@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 type Tool = {
@@ -14,7 +15,8 @@ type Tool = {
 const tools: Tool[] = [
   {
     name: "Merge PDF",
-    description: "Combine multiple PDF files into one document.",
+    description:
+      "Combine multiple PDF files into one document quickly and easily.",
     icon: "M",
     category: "Organize",
     href: "/merge-pdf",
@@ -22,7 +24,8 @@ const tools: Tool[] = [
   },
   {
     name: "Split PDF",
-    description: "Extract selected pages from your PDF document.",
+    description:
+      "Split a PDF or extract selected pages into a new PDF document.",
     icon: "S",
     category: "Organize",
     href: "/split-pdf",
@@ -30,7 +33,8 @@ const tools: Tool[] = [
   },
   {
     name: "Compress PDF",
-    description: "Reduce PDF file size for easier sharing and storage.",
+    description:
+      "Reduce PDF file size for easier sharing, uploading and storage.",
     icon: "C",
     category: "Optimize",
     href: "/compress-pdf",
@@ -38,49 +42,56 @@ const tools: Tool[] = [
   },
   {
     name: "Images to PDF",
-    description: "Convert JPG, PNG or WebP images into a PDF.",
+    description:
+      "Convert JPG, PNG and WebP images into a single PDF document.",
     icon: "I",
     category: "Convert",
     href: "/images-to-pdf",
   },
   {
     name: "PDF to JPG",
-    description: "Convert PDF pages into JPG images.",
+    description:
+      "Convert PDF pages into JPG images for easy sharing and viewing.",
     icon: "J",
     category: "Convert",
     href: "/pdf-to-jpg",
   },
   {
     name: "PDF to Word",
-    description: "Convert PDF files into editable Word documents.",
+    description:
+      "Convert PDF documents into editable Word files.",
     icon: "W",
     category: "Convert",
     href: "/pdf-to-word",
   },
   {
     name: "Rotate PDF",
-    description: "Rotate PDF pages by 90, 180 or 270 degrees.",
+    description:
+      "Rotate PDF pages by 90, 180 or 270 degrees.",
     icon: "R",
     category: "Edit",
     href: "/rotate-pdf",
   },
   {
     name: "Delete Pages",
-    description: "Remove unwanted pages from a PDF.",
+    description:
+      "Remove unwanted pages from a PDF document.",
     icon: "D",
     category: "Edit",
     href: "/delete-pages",
   },
   {
     name: "Extract Pages",
-    description: "Create a new PDF from selected pages.",
+    description:
+      "Extract selected pages and create a new PDF file.",
     icon: "E",
     category: "Edit",
     href: "/extract-pages",
   },
   {
     name: "Watermark PDF",
-    description: "Add a custom text watermark to your PDF.",
+    description:
+      "Add a custom text watermark to your PDF document.",
     icon: "W",
     category: "Security",
     href: "/watermark",
@@ -100,12 +111,12 @@ const faqs = [
   {
     question: "Is PDFora free to use?",
     answer:
-      "PDFora currently provides its available PDF tools without requiring a subscription.",
+      "PDFora currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
   },
   {
     question: "Do I need to install software?",
     answer:
-      "No. PDFora works directly in your web browser on phones, tablets and computers.",
+      "No. PDFora is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
   },
   {
     question: "What PDF tools are available?",
@@ -120,7 +131,12 @@ const faqs = [
   {
     question: "Are my uploaded files stored permanently?",
     answer:
-      "PDFora is designed to process uploaded files temporarily rather than maintain a permanent personal file library.",
+      "PDFora is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
+  },
+  {
+    question: "Can I use PDFora on my phone?",
+    answer:
+      "Yes. PDFora is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
   },
 ];
 
@@ -153,7 +169,7 @@ export default function Home() {
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2"
             aria-label="PDFora home"
@@ -165,26 +181,29 @@ export default function Home() {
             <span className="text-xl font-black tracking-tight">
               PDF<span className="text-blue-600">ora</span>
             </span>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="#tools"
             className="rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800"
           >
             Explore Tools
-          </a>
+          </Link>
         </div>
       </header>
 
       {/* HERO */}
       <section className="border-b border-slate-200 bg-white px-4 pb-14 pt-14 sm:pb-20 sm:pt-20">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-lg font-black text-blue-600">
+          <div
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-lg font-black text-blue-600"
+            aria-hidden="true"
+          >
             PDF
           </div>
 
           <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-blue-600">
-            Simple PDF tools
+            Free online PDF tools
           </p>
 
           <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-6xl">
@@ -194,9 +213,9 @@ export default function Home() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Free, fast and easy-to-use online PDF tools for merging,
-            splitting, compressing, converting, editing and protecting your
-            documents.
+            Simple online PDF tools for merging, splitting, compressing,
+            converting, editing and processing documents directly from your
+            browser.
           </p>
 
           {/* SEARCH */}
@@ -244,44 +263,30 @@ export default function Home() {
       </section>
 
       {/* POPULAR TOOLS */}
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <section
+        aria-labelledby="popular-heading"
+        className="mx-auto max-w-6xl px-4 py-12 sm:px-6"
+      >
         <div className="mb-5">
           <p className="text-xs font-black uppercase tracking-widest text-blue-600">
             Popular
           </p>
 
-          <h2 className="mt-1 text-2xl font-black">
-            Most used tools
+          <h2
+            id="popular-heading"
+            className="mt-1 text-2xl font-black"
+          >
+            Popular PDF tools
           </h2>
+
+          <p className="mt-2 text-sm text-slate-500">
+            Quickly access some of the most useful PDF processing tools.
+          </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
           {popularTools.map((tool) => (
-            <a
-              key={tool.href}
-              href={tool.href}
-              className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-md"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-sm font-black text-blue-600">
-                  {tool.icon}
-                </div>
-
-                <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-black text-blue-600">
-                  Popular
-                </span>
-              </div>
-
-              <h3 className="mt-5 font-black">{tool.name}</h3>
-
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                {tool.description}
-              </p>
-
-              <div className="mt-4 text-sm font-bold text-blue-600">
-                Open tool →
-              </div>
-            </a>
+            <ToolCard key={tool.href} tool={tool} popular />
           ))}
         </div>
       </section>
@@ -289,6 +294,7 @@ export default function Home() {
       {/* ALL TOOLS */}
       <section
         id="tools"
+        aria-labelledby="tools-heading"
         className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-16 sm:px-6"
       >
         <div className="mb-6">
@@ -296,17 +302,28 @@ export default function Home() {
             PDFora toolbox
           </p>
 
-          <h2 className="mt-1 text-2xl font-black">
+          <h2
+            id="tools-heading"
+            className="mt-1 text-2xl font-black"
+          >
             All PDF tools
           </h2>
+
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+            Choose a PDF tool below to process your document online.
+            PDFora is designed to make common document tasks simple and
+            accessible.
+          </p>
         </div>
 
+        {/* CATEGORIES */}
         <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
           {categories.map((item) => (
             <button
               key={item}
               type="button"
               onClick={() => setCategory(item)}
+              aria-pressed={category === item}
               className={
                 category === item
                   ? "shrink-0 rounded-full bg-slate-950 px-4 py-2.5 text-xs font-bold text-white"
@@ -320,14 +337,19 @@ export default function Home() {
 
         {filteredTools.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white px-5 py-14 text-center">
-            <div className="text-3xl">?</div>
+            <div
+              className="text-3xl"
+              aria-hidden="true"
+            >
+              ?
+            </div>
 
             <h2 className="mt-3 text-lg font-black">
               No tools found
             </h2>
 
             <p className="mt-2 text-sm text-slate-500">
-              Try another search or category.
+              Try another search term or category.
             </p>
 
             <button
@@ -344,33 +366,7 @@ export default function Home() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredTools.map((tool) => (
-              <a
-                key={tool.href}
-                href={tool.href}
-                className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-md active:scale-[0.99]"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-sm font-black text-blue-600">
-                    {tool.icon}
-                  </div>
-
-                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-                    {tool.category}
-                  </span>
-                </div>
-
-                <h2 className="mt-5 text-base font-black">
-                  {tool.name}
-                </h2>
-
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  {tool.description}
-                </p>
-
-                <div className="mt-5 text-sm font-bold text-blue-600">
-                  Open tool →
-                </div>
-              </a>
+              <ToolCard key={tool.href} tool={tool} />
             ))}
           </div>
         )}
@@ -387,40 +383,89 @@ export default function Home() {
             <h2 className="mt-2 text-2xl font-black sm:text-3xl">
               Built to keep PDF work simple
             </h2>
+
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500">
+              PDFora focuses on making everyday PDF tasks easier to access
+              without requiring desktop software installation.
+            </p>
           </div>
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <InfoCard
               icon="⚡"
-              title="Fast workflow"
-              description="Choose a tool, upload your document and start processing with a simple interface."
+              title="Simple workflow"
+              description="Choose a tool, upload your document and start the requested PDF operation through a straightforward interface."
             />
 
             <InfoCard
               icon="📱"
-              title="Works everywhere"
-              description="Use PDFora from a phone, tablet or desktop browser without installing an application."
+              title="Works across devices"
+              description="Use PDFora from modern desktop, tablet and mobile browsers with a responsive interface."
             />
 
             <InfoCard
               icon="🔒"
               title="Temporary processing"
-              description="Uploaded files are processed by the PDFora backend for the requested operation."
+              description="Uploaded files are sent to the processing backend for the requested operation rather than being presented as a permanent file library."
             />
           </div>
         </div>
       </section>
 
+      {/* HOW IT WORKS */}
+      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <div className="text-center">
+          <p className="text-xs font-black uppercase tracking-widest text-blue-600">
+            How it works
+          </p>
+
+          <h2 className="mt-2 text-2xl font-black sm:text-3xl">
+            Process a PDF in three simple steps
+          </h2>
+        </div>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <StepCard
+            number="01"
+            title="Choose a tool"
+            description="Select the PDF operation you need from the PDFora toolbox."
+          />
+
+          <StepCard
+            number="02"
+            title="Upload your file"
+            description="Select the document or files required for the chosen operation."
+          />
+
+          <StepCard
+            number="03"
+            title="Process and download"
+            description="Run the requested operation and download the resulting document."
+          />
+        </div>
+      </section>
+
       {/* FAQ */}
-      <section id="faq" className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
+      <section
+        id="faq"
+        aria-labelledby="faq-heading"
+        className="mx-auto max-w-4xl scroll-mt-20 px-4 py-14 sm:px-6"
+      >
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-blue-600">
             FAQ
           </p>
 
-          <h2 className="mt-2 text-2xl font-black sm:text-3xl">
+          <h2
+            id="faq-heading"
+            className="mt-2 text-2xl font-black sm:text-3xl"
+          >
             Frequently asked questions
           </h2>
+
+          <p className="mt-3 text-sm text-slate-500">
+            Answers to common questions about using PDFora.
+          </p>
         </div>
 
         <div className="mt-8 space-y-3">
@@ -437,14 +482,17 @@ export default function Home() {
                   onClick={() =>
                     setOpenFaq(isOpen ? null : index)
                   }
-                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                   aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                 >
                   <span className="text-sm font-black">
                     {faq.question}
                   </span>
 
-                  <span className="text-lg text-slate-400">
+                  <span
+                    className="text-lg text-slate-400"
+                    aria-hidden="true"
+                  >
                     {isOpen ? "−" : "+"}
                   </span>
                 </button>
@@ -460,15 +508,47 @@ export default function Home() {
         </div>
       </section>
 
+      {/* INFORMATION LINKS */}
+      <section className="border-y border-slate-200 bg-white px-4 py-12 sm:px-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <InfoLink
+              href="/about"
+              title="About PDFora"
+              description="Learn more about PDFora and its purpose."
+            />
+
+            <InfoLink
+              href="/contact"
+              title="Contact Us"
+              description="Send feedback, questions or report a problem."
+            />
+
+            <InfoLink
+              href="/privacy"
+              title="Privacy Policy"
+              description="Learn how uploaded files and technical information are handled."
+            />
+
+            <InfoLink
+              href="/terms"
+              title="Terms of Service"
+              description="Read the terms that apply when using PDFora."
+            />
+          </div>
+        </div>
+      </section>
+
       {/* FOOTER */}
       <footer className="border-t border-slate-200 bg-slate-950 px-4 py-12 text-white sm:px-6">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 md:grid-cols-4">
             {/* BRAND */}
             <div>
-              <a
+              <Link
                 href="/"
                 className="flex items-center gap-2"
+                aria-label="PDFora home"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
                   P
@@ -477,7 +557,7 @@ export default function Home() {
                 <span className="text-xl font-black">
                   PDFora
                 </span>
-              </a>
+              </Link>
 
               <p className="mt-4 max-w-sm text-sm leading-6 text-slate-400">
                 Simple online tools for everyday PDF and document tasks.
@@ -487,29 +567,33 @@ export default function Home() {
             {/* TOOLS */}
             <div>
               <h3 className="text-sm font-black">
-                Tools
+                Popular tools
               </h3>
 
               <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
-                <a href="/merge-pdf" className="hover:text-white">
+                <FooterLink href="/merge-pdf">
                   Merge PDF
-                </a>
+                </FooterLink>
 
-                <a href="/split-pdf" className="hover:text-white">
+                <FooterLink href="/split-pdf">
                   Split PDF
-                </a>
+                </FooterLink>
 
-                <a href="/compress-pdf" className="hover:text-white">
+                <FooterLink href="/compress-pdf">
                   Compress PDF
-                </a>
+                </FooterLink>
 
-                <a href="/pdf-to-word" className="hover:text-white">
+                <FooterLink href="/pdf-to-word">
                   PDF to Word
-                </a>
+                </FooterLink>
 
-                <a href="/pdf-to-jpg" className="hover:text-white">
+                <FooterLink href="/pdf-to-jpg">
                   PDF to JPG
-                </a>
+                </FooterLink>
+
+                <FooterLink href="/images-to-pdf">
+                  Images to PDF
+                </FooterLink>
               </div>
             </div>
 
@@ -520,25 +604,25 @@ export default function Home() {
               </h3>
 
               <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
-                <a href="/about" className="hover:text-white">
+                <FooterLink href="/about">
                   About
-                </a>
+                </FooterLink>
 
-                <a href="/contact" className="hover:text-white">
+                <FooterLink href="/contact">
                   Contact
-                </a>
+                </FooterLink>
 
-                <a href="/privacy" className="hover:text-white">
+                <FooterLink href="/privacy">
                   Privacy Policy
-                </a>
+                </FooterLink>
 
-                <a href="/terms" className="hover:text-white">
+                <FooterLink href="/terms">
                   Terms of Service
-                </a>
+                </FooterLink>
 
-                <a href="#faq" className="hover:text-white">
+                <FooterLink href="#faq">
                   FAQ
-                </a>
+                </FooterLink>
               </div>
             </div>
 
@@ -549,14 +633,23 @@ export default function Home() {
               </h3>
 
               <p className="mt-4 text-sm leading-6 text-slate-400">
-                PDFora is a web-based PDF utility platform focused on making
-                common document tasks easier and more accessible.
+                PDFora is a web-based PDF utility platform focused on
+                providing simple tools for common document-processing tasks.
               </p>
+
+              <Link
+                href="/about"
+                className="mt-4 inline-block text-sm font-bold text-white hover:text-blue-400"
+              >
+                Learn more →
+              </Link>
             </div>
           </div>
 
           <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
-            <p>© 2026 PDFora. All rights reserved.</p>
+            <p>
+              © 2026 PDFora. All rights reserved.
+            </p>
 
             <p>
               Developed by Niroj Pokhrel
@@ -565,6 +658,50 @@ export default function Home() {
         </div>
       </footer>
     </main>
+  );
+}
+
+function ToolCard({
+  tool,
+  popular = false,
+}: {
+  tool: Tool;
+  popular?: boolean;
+}) {
+  return (
+    <Link
+      href={tool.href}
+      className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-md active:scale-[0.99]"
+      aria-label={`Open ${tool.name}`}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-sm font-black text-blue-600">
+          {tool.icon}
+        </div>
+
+        {popular ? (
+          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-black text-blue-600">
+            Popular
+          </span>
+        ) : (
+          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-500">
+            {tool.category}
+          </span>
+        )}
+      </div>
+
+      <h2 className="mt-5 text-base font-black">
+        {tool.name}
+      </h2>
+
+      <p className="mt-2 text-sm leading-6 text-slate-500">
+        {tool.description}
+      </p>
+
+      <div className="mt-5 text-sm font-bold text-blue-600">
+        Open tool →
+      </div>
+    </Link>
   );
 }
 
@@ -579,7 +716,10 @@ function InfoCard({
 }) {
   return (
     <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
-      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-lg shadow-sm">
+      <div
+        className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-lg shadow-sm"
+        aria-hidden="true"
+      >
         {icon}
       </div>
 
@@ -591,5 +731,77 @@ function InfoCard({
         {description}
       </p>
     </div>
+  );
+}
+
+function StepCard({
+  number,
+  title,
+  description,
+}: {
+  number: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="text-sm font-black text-blue-600">
+        {number}
+      </div>
+
+      <h3 className="mt-4 text-base font-black">
+        {title}
+      </h3>
+
+      <p className="mt-2 text-sm leading-6 text-slate-500">
+        {description}
+      </p>
+    </div>
+  );
+}
+
+function InfoLink({
+  href,
+  title,
+  description,
+}: {
+  href: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-blue-300 hover:bg-white"
+    >
+      <h3 className="text-sm font-black">
+        {title}
+      </h3>
+
+      <p className="mt-2 text-sm leading-6 text-slate-500">
+        {description}
+      </p>
+
+      <span className="mt-4 inline-block text-sm font-bold text-blue-600">
+        Learn more →
+      </span>
+    </Link>
+  );
+}
+
+function FooterLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="hover:text-white"
+    >
+      {children}
+    </Link>
   );
 }

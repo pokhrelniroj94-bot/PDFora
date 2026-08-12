@@ -1,5 +1,6 @@
 ﻿from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query
 from fastapi.responses import FileResponse
+from docx import Document
 from fastapi.middleware.cors import CORSMiddleware
 from pypdf import PdfReader, PdfWriter
 from pathlib import Path
@@ -1083,3 +1084,58 @@ def cleanup():
         "status": "ok",
         "removed_jobs": removed
     }
+
+# ============================================================
+# PDF TO WORD
+# ============================================================
+
+@app.post("/api/pdf-to-word")
+async def pdf_to_word(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(
+            status_code=400,
+            detail="Please upload a PDF file."
+        )
+
+    job = create_job()
+    input_path = job / "input.pdf"
+    output_path = job / "output.docx"
+
+    try:
+        await save_upload(file, input_path)
+
+        doc = Document()
+
+        pdf = fitz.open(str(input_path))
+
+        for page_number, page in enumerate(pdf):
+            text = page.get_text("text")
+
+            if text.strip():
+                for line in text.splitlines():
+                    doc.add_paragraph(line)
+            else:
+                doc.add_paragraph("")
+
+            if page_number < len(pdf) - 1:
+                doc.add_page_break()
+
+        pdf.close()
+
+        doc.save(str(output_path))
+
+        return FileResponse(
+            path=str(output_path),
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            filename="converted.docx"
+        )
+
+    except Exception as exc:
+        shutil.rmtree(job, ignore_errors=True)
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"PDF to Word conversion failed: {str(exc)}"
+        )
+
+

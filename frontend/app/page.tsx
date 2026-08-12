@@ -51,6 +51,13 @@ const tools: Tool[] = [
     href: "/pdf-to-jpg",
   },
   {
+    name: "PDF to Word",
+    description: "Convert PDF files into editable Word documents.",
+    icon: "W",
+    category: "Convert",
+    href: "/pdf-to-word",
+  },
+  {
     name: "Rotate PDF",
     description: "Rotate PDF pages by 90, 180 or 270 degrees.",
     icon: "R",
@@ -519,3 +526,14 @@ function InfoCard({
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+

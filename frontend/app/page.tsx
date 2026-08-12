@@ -22,7 +22,7 @@ const tools: Tool[] = [
   },
   {
     name: "Split PDF",
-    description: "Extract a page range from your PDF document.",
+    description: "Extract selected pages from your PDF document.",
     icon: "S",
     category: "Organize",
     href: "/split-pdf",
@@ -30,7 +30,7 @@ const tools: Tool[] = [
   },
   {
     name: "Compress PDF",
-    description: "Reduce PDF file size for easier sharing.",
+    description: "Reduce PDF file size for easier sharing and storage.",
     icon: "C",
     category: "Optimize",
     href: "/compress-pdf",
@@ -100,7 +100,7 @@ const faqs = [
   {
     question: "Is PDFora free to use?",
     answer:
-      "PDFora is currently designed to provide simple PDF tools without requiring a subscription.",
+      "PDFora currently provides its available PDF tools without requiring a subscription.",
   },
   {
     question: "Do I need to install software?",
@@ -108,14 +108,19 @@ const faqs = [
       "No. PDFora works directly in your web browser on phones, tablets and computers.",
   },
   {
-    question: "What tools are available?",
+    question: "What PDF tools are available?",
     answer:
-      "PDFora currently includes tools for merging, splitting, compressing, converting, rotating, deleting, extracting and watermarking PDFs.",
+      "PDFora currently provides tools for merging, splitting, compressing, converting, rotating, deleting, extracting and watermarking PDF files.",
   },
   {
-    question: "How are files processed?",
+    question: "How are my files processed?",
     answer:
-      "Files selected for processing are sent to the PDFora backend so the requested PDF operation can be performed.",
+      "Files selected for processing are temporarily sent to the PDFora processing backend so the requested operation can be completed.",
+  },
+  {
+    question: "Are my uploaded files stored permanently?",
+    answer:
+      "PDFora is designed to process uploaded files temporarily rather than maintain a permanent personal file library.",
   },
 ];
 
@@ -145,9 +150,14 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
+      {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <a href="/" className="flex items-center gap-2">
+          <a
+            href="/"
+            className="flex items-center gap-2"
+            aria-label="PDFora home"
+          >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-sm font-black text-white">
               P
             </div>
@@ -166,6 +176,7 @@ export default function Home() {
         </div>
       </header>
 
+      {/* HERO */}
       <section className="border-b border-slate-200 bg-white px-4 pb-14 pt-14 sm:pb-20 sm:pt-20">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-lg font-black text-blue-600">
@@ -183,12 +194,19 @@ export default function Home() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Free, fast and easy-to-use PDF tools for merging, splitting,
-            compressing, converting, editing and protecting your documents.
+            Free, fast and easy-to-use online PDF tools for merging,
+            splitting, compressing, converting, editing and protecting your
+            documents.
           </p>
 
+          {/* SEARCH */}
           <div className="mx-auto mt-8 flex max-w-2xl items-center rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
-            <span className="pl-3 text-lg text-slate-400">⌕</span>
+            <span
+              className="pl-3 text-lg text-slate-400"
+              aria-hidden="true"
+            >
+              ⌕
+            </span>
 
             <input
               value={query}
@@ -211,7 +229,7 @@ export default function Home() {
 
           <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs text-slate-500">
             <span className="rounded-full bg-slate-100 px-3 py-2">
-              {tools.length} working tools
+              {tools.length} available tools
             </span>
 
             <span className="rounded-full bg-slate-100 px-3 py-2">
@@ -225,6 +243,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* POPULAR TOOLS */}
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="mb-5">
           <p className="text-xs font-black uppercase tracking-widest text-blue-600">
@@ -267,6 +286,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ALL TOOLS */}
       <section
         id="tools"
         className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-16 sm:px-6"
@@ -356,6 +376,7 @@ export default function Home() {
         )}
       </section>
 
+      {/* WHY PDFORA */}
       <section className="border-y border-slate-200 bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
@@ -383,13 +404,14 @@ export default function Home() {
 
             <InfoCard
               icon="🔒"
-              title="Backend processing"
-              description="PDF operations are handled by the PDFora processing backend."
+              title="Temporary processing"
+              description="Uploaded files are processed by the PDFora backend for the requested operation."
             />
           </div>
         </div>
       </section>
 
+      {/* FAQ */}
       <section id="faq" className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-blue-600">
@@ -416,6 +438,7 @@ export default function Home() {
                     setOpenFaq(isOpen ? null : index)
                   }
                   className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                  aria-expanded={isOpen}
                 >
                   <span className="text-sm font-black">
                     {faq.question}
@@ -437,11 +460,16 @@ export default function Home() {
         </div>
       </section>
 
+      {/* FOOTER */}
       <footer className="border-t border-slate-200 bg-slate-950 px-4 py-12 text-white sm:px-6">
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-10 md:grid-cols-3">
+          <div className="grid gap-10 md:grid-cols-4">
+            {/* BRAND */}
             <div>
-              <div className="flex items-center gap-2">
+              <a
+                href="/"
+                className="flex items-center gap-2"
+              >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
                   P
                 </div>
@@ -449,51 +477,90 @@ export default function Home() {
                 <span className="text-xl font-black">
                   PDFora
                 </span>
-              </div>
+              </a>
 
               <p className="mt-4 max-w-sm text-sm leading-6 text-slate-400">
-                Simple online tools for everyday PDF tasks.
+                Simple online tools for everyday PDF and document tasks.
               </p>
             </div>
 
+            {/* TOOLS */}
             <div>
               <h3 className="text-sm font-black">
-                Quick links
+                Tools
               </h3>
 
               <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
-                <a href="#tools" className="hover:text-white">
-                  All Tools
+                <a href="/merge-pdf" className="hover:text-white">
+                  Merge PDF
+                </a>
+
+                <a href="/split-pdf" className="hover:text-white">
+                  Split PDF
+                </a>
+
+                <a href="/compress-pdf" className="hover:text-white">
+                  Compress PDF
+                </a>
+
+                <a href="/pdf-to-word" className="hover:text-white">
+                  PDF to Word
+                </a>
+
+                <a href="/pdf-to-jpg" className="hover:text-white">
+                  PDF to JPG
+                </a>
+              </div>
+            </div>
+
+            {/* COMPANY */}
+            <div>
+              <h3 className="text-sm font-black">
+                PDFora
+              </h3>
+
+              <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
+                <a href="/about" className="hover:text-white">
+                  About
+                </a>
+
+                <a href="/contact" className="hover:text-white">
+                  Contact
+                </a>
+
+                <a href="/privacy" className="hover:text-white">
+                  Privacy Policy
+                </a>
+
+                <a href="/terms" className="hover:text-white">
+                  Terms of Service
                 </a>
 
                 <a href="#faq" className="hover:text-white">
                   FAQ
                 </a>
-
-                <a href="#about" className="hover:text-white">
-                  About
-                </a>
               </div>
             </div>
 
-            <div id="about">
+            {/* ABOUT */}
+            <div>
               <h3 className="text-sm font-black">
                 About PDFora
               </h3>
 
               <p className="mt-4 text-sm leading-6 text-slate-400">
-                PDFora is a web-based PDF utility project focused on making
+                PDFora is a web-based PDF utility platform focused on making
                 common document tasks easier and more accessible.
-              </p>
-
-              <p className="mt-4 text-sm font-bold text-white">
-                Developed by Niroj Pokhrel
               </p>
             </div>
           </div>
 
-          <div className="mt-10 border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
-            © 2026 PDFora. All rights reserved.
+          <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
+            <p>© 2026 PDFora. All rights reserved.</p>
+
+            <p>
+              Developed by Niroj Pokhrel
+            </p>
           </div>
         </div>
       </footer>
@@ -526,14 +593,3 @@ function InfoCard({
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-

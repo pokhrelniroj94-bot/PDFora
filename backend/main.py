@@ -32,11 +32,13 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:3001",
-    ],
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
+    "https://pd-fora.vercel.app",
+    "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -1137,5 +1139,6 @@ async def pdf_to_word(file: UploadFile = File(...)):
             status_code=500,
             detail=f"PDF to Word conversion failed: {str(exc)}"
         )
+
 
 

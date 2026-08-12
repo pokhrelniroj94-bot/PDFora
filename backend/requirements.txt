@@ -4,3 +4,4 @@ python-multipart
 pypdf
 pillow
 pymupdf
+python-docx

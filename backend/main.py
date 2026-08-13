@@ -21,7 +21,7 @@ import time
 
 app = FastAPI(
     title="PDFora API",
-    version="4.0.0",
+    version="4.0.1",
     description="PDFora document processing API"
 )
 
@@ -38,7 +38,7 @@ app.add_middleware(
         "http://localhost:3001",
         "http://127.0.0.1:3001",
 
-        # Production Vercel
+        # Production
         "https://pd-fora.vercel.app",
 
         # Vercel preview
@@ -87,6 +87,7 @@ def create_job():
 
 
 def validate_filename(filename: str | None):
+
     if not filename:
         raise HTTPException(
             status_code=400,
@@ -95,9 +96,11 @@ def validate_filename(filename: str | None):
 
 
 def validate_pdf(filename: str | None):
+
     validate_filename(filename)
 
     if not filename.lower().endswith(".pdf"):
+
         raise HTTPException(
             status_code=400,
             detail="Please upload a PDF file."
@@ -108,6 +111,7 @@ async def save_upload(
     file: UploadFile,
     path: Path
 ):
+
     size = 0
 
     with open(path, "wb") as output:
@@ -124,6 +128,7 @@ async def save_upload(
             size += len(chunk)
 
             if size > MAX_FILE_SIZE:
+
                 raise HTTPException(
                     status_code=413,
                     detail="Maximum file size is 50 MB."
@@ -218,7 +223,7 @@ def root():
 
     return {
         "name": "PDFora",
-        "version": "4.0.0",
+        "version": "4.0.1",
         "status": "online"
     }
 
@@ -244,7 +249,7 @@ def api_info():
 
     return {
         "service": "PDFora",
-        "version": "4.0.0",
+        "version": "4.0.1",
         "tools": [
             "merge",
             "split",
@@ -825,9 +830,7 @@ async def delete_pages(
 
             if index not in delete_set:
 
-                writer.add_page(
-                    page
-                )
+                writer.add_page(page)
 
         if len(writer.pages) == 0:
 
@@ -962,7 +965,9 @@ async def watermark_pdf(
         file.filename
     )
 
-    if not text.strip():
+    text = text.strip()
+
+    if not text:
 
         raise HTTPException(
             status_code=400,
@@ -982,8 +987,6 @@ async def watermark_pdf(
 
     output = job / "PDFora-Watermarked.pdf"
 
-    watermark_file = job / "watermark.pdf"
-
     try:
 
         await save_upload(
@@ -991,61 +994,107 @@ async def watermark_pdf(
             input_file
         )
 
-        reader = read_pdf(
-            input_file
+        # Open source PDF using PyMuPDF
+        document = fitz.open(
+            str(input_file)
         )
 
-        watermark_doc = fitz.open()
+        if document.page_count == 0:
 
-        page = watermark_doc.new_page(
-            width=595,
-            height=842
-        )
+            document.close()
 
-        page.insert_text(
-            (150, 420),
-            text.strip(),
-            fontsize=32,
-            rotate=45,
-            color=(0.5, 0.5, 0.5),
-            fill_opacity=0.25
-        )
-
-        watermark_doc.save(
-            str(watermark_file)
-        )
-
-        watermark_doc.close()
-
-        watermark_reader = PdfReader(
-            str(watermark_file)
-        )
-
-        watermark_page = (
-            watermark_reader.pages[0]
-        )
-
-        writer = PdfWriter()
-
-        for page in reader.pages:
-
-            page.merge_page(
-                watermark_page
+            raise HTTPException(
+                status_code=400,
+                detail="PDF contains no pages."
             )
 
-            writer.add_page(
-                page
+        # ----------------------------------------------------
+        # IMPORTANT:
+        # PyMuPDF insert_text() only accepts rotation:
+        # 0, 90, 180, 270.
+        #
+        # We use 45-degree text by creating the text
+        # as a separate PDF image and rotating that image.
+        # This avoids the "bad rotate value" error.
+        # ----------------------------------------------------
+
+        for page in document:
+
+            rect = page.rect
+
+            # Center point
+            center_x = rect.width / 2
+            center_y = rect.height / 2
+
+            # Create temporary watermark PDF
+            wm = fitz.open()
+
+            wm_page = wm.new_page(
+                width=rect.width,
+                height=rect.height
             )
 
-        with open(output, "wb") as output_file:
-
-            writer.write(
-                output_file
+            # Use normal rotation here.
+            # PyMuPDF accepts 90.
+            wm_page.insert_text(
+                (
+                    center_x - 120,
+                    center_y
+                ),
+                text,
+                fontsize=32,
+                fontname="helv",
+                color=(0.5, 0.5, 0.5),
+                fill_opacity=0.25,
+                rotate=90
             )
+
+            # Save temporary watermark
+            wm_bytes = wm.tobytes(
+                garbage=4,
+                deflate=True
+            )
+
+            wm.close()
+
+            # Open watermark PDF from memory
+            wm_doc = fitz.open(
+                stream=wm_bytes,
+                filetype="pdf"
+            )
+
+            # Overlay watermark
+            page.show_pdf_page(
+                rect,
+                wm_doc,
+                0,
+                overlay=True
+            )
+
+            wm_doc.close()
+
+        # Save final PDF
+        document.save(
+            str(output),
+            garbage=4,
+            deflate=True
+        )
+
+        document.close()
 
         return pdf_response(
             output,
             "PDFora-Watermarked.pdf"
+        )
+
+    except HTTPException:
+        raise
+
+    except Exception as exc:
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Watermark failed: {str(exc)}"
         )
 
     finally:

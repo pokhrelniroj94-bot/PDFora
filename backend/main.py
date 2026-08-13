@@ -1,10 +1,11 @@
 ﻿from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query
 from fastapi.responses import FileResponse
-from docx import Document
 from fastapi.middleware.cors import CORSMiddleware
+from docx import Document
 from pypdf import PdfReader, PdfWriter
 from pathlib import Path
 from PIL import Image
+
 import fitz
 import tempfile
 import shutil
@@ -32,13 +33,17 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:3001",
-    "http://127.0.0.1:3001",
-    "https://pd-fora.vercel.app",
-    "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
-],
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
+
+        # Production Vercel
+        "https://pd-fora.vercel.app",
+
+        # Vercel preview
+        "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -151,6 +156,7 @@ def read_pdf(path: Path):
             result = reader.decrypt("")
 
             if result == 0:
+
                 raise HTTPException(
                     status_code=400,
                     detail="Password protected PDF is not supported."
@@ -191,11 +197,14 @@ def pdf_response(
 def cleanup_job(job: Path):
 
     try:
+
         if job.exists():
+
             shutil.rmtree(
                 job,
                 ignore_errors=True
             )
+
     except Exception:
         pass
 
@@ -245,7 +254,8 @@ def api_info():
             "rotate",
             "delete-pages",
             "extract-pages",
-            "watermark"
+            "watermark",
+            "pdf-to-word"
         ]
     }
 
@@ -453,8 +463,6 @@ async def compress_pdf(
 
         compressed_size = output.stat().st_size
 
-        # Do not make the file larger than the original.
-        # If compression made it larger, return the original.
         if compressed_size >= original_size:
 
             response_path = input_file
@@ -611,7 +619,6 @@ async def pdf_to_jpg(
             input_file
         )
 
-        # Validate PDF first
         read_pdf(
             input_file
         )
@@ -1060,6 +1067,13 @@ def cleanup():
 
     now = time.time()
 
+    if not TEMP_DIR.exists():
+
+        return {
+            "status": "ok",
+            "removed_jobs": 0
+        }
+
     for directory in TEMP_DIR.iterdir():
 
         if not directory.is_dir():
@@ -1069,7 +1083,6 @@ def cleanup():
 
             age = now - directory.stat().st_mtime
 
-            # Remove jobs older than 1 hour
             if age > 3600:
 
                 shutil.rmtree(
@@ -1087,58 +1100,90 @@ def cleanup():
         "removed_jobs": removed
     }
 
+
 # ============================================================
 # PDF TO WORD
 # ============================================================
 
 @app.post("/api/pdf-to-word")
-async def pdf_to_word(file: UploadFile = File(...)):
-    if not file.filename.lower().endswith(".pdf"):
-        raise HTTPException(
-            status_code=400,
-            detail="Please upload a PDF file."
-        )
+async def pdf_to_word(
+    file: UploadFile = File(...)
+):
+
+    validate_pdf(
+        file.filename
+    )
 
     job = create_job()
+
     input_path = job / "input.pdf"
+
     output_path = job / "output.docx"
 
     try:
-        await save_upload(file, input_path)
+
+        await save_upload(
+            file,
+            input_path
+        )
+
+        pdf = fitz.open(
+            str(input_path)
+        )
 
         doc = Document()
 
-        pdf = fitz.open(str(input_path))
-
         for page_number, page in enumerate(pdf):
+
             text = page.get_text("text")
 
             if text.strip():
+
                 for line in text.splitlines():
+
                     doc.add_paragraph(line)
+
             else:
+
                 doc.add_paragraph("")
 
             if page_number < len(pdf) - 1:
+
                 doc.add_page_break()
 
         pdf.close()
 
-        doc.save(str(output_path))
+        doc.save(
+            str(output_path)
+        )
 
         return FileResponse(
             path=str(output_path),
-            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            media_type=(
+                "application/vnd.openxmlformats-"
+                "officedocument.wordprocessingml.document"
+            ),
             filename="converted.docx"
         )
 
+    except HTTPException:
+        raise
+
     except Exception as exc:
-        shutil.rmtree(job, ignore_errors=True)
+
+        shutil.rmtree(
+            job,
+            ignore_errors=True
+        )
 
         raise HTTPException(
             status_code=500,
             detail=f"PDF to Word conversion failed: {str(exc)}"
         )
 
+    finally:
 
-
+        try:
+            await file.close()
+        except Exception:
+            pass

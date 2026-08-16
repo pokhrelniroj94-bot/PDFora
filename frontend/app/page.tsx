@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -55,6 +55,14 @@ const tools: Tool[] = [
     icon: "J",
     category: "Convert",
     href: "/pdf-to-jpg",
+  },
+    {
+    name: "PDF to Excel",
+    description:
+      "Convert PDF tables into editable Excel spreadsheets.",
+    icon: "E",
+    category: "Convert",
+    href: "/pdf-to-excel",
   },
   {
     name: "PDF to Word",

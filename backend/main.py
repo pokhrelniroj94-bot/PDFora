@@ -13,6 +13,8 @@ import uuid
 import io
 import zipfile
 import time
+import pdfplumber
+from openpyxl import Workbook
 
 
 # ============================================================
@@ -1109,6 +1111,143 @@ async def watermark_pdf(
 # CLEANUP
 # ============================================================
 
+# ============================================================
+# PDF TO EXCEL
+# ============================================================
+
+@app.post("/api/pdf-to-excel")
+async def pdf_to_excel(
+    file: UploadFile = File(...)
+):
+    validate_pdf(file.filename)
+
+    job = create_job()
+
+    try:
+        input_path = job / "input.pdf"
+        output_path = job / "converted.xlsx"
+
+        await save_upload(file, input_path)
+
+        workbook = Workbook()
+        default_sheet = workbook.active
+        workbook.remove(default_sheet)
+
+        extracted_anything = False
+
+        with pdfplumber.open(input_path) as pdf:
+            for page_number, page in enumerate(pdf.pages, start=1):
+
+                tables = page.extract_tables()
+
+                if tables:
+                    for table_number, table in enumerate(tables, start=1):
+
+                        if not table:
+                            continue
+
+                        extracted_anything = True
+
+                        sheet_name = (
+                            f"Page {page_number}"
+                            if len(tables) == 1
+                            else f"Page {page_number}-{table_number}"
+                        )
+
+                        worksheet = workbook.create_sheet(
+                            title=sheet_name[:31]
+                        )
+
+                        for row_number, row in enumerate(table, start=1):
+
+                            if row is None:
+                                continue
+
+                            for column_number, value in enumerate(
+                                row,
+                                start=1
+                            ):
+                                if value is not None:
+                                    worksheet.cell(
+                                        row=row_number,
+                                        column=column_number,
+                                        value=str(value).strip()
+                                    )
+
+                        for column_cells in worksheet.columns:
+
+                            max_length = 0
+                            column_letter = column_cells[0].column_letter
+
+                            for cell in column_cells:
+                                if cell.value is not None:
+                                    max_length = max(
+                                        max_length,
+                                        len(str(cell.value))
+                                    )
+
+                            worksheet.column_dimensions[
+                                column_letter
+                            ].width = min(
+                                max(max_length + 2, 10),
+                                50
+                            )
+
+                else:
+                    text = page.extract_text()
+
+                    if text and text.strip():
+
+                        extracted_anything = True
+
+                        worksheet = workbook.create_sheet(
+                            title=f"Page {page_number}"[:31]
+                        )
+
+                        for row_number, line in enumerate(
+                            text.splitlines(),
+                            start=1
+                        ):
+                            worksheet.cell(
+                                row=row_number,
+                                column=1,
+                                value=line.strip()
+                            )
+
+                        worksheet.column_dimensions["A"].width = 100
+
+        if not extracted_anything:
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "No readable text or tables were found in this PDF. "
+                    "The PDF may be scanned or image-based."
+                )
+            )
+
+        workbook.save(output_path)
+
+        return FileResponse(
+            path=str(output_path),
+            media_type=(
+                "application/vnd.openxmlformats-officedocument."
+                "spreadsheetml.sheet"
+            ),
+            filename="pdfora-converted.xlsx"
+        )
+
+    except HTTPException:
+        cleanup_job(job)
+        raise
+
+    except Exception as exc:
+        cleanup_job(job)
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"PDF to Excel conversion failed: {str(exc)}"
+        )
+
 @app.post("/api/cleanup")
 def cleanup():
 
@@ -1236,3 +1375,5 @@ async def pdf_to_word(
             await file.close()
         except Exception:
             pass
+
+

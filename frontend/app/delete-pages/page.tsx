@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import PDForaTool from "../../components/PDForaTool";
 
@@ -21,9 +21,7 @@ export default function Page() {
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Remove unwanted pages from a PDF document quickly and easily.
-              PDFora lets you process PDF files online from your desktop,
-              tablet or mobile browser.
+              Delete unwanted pages from a PDF online for free with PDFora. Remove blank, unnecessary or unwanted pages quickly from your document using your browser on desktop, tablet or mobile.
             </p>
           </div>
 
@@ -47,7 +45,7 @@ export default function Page() {
           <div className="grid gap-5 md:grid-cols-3">
             <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-lg">
-                🗑️
+                ???
               </div>
               <h2 className="mt-4 text-base font-black">
                 Remove Pages
@@ -60,7 +58,7 @@ export default function Page() {
 
             <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-lg">
-                ⚡
+                ?
               </div>
               <h2 className="mt-4 text-base font-black">
                 Simple Workflow
@@ -73,7 +71,7 @@ export default function Page() {
 
             <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-lg">
-                📱
+                ??
               </div>
               <h2 className="mt-4 text-base font-black">
                 Works on Any Device
@@ -134,7 +132,7 @@ export default function Page() {
       <section className="bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-2xl font-black">
-            Delete pages from PDF online with PDFora
+            Delete pages from PDF online for free with PDFora
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
@@ -210,7 +208,7 @@ export default function Page() {
           <div className="mt-8 space-y-4">
             <details className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <summary className="cursor-pointer font-black">
-                How do I delete pages from a PDF?
+                How can I remove pages from a PDF online?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 Upload your PDF, enter the page numbers you want to remove and
@@ -220,7 +218,7 @@ export default function Page() {
 
             <details className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <summary className="cursor-pointer font-black">
-                Can I remove multiple pages?
+                Can I delete multiple pages from a PDF?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 You can specify the pages that need to be removed according to
@@ -230,7 +228,7 @@ export default function Page() {
 
             <details className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <summary className="cursor-pointer font-black">
-                Do I need to install software?
+                Is PDFora free to use and do I need to install software?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 No. The tool is designed to work in a modern web browser.
@@ -242,3 +240,4 @@ export default function Page() {
     </main>
   );
 }
+

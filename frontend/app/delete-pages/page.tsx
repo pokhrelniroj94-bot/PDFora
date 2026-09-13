@@ -17,8 +17,7 @@ export default function Page() {
             </p>
 
             <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
-              Delete PDF Pages Online
-            </h1>
+              Delete Pages from PDF Online Free</h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Delete unwanted pages from a PDF online for free with PDFora. Remove blank, unnecessary or unwanted pages quickly from your document using your browser on desktop, tablet or mobile.
@@ -211,8 +210,7 @@ export default function Page() {
                 How can I remove pages from a PDF online?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                Upload your PDF, enter the page numbers you want to remove and
-                process the document.
+                Upload your PDF, enter the page numbers you want to remove, and click the delete button. PDFora processes the file online and creates a new PDF without the selected pages.
               </p>
             </details>
 
@@ -221,8 +219,7 @@ export default function Page() {
                 Can I delete multiple pages from a PDF?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                You can specify the pages that need to be removed according to
-                the format supported by the tool.
+                Yes. You can enter multiple page numbers, such as 2,4,6, to remove several unwanted pages from the same PDF.
               </p>
             </details>
 
@@ -231,7 +228,7 @@ export default function Page() {
                 Is PDFora free to use and do I need to install software?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                No. The tool is designed to work in a modern web browser.
+                Yes. PDFora provides this PDF page removal tool online without requiring a subscription or software installation. You can use it from a modern desktop, tablet, or mobile browser.
               </p>
             </details>
           </div>
@@ -240,4 +237,7 @@ export default function Page() {
     </main>
   );
 }
+
+
+
 

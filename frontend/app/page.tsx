@@ -203,7 +203,7 @@ export default function Home() {
             className="flex items-center gap-2"
             aria-label="PDFora home"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-sm font-black text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-700 text-sm font-black text-white">
               N
             </div>
 
@@ -225,13 +225,13 @@ export default function Home() {
       <section className="border-b border-slate-200 bg-white px-4 pb-14 pt-14 sm:pb-20 sm:pt-20">
         <div className="mx-auto max-w-4xl text-center">
           <div
-            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100 text-lg font-black text-violet-600"
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-100 text-lg font-black text-teal-700"
             aria-hidden="true"
           >
             PDF
           </div>
 
-          <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-violet-600">
+          <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-teal-700">
             Free online PDF tools
           </p>
 

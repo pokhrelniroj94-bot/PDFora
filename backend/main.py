@@ -1623,3 +1623,105 @@ async def repair_pdf(file: UploadFile = File(...)):
 @app.post("/api/ocr")
 async def ocr_pdf(file: UploadFile = File(...)):
     raise HTTPException(status_code=501,detail="OCR is not enabled on this server yet. Tesseract OCR and language data must be installed before this tool can process files.")
+
+
+# ============================================================
+# ADDITIONAL OCR-FREE TOOLS
+# ============================================================
+
+@app.post("/api/pdf-to-html")
+async def pdf_to_html(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"converted.html"
+        await save_upload(file,src)
+        doc=fitz.open(src)
+        parts=["<!doctype html><html><head><meta charset='utf-8'><title>PDF to HTML</title><style>body{font-family:Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;color:#222}.pdf-page{white-space:pre-wrap;border-bottom:1px solid #ddd;padding:24px 0;line-height:1.6}</style></head><body>"]
+        for i,page in enumerate(doc):
+            text=page.get_text("text")
+            parts.append(f"<section class='pdf-page'><h2>Page {i+1}</h2><pre>{__import__('html').escape(text)}</pre></section>")
+        parts.append("</body></html>")
+        doc.close()
+        out.write_text("\n".join(parts),encoding="utf-8")
+        return _tool_file_response(out,"Niroj77-PDF-to-HTML.html","text/html; charset=utf-8")
+    finally:
+        await file.close()
+
+@app.post("/api/extract-images")
+async def extract_images(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"extracted-images.zip"
+        await save_upload(file,src)
+        doc=fitz.open(src); count=0; seen=set()
+        with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as archive:
+            for page_no,page in enumerate(doc,start=1):
+                for image_no,item in enumerate(page.get_images(full=True),start=1):
+                    xref=item[0]
+                    if xref in seen: continue
+                    seen.add(xref)
+                    try:
+                        data=doc.extract_image(xref)
+                        raw=data.get("image")
+                        ext=data.get("ext","png").lower()
+                        if not raw: continue
+                        count+=1
+                        archive.writestr(f"image-{count}-page-{page_no}.{ext}",raw)
+                    except Exception:
+                        continue
+        doc.close()
+        if count==0: raise HTTPException(status_code=422,detail="No embedded images were found in this PDF.")
+        return _tool_file_response(out,"Niroj77-Extracted-Images.zip","application/zip")
+    finally:
+        await file.close()
+
+@app.post("/api/remove-blank-pages")
+async def remove_blank_pages(file: UploadFile = File(...), threshold: int = Form(2)):
+    validate_pdf(file.filename)
+    if not 0<=threshold<=20: raise HTTPException(status_code=400,detail="Threshold must be between 0 and 20.")
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"without-blank-pages.pdf"
+        await save_upload(file,src); doc=fitz.open(src); kept=[]; removed=[]
+        for i,page in enumerate(doc):
+            text="".join(page.get_text("text").split())
+            has_images=bool(page.get_images(full=True))
+            has_drawings=bool(page.get_drawings())
+            if len(text)<=threshold and not has_images and not has_drawings:
+                removed.append(i)
+            else:
+                kept.append(i)
+        if not removed: raise HTTPException(status_code=422,detail="No blank pages were detected.")
+        if not kept: raise HTTPException(status_code=422,detail="All pages appear blank; no output was created.")
+        result=fitz.open()
+        for i in kept: result.insert_pdf(doc,from_page=i,to_page=i)
+        doc.close(); result.save(out,garbage=4,deflate=True); result.close()
+        return _tool_file_response(out,"Niroj77-Without-Blank-Pages.pdf")
+    finally:
+        await file.close()
+
+@app.post("/api/compare")
+async def compare_pdfs(files: list[UploadFile] = File(...)):
+    if len(files)!=2: raise HTTPException(status_code=400,detail="Upload exactly two PDF files to compare.")
+    job=create_job()
+    try:
+        readers=[]
+        for i,file in enumerate(files):
+            validate_pdf(file.filename)
+            path=job/f"compare-{i}.pdf"; await save_upload(file,path)
+            doc=fitz.open(path)
+            readers.append([page.get_text("text") for page in doc])
+            doc.close()
+        from difflib import unified_diff
+        left="\n".join(f"--- Page {i+1} ---\n{t}" for i,t in enumerate(readers[0]))
+        right="\n".join(f"--- Page {i+1} ---\n{t}" for i,t in enumerate(readers[1]))
+        diff=list(unified_diff(left.splitlines(),right.splitlines(),fromfile=files[0].filename,tofile=files[1].filename,lineterm=""))
+        out=job/"comparison.txt"
+        summary=f"PDF COMPARISON REPORT\nFile 1: {files[0].filename}\nFile 2: {files[1].filename}\nPages in file 1: {len(readers[0])}\nPages in file 2: {len(readers[1])}\n\n"
+        out.write_text(summary+("\n".join(diff) if diff else "No selectable-text differences were detected. This comparison does not inspect visual layout or scanned images."),encoding="utf-8")
+        return _tool_file_response(out,"Niroj77-PDF-Comparison.txt","text/plain; charset=utf-8")
+    finally:
+        for file in files:
+            await file.close()

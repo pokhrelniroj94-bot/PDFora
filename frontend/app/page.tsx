@@ -106,7 +106,22 @@ const tools: Tool[] = [
     category: "Security",
     href: "/watermark",
   },
-];
+  { name: "Reorder PDF Pages", description: "Change the order of pages in a PDF document.", icon: "N", category: "Organize", href: "/reorder-pdf" },
+  { name: "Add Page Numbers", description: "Insert page numbers into your PDF.", icon: "N", category: "Edit", href: "/add-page-numbers" },
+  { name: "Crop PDF", description: "Crop page margins in a PDF.", icon: "N", category: "Edit", href: "/crop-pdf" },
+  { name: "Add Header or Footer", description: "Add a text header to every page.", icon: "N", category: "Edit", href: "/header-footer" },
+  { name: "Protect PDF", description: "Encrypt your PDF with a password.", icon: "N", category: "Security", href: "/protect-pdf" },
+  { name: "Unlock PDF", description: "Unlock a PDF using its existing password.", icon: "N", category: "Security", href: "/unlock-pdf" },
+  { name: "Sign PDF", description: "Add a visible typed signature to a PDF.", icon: "N", category: "Sign", href: "/sign-pdf" },
+  { name: "PDF to PNG", description: "Convert PDF pages to PNG images.", icon: "N", category: "Convert", href: "/pdf-to-png" },
+  { name: "PDF to WebP", description: "Convert PDF pages to WebP images.", icon: "N", category: "Convert", href: "/pdf-to-webp" },
+  { name: "PDF to Text", description: "Extract selectable text from a PDF.", icon: "N", category: "Convert", href: "/pdf-to-text" },
+  { name: "OCR PDF", description: "Recognize text in scanned PDFs (server setup required).", icon: "N", category: "Convert", href: "/ocr-pdf" },
+  { name: "Grayscale PDF", description: "Convert PDF pages to grayscale.", icon: "N", category: "Edit", href: "/grayscale-pdf" },
+  { name: "Flatten PDF", description: "Apply form appearances and remove annotations where supported.", icon: "N", category: "Edit", href: "/flatten-pdf" },
+  { name: "Edit PDF Metadata", description: "Change PDF title, author, subject and keywords.", icon: "N", category: "Edit", href: "/edit-pdf-metadata" },
+  { name: "Repair PDF", description: "Attempt best-effort recovery of damaged PDFs.", icon: "N", category: "Edit", href: "/repair-pdf" },
+]; 
 
 const categories = [
   "All",

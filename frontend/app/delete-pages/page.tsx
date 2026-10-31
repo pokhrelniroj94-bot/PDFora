@@ -1,6 +1,6 @@
 "use client";
 
-import PDForaTool from "../../components/PDForaTool";
+import Niroj77Tool from "../../components/Niroj77Tool";
 
 export default function Page() {
   return (
@@ -20,18 +20,18 @@ export default function Page() {
               Delete Pages from PDF Online Free</h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Delete unwanted pages from a PDF online for free with PDFora. Remove blank, unnecessary or unwanted pages quickly from your document using your browser on desktop, tablet or mobile.
+              Delete unwanted pages from a PDF online for free with Niroj77. Remove blank, unnecessary or unwanted pages quickly from your document using your browser on desktop, tablet or mobile.
             </p>
           </div>
 
           <div className="mt-10">
-            <PDForaTool
+            <Niroj77Tool
               endpoint="/api/delete-pages"
               title="Delete PDF Pages"
               description="Remove unwanted pages from a PDF document."
               multiple={false}
               accept="application/pdf,.pdf"
-              downloadName="PDFora-Deleted-Pages.pdf"
+              downloadName="Niroj77-Deleted-Pages.pdf"
               formField="pages"
               formPlaceholder="Enter page numbers, e.g. 2,4,6"
             />
@@ -131,11 +131,11 @@ export default function Page() {
       <section className="bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-2xl font-black">
-            Delete pages from PDF online for free with PDFora
+            Delete pages from PDF online for free with Niroj77
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora provides an online PDF page removal tool for removing
+            Niroj77 provides an online PDF page removal tool for removing
             unwanted pages from PDF documents. It can be useful when you need
             to remove blank pages, unnecessary sections or other pages before
             sharing a document.
@@ -147,11 +147,11 @@ export default function Page() {
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
-            Is PDFora Delete Pages free?
+            Is Niroj77 Delete Pages free?
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora currently provides its available PDF tools without
+            Niroj77 currently provides its available PDF tools without
             requiring a subscription.
           </p>
         </div>
@@ -210,7 +210,7 @@ export default function Page() {
                 How can I remove pages from a PDF online?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                Upload your PDF, enter the page numbers you want to remove, and click the delete button. PDFora processes the file online and creates a new PDF without the selected pages.
+                Upload your PDF, enter the page numbers you want to remove, and click the delete button. Niroj77 processes the file online and creates a new PDF without the selected pages.
               </p>
             </details>
 
@@ -225,10 +225,10 @@ export default function Page() {
 
             <details className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
               <summary className="cursor-pointer font-black">
-                Is PDFora free to use and do I need to install software?
+                Is Niroj77 free to use and do I need to install software?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                Yes. PDFora provides this PDF page removal tool online without requiring a subscription or software installation. You can use it from a modern desktop, tablet, or mobile browser.
+                Yes. Niroj77 provides this PDF page removal tool online without requiring a subscription or software installation. You can use it from a modern desktop, tablet, or mobile browser.
               </p>
             </details>
           </div>

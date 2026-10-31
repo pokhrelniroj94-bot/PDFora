@@ -2142,3 +2142,229 @@ async def pdf_to_tiff(file: UploadFile = File(...)):
         if doc is not None:
             doc.close()
         await file.close()
+
+
+# ============================================================
+# CONVERT PDF PAGES TO BMP ARCHIVE
+# ============================================================
+
+@app.post("/api/pdf-to-bmp")
+async def pdf_to_bmp(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-BMP-Pages.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for index, page in enumerate(doc):
+                pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                image = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
+                buffer = io.BytesIO()
+                image.save(buffer, format="BMP")
+                archive.writestr(f"page-{index + 1:04d}.bmp", buffer.getvalue())
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-BMP-Pages.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# SPLIT PDF USING EXISTING BOOKMARKS
+# ============================================================
+
+@app.post("/api/split-by-bookmarks")
+async def split_pdf_by_bookmarks(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Bookmark-Sections.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        toc = doc.get_toc()
+        if not toc:
+            raise HTTPException(status_code=422, detail="This PDF has no bookmarks to split by.")
+        starts = sorted(set(max(1, min(len(doc), int(item[2]))) for item in toc if len(item) >= 3 and int(item[2]) > 0))
+        if not starts:
+            raise HTTPException(status_code=422, detail="No valid bookmark destinations were found.")
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for index, start_page in enumerate(starts):
+                end_page = starts[index + 1] - 1 if index + 1 < len(starts) else len(doc)
+                section = fitz.open()
+                section.insert_pdf(doc, from_page=start_page - 1, to_page=end_page - 1)
+                buffer = section.tobytes(garbage=4, deflate=True)
+                section.close()
+                title = next((str(item[1]) for item in toc if int(item[2]) == start_page), f"Section-{index + 1}")
+                safe_title = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in title)[:60] or f"Section-{index + 1}"
+                archive.writestr(f"{index + 1:02d}-{safe_title}.pdf", buffer)
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-Bookmark-Sections.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# CONVERT PDF TEXT TO MARKDOWN
+# ============================================================
+
+@app.post("/api/pdf-to-markdown")
+async def pdf_to_markdown(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Text.md"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        parts = [f"# Extracted content: {Path(file.filename).stem}\n"]
+        for index, page in enumerate(doc, start=1):
+            parts.append(f"\n## Page {index}\n")
+            parts.append(page.get_text("text").strip() or "_No selectable text found on this page._")
+        out.write_text("\n".join(parts), encoding="utf-8")
+        return FileResponse(str(out), media_type="text/markdown; charset=utf-8", filename="PDFora-Text.md", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# REMOVE EMBEDDED FILE ATTACHMENTS
+# ============================================================
+
+@app.post("/api/remove-attachments")
+async def remove_pdf_attachments(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Attachments-Removed.pdf"
+        await save_upload(file, src)
+        reader = read_pdf(src)
+        writer = PdfWriter()
+        for page in reader.pages:
+            writer.add_page(page)
+        try:
+            writer.add_metadata({"/Title": str(reader.metadata.title or ""), "/Author": str(reader.metadata.author or "")})
+        except Exception:
+            pass
+        # Remove embedded file specifications from the document catalog.
+        try:
+            root = writer._root_object
+            names = root.get("/Names")
+            if names:
+                names_obj = names.get_object()
+                if "/EmbeddedFiles" in names_obj:
+                    del names_obj["/EmbeddedFiles"]
+        except Exception:
+            pass
+        with open(out, "wb") as stream:
+            writer.write(stream)
+        return pdf_response(out, "PDFora-Attachments-Removed.pdf")
+    finally:
+        await file.close()
+
+
+# ============================================================
+# ADD TEXT BACKGROUND / WATERMARK-LIKE PAGE BACKGROUND
+# ============================================================
+
+@app.post("/api/add-background")
+async def add_pdf_background(file: UploadFile = File(...), text: str = Form("DRAFT"), color: str = Form("#E5E7EB")):
+    validate_pdf(file.filename)
+    if len(text) > 60 or not text.strip():
+        raise HTTPException(status_code=400, detail="Enter background text up to 60 characters.")
+    colors = {"#E5E7EB": (0.90, 0.91, 0.92), "#FDE68A": (0.99, 0.90, 0.54), "#DBEAFE": (0.86, 0.92, 0.99), "#FEE2E2": (1.0, 0.88, 0.88)}
+    if color not in colors:
+        raise HTTPException(status_code=400, detail="Choose one of the supported background colors.")
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "background.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for page in doc:
+            rect = page.rect
+            page.draw_rect(rect, color=None, fill=colors[color], overlay=False)
+            page.insert_textbox(fitz.Rect(30, rect.height / 2 - 40, rect.width - 30, rect.height / 2 + 40), text.strip(), fontsize=34, color=(0.55, 0.55, 0.55), align=1, rotate=0, overlay=False)
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Background.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# EXTRACT PDF PAGE IMAGES AS INDIVIDUAL FILES
+# ============================================================
+
+@app.post("/api/extract-page-images")
+async def extract_pdf_page_images(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Page-Images.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            count = 0
+            for page_index, page in enumerate(doc):
+                for image_index, item in enumerate(page.get_images(full=True), start=1):
+                    xref = item[0]
+                    extracted = doc.extract_image(xref)
+                    ext = extracted.get("ext", "bin")
+                    archive.writestr(f"page-{page_index + 1:04d}-image-{image_index:03d}.{ext}", extracted["image"])
+                    count += 1
+        if count == 0:
+            raise HTTPException(status_code=422, detail="No embedded images were found in this PDF.")
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-Page-Images.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# EXTRACT PDF FONTS AS ARCHIVE
+# ============================================================
+
+@app.post("/api/extract-fonts")
+async def extract_pdf_fonts(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Fonts.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        found = set()
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for page_index, page in enumerate(doc):
+                for font in page.get_fonts(full=True):
+                    xref = font[0]
+                    if not xref or xref in found:
+                        continue
+                    found.add(xref)
+                    extracted = doc.extract_font(xref)
+                    if extracted and extracted[3]:
+                        name, ext, _, data = extracted
+                        safe_name = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in name)[:80]
+                        archive.writestr(f"{safe_name or 'font'}-{xref}.{ext}", data)
+        if not found:
+            raise HTTPException(status_code=422, detail="No extractable embedded fonts were found.")
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-Fonts.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()

@@ -1778,7 +1778,7 @@ async def add_blank_pages(file: UploadFile = File(...), count: int = Form(1)):
             writer.add_blank_page(width=width, height=height)
         with open(out, "wb") as stream:
             writer.write(stream)
-        return _tool_file_response(out, "PDFora-Blank-Pages-Added.pdf")
+        return pdf_response(out, "PDFora-Blank-Pages-Added.pdf")
     finally:
         await file.close()
 
@@ -1807,7 +1807,123 @@ async def rotate_selected_pages(file: UploadFile = File(...), pages: str = Form(
         for index in selected:
             doc[index].set_rotation((doc[index].rotation + degrees) % 360)
         doc.save(out, garbage=4, deflate=True)
-        return _tool_file_response(out, "PDFora-Rotated-Selected-Pages.pdf")
+        return pdf_response(out, "PDFora-Rotated-Selected-Pages.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# REMOVE PDF ANNOTATIONS
+# ============================================================
+
+@app.post("/api/remove-annotations")
+async def remove_annotations(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "without-annotations.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for page in doc:
+            annot = page.first_annot
+            while annot:
+                following = annot.next
+                page.delete_annot(annot)
+                annot = following
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Annotations-Removed.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# REMOVE PDF HYPERLINKS
+# ============================================================
+
+@app.post("/api/remove-links")
+async def remove_pdf_links(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "without-links.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for page in doc:
+            for link in page.get_links():
+                page.delete_link(link)
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Links-Removed.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# PDF PAGE COUNTER REPORT
+# ============================================================
+
+@app.post("/api/page-counter")
+async def pdf_page_counter(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Page-Count.txt"
+        size = await save_upload(file, src)
+        reader = read_pdf(src)
+        report = (
+            "PDFora - PDF Page Count Report\\n"
+            "================================\\n"
+            f"File name: {Path(file.filename).name}\\n"
+            f"Total pages: {len(reader.pages)}\\n"
+            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\\n"
+        )
+        out.write_text(report, encoding="utf-8")
+        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="PDFora-Page-Count.txt", background=BackgroundTask(cleanup_job, job))
+    finally:
+        await file.close()
+
+
+# ============================================================
+# PDF INFORMATION REPORT
+# ============================================================
+
+@app.post("/api/pdf-info")
+async def pdf_information(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Information.txt"
+        size = await save_upload(file, src)
+        reader = read_pdf(src)
+        metadata = reader.metadata
+        doc = fitz.open(src)
+        first = doc[0].rect
+        lines = [
+            "PDFora - PDF Information Report",
+            "================================",
+            f"File name: {Path(file.filename).name}",
+            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)",
+            f"Page count: {len(reader.pages)}",
+            f"PDF version: {doc.metadata.get('format', 'Unknown')}",
+            f"Page 1 dimensions: {first.width:.1f} x {first.height:.1f} points",
+            f"Title: {metadata.title or 'Not set'}",
+            f"Author: {metadata.author or 'Not set'}",
+            f"Subject: {metadata.subject or 'Not set'}",
+            f"Creator: {metadata.creator or 'Not set'}",
+            f"Encrypted: {'Yes' if reader.is_encrypted else 'No'}",
+        ]
+        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="PDFora-Information.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()

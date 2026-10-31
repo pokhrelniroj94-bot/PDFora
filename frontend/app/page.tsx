@@ -234,7 +234,7 @@ export default function Home() {
               className="pl-3 text-lg text-slate-400"
               aria-hidden="true"
             >
-              âŒ•
+              ⌕
             </span>
 
             <input
@@ -406,19 +406,19 @@ export default function Home() {
 
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <InfoCard
-              icon="âš¡"
+              icon="⚡"
               title="Simple workflow"
               description="Choose a tool, upload your document and start the requested PDF operation through a straightforward interface."
             />
 
             <InfoCard
-              icon="ðŸ“±"
+              icon="📱"
               title="Works across devices"
               description="Use PDFora from modern desktop, tablet and mobile browsers with a responsive interface."
             />
 
             <InfoCard
-              icon="ðŸ”’"
+              icon="🔒"
               title="Temporary processing"
               description="Uploaded files are sent to the processing backend for the requested operation rather than being presented as a permanent file library."
             />
@@ -507,7 +507,7 @@ export default function Home() {
                     className="text-lg text-slate-400"
                     aria-hidden="true"
                   >
-                    {isOpen ? "âˆ’" : "+"}
+                    {isOpen ? "−" : "+"}
                   </span>
                 </button>
 
@@ -655,14 +655,14 @@ export default function Home() {
                 href="/about"
                 className="mt-4 inline-block text-sm font-bold text-white hover:text-blue-400"
               >
-                Learn more â†’
+                Learn more →
               </Link>
             </div>
           </div>
 
           <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
             <p>
-              Â© 2026 PDFora. All rights reserved.
+              © 2026 PDFora. All rights reserved.
             </p>
 
             <p>
@@ -713,7 +713,7 @@ function ToolCard({
       </p>
 
       <div className="mt-5 text-sm font-bold text-blue-600">
-        Open tool â†’
+        Open tool →
       </div>
     </Link>
   );
@@ -797,7 +797,7 @@ function InfoLink({
       </p>
 
       <span className="mt-4 inline-block text-sm font-bold text-blue-600">
-        Learn more â†’
+        Learn more →
       </span>
     </Link>
   );
@@ -819,6 +819,7 @@ function FooterLink({
     </Link>
   );
 }
+
 
 
 

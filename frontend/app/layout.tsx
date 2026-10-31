@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | Niroj77",
   },
   description:
-    "Niroj77 offers free online PDF tools to merge, split, compress, convert and edit PDF files. Simple browser-based PDF utilities for everyday document tasks.",
+    "Use Niroj77 free online PDF tools to merge PDF files, split PDF pages, compress PDF size, convert PDF to Word, Excel, JPG and PNG, rotate, edit and protect PDF documents. Fast browser-based PDF utilities for everyday work.",
   keywords: [
     "free PDF tools",
     "online PDF tools",

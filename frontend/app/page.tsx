@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import AdsterraNative from "./components/AdsterraNative";
@@ -184,7 +184,8 @@ export default function Home() {
         !search ||
         tool.name.toLowerCase().includes(search) ||
         tool.description.toLowerCase().includes(search) ||
-        tool.category.toLowerCase().includes(search);
+        tool.category.toLowerCase().includes(search) ||
+        ({ "merge-pdf": "combine pdf join pdf files pdf merger", "split-pdf": "separate pdf extract pdf pages", "compress-pdf": "reduce pdf size shrink pdf optimize pdf", "images-to-pdf": "jpg to pdf png to pdf photo to pdf", "pdf-to-jpg": "convert pdf to jpg jpeg", "pdf-to-word": "pdf to doc docx converter", "pdf-to-excel": "pdf to xlsx spreadsheet converter", "rotate-pdf": "turn pdf pages", "delete-pages": "remove pdf pages", "extract-pages": "save selected pdf pages", "watermark": "add watermark pdf", "protect-pdf": "password protect pdf encrypt pdf", "unlock-pdf": "remove pdf password", "pdf-to-text": "extract text from pdf", "pdf-to-png": "pdf image converter", "pdf-to-webp": "convert pdf to webp", "extract-images": "extract pictures from pdf", "compare-pdf": "compare two pdf documents diff", "remove-blank-pages": "delete empty pages pdf" }[tool.href.replace(/^\//, "")] || "").includes(search);
 
       return matchesCategory && matchesSearch;
     });
@@ -203,7 +204,7 @@ export default function Home() {
             aria-label="Niroj77 home"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-sm font-black text-white">
-              P
+              N
             </div>
 
             <span className="text-xl font-black tracking-tight">
@@ -258,7 +259,7 @@ export default function Home() {
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search PDF tools..."
+              placeholder="Search: merge PDF, compress PDF, PDF to Word..."
               className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm outline-none"
               aria-label="Search PDF tools"
             />
@@ -404,7 +405,7 @@ export default function Home() {
 
       <Adsterra160x600 />
 
-      {/* WHY PDFORA */}
+      {/* WHY NIROJ77 */}
       <section className="border-y border-slate-200 bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
@@ -583,7 +584,7 @@ export default function Home() {
                 aria-label="Niroj77 home"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
-                  P
+                  N
                 </div>
 
                 <span className="text-xl font-black">

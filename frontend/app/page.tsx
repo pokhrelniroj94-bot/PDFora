@@ -116,11 +116,14 @@ const tools: Tool[] = [
   { name: "PDF to PNG", description: "Convert PDF pages to PNG images.", icon: "N", category: "Convert", href: "/pdf-to-png" },
   { name: "PDF to WebP", description: "Convert PDF pages to WebP images.", icon: "N", category: "Convert", href: "/pdf-to-webp" },
   { name: "PDF to Text", description: "Extract selectable text from a PDF.", icon: "N", category: "Convert", href: "/pdf-to-text" },
-  { name: "OCR PDF", description: "Recognize text in scanned PDFs (server setup required).", icon: "N", category: "Convert", href: "/ocr-pdf" },
   { name: "Grayscale PDF", description: "Convert PDF pages to grayscale.", icon: "N", category: "Edit", href: "/grayscale-pdf" },
   { name: "Flatten PDF", description: "Apply form appearances and remove annotations where supported.", icon: "N", category: "Edit", href: "/flatten-pdf" },
   { name: "Edit PDF Metadata", description: "Change PDF title, author, subject and keywords.", icon: "N", category: "Edit", href: "/edit-pdf-metadata" },
   { name: "Repair PDF", description: "Attempt best-effort recovery of damaged PDFs.", icon: "N", category: "Edit", href: "/repair-pdf" },
+  { name: "PDF to HTML", description: "Export selectable PDF text as an HTML document.", icon: "H", category: "Convert", href: "/pdf-to-html" },
+  { name: "Extract Images", description: "Extract embedded images from a PDF into a ZIP file.", icon: "I", category: "Convert", href: "/extract-images" },
+  { name: "Remove Blank Pages", description: "Detect and remove empty pages from a PDF.", icon: "B", category: "Edit", href: "/remove-blank-pages" },
+  { name: "Compare PDF", description: "Compare text in two PDFs and download a difference report.", icon: "C", category: "Edit", href: "/compare-pdf" },
 ]; 
 
 const categories = [
@@ -199,7 +202,7 @@ export default function Home() {
             className="flex items-center gap-2"
             aria-label="Niroj77 home"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-sm font-black text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-sm font-black text-white">
               P
             </div>
 

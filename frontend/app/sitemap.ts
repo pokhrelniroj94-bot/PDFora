@@ -107,6 +107,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/add-bookmarks`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/bates-numbering`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/pdf-to-tiff`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/pdf-to-bmp`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/split-by-bookmarks`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/pdf-to-markdown`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/remove-attachments`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/add-background`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/extract-page-images`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/extract-fonts`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),

@@ -64,7 +64,7 @@ app.add_middleware(
 
 MAX_FILE_SIZE = 50 * 1024 * 1024
 
-TEMP_DIR = Path(tempfile.gettempdir()) / "niroj77"
+TEMP_DIR = Path(tempfile.gettempdir()) / "pdfora"
 
 TEMP_DIR.mkdir(
     parents=True,
@@ -1409,7 +1409,7 @@ async def pdf_to_word(
 
 
 # ============================================================
-# NIROJ77 ADDITIONAL PDF TOOLS
+# PDFORA ADDITIONAL PDF TOOLS
 # ============================================================
 from fastapi import BackgroundTasks
 from pypdf import PdfReader as _PdfReader, PdfWriter as _PdfWriter

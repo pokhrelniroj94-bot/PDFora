@@ -1,6 +1,6 @@
 "use client";
 
-import PDForaTool from "../../components/PDForaTool";
+import Niroj77Tool from "../../components/Niroj77Tool";
 
 export default function Page() {
   return (
@@ -22,7 +22,7 @@ export default function Page() {
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Convert PDF files to editable Word documents online with PDFora.
+              Convert PDF files to editable Word documents online with Niroj77.
               Upload your PDF, process it in your browser and download the
               converted Word document quickly and easily.
             </p>
@@ -30,13 +30,13 @@ export default function Page() {
 
           {/* TOOL */}
           <div className="mt-10">
-            <PDForaTool
+            <Niroj77Tool
               endpoint="/api/pdf-to-word"
               title="PDF to Word"
               description="Convert your PDF into an editable Word document."
               multiple={false}
               accept="application/pdf,.pdf"
-              downloadName="PDFora-Converted.docx"
+              downloadName="Niroj77-Converted.docx"
               fieldName="file"
             />
           </div>
@@ -87,7 +87,7 @@ export default function Page() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Use PDFora from modern desktop, tablet and mobile browsers
+                Use Niroj77 from modern desktop, tablet and mobile browsers
                 without installing software.
               </p>
             </div>
@@ -133,7 +133,7 @@ export default function Page() {
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Start the PDF to Word conversion using the PDFora converter.
+                Start the PDF to Word conversion using the Niroj77 converter.
               </p>
             </div>
 
@@ -162,7 +162,7 @@ export default function Page() {
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora provides an online PDF to Word converter for users who need
+            Niroj77 provides an online PDF to Word converter for users who need
             to turn PDF documents into editable Word files. Instead of
             manually recreating the content, upload your PDF and use the
             converter to create a Word document.
@@ -186,11 +186,11 @@ export default function Page() {
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
-            Is PDFora PDF to Word free?
+            Is Niroj77 PDF to Word free?
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora currently provides its available PDF tools without
+            Niroj77 currently provides its available PDF tools without
             requiring a subscription. You can upload a PDF and use the PDF to
             Word tool to generate a downloadable Word document.
           </p>

@@ -1,10 +1,10 @@
 ﻿import type { Metadata } from "next";
-import PDForaTool from "../../components/PDForaTool";
+import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
   title: "Merge PDF Online Free",
   description:
-    "Merge multiple PDF files into one PDF online for free. Combine PDF documents quickly and easily with PDFora. No software installation required.",
+    "Merge multiple PDF files into one PDF online for free. Combine PDF documents quickly and easily with Niroj77. No software installation required.",
   keywords: [
     "merge PDF",
     "merge PDF online",
@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     canonical: "https://pd-fora.vercel.app/merge-pdf",
   },
   openGraph: {
-    title: "Merge PDF Online Free | PDFora",
+    title: "Merge PDF Online Free | Niroj77",
     description:
-      "Combine multiple PDF files into one PDF document quickly and easily with PDFora.",
+      "Combine multiple PDF files into one PDF document quickly and easily with Niroj77.",
     url: "https://pd-fora.vercel.app/merge-pdf",
-    siteName: "PDFora",
+    siteName: "Niroj77",
     type: "website",
   },
 };
@@ -33,7 +33,7 @@ export default function Page() {
       <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">
-            PDFora PDF Tools
+            Niroj77 PDF Tools
           </p>
 
           <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
@@ -48,12 +48,12 @@ export default function Page() {
         </div>
 
         <div className="mt-10">
-          <PDForaTool
+          <Niroj77Tool
             endpoint="/api/merge"
             title="Merge PDF"
             description="Combine multiple PDF files into one PDF document."
             multiple
-            downloadName="PDFora-Merged.pdf"
+            downloadName="Niroj77-Merged.pdf"
           />
         </div>
 
@@ -114,7 +114,7 @@ export default function Page() {
             </h2>
 
             <p className="mt-4 text-sm leading-7 text-slate-600">
-              PDFora makes it easy to combine multiple PDF documents into a
+              Niroj77 makes it easy to combine multiple PDF documents into a
               single file. Whether you are combining documents for work,
               school, applications, reports or personal use, you can merge
               your files directly from your browser without installing
@@ -122,7 +122,7 @@ export default function Page() {
             </p>
 
             <p className="mt-4 text-sm leading-7 text-slate-600">
-              Use the PDFora Merge PDF tool to combine multiple documents into
+              Use the Niroj77 Merge PDF tool to combine multiple documents into
               one organized PDF file. The tool is designed to work across
               modern desktop and mobile browsers.
             </p>
@@ -147,11 +147,11 @@ export default function Page() {
 
               <div>
                 <h3 className="font-black text-slate-950">
-                  Is PDFora Merge PDF free?
+                  Is Niroj77 Merge PDF free?
                 </h3>
 
                 <p className="mt-2 text-sm leading-6 text-slate-600">
-                  PDFora provides this PDF merging tool online without
+                  Niroj77 provides this PDF merging tool online without
                   requiring desktop software installation.
                 </p>
               </div>

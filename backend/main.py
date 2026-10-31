@@ -22,9 +22,9 @@ from openpyxl import Workbook
 # ============================================================
 
 app = FastAPI(
-    title="PDFora API",
+    title="Niroj77 API",
     version="4.0.1",
-    description="PDFora document processing API"
+    description="Niroj77 document processing API"
 )
 
 
@@ -197,7 +197,8 @@ def pdf_response(
     return FileResponse(
         path=str(path),
         media_type="application/pdf",
-        filename=filename
+        filename=filename,
+        background=BackgroundTask(cleanup_job, path.parent)
     )
 
 
@@ -224,7 +225,7 @@ def cleanup_job(job: Path):
 def root():
 
     return {
-        "name": "PDFora",
+        "name": "Niroj77",
         "version": "4.0.1",
         "status": "online"
     }
@@ -250,7 +251,7 @@ def health():
 def api_info():
 
     return {
-        "service": "PDFora",
+        "service": "Niroj77",
         "version": "4.0.1",
         "tools": [
             "merge",
@@ -262,7 +263,10 @@ def api_info():
             "delete-pages",
             "extract-pages",
             "watermark",
-            "pdf-to-word"
+            "pdf-to-word",
+            "reorder", "page-numbers", "crop", "header-footer", "protect", "unlock",
+            "sign", "pdf-to-png", "pdf-to-webp", "pdf-to-text", "grayscale",
+            "flatten", "metadata", "repair", "pdf-to-html", "extract-images", "remove-blank-pages", "compare"
         ]
     }
 
@@ -1233,7 +1237,8 @@ async def pdf_to_excel(
                 "application/vnd.openxmlformats-officedocument."
                 "spreadsheetml.sheet"
             ),
-            filename="pdfora-converted.xlsx"
+            filename="pdfora-converted.xlsx",
+            background=BackgroundTask(cleanup_job, job)
         )
 
     except HTTPException:
@@ -1351,7 +1356,8 @@ async def pdf_to_word(
                 "application/vnd.openxmlformats-"
                 "officedocument.wordprocessingml.document"
             ),
-            filename="converted.docx"
+            filename="converted.docx",
+            background=BackgroundTask(cleanup_job, job)
         )
 
     except HTTPException:
@@ -1377,3 +1383,348 @@ async def pdf_to_word(
             pass
 
 
+
+
+
+# ============================================================
+# NIROJ77 ADDITIONAL PDF TOOLS
+# ============================================================
+from fastapi import BackgroundTasks
+from pypdf import PdfReader as _PdfReader, PdfWriter as _PdfWriter
+from starlette.background import BackgroundTask
+
+def _tool_file_response(path: Path, filename: str, media_type: str = "application/pdf"):
+    return FileResponse(
+        path=str(path),
+        media_type=media_type,
+        filename=filename,
+        background=BackgroundTask(cleanup_job, path.parent),
+    )
+
+def _parse_page_order(value: str, total: int) -> list[int]:
+    try:
+        order = [int(x.strip()) for x in value.split(",") if x.strip()]
+    except Exception:
+        raise HTTPException(status_code=400, detail="Enter page order like 3,1,2.")
+    if not order or len(order) != total or sorted(order) != list(range(1, total + 1)):
+        raise HTTPException(status_code=400, detail=f"Enter every page number from 1 to {total} exactly once.")
+    return order
+
+@app.post("/api/reorder")
+async def reorder_pdf(file: UploadFile = File(...), order: str = Form(...)):
+    validate_pdf(file.filename)
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"reordered.pdf"
+        await save_upload(file,src)
+        reader=read_pdf(src); sequence=_parse_page_order(order,len(reader.pages))
+        writer=PdfWriter()
+        for n in sequence: writer.add_page(reader.pages[n-1])
+        with open(out,"wb") as f: writer.write(f)
+        return _tool_file_response(out,"Niroj77-Reordered.pdf")
+    finally:
+        await file.close()
+
+@app.post("/api/page-numbers")
+async def add_page_numbers(file: UploadFile = File(...), position: str = Form("bottom-center"), start_number: int = Form(1), skip_first: bool = Form(False), font_size: int = Form(11)):
+    validate_pdf(file.filename)
+    if position not in {"bottom-center","bottom-left","bottom-right","top-center","top-left","top-right"} or not 1 <= font_size <= 36 or start_number < 0:
+        raise HTTPException(status_code=400, detail="Invalid page-number settings.")
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"numbered.pdf"
+        await save_upload(file,src); doc=fitz.open(src)
+        for i,page in enumerate(doc):
+            if skip_first and i==0: continue
+            r=page.rect; x={"left":36,"center":r.width/2,"right":r.width-36}[position.split("-")[1]]
+            y=24 if position.startswith("top") else r.height-24
+            page.insert_text((x,y),str(start_number+i-(1 if skip_first and i>0 else 0)),fontsize=font_size, color=(0.25,0.25,0.3))
+        doc.save(out,garbage=4,deflate=True); doc.close()
+        return _tool_file_response(out,"Niroj77-Page-Numbers.pdf")
+    finally: await file.close()
+
+@app.post("/api/crop")
+async def crop_pdf(file: UploadFile = File(...), margin: float = Form(36), pages: str = Form("all")):
+    validate_pdf(file.filename)
+    if margin < 0 or margin > 300: raise HTTPException(status_code=400,detail="Margin must be between 0 and 300 points.")
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"cropped.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        selected=set(range(len(doc)))
+        if pages.strip().lower()!="all":
+            try: selected={int(x.strip())-1 for x in pages.split(",")}
+            except Exception: raise HTTPException(status_code=400,detail="Pages must look like 1,3,5 or all.")
+            if not selected or min(selected)<0 or max(selected)>=len(doc): raise HTTPException(status_code=400,detail="Selected page number is out of range.")
+        for i in selected:
+            p=doc[i]; r=p.rect
+            if r.width<=2*margin or r.height<=2*margin: raise HTTPException(status_code=400,detail="Margin is too large for one or more pages.")
+            p.set_cropbox(fitz.Rect(r.x0+margin,r.y0+margin,r.x1-margin,r.y1-margin))
+        doc.save(out,garbage=4,deflate=True); doc.close()
+        return _tool_file_response(out,"Niroj77-Cropped.pdf")
+    finally: await file.close()
+
+@app.post("/api/header-footer")
+async def header_footer(file: UploadFile = File(...), header: str = Form(""), footer: str = Form(""), font_size: int = Form(10)):
+    validate_pdf(file.filename)
+    if len(header)>300 or len(footer)>300 or not 6<=font_size<=24 or (not header and not footer): raise HTTPException(status_code=400,detail="Enter header or footer text (up to 300 characters) and font size 6–24.")
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"header-footer.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        for p in doc:
+            r=p.rect
+            if header: p.insert_text((36,24),header[:300],fontsize=font_size)
+            if footer: p.insert_text((36,r.height-24),footer[:300],fontsize=font_size)
+        doc.save(out,garbage=4,deflate=True); doc.close()
+        return _tool_file_response(out,"Niroj77-Header-Footer.pdf")
+    finally: await file.close()
+
+@app.post("/api/protect")
+async def protect_pdf(file: UploadFile = File(...), password: str = Form(...)):
+    validate_pdf(file.filename)
+    if len(password)<6 or len(password)>128: raise HTTPException(status_code=400,detail="Password must be 6–128 characters.")
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"protected.pdf"; await save_upload(file,src); reader=read_pdf(src); writer=PdfWriter()
+        writer.clone_document_from_reader(reader); writer.encrypt(password)
+        with open(out,"wb") as f: writer.write(f)
+        return _tool_file_response(out,"Niroj77-Protected.pdf")
+    finally: await file.close()
+
+@app.post("/api/unlock")
+async def unlock_pdf(file: UploadFile = File(...), password: str = Form(...)):
+    validate_pdf(file.filename)
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"unlocked.pdf"; await save_upload(file,src); reader=PdfReader(str(src))
+        if reader.is_encrypted:
+            try: ok=reader.decrypt(password)
+            except Exception: ok=0
+            if not ok: raise HTTPException(status_code=400,detail="Incorrect password or unsupported encryption.")
+        writer=PdfWriter()
+        for p in reader.pages: writer.add_page(p)
+        with open(out,"wb") as f: writer.write(f)
+        return _tool_file_response(out,"Niroj77-Unlocked.pdf")
+    finally: await file.close()
+
+@app.post("/api/sign")
+async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)):
+    validate_pdf(file.filename)
+    if not signature_text.strip() or len(signature_text)>100: raise HTTPException(status_code=400,detail="Enter a signature name (maximum 100 characters).")
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"signed.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        p=doc[-1]; r=p.rect
+        box=fitz.Rect(36,r.height-90,min(r.width-36,300),r.height-36)
+        p.draw_rect(box,color=(0.35,0.2,0.6),width=1)
+        p.insert_text((box.x0+8,box.y0+28),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35))
+        p.insert_text((box.x0+8,box.y0+44),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4))
+        doc.save(out,garbage=4,deflate=True); doc.close()
+        return _tool_file_response(out,"Niroj77-Signed.pdf")
+    finally: await file.close()
+
+async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
+    validate_pdf(file.filename)
+    job=create_job(); doc=None
+    try:
+        src=job/"input.pdf"; archive=job/f"images-{fmt}.zip"; await save_upload(file,src); doc=fitz.open(src)
+        if len(doc)>200: raise HTTPException(status_code=413,detail="Maximum 200 pages per image conversion.")
+        with zipfile.ZipFile(archive,"w",zipfile.ZIP_DEFLATED) as z:
+            for i,p in enumerate(doc):
+                pix=p.get_pixmap(matrix=fitz.Matrix(2,2),alpha=False)
+                im=Image.frombytes("RGB",[pix.width,pix.height],pix.samples)
+                dest=io.BytesIO()
+                opts={"quality":quality,"method":6} if fmt=="webp" else {}
+                im.save(dest,format=fmt.upper(),**opts)
+                z.writestr(f"page-{i+1}.{fmt}",dest.getvalue())
+        return _tool_file_response(archive,f"Niroj77-{fmt.upper()}.zip","application/zip")
+    finally:
+        if doc: doc.close()
+        await file.close()
+
+@app.post("/api/pdf-to-png")
+async def pdf_to_png(file: UploadFile = File(...)):
+    return await _render_pdf_images(file,"png")
+
+@app.post("/api/pdf-to-webp")
+async def pdf_to_webp(file: UploadFile = File(...), quality: int = Form(85)):
+    if not 1<=quality<=100: raise HTTPException(status_code=400,detail="Quality must be between 1 and 100.")
+    return await _render_pdf_images(file,"webp",quality)
+
+@app.post("/api/pdf-to-text")
+async def pdf_to_text(file: UploadFile = File(...)):
+    validate_pdf(file.filename); job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"extracted.txt"; await save_upload(file,src); doc=fitz.open(src)
+        with open(out,"w",encoding="utf-8") as f:
+            for i,p in enumerate(doc):
+                f.write(f"--- Page {i+1} ---\n{p.get_text('text')}\n\n")
+        doc.close()
+        return _tool_file_response(out,"Niroj77-Extracted-Text.txt","text/plain; charset=utf-8")
+    finally: await file.close()
+
+@app.post("/api/grayscale")
+async def grayscale_pdf(file: UploadFile = File(...)):
+    validate_pdf(file.filename); job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"grayscale.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for grayscale conversion.")
+        flattened=fitz.open()
+        for p in doc:
+            rect=p.rect
+            pix=p.get_pixmap(matrix=fitz.Matrix(1.5,1.5),colorspace=fitz.csGRAY,alpha=False,annots=True)
+            page=flattened.new_page(width=rect.width,height=rect.height)
+            page.insert_image(page.rect,stream=pix.tobytes("png"))
+        doc.close()
+        flattened.save(out,garbage=4,deflate=True); flattened.close()
+        return _tool_file_response(out,"Niroj77-Grayscale.pdf")
+    finally: await file.close()
+
+@app.post("/api/flatten")
+async def flatten_pdf(file: UploadFile = File(...)):
+    validate_pdf(file.filename); job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"flattened.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for flattening.")
+        # Render each page into a fresh PDF page. This removes interactive annotations/widgets.
+        flattened=fitz.open()
+        for page in doc:
+            rect=page.rect
+            pix=page.get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False,annots=True)
+            target=flattened.new_page(width=rect.width,height=rect.height)
+            target.insert_image(target.rect,stream=pix.tobytes("png"))
+        doc.close()
+        flattened.save(out,garbage=4,deflate=True); flattened.close()
+        return _tool_file_response(out,"Niroj77-Flattened.pdf")
+    finally: await file.close()
+
+@app.post("/api/metadata")
+async def edit_pdf_metadata(file: UploadFile = File(...), title: str = Form(""), author: str = Form(""), subject: str = Form(""), keywords: str = Form("")):
+    validate_pdf(file.filename)
+    if any(len(v)>500 for v in [title,author,subject,keywords]): raise HTTPException(status_code=400,detail="Metadata fields must be 500 characters or fewer.")
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"metadata.pdf"; await save_upload(file,src); reader=PdfReader(str(src)); writer=PdfWriter(); writer.clone_document_from_reader(reader)
+        writer.add_metadata({"/Title":title,"/Author":author,"/Subject":subject,"/Keywords":keywords})
+        with open(out,"wb") as f: writer.write(f)
+        return _tool_file_response(out,"Niroj77-Updated-Metadata.pdf")
+    finally: await file.close()
+
+@app.post("/api/repair")
+async def repair_pdf(file: UploadFile = File(...)):
+    validate_pdf(file.filename); job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"repaired.pdf"; await save_upload(file,src)
+        try:
+            doc=fitz.open(src)
+            if doc.is_repaired is False and len(doc)==0: raise ValueError("Empty PDF")
+            doc.save(out,garbage=4,deflate=True,clean=True); doc.close()
+        except Exception:
+            raise HTTPException(status_code=422,detail="This PDF could not be repaired. The file may be severely damaged or unsupported.")
+        return _tool_file_response(out,"Niroj77-Repaired.pdf")
+    finally: await file.close()
+
+@app.post("/api/ocr")
+async def ocr_pdf(file: UploadFile = File(...)):
+    raise HTTPException(status_code=501,detail="OCR is not enabled on this server yet. Tesseract OCR and language data must be installed before this tool can process files.")
+
+
+# ============================================================
+# ADDITIONAL OCR-FREE TOOLS
+# ============================================================
+
+@app.post("/api/pdf-to-html")
+async def pdf_to_html(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"converted.html"
+        await save_upload(file,src)
+        doc=fitz.open(src)
+        parts=["<!doctype html><html><head><meta charset='utf-8'><title>PDF to HTML</title><style>body{font-family:Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;color:#222}.pdf-page{white-space:pre-wrap;border-bottom:1px solid #ddd;padding:24px 0;line-height:1.6}</style></head><body>"]
+        for i,page in enumerate(doc):
+            text=page.get_text("text")
+            parts.append(f"<section class='pdf-page'><h2>Page {i+1}</h2><pre>{__import__('html').escape(text)}</pre></section>")
+        parts.append("</body></html>")
+        doc.close()
+        out.write_text("\n".join(parts),encoding="utf-8")
+        return _tool_file_response(out,"Niroj77-PDF-to-HTML.html","text/html; charset=utf-8")
+    finally:
+        await file.close()
+
+@app.post("/api/extract-images")
+async def extract_images(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"extracted-images.zip"
+        await save_upload(file,src)
+        doc=fitz.open(src); count=0; seen=set()
+        with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as archive:
+            for page_no,page in enumerate(doc,start=1):
+                for image_no,item in enumerate(page.get_images(full=True),start=1):
+                    xref=item[0]
+                    if xref in seen: continue
+                    seen.add(xref)
+                    try:
+                        data=doc.extract_image(xref)
+                        raw=data.get("image")
+                        ext=data.get("ext","png").lower()
+                        if not raw: continue
+                        count+=1
+                        archive.writestr(f"image-{count}-page-{page_no}.{ext}",raw)
+                    except Exception:
+                        continue
+        doc.close()
+        if count==0: raise HTTPException(status_code=422,detail="No embedded images were found in this PDF.")
+        return _tool_file_response(out,"Niroj77-Extracted-Images.zip","application/zip")
+    finally:
+        await file.close()
+
+@app.post("/api/remove-blank-pages")
+async def remove_blank_pages(file: UploadFile = File(...), threshold: int = Form(2)):
+    validate_pdf(file.filename)
+    if not 0<=threshold<=20: raise HTTPException(status_code=400,detail="Threshold must be between 0 and 20.")
+    job=create_job()
+    try:
+        src=job/"input.pdf"; out=job/"without-blank-pages.pdf"
+        await save_upload(file,src); doc=fitz.open(src); kept=[]; removed=[]
+        for i,page in enumerate(doc):
+            text="".join(page.get_text("text").split())
+            has_images=bool(page.get_images(full=True))
+            has_drawings=bool(page.get_drawings())
+            if len(text)<=threshold and not has_images and not has_drawings:
+                removed.append(i)
+            else:
+                kept.append(i)
+        if not removed: raise HTTPException(status_code=422,detail="No blank pages were detected.")
+        if not kept: raise HTTPException(status_code=422,detail="All pages appear blank; no output was created.")
+        result=fitz.open()
+        for i in kept: result.insert_pdf(doc,from_page=i,to_page=i)
+        doc.close(); result.save(out,garbage=4,deflate=True); result.close()
+        return _tool_file_response(out,"Niroj77-Without-Blank-Pages.pdf")
+    finally:
+        await file.close()
+
+@app.post("/api/compare")
+async def compare_pdfs(files: list[UploadFile] = File(...)):
+    if len(files)!=2: raise HTTPException(status_code=400,detail="Upload exactly two PDF files to compare.")
+    job=create_job()
+    try:
+        readers=[]
+        for i,file in enumerate(files):
+            validate_pdf(file.filename)
+            path=job/f"compare-{i}.pdf"; await save_upload(file,path)
+            doc=fitz.open(path)
+            readers.append([page.get_text("text") for page in doc])
+            doc.close()
+        from difflib import unified_diff
+        left="\n".join(f"--- Page {i+1} ---\n{t}" for i,t in enumerate(readers[0]))
+        right="\n".join(f"--- Page {i+1} ---\n{t}" for i,t in enumerate(readers[1]))
+        diff=list(unified_diff(left.splitlines(),right.splitlines(),fromfile=files[0].filename,tofile=files[1].filename,lineterm=""))
+        out=job/"comparison.txt"
+        summary=f"PDF COMPARISON REPORT\nFile 1: {files[0].filename}\nFile 2: {files[1].filename}\nPages in file 1: {len(readers[0])}\nPages in file 2: {len(readers[1])}\n\n"
+        out.write_text(summary+("\n".join(diff) if diff else "No selectable-text differences were detected. This comparison does not inspect visual layout or scanned images."),encoding="utf-8")
+        return _tool_file_response(out,"Niroj77-PDF-Comparison.txt","text/plain; charset=utf-8")
+    finally:
+        for file in files:
+            await file.close()

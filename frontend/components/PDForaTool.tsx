@@ -3,7 +3,7 @@
 import { ChangeEvent, useRef, useState } from "react";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_URL || "https://pdfora-493r.onrender.com";
 
 type Props = {
   endpoint: string;
@@ -134,7 +134,7 @@ export default function PDForaTool({
       link.click();
       link.remove();
 
-      window.URL.revokeObjectURL(downloadURL);
+      window.setTimeout(() => window.URL.revokeObjectURL(downloadURL), 1000);
 
       setMessage("Completed successfully. Download started.");
     } catch (error) {
@@ -163,12 +163,12 @@ export default function PDForaTool({
             href="/"
             className="flex min-h-11 items-center gap-2"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 font-black text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 font-black text-white">
               P
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              PDF<span className="text-blue-600">ora</span>
+              Niroj77
             </span>
           </a>
 
@@ -191,8 +191,8 @@ export default function PDForaTool({
       <section className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
         {/* Heading */}
         <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-widest text-blue-600">
-            PDFora Tool
+          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
+            Niroj77 Tool
           </p>
 
           <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
@@ -210,9 +210,9 @@ export default function PDForaTool({
           <button
             type="button"
             onClick={chooseFiles}
-            className="flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 text-center transition active:scale-[0.99] hover:border-blue-400 hover:bg-blue-50 sm:min-h-64"
+            className="flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 text-center transition active:scale-[0.99] hover:border-violet-400 hover:bg-violet-50 sm:min-h-64"
           >
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-3xl">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100 text-3xl">
               📄
             </div>
 
@@ -237,7 +237,7 @@ export default function PDForaTool({
 
           <input
             ref={inputRef}
-            id="pdfora-file"
+            id="niroj77-file"
             type="file"
             accept={accept}
             multiple={multiple}
@@ -310,7 +310,7 @@ export default function PDForaTool({
                 placeholder={
                   formPlaceholder || "Enter value"
                 }
-                className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
               />
             </div>
           )}
@@ -320,7 +320,7 @@ export default function PDForaTool({
             type="button"
             onClick={processPDF}
             disabled={loading || files.length === 0}
-            className="mt-5 flex min-h-14 w-full items-center justify-center rounded-2xl bg-blue-600 px-5 text-sm font-black text-white transition active:scale-[0.99] hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="mt-5 flex min-h-14 w-full items-center justify-center rounded-2xl bg-violet-600 px-5 text-sm font-black text-white transition active:scale-[0.99] hover:bg-violet-700 disabled:cursor-not-allowed disabled:bg-slate-300"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -357,7 +357,7 @@ export default function PDForaTool({
           <InfoCard
             icon="🔒"
             title="Private"
-            description="Files are processed by the PDFora backend."
+            description="Files are processed by the Niroj77 backend."
           />
 
           <InfoCard
@@ -382,7 +382,7 @@ function InfoCard({
 }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-lg">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-lg">
         {icon}
       </div>
 

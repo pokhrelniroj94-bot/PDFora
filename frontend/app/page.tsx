@@ -106,7 +106,25 @@ const tools: Tool[] = [
     category: "Security",
     href: "/watermark",
   },
-];
+  { name: "Reorder PDF Pages", description: "Change the order of pages in a PDF document.", icon: "N", category: "Organize", href: "/reorder-pdf" },
+  { name: "Add Page Numbers", description: "Insert page numbers into your PDF.", icon: "N", category: "Edit", href: "/add-page-numbers" },
+  { name: "Crop PDF", description: "Crop page margins in a PDF.", icon: "N", category: "Edit", href: "/crop-pdf" },
+  { name: "Add Header or Footer", description: "Add a text header to every page.", icon: "N", category: "Edit", href: "/header-footer" },
+  { name: "Protect PDF", description: "Encrypt your PDF with a password.", icon: "N", category: "Security", href: "/protect-pdf" },
+  { name: "Unlock PDF", description: "Unlock a PDF using its existing password.", icon: "N", category: "Security", href: "/unlock-pdf" },
+  { name: "Sign PDF", description: "Add a visible typed signature to a PDF.", icon: "N", category: "Security", href: "/sign-pdf" },
+  { name: "PDF to PNG", description: "Convert PDF pages to PNG images.", icon: "N", category: "Convert", href: "/pdf-to-png" },
+  { name: "PDF to WebP", description: "Convert PDF pages to WebP images.", icon: "N", category: "Convert", href: "/pdf-to-webp" },
+  { name: "PDF to Text", description: "Extract selectable text from a PDF.", icon: "N", category: "Convert", href: "/pdf-to-text" },
+  { name: "Grayscale PDF", description: "Convert PDF pages to grayscale.", icon: "N", category: "Edit", href: "/grayscale-pdf" },
+  { name: "Flatten PDF", description: "Apply form appearances and remove annotations where supported.", icon: "N", category: "Edit", href: "/flatten-pdf" },
+  { name: "Edit PDF Metadata", description: "Change PDF title, author, subject and keywords.", icon: "N", category: "Edit", href: "/edit-pdf-metadata" },
+  { name: "Repair PDF", description: "Attempt best-effort recovery of damaged PDFs.", icon: "N", category: "Edit", href: "/repair-pdf" },
+  { name: "PDF to HTML", description: "Export selectable PDF text as an HTML document.", icon: "H", category: "Convert", href: "/pdf-to-html" },
+  { name: "Extract Images", description: "Extract embedded images from a PDF into a ZIP file.", icon: "I", category: "Convert", href: "/extract-images" },
+  { name: "Remove Blank Pages", description: "Detect and remove empty pages from a PDF.", icon: "B", category: "Edit", href: "/remove-blank-pages" },
+  { name: "Compare PDF", description: "Compare text in two PDFs and download a difference report.", icon: "C", category: "Edit", href: "/compare-pdf" },
+]; 
 
 const categories = [
   "All",
@@ -119,34 +137,34 @@ const categories = [
 
 const faqs = [
   {
-    question: "Is PDFora free to use?",
+    question: "Is Niroj77 free to use?",
     answer:
-      "PDFora currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
+      "Niroj77 currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
   },
   {
     question: "Do I need to install software?",
     answer:
-      "No. PDFora is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
+      "No. Niroj77 is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
   },
   {
     question: "What PDF tools are available?",
     answer:
-      "PDFora currently provides tools for merging, splitting, compressing, converting, rotating, deleting, extracting and watermarking PDF files.",
+      "Niroj77 provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
   },
   {
     question: "How are my files processed?",
     answer:
-      "Files selected for processing are temporarily sent to the PDFora processing backend so the requested operation can be completed.",
+      "Files selected for processing are temporarily sent to the Niroj77 processing backend so the requested operation can be completed.",
   },
   {
     question: "Are my uploaded files stored permanently?",
     answer:
-      "PDFora is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
+      "Niroj77 is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
   },
   {
-    question: "Can I use PDFora on my phone?",
+    question: "Can I use Niroj77 on my phone?",
     answer:
-      "Yes. PDFora is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
+      "Yes. Niroj77 is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
   },
 ];
 
@@ -182,14 +200,14 @@ export default function Home() {
           <Link
             href="/"
             className="flex items-center gap-2"
-            aria-label="PDFora home"
+            aria-label="Niroj77 home"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-sm font-black text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-sm font-black text-white">
               P
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              PDF<span className="text-blue-600">ora</span>
+              Niroj77
             </span>
           </Link>
 
@@ -206,13 +224,13 @@ export default function Home() {
       <section className="border-b border-slate-200 bg-white px-4 pb-14 pt-14 sm:pb-20 sm:pt-20">
         <div className="mx-auto max-w-4xl text-center">
           <div
-            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-lg font-black text-blue-600"
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100 text-lg font-black text-violet-600"
             aria-hidden="true"
           >
             PDF
           </div>
 
-          <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-blue-600">
+          <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-violet-600">
             Free online PDF tools
           </p>
 
@@ -278,7 +296,7 @@ export default function Home() {
         className="mx-auto max-w-6xl px-4 py-12 sm:px-6"
       >
         <div className="mb-5">
-          <p className="text-xs font-black uppercase tracking-widest text-blue-600">
+          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
             Popular
           </p>
 
@@ -310,8 +328,8 @@ export default function Home() {
         className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-16 sm:px-6"
       >
         <div className="mb-6">
-          <p className="text-xs font-black uppercase tracking-widest text-blue-600">
-            PDFora toolbox
+          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
+            Niroj77 toolbox
           </p>
 
           <h2
@@ -323,7 +341,7 @@ export default function Home() {
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
             Choose a PDF tool below to process your document online.
-            PDFora is designed to make common document tasks simple and
+            Niroj77 is designed to make common document tasks simple and
             accessible.
           </p>
         </div>
@@ -390,8 +408,8 @@ export default function Home() {
       <section className="border-y border-slate-200 bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
-            <p className="text-xs font-black uppercase tracking-widest text-blue-600">
-              Why PDFora
+            <p className="text-xs font-black uppercase tracking-widest text-violet-600">
+              Why Niroj77
             </p>
 
             <h2 className="mt-2 text-2xl font-black sm:text-3xl">
@@ -399,7 +417,7 @@ export default function Home() {
             </h2>
 
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-              PDFora focuses on making everyday PDF tasks easier to access
+              Niroj77 focuses on making everyday PDF tasks easier to access
               without requiring desktop software installation.
             </p>
           </div>
@@ -414,7 +432,7 @@ export default function Home() {
             <InfoCard
               icon="📱"
               title="Works across devices"
-              description="Use PDFora from modern desktop, tablet and mobile browsers with a responsive interface."
+              description="Use Niroj77 from modern desktop, tablet and mobile browsers with a responsive interface."
             />
 
             <InfoCard
@@ -429,7 +447,7 @@ export default function Home() {
       {/* HOW IT WORKS */}
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-widest text-blue-600">
+          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
             How it works
           </p>
 
@@ -442,7 +460,7 @@ export default function Home() {
           <StepCard
             number="01"
             title="Choose a tool"
-            description="Select the PDF operation you need from the PDFora toolbox."
+            description="Select the PDF operation you need from the Niroj77 toolbox."
           />
 
           <StepCard
@@ -466,7 +484,7 @@ export default function Home() {
         className="mx-auto max-w-4xl scroll-mt-20 px-4 py-14 sm:px-6"
       >
         <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-widest text-blue-600">
+          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
             FAQ
           </p>
 
@@ -478,7 +496,7 @@ export default function Home() {
           </h2>
 
           <p className="mt-3 text-sm text-slate-500">
-            Answers to common questions about using PDFora.
+            Answers to common questions about using Niroj77.
           </p>
         </div>
 
@@ -528,8 +546,8 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <InfoLink
               href="/about"
-              title="About PDFora"
-              description="Learn more about PDFora and its purpose."
+              title="About Niroj77"
+              description="Learn more about Niroj77 and its purpose."
             />
 
             <InfoLink
@@ -547,7 +565,7 @@ export default function Home() {
             <InfoLink
               href="/terms"
               title="Terms of Service"
-              description="Read the terms that apply when using PDFora."
+              description="Read the terms that apply when using Niroj77."
             />
           </div>
         </div>
@@ -562,14 +580,14 @@ export default function Home() {
               <Link
                 href="/"
                 className="flex items-center gap-2"
-                aria-label="PDFora home"
+                aria-label="Niroj77 home"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
                   P
                 </div>
 
                 <span className="text-xl font-black">
-                  PDFora
+                  Niroj77
                 </span>
               </Link>
 
@@ -614,7 +632,7 @@ export default function Home() {
             {/* COMPANY */}
             <div>
               <h3 className="text-sm font-black">
-                PDFora
+                Niroj77
               </h3>
 
               <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
@@ -643,17 +661,17 @@ export default function Home() {
             {/* ABOUT */}
             <div>
               <h3 className="text-sm font-black">
-                About PDFora
+                About Niroj77
               </h3>
 
               <p className="mt-4 text-sm leading-6 text-slate-400">
-                PDFora is a web-based PDF utility platform focused on
+                Niroj77 is a web-based PDF utility platform focused on
                 providing simple tools for common document-processing tasks.
               </p>
 
               <Link
                 href="/about"
-                className="mt-4 inline-block text-sm font-bold text-white hover:text-blue-400"
+                className="mt-4 inline-block text-sm font-bold text-white hover:text-violet-400"
               >
                 Learn more →
               </Link>
@@ -662,7 +680,7 @@ export default function Home() {
 
           <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
             <p>
-              © 2026 PDFora. All rights reserved.
+              © 2026 Niroj77. All rights reserved.
             </p>
 
             <p>
@@ -685,16 +703,16 @@ function ToolCard({
   return (
     <Link
       href={tool.href}
-      className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-md active:scale-[0.99]"
+      className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-violet-300 hover:shadow-md active:scale-[0.99]"
       aria-label={`Open ${tool.name}`}
     >
       <div className="flex items-start justify-between gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-sm font-black text-blue-600">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-sm font-black text-violet-600">
           {tool.icon}
         </div>
 
         {popular ? (
-          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-black text-blue-600">
+          <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-black text-violet-600">
             Popular
           </span>
         ) : (
@@ -712,7 +730,7 @@ function ToolCard({
         {tool.description}
       </p>
 
-      <div className="mt-5 text-sm font-bold text-blue-600">
+      <div className="mt-5 text-sm font-bold text-violet-600">
         Open tool →
       </div>
     </Link>
@@ -759,7 +777,7 @@ function StepCard({
 }) {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="text-sm font-black text-blue-600">
+      <div className="text-sm font-black text-violet-600">
         {number}
       </div>
 
@@ -786,7 +804,7 @@ function InfoLink({
   return (
     <Link
       href={href}
-      className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-blue-300 hover:bg-white"
+      className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-violet-300 hover:bg-white"
     >
       <h3 className="text-sm font-black">
         {title}
@@ -796,7 +814,7 @@ function InfoLink({
         {description}
       </p>
 
-      <span className="mt-4 inline-block text-sm font-bold text-blue-600">
+      <span className="mt-4 inline-block text-sm font-bold text-violet-600">
         Learn more →
       </span>
     </Link>

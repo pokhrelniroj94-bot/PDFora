@@ -9,7 +9,7 @@ export default function ContactPage() {
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              PDF<span className="text-blue-600">ora</span>
+              PDF<span className="text-violet-600">ora</span>
             </span>
           </a>
 
@@ -25,8 +25,8 @@ export default function ContactPage() {
       <section className="px-4 py-16 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <div className="text-center">
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">
-              Contact PDFora
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-violet-600">
+              Contact Niroj77
             </p>
 
             <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
@@ -35,13 +35,13 @@ export default function ContactPage() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Have a question, suggestion, feedback, or a problem with one
-              of our PDF tools? Contact the PDFora team.
+              of our PDF tools? Contact the Niroj77 team.
             </p>
           </div>
 
           <div className="mt-10 grid gap-5 md:grid-cols-2">
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-xl">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-xl">
                 📧
               </div>
 
@@ -56,14 +56,14 @@ export default function ContactPage() {
 
               <a
                 href="mailto:zenvora966@gmail.com"
-                className="mt-5 inline-flex rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
+                className="mt-5 inline-flex rounded-xl bg-violet-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-violet-700"
               >
                 zenvora966@gmail.com
               </a>
             </div>
 
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-xl">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-xl">
                 🛠️
               </div>
 
@@ -78,7 +78,7 @@ export default function ContactPage() {
             </div>
 
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-xl">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-xl">
                 💡
               </div>
 
@@ -87,13 +87,13 @@ export default function ContactPage() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                We welcome ideas that can help make PDFora faster, easier,
+                We welcome ideas that can help make Niroj77 faster, easier,
                 and more useful.
               </p>
             </div>
 
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-xl">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-xl">
                 🔒
               </div>
 
@@ -102,20 +102,20 @@ export default function ContactPage() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                For questions about how PDFora handles information and
+                For questions about how Niroj77 handles information and
                 uploaded files, please contact us by email.
               </p>
 
               <a
                 href="mailto:zenvora966@gmail.com"
-                className="mt-4 inline-block text-sm font-bold text-blue-600 hover:underline"
+                className="mt-4 inline-block text-sm font-bold text-violet-600 hover:underline"
               >
-                Contact PDFora →
+                Contact Niroj77 →
               </a>
             </div>
           </div>
 
-          <div className="mt-8 rounded-3xl border border-blue-100 bg-blue-50 p-6 text-center">
+          <div className="mt-8 rounded-3xl border border-violet-100 bg-violet-50 p-6 text-center">
             <p className="text-sm text-slate-600">
               We recommend including the name of the PDF tool you were using
               and a short description of the issue so we can investigate it
@@ -142,14 +142,14 @@ export default function ContactPage() {
               href="/about"
               className="rounded-xl border border-slate-200 bg-white px-4 py-3 font-bold text-slate-600 hover:bg-slate-100"
             >
-              About PDFora
+              About Niroj77
             </a>
           </div>
         </div>
       </section>
 
       <footer className="border-t border-slate-200 bg-slate-950 px-4 py-8 text-center text-xs text-slate-500">
-        © 2026 PDFora. All rights reserved.
+        © 2026 Niroj77. All rights reserved.
       </footer>
     </main>
   );

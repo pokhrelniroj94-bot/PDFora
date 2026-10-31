@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import PDForaTool from "../../components/PDForaTool";
+import Niroj77Tool from "../../components/Niroj77Tool";
 
 export default function Page() {
   return (
@@ -22,19 +22,19 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Extract selected pages from a PDF document and create a new PDF
-              file. PDFora makes it easy to select the pages you need and
+              file. Niroj77 makes it easy to select the pages you need and
               download the result.
             </p>
           </div>
 
           <div className="mt-10">
-            <PDForaTool
+            <Niroj77Tool
               endpoint="/api/extract-pages"
               title="Extract PDF Pages"
               description="Extract selected pages and create a new PDF file."
               multiple={false}
               accept="application/pdf,.pdf"
-              downloadName="PDFora-Extracted-Pages.pdf"
+              downloadName="Niroj77-Extracted-Pages.pdf"
               formField="pages"
               formPlaceholder="Enter page numbers or range, e.g. 1,3,5-8"
             />
@@ -77,7 +77,7 @@ export default function Page() {
                 Mobile Friendly
               </h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Use PDFora from phones, tablets and desktop browsers.
+                Use Niroj77 from phones, tablets and desktop browsers.
               </p>
             </div>
           </div>
@@ -132,11 +132,11 @@ export default function Page() {
       <section className="bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-2xl font-black">
-            Extract pages from PDF online with PDFora
+            Extract pages from PDF online with Niroj77
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora provides an online PDF page extraction tool for creating a
+            Niroj77 provides an online PDF page extraction tool for creating a
             new PDF from selected pages of an existing document. It can be
             useful when you only need certain pages from a larger PDF.
           </p>
@@ -147,11 +147,11 @@ export default function Page() {
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
-            Is PDFora Extract Pages free?
+            Is Niroj77 Extract Pages free?
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora currently provides its available PDF tools without
+            Niroj77 currently provides its available PDF tools without
             requiring a subscription.
           </p>
         </div>
@@ -220,7 +220,7 @@ export default function Page() {
                 Can I extract a page range?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                You can enter page ranges when supported by the PDFora
+                You can enter page ranges when supported by the Niroj77
                 processing endpoint.
               </p>
             </details>
@@ -230,7 +230,7 @@ export default function Page() {
                 Do I need to install software?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                No. PDFora works through a modern web browser.
+                No. Niroj77 works through a modern web browser.
               </p>
             </details>
           </div>

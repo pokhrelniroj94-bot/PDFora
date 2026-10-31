@@ -16,13 +16,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "PDFora - Free Online PDF Tools",
-    template: "%s | PDFora",
+    default: "Niroj77 | Free Online PDF Tools",
+    template: "%s | Niroj77",
   },
   description:
-    "Free online PDF tools to convert, merge, split, compress, rotate, and edit PDF files quickly and securely.",
+    "Niroj77 offers free online PDF tools to merge, split, compress, convert and edit PDF files. Simple browser-based PDF utilities for everyday document tasks.",
   keywords: [
-    "PDF tools",
+    "free PDF tools",
+    "online PDF tools",
+    "Niroj77 PDF tools",
     "PDF converter",
     "PDF to Word",
     "Word to PDF",

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Privacy Policy for PDFora.",
+  description: "Privacy Policy for Niroj77.",
 };
 
 export default function PrivacyPage() {
@@ -19,7 +19,7 @@ export default function PrivacyPage() {
           <div>
             <h2 className="mb-2 text-2xl font-semibold">1. Introduction</h2>
             <p>
-              Welcome to PDFora. We provide online PDF tools for converting,
+              Welcome to Niroj77. We provide online PDF tools for converting,
               merging, compressing, editing, and processing PDF and related
               files. This Privacy Policy explains how information is handled
               when you use our website.
@@ -31,7 +31,7 @@ export default function PrivacyPage() {
               2. Files You Upload
             </h2>
             <p>
-              PDFora processes files that you voluntarily upload to use our
+              Niroj77 processes files that you voluntarily upload to use our
               tools. Uploaded files are temporarily processed by our backend
               servers to provide the requested service.
             </p>
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
               4. Cookies and Advertising
             </h2>
             <p>
-              PDFora may use cookies or similar technologies for website
+              Niroj77 may use cookies or similar technologies for website
               functionality, analytics, and, if enabled in the future,
               advertising services such as Google AdSense.
             </p>
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
               5. Third-Party Services
             </h2>
             <p>
-              PDFora may use third-party infrastructure, hosting, analytics,
+              Niroj77 may use third-party infrastructure, hosting, analytics,
               security, or advertising services to operate and improve the
               website. These providers may process technical information as
               necessary to provide their services.
@@ -88,7 +88,7 @@ export default function PrivacyPage() {
             </h2>
             <p>
               We take reasonable measures to protect information processed
-              through PDFora. However, no internet transmission or online
+              through Niroj77. However, no internet transmission or online
               storage system can be guaranteed to be completely secure.
             </p>
           </div>
@@ -98,7 +98,7 @@ export default function PrivacyPage() {
               7. Children's Privacy
             </h2>
             <p>
-              PDFora is not intentionally designed to collect personal
+              Niroj77 is not intentionally designed to collect personal
               information from children. If you believe a child has provided
               personal information to us, please contact us so appropriate
               action can be considered.
@@ -119,8 +119,8 @@ export default function PrivacyPage() {
           <div>
             <h2 className="mb-2 text-2xl font-semibold">9. Contact</h2>
             <p>
-              If you have questions about this Privacy Policy or PDFora's
-              privacy practices, please contact the PDFora team through the
+              If you have questions about this Privacy Policy or Niroj77's
+              privacy practices, please contact the Niroj77 team through the
               contact information provided on our website.
             </p>
           </div>

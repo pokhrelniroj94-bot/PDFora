@@ -77,6 +77,15 @@ TEMP_DIR.mkdir(
 # ============================================================
 
 def create_job():
+    # Remove abandoned temporary jobs left by interrupted or failed requests.
+    now = time.time()
+    for old_job in TEMP_DIR.iterdir():
+        try:
+            if old_job.is_dir() and now - old_job.stat().st_mtime > 6 * 60 * 60:
+                shutil.rmtree(old_job, ignore_errors=True)
+        except OSError:
+            pass
+
     job_id = uuid.uuid4().hex
 
     directory = TEMP_DIR / job_id
@@ -337,7 +346,7 @@ async def merge_pdf(
 
         return pdf_response(
             output,
-            "PDFora-Merged.pdf"
+            "Niroj77-Merged.pdf"
         )
 
     finally:

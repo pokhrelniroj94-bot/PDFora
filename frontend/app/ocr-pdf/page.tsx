@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
   title: "OCR PDF Online | Niroj77",

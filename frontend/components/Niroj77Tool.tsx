@@ -20,7 +20,7 @@ type Props = {
   extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string }[];
 };
 
-export default function Niroj77Tool({
+export default function PDForaTool({
   endpoint,
   title,
   description,
@@ -180,7 +180,7 @@ export default function Niroj77Tool({
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              Niroj77
+              PDFora
             </span>
           </a>
 
@@ -204,7 +204,7 @@ export default function Niroj77Tool({
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-            Niroj77 Tool
+            PDFora Tool
           </p>
 
           <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
@@ -378,7 +378,7 @@ export default function Niroj77Tool({
           <InfoCard
             icon="🔒"
             title="Private"
-            description="Files are processed by the Niroj77 backend."
+            description="Files are processed by the PDFora backend."
           />
 
           <InfoCard

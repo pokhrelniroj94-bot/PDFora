@@ -236,15 +236,14 @@ export default function Home() {
           </p>
 
           <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-6xl">
-            Your PDF.
+            Free PDF tools.
             <br />
             Made simple.
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Simple online PDF tools for merging, splitting, compressing,
-            converting, editing and processing documents directly from your
-            browser.
+            Merge PDF, split PDF, compress PDF, convert PDF to Word, Excel or JPG,
+            and edit documents online for free. No software installation needed.
           </p>
 
           {/* SEARCH */}

@@ -22,9 +22,9 @@ from openpyxl import Workbook
 # ============================================================
 
 app = FastAPI(
-    title="Niroj77 API",
+    title="PDFora API",
     version="4.0.1",
-    description="Niroj77 document processing API"
+    description="PDFora document processing API"
 )
 
 
@@ -41,8 +41,8 @@ app.add_middleware(
         "http://127.0.0.1:3001",
 
         # Production
-        "https://niroj77.com.np",
-        "https://www.niroj77.com.np",
+        "https://pd-fora.vercel.app",
+        "https://www.pd-fora.vercel.app",
 
         # Vercel preview
         "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
@@ -247,7 +247,7 @@ def cleanup_job(job: Path):
 def root():
 
     return {
-        "name": "Niroj77",
+        "name": "PDFora",
         "version": "4.0.1",
         "status": "online"
     }
@@ -273,7 +273,7 @@ def health():
 def api_info():
 
     return {
-        "service": "Niroj77",
+        "service": "PDFora",
         "version": "4.0.1",
         "tools": [
             "merge",
@@ -311,7 +311,7 @@ async def merge_pdf(
 
     job = create_job()
 
-    output = job / "Niroj77-Merged.pdf"
+    output = job / "PDFora-Merged.pdf"
 
     writer = PdfWriter()
 
@@ -346,7 +346,7 @@ async def merge_pdf(
 
         return pdf_response(
             output,
-            "Niroj77-Merged.pdf"
+            "PDFora-Merged.pdf"
         )
 
     finally:
@@ -1443,7 +1443,7 @@ async def reorder_pdf(file: UploadFile = File(...), order: str = Form(...)):
         writer=PdfWriter()
         for n in sequence: writer.add_page(reader.pages[n-1])
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"Niroj77-Reordered.pdf")
+        return _tool_file_response(out,"PDFora-Reordered.pdf")
     finally:
         await file.close()
 
@@ -1462,7 +1462,7 @@ async def add_page_numbers(file: UploadFile = File(...), position: str = Form("b
             y=24 if position.startswith("top") else r.height-24
             page.insert_text((x,y),str(start_number+i-(1 if skip_first and i>0 else 0)),fontsize=font_size, color=(0.25,0.25,0.3))
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"Niroj77-Page-Numbers.pdf")
+        return _tool_file_response(out,"PDFora-Page-Numbers.pdf")
     finally: await file.close()
 
 @app.post("/api/crop")
@@ -1482,7 +1482,7 @@ async def crop_pdf(file: UploadFile = File(...), margin: float = Form(36), pages
             if r.width<=2*margin or r.height<=2*margin: raise HTTPException(status_code=400,detail="Margin is too large for one or more pages.")
             p.set_cropbox(fitz.Rect(r.x0+margin,r.y0+margin,r.x1-margin,r.y1-margin))
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"Niroj77-Cropped.pdf")
+        return _tool_file_response(out,"PDFora-Cropped.pdf")
     finally: await file.close()
 
 @app.post("/api/header-footer")
@@ -1497,7 +1497,7 @@ async def header_footer(file: UploadFile = File(...), header: str = Form(""), fo
             if header: p.insert_text((36,24),header[:300],fontsize=font_size)
             if footer: p.insert_text((36,r.height-24),footer[:300],fontsize=font_size)
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"Niroj77-Header-Footer.pdf")
+        return _tool_file_response(out,"PDFora-Header-Footer.pdf")
     finally: await file.close()
 
 @app.post("/api/protect")
@@ -1509,7 +1509,7 @@ async def protect_pdf(file: UploadFile = File(...), password: str = Form(...)):
         src=job/"input.pdf"; out=job/"protected.pdf"; await save_upload(file,src); reader=read_pdf(src); writer=PdfWriter()
         writer.clone_document_from_reader(reader); writer.encrypt(password)
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"Niroj77-Protected.pdf")
+        return _tool_file_response(out,"PDFora-Protected.pdf")
     finally: await file.close()
 
 @app.post("/api/unlock")
@@ -1525,7 +1525,7 @@ async def unlock_pdf(file: UploadFile = File(...), password: str = Form(...)):
         writer=PdfWriter()
         for p in reader.pages: writer.add_page(p)
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"Niroj77-Unlocked.pdf")
+        return _tool_file_response(out,"PDFora-Unlocked.pdf")
     finally: await file.close()
 
 @app.post("/api/sign")
@@ -1541,7 +1541,7 @@ async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)
         p.insert_text((box.x0+8,box.y0+28),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35))
         p.insert_text((box.x0+8,box.y0+44),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4))
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"Niroj77-Signed.pdf")
+        return _tool_file_response(out,"PDFora-Signed.pdf")
     finally: await file.close()
 
 async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
@@ -1558,7 +1558,7 @@ async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
                 opts={"quality":quality,"method":6} if fmt=="webp" else {}
                 im.save(dest,format=fmt.upper(),**opts)
                 z.writestr(f"page-{i+1}.{fmt}",dest.getvalue())
-        return _tool_file_response(archive,f"Niroj77-{fmt.upper()}.zip","application/zip")
+        return _tool_file_response(archive,f"PDFora-{fmt.upper()}.zip","application/zip")
     finally:
         if doc: doc.close()
         await file.close()
@@ -1581,7 +1581,7 @@ async def pdf_to_text(file: UploadFile = File(...)):
             for i,p in enumerate(doc):
                 f.write(f"--- Page {i+1} ---\n{p.get_text('text')}\n\n")
         doc.close()
-        return _tool_file_response(out,"Niroj77-Extracted-Text.txt","text/plain; charset=utf-8")
+        return _tool_file_response(out,"PDFora-Extracted-Text.txt","text/plain; charset=utf-8")
     finally: await file.close()
 
 @app.post("/api/grayscale")
@@ -1598,7 +1598,7 @@ async def grayscale_pdf(file: UploadFile = File(...)):
             page.insert_image(page.rect,stream=pix.tobytes("png"))
         doc.close()
         flattened.save(out,garbage=4,deflate=True); flattened.close()
-        return _tool_file_response(out,"Niroj77-Grayscale.pdf")
+        return _tool_file_response(out,"PDFora-Grayscale.pdf")
     finally: await file.close()
 
 @app.post("/api/flatten")
@@ -1616,7 +1616,7 @@ async def flatten_pdf(file: UploadFile = File(...)):
             target.insert_image(target.rect,stream=pix.tobytes("png"))
         doc.close()
         flattened.save(out,garbage=4,deflate=True); flattened.close()
-        return _tool_file_response(out,"Niroj77-Flattened.pdf")
+        return _tool_file_response(out,"PDFora-Flattened.pdf")
     finally: await file.close()
 
 @app.post("/api/metadata")
@@ -1628,7 +1628,7 @@ async def edit_pdf_metadata(file: UploadFile = File(...), title: str = Form(""),
         src=job/"input.pdf"; out=job/"metadata.pdf"; await save_upload(file,src); reader=PdfReader(str(src)); writer=PdfWriter(); writer.clone_document_from_reader(reader)
         writer.add_metadata({"/Title":title,"/Author":author,"/Subject":subject,"/Keywords":keywords})
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"Niroj77-Updated-Metadata.pdf")
+        return _tool_file_response(out,"PDFora-Updated-Metadata.pdf")
     finally: await file.close()
 
 @app.post("/api/repair")
@@ -1642,7 +1642,7 @@ async def repair_pdf(file: UploadFile = File(...)):
             doc.save(out,garbage=4,deflate=True,clean=True); doc.close()
         except Exception:
             raise HTTPException(status_code=422,detail="This PDF could not be repaired. The file may be severely damaged or unsupported.")
-        return _tool_file_response(out,"Niroj77-Repaired.pdf")
+        return _tool_file_response(out,"PDFora-Repaired.pdf")
     finally: await file.close()
 
 @app.post("/api/ocr")
@@ -1669,7 +1669,7 @@ async def pdf_to_html(file: UploadFile = File(...)):
         parts.append("</body></html>")
         doc.close()
         out.write_text("\n".join(parts),encoding="utf-8")
-        return _tool_file_response(out,"Niroj77-PDF-to-HTML.html","text/html; charset=utf-8")
+        return _tool_file_response(out,"PDFora-PDF-to-HTML.html","text/html; charset=utf-8")
     finally:
         await file.close()
 
@@ -1698,7 +1698,7 @@ async def extract_images(file: UploadFile = File(...)):
                         continue
         doc.close()
         if count==0: raise HTTPException(status_code=422,detail="No embedded images were found in this PDF.")
-        return _tool_file_response(out,"Niroj77-Extracted-Images.zip","application/zip")
+        return _tool_file_response(out,"PDFora-Extracted-Images.zip","application/zip")
     finally:
         await file.close()
 
@@ -1723,7 +1723,7 @@ async def remove_blank_pages(file: UploadFile = File(...), threshold: int = Form
         result=fitz.open()
         for i in kept: result.insert_pdf(doc,from_page=i,to_page=i)
         doc.close(); result.save(out,garbage=4,deflate=True); result.close()
-        return _tool_file_response(out,"Niroj77-Without-Blank-Pages.pdf")
+        return _tool_file_response(out,"PDFora-Without-Blank-Pages.pdf")
     finally:
         await file.close()
 
@@ -1746,7 +1746,7 @@ async def compare_pdfs(files: list[UploadFile] = File(...)):
         out=job/"comparison.txt"
         summary=f"PDF COMPARISON REPORT\nFile 1: {files[0].filename}\nFile 2: {files[1].filename}\nPages in file 1: {len(readers[0])}\nPages in file 2: {len(readers[1])}\n\n"
         out.write_text(summary+("\n".join(diff) if diff else "No selectable-text differences were detected. This comparison does not inspect visual layout or scanned images."),encoding="utf-8")
-        return _tool_file_response(out,"Niroj77-PDF-Comparison.txt","text/plain; charset=utf-8")
+        return _tool_file_response(out,"PDFora-PDF-Comparison.txt","text/plain; charset=utf-8")
     finally:
         for file in files:
             await file.close()

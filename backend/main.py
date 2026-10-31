@@ -1,4 +1,4 @@
-﻿from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from docx import Document
@@ -41,14 +41,15 @@ app.add_middleware(
         "http://127.0.0.1:3001",
 
         # Production
-        "https://pd-fora.vercel.app",
+        "https://niroj77.com.np",
+        "https://www.niroj77.com.np",
 
         # Vercel preview
         "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
     ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
     expose_headers=[
         "Content-Disposition",
         "X-Original-Size",
@@ -63,7 +64,7 @@ app.add_middleware(
 
 MAX_FILE_SIZE = 50 * 1024 * 1024
 
-TEMP_DIR = Path(tempfile.gettempdir()) / "pdfora"
+TEMP_DIR = Path(tempfile.gettempdir()) / "niroj77"
 
 TEMP_DIR.mkdir(
     parents=True,
@@ -143,6 +144,15 @@ async def save_upload(
 
 def read_pdf(path: Path):
 
+    # Validate the actual file signature; never trust the filename or browser MIME type.
+    try:
+        with open(path, "rb") as uploaded:
+            header = uploaded.read(1024)
+        if b"%PDF-" not in header:
+            raise HTTPException(status_code=400, detail="The uploaded file is not a valid PDF.")
+    except OSError:
+        raise HTTPException(status_code=400, detail="Unable to read the uploaded PDF.")
+
     try:
 
         reader = PdfReader(
@@ -185,6 +195,9 @@ def read_pdf(path: Path):
             status_code=400,
             detail="PDF contains no pages."
         )
+
+    if len(reader.pages) > 1000:
+        raise HTTPException(status_code=413, detail="PDFs with more than 1,000 pages are not supported.")
 
     return reader
 
@@ -289,7 +302,7 @@ async def merge_pdf(
 
     job = create_job()
 
-    output = job / "PDFora-Merged.pdf"
+    output = job / "Niroj77-Merged.pdf"
 
     writer = PdfWriter()
 

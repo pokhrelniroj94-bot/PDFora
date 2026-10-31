@@ -17,7 +17,6 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://niroj77.com.np"),
-  alternates: { canonical: "/" },
   title: {
     default: "Free PDF Tools Online – Merge, Split, Compress & Convert | Niroj77",
     template: "%s | Niroj77",

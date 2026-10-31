@@ -137,34 +137,34 @@ const categories = [
 
 const faqs = [
   {
-    question: "Is Niroj77 free to use?",
+    question: "Is PDFora free to use?",
     answer:
-      "Niroj77 currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
+      "PDFora currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
   },
   {
     question: "Do I need to install software?",
     answer:
-      "No. Niroj77 is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
+      "No. PDFora is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
   },
   {
     question: "What PDF tools are available?",
     answer:
-      "Niroj77 provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
+      "PDFora provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
   },
   {
     question: "How are my files processed?",
     answer:
-      "Files selected for processing are temporarily sent to the Niroj77 processing backend so the requested operation can be completed.",
+      "Files selected for processing are temporarily sent to the PDFora processing backend so the requested operation can be completed.",
   },
   {
     question: "Are my uploaded files stored permanently?",
     answer:
-      "Niroj77 is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
+      "PDFora is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
   },
   {
-    question: "Can I use Niroj77 on my phone?",
+    question: "Can I use PDFora on my phone?",
     answer:
-      "Yes. Niroj77 is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
+      "Yes. PDFora is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
   },
 ];
 
@@ -201,14 +201,14 @@ export default function Home() {
           <Link
             href="/"
             className="flex items-center gap-2"
-            aria-label="Niroj77 home"
+            aria-label="PDFora home"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-sm font-black text-white">
               N
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              Niroj77
+              PDFora
             </span>
           </Link>
 
@@ -329,7 +329,7 @@ export default function Home() {
       >
         <div className="mb-6">
           <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-            Niroj77 toolbox
+            PDFora toolbox
           </p>
 
           <h2
@@ -341,7 +341,7 @@ export default function Home() {
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
             Choose a PDF tool below to process your document online.
-            Niroj77 is designed to make common document tasks simple and
+            PDFora is designed to make common document tasks simple and
             accessible.
           </p>
         </div>
@@ -409,7 +409,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-              Why Niroj77
+              Why PDFora
             </p>
 
             <h2 className="mt-2 text-2xl font-black sm:text-3xl">
@@ -417,7 +417,7 @@ export default function Home() {
             </h2>
 
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-              Niroj77 focuses on making everyday PDF tasks easier to access
+              PDFora focuses on making everyday PDF tasks easier to access
               without requiring desktop software installation.
             </p>
           </div>
@@ -432,7 +432,7 @@ export default function Home() {
             <InfoCard
               icon="📱"
               title="Works across devices"
-              description="Use Niroj77 from modern desktop, tablet and mobile browsers with a responsive interface."
+              description="Use PDFora from modern desktop, tablet and mobile browsers with a responsive interface."
             />
 
             <InfoCard
@@ -460,7 +460,7 @@ export default function Home() {
           <StepCard
             number="01"
             title="Choose a tool"
-            description="Select the PDF operation you need from the Niroj77 toolbox."
+            description="Select the PDF operation you need from the PDFora toolbox."
           />
 
           <StepCard
@@ -496,7 +496,7 @@ export default function Home() {
           </h2>
 
           <p className="mt-3 text-sm text-slate-500">
-            Answers to common questions about using Niroj77.
+            Answers to common questions about using PDFora.
           </p>
         </div>
 
@@ -546,8 +546,8 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <InfoLink
               href="/about"
-              title="About Niroj77"
-              description="Learn more about Niroj77 and its purpose."
+              title="About PDFora"
+              description="Learn more about PDFora and its purpose."
             />
 
             <InfoLink
@@ -565,7 +565,7 @@ export default function Home() {
             <InfoLink
               href="/terms"
               title="Terms of Service"
-              description="Read the terms that apply when using Niroj77."
+              description="Read the terms that apply when using PDFora."
             />
           </div>
         </div>
@@ -580,14 +580,14 @@ export default function Home() {
               <Link
                 href="/"
                 className="flex items-center gap-2"
-                aria-label="Niroj77 home"
+                aria-label="PDFora home"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
                   N
                 </div>
 
                 <span className="text-xl font-black">
-                  Niroj77
+                  PDFora
                 </span>
               </Link>
 
@@ -632,7 +632,7 @@ export default function Home() {
             {/* COMPANY */}
             <div>
               <h3 className="text-sm font-black">
-                Niroj77
+                PDFora
               </h3>
 
               <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
@@ -661,11 +661,11 @@ export default function Home() {
             {/* ABOUT */}
             <div>
               <h3 className="text-sm font-black">
-                About Niroj77
+                About PDFora
               </h3>
 
               <p className="mt-4 text-sm leading-6 text-slate-400">
-                Niroj77 is a web-based PDF utility platform focused on
+                PDFora is a web-based PDF utility platform focused on
                 providing simple tools for common document-processing tasks.
               </p>
 
@@ -680,7 +680,7 @@ export default function Home() {
 
           <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
             <p>
-              © 2026 Niroj77. All rights reserved.
+              © 2026 PDFora. All rights reserved.
             </p>
 
             <p>

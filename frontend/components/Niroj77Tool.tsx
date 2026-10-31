@@ -67,7 +67,7 @@ export default function Niroj77Tool({
       return;
     }
 
-    if ((formField || queryField) && !value.trim()) {
+    if ((formField || queryField) && !value.trim() && endpoint !== "/api/header-footer") {
       setMessage("Please enter the required information.");
       return;
     }

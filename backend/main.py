@@ -304,11 +304,9 @@ async def merge_pdf(
 ):
 
     if len(files) < 2:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Select at least 2 PDF files."
-        )
+        raise HTTPException(status_code=400, detail="Select at least 2 PDF files.")
+    if len(files) > 20:
+        raise HTTPException(status_code=413, detail="You can merge up to 20 PDF files at once.")
 
     job = create_job()
 
@@ -318,18 +316,13 @@ async def merge_pdf(
 
     try:
 
+        total_upload_size = 0
         for index, file in enumerate(files):
-
-            validate_pdf(
-                file.filename
-            )
-
+            validate_pdf(file.filename)
             input_file = job / f"{index}.pdf"
-
-            await save_upload(
-                file,
-                input_file
-            )
+            total_upload_size += await save_upload(file, input_file)
+            if total_upload_size > MAX_FILE_SIZE:
+                raise HTTPException(status_code=413, detail="The combined upload size must not exceed 50 MB.")
 
             reader = read_pdf(
                 input_file
@@ -535,34 +528,24 @@ async def images_to_pdf(
 ):
 
     if not files:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Select at least one image."
-        )
+        raise HTTPException(status_code=400, detail="Select at least one image.")
+    if len(files) > 20:
+        raise HTTPException(status_code=413, detail="You can convert up to 20 images at once.")
 
     job = create_job()
 
     output = job / "PDFora-Images.pdf"
 
     images = []
+    total_upload_size = 0
 
     try:
-
         for file in files:
-
-            validate_filename(
-                file.filename
-            )
-
+            validate_filename(file.filename)
             data = await file.read()
-
-            if len(data) > MAX_FILE_SIZE:
-
-                raise HTTPException(
-                    status_code=413,
-                    detail=f"{file.filename} is larger than 50 MB."
-                )
+            total_upload_size += len(data)
+            if total_upload_size > MAX_FILE_SIZE:
+                raise HTTPException(status_code=413, detail="The combined image upload size must not exceed 50 MB.")
 
             try:
 
@@ -1970,18 +1953,15 @@ async def remove_pdf_metadata(file: UploadFile = File(...)):
     try:
         src, out = job / "input.pdf", job / "metadata-removed.pdf"
         await save_upload(file, src)
-        reader = read_pdf(src)
-        writer = PdfWriter()
-        for page in reader.pages:
-            writer.add_page(page)
-        writer.add_metadata({
-            "/Title": "", "/Author": "", "/Subject": "",
-            "/Creator": "", "/Producer": "", "/Keywords": "",
-        })
-        with open(out, "wb") as stream:
-            writer.write(stream)
+        read_pdf(src)
+        doc = fitz.open(src)
+        doc.set_metadata({})
+        doc.del_xml_metadata()
+        doc.save(out, garbage=4, deflate=True)
         return pdf_response(out, "PDFora-Metadata-Removed.pdf")
     finally:
+        if 'doc' in locals() and doc is not None:
+            doc.close()
         await file.close()
 
 
@@ -2130,6 +2110,8 @@ async def pdf_to_tiff(file: UploadFile = File(...)):
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
+        if len(doc) > 200:
+            raise HTTPException(status_code=413, detail="TIFF conversion is limited to 200 pages per file.")
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, page in enumerate(doc):
                 pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
@@ -2158,6 +2140,8 @@ async def pdf_to_bmp(file: UploadFile = File(...)):
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
+        if len(doc) > 200:
+            raise HTTPException(status_code=413, detail="BMP conversion is limited to 200 pages per file.")
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, page in enumerate(doc):
                 pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
@@ -2246,28 +2230,15 @@ async def remove_pdf_attachments(file: UploadFile = File(...)):
     try:
         src, out = job / "input.pdf", job / "PDFora-Attachments-Removed.pdf"
         await save_upload(file, src)
-        reader = read_pdf(src)
-        writer = PdfWriter()
-        for page in reader.pages:
-            writer.add_page(page)
-        try:
-            writer.add_metadata({"/Title": str(reader.metadata.title or ""), "/Author": str(reader.metadata.author or "")})
-        except Exception:
-            pass
-        # Remove embedded file specifications from the document catalog.
-        try:
-            root = writer._root_object
-            names = root.get("/Names")
-            if names:
-                names_obj = names.get_object()
-                if "/EmbeddedFiles" in names_obj:
-                    del names_obj["/EmbeddedFiles"]
-        except Exception:
-            pass
-        with open(out, "wb") as stream:
-            writer.write(stream)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for attachment_name in list(doc.embfile_names()):
+            doc.embfile_del(attachment_name)
+        doc.save(out, garbage=4, deflate=True)
         return pdf_response(out, "PDFora-Attachments-Removed.pdf")
     finally:
+        if 'doc' in locals() and doc is not None:
+            doc.close()
         await file.close()
 
 
@@ -2293,7 +2264,7 @@ async def add_pdf_background(file: UploadFile = File(...), text: str = Form("DRA
         for page in doc:
             rect = page.rect
             page.draw_rect(rect, color=None, fill=colors[color], overlay=False)
-            page.insert_textbox(fitz.Rect(30, rect.height / 2 - 40, rect.width - 30, rect.height / 2 + 40), text.strip(), fontsize=34, color=(0.55, 0.55, 0.55), align=1, rotate=0, overlay=False)
+            page.insert_textbox(fitz.Rect(30, rect.height / 2 - 40, rect.width - 30, rect.height / 2 + 40), text.strip(), fontsize=34, color=(0.55, 0.55, 0.55), align=1, rotate=0, overlay=True)
         doc.save(out, garbage=4, deflate=True)
         return pdf_response(out, "PDFora-Background.pdf")
     finally:

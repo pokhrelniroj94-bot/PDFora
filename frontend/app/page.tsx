@@ -146,7 +146,7 @@ const faqs = [
   {
     question: "What PDF tools are available?",
     answer:
-      "Niroj77 currently provides tools for merging, splitting, compressing, converting, rotating, deleting, extracting and watermarking PDF files.",
+      "Niroj77 provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
   },
   {
     question: "How are my files processed?",

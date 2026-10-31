@@ -112,7 +112,7 @@ const tools: Tool[] = [
   { name: "Add Header or Footer", description: "Add a text header to every page.", icon: "N", category: "Edit", href: "/header-footer" },
   { name: "Protect PDF", description: "Encrypt your PDF with a password.", icon: "N", category: "Security", href: "/protect-pdf" },
   { name: "Unlock PDF", description: "Unlock a PDF using its existing password.", icon: "N", category: "Security", href: "/unlock-pdf" },
-  { name: "Sign PDF", description: "Add a visible typed signature to a PDF.", icon: "N", category: "Sign", href: "/sign-pdf" },
+  { name: "Sign PDF", description: "Add a visible typed signature to a PDF.", icon: "N", category: "Security", href: "/sign-pdf" },
   { name: "PDF to PNG", description: "Convert PDF pages to PNG images.", icon: "N", category: "Convert", href: "/pdf-to-png" },
   { name: "PDF to WebP", description: "Convert PDF pages to WebP images.", icon: "N", category: "Convert", href: "/pdf-to-webp" },
   { name: "PDF to Text", description: "Extract selectable text from a PDF.", icon: "N", category: "Convert", href: "/pdf-to-text" },

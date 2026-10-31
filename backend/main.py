@@ -289,7 +289,7 @@ def api_info():
             "pdf-to-word",
             "reorder", "page-numbers", "crop", "header-footer", "protect", "unlock",
             "sign", "pdf-to-png", "pdf-to-webp", "pdf-to-text", "grayscale",
-            "flatten", "metadata", "repair", "pdf-to-html", "extract-images", "remove-blank-pages", "compare", "add-blank-pages", "rotate-selected-pages", "page-counter", "pdf-info", "remove-annotations", "remove-links", "extract-bookmarks", "remove-metadata", "pdf-to-json", "pdf-to-csv"
+            "flatten", "metadata", "repair", "pdf-to-html", "extract-images", "remove-blank-pages", "compare", "add-blank-pages", "rotate-selected-pages", "page-counter", "pdf-info", "remove-annotations", "remove-links", "extract-bookmarks", "remove-metadata", "pdf-to-json", "pdf-to-csv", "add-bookmarks", "bates-numbering", "pdf-to-tiff"
         ]
     }
 

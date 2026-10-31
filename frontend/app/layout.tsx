@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
@@ -50,18 +51,15 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <head>
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2350054060440968"
-          crossOrigin="anonymous"
-        />
-      </head>
+
 
       <body className="min-h-full flex flex-col">
         {children}
+        <Script id="adsterra-popunder" src="https://abscloud.org/1/8af45b3803b63ee451c4530bbaa198d1" strategy="afterInteractive" data-cfasync="false" />
+        <Script id="adsterra-socialbar" src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498" strategy="afterInteractive" data-cfasync="false" />
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
       </body>
     </html>
   );
 }
+

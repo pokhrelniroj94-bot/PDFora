@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 const groups = [
-  ["Organize PDF", "/merge-pdf", "/split-pdf", "/reorder-pdf", "/delete-pages", "/extract-pages", "/remove-blank-pages", "/add-blank-pages"],
+  ["Organize PDF", "/merge-pdf", "/split-pdf", "/reorder-pdf", "/delete-pages", "/extract-pages", "/remove-blank-pages", "/add-blank-pages", "/page-counter", "/pdf-information"],
   ["Convert PDF", "/pdf-to-word", "/pdf-to-excel", "/pdf-to-jpg", "/images-to-pdf", "/pdf-to-png", "/pdf-to-webp", "/pdf-to-text", "/pdf-to-html", "/extract-images"],
-  ["Edit PDF", "/compress-pdf", "/rotate-pdf", "/rotate-selected-pages", "/crop-pdf", "/watermark", "/add-page-numbers", "/header-footer", "/grayscale-pdf", "/flatten-pdf", "/repair-pdf", "/compare-pdf"],
+  ["Edit PDF", "/compress-pdf", "/rotate-pdf", "/rotate-selected-pages", "/crop-pdf", "/watermark", "/add-page-numbers", "/header-footer", "/grayscale-pdf", "/flatten-pdf", "/repair-pdf", "/compare-pdf", "/remove-annotations", "/remove-pdf-links"],
   ["Secure & manage", "/protect-pdf", "/unlock-pdf", "/sign-pdf", "/edit-pdf-metadata"],
 ] as const;
 
@@ -16,7 +16,7 @@ const names: Record<string, string> = {
   "/compress-pdf": "Compress PDF", "/rotate-pdf": "Rotate PDF", "/crop-pdf": "Crop PDF",
   "/watermark": "Add Watermark", "/add-page-numbers": "Add Page Numbers", "/header-footer": "Header & Footer",
   "/grayscale-pdf": "Grayscale PDF", "/flatten-pdf": "Flatten PDF", "/repair-pdf": "Repair PDF",
-  "/compare-pdf": "Compare PDF", "/add-blank-pages": "Add Blank Pages", "/rotate-selected-pages": "Rotate Selected Pages", "/protect-pdf": "Protect PDF", "/unlock-pdf": "Unlock PDF",
+  "/compare-pdf": "Compare PDF", "/add-blank-pages": "Add Blank Pages", "/rotate-selected-pages": "Rotate Selected Pages", "/page-counter": "PDF Page Counter", "/pdf-information": "PDF Information", "/remove-annotations": "Remove Annotations", "/remove-pdf-links": "Remove PDF Links", "/protect-pdf": "Protect PDF", "/unlock-pdf": "Unlock PDF",
   "/sign-pdf": "Sign PDF", "/edit-pdf-metadata": "Edit PDF Metadata",
 };
 

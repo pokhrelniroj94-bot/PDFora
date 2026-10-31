@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
+import ToolDirectory from "../components/ToolDirectory";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,6 +58,7 @@ export default function RootLayout({
 
       <body className="min-h-full flex flex-col">
         {children}
+        <ToolDirectory />
         <Script id="adsterra-popunder" src="https://abscloud.org/1/8af45b3803b63ee451c4530bbaa198d1" strategy="afterInteractive" data-cfasync="false" />
         <Script id="adsterra-socialbar" src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498" strategy="afterInteractive" data-cfasync="false" />
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />

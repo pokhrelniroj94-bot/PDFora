@@ -3,7 +3,7 @@
 import { ChangeEvent, useRef, useState } from "react";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_URL || "https://pdfora-493r.onrender.com";
 
 type Props = {
   endpoint: string;
@@ -134,7 +134,7 @@ export default function PDForaTool({
       link.click();
       link.remove();
 
-      window.URL.revokeObjectURL(downloadURL);
+      window.setTimeout(() => window.URL.revokeObjectURL(downloadURL), 1000);
 
       setMessage("Completed successfully. Download started.");
     } catch (error) {
@@ -163,7 +163,7 @@ export default function PDForaTool({
             href="/"
             className="flex min-h-11 items-center gap-2"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 font-black text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 font-black text-white">
               P
             </div>
 

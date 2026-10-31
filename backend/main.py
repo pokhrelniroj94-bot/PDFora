@@ -1,5 +1,5 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query, Request
+from fastapi.responses import FileResponse, JSONResponse
 from starlette.background import BackgroundTask
 from fastapi.middleware.cors import CORSMiddleware
 from docx import Document
@@ -32,6 +32,25 @@ app = FastAPI(
 # ============================================================
 # CORS
 # ============================================================
+
+@app.middleware("http")
+async def enforce_request_limits(request: Request, call_next):
+    # Reject oversized declared bodies before multipart parsing allocates resources.
+    if request.method == "POST" and request.url.path.startswith("/api/"):
+        content_length = request.headers.get("content-length")
+        if content_length:
+            try:
+                if int(content_length) > MAX_FILE_SIZE + 2 * 1024 * 1024:
+                    return JSONResponse(status_code=413, content={"detail": "The total request must not exceed 52 MB."})
+            except ValueError:
+                return JSONResponse(status_code=400, content={"detail": "Invalid Content-Length header."})
+    response = await call_next(request)
+    if request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-store, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
 
 app.add_middleware(
     CORSMiddleware,

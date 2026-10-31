@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query
 from fastapi.responses import FileResponse
+from starlette.background import BackgroundTask
 from fastapi.middleware.cors import CORSMiddleware
 from docx import Document
 from pypdf import PdfReader, PdfWriter

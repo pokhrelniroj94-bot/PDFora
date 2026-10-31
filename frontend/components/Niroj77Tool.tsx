@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ChangeEvent, useRef, useState } from "react";
 
@@ -44,7 +44,13 @@ export default function Niroj77Tool({
 
   function handleFiles(event: ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(event.target.files || []);
-
+    const oversized = selected.find((file) => file.size > 50 * 1024 * 1024);
+    if (oversized) {
+      setFiles([]);
+      setMessage(`${oversized.name} exceeds the 50 MB per-file limit.`);
+      event.target.value = "";
+      return;
+    }
     setFiles(selected);
     setMessage("");
   }
@@ -233,7 +239,7 @@ export default function Niroj77Tool({
             </h2>
 
             <p className="mt-2 text-xs text-slate-500 sm:text-sm">
-              Maximum 50 MB per file
+              PDF files up to 50 MB each
             </p>
 
             <span className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-slate-950 px-5 text-sm font-bold text-white">
@@ -348,6 +354,8 @@ export default function Niroj77Tool({
           {/* Message */}
           {message && (
             <div
+              role="status"
+              aria-live="polite"
               className={`mt-4 rounded-xl border px-4 py-3 text-center text-sm font-semibold ${
                 success
                   ? "border-green-200 bg-green-50 text-green-700"

@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import PDForaTool from "../../components/PDForaTool";
+import Niroj77Tool from "../../components/Niroj77Tool";
 
 export default function Page() {
   return (
@@ -22,7 +22,7 @@ export default function Page() {
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Convert PDF pages into JPG images online with PDFora. Turn your
+              Convert PDF pages into JPG images online with Niroj77. Turn your
               PDF documents into easy-to-view JPG images directly from your
               browser on desktop, tablet or mobile.
             </p>
@@ -30,12 +30,12 @@ export default function Page() {
 
           {/* TOOL */}
           <div className="mt-10">
-            <PDForaTool
+            <Niroj77Tool
               endpoint="/api/pdf-to-jpg"
               title="PDF to JPG"
               description="Convert PDF pages into JPG images for easy sharing and viewing."
               multiple={false}
-              downloadName="PDFora-JPG.zip"
+              downloadName="Niroj77-JPG.zip"
             />
           </div>
         </div>
@@ -129,7 +129,7 @@ export default function Page() {
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Start the PDF to JPG conversion using the PDFora tool.
+                Start the PDF to JPG conversion using the Niroj77 tool.
               </p>
             </div>
 
@@ -155,18 +155,18 @@ export default function Page() {
       <section className="bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-2xl font-black">
-            Convert PDF to JPG online with PDFora
+            Convert PDF to JPG online with Niroj77
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora provides a simple online PDF to JPG converter for turning
+            Niroj77 provides a simple online PDF to JPG converter for turning
             PDF pages into JPG images. JPG files can be convenient for
             previews, sharing, presentations and viewing documents on
             different devices.
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Instead of installing desktop software, you can use the PDFora
+            Instead of installing desktop software, you can use the Niroj77
             PDF to JPG tool directly from a modern web browser. Upload your
             PDF, start the conversion and download the resulting images.
           </p>
@@ -182,11 +182,11 @@ export default function Page() {
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
-            Is PDFora PDF to JPG free?
+            Is Niroj77 PDF to JPG free?
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora currently provides its available PDF tools without
+            Niroj77 currently provides its available PDF tools without
             requiring a subscription. You can use the PDF to JPG tool to
             process your document and download the resulting files.
           </p>

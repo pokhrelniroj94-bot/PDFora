@@ -265,7 +265,7 @@ def api_info():
             "pdf-to-word",
             "reorder", "page-numbers", "crop", "header-footer", "protect", "unlock",
             "sign", "pdf-to-png", "pdf-to-webp", "pdf-to-text", "grayscale",
-            "flatten", "metadata", "repair", "ocr"
+            "flatten", "metadata", "repair", "pdf-to-html", "extract-images", "remove-blank-pages", "compare"
         ]
     }
 

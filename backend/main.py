@@ -1564,11 +1564,15 @@ async def grayscale_pdf(file: UploadFile = File(...)):
     validate_pdf(file.filename); job=create_job()
     try:
         src=job/"input.pdf"; out=job/"grayscale.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for grayscale conversion.")
+        flattened=fitz.open()
         for p in doc:
-            pix=p.get_pixmap(matrix=fitz.Matrix(1.5,1.5),colorspace=fitz.csGRAY,alpha=False)
-            p.clean_contents()
-            p.insert_image(p.rect,stream=pix.tobytes("png"),overlay=True)
-        doc.save(out,garbage=4,deflate=True); doc.close()
+            rect=p.rect
+            pix=p.get_pixmap(matrix=fitz.Matrix(1.5,1.5),colorspace=fitz.csGRAY,alpha=False,annots=True)
+            page=flattened.new_page(width=rect.width,height=rect.height)
+            page.insert_image(page.rect,stream=pix.tobytes("png"))
+        doc.close()
+        flattened.save(out,garbage=4,deflate=True); flattened.close()
         return _tool_file_response(out,"Niroj77-Grayscale.pdf")
     finally: await file.close()
 
@@ -1578,16 +1582,15 @@ async def flatten_pdf(file: UploadFile = File(...)):
     try:
         src=job/"input.pdf"; out=job/"flattened.pdf"; await save_upload(file,src); doc=fitz.open(src)
         if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for flattening.")
-        # Rasterize the rendered page, including form widgets and annotations, to create a visual flatten.
+        # Render each page into a fresh PDF page. This removes interactive annotations/widgets.
+        flattened=fitz.open()
         for page in doc:
+            rect=page.rect
             pix=page.get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False,annots=True)
-            image_bytes=pix.tobytes("png")
-            page.clean_contents()
-            page.delete_image
-            page.show_pdf_page
-            page.draw_rect(page.rect, color=None, fill=(1,1,1), overlay=True)
-            page.insert_image(page.rect,stream=image_bytes,overlay=True)
-        doc.save(out,garbage=4,deflate=True); doc.close()
+            target=flattened.new_page(width=rect.width,height=rect.height)
+            target.insert_image(target.rect,stream=pix.tobytes("png"))
+        doc.close()
+        flattened.save(out,garbage=4,deflate=True); flattened.close()
         return _tool_file_response(out,"Niroj77-Flattened.pdf")
     finally: await file.close()
 

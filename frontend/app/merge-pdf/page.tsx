@@ -15,13 +15,13 @@ export const metadata: Metadata = {
     "merge multiple PDFs",
   ],
   alternates: {
-    canonical: "https://pd-fora.vercel.app/merge-pdf",
+    canonical: "https://niroj77.com.np/merge-pdf",
   },
   openGraph: {
     title: "Merge PDF Online Free | Niroj77",
     description:
       "Combine multiple PDF files into one PDF document quickly and easily with Niroj77.",
-    url: "https://pd-fora.vercel.app/merge-pdf",
+    url: "https://niroj77.com.np/merge-pdf",
     siteName: "Niroj77",
     type: "website",
   },

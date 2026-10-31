@@ -290,6 +290,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* HIGH-VISIBILITY NATIVE AD: after the hero, before popular tools */}
+      <AdsterraNative />
+
       {/* POPULAR TOOLS */}
       <section
         aria-labelledby="popular-heading"
@@ -318,8 +321,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <AdsterraNative />
 
       {/* ALL TOOLS */}
       <section

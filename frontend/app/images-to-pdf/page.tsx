@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import PDForaTool from "../../components/PDForaTool";
+import Niroj77Tool from "../../components/Niroj77Tool";
 
 export default function Page() {
 return ( <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -17,20 +17,20 @@ I </div>
 
         <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
           Convert JPG, JPEG, PNG and WebP images into a single PDF
-          document online. PDFora makes it simple to combine multiple
+          document online. Niroj77 makes it simple to combine multiple
           images into one PDF file from your phone, tablet or computer.
         </p>
       </div>
 
       {/* TOOL */}
       <div className="mt-10">
-        <PDForaTool
+        <Niroj77Tool
           endpoint="/api/images-to-pdf"
           title="Images to PDF"
           description="Convert JPG, PNG and WebP images into a single PDF document."
           multiple
           accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-          downloadName="PDFora-Images.pdf"
+          downloadName="Niroj77-Images.pdf"
         />
       </div>
     </div>
@@ -80,7 +80,7 @@ I </div>
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Use PDFora from modern desktop, tablet and mobile browsers
+            Use Niroj77 from modern desktop, tablet and mobile browsers
             without installing additional software.
           </p>
         </div>
@@ -122,7 +122,7 @@ I </div>
           </h3>
 
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Upload your selected images to the PDFora Images to PDF tool.
+            Upload your selected images to the Niroj77 Images to PDF tool.
           </p>
         </div>
 
@@ -145,11 +145,11 @@ I </div>
   <section className="bg-white px-4 py-14 sm:px-6">
     <div className="mx-auto max-w-4xl">
       <h2 className="text-2xl font-black">
-        Convert images to PDF online with PDFora
+        Convert images to PDF online with Niroj77
       </h2>
 
       <p className="mt-4 text-sm leading-7 text-slate-600">
-        PDFora provides a simple online Images to PDF converter for
+        Niroj77 provides a simple online Images to PDF converter for
         turning pictures into a PDF document. You can select multiple
         images and combine them into a single PDF file directly from your
         browser.
@@ -168,7 +168,7 @@ I </div>
       <p className="mt-4 text-sm leading-7 text-slate-600">
         To convert JPG images to PDF, open the Images to PDF tool, select
         your JPG or JPEG files, upload them and start the conversion.
-        PDFora creates a single PDF document from the selected images.
+        Niroj77 creates a single PDF document from the selected images.
       </p>
 
       <h2 className="mt-10 text-2xl font-black">
@@ -176,17 +176,17 @@ I </div>
       </h2>
 
       <p className="mt-4 text-sm leading-7 text-slate-600">
-        Select one or more PNG images using the PDFora Images to PDF tool.
+        Select one or more PNG images using the Niroj77 Images to PDF tool.
         After uploading the images, process them to create a PDF document
         that can be downloaded to your device.
       </p>
 
       <h2 className="mt-10 text-2xl font-black">
-        Is PDFora Images to PDF free?
+        Is Niroj77 Images to PDF free?
       </h2>
 
       <p className="mt-4 text-sm leading-7 text-slate-600">
-        PDFora currently provides its available PDF tools without
+        Niroj77 currently provides its available PDF tools without
         requiring a subscription. You can use the Images to PDF tool to
         convert supported image files into a PDF document.
       </p>

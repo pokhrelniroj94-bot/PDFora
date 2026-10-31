@@ -3,7 +3,7 @@
 import { ChangeEvent, useRef, useState } from "react";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_URL || "https://pdfora-493r.onrender.com";
 
 type Props = {
   endpoint: string;
@@ -20,7 +20,7 @@ type Props = {
   extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string }[];
 };
 
-export default function PDForaTool({
+export default function Niroj77Tool({
   endpoint,
   title,
   description,

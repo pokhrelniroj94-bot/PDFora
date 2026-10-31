@@ -197,7 +197,8 @@ def pdf_response(
     return FileResponse(
         path=str(path),
         media_type="application/pdf",
-        filename=filename
+        filename=filename,
+        background=BackgroundTask(cleanup_job, path.parent)
     )
 
 
@@ -1236,7 +1237,8 @@ async def pdf_to_excel(
                 "application/vnd.openxmlformats-officedocument."
                 "spreadsheetml.sheet"
             ),
-            filename="pdfora-converted.xlsx"
+            filename="pdfora-converted.xlsx",
+            background=BackgroundTask(cleanup_job, job)
         )
 
     except HTTPException:
@@ -1354,7 +1356,8 @@ async def pdf_to_word(
                 "application/vnd.openxmlformats-"
                 "officedocument.wordprocessingml.document"
             ),
-            filename="converted.docx"
+            filename="converted.docx",
+            background=BackgroundTask(cleanup_job, job)
         )
 
     except HTTPException:

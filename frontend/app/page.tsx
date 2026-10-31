@@ -123,7 +123,7 @@ const tools: Tool[] = [
   { name: "PDF to HTML", description: "Export selectable PDF text as an HTML document.", icon: "H", category: "Convert", href: "/pdf-to-html" },
   { name: "Extract Images", description: "Extract embedded images from a PDF into a ZIP file.", icon: "I", category: "Convert", href: "/extract-images" },
   { name: "Remove Blank Pages", description: "Detect and remove empty pages from a PDF.", icon: "B", category: "Edit", href: "/remove-blank-pages" },
-  { name: "Compare PDF", description: "Compare text in two PDFs and download a difference report.", icon: "C", category: "Edit", href: "/compare-pdf" },
+  { name: "Compare PDF", description: "Compare text in two PDFs and download a difference report.", icon: "C", category: "Edit", href: "/compare-pdf" },\n  { name: "Add Blank Pages", description: "Append blank pages to the end of a PDF document.", icon: "B", category: "Edit", href: "/add-blank-pages" },\n  { name: "Rotate Selected Pages", description: "Rotate chosen PDF pages without changing the others.", icon: "R", category: "Edit", href: "/rotate-selected-pages" },
 ]; 
 
 const categories = [

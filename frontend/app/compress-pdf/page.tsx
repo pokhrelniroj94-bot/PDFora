@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import PDForaTool from "../../components/PDForaTool";
+import Niroj77Tool from "../../components/Niroj77Tool";
 
 export default function Page() {
   return (
@@ -23,19 +23,19 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Compress PDF files online and reduce their file size for easier
-              sharing, uploading and storage. PDFora provides a simple way to
+              sharing, uploading and storage. Niroj77 provides a simple way to
               optimize PDF documents from your browser.
             </p>
           </div>
 
           {/* TOOL */}
           <div className="mt-10">
-            <PDForaTool
+            <Niroj77Tool
               endpoint="/api/compress"
               title="Compress PDF"
               description="Reduce PDF file size for easier sharing, uploading and storage."
               multiple={false}
-              downloadName="PDFora-Compressed.pdf"
+              downloadName="Niroj77-Compressed.pdf"
             />
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function Page() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Use PDFora from modern desktop, tablet and mobile browsers.
+                Use Niroj77 from modern desktop, tablet and mobile browsers.
               </p>
             </div>
           </div>
@@ -126,7 +126,7 @@ export default function Page() {
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Start the PDF compression process with the PDFora tool.
+                Start the PDF compression process with the Niroj77 tool.
               </p>
             </div>
 
@@ -149,17 +149,17 @@ export default function Page() {
       <section className="bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-2xl font-black">
-            Compress PDF files online with PDFora
+            Compress PDF files online with Niroj77
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora provides an online PDF compressor for reducing the size of
+            Niroj77 provides an online PDF compressor for reducing the size of
             PDF documents. Smaller PDF files can be easier to upload, share
             through email or messaging services, and store on your devices.
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            The PDFora Compress PDF tool is designed to provide a simple
+            The Niroj77 Compress PDF tool is designed to provide a simple
             browser-based workflow. Select your PDF, process the document and
             download the resulting file.
           </p>
@@ -176,11 +176,11 @@ export default function Page() {
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
-            Is PDFora Compress PDF free?
+            Is Niroj77 Compress PDF free?
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora currently provides its available PDF tools without requiring
+            Niroj77 currently provides its available PDF tools without requiring
             a subscription. You can use the Compress PDF tool to process your
             document and download the resulting PDF.
           </p>

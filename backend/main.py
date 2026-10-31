@@ -1957,3 +1957,94 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
         if doc is not None:
             doc.close()
         await file.close()
+
+
+# ============================================================
+# REMOVE DOCUMENT METADATA
+# ============================================================
+
+@app.post("/api/remove-metadata")
+async def remove_pdf_metadata(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    try:
+        src, out = job / "input.pdf", job / "metadata-removed.pdf"
+        await save_upload(file, src)
+        reader = read_pdf(src)
+        writer = PdfWriter()
+        for page in reader.pages:
+            writer.add_page(page)
+        writer.add_metadata({
+            "/Title": "", "/Author": "", "/Subject": "",
+            "/Creator": "", "/Producer": "", "/Keywords": "",
+        })
+        with open(out, "wb") as stream:
+            writer.write(stream)
+        return pdf_response(out, "PDFora-Metadata-Removed.pdf")
+    finally:
+        await file.close()
+
+
+# ============================================================
+# EXTRACT PDF TEXT AS STRUCTURED JSON
+# ============================================================
+
+@app.post("/api/pdf-to-json")
+async def pdf_to_json(file: UploadFile = File(...)):
+    import json
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Text.json"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        pages = []
+        for index, page in enumerate(doc):
+            blocks = []
+            for block in page.get_text("blocks"):
+                if len(block) >= 5 and str(block[4]).strip():
+                    blocks.append({
+                        "x0": round(block[0], 2), "y0": round(block[1], 2),
+                        "x1": round(block[2], 2), "y1": round(block[3], 2),
+                        "text": str(block[4]).strip(),
+                    })
+            pages.append({"page": index + 1, "width": round(page.rect.width, 2), "height": round(page.rect.height, 2), "blocks": blocks})
+        out.write_text(json.dumps({"file": Path(file.filename).name, "page_count": len(doc), "pages": pages}, ensure_ascii=False, indent=2), encoding="utf-8")
+        return FileResponse(str(out), media_type="application/json", filename="PDFora-Text.json", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# EXTRACT PDF TABLES AS CSV
+# ============================================================
+
+@app.post("/api/pdf-to-csv")
+async def pdf_to_csv(file: UploadFile = File(...)):
+    import csv
+    validate_pdf(file.filename)
+    job = create_job()
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Tables.csv"
+        await save_upload(file, src)
+        read_pdf(src)
+        rows_written = 0
+        with pdfplumber.open(src) as pdf, open(out, "w", newline="", encoding="utf-8-sig") as stream:
+            writer = csv.writer(stream)
+            writer.writerow(["page", "table", "row", "column", "value"])
+            for page_number, page in enumerate(pdf.pages, start=1):
+                for table_number, table in enumerate(page.extract_tables() or [], start=1):
+                    for row_number, row in enumerate(table, start=1):
+                        for column_number, value in enumerate(row or [], start=1):
+                            if value is not None and str(value).strip():
+                                writer.writerow([page_number, table_number, row_number, column_number, str(value).strip()])
+                                rows_written += 1
+        if rows_written == 0:
+            raise HTTPException(status_code=422, detail="No extractable tables were found in this PDF.")
+        return FileResponse(str(out), media_type="text/csv; charset=utf-8", filename="PDFora-Tables.csv", background=BackgroundTask(cleanup_job, job))
+    finally:
+        await file.close()

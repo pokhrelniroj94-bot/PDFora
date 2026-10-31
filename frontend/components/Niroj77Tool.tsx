@@ -17,7 +17,7 @@ type Props = {
   formPlaceholder?: string;
   queryField?: string;
   queryDefault?: string;
-  extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string }[];
+  extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string; multiline?: boolean }[];
 };
 
 export default function PDForaTool({
@@ -330,7 +330,11 @@ export default function PDForaTool({
           {extraFields.map((field) => (
             <div key={field.name} className="mt-4">
               <label className="mb-2 block text-sm font-bold" htmlFor={field.name}>{field.label}</label>
-              <input id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+              {field.multiline ? (
+                <textarea id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} rows={5} className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+              ) : (
+                <input id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+              )}
             </div>
           ))}
 

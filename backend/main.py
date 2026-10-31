@@ -22,9 +22,9 @@ from openpyxl import Workbook
 # ============================================================
 
 app = FastAPI(
-    title="PDFora API",
+    title="Niroj77 API",
     version="4.0.1",
-    description="PDFora document processing API"
+    description="Niroj77 document processing API"
 )
 
 
@@ -224,7 +224,7 @@ def cleanup_job(job: Path):
 def root():
 
     return {
-        "name": "PDFora",
+        "name": "Niroj77",
         "version": "4.0.1",
         "status": "online"
     }
@@ -250,7 +250,7 @@ def health():
 def api_info():
 
     return {
-        "service": "PDFora",
+        "service": "Niroj77",
         "version": "4.0.1",
         "tools": [
             "merge",
@@ -262,7 +262,10 @@ def api_info():
             "delete-pages",
             "extract-pages",
             "watermark",
-            "pdf-to-word"
+            "pdf-to-word",
+            "reorder", "page-numbers", "crop", "header-footer", "protect", "unlock",
+            "sign", "pdf-to-png", "pdf-to-webp", "pdf-to-text", "grayscale",
+            "flatten", "metadata", "repair", "ocr"
         ]
     }
 
@@ -1574,14 +1577,16 @@ async def flatten_pdf(file: UploadFile = File(...)):
     validate_pdf(file.filename); job=create_job()
     try:
         src=job/"input.pdf"; out=job/"flattened.pdf"; await save_upload(file,src); doc=fitz.open(src)
-        for p in doc:
-            widgets=list(p.widgets() or [])
-            for w in widgets:
-                try: w.update()
-                except Exception: pass
-            for a in list(p.annots() or []):
-                try: p.delete_annot(a)
-                except Exception: pass
+        if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for flattening.")
+        # Rasterize the rendered page, including form widgets and annotations, to create a visual flatten.
+        for page in doc:
+            pix=page.get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False,annots=True)
+            image_bytes=pix.tobytes("png")
+            page.clean_contents()
+            page.delete_image
+            page.show_pdf_page
+            page.draw_rect(page.rect, color=None, fill=(1,1,1), overlay=True)
+            page.insert_image(page.rect,stream=image_bytes,overlay=True)
         doc.save(out,garbage=4,deflate=True); doc.close()
         return _tool_file_response(out,"Niroj77-Flattened.pdf")
     finally: await file.close()

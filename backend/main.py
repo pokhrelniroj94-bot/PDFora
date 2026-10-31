@@ -2048,3 +2048,97 @@ async def pdf_to_csv(file: UploadFile = File(...)):
         return FileResponse(str(out), media_type="text/csv; charset=utf-8", filename="PDFora-Tables.csv", background=BackgroundTask(cleanup_job, job))
     finally:
         await file.close()
+
+
+# ============================================================
+# ADD PDF BOOKMARKS FROM PAGE:TITLE LINES
+# ============================================================
+
+@app.post("/api/add-bookmarks")
+async def add_pdf_bookmarks(file: UploadFile = File(...), bookmarks: str = Form(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "bookmarked.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        toc = []
+        for line in bookmarks.splitlines():
+            if not line.strip():
+                continue
+            if ":" not in line:
+                raise HTTPException(status_code=400, detail="Use one bookmark per line in page:title format, e.g. 1:Introduction")
+            page_text, title = line.split(":", 1)
+            try:
+                page_number = int(page_text.strip())
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Bookmark page numbers must be whole numbers.")
+            if page_number < 1 or page_number > len(doc) or not title.strip():
+                raise HTTPException(status_code=400, detail=f"Invalid bookmark. Pages must be 1 to {len(doc)} and titles cannot be empty.")
+            toc.append([1, title.strip()[:200], page_number])
+        if not toc:
+            raise HTTPException(status_code=400, detail="Enter at least one bookmark.")
+        doc.set_toc(toc)
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Bookmarks-Added.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# ADD BATES NUMBERING
+# ============================================================
+
+@app.post("/api/bates-numbering")
+async def bates_numbering(file: UploadFile = File(...), prefix: str = Form(""), start: int = Form(1), digits: int = Form(6)):
+    validate_pdf(file.filename)
+    if start < 0 or start > 999999999 or digits < 1 or digits > 9:
+        raise HTTPException(status_code=400, detail="Start must be 0–999999999 and digits must be 1–9.")
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "bates-numbered.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for index, page in enumerate(doc):
+            label = f"{prefix[:20]}{start + index:0{digits}d}"
+            page.insert_text((page.rect.width - 150, page.rect.height - 24), label, fontsize=9, color=(0, 0, 0))
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Bates-Numbered.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# CONVERT PDF PAGES TO TIFF ARCHIVE
+# ============================================================
+
+@app.post("/api/pdf-to-tiff")
+async def pdf_to_tiff(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-TIFF-Pages.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for index, page in enumerate(doc):
+                pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                image = Image.open(io.BytesIO(pix.tobytes("png")))
+                buffer = io.BytesIO()
+                image.save(buffer, format="TIFF", compression="tiff_deflate")
+                archive.writestr(f"page-{index + 1:04d}.tiff", buffer.getvalue())
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-TIFF-Pages.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()

@@ -404,7 +404,7 @@ export default function Home() {
 
       <Adsterra160x600 />
 
-      {/* WHY NIROJ77 */}
+      {/* WHY PDFORA */}
       <section className="border-y border-slate-200 bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">

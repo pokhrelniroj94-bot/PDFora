@@ -140,7 +140,7 @@ export default function Niroj77Tool({
       link.click();
       link.remove();
 
-      window.URL.revokeObjectURL(downloadURL);
+      window.setTimeout(() => window.URL.revokeObjectURL(downloadURL), 1000);
 
       setMessage("Completed successfully. Download started.");
     } catch (error) {

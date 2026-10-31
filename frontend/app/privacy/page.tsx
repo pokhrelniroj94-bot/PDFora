@@ -65,7 +65,7 @@ export default function PrivacyPage() {
             </p>
             <p className="mt-2">
               Third-party advertising providers may use cookies to serve ads
-              based on a user's visits to this and other websites, subject to
+              based on a user&apos;s visits to this and other websites, subject to
               their own privacy policies and applicable settings.
             </p>
           </div>
@@ -119,7 +119,7 @@ export default function PrivacyPage() {
           <div>
             <h2 className="mb-2 text-2xl font-semibold">9. Contact</h2>
             <p>
-              If you have questions about this Privacy Policy or Niroj77's
+              If you have questions about this Privacy Policy or PDFora&apos;s
               privacy practices, please contact the Niroj77 team through the
               contact information provided on our website.
             </p>

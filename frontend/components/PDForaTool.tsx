@@ -237,7 +237,7 @@ export default function PDForaTool({
 
           <input
             ref={inputRef}
-            id="niroj77-file"
+            id="pdfora-file"
             type="file"
             accept={accept}
             multiple={multiple}

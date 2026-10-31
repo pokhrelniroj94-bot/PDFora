@@ -16,17 +16,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://niroj77.com.np"),
+  metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
-    default: "Free PDF Tools Online – Merge, Split, Compress & Convert | Niroj77",
-    template: "%s | Niroj77",
+    default: "Free PDF Tools Online – Merge, Split, Compress & Convert | PDFora",
+    template: "%s | PDFora",
   },
   description:
-    "Use Niroj77 free online PDF tools to merge PDF files, split PDF pages, compress PDF size, convert PDF to Word, Excel, JPG and PNG, rotate, edit and protect PDF documents. Fast browser-based PDF utilities for everyday work.",
+    "Use PDFora free online PDF tools to merge PDF files, split PDF pages, compress PDF size, convert PDF to Word, Excel, JPG and PNG, rotate, edit and protect PDF documents. Fast browser-based PDF utilities for everyday work.",
   keywords: [
     "free PDF tools",
     "online PDF tools",
-    "Niroj77 PDF tools",
+    "PDFora PDF tools",
     "PDF converter",
     "PDF to Word",
     "Word to PDF",

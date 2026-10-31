@@ -204,7 +204,7 @@ export default function Home() {
             aria-label="PDFora home"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-700 text-sm font-black text-white">
-              N
+              P
             </div>
 
             <span className="text-xl font-black tracking-tight">

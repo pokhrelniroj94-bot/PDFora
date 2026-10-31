@@ -1929,3 +1929,31 @@ async def pdf_information(file: UploadFile = File(...)):
         if doc is not None:
             doc.close()
         await file.close()
+
+
+# ============================================================
+# EXTRACT PDF BOOKMARKS
+# ============================================================
+
+@app.post("/api/extract-bookmarks")
+async def extract_pdf_bookmarks(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Bookmarks.txt"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        toc = doc.get_toc()
+        if not toc:
+            raise HTTPException(status_code=404, detail="This PDF does not contain bookmarks.")
+        lines = ["PDFora - PDF Bookmarks", "=======================", ""]
+        for level, title, page in toc:
+            lines.append(f"{'  ' * max(0, level - 1)}Page {page}: {title}")
+        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="PDFora-Bookmarks.txt", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()

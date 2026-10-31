@@ -7,16 +7,21 @@ export default function AdsterraNative() {
     const containerId = "container-bbb2fb9fcb838f327d814f02841f42be";
     const container = document.getElementById(containerId);
 
-    if (!container || container.dataset.loaded === "true") return;
+    if (!container) return;
 
-    container.dataset.loaded = "true";
+    if (container.querySelector("script[data-adsterra-native]")) return;
 
     const script = document.createElement("script");
     script.async = true;
     script.setAttribute("data-cfasync", "false");
+    script.setAttribute("data-adsterra-native", "true");
     script.src = "https://bauval.org/21/bbb2fb9fcb838f327d814f02841f42be";
 
     container.appendChild(script);
+
+    return () => {
+      // Keep the script in place; do not remove a loaded ad.
+    };
   }, []);
 
   return (

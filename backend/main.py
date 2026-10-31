@@ -1750,3 +1750,65 @@ async def compare_pdfs(files: list[UploadFile] = File(...)):
     finally:
         for file in files:
             await file.close()
+
+
+
+# ============================================================
+# PDFORA TOOLS: ADD BLANK PAGES AND ROTATE SELECTED PAGES
+# ============================================================
+
+@app.post("/api/add-blank-pages")
+async def add_blank_pages(file: UploadFile = File(...), count: int = Form(1)):
+    validate_pdf(file.filename)
+    if not 1 <= count <= 50:
+        raise HTTPException(status_code=400, detail="Choose between 1 and 50 blank pages.")
+    job = create_job()
+    try:
+        src = job / "input.pdf"
+        out = job / "with-blank-pages.pdf"
+        await save_upload(file, src)
+        reader = read_pdf(src)
+        writer = PdfWriter()
+        for page in reader.pages:
+            writer.add_page(page)
+        last = reader.pages[-1]
+        width = float(last.mediabox.width)
+        height = float(last.mediabox.height)
+        for _ in range(count):
+            writer.add_blank_page(width=width, height=height)
+        with open(out, "wb") as stream:
+            writer.write(stream)
+        return _tool_file_response(out, "PDFora-Blank-Pages-Added.pdf")
+    finally:
+        await file.close()
+
+
+@app.post("/api/rotate-selected-pages")
+async def rotate_selected_pages(file: UploadFile = File(...), pages: str = Form("all"), degrees: int = Form(90)):
+    validate_pdf(file.filename)
+    if degrees not in {90, 180, 270}:
+        raise HTTPException(status_code=400, detail="Rotation must be 90, 180 or 270 degrees.")
+    job = create_job()
+    doc = None
+    try:
+        src = job / "input.pdf"
+        out = job / "rotated-selected-pages.pdf"
+        await save_upload(file, src)
+        doc = fitz.open(src)
+        if pages.strip().lower() == "all":
+            selected = list(range(len(doc)))
+        else:
+            try:
+                selected = sorted(set(int(value.strip()) - 1 for value in pages.split(",") if value.strip()))
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Enter page numbers like 1,3,5 or use all.")
+            if not selected or min(selected) < 0 or max(selected) >= len(doc):
+                raise HTTPException(status_code=400, detail=f"Page numbers must be between 1 and {len(doc)}.")
+        for index in selected:
+            doc[index].set_rotation((doc[index].rotation + degrees) % 360)
+        doc.save(out, garbage=4, deflate=True)
+        return _tool_file_response(out, "PDFora-Rotated-Selected-Pages.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()

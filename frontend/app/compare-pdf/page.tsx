@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
+
+export const metadata: Metadata = { title: "Compare PDF Files Online", description: "Compare the selectable text in two PDF documents and download a difference report with Niroj77.", keywords: ["compare PDF files", "PDF comparison online", "compare two PDF documents"], alternates: { canonical: "/compare-pdf" } };
+
 
 export const metadata: Metadata = {
   title: "Compare PDF Online | Niroj77",

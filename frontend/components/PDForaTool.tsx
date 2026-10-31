@@ -19,7 +19,7 @@ type Props = {
   queryDefault?: string;
 };
 
-export default function Niroj77Tool({
+export default function PDForaTool({
   endpoint,
   title,
   description,
@@ -168,7 +168,7 @@ export default function Niroj77Tool({
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              PDF<span className="text-violet-600">ora</span>
+              Niroj77
             </span>
           </a>
 
@@ -237,7 +237,7 @@ export default function Niroj77Tool({
 
           <input
             ref={inputRef}
-            id="pdfora-file"
+            id="niroj77-file"
             type="file"
             accept={accept}
             multiple={multiple}

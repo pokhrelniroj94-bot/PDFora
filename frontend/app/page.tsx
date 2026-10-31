@@ -189,7 +189,7 @@ export default function Home() {
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              PDF<span className="text-violet-600">ora</span>
+              Niroj77
             </span>
           </Link>
 

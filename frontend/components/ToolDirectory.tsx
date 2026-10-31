@@ -5,10 +5,10 @@ const names: Record<string, string> = {"/merge-pdf":"Merge PDF","/split-pdf":"Sp
 
 export default function ToolDirectory() {
   return (
-    <section aria-label="Explore all Niroj77 PDF tools" className="border-t border-teal-100 bg-white px-4 py-10 sm:px-6">
+    <section aria-label="Explore all PDFora PDF tools" className="border-t border-teal-100 bg-white px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-          <div><p className="text-xs font-black uppercase tracking-widest text-teal-700">Niroj77 toolbox</p><h2 className="mt-1 text-xl font-black text-slate-900">More free PDF tools</h2><p className="mt-1 text-sm text-slate-600">Move between PDF tasks without returning to the homepage.</p></div>
+          <div><p className="text-xs font-black uppercase tracking-widest text-teal-700">PDFora toolbox</p><h2 className="mt-1 text-xl font-black text-slate-900">More free PDF tools</h2><p className="mt-1 text-sm text-slate-600">Move between PDF tasks without returning to the homepage.</p></div>
           <Link href="/#tools" className="text-sm font-bold text-teal-700 hover:text-orange-600">Browse all tools →</Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

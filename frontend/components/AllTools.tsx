@@ -37,6 +37,8 @@ export default function ToolWorkspace({slug}:{slug:string}) {
 }
 
 function ToolBody({slug}:{slug:string}) {
+ if(slug==="notes-to-pdf") return <NotesToPDF />;
+
  const [values,setValues]=useState<Record<string,string>>({});
  const [output,setOutput]=useState("");
  const [busy,setBusy]=useState(false);
@@ -73,4 +75,24 @@ function CurrencyTool({box,label}:{box:string;label:string}) {
  const [amount,setAmount]=useState("1"),[from,setFrom]=useState("USD"),[to,setTo]=useState("NPR"),[rate,setRate]=useState<number|null>(null),[date,setDate]=useState(""),[error,setError]=useState(""),[loading,setLoading]=useState(false);
  const convert=async()=>{setLoading(true);setError("");try{const res=await fetch("https://open.er-api.com/v6/latest/"+from);if(!res.ok)throw new Error("Exchange-rate service unavailable.");const data=await res.json();const r=data?.rates?.[to];if(typeof r!=="number")throw new Error("Currency code not available.");setRate(r);setDate(data.time_last_update_utc??"");}catch(e){setError(e instanceof Error?e.message:"Could not load exchange rates.");}finally{setLoading(false);}};
  return <><div className="grid gap-4 sm:grid-cols-3"><label><span className={label}>Amount</span><input className={box} type="number" min="0" value={amount} onChange={e=>setAmount(e.target.value)}/></label><label><span className={label}>From</span><select className={box} value={from} onChange={e=>setFrom(e.target.value)}>{["USD","NPR","INR","EUR","GBP","AUD","CAD","JPY","CNY","AED","SAR"].map(c=><option key={c}>{c}</option>)}</select></label><label><span className={label}>To</span><select className={box} value={to} onChange={e=>setTo(e.target.value)}>{["NPR","USD","INR","EUR","GBP","AUD","CAD","JPY","CNY","AED","SAR"].map(c=><option key={c}>{c}</option>)}</select></label></div><button onClick={()=>void convert()} disabled={loading} className="mt-4 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">{loading?"Loading rate…":"Get latest exchange rate"}</button>{rate!==null&&<Result><p className="text-lg font-bold">{Number(amount||0).toLocaleString()} {from} = {(Number(amount||0)*rate).toLocaleString(undefined,{maximumFractionDigits:4})} {to}</p><p className="mt-2 text-xs">1 {from} = {rate} {to}. Last updated: {date}</p></Result>}{error&&<p className="mt-3 text-sm text-red-700">{error}</p>}<p className="mt-3 text-xs text-slate-500">Rates are indicative public mid-market rates, not guaranteed bank or remittance rates.</p></>;
+}
+
+
+function NotesToPDF() {
+ const [title,setTitle]=useState("My Notes");
+ const [notes,setNotes]=useState("");
+ const [size,setSize]=useState("A4");
+ const [fontSize,setFontSize]=useState("12");
+ const [message,setMessage]=useState("");
+ const makePdf=()=>{
+  if(!notes.trim()){setMessage("Please write or paste your notes first.");return;}
+  const safe=(s:string)=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  const win=window.open("","_blank","noopener,noreferrer");
+  if(!win){setMessage("Allow pop-ups for this site, then try again.");return;}
+  win.document.open();
+  win.document.write("<!doctype html><html><head><meta charset='utf-8'><title>"+safe(title||"Notes")+"</title><style>@page{size:"+size+";margin:20mm}body{font-family:Arial,sans-serif;color:#172033;font-size:"+Math.max(9,Math.min(24,Number(fontSize)||12))+"pt;line-height:1.65}h1{font-size:22pt;margin:0 0 18pt;border-bottom:1px solid #ddd;padding-bottom:10pt}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}</style></head><body><h1>"+safe(title||"My Notes")+"</h1><pre>"+safe(notes)+"</pre><script>window.onload=()=>{window.focus();window.print()}<\/script></body></html>");
+  win.document.close();
+  setMessage("Print dialog opened. Choose “Save as PDF” as the printer/destination to create your PDF.");
+ };
+ return <div className="space-y-4"><Field title="Document title"><input className={box} value={title} onChange={e=>setTitle(e.target.value)} placeholder="My Notes"/></Field><Field title="Your notes"><textarea className={box+" min-h-72"} value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Write or paste your notes here…"/></Field><div className="grid gap-4 sm:grid-cols-2"><Field title="Paper size"><select className={box} value={size} onChange={e=>setSize(e.target.value)}><option value="A4">A4</option><option value="Letter">Letter</option><option value="Legal">Legal</option></select></Field><Field title="Font size"><select className={box} value={fontSize} onChange={e=>setFontSize(e.target.value)}><option value="10">10 pt</option><option value="11">11 pt</option><option value="12">12 pt</option><option value="14">14 pt</option><option value="16">16 pt</option><option value="18">18 pt</option></select></Field></div><button onClick={makePdf} className="rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white">Create PDF</button>{message&&<p role="status" className="rounded-lg bg-teal-50 p-3 text-sm text-teal-900">{message}</p>}<p className="text-xs text-slate-500">Your notes stay in your browser. In the print window, select “Save as PDF”. This uses your browser's native PDF export and supports Unicode text according to the installed fonts.</p></div>;
 }

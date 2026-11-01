@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import os
 import sys
 import zipfile
 from pathlib import Path
@@ -9,11 +10,23 @@ import fitz
 from PIL import Image
 from pypdf import PdfReader, PdfWriter
 from fastapi.testclient import TestClient
+import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from main import app  # noqa: E402
 
-client = TestClient(app)
+class ApiClient:
+    def __init__(self, base_url: str):
+        self.base_url = base_url.rstrip("/")
+
+    def post(self, path: str, **kwargs):
+        return requests.post(f"{self.base_url}{path}", timeout=180, **kwargs)
+
+    def get(self, path: str, **kwargs):
+        return requests.get(f"{self.base_url}{path}", timeout=60, **kwargs)
+
+
+client = ApiClient(os.environ["PDFORA_API"]) if os.environ.get("PDFORA_API") else TestClient(app)
 
 
 def make_sample_pdf() -> bytes:

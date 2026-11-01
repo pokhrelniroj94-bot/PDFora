@@ -23,7 +23,7 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Split PDF files online and extract the pages you need into a
-              separate PDF document. Niroj77 makes splitting PDFs simple, fast
+              separate PDF document. PDFora makes splitting PDFs simple, fast
               and easy to use on phones, tablets and computers.
             </p>
           </div>
@@ -35,7 +35,7 @@ export default function Page() {
               title="Split PDF"
               description="Split a PDF or extract selected pages into a new PDF document."
               multiple={false}
-              downloadName="Niroj77-Split.pdf"
+              downloadName="PDFora-Split.pdf"
             />
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function Page() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Use Niroj77 from your phone, tablet or desktop browser without
+                Use PDFora from your phone, tablet or desktop browser without
                 installing software.
               </p>
             </div>
@@ -150,27 +150,27 @@ export default function Page() {
       <section className="bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-2xl font-black">
-            Split PDF files online with Niroj77
+            Split PDF files online with PDFora
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Niroj77 provides a simple online PDF splitter for extracting pages
+            PDFora provides a simple online PDF splitter for extracting pages
             from PDF documents. Whether you need to separate specific pages,
             remove unnecessary sections or create a smaller document, you can
             use the Split PDF tool directly from your browser.
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Niroj77 is designed to work across modern desktop and mobile
+            PDFora is designed to work across modern desktop and mobile
             browsers. No desktop application is required to access the tool.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
-            Is Niroj77 Split PDF free?
+            Is PDFora Split PDF free?
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Niroj77 currently provides its available PDF tools without
+            PDFora currently provides its available PDF tools without
             requiring a subscription. Upload your PDF, process it with the
             Split PDF tool and download the resulting document.
           </p>
@@ -256,7 +256,7 @@ export default function Page() {
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Niroj77 currently provides its available PDF tools without
+                PDFora currently provides its available PDF tools without
                 requiring a subscription.
               </p>
             </div>
@@ -267,7 +267,7 @@ export default function Page() {
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Yes. Niroj77 is designed to work with modern mobile, tablet and
+                Yes. PDFora is designed to work with modern mobile, tablet and
                 desktop browsers.
               </p>
             </div>
@@ -304,7 +304,7 @@ export default function Page() {
           </h2>
 
           <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-400">
-            Use Niroj77 to quickly extract the pages you need from your PDF
+            Use PDFora to quickly extract the pages you need from your PDF
             documents.
           </p>
 

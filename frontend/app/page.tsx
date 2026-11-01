@@ -161,34 +161,34 @@ const categories = [
 
 const faqs = [
   {
-    question: "Is PDFora free to use?",
+    question: "Is NIROJ Tools free to use?",
     answer:
-      "PDFora currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
+      "NIROJ Tools currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
   },
   {
     question: "Do I need to install software?",
     answer:
-      "No. PDFora is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
+      "No. NIROJ Tools is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
   },
   {
     question: "What PDF tools are available?",
     answer:
-      "PDFora provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
+      "NIROJ Tools provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
   },
   {
     question: "How are my files processed?",
     answer:
-      "Files selected for processing are temporarily sent to the PDFora processing backend so the requested operation can be completed.",
+      "Files selected for processing are temporarily sent to the NIROJ Tools processing backend so the requested operation can be completed.",
   },
   {
     question: "Are my uploaded files stored permanently?",
     answer:
-      "PDFora is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
+      "NIROJ Tools is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
   },
   {
-    question: "Can I use PDFora on my phone?",
+    question: "Can I use NIROJ Tools on my phone?",
     answer:
-      "Yes. PDFora is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
+      "Yes. NIROJ Tools is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
   },
 ];
 
@@ -301,14 +301,14 @@ export default function Home() {
           <Link
             href="/"
             className="flex items-center gap-2"
-            aria-label="PDFora home"
+            aria-label="NIROJ Tools home"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-700 text-sm font-black text-white">
               P
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              PDFora
+              NIROJ Tools
             </span>
           </Link>
 
@@ -429,7 +429,7 @@ export default function Home() {
             id="popular-heading"
             className="mt-1 text-2xl font-black"
           >
-            Popular PDF tools
+            Popular tools
           </h2>
 
           <p className="mt-2 text-sm text-slate-500">
@@ -452,19 +452,19 @@ export default function Home() {
       >
         <div className="mb-6">
           <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-            PDFora toolbox
+            NIROJ Tools toolbox
           </p>
 
           <h2
             id="tools-heading"
             className="mt-1 text-2xl font-black"
           >
-            All PDF tools
+            PDF tools
           </h2>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-            Choose a PDF tool below to process your document online.
-            PDFora is designed to make common document tasks simple and
+            Choose a tool below to complete your task online.
+            NIROJ Tools is designed to make common document tasks simple and
             accessible.
           </p>
         </div>
@@ -535,15 +535,15 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-              Why PDFora
+              Why NIROJ Tools
             </p>
 
             <h2 className="mt-2 text-2xl font-black sm:text-3xl">
-              Built to keep PDF work simple
+              Useful tools, all in one place
             </h2>
 
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-              PDFora focuses on making everyday PDF tasks easier to access
+              NIROJ Tools focuses on making everyday PDF tasks easier to access
               without requiring desktop software installation.
             </p>
           </div>
@@ -558,7 +558,7 @@ export default function Home() {
             <InfoCard
               icon="📱"
               title="Works across devices"
-              description="Use PDFora from modern desktop, tablet and mobile browsers with a responsive interface."
+              description="Use NIROJ Tools from modern desktop, tablet and mobile browsers with a responsive interface."
             />
 
             <InfoCard
@@ -578,7 +578,7 @@ export default function Home() {
           </p>
 
           <h2 className="mt-2 text-2xl font-black sm:text-3xl">
-            Process a PDF in three simple steps
+            Get things done in three simple steps
           </h2>
         </div>
 
@@ -586,7 +586,7 @@ export default function Home() {
           <StepCard
             number="01"
             title="Choose a tool"
-            description="Select the PDF operation you need from the PDFora toolbox."
+            description="Select the PDF operation you need from the NIROJ Tools toolbox."
           />
 
           <StepCard
@@ -622,7 +622,7 @@ export default function Home() {
           </h2>
 
           <p className="mt-3 text-sm text-slate-500">
-            Answers to common questions about using PDFora.
+            Answers to common questions about using NIROJ Tools.
           </p>
         </div>
 
@@ -672,8 +672,8 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <InfoLink
               href="/about"
-              title="About PDFora"
-              description="Learn more about PDFora and its purpose."
+              title="About NIROJ Tools"
+              description="Learn more about NIROJ Tools and its purpose."
             />
 
             <InfoLink
@@ -691,7 +691,7 @@ export default function Home() {
             <InfoLink
               href="/terms"
               title="Terms of Service"
-              description="Read the terms that apply when using PDFora."
+              description="Read the terms that apply when using NIROJ Tools."
             />
           </div>
         </div>
@@ -706,19 +706,19 @@ export default function Home() {
               <Link
                 href="/"
                 className="flex items-center gap-2"
-                aria-label="PDFora home"
+                aria-label="NIROJ Tools home"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
                   N
                 </div>
 
                 <span className="text-xl font-black">
-                  PDFora
+                  NIROJ Tools
                 </span>
               </Link>
 
               <p className="mt-4 max-w-sm text-sm leading-6 text-slate-400">
-                Simple online tools for everyday PDF and document tasks.
+                Free online tools for PDF, images, text and everyday digital tasks.
               </p>
             </div>
 
@@ -758,7 +758,7 @@ export default function Home() {
             {/* COMPANY */}
             <div>
               <h3 className="text-sm font-black">
-                PDFora
+                NIROJ Tools
               </h3>
 
               <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
@@ -787,12 +787,11 @@ export default function Home() {
             {/* ABOUT */}
             <div>
               <h3 className="text-sm font-black">
-                About PDFora
+                About NIROJ Tools
               </h3>
 
               <p className="mt-4 text-sm leading-6 text-slate-400">
-                PDFora is a web-based PDF utility platform focused on
-                providing simple tools for common document-processing tasks.
+                NIROJ Tools is an all-in-one online utility platform. We are expanding from PDF tools into image, text, calculator, developer and productivity tools.
               </p>
 
               <Link
@@ -806,7 +805,7 @@ export default function Home() {
 
           <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
             <p>
-              © 2026 PDFora. All rights reserved.
+              © 2026 NIROJ Tools. All rights reserved.
             </p>
 
             <p>

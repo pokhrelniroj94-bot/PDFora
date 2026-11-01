@@ -46,7 +46,8 @@ def make_sample_pdf() -> bytes:
         page.draw_line((50, 250), (50, 340))
         page.draw_line((150, 250), (150, 340))
         page.draw_line((250, 250), (250, 340))
-    doc.new_page(width=612, height=792)  # A real blank page exercises blank-page removal.\n    result = doc.tobytes(garbage=4, deflate=True)
+    doc.new_page(width=612, height=792)  # A real blank page exercises blank-page removal.
+    result = doc.tobytes(garbage=4, deflate=True)
     doc.close()
     reader = PdfReader(io.BytesIO(result))
     writer = PdfWriter()

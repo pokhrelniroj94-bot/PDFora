@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import AdsterraNative from "./components/AdsterraNative";
@@ -124,6 +124,28 @@ const tools: Tool[] = [
   { name: "Extract Images", description: "Extract embedded images from a PDF into a ZIP file.", icon: "I", category: "Convert", href: "/extract-images" },
   { name: "Remove Blank Pages", description: "Detect and remove empty pages from a PDF.", icon: "B", category: "Edit", href: "/remove-blank-pages" },
   { name: "Compare PDF", description: "Compare text in two PDFs and download a difference report.", icon: "C", category: "Edit", href: "/compare-pdf" },
+  { name: "Add Blank Pages", description: "Append blank pages to the end of a PDF document.", icon: "B", category: "Edit", href: "/add-blank-pages" },
+  { name: "Rotate Selected Pages", description: "Rotate chosen PDF pages without changing the others.", icon: "R", category: "Edit", href: "/rotate-selected-pages" },
+
+  { name: "Add Background", description: "Add a background layer to PDF pages.", icon: "B", category: "Edit", href: "/add-background" },
+  { name: "Add Bookmarks", description: "Create PDF bookmarks to navigate long documents.", icon: "B", category: "Organize", href: "/add-bookmarks" },
+  { name: "Bates Numbering", description: "Add sequential Bates identifiers to PDF pages.", icon: "N", category: "Organize", href: "/bates-numbering" },
+  { name: "Extract Bookmarks", description: "Export the bookmark outline from a PDF.", icon: "B", category: "Extract", href: "/extract-bookmarks" },
+  { name: "Extract Fonts", description: "Inspect and extract embedded PDF font resources where supported.", icon: "F", category: "Extract", href: "/extract-fonts" },
+  { name: "Extract Page Images", description: "Render individual PDF pages as image files.", icon: "I", category: "Extract", href: "/extract-page-images" },
+  { name: "OCR PDF", description: "Recognize text in scanned PDFs. OCR availability depends on server language-data setup.", icon: "O", category: "Convert", href: "/ocr-pdf" },
+  { name: "Page Counter", description: "Count pages and inspect the page structure of a PDF.", icon: "#", category: "Analyze", href: "/page-counter" },
+  { name: "PDF Information", description: "View PDF metadata, dimensions, encryption and document properties.", icon: "i", category: "Analyze", href: "/pdf-information" },
+  { name: "PDF to BMP", description: "Convert PDF pages into BMP images.", icon: "B", category: "Convert", href: "/pdf-to-bmp" },
+  { name: "PDF to CSV", description: "Extract tabular PDF data into CSV format where text tables are available.", icon: "C", category: "Convert", href: "/pdf-to-csv" },
+  { name: "PDF to JSON", description: "Export selectable PDF text and document structure as JSON.", icon: "J", category: "Convert", href: "/pdf-to-json" },
+  { name: "PDF to Markdown", description: "Convert selectable PDF text into Markdown.", icon: "M", category: "Convert", href: "/pdf-to-markdown" },
+  { name: "PDF to TIFF", description: "Convert PDF pages into TIFF images.", icon: "T", category: "Convert", href: "/pdf-to-tiff" },
+  { name: "Remove Annotations", description: "Remove supported comments and annotations from a PDF.", icon: "A", category: "Edit", href: "/remove-annotations" },
+  { name: "Remove Attachments", description: "Remove embedded file attachments from a PDF.", icon: "A", category: "Security", href: "/remove-attachments" },
+  { name: "Remove PDF Links", description: "Remove clickable link annotations from PDF pages.", icon: "L", category: "Security", href: "/remove-pdf-links" },
+  { name: "Remove PDF Metadata", description: "Clear document metadata from a PDF file.", icon: "M", category: "Security", href: "/remove-pdf-metadata" },
+  { name: "Split by Bookmarks", description: "Split a PDF into separate files using its bookmark outline.", icon: "S", category: "Organize", href: "/split-by-bookmarks" },
 ]; 
 
 const categories = [
@@ -133,38 +155,40 @@ const categories = [
   "Convert",
   "Edit",
   "Security",
+  "Extract",
+  "Analyze",
 ];
 
 const faqs = [
   {
-    question: "Is Niroj77 free to use?",
+    question: "Is PDFora free to use?",
     answer:
-      "Niroj77 currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
+      "PDFora currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
   },
   {
     question: "Do I need to install software?",
     answer:
-      "No. Niroj77 is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
+      "No. PDFora is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
   },
   {
     question: "What PDF tools are available?",
     answer:
-      "Niroj77 provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
+      "PDFora provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
   },
   {
     question: "How are my files processed?",
     answer:
-      "Files selected for processing are temporarily sent to the Niroj77 processing backend so the requested operation can be completed.",
+      "Files selected for processing are temporarily sent to the PDFora processing backend so the requested operation can be completed.",
   },
   {
     question: "Are my uploaded files stored permanently?",
     answer:
-      "Niroj77 is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
+      "PDFora is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
   },
   {
-    question: "Can I use Niroj77 on my phone?",
+    question: "Can I use PDFora on my phone?",
     answer:
-      "Yes. Niroj77 is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
+      "Yes. PDFora is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
   },
 ];
 
@@ -184,7 +208,8 @@ export default function Home() {
         !search ||
         tool.name.toLowerCase().includes(search) ||
         tool.description.toLowerCase().includes(search) ||
-        tool.category.toLowerCase().includes(search);
+        tool.category.toLowerCase().includes(search) ||
+        ({ "merge-pdf": "combine pdf join pdf files pdf merger", "split-pdf": "separate pdf extract pdf pages", "compress-pdf": "reduce pdf size shrink pdf optimize pdf", "images-to-pdf": "jpg to pdf png to pdf photo to pdf", "pdf-to-jpg": "convert pdf to jpg jpeg", "pdf-to-word": "pdf to doc docx converter", "pdf-to-excel": "pdf to xlsx spreadsheet converter", "rotate-pdf": "turn pdf pages", "delete-pages": "remove pdf pages", "extract-pages": "save selected pdf pages", "watermark": "add watermark pdf", "protect-pdf": "password protect pdf encrypt pdf", "unlock-pdf": "remove pdf password", "pdf-to-text": "extract text from pdf", "pdf-to-png": "pdf image converter", "pdf-to-webp": "convert pdf to webp", "extract-images": "extract pictures from pdf", "compare-pdf": "compare two pdf documents diff", "remove-blank-pages": "delete empty pages pdf" }[tool.href.replace(/^\//, "")] || "").includes(search);
 
       return matchesCategory && matchesSearch;
     });
@@ -200,14 +225,14 @@ export default function Home() {
           <Link
             href="/"
             className="flex items-center gap-2"
-            aria-label="Niroj77 home"
+            aria-label="PDFora home"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-sm font-black text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-700 text-sm font-black text-white">
               P
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              Niroj77
+              PDFora
             </span>
           </Link>
 
@@ -224,26 +249,25 @@ export default function Home() {
       <section className="border-b border-slate-200 bg-white px-4 pb-14 pt-14 sm:pb-20 sm:pt-20">
         <div className="mx-auto max-w-4xl text-center">
           <div
-            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100 text-lg font-black text-violet-600"
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-100 text-lg font-black text-teal-700"
             aria-hidden="true"
           >
             PDF
           </div>
 
-          <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-violet-600">
+          <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-teal-700">
             Free online PDF tools
           </p>
 
           <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-6xl">
-            Your PDF.
+            Free PDF tools.
             <br />
             Made simple.
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Simple online PDF tools for merging, splitting, compressing,
-            converting, editing and processing documents directly from your
-            browser.
+            Merge PDF, split PDF, compress PDF, convert PDF to Word, Excel or JPG,
+            and edit documents online for free. No software installation needed.
           </p>
 
           {/* SEARCH */}
@@ -258,7 +282,7 @@ export default function Home() {
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search PDF tools..."
+              placeholder="Search: merge PDF, compress PDF, PDF to Word..."
               className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm outline-none"
               aria-label="Search PDF tools"
             />
@@ -330,7 +354,7 @@ export default function Home() {
       >
         <div className="mb-6">
           <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-            Niroj77 toolbox
+            PDFora toolbox
           </p>
 
           <h2
@@ -342,7 +366,7 @@ export default function Home() {
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
             Choose a PDF tool below to process your document online.
-            Niroj77 is designed to make common document tasks simple and
+            PDFora is designed to make common document tasks simple and
             accessible.
           </p>
         </div>
@@ -410,7 +434,7 @@ export default function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-              Why Niroj77
+              Why PDFora
             </p>
 
             <h2 className="mt-2 text-2xl font-black sm:text-3xl">
@@ -418,7 +442,7 @@ export default function Home() {
             </h2>
 
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-              Niroj77 focuses on making everyday PDF tasks easier to access
+              PDFora focuses on making everyday PDF tasks easier to access
               without requiring desktop software installation.
             </p>
           </div>
@@ -433,7 +457,7 @@ export default function Home() {
             <InfoCard
               icon="📱"
               title="Works across devices"
-              description="Use Niroj77 from modern desktop, tablet and mobile browsers with a responsive interface."
+              description="Use PDFora from modern desktop, tablet and mobile browsers with a responsive interface."
             />
 
             <InfoCard
@@ -461,7 +485,7 @@ export default function Home() {
           <StepCard
             number="01"
             title="Choose a tool"
-            description="Select the PDF operation you need from the Niroj77 toolbox."
+            description="Select the PDF operation you need from the PDFora toolbox."
           />
 
           <StepCard
@@ -497,7 +521,7 @@ export default function Home() {
           </h2>
 
           <p className="mt-3 text-sm text-slate-500">
-            Answers to common questions about using Niroj77.
+            Answers to common questions about using PDFora.
           </p>
         </div>
 
@@ -547,8 +571,8 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <InfoLink
               href="/about"
-              title="About Niroj77"
-              description="Learn more about Niroj77 and its purpose."
+              title="About PDFora"
+              description="Learn more about PDFora and its purpose."
             />
 
             <InfoLink
@@ -566,7 +590,7 @@ export default function Home() {
             <InfoLink
               href="/terms"
               title="Terms of Service"
-              description="Read the terms that apply when using Niroj77."
+              description="Read the terms that apply when using PDFora."
             />
           </div>
         </div>
@@ -581,14 +605,14 @@ export default function Home() {
               <Link
                 href="/"
                 className="flex items-center gap-2"
-                aria-label="Niroj77 home"
+                aria-label="PDFora home"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
-                  P
+                  N
                 </div>
 
                 <span className="text-xl font-black">
-                  Niroj77
+                  PDFora
                 </span>
               </Link>
 
@@ -633,7 +657,7 @@ export default function Home() {
             {/* COMPANY */}
             <div>
               <h3 className="text-sm font-black">
-                Niroj77
+                PDFora
               </h3>
 
               <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
@@ -662,11 +686,11 @@ export default function Home() {
             {/* ABOUT */}
             <div>
               <h3 className="text-sm font-black">
-                About Niroj77
+                About PDFora
               </h3>
 
               <p className="mt-4 text-sm leading-6 text-slate-400">
-                Niroj77 is a web-based PDF utility platform focused on
+                PDFora is a web-based PDF utility platform focused on
                 providing simple tools for common document-processing tasks.
               </p>
 
@@ -681,7 +705,7 @@ export default function Home() {
 
           <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
             <p>
-              © 2026 Niroj77. All rights reserved.
+              © 2026 PDFora. All rights reserved.
             </p>
 
             <p>

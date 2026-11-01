@@ -1,5 +1,6 @@
-﻿from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query, Request
+from fastapi.responses import FileResponse, JSONResponse
+from starlette.background import BackgroundTask
 from fastapi.middleware.cors import CORSMiddleware
 from docx import Document
 from pypdf import PdfReader, PdfWriter
@@ -22,15 +23,34 @@ from openpyxl import Workbook
 # ============================================================
 
 app = FastAPI(
-    title="Niroj77 API",
+    title="PDFora API",
     version="4.0.1",
-    description="Niroj77 document processing API"
+    description="PDFora document processing API"
 )
 
 
 # ============================================================
 # CORS
 # ============================================================
+
+@app.middleware("http")
+async def enforce_request_limits(request: Request, call_next):
+    # Reject oversized declared bodies before multipart parsing allocates resources.
+    if request.method == "POST" and request.url.path.startswith("/api/"):
+        content_length = request.headers.get("content-length")
+        if content_length:
+            try:
+                if int(content_length) > MAX_FILE_SIZE + 2 * 1024 * 1024:
+                    return JSONResponse(status_code=413, content={"detail": "The total request must not exceed 52 MB."})
+            except ValueError:
+                return JSONResponse(status_code=400, content={"detail": "Invalid Content-Length header."})
+    response = await call_next(request)
+    if request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-store, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,13 +62,14 @@ app.add_middleware(
 
         # Production
         "https://pd-fora.vercel.app",
+        "https://www.pd-fora.vercel.app",
 
         # Vercel preview
         "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
     ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
     expose_headers=[
         "Content-Disposition",
         "X-Original-Size",
@@ -76,6 +97,15 @@ TEMP_DIR.mkdir(
 # ============================================================
 
 def create_job():
+    # Remove abandoned temporary jobs left by interrupted or failed requests.
+    now = time.time()
+    for old_job in TEMP_DIR.iterdir():
+        try:
+            if old_job.is_dir() and now - old_job.stat().st_mtime > 6 * 60 * 60:
+                shutil.rmtree(old_job, ignore_errors=True)
+        except OSError:
+            pass
+
     job_id = uuid.uuid4().hex
 
     directory = TEMP_DIR / job_id
@@ -143,6 +173,15 @@ async def save_upload(
 
 def read_pdf(path: Path):
 
+    # Validate the actual file signature; never trust the filename or browser MIME type.
+    try:
+        with open(path, "rb") as uploaded:
+            header = uploaded.read(1024)
+        if b"%PDF-" not in header:
+            raise HTTPException(status_code=400, detail="The uploaded file is not a valid PDF.")
+    except OSError:
+        raise HTTPException(status_code=400, detail="Unable to read the uploaded PDF.")
+
     try:
 
         reader = PdfReader(
@@ -186,6 +225,9 @@ def read_pdf(path: Path):
             detail="PDF contains no pages."
         )
 
+    if len(reader.pages) > 1000:
+        raise HTTPException(status_code=413, detail="PDFs with more than 1,000 pages are not supported.")
+
     return reader
 
 
@@ -225,7 +267,7 @@ def cleanup_job(job: Path):
 def root():
 
     return {
-        "name": "Niroj77",
+        "name": "PDFora",
         "version": "4.0.1",
         "status": "online"
     }
@@ -251,7 +293,7 @@ def health():
 def api_info():
 
     return {
-        "service": "Niroj77",
+        "service": "PDFora",
         "version": "4.0.1",
         "tools": [
             "merge",
@@ -266,7 +308,7 @@ def api_info():
             "pdf-to-word",
             "reorder", "page-numbers", "crop", "header-footer", "protect", "unlock",
             "sign", "pdf-to-png", "pdf-to-webp", "pdf-to-text", "grayscale",
-            "flatten", "metadata", "repair", "pdf-to-html", "extract-images", "remove-blank-pages", "compare"
+            "flatten", "metadata", "repair", "pdf-to-html", "extract-images", "remove-blank-pages", "compare", "add-blank-pages", "rotate-selected-pages", "page-counter", "pdf-info", "remove-annotations", "remove-links", "extract-bookmarks", "remove-metadata", "pdf-to-json", "pdf-to-csv", "add-bookmarks", "bates-numbering", "pdf-to-tiff", "pdf-to-bmp", "split-by-bookmarks", "pdf-to-markdown", "remove-attachments", "add-background", "extract-page-images", "extract-fonts"
         ]
     }
 
@@ -281,11 +323,9 @@ async def merge_pdf(
 ):
 
     if len(files) < 2:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Select at least 2 PDF files."
-        )
+        raise HTTPException(status_code=400, detail="Select at least 2 PDF files.")
+    if len(files) > 20:
+        raise HTTPException(status_code=413, detail="You can merge up to 20 PDF files at once.")
 
     job = create_job()
 
@@ -295,18 +335,13 @@ async def merge_pdf(
 
     try:
 
+        total_upload_size = 0
         for index, file in enumerate(files):
-
-            validate_pdf(
-                file.filename
-            )
-
+            validate_pdf(file.filename)
             input_file = job / f"{index}.pdf"
-
-            await save_upload(
-                file,
-                input_file
-            )
+            total_upload_size += await save_upload(file, input_file)
+            if total_upload_size > MAX_FILE_SIZE:
+                raise HTTPException(status_code=413, detail="The combined upload size must not exceed 50 MB.")
 
             reader = read_pdf(
                 input_file
@@ -512,34 +547,24 @@ async def images_to_pdf(
 ):
 
     if not files:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Select at least one image."
-        )
+        raise HTTPException(status_code=400, detail="Select at least one image.")
+    if len(files) > 20:
+        raise HTTPException(status_code=413, detail="You can convert up to 20 images at once.")
 
     job = create_job()
 
     output = job / "PDFora-Images.pdf"
 
     images = []
+    total_upload_size = 0
 
     try:
-
         for file in files:
-
-            validate_filename(
-                file.filename
-            )
-
+            validate_filename(file.filename)
             data = await file.read()
-
-            if len(data) > MAX_FILE_SIZE:
-
-                raise HTTPException(
-                    status_code=413,
-                    detail=f"{file.filename} is larger than 50 MB."
-                )
+            total_upload_size += len(data)
+            if total_upload_size > MAX_FILE_SIZE:
+                raise HTTPException(status_code=413, detail="The combined image upload size must not exceed 50 MB.")
 
             try:
 
@@ -1387,7 +1412,7 @@ async def pdf_to_word(
 
 
 # ============================================================
-# NIROJ77 ADDITIONAL PDF TOOLS
+# PDFORA ADDITIONAL PDF TOOLS
 # ============================================================
 from fastapi import BackgroundTasks
 from pypdf import PdfReader as _PdfReader, PdfWriter as _PdfWriter
@@ -1421,7 +1446,7 @@ async def reorder_pdf(file: UploadFile = File(...), order: str = Form(...)):
         writer=PdfWriter()
         for n in sequence: writer.add_page(reader.pages[n-1])
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"Niroj77-Reordered.pdf")
+        return _tool_file_response(out,"PDFora-Reordered.pdf")
     finally:
         await file.close()
 
@@ -1440,7 +1465,7 @@ async def add_page_numbers(file: UploadFile = File(...), position: str = Form("b
             y=24 if position.startswith("top") else r.height-24
             page.insert_text((x,y),str(start_number+i-(1 if skip_first and i>0 else 0)),fontsize=font_size, color=(0.25,0.25,0.3))
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"Niroj77-Page-Numbers.pdf")
+        return _tool_file_response(out,"PDFora-Page-Numbers.pdf")
     finally: await file.close()
 
 @app.post("/api/crop")
@@ -1460,7 +1485,7 @@ async def crop_pdf(file: UploadFile = File(...), margin: float = Form(36), pages
             if r.width<=2*margin or r.height<=2*margin: raise HTTPException(status_code=400,detail="Margin is too large for one or more pages.")
             p.set_cropbox(fitz.Rect(r.x0+margin,r.y0+margin,r.x1-margin,r.y1-margin))
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"Niroj77-Cropped.pdf")
+        return _tool_file_response(out,"PDFora-Cropped.pdf")
     finally: await file.close()
 
 @app.post("/api/header-footer")
@@ -1475,7 +1500,7 @@ async def header_footer(file: UploadFile = File(...), header: str = Form(""), fo
             if header: p.insert_text((36,24),header[:300],fontsize=font_size)
             if footer: p.insert_text((36,r.height-24),footer[:300],fontsize=font_size)
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"Niroj77-Header-Footer.pdf")
+        return _tool_file_response(out,"PDFora-Header-Footer.pdf")
     finally: await file.close()
 
 @app.post("/api/protect")
@@ -1487,7 +1512,7 @@ async def protect_pdf(file: UploadFile = File(...), password: str = Form(...)):
         src=job/"input.pdf"; out=job/"protected.pdf"; await save_upload(file,src); reader=read_pdf(src); writer=PdfWriter()
         writer.clone_document_from_reader(reader); writer.encrypt(password)
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"Niroj77-Protected.pdf")
+        return _tool_file_response(out,"PDFora-Protected.pdf")
     finally: await file.close()
 
 @app.post("/api/unlock")
@@ -1503,7 +1528,7 @@ async def unlock_pdf(file: UploadFile = File(...), password: str = Form(...)):
         writer=PdfWriter()
         for p in reader.pages: writer.add_page(p)
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"Niroj77-Unlocked.pdf")
+        return _tool_file_response(out,"PDFora-Unlocked.pdf")
     finally: await file.close()
 
 @app.post("/api/sign")
@@ -1519,7 +1544,7 @@ async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)
         p.insert_text((box.x0+8,box.y0+28),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35))
         p.insert_text((box.x0+8,box.y0+44),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4))
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"Niroj77-Signed.pdf")
+        return _tool_file_response(out,"PDFora-Signed.pdf")
     finally: await file.close()
 
 async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
@@ -1536,7 +1561,7 @@ async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
                 opts={"quality":quality,"method":6} if fmt=="webp" else {}
                 im.save(dest,format=fmt.upper(),**opts)
                 z.writestr(f"page-{i+1}.{fmt}",dest.getvalue())
-        return _tool_file_response(archive,f"Niroj77-{fmt.upper()}.zip","application/zip")
+        return _tool_file_response(archive,f"PDFora-{fmt.upper()}.zip","application/zip")
     finally:
         if doc: doc.close()
         await file.close()
@@ -1559,7 +1584,7 @@ async def pdf_to_text(file: UploadFile = File(...)):
             for i,p in enumerate(doc):
                 f.write(f"--- Page {i+1} ---\n{p.get_text('text')}\n\n")
         doc.close()
-        return _tool_file_response(out,"Niroj77-Extracted-Text.txt","text/plain; charset=utf-8")
+        return _tool_file_response(out,"PDFora-Extracted-Text.txt","text/plain; charset=utf-8")
     finally: await file.close()
 
 @app.post("/api/grayscale")
@@ -1576,7 +1601,7 @@ async def grayscale_pdf(file: UploadFile = File(...)):
             page.insert_image(page.rect,stream=pix.tobytes("png"))
         doc.close()
         flattened.save(out,garbage=4,deflate=True); flattened.close()
-        return _tool_file_response(out,"Niroj77-Grayscale.pdf")
+        return _tool_file_response(out,"PDFora-Grayscale.pdf")
     finally: await file.close()
 
 @app.post("/api/flatten")
@@ -1594,7 +1619,7 @@ async def flatten_pdf(file: UploadFile = File(...)):
             target.insert_image(target.rect,stream=pix.tobytes("png"))
         doc.close()
         flattened.save(out,garbage=4,deflate=True); flattened.close()
-        return _tool_file_response(out,"Niroj77-Flattened.pdf")
+        return _tool_file_response(out,"PDFora-Flattened.pdf")
     finally: await file.close()
 
 @app.post("/api/metadata")
@@ -1606,7 +1631,7 @@ async def edit_pdf_metadata(file: UploadFile = File(...), title: str = Form(""),
         src=job/"input.pdf"; out=job/"metadata.pdf"; await save_upload(file,src); reader=PdfReader(str(src)); writer=PdfWriter(); writer.clone_document_from_reader(reader)
         writer.add_metadata({"/Title":title,"/Author":author,"/Subject":subject,"/Keywords":keywords})
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"Niroj77-Updated-Metadata.pdf")
+        return _tool_file_response(out,"PDFora-Updated-Metadata.pdf")
     finally: await file.close()
 
 @app.post("/api/repair")
@@ -1620,7 +1645,7 @@ async def repair_pdf(file: UploadFile = File(...)):
             doc.save(out,garbage=4,deflate=True,clean=True); doc.close()
         except Exception:
             raise HTTPException(status_code=422,detail="This PDF could not be repaired. The file may be severely damaged or unsupported.")
-        return _tool_file_response(out,"Niroj77-Repaired.pdf")
+        return _tool_file_response(out,"PDFora-Repaired.pdf")
     finally: await file.close()
 
 @app.post("/api/ocr")
@@ -1647,7 +1672,7 @@ async def pdf_to_html(file: UploadFile = File(...)):
         parts.append("</body></html>")
         doc.close()
         out.write_text("\n".join(parts),encoding="utf-8")
-        return _tool_file_response(out,"Niroj77-PDF-to-HTML.html","text/html; charset=utf-8")
+        return _tool_file_response(out,"PDFora-PDF-to-HTML.html","text/html; charset=utf-8")
     finally:
         await file.close()
 
@@ -1676,7 +1701,7 @@ async def extract_images(file: UploadFile = File(...)):
                         continue
         doc.close()
         if count==0: raise HTTPException(status_code=422,detail="No embedded images were found in this PDF.")
-        return _tool_file_response(out,"Niroj77-Extracted-Images.zip","application/zip")
+        return _tool_file_response(out,"PDFora-Extracted-Images.zip","application/zip")
     finally:
         await file.close()
 
@@ -1701,7 +1726,7 @@ async def remove_blank_pages(file: UploadFile = File(...), threshold: int = Form
         result=fitz.open()
         for i in kept: result.insert_pdf(doc,from_page=i,to_page=i)
         doc.close(); result.save(out,garbage=4,deflate=True); result.close()
-        return _tool_file_response(out,"Niroj77-Without-Blank-Pages.pdf")
+        return _tool_file_response(out,"PDFora-Without-Blank-Pages.pdf")
     finally:
         await file.close()
 
@@ -1724,7 +1749,612 @@ async def compare_pdfs(files: list[UploadFile] = File(...)):
         out=job/"comparison.txt"
         summary=f"PDF COMPARISON REPORT\nFile 1: {files[0].filename}\nFile 2: {files[1].filename}\nPages in file 1: {len(readers[0])}\nPages in file 2: {len(readers[1])}\n\n"
         out.write_text(summary+("\n".join(diff) if diff else "No selectable-text differences were detected. This comparison does not inspect visual layout or scanned images."),encoding="utf-8")
-        return _tool_file_response(out,"Niroj77-PDF-Comparison.txt","text/plain; charset=utf-8")
+        return _tool_file_response(out,"PDFora-PDF-Comparison.txt","text/plain; charset=utf-8")
     finally:
         for file in files:
             await file.close()
+
+
+
+# ============================================================
+# PDFORA TOOLS: ADD BLANK PAGES AND ROTATE SELECTED PAGES
+# ============================================================
+
+@app.post("/api/add-blank-pages")
+async def add_blank_pages(file: UploadFile = File(...), count: int = Form(1)):
+    validate_pdf(file.filename)
+    if not 1 <= count <= 50:
+        raise HTTPException(status_code=400, detail="Choose between 1 and 50 blank pages.")
+    job = create_job()
+    try:
+        src = job / "input.pdf"
+        out = job / "with-blank-pages.pdf"
+        await save_upload(file, src)
+        reader = read_pdf(src)
+        writer = PdfWriter()
+        for page in reader.pages:
+            writer.add_page(page)
+        last = reader.pages[-1]
+        width = float(last.mediabox.width)
+        height = float(last.mediabox.height)
+        for _ in range(count):
+            writer.add_blank_page(width=width, height=height)
+        with open(out, "wb") as stream:
+            writer.write(stream)
+        return pdf_response(out, "PDFora-Blank-Pages-Added.pdf")
+    finally:
+        await file.close()
+
+
+@app.post("/api/rotate-selected-pages")
+async def rotate_selected_pages(file: UploadFile = File(...), pages: str = Form("all"), degrees: int = Form(90)):
+    validate_pdf(file.filename)
+    if degrees not in {90, 180, 270}:
+        raise HTTPException(status_code=400, detail="Rotation must be 90, 180 or 270 degrees.")
+    job = create_job()
+    doc = None
+    try:
+        src = job / "input.pdf"
+        out = job / "rotated-selected-pages.pdf"
+        await save_upload(file, src)
+        doc = fitz.open(src)
+        if pages.strip().lower() == "all":
+            selected = list(range(len(doc)))
+        else:
+            try:
+                selected = sorted(set(int(value.strip()) - 1 for value in pages.split(",") if value.strip()))
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Enter page numbers like 1,3,5 or use all.")
+            if not selected or min(selected) < 0 or max(selected) >= len(doc):
+                raise HTTPException(status_code=400, detail=f"Page numbers must be between 1 and {len(doc)}.")
+        for index in selected:
+            doc[index].set_rotation((doc[index].rotation + degrees) % 360)
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Rotated-Selected-Pages.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# REMOVE PDF ANNOTATIONS
+# ============================================================
+
+@app.post("/api/remove-annotations")
+async def remove_annotations(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "without-annotations.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for page in doc:
+            annot = page.first_annot
+            while annot:
+                following = annot.next
+                page.delete_annot(annot)
+                annot = following
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Annotations-Removed.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# REMOVE PDF HYPERLINKS
+# ============================================================
+
+@app.post("/api/remove-links")
+async def remove_pdf_links(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "without-links.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for page in doc:
+            for link in page.get_links():
+                page.delete_link(link)
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Links-Removed.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# PDF PAGE COUNTER REPORT
+# ============================================================
+
+@app.post("/api/page-counter")
+async def pdf_page_counter(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Page-Count.txt"
+        size = await save_upload(file, src)
+        reader = read_pdf(src)
+        report = (
+            "PDFora - PDF Page Count Report\\n"
+            "================================\\n"
+            f"File name: {Path(file.filename).name}\\n"
+            f"Total pages: {len(reader.pages)}\\n"
+            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\\n"
+        )
+        out.write_text(report, encoding="utf-8")
+        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="PDFora-Page-Count.txt", background=BackgroundTask(cleanup_job, job))
+    finally:
+        await file.close()
+
+
+# ============================================================
+# PDF INFORMATION REPORT
+# ============================================================
+
+@app.post("/api/pdf-info")
+async def pdf_information(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Information.txt"
+        size = await save_upload(file, src)
+        reader = read_pdf(src)
+        metadata = reader.metadata
+        doc = fitz.open(src)
+        first = doc[0].rect
+        lines = [
+            "PDFora - PDF Information Report",
+            "================================",
+            f"File name: {Path(file.filename).name}",
+            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)",
+            f"Page count: {len(reader.pages)}",
+            f"PDF version: {doc.metadata.get('format', 'Unknown')}",
+            f"Page 1 dimensions: {first.width:.1f} x {first.height:.1f} points",
+            f"Title: {metadata.title or 'Not set'}",
+            f"Author: {metadata.author or 'Not set'}",
+            f"Subject: {metadata.subject or 'Not set'}",
+            f"Creator: {metadata.creator or 'Not set'}",
+            f"Encrypted: {'Yes' if reader.is_encrypted else 'No'}",
+        ]
+        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="PDFora-Information.txt", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# EXTRACT PDF BOOKMARKS
+# ============================================================
+
+@app.post("/api/extract-bookmarks")
+async def extract_pdf_bookmarks(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Bookmarks.txt"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        toc = doc.get_toc()
+        if not toc:
+            raise HTTPException(status_code=404, detail="This PDF does not contain bookmarks.")
+        lines = ["PDFora - PDF Bookmarks", "=======================", ""]
+        for level, title, page in toc:
+            lines.append(f"{'  ' * max(0, level - 1)}Page {page}: {title}")
+        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="PDFora-Bookmarks.txt", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# REMOVE DOCUMENT METADATA
+# ============================================================
+
+@app.post("/api/remove-metadata")
+async def remove_pdf_metadata(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    try:
+        src, out = job / "input.pdf", job / "metadata-removed.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        doc.set_metadata({})
+        doc.del_xml_metadata()
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Metadata-Removed.pdf")
+    finally:
+        if 'doc' in locals() and doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# EXTRACT PDF TEXT AS STRUCTURED JSON
+# ============================================================
+
+@app.post("/api/pdf-to-json")
+async def pdf_to_json(file: UploadFile = File(...)):
+    import json
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Text.json"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        pages = []
+        for index, page in enumerate(doc):
+            blocks = []
+            for block in page.get_text("blocks"):
+                if len(block) >= 5 and str(block[4]).strip():
+                    blocks.append({
+                        "x0": round(block[0], 2), "y0": round(block[1], 2),
+                        "x1": round(block[2], 2), "y1": round(block[3], 2),
+                        "text": str(block[4]).strip(),
+                    })
+            pages.append({"page": index + 1, "width": round(page.rect.width, 2), "height": round(page.rect.height, 2), "blocks": blocks})
+        out.write_text(json.dumps({"file": Path(file.filename).name, "page_count": len(doc), "pages": pages}, ensure_ascii=False, indent=2), encoding="utf-8")
+        return FileResponse(str(out), media_type="application/json", filename="PDFora-Text.json", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# EXTRACT PDF TABLES AS CSV
+# ============================================================
+
+@app.post("/api/pdf-to-csv")
+async def pdf_to_csv(file: UploadFile = File(...)):
+    import csv
+    validate_pdf(file.filename)
+    job = create_job()
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Tables.csv"
+        await save_upload(file, src)
+        read_pdf(src)
+        rows_written = 0
+        with pdfplumber.open(src) as pdf, open(out, "w", newline="", encoding="utf-8-sig") as stream:
+            writer = csv.writer(stream)
+            writer.writerow(["page", "table", "row", "column", "value"])
+            for page_number, page in enumerate(pdf.pages, start=1):
+                for table_number, table in enumerate(page.extract_tables() or [], start=1):
+                    for row_number, row in enumerate(table, start=1):
+                        for column_number, value in enumerate(row or [], start=1):
+                            if value is not None and str(value).strip():
+                                writer.writerow([page_number, table_number, row_number, column_number, str(value).strip()])
+                                rows_written += 1
+        if rows_written == 0:
+            raise HTTPException(status_code=422, detail="No extractable tables were found in this PDF.")
+        return FileResponse(str(out), media_type="text/csv; charset=utf-8", filename="PDFora-Tables.csv", background=BackgroundTask(cleanup_job, job))
+    finally:
+        await file.close()
+
+
+# ============================================================
+# ADD PDF BOOKMARKS FROM PAGE:TITLE LINES
+# ============================================================
+
+@app.post("/api/add-bookmarks")
+async def add_pdf_bookmarks(file: UploadFile = File(...), bookmarks: str = Form(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "bookmarked.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        toc = []
+        for line in bookmarks.splitlines():
+            if not line.strip():
+                continue
+            if ":" not in line:
+                raise HTTPException(status_code=400, detail="Use one bookmark per line in page:title format, e.g. 1:Introduction")
+            page_text, title = line.split(":", 1)
+            try:
+                page_number = int(page_text.strip())
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Bookmark page numbers must be whole numbers.")
+            if page_number < 1 or page_number > len(doc) or not title.strip():
+                raise HTTPException(status_code=400, detail=f"Invalid bookmark. Pages must be 1 to {len(doc)} and titles cannot be empty.")
+            toc.append([1, title.strip()[:200], page_number])
+        if not toc:
+            raise HTTPException(status_code=400, detail="Enter at least one bookmark.")
+        doc.set_toc(toc)
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Bookmarks-Added.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# ADD BATES NUMBERING
+# ============================================================
+
+@app.post("/api/bates-numbering")
+async def bates_numbering(file: UploadFile = File(...), prefix: str = Form(""), start: int = Form(1), digits: int = Form(6)):
+    validate_pdf(file.filename)
+    if start < 0 or start > 999999999 or digits < 1 or digits > 9:
+        raise HTTPException(status_code=400, detail="Start must be 0–999999999 and digits must be 1–9.")
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "bates-numbered.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for index, page in enumerate(doc):
+            label = f"{prefix[:20]}{start + index:0{digits}d}"
+            page.insert_text((page.rect.width - 150, page.rect.height - 24), label, fontsize=9, color=(0, 0, 0))
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Bates-Numbered.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# CONVERT PDF PAGES TO TIFF ARCHIVE
+# ============================================================
+
+@app.post("/api/pdf-to-tiff")
+async def pdf_to_tiff(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-TIFF-Pages.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        if len(doc) > 200:
+            raise HTTPException(status_code=413, detail="TIFF conversion is limited to 200 pages per file.")
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for index, page in enumerate(doc):
+                pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                image = Image.open(io.BytesIO(pix.tobytes("png")))
+                buffer = io.BytesIO()
+                image.save(buffer, format="TIFF", compression="tiff_deflate")
+                archive.writestr(f"page-{index + 1:04d}.tiff", buffer.getvalue())
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-TIFF-Pages.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# CONVERT PDF PAGES TO BMP ARCHIVE
+# ============================================================
+
+@app.post("/api/pdf-to-bmp")
+async def pdf_to_bmp(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-BMP-Pages.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        if len(doc) > 200:
+            raise HTTPException(status_code=413, detail="BMP conversion is limited to 200 pages per file.")
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for index, page in enumerate(doc):
+                pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                image = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
+                buffer = io.BytesIO()
+                image.save(buffer, format="BMP")
+                archive.writestr(f"page-{index + 1:04d}.bmp", buffer.getvalue())
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-BMP-Pages.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# SPLIT PDF USING EXISTING BOOKMARKS
+# ============================================================
+
+@app.post("/api/split-by-bookmarks")
+async def split_pdf_by_bookmarks(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Bookmark-Sections.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        toc = doc.get_toc()
+        if not toc:
+            raise HTTPException(status_code=422, detail="This PDF has no bookmarks to split by.")
+        starts = sorted(set(max(1, min(len(doc), int(item[2]))) for item in toc if len(item) >= 3 and int(item[2]) > 0))
+        if not starts:
+            raise HTTPException(status_code=422, detail="No valid bookmark destinations were found.")
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for index, start_page in enumerate(starts):
+                end_page = starts[index + 1] - 1 if index + 1 < len(starts) else len(doc)
+                section = fitz.open()
+                section.insert_pdf(doc, from_page=start_page - 1, to_page=end_page - 1)
+                buffer = section.tobytes(garbage=4, deflate=True)
+                section.close()
+                title = next((str(item[1]) for item in toc if int(item[2]) == start_page), f"Section-{index + 1}")
+                safe_title = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in title)[:60] or f"Section-{index + 1}"
+                archive.writestr(f"{index + 1:02d}-{safe_title}.pdf", buffer)
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-Bookmark-Sections.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# CONVERT PDF TEXT TO MARKDOWN
+# ============================================================
+
+@app.post("/api/pdf-to-markdown")
+async def pdf_to_markdown(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Text.md"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        parts = [f"# Extracted content: {Path(file.filename).stem}\n"]
+        for index, page in enumerate(doc, start=1):
+            parts.append(f"\n## Page {index}\n")
+            parts.append(page.get_text("text").strip() or "_No selectable text found on this page._")
+        out.write_text("\n".join(parts), encoding="utf-8")
+        return FileResponse(str(out), media_type="text/markdown; charset=utf-8", filename="PDFora-Text.md", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# REMOVE EMBEDDED FILE ATTACHMENTS
+# ============================================================
+
+@app.post("/api/remove-attachments")
+async def remove_pdf_attachments(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Attachments-Removed.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for attachment_name in list(doc.embfile_names()):
+            doc.embfile_del(attachment_name)
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Attachments-Removed.pdf")
+    finally:
+        if 'doc' in locals() and doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# ADD TEXT BACKGROUND / WATERMARK-LIKE PAGE BACKGROUND
+# ============================================================
+
+@app.post("/api/add-background")
+async def add_pdf_background(file: UploadFile = File(...), text: str = Form("DRAFT"), color: str = Form("#E5E7EB")):
+    validate_pdf(file.filename)
+    if len(text) > 60 or not text.strip():
+        raise HTTPException(status_code=400, detail="Enter background text up to 60 characters.")
+    colors = {"#E5E7EB": (0.90, 0.91, 0.92), "#FDE68A": (0.99, 0.90, 0.54), "#DBEAFE": (0.86, 0.92, 0.99), "#FEE2E2": (1.0, 0.88, 0.88)}
+    if color not in colors:
+        raise HTTPException(status_code=400, detail="Choose one of the supported background colors.")
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "background.pdf"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        for page in doc:
+            rect = page.rect
+            page.draw_rect(rect, color=None, fill=colors[color], overlay=False)
+            page.insert_textbox(fitz.Rect(30, rect.height / 2 - 40, rect.width - 30, rect.height / 2 + 40), text.strip(), fontsize=34, color=(0.55, 0.55, 0.55), align=1, rotate=0, overlay=True)
+        doc.save(out, garbage=4, deflate=True)
+        return pdf_response(out, "PDFora-Background.pdf")
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# EXTRACT PDF PAGE IMAGES AS INDIVIDUAL FILES
+# ============================================================
+
+@app.post("/api/extract-page-images")
+async def extract_pdf_page_images(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Page-Images.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            count = 0
+            for page_index, page in enumerate(doc):
+                for image_index, item in enumerate(page.get_images(full=True), start=1):
+                    xref = item[0]
+                    extracted = doc.extract_image(xref)
+                    ext = extracted.get("ext", "bin")
+                    archive.writestr(f"page-{page_index + 1:04d}-image-{image_index:03d}.{ext}", extracted["image"])
+                    count += 1
+        if count == 0:
+            raise HTTPException(status_code=422, detail="No embedded images were found in this PDF.")
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-Page-Images.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()
+
+
+# ============================================================
+# EXTRACT PDF FONTS AS ARCHIVE
+# ============================================================
+
+@app.post("/api/extract-fonts")
+async def extract_pdf_fonts(file: UploadFile = File(...)):
+    validate_pdf(file.filename)
+    job = create_job()
+    doc = None
+    try:
+        src, out = job / "input.pdf", job / "PDFora-Fonts.zip"
+        await save_upload(file, src)
+        read_pdf(src)
+        doc = fitz.open(src)
+        found = set()
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for page_index, page in enumerate(doc):
+                for font in page.get_fonts(full=True):
+                    xref = font[0]
+                    if not xref or xref in found:
+                        continue
+                    found.add(xref)
+                    extracted = doc.extract_font(xref)
+                    if extracted and extracted[3]:
+                        name, ext, _, data = extracted
+                        safe_name = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in name)[:80]
+                        archive.writestr(f"{safe_name or 'font'}-{xref}.{ext}", data)
+        if not found:
+            raise HTTPException(status_code=422, detail="No extractable embedded fonts were found.")
+        return FileResponse(str(out), media_type="application/zip", filename="PDFora-Fonts.zip", background=BackgroundTask(cleanup_job, job))
+    finally:
+        if doc is not None:
+            doc.close()
+        await file.close()

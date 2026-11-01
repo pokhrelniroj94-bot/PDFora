@@ -168,7 +168,7 @@ export default function PDForaTool({
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              Niroj77
+              PDFora
             </span>
           </a>
 
@@ -192,7 +192,7 @@ export default function PDForaTool({
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-            Niroj77 Tool
+            PDFora Tool
           </p>
 
           <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
@@ -237,7 +237,7 @@ export default function PDForaTool({
 
           <input
             ref={inputRef}
-            id="niroj77-file"
+            id="pdfora-file"
             type="file"
             accept={accept}
             multiple={multiple}
@@ -357,7 +357,7 @@ export default function PDForaTool({
           <InfoCard
             icon="🔒"
             title="Private"
-            description="Files are processed by the Niroj77 backend."
+            description="Files are processed by the PDFora backend."
           />
 
           <InfoCard

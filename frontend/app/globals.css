@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbfaff;
-  --foreground: #19152b;
-  --brand: #6d28d9;
-  --brand-strong: #5b21b6;
-  --brand-soft: #f3e8ff;
-  --brand-accent: #f59e0b;
+  --background: #f5faf9;
+  --foreground: #102a2a;
+  --brand: #0f766e;
+  --brand-strong: #115e59;
+  --brand-soft: #ccfbf1;
+  --brand-accent: #f97316;
 }
 
 @theme inline {
@@ -18,17 +18,15 @@
 
 html { color-scheme: light; }
 body { background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; }
-::selection { background: #e9d5ff; color: #3b0764; }
+::selection { background: #99f6e4; color: #134e4a; }
 
-/* Keep legacy tool-page accent classes aligned with the Niroj77 violet identity. */
-.text-blue-600 { color: #6d28d9 !important; }
-.bg-blue-600 { background-color: #6d28d9 !important; }
-.bg-blue-700 { background-color: #5b21b6 !important; }
-.bg-blue-100 { background-color: #f3e8ff !important; }
-.bg-blue-50 { background-color: #faf5ff !important; }
-.border-blue-100 { border-color: #e9d5ff !important; }
-.hover\\:bg-blue-700:hover { background-color: #5b21b6 !important; }
-.hover\\:border-blue-400:hover { border-color: #a78bfa !important; }
-.hover\\:bg-blue-50:hover { background-color: #faf5ff !important; }
-.focus\\:border-blue-500:focus { border-color: #8b5cf6 !important; }
-.focus\\:ring-blue-100:focus { --tw-ring-color: #ede9fe !important; }
+/* Keep legacy blue and violet utility classes consistent with PDFora's teal identity. */
+.text-blue-600, .text-violet-600 { color: #0f766e !important; }
+.bg-blue-600, .bg-violet-600 { background-color: #0f766e !important; }
+.bg-blue-700, .bg-violet-700 { background-color: #115e59 !important; }
+.bg-blue-100, .bg-blue-50, .bg-violet-100, .bg-violet-50 { background-color: #ccfbf1 !important; }
+.border-blue-100, .border-violet-300 { border-color: #99f6e4 !important; }
+.hover\\:bg-blue-700:hover, .hover\\:bg-violet-50:hover { background-color: #f0fdfa !important; }
+.hover\\:border-blue-400:hover, .hover\\:border-violet-300:hover, .hover\\:border-violet-400:hover { border-color: #5eead4 !important; }
+.focus\\:border-blue-500:focus, .focus\\:border-violet-500:focus { border-color: #0d9488 !important; }
+.focus\\:ring-blue-100:focus, .focus\\:ring-violet-100:focus { --tw-ring-color: #ccfbf1 !important; }

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ChangeEvent, useRef, useState } from "react";
 
@@ -17,10 +17,10 @@ type Props = {
   formPlaceholder?: string;
   queryField?: string;
   queryDefault?: string;
-  extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string }[];
+  extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string; multiline?: boolean }[];
 };
 
-export default function Niroj77Tool({
+export default function PDForaTool({
   endpoint,
   title,
   description,
@@ -44,7 +44,13 @@ export default function Niroj77Tool({
 
   function handleFiles(event: ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(event.target.files || []);
-
+    const oversized = selected.find((file) => file.size > 50 * 1024 * 1024);
+    if (oversized) {
+      setFiles([]);
+      setMessage(`${oversized.name} exceeds the 50 MB per-file limit.`);
+      event.target.value = "";
+      return;
+    }
     setFiles(selected);
     setMessage("");
   }
@@ -174,7 +180,7 @@ export default function Niroj77Tool({
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              Niroj77
+              PDFora
             </span>
           </a>
 
@@ -198,7 +204,7 @@ export default function Niroj77Tool({
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-            Niroj77 Tool
+            PDFora Tool
           </p>
 
           <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
@@ -233,7 +239,7 @@ export default function Niroj77Tool({
             </h2>
 
             <p className="mt-2 text-xs text-slate-500 sm:text-sm">
-              Maximum 50 MB per file
+              PDF files up to 50 MB each
             </p>
 
             <span className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-slate-950 px-5 text-sm font-bold text-white">
@@ -243,7 +249,7 @@ export default function Niroj77Tool({
 
           <input
             ref={inputRef}
-            id="niroj77-file"
+            id="pdfora-file"
             type="file"
             accept={accept}
             multiple={multiple}
@@ -324,7 +330,11 @@ export default function Niroj77Tool({
           {extraFields.map((field) => (
             <div key={field.name} className="mt-4">
               <label className="mb-2 block text-sm font-bold" htmlFor={field.name}>{field.label}</label>
-              <input id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+              {field.multiline ? (
+                <textarea id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} rows={5} className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+              ) : (
+                <input id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+              )}
             </div>
           ))}
 
@@ -348,6 +358,8 @@ export default function Niroj77Tool({
           {/* Message */}
           {message && (
             <div
+              role="status"
+              aria-live="polite"
               className={`mt-4 rounded-xl border px-4 py-3 text-center text-sm font-semibold ${
                 success
                   ? "border-green-200 bg-green-50 text-green-700"
@@ -370,7 +382,7 @@ export default function Niroj77Tool({
           <InfoCard
             icon="🔒"
             title="Private"
-            description="Files are processed by the Niroj77 backend."
+            description="Files are processed by the PDFora backend."
           />
 
           <InfoCard

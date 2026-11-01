@@ -1,8 +1,9 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
+import ToolDirectory from "../components/ToolDirectory";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,16 +16,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
-    default: "Niroj77 | Free Online PDF Tools",
-    template: "%s | Niroj77",
+    default: "Free PDF Tools Online – Merge, Split, Compress & Convert | PDFora",
+    template: "%s | PDFora",
   },
   description:
-    "Niroj77 offers free online PDF tools to merge, split, compress, convert and edit PDF files. Simple browser-based PDF utilities for everyday document tasks.",
+    "Use PDFora free online PDF tools to merge PDF files, split PDF pages, compress PDF size, convert PDF to Word, Excel, JPG and PNG, rotate, edit and protect PDF documents. Fast browser-based PDF utilities for everyday work.",
   keywords: [
     "free PDF tools",
     "online PDF tools",
-    "Niroj77 PDF tools",
+    "PDFora PDF tools",
     "PDF converter",
     "PDF to Word",
     "Word to PDF",
@@ -57,6 +59,7 @@ export default function RootLayout({
 
       <body className="min-h-full flex flex-col">
         {children}
+        <ToolDirectory />
         <Script id="adsterra-popunder" src="https://abscloud.org/1/8af45b3803b63ee451c4530bbaa198d1" strategy="afterInteractive" data-cfasync="false" />
         <Script id="adsterra-socialbar" src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498" strategy="afterInteractive" data-cfasync="false" />
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />

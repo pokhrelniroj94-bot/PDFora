@@ -192,12 +192,7 @@ const faqs = [
   },
 ];
 
-export default function Home() {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("All");
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  const searchTerms: Record<string, string> = {
+const searchTerms: Record<string, string> = {
     "/merge-pdf": "combine join multiple files merger", "/split-pdf": "separate divide pages range",
     "/compress-pdf": "shrink reduce smaller optimize size mb", "/images-to-pdf": "jpg jpeg png webp photo picture",
     "/pdf-to-jpg": "jpeg image pictures export", "/pdf-to-excel": "xlsx spreadsheet table cells",
@@ -224,7 +219,7 @@ export default function Home() {
     "/split-by-bookmarks": "chapters sections outline divide",
   };
 
-  const howToUse: Record<string, string> = {
+const howToUse: Record<string, string> = {
     "/merge-pdf": "Choose at least two PDFs, arrange their order, then merge and download one file.",
     "/split-pdf": "Upload a PDF, select the page range or split option, then download the separated pages.",
     "/compress-pdf": "Upload your PDF and run compression to create a smaller file for sharing.",
@@ -276,6 +271,15 @@ export default function Home() {
     "/remove-pdf-metadata": "Upload a PDF and clear document metadata such as title and author.",
     "/split-by-bookmarks": "Upload a bookmarked PDF and split it into sections using bookmark destinations.",
   };
+
+export default function Home() {
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All");
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+
+
+
 
   const filteredTools = useMemo(() => {
     const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();

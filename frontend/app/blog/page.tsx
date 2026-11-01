@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 import { blogPosts } from "../../lib/blog-posts";
 
 export const metadata: Metadata = {
-  title: "Tools, Tutorials & Practical Guides",
-  description: "Practical guides for free PDF, text, developer, image, finance and productivity tools.",
+  title: "Nepal Date, Tax, Land & Online Tools Guides",
+  description: "Nepal-focused guides for Bikram Sambat dates, VAT, land measurements, Nepali numbers, PDF tools and everyday online tasks.",
   alternates: { canonical: "https://pd-fora.vercel.app/blog" },
   openGraph: {
-    title: "Tools, Tutorials & Practical Guides | NIROJ Tools",
-    description: "Step-by-step Practical guides and practical document tips.",
-    url: "https://pd-fora.vercel.app/blog",
+    title: "Nepal Date, Tax, Land & Online Tools Guides | NIROJ Tools",
+    description: "Helpful Nepal-focused date conversion, VAT, land measurement and document tutorials.",
+    url: "https://niroj.com.np/blog",
     siteName: "NIROJ Tools",
     type: "website",
   },
@@ -21,7 +21,7 @@ export default function BlogIndexPage() {
       <div className="mx-auto max-w-5xl">
         <p className="text-xs font-black uppercase tracking-[0.2em] text-teal-700">NIROJ Tools Learning Centre</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Tools, Tutorials & Practical Guides</h1>
-        <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">Clear, practical guides for everyday PDF, text, finance, developer, image and SEO tasks. Learn how tools work and how to check their results.</p>
+        <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">Nepal-focused how-to guides for Bikram Sambat dates, tax calculations, land measurements, Nepali numbers and everyday document tasks.</p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {blogPosts.map((post) => (
             <article key={post.slug} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

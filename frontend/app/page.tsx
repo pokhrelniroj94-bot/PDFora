@@ -291,6 +291,7 @@ export default function Home() {
     });
   }, [query, category]);
   const popularTools = tools.filter((tool) => tool.popular);
+  const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -372,6 +373,31 @@ export default function Home() {
               </button>
             )}
           </div>
+
+          {query.trim() && (
+            <div className="mx-auto mt-3 max-w-2xl overflow-hidden rounded-2xl border border-teal-100 bg-white text-left shadow-xl shadow-teal-900/10" role="region" aria-label="Live PDF tool search results">
+              <div className="flex items-center justify-between border-b border-slate-100 bg-teal-50/70 px-4 py-3 text-xs">
+                <span className="font-extrabold text-teal-900">Search results</span>
+                <span className="text-slate-500">{searchResults.length} matching tools</span>
+              </div>
+              {searchResults.length ? (
+                <div className="divide-y divide-slate-100">
+                  {searchResults.slice(0, 6).map((tool) => (
+                    <Link key={tool.href} href={tool.href} className="flex items-center justify-between gap-4 px-4 py-3 transition hover:bg-teal-50">
+                      <span className="min-w-0">
+                        <span className="block text-sm font-bold text-slate-900">{tool.name}</span>
+                        <span className="mt-0.5 block text-xs text-slate-500">{tool.description}</span>
+                      </span>
+                      <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600">{tool.category}</span>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="px-4 py-5 text-sm text-slate-500">No matching tools. Try words such as merge, compress, password or Excel.</p>
+              )}
+              {searchResults.length > 6 && <p className="border-t border-slate-100 px-4 py-2 text-xs text-slate-500">Showing the first 6 results. All matching tools are filtered below.</p>}
+            </div>
+          )}
 
           <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs text-slate-500">
             <span className="rounded-full bg-slate-100 px-3 py-2">

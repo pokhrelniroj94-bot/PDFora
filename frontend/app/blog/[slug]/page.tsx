@@ -40,7 +40,16 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
     author: { "@type": "Organization", name: "NIROJ Tools", url: baseUrl },
     publisher: { "@type": "Organization", name: "NIROJ Tools", url: baseUrl },
   };
-  const breadcrumbSchema = {\n    "@context": "https://schema.org",\n    "@type": "BreadcrumbList",\n    itemListElement: [\n      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },\n      { "@type": "ListItem", position: 2, name: "Guides", item: `${baseUrl}/blog` },\n      { "@type": "ListItem", position: 3, name: post.title, item: `${baseUrl}/blog/${post.slug}` },\n    ],\n  };\n  const faqSchema = {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Guides", item: `${baseUrl}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${baseUrl}/blog/${post.slug}` },
+    ],
+  };
+  const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: post.faqs.map((faq) => ({

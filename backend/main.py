@@ -1510,7 +1510,14 @@ async def protect_pdf(file: UploadFile = File(...), password: str = Form(...)):
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"protected.pdf"; await save_upload(file,src); reader=read_pdf(src); writer=PdfWriter()
-        writer.clone_document_from_reader(reader); writer.encrypt(password)
+        # Explicit page copying avoids fragile catalog cloning on complex PDFs.
+        for page in reader.pages:
+            writer.add_page(page)
+        if reader.metadata:
+            safe_metadata = {str(key): str(value) for key, value in reader.metadata.items() if value is not None}
+            if safe_metadata:
+                writer.add_metadata(safe_metadata)
+        writer.encrypt(user_password=password, owner_password=password)
         with open(out,"wb") as f: writer.write(f)
         return _tool_file_response(out,"PDFora-Protected.pdf")
     finally: await file.close()
@@ -1908,7 +1915,7 @@ async def pdf_information(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "PDFora-Information.txt"
         size = await save_upload(file, src)
         reader = read_pdf(src)
-        metadata = reader.metadata
+        metadata = reader.metadata or {}
         doc = fitz.open(src)
         first = doc[0].rect
         lines = [
@@ -1919,10 +1926,10 @@ async def pdf_information(file: UploadFile = File(...)):
             f"Page count: {len(reader.pages)}",
             f"PDF version: {doc.metadata.get('format', 'Unknown')}",
             f"Page 1 dimensions: {first.width:.1f} x {first.height:.1f} points",
-            f"Title: {metadata.title or 'Not set'}",
-            f"Author: {metadata.author or 'Not set'}",
-            f"Subject: {metadata.subject or 'Not set'}",
-            f"Creator: {metadata.creator or 'Not set'}",
+            f"Title: {metadata.get('/Title') or 'Not set'}",
+            f"Author: {metadata.get('/Author') or 'Not set'}",
+            f"Subject: {metadata.get('/Subject') or 'Not set'}",
+            f"Creator: {metadata.get('/Creator') or 'Not set'}",
             f"Encrypted: {'Yes' if reader.is_encrypted else 'No'}",
         ]
         out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")

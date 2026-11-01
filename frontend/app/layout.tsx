@@ -18,11 +18,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
-    default: "Free Online PDF Tools: Merge, Compress & Convert PDF | PDFora",
+    default: "Free PDF Tools Online: Merge, Compress & Convert | PDFora",
     template: "%s | PDFora",
   },
   description:
-    "Free online PDF tools to merge, split, compress, convert PDF to Word, Excel, JPG and PNG, rotate pages, add page numbers, protect and edit PDFs. No installation required.",
+    "Merge, split, compress and convert PDF files online for free. Edit, organize and secure documents in your browser with PDFora—no installation needed.",
   alternates: { canonical: "/" },
   openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "PDFora", title: "PDFora – Free Online PDF Tools: Merge, Compress & Convert", description: "Merge, split, compress, convert and edit PDF files online with PDFora." },
   twitter: { card: "summary", title: "PDFora – Free Online PDF Tools", description: "Free tools to merge, split, compress, convert and edit PDFs online." },
@@ -63,7 +63,45 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <ToolDirectory />
-        <Script id="pdfora-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "WebApplication", name: "PDFora", url: "https://pd-fora.vercel.app/", applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description: "Free online PDF tools for merging, splitting, compressing, converting and editing PDF documents.", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } }) }} />
+        <Script
+          id="pdfora-structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "WebSite",
+                  "@id": "https://pd-fora.vercel.app/#website",
+                  name: "PDFora",
+                  url: "https://pd-fora.vercel.app/",
+                  inLanguage: "en",
+                },
+                {
+                  "@type": "Organization",
+                  "@id": "https://pd-fora.vercel.app/#organization",
+                  name: "PDFora",
+                  url: "https://pd-fora.vercel.app/",
+                },
+                {
+                  "@type": "SoftwareApplication",
+                  "@id": "https://pd-fora.vercel.app/#application",
+                  name: "PDFora",
+                  url: "https://pd-fora.vercel.app/",
+                  applicationCategory: "UtilitiesApplication",
+                  operatingSystem: "Any",
+                  description:
+                    "Free browser-based tools to merge, split, compress, convert, organize and edit PDF documents.",
+                  offers: {
+                    "@type": "Offer",
+                    price: "0",
+                    priceCurrency: "USD",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
       </body>
     </html>

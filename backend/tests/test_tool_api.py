@@ -46,11 +46,18 @@ def make_sample_pdf() -> bytes:
         page.draw_line((50, 250), (50, 340))
         page.draw_line((150, 250), (150, 340))
         page.draw_line((250, 250), (250, 340))
-    doc.new_page(width=612, height=792)  # A real blank page exercises blank-page removal.\n    doc.set_toc([[1, "Introduction", 1], [1, "Second section", 2]])
-    doc.embfile_add("sample.txt", b"PDFora attachment regression fixture")
-    result = doc.tobytes(garbage=4, deflate=True)
+    doc.new_page(width=612, height=792)  # A real blank page exercises blank-page removal.\n    result = doc.tobytes(garbage=4, deflate=True)
     doc.close()
-    return result
+    reader = PdfReader(io.BytesIO(result))
+    writer = PdfWriter()
+    for page in reader.pages:
+        writer.add_page(page)
+    writer.add_outline_item("Introduction", 0)
+    writer.add_outline_item("Second section", 1)
+    writer.add_attachment("sample.txt", b"PDFora attachment regression fixture")
+    output = io.BytesIO()
+    writer.write(output)
+    return output.getvalue()
 
 
 def make_encrypted_pdf(pdf_bytes: bytes, password: str = "PDFora-Test-Password") -> bytes:
@@ -97,7 +104,7 @@ def test_all_available_pdf_tools_process_a_realistic_pdf():
         ("watermark", lambda: post_pdf("/api/watermark", pdf, data={"text": "PDFora"})),
         ("pdf-to-excel", lambda: post_pdf("/api/pdf-to-excel", pdf)),
         ("pdf-to-word", lambda: post_pdf("/api/pdf-to-word", pdf)),
-        ("reorder", lambda: post_pdf("/api/reorder", pdf, data={"order": "3,2,1"})),
+        ("reorder", lambda: post_pdf("/api/reorder", pdf, data={"order": "4,3,2,1"})),
         ("page-numbers", lambda: post_pdf("/api/page-numbers", pdf)),
         ("crop", lambda: post_pdf("/api/crop", pdf)),
         ("header-footer", lambda: post_pdf("/api/header-footer", pdf, data={"header": "PDFora"})),

@@ -22,7 +22,7 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Add a custom text watermark to your PDF document online.
-              Niroj77 provides a simple way to watermark PDF files directly
+              PDFora provides a simple way to watermark PDF files directly
               from your browser.
             </p>
           </div>
@@ -34,7 +34,7 @@ export default function Page() {
               description="Add a custom text watermark to a PDF document."
               multiple={false}
               accept="application/pdf,.pdf"
-              downloadName="Niroj77-Watermarked.pdf"
+              downloadName="PDFora-Watermarked.pdf"
               formField="text"
               formPlaceholder="Enter watermark text"
             />
@@ -132,11 +132,11 @@ export default function Page() {
       <section className="bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-2xl font-black">
-            Add a watermark to PDF online with Niroj77
+            Add a watermark to PDF online with PDFora
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Niroj77 provides an online PDF watermark tool that lets you add
+            PDFora provides an online PDF watermark tool that lets you add
             custom text to a PDF document. Watermarks can be useful for
             identifying documents, adding ownership information or marking
             files for a particular purpose.
@@ -148,11 +148,11 @@ export default function Page() {
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
-            Is Niroj77 Watermark PDF free?
+            Is PDFora Watermark PDF free?
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Niroj77 currently provides its available PDF tools without
+            PDFora currently provides its available PDF tools without
             requiring a subscription.
           </p>
         </div>
@@ -212,7 +212,7 @@ export default function Page() {
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 Upload your PDF, enter the watermark text and process the
-                document using the Niroj77 Watermark tool.
+                document using the PDFora Watermark tool.
               </p>
             </details>
 
@@ -231,7 +231,7 @@ export default function Page() {
                 Do I need to install software?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                No. Niroj77 is designed to work through a modern web browser.
+                No. PDFora is designed to work through a modern web browser.
               </p>
             </details>
           </div>

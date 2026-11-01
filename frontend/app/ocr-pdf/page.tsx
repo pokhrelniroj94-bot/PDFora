@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "OCR PDF Online | Niroj77",
+  title: "OCR PDF Online | PDFora",
   description: "OCR is currently unavailable until the server has Tesseract and language data installed.",
   alternates: { canonical: "https://pd-fora.vercel.app/ocr-pdf" },
 };

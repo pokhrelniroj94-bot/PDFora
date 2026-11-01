@@ -415,9 +415,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* HIGH-VISIBILITY NATIVE AD: after the hero, before popular tools */}
-      <AdsterraNative />
-
       {/* POPULAR TOOLS */}
       <section
         aria-labelledby="popular-heading"
@@ -529,6 +526,8 @@ export default function Home() {
         )}
       </section>
 
+      {/* Non-intrusive ad after the main tool discovery area */}
+      <AdsterraNative />
       <Adsterra160x600 />
 
       {/* WHY PDFORA */}

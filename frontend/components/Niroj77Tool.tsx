@@ -1,6 +1,7 @@
 "use client";
 
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import AdsterraNative from "../app/components/AdsterraNative";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "https://pdfora-493r.onrender.com";
@@ -39,20 +40,33 @@ export default function PDForaTool({
   const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((f) => [f.name, f.defaultValue || ""])));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [dragActive, setDragActive] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function handleFiles(event: ChangeEvent<HTMLInputElement>) {
-    const selected = Array.from(event.target.files || []);
+  function applyFiles(selectedFiles: File[]) {
+    const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
     const oversized = selected.find((file) => file.size > 50 * 1024 * 1024);
     if (oversized) {
       setFiles([]);
       setMessage(`${oversized.name} exceeds the 50 MB per-file limit.`);
-      event.target.value = "";
+      if (inputRef.current) inputRef.current.value = "";
       return;
     }
     setFiles(selected);
     setMessage("");
+  }
+
+  function handleFiles(event: ChangeEvent<HTMLInputElement>) {
+    applyFiles(Array.from(event.target.files || []));
+    event.target.value = "";
+  }
+
+  function handleDrop(event: DragEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    setDragActive(false);
+    if (loading) return;
+    applyFiles(Array.from(event.dataTransfer.files || []));
   }
 
   function removeFile(index: number) {
@@ -148,6 +162,8 @@ export default function PDForaTool({
 
       window.setTimeout(() => window.URL.revokeObjectURL(downloadURL), 1000);
 
+      setFiles([]);
+      if (inputRef.current) inputRef.current.value = "";
       setMessage("Completed successfully. Download started.");
     } catch (error) {
       console.error(error);
@@ -222,7 +238,11 @@ export default function PDForaTool({
           <button
             type="button"
             onClick={chooseFiles}
-            className="flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 text-center transition active:scale-[0.99] hover:border-violet-400 hover:bg-violet-50 sm:min-h-64"
+            onDragOver={(event) => { event.preventDefault(); if (!loading) setDragActive(true); }}
+            onDragLeave={(event) => { event.preventDefault(); setDragActive(false); }}
+            onDrop={handleDrop}
+            aria-label="Choose or drop PDF files"
+            className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] sm:min-h-64 ${dragActive ? "border-violet-500 bg-violet-50" : "border-slate-300 bg-slate-50 hover:border-violet-400 hover:bg-violet-50"}`}
           >
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100 text-3xl">
               📄
@@ -234,8 +254,8 @@ export default function PDForaTool({
                     files.length > 1 ? "s" : ""
                   } selected`
                 : multiple
-                  ? "Select PDF files"
-                  : "Select a PDF file"}
+                  ? "Choose or drop PDF files"
+                  : "Choose or drop a PDF file"}
             </h2>
 
             <p className="mt-2 text-xs text-slate-500 sm:text-sm">
@@ -391,6 +411,7 @@ export default function PDForaTool({
             description="Designed to work smoothly on phones and desktops."
           />
         </div>
+        <AdsterraNative />
       </section>
     </main>
   );

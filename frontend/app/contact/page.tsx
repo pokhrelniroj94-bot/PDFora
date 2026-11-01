@@ -26,7 +26,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-4xl">
           <div className="text-center">
             <p className="text-xs font-black uppercase tracking-[0.2em] text-violet-600">
-              Contact Niroj77
+              Contact PDFora
             </p>
 
             <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
@@ -35,7 +35,7 @@ export default function ContactPage() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Have a question, suggestion, feedback, or a problem with one
-              of our PDF tools? Contact the Niroj77 team.
+              of our PDF tools? Contact the PDFora team.
             </p>
           </div>
 
@@ -87,7 +87,7 @@ export default function ContactPage() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                We welcome ideas that can help make Niroj77 faster, easier,
+                We welcome ideas that can help make PDFora faster, easier,
                 and more useful.
               </p>
             </div>
@@ -102,7 +102,7 @@ export default function ContactPage() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                For questions about how Niroj77 handles information and
+                For questions about how PDFora handles information and
                 uploaded files, please contact us by email.
               </p>
 
@@ -110,7 +110,7 @@ export default function ContactPage() {
                 href="mailto:zenvora966@gmail.com"
                 className="mt-4 inline-block text-sm font-bold text-violet-600 hover:underline"
               >
-                Contact Niroj77 →
+                Contact PDFora →
               </a>
             </div>
           </div>
@@ -142,14 +142,14 @@ export default function ContactPage() {
               href="/about"
               className="rounded-xl border border-slate-200 bg-white px-4 py-3 font-bold text-slate-600 hover:bg-slate-100"
             >
-              About Niroj77
+              About PDFora
             </a>
           </div>
         </div>
       </section>
 
       <footer className="border-t border-slate-200 bg-slate-950 px-4 py-8 text-center text-xs text-slate-500">
-        © 2026 Niroj77. All rights reserved.
+        © 2026 PDFora. All rights reserved.
       </footer>
     </main>
   );

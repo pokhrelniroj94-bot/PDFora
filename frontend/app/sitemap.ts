@@ -1,3 +1,4 @@
+import { blogPosts } from "../lib/blog-posts";
 import type { MetadataRoute } from "next";
 
 const baseUrl = "https://pd-fora.vercel.app";
@@ -72,6 +73,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     ...toolEntries,
+    { url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.8 },
+    ...blogPosts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.updated),
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+    })),
     {
       url: `${baseUrl}/about`,
       changeFrequency: "monthly",

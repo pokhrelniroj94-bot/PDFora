@@ -248,8 +248,8 @@ export default function PDForaTool({
                     files.length > 1 ? "s" : ""
                   } selected`
                 : multiple
-                  ? "Select PDF files"
-                  : "Select a PDF file"}
+                  ? "Choose or drop PDF files"
+                  : "Choose or drop a PDF file"}
             </h2>
 
             <p className="mt-2 text-xs text-slate-500 sm:text-sm">
@@ -361,6 +361,8 @@ export default function PDForaTool({
           {/* Message */}
           {message && (
             <div
+              role="status"
+              aria-live="polite"
               className={`mt-4 rounded-xl border px-4 py-3 text-center text-sm font-semibold ${
                 success
                   ? "border-green-200 bg-green-50 text-green-700"

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Nepal Date, Tax, Land & Online Tools Guides | NIROJ Tools",
     description: "Helpful Nepal-focused date conversion, VAT, land measurement and document tutorials.",
-    url: "https://niroj.com.np/blog",
+    url: "https://pd-fora.vercel.app/blog",
     siteName: "NIROJ Tools",
     type: "website",
   },

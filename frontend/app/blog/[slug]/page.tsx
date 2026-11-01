@@ -82,6 +82,10 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
               {section.bullets && <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-700">{section.bullets.map((item) => <li key={item}>{item}</li>)}</ol>}
             </section>
           ))}
+          {post.sources && post.sources.length > 0 && <section className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8" aria-labelledby="official-sources-heading">
+            <h2 id="official-sources-heading" className="text-xl font-black text-slate-950">Official and technical references</h2>
+            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-teal-700">{post.sources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer" className="font-semibold underline">{source.label}</a></li>)}</ul>
+          </section>}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
             <div className="mt-5 space-y-5">

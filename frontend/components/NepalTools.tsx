@@ -13,7 +13,8 @@ function Panel({children}:{children:React.ReactNode}) { return <div className="s
 export default function NepalTools({slug}:{slug:string}) {
  const [mode,setMode]=useState("ad-bs"),[date,setDate]=useState(""),[result,setResult]=useState(""),[ready,setReady]=useState(false);
  const [amount,setAmount]=useState("1000"),[rate,setRate]=useState("13"),[taxMode,setTaxMode]=useState("add");
- const [ropani,setRopani]=useState("0"),[aana,setAana]=useState("0"),[paisa,setPaisa]=useState("0"),[daam,setDaam]=useState("0"),[area,setArea]=useState("5476"),[areaMode,setAreaMode]=useState("traditional");\n const [bigha,setBigha]=useState("0"),[kattha,setKattha]=useState("0"),[dhur,setDhur]=useState("0");
+ const [ropani,setRopani]=useState("0"),[aana,setAana]=useState("0"),[paisa,setPaisa]=useState("0"),[daam,setDaam]=useState("0"),[area,setArea]=useState("5476");
+ const [bigha,setBigha]=useState("0"),[kattha,setKattha]=useState("0"),[dhur,setDhur]=useState("0");
  const [number,setNumber]=useState("1234567"),[phone,setPhone]=useState("98XXXXXXXX"),[weight,setWeight]=useState("1"),[weightMode,setWeightMode]=useState("tola");
  const [digitsText,setDigitsText]=useState("नेपाल 2083 साल");
  const [preetiText,setPreetiText]=useState("g]kfn ;/sf/sf"),[preetiMode,setPreetiMode]=useState("to-unicode"),[preetiReady,setPreetiReady]=useState(false);

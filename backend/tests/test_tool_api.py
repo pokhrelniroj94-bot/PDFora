@@ -46,7 +46,7 @@ def make_sample_pdf() -> bytes:
         page.draw_line((50, 250), (50, 340))
         page.draw_line((150, 250), (150, 340))
         page.draw_line((250, 250), (250, 340))
-    doc.set_toc([[1, "Introduction", 1], [1, "Second section", 2]])
+    doc.new_page(width=612, height=792)  # A real blank page exercises blank-page removal.\n    doc.set_toc([[1, "Introduction", 1], [1, "Second section", 2]])
     doc.embfile_add("sample.txt", b"PDFora attachment regression fixture")
     result = doc.tobytes(garbage=4, deflate=True)
     doc.close()
@@ -158,7 +158,7 @@ def test_pdf_information_handles_missing_metadata():
     response = post_pdf("/api/pdf-info", make_sample_pdf())
     assert response.status_code == 200
     report = response.content.decode("utf-8")
-    assert "Page count: 3" in report
+    assert "Page count: 4" in report
     assert "Title: Not set" in report
     assert "Author: Not set" in report
 
@@ -169,7 +169,7 @@ def test_protect_pdf_encrypts_and_preserves_pages():
     reader = PdfReader(io.BytesIO(response.content))
     assert reader.is_encrypted
     assert reader.decrypt("PDFora-Test-Password")
-    assert len(reader.pages) == 3
+    assert len(reader.pages) == 4
 
 
 def test_invalid_pdf_is_rejected():

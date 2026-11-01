@@ -11,7 +11,7 @@ declare global {
 }
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 export default function NepaliTypingTool() {
-  const [roman, setRoman] = useState("namaste mero naam niroj ho");
+  const [roman, setRoman] = useState("namaste mero desh nepal ho");
   const [output, setOutput] = useState("");
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
@@ -57,7 +57,7 @@ export default function NepaliTypingTool() {
     anchor.href = url;
     anchor.download = "nepali-unicode.txt";
     anchor.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   return <div className="space-y-4">
     <div><h2 className="text-lg font-bold">Nepali Unicode Typing (Roman to Nepali)</h2><p className="mt-1 text-sm text-slate-600">Type Nepali words using English letters, then convert them into Devanagari Unicode.</p></div>

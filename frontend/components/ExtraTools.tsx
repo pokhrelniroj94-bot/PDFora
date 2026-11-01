@@ -17,7 +17,7 @@ const config:Record<string,F[]> = {
 "whitespace-cleaner":[{key:"text",label:"Text",value:"  Remove   extra spaces  \n\n and blank lines. "}],
 "character-frequency":[{key:"text",label:"Text",value:"banana"}],
 "password-generator":[{key:"len",label:"Length (8–128)",type:"number",value:"20"},{key:"count",label:"Number to generate (1–10)",type:"number",value:"3"}],
-"uuid-generator":[],"xml-formatter-validator":[{key:"text",label:"XML input",value:"<root><item id=\"1\">Hello</item></root>"}],"url-query-parser":[{key:"text",label:"Full URL",value:"https://example.com/search?q=pdf&page=2"}],"xml-formatter-validator":[{key:"text",label:"XML input",value:"<root><item>Example</item></root>"}],
+"uuid-generator":[],"xml-formatter-validator":[{key:"text",label:"XML input",value:"<root><item id=\"1\">Hello</item></root>"}],"url-query-parser":[{key:"text",label:"Full URL",value:"https://example.com/search?q=pdf&page=2"}],
 "html-encoder-decoder":[{key:"text",label:"HTML or plain text",value:"<h1>Hello & welcome</h1>"},{key:"mode",label:"Mode (encode or decode)",value:"encode"}],
 "regex-tester":[{key:"pattern",label:"Regular expression",value:"\\bcat\\b"},{key:"flags",label:"Flags (g, i, m)",value:"gi"},{key:"text",label:"Test text",value:"Cat, catalog, cat."}],
 "jwt-decoder":[{key:"text",label:"JWT token",value:""}],

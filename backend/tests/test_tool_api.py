@@ -31,7 +31,7 @@ def make_sample_pdf() -> bytes:
             image_bytes = io.BytesIO()
             image.save(image_bytes, format="PNG")
             page.insert_image(fitz.Rect(50, 150, 90, 190), stream=image_bytes.getvalue())
-            page.add_link({"kind": fitz.LINK_URI, "from": fitz.Rect(50, 200, 150, 220), "uri": "https://example.com"})
+            page.insert_link({"kind": fitz.LINK_URI, "from": fitz.Rect(50, 200, 150, 220), "uri": "https://example.com"})
             page.add_text_annot((200, 200), "PDFora annotation")
         page.draw_line((50, 250), (250, 250))
         page.draw_line((50, 280), (250, 280))
@@ -181,4 +181,4 @@ def test_api_directory_includes_every_operational_tool():
     assert len(tools) == len(set(tools))
     assert "pdf-to-excel" in tools
     assert "ocr" not in tools
-    assert len(tools) == 48
+    assert len(tools) == 49

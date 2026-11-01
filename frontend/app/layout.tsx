@@ -16,20 +16,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pd-fora.vercel.app"),
+  metadataBase: new URL("https://niroj.com.np"),
   title: {
-    default: "Free PDF Tools Online: Merge, Compress & Convert | PDFora",
-    template: "%s | PDFora",
+    default: "Free Online Tools: PDF, Image, Text & More | NIROJ Tools",
+    template: "%s | NIROJ Tools",
   },
   description:
-    "Merge, split, compress and convert PDF files online for free. Edit, organize and secure documents in your browser with PDFora—no installation needed.",
+    "Free online tools for PDF documents and everyday digital tasks. Convert, edit, organize and process files directly in your browser.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "PDFora", title: "PDFora – Free Online PDF Tools: Merge, Compress & Convert", description: "Merge, split, compress, convert and edit PDF files online with PDFora." },
-  twitter: { card: "summary", title: "PDFora – Free Online PDF Tools", description: "Free tools to merge, split, compress, convert and edit PDFs online." },
+  openGraph: { type: "website", url: "https://niroj.com.np/", siteName: "NIROJ Tools", title: "NIROJ Tools – Free Online PDF Tools: Merge, Compress & Convert", description: "Free online PDF, image, text and productivity tools." },
+  twitter: { card: "summary", title: "NIROJ Tools – Free Online PDF Tools", description: "Free tools to merge, split, compress, convert and edit PDFs online." },
   keywords: [
     "free PDF tools",
     "online PDF tools",
-    "PDFora PDF tools",
+    "NIROJ Tools PDF tools",
     "PDF converter",
     "PDF to Word",
     "Word to PDF",
@@ -63,9 +63,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <footer className="border-t border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-600">
-          <a href="/blog" className="font-semibold text-teal-700 hover:underline">PDF Guides &amp; Tutorials</a>
+          <a href="/blog" className="font-semibold text-teal-700 hover:underline">Guides &amp; Tutorials</a>
           <span className="mx-2">·</span>
-          <a href="/about" className="hover:underline">About PDFora</a>
+          <a href="/about" className="hover:underline">About NIROJ Tools</a>
           <span className="mx-2">·</span>
           <a href="/contact" className="hover:underline">Contact</a>
         </footer>
@@ -79,26 +79,26 @@ export default function RootLayout({
               "@graph": [
                 {
                   "@type": "WebSite",
-                  "@id": "https://pd-fora.vercel.app/#website",
-                  name: "PDFora",
-                  url: "https://pd-fora.vercel.app/",
+                  "@id": "https://niroj.com.np/#website",
+                  name: "NIROJ Tools",
+                  url: "https://niroj.com.np/",
                   inLanguage: "en",
                 },
                 {
                   "@type": "Organization",
-                  "@id": "https://pd-fora.vercel.app/#organization",
-                  name: "PDFora",
-                  url: "https://pd-fora.vercel.app/",
+                  "@id": "https://niroj.com.np/#organization",
+                  name: "NIROJ Tools",
+                  url: "https://niroj.com.np/",
                 },
                 {
                   "@type": "SoftwareApplication",
-                  "@id": "https://pd-fora.vercel.app/#application",
-                  name: "PDFora",
-                  url: "https://pd-fora.vercel.app/",
+                  "@id": "https://niroj.com.np/#application",
+                  name: "NIROJ Tools",
+                  url: "https://niroj.com.np/",
                   applicationCategory: "UtilitiesApplication",
                   operatingSystem: "Any",
                   description:
-                    "Free browser-based tools to merge, split, compress, convert, organize and edit PDF documents.",
+                    "Free browser-based tools for PDF, image, text and everyday productivity tasks.",
                   offers: {
                     "@type": "Offer",
                     price: "0",

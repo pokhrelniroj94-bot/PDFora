@@ -8,15 +8,15 @@ export const metadata: Metadata = {
   keywords: ["Nepali date converter", "BS to AD", "AD to BS", "VAT calculator Nepal", "Ropani to Aana", "Nepali number converter", "free online tools Nepal", "NIROJ Tools"],
   openGraph: {
     type: "website",
-    title: "100+ Free Online Tools | NIROJ Tools",
-    description: "Free browser-based calculators, converters, text, developer, image and PDF utilities.",
+    title: "Free Nepal Tools: BS to AD, VAT & Ropani Converter | NIROJ Tools",
+    description: "Convert Nepali dates, calculate 13% VAT, convert Ropani and Aana, write Nepali numbers and use free PDF and SEO tools.",
     url: "https://niroj.com.np/tools",
     siteName: "NIROJ Tools",
   },
   twitter: {
     card: "summary",
-    title: "100+ Free Online Tools | NIROJ Tools",
-    description: "Free browser-based calculators, converters and productivity utilities.",
+    title: "Free Nepal Tools: BS to AD, VAT & Ropani Converter | NIROJ Tools",
+    description: "Nepal-focused free date, VAT, land measurement, number, phone and PDF utilities.",
   },
 };
 

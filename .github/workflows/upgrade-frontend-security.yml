@@ -1,0 +1,44 @@
+name: Upgrade vulnerable frontend dependencies
+on:
+  push:
+    branches: [security-next-upgrade]
+  pull_request:
+    branches: [master]
+permissions:
+  contents: write
+jobs:
+  upgrade-and-verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: security-next-upgrade
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Upgrade Next.js to patched release
+        run: npm install next@16.4.3 --save-exact
+      - name: Apply compatible security fixes
+        run: npm audit fix || echo "Non-blocking development advisories remain; the production audit below is the release gate."
+      - name: Lint
+        run: npm run lint
+      - name: Production build
+        run: npm run build
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - name: Commit verified dependency updates
+        working-directory: .
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/package.json frontend/package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m "security: upgrade vulnerable frontend dependencies [skip ci]"
+            git pull --rebase origin security-next-upgrade
+            git push origin HEAD:security-next-upgrade
+          fi

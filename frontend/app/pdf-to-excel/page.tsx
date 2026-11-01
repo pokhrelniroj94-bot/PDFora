@@ -23,7 +23,7 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Convert PDF files to editable Excel spreadsheets online with
-              Niroj77. Extract tables and text from your PDF and download the
+              PDFora. Extract tables and text from your PDF and download the
               result as an Excel XLSX file quickly and easily.
             </p>
           </div>
@@ -36,7 +36,7 @@ export default function Page() {
               description="Convert your PDF into an editable Excel spreadsheet."
               multiple={false}
               accept="application/pdf,.pdf"
-              downloadName="Niroj77-Converted.xlsx"
+              downloadName="PDFora-Converted.xlsx"
               fieldName="file"
             />
           </div>
@@ -87,7 +87,7 @@ export default function Page() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Use Niroj77 from modern desktop, tablet and mobile browsers
+                Use PDFora from modern desktop, tablet and mobile browsers
                 without installing additional software.
               </p>
             </div>
@@ -134,7 +134,7 @@ export default function Page() {
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Start the PDF to Excel conversion using the Niroj77 converter.
+                Start the PDF to Excel conversion using the PDFora converter.
               </p>
             </div>
 
@@ -164,7 +164,7 @@ export default function Page() {
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Niroj77 provides a free online PDF to Excel converter for users who
+            PDFora provides a free online PDF to Excel converter for users who
             need to turn PDF documents into editable Excel spreadsheets.
             Upload a PDF and convert readable tables and text into an XLSX
             file that can be opened and edited in spreadsheet software.
@@ -188,22 +188,22 @@ export default function Page() {
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
-            What can Niroj77 PDF to Excel convert?
+            What can PDFora PDF to Excel convert?
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Niroj77 can extract readable tables when tables are detected in the
+            PDFora can extract readable tables when tables are detected in the
             PDF. When no table is detected, readable text can be placed into
             Excel worksheets so that the content can still be accessed and
             edited.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
-            Is Niroj77 PDF to Excel free?
+            Is PDFora PDF to Excel free?
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Niroj77 currently provides its available PDF tools without
+            PDFora currently provides its available PDF tools without
             requiring a subscription. Upload a PDF and use the PDF to Excel
             converter to generate a downloadable XLSX spreadsheet.
           </p>

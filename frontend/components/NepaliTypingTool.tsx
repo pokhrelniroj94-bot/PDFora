@@ -16,7 +16,7 @@ export default function NepaliTypingTool() {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
-    if (window.nepalify?.format) { setReady(true); return; }
+    if (window.nepalify?.format) { Promise.resolve().then(() => setReady(true)); return; }
     const existing = document.querySelector<HTMLScriptElement>('script[data-nepalify-script]');
     if (existing) {
       const onLoad = () => setReady(!!window.nepalify?.format);

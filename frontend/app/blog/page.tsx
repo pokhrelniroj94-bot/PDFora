@@ -36,7 +36,7 @@ export default function BlogIndexPage() {
         </div>
         <div className="mt-10 rounded-3xl border border-teal-100 bg-teal-50 p-6">
           <h2 className="text-xl font-black text-slate-950">Need to work on a PDF now?</h2>
-          <p className="mt-2 text-sm leading-7 text-slate-700">Use PDFora's free online tools to merge, split, compress and convert documents.</p>
+          <p className="mt-2 text-sm leading-7 text-slate-700">Use PDFora&apos;s free online tools to merge, split, compress and convert documents.</p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white" href="/compress-pdf">Compress PDF</Link>
             <Link className="rounded-xl border border-teal-200 bg-white px-4 py-2 text-sm font-bold text-teal-800" href="/merge-pdf">Merge PDF</Link>

@@ -21,7 +21,7 @@ type Props = {
   extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string; multiline?: boolean }[];
 };
 
-export default function NIROJ ToolsTool({
+export default function NirojToolsTool({
   endpoint,
   title,
   description,

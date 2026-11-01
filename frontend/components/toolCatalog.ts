@@ -50,4 +50,5 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"sales-tax-calculator",name:"Sales Tax Calculator",category:"Business",description:"Add or remove a configurable sales tax percentage.",keywords:"sales tax calculator tax percentage"},
 {slug:"salary-breakdown-calculator",name:"Salary Breakdown Calculator",category:"Business",description:"Convert gross salary between monthly and annual amounts and estimate take-home after a simple deduction rate.",keywords:"salary breakdown calculator monthly annual"},
 {slug:"savings-goal-calculator",name:"Savings Goal Calculator",category:"Business",description:"Estimate monthly savings needed to reach a target by a chosen date.",keywords:"savings goal monthly deposit calculator"},
+{slug:"url-query-parser",name:"URL Query String Parser",category:"Developer",description:"Parse a URL and inspect its query parameters in a readable table.",keywords:"url query string parser parameters decoder"},
 ];

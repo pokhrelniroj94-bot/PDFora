@@ -290,7 +290,7 @@ const catalogGuides: BlogPost[] = toolCatalog
   });
 
 
-export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts, ...catalogGuides, ...nepalBlogPosts];
+export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides];
 
 export function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug);

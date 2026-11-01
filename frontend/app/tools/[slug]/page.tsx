@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import ToolWorkspace from "../../../components/AllTools";
+import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
 import { toolCatalog } from "../../../components/toolCatalog";
 import { blogPosts } from "../../../lib/blog-posts";
 
@@ -12,15 +12,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool) return { title: "Tool not found", robots: { index: false, follow: true } };
-  const title = `${tool.name} – Free Online Tool | NIROJ Tools`;
+  const title = `${tool.name} – Free Online Tool | PDFora`;
   const description = tool.description.length > 155 ? tool.description.slice(0, 152).trimEnd() + "..." : tool.description;
   const canonical = `${site}/tools/${tool.slug}`;
   return {
     title, description,
-    keywords: [...new Set([tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), "free online tool", "NIROJ Tools"])],
+    keywords: [...new Set([tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), "free online tool", "PDFora"])],
     alternates: { canonical },
     robots: { index: true, follow: true },
-    openGraph: { type: "website", title, description, url: canonical, siteName: "NIROJ Tools" },
+    openGraph: { type: "website", title, description, url: canonical, siteName: "PDFora" },
     twitter: { card: "summary_large_image", title, description },
   };
 }
@@ -79,17 +79,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
     <ToolWorkspace slug={slug} />
-    <section className="mx-auto max-w-4xl px-4 pb-12">
-      <article className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-        <h2 className="text-2xl font-black text-slate-950">How to use {tool.name}</h2>
-        <p className="mt-3 leading-7 text-slate-700">{tool.description} Start with a representative sample, check every field and run the tool. Review the result before copying it into another app or using it in a workflow.</p>
-        <h3 className="mt-6 text-lg font-bold text-slate-900">Practical tips</h3>
-        <ul className="mt-3 list-disc space-y-2 pl-5 leading-7 text-slate-700"><li>Check units, input format and available options before processing.</li><li>Try a small sample first and compare the result with an expected output.</li><li>Keep a source copy and verify important results independently.</li></ul>
-        <h3 className="mt-6 text-lg font-bold text-slate-900">Frequently asked questions</h3>
-        <div className="mt-3 space-y-4">{questions.map((item) => <div key={item.q}><h4 className="font-semibold text-slate-900">{item.q}</h4><p className="mt-1 leading-7 text-slate-600">{item.a}</p></div>)}</div>
-        {guide && <p className="mt-5"><Link className="font-semibold text-teal-700 underline" href={`/blog/${guide.slug}`}>Read the complete {tool.name} guide</Link></p>}
-      </article>
-      <nav aria-label="Related tools" className="mt-6"><h2 className="text-xl font-bold text-slate-900">Related {tool.category} tools</h2><div className="mt-3 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-teal-700 hover:border-teal-500">{item.name}</Link>)}</div></nav>
-    </section>
+    <CatalogToolSEOContent tool={tool} questions={questions} related={related} guideSlug={guide?.slug} />
   </>;
 }

@@ -7,10 +7,10 @@ export const metadata: Metadata = {
   description: "Practical Nepal guides for NRB exchange rates, FY 2083/84 salary tax, NEA electricity bills, government holidays, Nepali typing, BS dates, land units and online tools.",
   alternates: { canonical: "https://pd-fora.vercel.app/blog" },
   openGraph: {
-    title: "Nepal Guides: NRB Rates, Tax, Electricity, Holidays & Tools | NIROJ Tools",
+    title: "Nepal Guides: NRB Rates, Tax, Electricity, Holidays & Tools | PDFora",
     description: "Helpful Nepal-focused guides for exchange rates, salary tax, electricity bills, public holidays, Nepali typing, date conversion and documents.",
     url: "https://pd-fora.vercel.app/blog",
-    siteName: "NIROJ Tools",
+    siteName: "PDFora",
     type: "website",
   },
 };
@@ -19,7 +19,7 @@ export default function BlogIndexPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-12 sm:px-6">
       <div className="mx-auto max-w-5xl">
-        <p className="text-xs font-black uppercase tracking-[0.2em] text-teal-700">NIROJ Tools Learning Centre</p>
+        <p className="text-xs font-black uppercase tracking-[0.2em] text-teal-700">PDFora Learning Centre</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Tools, Tutorials & Practical Guides</h1>
         <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">Practical Nepal how-to guides for NRB rates, income tax, electricity bills, public holidays, Nepali Unicode typing, Bikram Sambat dates, land units and everyday document tasks.</p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
@@ -36,7 +36,7 @@ export default function BlogIndexPage() {
         </div>
         <div className="mt-10 rounded-3xl border border-teal-100 bg-teal-50 p-6">
           <h2 className="text-xl font-black text-slate-950">Need a tool now?</h2>
-          <p className="mt-2 text-sm leading-7 text-slate-700">Use NIROJ Tools&apos;s free online tools to merge, split, compress and convert documents.</p>
+          <p className="mt-2 text-sm leading-7 text-slate-700">Use PDFora&apos;s free online tools to merge, split, compress and convert documents.</p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white" href="/compress-pdf">Compress PDF</Link>
             <Link className="rounded-xl border border-teal-200 bg-white px-4 py-2 text-sm font-bold text-teal-800" href="/merge-pdf">Merge PDF</Link>

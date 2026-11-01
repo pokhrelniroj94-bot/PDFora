@@ -18,14 +18,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
-    default: "Free Nepal Online Tools: PDF, Tax, Forex, Calendar & More | NIROJ Tools",
-    template: "%s | NIROJ Tools",
+    default: "Free Nepal Online Tools: PDF, Tax, Forex, Calendar & More | PDFora",
+    template: "%s | PDFora",
   },
   description:
     "Free online tools for Nepal: NRB exchange rates, salary tax, electricity bills, Nepali dates, typing, public holidays, calculators and PDF document tools.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "NIROJ Tools", title: "NIROJ Tools – Free Nepal Online Utilities, PDF & Calculators", description: "Use free Nepal tools for NRB forex rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF tasks." },
-  twitter: { card: "summary", title: "Free Nepal Online Tools | NIROJ Tools", description: "NRB rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF utilities." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "PDFora", title: "PDFora – Free Nepal Online Utilities, PDF & Calculators", description: "Use free Nepal tools for NRB forex rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF tasks." },
+  twitter: { card: "summary", title: "Free Nepal Online Tools | PDFora", description: "NRB rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF utilities." },
   keywords: [
     "free Nepal online tools",
     "NRB exchange rate",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     "Nepal public holidays",
     "free PDF tools",
     "online PDF tools",
-    "NIROJ Tools PDF tools",
+    "PDFora PDF tools",
     "PDF converter",
     "PDF to Word",
     "Word to PDF",
@@ -74,7 +74,7 @@ export default function RootLayout({
           <span className="mx-2">·</span>
           <a href="/blog" className="font-semibold text-teal-700 hover:underline">Guides &amp; Tutorials</a>
           <span className="mx-2">·</span>
-          <a href="/about" className="hover:underline">About NIROJ Tools</a>
+          <a href="/about" className="hover:underline">About PDFora</a>
           <span className="mx-2">·</span>
           <a href="/contact" className="hover:underline">Contact</a>
         </footer>
@@ -89,20 +89,20 @@ export default function RootLayout({
                 {
                   "@type": "WebSite",
                   "@id": "https://pd-fora.vercel.app/#website",
-                  name: "NIROJ Tools",
+                  name: "PDFora",
                   url: "https://pd-fora.vercel.app/",
                   inLanguage: ["en", "ne"],
                 },
                 {
                   "@type": "Organization",
                   "@id": "https://pd-fora.vercel.app/#organization",
-                  name: "NIROJ Tools",
+                  name: "PDFora",
                   url: "https://pd-fora.vercel.app/",
                 },
                 {
                   "@type": "SoftwareApplication",
                   "@id": "https://pd-fora.vercel.app/#application",
-                  name: "NIROJ Tools",
+                  name: "PDFora",
                   url: "https://pd-fora.vercel.app/",
                   applicationCategory: "UtilitiesApplication",
                   operatingSystem: "Any",

@@ -209,6 +209,7 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "Does the tool use live rates?", answer: "It requests the latest available published NRB rate when you refresh; it does not guarantee intraday bank rates." }
     ],
     toolLinks: [{ label: "NRB Exchange Rates", href: "/tools/nepal-forex-rates" }, { label: "General Currency Converter", href: "/tools/currency-converter" }]
+    sources: [{ label: "Nepal Rastra Bank exchange rates", url: "https://www.nrb.org.np/forex" }, { label: "NRB Forex API documentation", url: "https://www.nrb.org.np/api-docs-v1/" }],
   },
   {
     slug: "nepal-salary-income-tax-calculator-2083-84-guide",
@@ -229,6 +230,7 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "Is the result the exact take-home pay?", answer: "No. It is a tax estimate and excludes payroll items or deductions that are not entered." }
     ],
     toolLinks: [{ label: "Nepal Salary Tax Calculator", href: "/tools/nepal-salary-tax-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }]
+    sources: [{ label: "Inland Revenue Department tax rates and incentives", url: "https://ird.gov.np/category/taxrateincentives/" }],
   },
   {
     slug: "nea-electricity-bill-calculator-nepal-guide",
@@ -249,6 +251,7 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "Is the estimate an official bill?", answer: "No. The actual bill issued by NEA is final. Check current ERC and NEA tariff information." }
     ],
     toolLinks: [{ label: "NEA Electricity Bill Calculator", href: "/tools/nepal-electricity-bill-calculator" }]
+    sources: [{ label: "Electricity Regulatory Commission official bill calculator", url: "https://www.erc.gov.np/electricity-calculator" }, { label: "NEA consumer tariff rates", url: "https://www.nea.org.np/en/pages/consumer-tariff-rates" }],
   },
   {
     slug: "nepal-public-holidays-2083-calendar-guide",
@@ -269,6 +272,7 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "Where can I verify the official notice?", answer: "Use the Ministry of Home Affairs Government and Public Holidays 2083 page linked from the calendar." }
     ],
     toolLinks: [{ label: "Nepal Public Holidays 2083", href: "/tools/nepal-public-holidays-2083" }, { label: "Nepali Calendar", href: "/tools/nepali-calendar" }]
+    sources: [{ label: "Ministry of Home Affairs: Government and Public Holidays 2083", url: "https://moha.gov.np/en/page/government-and-public-holidays-in-2083" }],
   },
   {
     slug: "nepali-unicode-typing-online-guide",
@@ -289,6 +293,7 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "Can it convert old Preeti documents?", answer: "Use the separate Preeti ↔ Unicode converter for legacy Preeti-encoded text." }
     ],
     toolLinks: [{ label: "Nepali Unicode Typing", href: "/tools/nepali-unicode-typing" }, { label: "Preeti Unicode Converter", href: "/tools/preeti-unicode-converter" }]
+    sources: [{ label: "Nepalify open-source typing library", url: "https://github.com/suvash/nepalify" }],
   }
 
 ];

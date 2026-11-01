@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5faf9;
+  --background: #f7faf9;
   --foreground: #102a2a;
   --brand: #0f766e;
   --brand-strong: #115e59;
   --brand-soft: #ccfbf1;
-  --brand-accent: #f97316;
+  --brand-accent: #f59e0b;
 }
 
 @theme inline {
@@ -16,17 +16,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-html { color-scheme: light; }
-body { background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; }
+html { color-scheme: light; scroll-behavior: smooth; }
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  text-rendering: optimizeLegibility;
+}
 ::selection { background: #99f6e4; color: #134e4a; }
-
-/* Keep legacy blue and violet utility classes consistent with PDFora's teal identity. */
-.text-blue-600, .text-violet-600 { color: #0f766e !important; }
-.bg-blue-600, .bg-violet-600 { background-color: #0f766e !important; }
-.bg-blue-700, .bg-violet-700 { background-color: #115e59 !important; }
-.bg-blue-100, .bg-blue-50, .bg-violet-100, .bg-violet-50 { background-color: #ccfbf1 !important; }
-.border-blue-100, .border-violet-300 { border-color: #99f6e4 !important; }
-.hover\\:bg-blue-700:hover, .hover\\:bg-violet-50:hover { background-color: #f0fdfa !important; }
-.hover\\:border-blue-400:hover, .hover\\:border-violet-300:hover, .hover\\:border-violet-400:hover { border-color: #5eead4 !important; }
-.focus\\:border-blue-500:focus, .focus\\:border-violet-500:focus { border-color: #0d9488 !important; }
-.focus\\:ring-blue-100:focus, .focus\\:ring-violet-100:focus { --tw-ring-color: #ccfbf1 !important; }
+:focus-visible { outline: 3px solid #14b8a6; outline-offset: 3px; }
+input, button, a { -webkit-tap-highlight-color: transparent; }
+button, a { transition-duration: 180ms; }

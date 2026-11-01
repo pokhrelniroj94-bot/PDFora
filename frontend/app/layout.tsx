@@ -22,7 +22,10 @@ export const metadata: Metadata = {
     template: "%s | PDFora",
   },
   description:
-    "Use PDFora free online PDF tools to merge PDF files, split PDF pages, compress PDF size, convert PDF to Word, Excel, JPG and PNG, rotate, edit and protect PDF documents. Fast browser-based PDF utilities for everyday work.",
+    "Free online PDF tools to merge, split, compress, convert PDF to Word, Excel, JPG and PNG, rotate pages, add page numbers, protect and edit PDFs. No installation required.",
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "PDFora", title: "PDFora – Free Online PDF Tools", description: "Merge, split, compress, convert and edit PDF files online with PDFora." },
+  twitter: { card: "summary", title: "PDFora – Free Online PDF Tools", description: "Free tools to merge, split, compress, convert and edit PDFs online." },
   keywords: [
     "free PDF tools",
     "online PDF tools",
@@ -60,6 +63,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <ToolDirectory />
+        <Script id="pdfora-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context": "https://schema.org", "@type": "WebApplication", name: "PDFora", url: "https://pd-fora.vercel.app/", applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description: "Free online PDF tools for merging, splitting, compressing, converting and editing PDF documents.", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } }) }} />
         <Script id="adsterra-popunder" src="https://abscloud.org/1/8af45b3803b63ee451c4530bbaa198d1" strategy="afterInteractive" data-cfasync="false" />
         <Script id="adsterra-socialbar" src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498" strategy="afterInteractive" data-cfasync="false" />
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />

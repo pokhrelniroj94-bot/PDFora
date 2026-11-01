@@ -192,29 +192,104 @@ const faqs = [
   },
 ];
 
+const searchTerms: Record<string, string> = {
+    "/merge-pdf": "combine join multiple files merger", "/split-pdf": "separate divide pages range",
+    "/compress-pdf": "shrink reduce smaller optimize size mb", "/images-to-pdf": "jpg jpeg png webp photo picture",
+    "/pdf-to-jpg": "jpeg image pictures export", "/pdf-to-excel": "xlsx spreadsheet table cells",
+    "/pdf-to-word": "doc docx editable document", "/rotate-pdf": "turn orientation sideways",
+    "/delete-pages": "remove erase unwanted", "/extract-pages": "save selected range",
+    "/watermark": "stamp brand overlay", "/reorder-pdf": "rearrange move sequence",
+    "/add-page-numbers": "numbering footer", "/crop-pdf": "trim margins", "/header-footer": "heading footer",
+    "/protect-pdf": "encrypt password lock secure", "/unlock-pdf": "decrypt remove password",
+    "/sign-pdf": "signature signer e-sign", "/pdf-to-png": "image export", "/pdf-to-webp": "image convert",
+    "/pdf-to-text": "extract copy selectable txt", "/grayscale-pdf": "black white monochrome",
+    "/flatten-pdf": "forms annotations", "/edit-pdf-metadata": "title author properties",
+    "/repair-pdf": "fix damaged corrupted recover", "/pdf-to-html": "webpage markup",
+    "/extract-images": "photos pictures embedded zip", "/remove-blank-pages": "empty pages",
+    "/compare-pdf": "difference diff two documents", "/add-blank-pages": "insert empty",
+    "/rotate-selected-pages": "turn chosen individual", "/add-background": "background color layer",
+    "/add-bookmarks": "outline navigation contents", "/bates-numbering": "legal sequential labels",
+    "/extract-bookmarks": "outline export", "/extract-fonts": "typeface embedded",
+    "/extract-page-images": "render snapshots", "/ocr-pdf": "scanned recognize optical character",
+    "/page-counter": "count number dimensions", "/pdf-information": "metadata properties details inspect",
+    "/pdf-to-bmp": "bitmap image", "/pdf-to-csv": "table spreadsheet comma separated",
+    "/pdf-to-json": "structured data", "/pdf-to-markdown": "md notes", "/pdf-to-tiff": "tif archive",
+    "/remove-annotations": "comments notes markup", "/remove-attachments": "embedded files",
+    "/remove-pdf-links": "hyperlinks urls", "/remove-pdf-metadata": "clear privacy author",
+    "/split-by-bookmarks": "chapters sections outline divide",
+  };
+
+const howToUse: Record<string, string> = {
+    "/merge-pdf": "Choose at least two PDFs, arrange their order, then merge and download one file.",
+    "/split-pdf": "Upload a PDF, select the page range or split option, then download the separated pages.",
+    "/compress-pdf": "Upload your PDF and run compression to create a smaller file for sharing.",
+    "/images-to-pdf": "Select JPG, PNG or WebP images, arrange them, then create one PDF.",
+    "/pdf-to-jpg": "Upload a PDF and download its pages as JPG images in a ZIP archive.",
+    "/pdf-to-excel": "Upload a PDF containing selectable tables and download the extracted Excel workbook.",
+    "/pdf-to-word": "Upload a text-based PDF and download an editable Word document.",
+    "/rotate-pdf": "Upload a PDF, choose 90, 180 or 270 degrees, then save the rotated file.",
+    "/delete-pages": "Upload a PDF, enter page numbers to remove, then download the remaining pages.",
+    "/extract-pages": "Upload a PDF and enter the page numbers or range you want to keep.",
+    "/watermark": "Upload a PDF, type the watermark text, set its options and apply it.",
+    "/reorder-pdf": "Upload a PDF and enter the new page order to rearrange its pages.",
+    "/add-page-numbers": "Upload a PDF, set the numbering format and position, then apply page numbers.",
+    "/crop-pdf": "Upload a PDF and set crop margins to trim page edges.",
+    "/header-footer": "Upload a PDF, enter header or footer text and apply it to pages.",
+    "/protect-pdf": "Upload a PDF, enter a strong password and download the encrypted copy.",
+    "/unlock-pdf": "Upload the protected PDF, enter its current password and download the unlocked copy.",
+    "/sign-pdf": "Upload a PDF, type the signer name and add a visible signature to the last page.",
+    "/pdf-to-png": "Upload a PDF and download page images as PNG files.",
+    "/pdf-to-webp": "Upload a PDF and download its pages as WebP images.",
+    "/pdf-to-text": "Upload a PDF with selectable text and download the extracted text.",
+    "/grayscale-pdf": "Upload a PDF and convert its pages to black-and-white grayscale.",
+    "/flatten-pdf": "Upload a PDF to apply supported form appearances and flatten annotations.",
+    "/edit-pdf-metadata": "Upload a PDF, edit its title, author, subject or keywords, then save.",
+    "/repair-pdf": "Upload a damaged PDF and try best-effort recovery; results depend on the damage.",
+    "/pdf-to-html": "Upload a text-based PDF and export its selectable content as HTML.",
+    "/extract-images": "Upload a PDF with embedded images and download them as a ZIP.",
+    "/remove-blank-pages": "Upload a PDF; detected blank pages are removed from the output.",
+    "/compare-pdf": "Upload two PDFs and download a report showing their text differences.",
+    "/add-blank-pages": "Upload a PDF, specify how many blank pages to append, then download it.",
+    "/rotate-selected-pages": "Upload a PDF, specify pages and angle, then save the result.",
+    "/add-background": "Upload a PDF, enter background text and choose a supported background color.",
+    "/add-bookmarks": "Enter one bookmark per line as page:title, for example 1:Introduction.",
+    "/bates-numbering": "Set a prefix and starting number to add sequential Bates labels to pages.",
+    "/extract-bookmarks": "Upload a bookmarked PDF and download its outline as a text file.",
+    "/extract-fonts": "Upload a PDF with embedded fonts and download extractable font files as a ZIP.",
+    "/extract-page-images": "Upload a PDF and download rendered page images in a ZIP archive.",
+    "/ocr-pdf": "OCR is not enabled on the current server yet; scanned-PDF recognition is coming later.",
+    "/page-counter": "Upload a PDF to get its page count and basic document-size information.",
+    "/pdf-information": "Upload a PDF and download a report with metadata, page dimensions and encryption status.",
+    "/pdf-to-bmp": "Upload a PDF and download each page as a BMP bitmap image.",
+    "/pdf-to-csv": "Upload a PDF with extractable tables and download detected table data as CSV.",
+    "/pdf-to-json": "Upload a text-based PDF and export selectable text and structure as JSON.",
+    "/pdf-to-markdown": "Upload a text-based PDF and export page-by-page content as Markdown.",
+    "/pdf-to-tiff": "Upload a PDF and download its pages as TIFF images in a ZIP.",
+    "/remove-annotations": "Upload a PDF and remove supported comments and annotation markups.",
+    "/remove-attachments": "Upload a PDF and remove embedded file attachments.",
+    "/remove-pdf-links": "Upload a PDF and strip clickable link annotations from its pages.",
+    "/remove-pdf-metadata": "Upload a PDF and clear document metadata such as title and author.",
+    "/split-by-bookmarks": "Upload a bookmarked PDF and split it into sections using bookmark destinations.",
+  };
+
 export default function Home() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+
+
+
+
   const filteredTools = useMemo(() => {
-    const search = query.trim().toLowerCase();
-
+    const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const tokens = normalize(query).split(" ").filter(Boolean);
     return tools.filter((tool) => {
-      const matchesCategory =
-        category === "All" || tool.category === category;
-
-      const matchesSearch =
-        !search ||
-        tool.name.toLowerCase().includes(search) ||
-        tool.description.toLowerCase().includes(search) ||
-        tool.category.toLowerCase().includes(search) ||
-        ({ "merge-pdf": "combine pdf join pdf files pdf merger", "split-pdf": "separate pdf extract pdf pages", "compress-pdf": "reduce pdf size shrink pdf optimize pdf", "images-to-pdf": "jpg to pdf png to pdf photo to pdf", "pdf-to-jpg": "convert pdf to jpg jpeg", "pdf-to-word": "pdf to doc docx converter", "pdf-to-excel": "pdf to xlsx spreadsheet converter", "rotate-pdf": "turn pdf pages", "delete-pages": "remove pdf pages", "extract-pages": "save selected pdf pages", "watermark": "add watermark pdf", "protect-pdf": "password protect pdf encrypt pdf", "unlock-pdf": "remove pdf password", "pdf-to-text": "extract text from pdf", "pdf-to-png": "pdf image converter", "pdf-to-webp": "convert pdf to webp", "extract-images": "extract pictures from pdf", "compare-pdf": "compare two pdf documents diff", "remove-blank-pages": "delete empty pages pdf" }[tool.href.replace(/^\//, "")] || "").includes(search);
-
-      return matchesCategory && matchesSearch;
+      const matchesCategory = category === "All" || tool.category === category;
+      const searchable = normalize([tool.name, tool.description, tool.category, tool.href.replaceAll("-", " "), searchTerms[tool.href] || ""].join(" "));
+      return matchesCategory && (tokens.length === 0 || tokens.every((token) => searchable.includes(token)));
     });
   }, [query, category]);
-
   const popularTools = tools.filter((tool) => tool.popular);
 
   return (
@@ -271,7 +346,7 @@ export default function Home() {
           </p>
 
           {/* SEARCH */}
-          <div className="mx-auto mt-8 flex max-w-2xl items-center rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
+          <div className="mx-auto mt-8 flex max-w-2xl items-center rounded-2xl border border-teal-200 bg-white p-1.5 shadow-lg shadow-teal-900/5 ring-4 ring-teal-50 focus-within:border-teal-500">
             <span
               className="pl-3 text-lg text-slate-400"
               aria-hidden="true"
@@ -281,8 +356,8 @@ export default function Home() {
 
             <input
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search: merge PDF, compress PDF, PDF to Word..."
+              onChange={(event) => { setQuery(event.target.value); setCategory("All"); }}
+              placeholder="Search any task: merge, shrink, convert, password, page number..."
               className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm outline-none"
               aria-label="Search PDF tools"
             />
@@ -300,7 +375,7 @@ export default function Home() {
 
           <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs text-slate-500">
             <span className="rounded-full bg-slate-100 px-3 py-2">
-              {tools.length} available tools
+              {tools.length - 1} available tools
             </span>
 
             <span className="rounded-full bg-slate-100 px-3 py-2">
@@ -390,6 +465,7 @@ export default function Home() {
           ))}
         </div>
 
+        {query.trim() && <p className="mb-4 text-sm text-slate-500" aria-live="polite">Showing {filteredTools.length} matching tools for “{query}”.</p>}
         {filteredTools.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white px-5 py-14 text-center">
             <div
@@ -725,11 +801,14 @@ function ToolCard({
   tool: Tool;
   popular?: boolean;
 }) {
+  const unavailable = tool.href === "/ocr-pdf";
   return (
     <Link
       href={tool.href}
-      className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-violet-300 hover:shadow-md active:scale-[0.99]"
+      className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg active:scale-[0.99]"
       aria-label={`Open ${tool.name}`}
+      aria-disabled={unavailable}
+      onClick={(event) => { if (unavailable) event.preventDefault(); }}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-sm font-black text-violet-600">
@@ -755,8 +834,14 @@ function ToolCard({
         {tool.description}
       </p>
 
-      <div className="mt-5 text-sm font-bold text-violet-600">
-        Open tool →
+      <div className="mt-auto pt-4">
+        <p className="rounded-xl bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-600">
+          <span className="font-extrabold text-teal-700">How to use:</span>{" "}
+          {howToUse[tool.href] || "Open this tool, upload the required file, follow the options and download the result."}
+        </p>
+        <div className="mt-4 flex items-center justify-between text-sm font-bold text-teal-700">
+          <span>{unavailable ? "Coming soon" : "Open tool"}</span><span aria-hidden="true">→</span>
+        </div>
       </div>
     </Link>
   );

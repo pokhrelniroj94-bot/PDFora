@@ -18,15 +18,22 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
-    default: "Free PDF Tools Online: Merge, Compress & Convert | PDFora",
+    default: "Free Nepal Online Tools: PDF, Tax, Forex, Calendar & More | PDFora",
     template: "%s | PDFora",
   },
   description:
-    "Merge, split, compress and convert PDF files online for free. Edit, organize and secure documents in your browser with PDFora—no installation needed.",
+    "Free online tools for Nepal: NRB exchange rates, salary tax, electricity bills, Nepali dates, typing, public holidays, calculators and PDF document tools.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "PDFora", title: "PDFora – Free Online PDF Tools: Merge, Compress & Convert", description: "Merge, split, compress, convert and edit PDF files online with PDFora." },
-  twitter: { card: "summary", title: "PDFora – Free Online PDF Tools", description: "Free tools to merge, split, compress, convert and edit PDFs online." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "PDFora", title: "PDFora – Free Nepal Online Utilities, PDF & Calculators", description: "Use free Nepal tools for NRB forex rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF tasks." },
+  twitter: { card: "summary", title: "Free Nepal Online Tools | PDFora", description: "NRB rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF utilities." },
   keywords: [
+    "free Nepal online tools",
+    "NRB exchange rate",
+    "Nepal salary tax calculator",
+    "NEA electricity bill calculator",
+    "Nepali date converter",
+    "Nepali Unicode typing",
+    "Nepal public holidays",
     "free PDF tools",
     "online PDF tools",
     "PDFora PDF tools",
@@ -63,7 +70,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <footer className="border-t border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-600">
-          <a href="/blog" className="font-semibold text-teal-700 hover:underline">PDF Guides &amp; Tutorials</a>
+          <a href="/tools" className="font-semibold text-teal-700 hover:underline">All Tools</a>
+          <span className="mx-2">·</span>
+          <a href="/blog" className="font-semibold text-teal-700 hover:underline">Guides &amp; Tutorials</a>
           <span className="mx-2">·</span>
           <a href="/about" className="hover:underline">About PDFora</a>
           <span className="mx-2">·</span>
@@ -82,7 +91,7 @@ export default function RootLayout({
                   "@id": "https://pd-fora.vercel.app/#website",
                   name: "PDFora",
                   url: "https://pd-fora.vercel.app/",
-                  inLanguage: "en",
+                  inLanguage: ["en", "ne"],
                 },
                 {
                   "@type": "Organization",
@@ -98,7 +107,7 @@ export default function RootLayout({
                   applicationCategory: "UtilitiesApplication",
                   operatingSystem: "Any",
                   description:
-                    "Free browser-based tools to merge, split, compress, convert, organize and edit PDF documents.",
+                    "Free browser-based tools for PDF, image, text and everyday productivity tasks.",
                   offers: {
                     "@type": "Offer",
                     price: "0",

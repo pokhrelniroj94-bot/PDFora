@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.title,
     description: post.description,
     alternates: { canonical: url },
-    keywords: [post.keyword, "PDF tutorial", "online PDF tools", "PDFora"],
+    keywords: [post.keyword, "free online tools", "tool tutorial", "how-to guide", "PDFora"],
     openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated },
     twitter: { card: "summary", title: post.title, description: post.description },
   };
@@ -39,6 +39,15 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
     mainEntityOfPage: `${baseUrl}/blog/${post.slug}`,
     author: { "@type": "Organization", name: "PDFora", url: baseUrl },
     publisher: { "@type": "Organization", name: "PDFora", url: baseUrl },
+  };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Guides", item: `${baseUrl}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${baseUrl}/blog/${post.slug}` },
+    ],
   };
   const faqSchema = {
     "@context": "https://schema.org",
@@ -73,6 +82,10 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
               {section.bullets && <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-700">{section.bullets.map((item) => <li key={item}>{item}</li>)}</ol>}
             </section>
           ))}
+          {post.sources && post.sources.length > 0 && <section className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8" aria-labelledby="official-sources-heading">
+            <h2 id="official-sources-heading" className="text-xl font-black text-slate-950">Official and technical references</h2>
+            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-teal-700">{post.sources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer" className="font-semibold underline">{source.label}</a></li>)}</ul>
+          </section>}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
             <div className="mt-5 space-y-5">
@@ -85,19 +98,20 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             </div>
           </section>
           <section className="rounded-3xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
-            <h2 className="text-xl font-black text-slate-950">Try a related PDF tool</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-700">Continue with the relevant PDFora tool when you are ready to process your document.</p>
+            <h2 className="text-xl font-black text-slate-950">Try a related tool</h2>
+            <p className="mt-2 text-sm leading-7 text-slate-700">Continue with a related PDFora utility when you are ready to put this guide into practice.</p>
             <div className="mt-4 flex flex-wrap gap-3">
               {post.toolLinks.map((tool) => <Link key={tool.href} href={tool.href} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
             </div>
           </section>
         </div>
         <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6 text-sm">
-          <Link href="/blog" className="font-bold text-teal-700 hover:underline">← All PDF guides</Link>
+          <Link href="/blog" className="font-bold text-teal-700 hover:underline">← All guides</Link>
           <Link href="/" className="font-bold text-teal-700 hover:underline">PDFora home</Link>
         </div>
       </article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </main>
   );

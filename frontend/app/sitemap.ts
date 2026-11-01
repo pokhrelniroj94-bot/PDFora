@@ -1,5 +1,6 @@
 import { blogPosts } from "../lib/blog-posts";
 import type { MetadataRoute } from "next";
+import { toolCatalog } from "../components/toolCatalog";
 
 const baseUrl = "https://pd-fora.vercel.app";
 
@@ -72,6 +73,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
+    ...toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ url: `${baseUrl}/tools/${tool.slug}`, changeFrequency: "monthly" as const, priority: 0.7 })),
     ...toolEntries,
     { url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.8 },
     ...blogPosts.map((post) => ({

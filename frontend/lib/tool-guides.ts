@@ -900,19 +900,19 @@ const existingBlogSlugs = new Set([
 export const additionalToolBlogPosts = toolGuides.filter((tool)=>!existingBlogSlugs.has(tool.blogSlug)).map((tool)=>({
   slug:tool.blogSlug,
   title:`How to ${tool.name.toLowerCase()} online: a practical step-by-step guide`,
-  description:`Learn ${tool.keyword}, when this PDF task is useful, how to use PDFora and what to check before sharing the result.`,
+  description:`Learn ${tool.keyword}, when this PDF task is useful, how to use NIROJ Tools and what to check before sharing the result.`,
   keyword:tool.keyword,
   updated:"2026-11-01",
   readTime:"5 min read",
   intro:`${tool.purpose} This guide explains the workflow, what to review in the output and common limitations to consider before using the processed file.`,
   sections:[
-    {heading:`When should you ${tool.name.toLowerCase()}?`,paragraphs:[tool.purpose,`This task is useful when preparing documents for work, study, records or online submission. Before processing, keep an untouched copy of the original PDF and check any file-format or page requirements given by the recipient.`,`PDFora provides this workflow in a browser, so you can start from a desktop, tablet or mobile device without installing a separate desktop PDF application.`] },
-    {heading:`How to ${tool.name.toLowerCase()} with PDFora`,paragraphs:[`Open the PDFora ${tool.name} page and select the document you want to process. Follow the available on-screen controls and wait for the tool to finish. Download the generated file when processing is complete.`,`Use these steps as a checklist:`],bullets:tool.steps},
+    {heading:`When should you ${tool.name.toLowerCase()}?`,paragraphs:[tool.purpose,`This task is useful when preparing documents for work, study, records or online submission. Before processing, keep an untouched copy of the original PDF and check any file-format or page requirements given by the recipient.`,`NIROJ Tools provides this workflow in a browser, so you can start from a desktop, tablet or mobile device without installing a separate desktop PDF application.`] },
+    {heading:`How to ${tool.name.toLowerCase()} with NIROJ Tools`,paragraphs:[`Open the NIROJ Tools ${tool.name} page and select the document you want to process. Follow the available on-screen controls and wait for the tool to finish. Download the generated file when processing is complete.`,`Use these steps as a checklist:`],bullets:tool.steps},
     {heading:"Check the result before sharing",paragraphs:[`Open the downloaded file in a PDF reader and review the pages affected by the operation. Check page order, text, images, page dimensions and any important signatures or references. Compare the output with the original if the document is important.`,tool.caution,`If the result is not what you expected, do not overwrite your source file. Recheck the selected pages and settings, then try again with a fresh copy where appropriate.`]}
   ],
   faqs:[
-    {question:`How do I ${tool.name.toLowerCase()} online?`,answer:`Open PDFora's ${tool.name} tool, select the source PDF, use the available controls, process the file and review the downloaded result.`},
-    {question:`Can I use PDFora ${tool.name} on my phone?`,answer:"PDFora is available in modern mobile browsers. The exact file-selection experience depends on your device and browser."},
+    {question:`How do I ${tool.name.toLowerCase()} online?`,answer:`Open NIROJ Tools's ${tool.name} tool, select the source PDF, use the available controls, process the file and review the downloaded result.`},
+    {question:`Can I use NIROJ Tools ${tool.name} on my phone?`,answer:"NIROJ Tools is available in modern mobile browsers. The exact file-selection experience depends on your device and browser."},
     {question:"Will the processed PDF look exactly like the original?",answer:"That depends on the operation and source document. Always inspect the output, especially pages with complex layouts, images, tables or signatures."},
     {question:"What should I do if processing does not give the expected result?",answer:"Keep the original file, confirm it is a valid PDF, review the selected settings and try again. Some protected, damaged or unusual PDFs may not be fully supported."}
   ],

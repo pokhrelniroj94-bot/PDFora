@@ -23,9 +23,9 @@ from openpyxl import Workbook
 # ============================================================
 
 app = FastAPI(
-    title="PDFora API",
+    title="NIROJ Tools API",
     version="4.0.1",
-    description="PDFora document processing API"
+    description="NIROJ Tools document processing API"
 )
 
 
@@ -62,6 +62,8 @@ app.add_middleware(
 
         # Production
         "https://pd-fora.vercel.app",
+        "https://niroj.com.np",
+        "https://www.niroj.com.np",
         "https://www.pd-fora.vercel.app",
 
         # Vercel preview
@@ -267,7 +269,7 @@ def cleanup_job(job: Path):
 def root():
 
     return {
-        "name": "PDFora",
+        "name": "NIROJ Tools",
         "version": "4.0.1",
         "status": "online"
     }
@@ -293,7 +295,7 @@ def health():
 def api_info():
 
     return {
-        "service": "PDFora",
+        "service": "NIROJ Tools",
         "version": "4.0.1",
         "tools": [
             "merge",
@@ -330,7 +332,7 @@ async def merge_pdf(
 
     job = create_job()
 
-    output = job / "PDFora-Merged.pdf"
+    output = job / "NIROJ-Merged.pdf"
 
     writer = PdfWriter()
 
@@ -360,7 +362,7 @@ async def merge_pdf(
 
         return pdf_response(
             output,
-            "PDFora-Merged.pdf"
+            "NIROJ-Merged.pdf"
         )
 
     finally:
@@ -392,7 +394,7 @@ async def split_pdf(
 
     input_file = job / "input.pdf"
 
-    output = job / "PDFora-Split.pdf"
+    output = job / "NIROJ-Split.pdf"
 
     try:
 
@@ -450,7 +452,7 @@ async def split_pdf(
 
         return pdf_response(
             output,
-            "PDFora-Split.pdf"
+            "NIROJ-Split.pdf"
         )
 
     finally:
@@ -478,7 +480,7 @@ async def compress_pdf(
 
     input_file = job / "input.pdf"
 
-    output = job / "PDFora-Compressed.pdf"
+    output = job / "NIROJ-Compressed.pdf"
 
     try:
 
@@ -523,7 +525,7 @@ async def compress_pdf(
         return FileResponse(
             path=str(response_path),
             media_type="application/pdf",
-            filename="PDFora-Compressed.pdf",
+            filename="NIROJ-Compressed.pdf",
             headers={
                 "X-Original-Size": str(original_size),
                 "X-Compressed-Size": str(final_size)
@@ -554,7 +556,7 @@ async def images_to_pdf(
 
     job = create_job()
 
-    output = job / "PDFora-Images.pdf"
+    output = job / "NIROJ-Images.pdf"
 
     images = []
     total_upload_size = 0
@@ -615,7 +617,7 @@ async def images_to_pdf(
 
         return pdf_response(
             output,
-            "PDFora-Images.pdf"
+            "NIROJ-Images.pdf"
         )
 
     finally:
@@ -645,7 +647,7 @@ async def pdf_to_jpg(
 
     input_file = job / "input.pdf"
 
-    zip_file = job / "PDFora-JPG.zip"
+    zip_file = job / "NIROJ-JPG.zip"
 
     document = None
 
@@ -698,7 +700,7 @@ async def pdf_to_jpg(
         return FileResponse(
             path=str(zip_file),
             media_type="application/zip",
-            filename="PDFora-JPG.zip"
+            filename="NIROJ-JPG.zip"
         )
 
     finally:
@@ -741,7 +743,7 @@ async def rotate_pdf(
 
     input_file = job / "input.pdf"
 
-    output = job / "PDFora-Rotated.pdf"
+    output = job / "NIROJ-Rotated.pdf"
 
     try:
 
@@ -774,7 +776,7 @@ async def rotate_pdf(
 
         return pdf_response(
             output,
-            "PDFora-Rotated.pdf"
+            "NIROJ-Rotated.pdf"
         )
 
     finally:
@@ -803,7 +805,7 @@ async def delete_pages(
 
     input_file = job / "input.pdf"
 
-    output = job / "PDFora-Deleted-Pages.pdf"
+    output = job / "NIROJ-Deleted-Pages.pdf"
 
     try:
 
@@ -879,7 +881,7 @@ async def delete_pages(
 
         return pdf_response(
             output,
-            "PDFora-Deleted-Pages.pdf"
+            "NIROJ-Deleted-Pages.pdf"
         )
 
     finally:
@@ -908,7 +910,7 @@ async def extract_pages(
 
     input_file = job / "input.pdf"
 
-    output = job / "PDFora-Extracted.pdf"
+    output = job / "NIROJ-Extracted.pdf"
 
     try:
 
@@ -972,7 +974,7 @@ async def extract_pages(
 
         return pdf_response(
             output,
-            "PDFora-Extracted.pdf"
+            "NIROJ-Extracted.pdf"
         )
 
     finally:
@@ -1017,7 +1019,7 @@ async def watermark_pdf(
 
     input_file = job / "input.pdf"
 
-    output = job / "PDFora-Watermarked.pdf"
+    output = job / "NIROJ-Watermarked.pdf"
 
     try:
 
@@ -1116,7 +1118,7 @@ async def watermark_pdf(
 
         return pdf_response(
             output,
-            "PDFora-Watermarked.pdf"
+            "NIROJ-Watermarked.pdf"
         )
 
     except HTTPException:
@@ -1447,7 +1449,7 @@ async def reorder_pdf(file: UploadFile = File(...), order: str = Form(...)):
         writer=PdfWriter()
         for n in sequence: writer.add_page(reader.pages[n-1])
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"PDFora-Reordered.pdf")
+        return _tool_file_response(out,"NIROJ-Reordered.pdf")
     finally:
         await file.close()
 
@@ -1466,7 +1468,7 @@ async def add_page_numbers(file: UploadFile = File(...), position: str = Form("b
             y=24 if position.startswith("top") else r.height-24
             page.insert_text((x,y),str(start_number+i-(1 if skip_first and i>0 else 0)),fontsize=font_size, color=(0.25,0.25,0.3))
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"PDFora-Page-Numbers.pdf")
+        return _tool_file_response(out,"NIROJ-Page-Numbers.pdf")
     finally: await file.close()
 
 @app.post("/api/crop")
@@ -1486,7 +1488,7 @@ async def crop_pdf(file: UploadFile = File(...), margin: float = Form(36), pages
             if r.width<=2*margin or r.height<=2*margin: raise HTTPException(status_code=400,detail="Margin is too large for one or more pages.")
             p.set_cropbox(fitz.Rect(r.x0+margin,r.y0+margin,r.x1-margin,r.y1-margin))
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"PDFora-Cropped.pdf")
+        return _tool_file_response(out,"NIROJ-Cropped.pdf")
     finally: await file.close()
 
 @app.post("/api/header-footer")
@@ -1501,7 +1503,7 @@ async def header_footer(file: UploadFile = File(...), header: str = Form(""), fo
             if header: p.insert_text((36,24),header[:300],fontsize=font_size)
             if footer: p.insert_text((36,r.height-24),footer[:300],fontsize=font_size)
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"PDFora-Header-Footer.pdf")
+        return _tool_file_response(out,"NIROJ-Header-Footer.pdf")
     finally: await file.close()
 
 @app.post("/api/protect")
@@ -1520,7 +1522,7 @@ async def protect_pdf(file: UploadFile = File(...), password: str = Form(...)):
                 writer.add_metadata(safe_metadata)
         writer.encrypt(user_password=password, owner_password=password)
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"PDFora-Protected.pdf")
+        return _tool_file_response(out,"NIROJ-Protected.pdf")
     finally: await file.close()
 
 @app.post("/api/unlock")
@@ -1536,7 +1538,7 @@ async def unlock_pdf(file: UploadFile = File(...), password: str = Form(...)):
         writer=PdfWriter()
         for p in reader.pages: writer.add_page(p)
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"PDFora-Unlocked.pdf")
+        return _tool_file_response(out,"NIROJ-Unlocked.pdf")
     finally: await file.close()
 
 @app.post("/api/sign")
@@ -1552,7 +1554,7 @@ async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)
         p.insert_text((box.x0+8,box.y0+28),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35))
         p.insert_text((box.x0+8,box.y0+44),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4))
         doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"PDFora-Signed.pdf")
+        return _tool_file_response(out,"NIROJ-Signed.pdf")
     finally: await file.close()
 
 async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
@@ -1569,7 +1571,7 @@ async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
                 opts={"quality":quality,"method":6} if fmt=="webp" else {}
                 im.save(dest,format=fmt.upper(),**opts)
                 z.writestr(f"page-{i+1}.{fmt}",dest.getvalue())
-        return _tool_file_response(archive,f"PDFora-{fmt.upper()}.zip","application/zip")
+        return _tool_file_response(archive,f"NIROJ-{fmt.upper()}.zip","application/zip")
     finally:
         if doc: doc.close()
         await file.close()
@@ -1592,7 +1594,7 @@ async def pdf_to_text(file: UploadFile = File(...)):
             for i,p in enumerate(doc):
                 f.write(f"--- Page {i+1} ---\n{p.get_text('text')}\n\n")
         doc.close()
-        return _tool_file_response(out,"PDFora-Extracted-Text.txt","text/plain; charset=utf-8")
+        return _tool_file_response(out,"NIROJ-Extracted-Text.txt","text/plain; charset=utf-8")
     finally: await file.close()
 
 @app.post("/api/grayscale")
@@ -1609,7 +1611,7 @@ async def grayscale_pdf(file: UploadFile = File(...)):
             page.insert_image(page.rect,stream=pix.tobytes("png"))
         doc.close()
         flattened.save(out,garbage=4,deflate=True); flattened.close()
-        return _tool_file_response(out,"PDFora-Grayscale.pdf")
+        return _tool_file_response(out,"NIROJ-Grayscale.pdf")
     finally: await file.close()
 
 @app.post("/api/flatten")
@@ -1627,7 +1629,7 @@ async def flatten_pdf(file: UploadFile = File(...)):
             target.insert_image(target.rect,stream=pix.tobytes("png"))
         doc.close()
         flattened.save(out,garbage=4,deflate=True); flattened.close()
-        return _tool_file_response(out,"PDFora-Flattened.pdf")
+        return _tool_file_response(out,"NIROJ-Flattened.pdf")
     finally: await file.close()
 
 @app.post("/api/metadata")
@@ -1639,7 +1641,7 @@ async def edit_pdf_metadata(file: UploadFile = File(...), title: str = Form(""),
         src=job/"input.pdf"; out=job/"metadata.pdf"; await save_upload(file,src); reader=PdfReader(str(src)); writer=PdfWriter(); writer.clone_document_from_reader(reader)
         writer.add_metadata({"/Title":title,"/Author":author,"/Subject":subject,"/Keywords":keywords})
         with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"PDFora-Updated-Metadata.pdf")
+        return _tool_file_response(out,"NIROJ-Updated-Metadata.pdf")
     finally: await file.close()
 
 @app.post("/api/repair")
@@ -1653,7 +1655,7 @@ async def repair_pdf(file: UploadFile = File(...)):
             doc.save(out,garbage=4,deflate=True,clean=True); doc.close()
         except Exception:
             raise HTTPException(status_code=422,detail="This PDF could not be repaired. The file may be severely damaged or unsupported.")
-        return _tool_file_response(out,"PDFora-Repaired.pdf")
+        return _tool_file_response(out,"NIROJ-Repaired.pdf")
     finally: await file.close()
 
 @app.post("/api/ocr")
@@ -1680,7 +1682,7 @@ async def pdf_to_html(file: UploadFile = File(...)):
         parts.append("</body></html>")
         doc.close()
         out.write_text("\n".join(parts),encoding="utf-8")
-        return _tool_file_response(out,"PDFora-PDF-to-HTML.html","text/html; charset=utf-8")
+        return _tool_file_response(out,"NIROJ-PDF-to-HTML.html","text/html; charset=utf-8")
     finally:
         await file.close()
 
@@ -1709,7 +1711,7 @@ async def extract_images(file: UploadFile = File(...)):
                         continue
         doc.close()
         if count==0: raise HTTPException(status_code=422,detail="No embedded images were found in this PDF.")
-        return _tool_file_response(out,"PDFora-Extracted-Images.zip","application/zip")
+        return _tool_file_response(out,"NIROJ-Extracted-Images.zip","application/zip")
     finally:
         await file.close()
 
@@ -1734,7 +1736,7 @@ async def remove_blank_pages(file: UploadFile = File(...), threshold: int = Form
         result=fitz.open()
         for i in kept: result.insert_pdf(doc,from_page=i,to_page=i)
         doc.close(); result.save(out,garbage=4,deflate=True); result.close()
-        return _tool_file_response(out,"PDFora-Without-Blank-Pages.pdf")
+        return _tool_file_response(out,"NIROJ-Without-Blank-Pages.pdf")
     finally:
         await file.close()
 
@@ -1757,7 +1759,7 @@ async def compare_pdfs(files: list[UploadFile] = File(...)):
         out=job/"comparison.txt"
         summary=f"PDF COMPARISON REPORT\nFile 1: {files[0].filename}\nFile 2: {files[1].filename}\nPages in file 1: {len(readers[0])}\nPages in file 2: {len(readers[1])}\n\n"
         out.write_text(summary+("\n".join(diff) if diff else "No selectable-text differences were detected. This comparison does not inspect visual layout or scanned images."),encoding="utf-8")
-        return _tool_file_response(out,"PDFora-PDF-Comparison.txt","text/plain; charset=utf-8")
+        return _tool_file_response(out,"NIROJ-PDF-Comparison.txt","text/plain; charset=utf-8")
     finally:
         for file in files:
             await file.close()
@@ -1789,7 +1791,7 @@ async def add_blank_pages(file: UploadFile = File(...), count: int = Form(1)):
             writer.add_blank_page(width=width, height=height)
         with open(out, "wb") as stream:
             writer.write(stream)
-        return pdf_response(out, "PDFora-Blank-Pages-Added.pdf")
+        return pdf_response(out, "NIROJ-Blank-Pages-Added.pdf")
     finally:
         await file.close()
 
@@ -1818,7 +1820,7 @@ async def rotate_selected_pages(file: UploadFile = File(...), pages: str = Form(
         for index in selected:
             doc[index].set_rotation((doc[index].rotation + degrees) % 360)
         doc.save(out, garbage=4, deflate=True)
-        return pdf_response(out, "PDFora-Rotated-Selected-Pages.pdf")
+        return pdf_response(out, "NIROJ-Rotated-Selected-Pages.pdf")
     finally:
         if doc is not None:
             doc.close()
@@ -1846,7 +1848,7 @@ async def remove_annotations(file: UploadFile = File(...)):
                 page.delete_annot(annot)
                 annot = following
         doc.save(out, garbage=4, deflate=True)
-        return pdf_response(out, "PDFora-Annotations-Removed.pdf")
+        return pdf_response(out, "NIROJ-Annotations-Removed.pdf")
     finally:
         if doc is not None:
             doc.close()
@@ -1871,7 +1873,7 @@ async def remove_pdf_links(file: UploadFile = File(...)):
             for link in page.get_links():
                 page.delete_link(link)
         doc.save(out, garbage=4, deflate=True)
-        return pdf_response(out, "PDFora-Links-Removed.pdf")
+        return pdf_response(out, "NIROJ-Links-Removed.pdf")
     finally:
         if doc is not None:
             doc.close()
@@ -1887,7 +1889,7 @@ async def pdf_page_counter(file: UploadFile = File(...)):
     validate_pdf(file.filename)
     job = create_job()
     try:
-        src, out = job / "input.pdf", job / "PDFora-Page-Count.txt"
+        src, out = job / "input.pdf", job / "NIROJ-Page-Count.txt"
         size = await save_upload(file, src)
         reader = read_pdf(src)
         report = (
@@ -1898,7 +1900,7 @@ async def pdf_page_counter(file: UploadFile = File(...)):
             f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\\n"
         )
         out.write_text(report, encoding="utf-8")
-        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="PDFora-Page-Count.txt", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Page-Count.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         await file.close()
 
@@ -1913,7 +1915,7 @@ async def pdf_information(file: UploadFile = File(...)):
     job = create_job()
     doc = None
     try:
-        src, out = job / "input.pdf", job / "PDFora-Information.txt"
+        src, out = job / "input.pdf", job / "NIROJ-Information.txt"
         size = await save_upload(file, src)
         reader = read_pdf(src)
         metadata = reader.metadata or {}
@@ -1934,7 +1936,7 @@ async def pdf_information(file: UploadFile = File(...)):
             f"Encrypted: {'Yes' if reader.is_encrypted else 'No'}",
         ]
         out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
-        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="PDFora-Information.txt", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Information.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()
@@ -1951,7 +1953,7 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
     job = create_job()
     doc = None
     try:
-        src, out = job / "input.pdf", job / "PDFora-Bookmarks.txt"
+        src, out = job / "input.pdf", job / "NIROJ-Bookmarks.txt"
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
@@ -1962,7 +1964,7 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
         for level, title, page in toc:
             lines.append(f"{'  ' * max(0, level - 1)}Page {page}: {title}")
         out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
-        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="PDFora-Bookmarks.txt", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Bookmarks.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()
@@ -1985,7 +1987,7 @@ async def remove_pdf_metadata(file: UploadFile = File(...)):
         doc.set_metadata({})
         doc.del_xml_metadata()
         doc.save(out, garbage=4, deflate=True)
-        return pdf_response(out, "PDFora-Metadata-Removed.pdf")
+        return pdf_response(out, "NIROJ-Metadata-Removed.pdf")
     finally:
         if 'doc' in locals() and doc is not None:
             doc.close()
@@ -2003,7 +2005,7 @@ async def pdf_to_json(file: UploadFile = File(...)):
     job = create_job()
     doc = None
     try:
-        src, out = job / "input.pdf", job / "PDFora-Text.json"
+        src, out = job / "input.pdf", job / "NIROJ-Text.json"
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
@@ -2019,7 +2021,7 @@ async def pdf_to_json(file: UploadFile = File(...)):
                     })
             pages.append({"page": index + 1, "width": round(page.rect.width, 2), "height": round(page.rect.height, 2), "blocks": blocks})
         out.write_text(json.dumps({"file": Path(file.filename).name, "page_count": len(doc), "pages": pages}, ensure_ascii=False, indent=2), encoding="utf-8")
-        return FileResponse(str(out), media_type="application/json", filename="PDFora-Text.json", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="application/json", filename="NIROJ-Text.json", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()
@@ -2036,7 +2038,7 @@ async def pdf_to_csv(file: UploadFile = File(...)):
     validate_pdf(file.filename)
     job = create_job()
     try:
-        src, out = job / "input.pdf", job / "PDFora-Tables.csv"
+        src, out = job / "input.pdf", job / "NIROJ-Tables.csv"
         await save_upload(file, src)
         read_pdf(src)
         rows_written = 0
@@ -2052,7 +2054,7 @@ async def pdf_to_csv(file: UploadFile = File(...)):
                                 rows_written += 1
         if rows_written == 0:
             raise HTTPException(status_code=422, detail="No extractable tables were found in this PDF.")
-        return FileResponse(str(out), media_type="text/csv; charset=utf-8", filename="PDFora-Tables.csv", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="text/csv; charset=utf-8", filename="NIROJ-Tables.csv", background=BackgroundTask(cleanup_job, job))
     finally:
         await file.close()
 
@@ -2089,7 +2091,7 @@ async def add_pdf_bookmarks(file: UploadFile = File(...), bookmarks: str = Form(
             raise HTTPException(status_code=400, detail="Enter at least one bookmark.")
         doc.set_toc(toc)
         doc.save(out, garbage=4, deflate=True)
-        return pdf_response(out, "PDFora-Bookmarks-Added.pdf")
+        return pdf_response(out, "NIROJ-Bookmarks-Added.pdf")
     finally:
         if doc is not None:
             doc.close()
@@ -2116,7 +2118,7 @@ async def bates_numbering(file: UploadFile = File(...), prefix: str = Form(""), 
             label = f"{prefix[:20]}{start + index:0{digits}d}"
             page.insert_text((page.rect.width - 150, page.rect.height - 24), label, fontsize=9, color=(0, 0, 0))
         doc.save(out, garbage=4, deflate=True)
-        return pdf_response(out, "PDFora-Bates-Numbered.pdf")
+        return pdf_response(out, "NIROJ-Bates-Numbered.pdf")
     finally:
         if doc is not None:
             doc.close()
@@ -2133,7 +2135,7 @@ async def pdf_to_tiff(file: UploadFile = File(...)):
     job = create_job()
     doc = None
     try:
-        src, out = job / "input.pdf", job / "PDFora-TIFF-Pages.zip"
+        src, out = job / "input.pdf", job / "NIROJ-TIFF-Pages.zip"
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
@@ -2146,7 +2148,7 @@ async def pdf_to_tiff(file: UploadFile = File(...)):
                 buffer = io.BytesIO()
                 image.save(buffer, format="TIFF", compression="tiff_deflate")
                 archive.writestr(f"page-{index + 1:04d}.tiff", buffer.getvalue())
-        return FileResponse(str(out), media_type="application/zip", filename="PDFora-TIFF-Pages.zip", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="application/zip", filename="NIROJ-TIFF-Pages.zip", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()
@@ -2163,7 +2165,7 @@ async def pdf_to_bmp(file: UploadFile = File(...)):
     job = create_job()
     doc = None
     try:
-        src, out = job / "input.pdf", job / "PDFora-BMP-Pages.zip"
+        src, out = job / "input.pdf", job / "NIROJ-BMP-Pages.zip"
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
@@ -2176,7 +2178,7 @@ async def pdf_to_bmp(file: UploadFile = File(...)):
                 buffer = io.BytesIO()
                 image.save(buffer, format="BMP")
                 archive.writestr(f"page-{index + 1:04d}.bmp", buffer.getvalue())
-        return FileResponse(str(out), media_type="application/zip", filename="PDFora-BMP-Pages.zip", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="application/zip", filename="NIROJ-BMP-Pages.zip", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()
@@ -2193,7 +2195,7 @@ async def split_pdf_by_bookmarks(file: UploadFile = File(...)):
     job = create_job()
     doc = None
     try:
-        src, out = job / "input.pdf", job / "PDFora-Bookmark-Sections.zip"
+        src, out = job / "input.pdf", job / "NIROJ-Bookmark-Sections.zip"
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
@@ -2213,7 +2215,7 @@ async def split_pdf_by_bookmarks(file: UploadFile = File(...)):
                 title = next((str(item[1]) for item in toc if int(item[2]) == start_page), f"Section-{index + 1}")
                 safe_title = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in title)[:60] or f"Section-{index + 1}"
                 archive.writestr(f"{index + 1:02d}-{safe_title}.pdf", buffer)
-        return FileResponse(str(out), media_type="application/zip", filename="PDFora-Bookmark-Sections.zip", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="application/zip", filename="NIROJ-Bookmark-Sections.zip", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()
@@ -2230,7 +2232,7 @@ async def pdf_to_markdown(file: UploadFile = File(...)):
     job = create_job()
     doc = None
     try:
-        src, out = job / "input.pdf", job / "PDFora-Text.md"
+        src, out = job / "input.pdf", job / "NIROJ-Text.md"
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
@@ -2239,7 +2241,7 @@ async def pdf_to_markdown(file: UploadFile = File(...)):
             parts.append(f"\n## Page {index}\n")
             parts.append(page.get_text("text").strip() or "_No selectable text found on this page._")
         out.write_text("\n".join(parts), encoding="utf-8")
-        return FileResponse(str(out), media_type="text/markdown; charset=utf-8", filename="PDFora-Text.md", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="text/markdown; charset=utf-8", filename="NIROJ-Text.md", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()
@@ -2255,14 +2257,14 @@ async def remove_pdf_attachments(file: UploadFile = File(...)):
     validate_pdf(file.filename)
     job = create_job()
     try:
-        src, out = job / "input.pdf", job / "PDFora-Attachments-Removed.pdf"
+        src, out = job / "input.pdf", job / "NIROJ-Attachments-Removed.pdf"
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
         for attachment_name in list(doc.embfile_names()):
             doc.embfile_del(attachment_name)
         doc.save(out, garbage=4, deflate=True)
-        return pdf_response(out, "PDFora-Attachments-Removed.pdf")
+        return pdf_response(out, "NIROJ-Attachments-Removed.pdf")
     finally:
         if 'doc' in locals() and doc is not None:
             doc.close()
@@ -2293,7 +2295,7 @@ async def add_pdf_background(file: UploadFile = File(...), text: str = Form("DRA
             page.draw_rect(rect, color=None, fill=colors[color], overlay=False)
             page.insert_textbox(fitz.Rect(30, rect.height / 2 - 40, rect.width - 30, rect.height / 2 + 40), text.strip(), fontsize=34, color=(0.55, 0.55, 0.55), align=1, rotate=0, overlay=True)
         doc.save(out, garbage=4, deflate=True)
-        return pdf_response(out, "PDFora-Background.pdf")
+        return pdf_response(out, "NIROJ-Background.pdf")
     finally:
         if doc is not None:
             doc.close()
@@ -2310,7 +2312,7 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
     job = create_job()
     doc = None
     try:
-        src, out = job / "input.pdf", job / "PDFora-Page-Images.zip"
+        src, out = job / "input.pdf", job / "NIROJ-Page-Images.zip"
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
@@ -2325,7 +2327,7 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
                     count += 1
         if count == 0:
             raise HTTPException(status_code=422, detail="No embedded images were found in this PDF.")
-        return FileResponse(str(out), media_type="application/zip", filename="PDFora-Page-Images.zip", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="application/zip", filename="NIROJ-Page-Images.zip", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()
@@ -2342,7 +2344,7 @@ async def extract_pdf_fonts(file: UploadFile = File(...)):
     job = create_job()
     doc = None
     try:
-        src, out = job / "input.pdf", job / "PDFora-Fonts.zip"
+        src, out = job / "input.pdf", job / "NIROJ-Fonts.zip"
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
@@ -2361,7 +2363,7 @@ async def extract_pdf_fonts(file: UploadFile = File(...)):
                         archive.writestr(f"{safe_name or 'font'}-{xref}.{ext}", data)
         if not found:
             raise HTTPException(status_code=422, detail="No extractable embedded fonts were found.")
-        return FileResponse(str(out), media_type="application/zip", filename="PDFora-Fonts.zip", background=BackgroundTask(cleanup_job, job))
+        return FileResponse(str(out), media_type="application/zip", filename="NIROJ-Fonts.zip", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()

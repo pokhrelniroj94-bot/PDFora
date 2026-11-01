@@ -2,8 +2,6 @@ name: Upgrade vulnerable frontend dependencies
 on:
   push:
     branches: [security-next-upgrade]
-  pull_request:
-    branches: [master]
 permissions:
   contents: write
 jobs:

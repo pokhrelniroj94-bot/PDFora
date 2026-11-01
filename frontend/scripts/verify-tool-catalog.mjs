@@ -18,7 +18,7 @@ const conditionalCases = [...allTools.matchAll(/if\s*\(slug\s*===\s*"([^"]+)"/g)
 assert.equal(new Set(quickCases).size, quickCases.length, "Duplicate quick-tool handlers");
 assert.equal(new Set(extraCases).size, extraCases.length, "Duplicate extra-tool handlers");
 assert.deepEqual([...quickSlugs].sort(), [...quickCases].sort(), "Quick utility dispatch list and handlers differ");
-const nepalCases = [...nepalTools.matchAll(/slug===\"([a-z0-9-]+)\"/g)].map((m) => m[1]);
+const nepalCases = [...nepalTools.matchAll(/slug==="([a-z0-9-]+)"/g)].map((m) => m[1]);
 const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases]);
 if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {
   implemented.add("image-compressor");

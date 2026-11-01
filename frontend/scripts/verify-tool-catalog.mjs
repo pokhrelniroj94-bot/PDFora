@@ -8,6 +8,8 @@ const extraTools = read("../components/ExtraTools.tsx");
 const nepalTools = read("../components/NepalTools.tsx");
 const nepalLiveTools = read("../components/NepalLiveTools.tsx");
 const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
+const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
+const blogPostsSource = read("../lib/blog-posts.ts");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
@@ -40,5 +42,10 @@ for (const slug of ["nepal-forex-rates", "nepal-salary-tax-calculator", "nepal-e
 }
 assert.ok(typingRouted, "Nepali Unicode typing route or engine is missing");
 assert.ok(allTools.includes('import NepalLiveTools from "./NepalLiveTools"'), "Nepal live tools component is not imported");
+
 assert.ok(allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");
+const nepalSlugs = [...catalogSource.matchAll(/\\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);
+const missingNepalGuides = nepalSlugs.filter((slug) => !nepalBlogPosts.includes('href: "/tools/' + slug + '"'));
+assert.deepEqual(missingNepalGuides, [], "Nepal tools without dedicated guides: " + missingNepalGuides.join(", "));
+assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf("...catalogGuides"), "Dedicated Nepal guides must take precedence over generated generic guides");
 console.log(`Verified ${catalog.length} unique tools: every catalog slug has an implementation and Nepal utility routes are connected.`);

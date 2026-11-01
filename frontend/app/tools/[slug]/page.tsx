@@ -12,15 +12,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool) return { title: "Tool not found", robots: { index: false, follow: true } };
-  const title = `${tool.name} – Free Online Tool | NIROJ Tools`;
+  const title = `${tool.name} – Free Online Tool | PDFora`;
   const description = tool.description.length > 155 ? tool.description.slice(0, 152).trimEnd() + "..." : tool.description;
   const canonical = `${site}/tools/${tool.slug}`;
   return {
     title, description,
-    keywords: [...new Set([tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), "free online tool", "NIROJ Tools"])],
+    keywords: [...new Set([tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), "free online tool", "PDFora"])],
     alternates: { canonical },
     robots: { index: true, follow: true },
-    openGraph: { type: "website", title, description, url: canonical, siteName: "NIROJ Tools" },
+    openGraph: { type: "website", title, description, url: canonical, siteName: "PDFora" },
     twitter: { card: "summary_large_image", title, description },
   };
 }

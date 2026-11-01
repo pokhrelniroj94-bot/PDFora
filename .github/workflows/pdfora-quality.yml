@@ -20,7 +20,7 @@ jobs:
       - name: Install backend dependencies
         run: pip install -r backend/requirements.txt
       - name: Run backend functional regression tests
-        run: pip install pytest httpx && pytest -q backend/tests
+        run: pip install pytest httpx requests && pytest -q backend/tests
       - name: Audit Python dependencies
         run: pip install pip-audit && pip-audit -r backend/requirements.txt
   frontend:
@@ -50,6 +50,6 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install live smoke-test dependencies
-        run: pip install -r backend/requirements.txt requests
+        run: pip install -r backend/requirements.txt requests pytest httpx
       - name: Verify deployed Render backend
         run: python backend/tests/live_production_smoke.py

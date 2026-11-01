@@ -46,39 +46,16 @@ def wait_for_updated_backend() -> None:
 
 def main() -> None:
     wait_for_updated_backend()
-    pdf = sample_pdf()
-    files = {"file": ("pdfora-live-check.pdf", pdf, "application/pdf")}
-
-    info = requests.post(f"{BASE}/api/pdf-info", files=files, timeout=90)
-    info.raise_for_status()
-    report = info.content.decode("utf-8", errors="replace")
-    assert "Page count: 2" in report, report
-    assert "Title: Not set" in report, report
-    assert "Author: Not set" in report, report
-    print("PASS: PDF Information handles PDFs without metadata.")
-
-    protected = requests.post(
-        f"{BASE}/api/protect",
-        files=files,
-        data={"password": PASSWORD},
-        timeout=90,
+    environment = os.environ.copy()
+    environment["PDFORA_API"] = BASE
+    print("Running the complete 49-tool suite against the live Render backend...")
+    import subprocess
+    import sys
+    subprocess.run(
+        [sys.executable, "-m", "pytest", "-q", "backend/tests/test_tool_api.py"],
+        check=True,
+        env=environment,
     )
-    protected.raise_for_status()
-    assert protected.content.startswith(b"%PDF-"), "Protect PDF did not return a PDF."
-    encrypted = PdfReader(io.BytesIO(protected.content))
-    assert encrypted.is_encrypted, "Protect PDF output is not encrypted."
-    assert encrypted.decrypt(PASSWORD), "Password does not decrypt the protected output."
-    assert len(encrypted.pages) == 2, "Protected PDF page count changed."
-    print("PASS: Protect PDF encrypts the file and preserves its pages.")
-
-    text_result = requests.post(f"{BASE}/api/pdf-to-text", files=files, timeout=90)
-    text_result.raise_for_status()
-    assert b"PDFora live deployment check" in text_result.content
-    print("PASS: PDF-to-Text extracts selectable text.")
-
-    ocr = requests.post(f"{BASE}/api/ocr", files=files, timeout=90)
-    assert ocr.status_code == 501, f"OCR availability changed unexpectedly: {ocr.status_code}"
-    print("PASS: OCR is clearly reported as unavailable (HTTP 501), not advertised as operational.")
 
 
 if __name__ == "__main__":

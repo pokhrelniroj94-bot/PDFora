@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { ToolsDirectory } from "../../components/AllTools";
 
 export const metadata: Metadata = {
-  title: "100+ Free Online Tools",
-  description: "Find free online finance, text, developer, image, SEO and PDF tools. Use practical browser-based calculators, converters and productivity utilities.",
+  title: "Free Nepal Tools: BS to AD Date, VAT, Ropani & More",
+  description: "Free Nepal-focused online tools: Bikram Sambat to AD date converter, 13% VAT calculator, Ropani-Aana converter, Nepali number and phone tools, plus PDF and SEO utilities.",
   alternates: { canonical: "https://niroj.com.np/tools" },
-  keywords: ["free online tools", "online calculators", "text tools", "developer tools", "image tools", "PDF tools", "NIROJ Tools"],
+  keywords: ["Nepali date converter", "BS to AD", "AD to BS", "VAT calculator Nepal", "Ropani to Aana", "Nepali number converter", "free online tools Nepal", "NIROJ Tools"],
   openGraph: {
     type: "website",
     title: "100+ Free Online Tools | NIROJ Tools",

@@ -18,15 +18,22 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
-    default: "Free Online Tools: PDF, Image, Text & More | NIROJ Tools",
+    default: "Free Nepal Online Tools: PDF, Tax, Forex, Calendar & More | NIROJ Tools",
     template: "%s | NIROJ Tools",
   },
   description:
-    "Free online tools for PDF documents and everyday digital tasks. Convert, edit, organize and process files directly in your browser.",
+    "Free online tools for Nepal: NRB exchange rates, salary tax, electricity bills, Nepali dates, typing, public holidays, calculators and PDF document tools.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "NIROJ Tools", title: "NIROJ Tools – Free Online PDF Tools: Merge, Compress & Convert", description: "Free online PDF, image, text and productivity tools." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "NIROJ Tools", title: "NIROJ Tools – Free Nepal Online Utilities, PDF & Calculators", description: "Use free Nepal tools for NRB forex rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF tasks." },
   twitter: { card: "summary", title: "NIROJ Tools – Free Online PDF Tools", description: "Free tools to merge, split, compress, convert and edit PDFs online." },
   keywords: [
+    "free Nepal online tools",
+    "NRB exchange rate",
+    "Nepal salary tax calculator",
+    "NEA electricity bill calculator",
+    "Nepali date converter",
+    "Nepali Unicode typing",
+    "Nepal public holidays",
     "free PDF tools",
     "online PDF tools",
     "NIROJ Tools PDF tools",
@@ -84,7 +91,7 @@ export default function RootLayout({
                   "@id": "https://pd-fora.vercel.app/#website",
                   name: "NIROJ Tools",
                   url: "https://pd-fora.vercel.app/",
-                  inLanguage: "en",
+                  inLanguage: ["en", "ne"],
                 },
                 {
                   "@type": "Organization",

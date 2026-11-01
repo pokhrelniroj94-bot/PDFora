@@ -254,8 +254,8 @@ export default function PDForaTool({
                     files.length > 1 ? "s" : ""
                   } selected`
                 : multiple
-                  ? "Select PDF files"
-                  : "Select a PDF file"}
+                  ? "Choose or drop PDF files"
+                  : "Choose or drop a PDF file"}
             </h2>
 
             <p className="mt-2 text-xs text-slate-500 sm:text-sm">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { toolCatalog } from "./toolCatalog";
 import ExtraTools from "./ExtraTools";
 
-const categories = ["All","Finance","Text","Developer","Image","PDF"];
+const categories = ["All","Finance","Text","Developer","Image","SEO","Math","Business","PDF"];
 const box = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-teal-600 focus:outline-none";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const panel = "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm";

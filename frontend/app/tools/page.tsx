@@ -3,20 +3,20 @@ import { ToolsDirectory } from "../../components/AllTools";
 
 export const metadata: Metadata = {
   title: "Free Nepal Tools: BS to AD Date, VAT, Ropani & More",
-  description: "Free Nepal-focused online tools: Bikram Sambat to AD date converter, 13% VAT calculator, Ropani-Aana converter, Nepali number and phone tools, plus PDF and SEO utilities.",
+  description: "Free Nepal tools: Nepali calendar, BS to AD converter, NEB GPA calculator, Loksewa photo resizer, NEPSE share calculator, VAT and land converters, plus PDF and SEO utilities.",
   alternates: { canonical: "https://pd-fora.vercel.app/tools" },
-  keywords: ["Nepali date converter", "BS to AD", "AD to BS", "VAT calculator Nepal", "Ropani to Aana", "Nepali number converter", "free online tools Nepal", "NIROJ Tools"],
+  keywords: ["Nepali date converter", "BS to AD", "AD to BS", "VAT calculator Nepal", "Ropani to Aana", "Nepali number converter", "Nepali calendar 2083", "NEB GPA calculator", "Loksewa photo resizer", "NEPSE share calculator", "free online tools Nepal", "NIROJ Tools"],
   openGraph: {
     type: "website",
     title: "Free Nepal Tools: BS to AD, VAT & Ropani Converter | NIROJ Tools",
-    description: "Convert Nepali dates, calculate 13% VAT, convert Ropani and Aana, write Nepali numbers and use free PDF and SEO tools.",
+    description: "Nepali calendar, BS-AD dates, NEB GPA, Loksewa photo resize, NEPSE share charges, VAT, land units and free PDF utilities.",
     url: "https://pd-fora.vercel.app/tools",
     siteName: "NIROJ Tools",
   },
   twitter: {
     card: "summary",
     title: "Free Nepal Tools: BS to AD, VAT & Ropani Converter | NIROJ Tools",
-    description: "Nepal-focused free date, VAT, land measurement, number, phone and PDF utilities.",
+    description: "Nepal-focused free calendar, GPA, Loksewa, NEPSE, date, VAT, land, number, phone and PDF utilities.",
   },
 };
 

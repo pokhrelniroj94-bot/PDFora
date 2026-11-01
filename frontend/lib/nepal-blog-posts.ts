@@ -167,4 +167,26 @@ export const nepalBlogPosts: BlogPost[] = [
     toolLinks: [{ label: "Nepali Digit Converter", href: "/tools/nepali-digit-converter" }, { label: "Nepali Number to Words", href: "/tools/nepali-number-converter" }]
   }
 
+  ,
+  {
+    slug: "preeti-to-unicode-nepali-font-converter-guide",
+    title: "Preeti to Unicode Converter: Convert Old Nepali Text Online",
+    description: "Learn how to convert legacy Preeti font text into readable Nepali Unicode and convert Unicode back to Preeti.",
+    keyword: "Preeti to Unicode converter",
+    updated: "2026-11-01",
+    readTime: "4 min read",
+    intro: "Many older Nepali documents were typed using the Preeti font. When copied into a modern website, email or Unicode document, the text can appear as Latin characters. A Preeti-to-Unicode converter helps recover readable Devanagari text.",
+    sections: [
+      { heading: "Why old Preeti text looks like English", paragraphs: ["Preeti is a legacy font encoding: the stored characters are Latin-key characters that display Nepali glyphs when the Preeti font is applied. Without the font, copied text may look like a string of English letters and symbols.", "Unicode Nepali stores Devanagari characters directly, so it is generally more suitable for modern websites, search, email and cross-device documents."] },
+      { heading: "How to convert Preeti to Unicode", bullets: ["Copy text from the old Preeti document.", "Open the Preeti ↔ Nepali Unicode Converter.", "Choose Preeti to Unicode.", "Paste the Preeti-encoded text and convert.", "Review the output carefully, especially punctuation, names and mixed English/Nepali text."] },
+      { heading: "Convert Unicode back to Preeti", paragraphs: ["Choose Unicode Nepali to Preeti, paste the Unicode text and convert. The resulting encoded text should be placed in a document using the Preeti font to display as intended.", "Keep a copy of the original document. Different legacy fonts use different mappings, so text typed in Kantipur, PCS Nepali or another font may not convert correctly using a Preeti-only converter."] }
+    ],
+    faqs: [
+      { question: "Does Preeti text equal Unicode Nepali?", answer: "No. Preeti is a legacy font encoding; Unicode stores Devanagari characters directly." },
+      { question: "Can this convert Kantipur or PCS Nepali?", answer: "This tool targets Preeti. Other legacy fonts may use different character maps." },
+      { question: "Should I check the converted text?", answer: "Yes. Review names, punctuation and mixed English/Nepali passages before using the result in an official document." }
+    ],
+    toolLinks: [{ label: "Preeti Unicode Converter", href: "/tools/preeti-unicode-converter" }, { label: "Nepali Digit Converter", href: "/tools/nepali-digit-converter" }]
+  }
+
 ];

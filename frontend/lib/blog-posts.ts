@@ -1,4 +1,5 @@
 import { additionalToolBlogPosts } from "./tool-guides";
+import { toolCatalog } from "../components/toolCatalog";
 
 export type BlogSection = {
   heading: string;
@@ -198,7 +199,56 @@ const editorialBlogPosts: BlogPost[] = [
   }
 ];
 
-export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts];
+
+const existingArticleSlugs = new Set([...editorialBlogPosts, ...additionalToolBlogPosts].map((post) => post.slug));
+const catalogGuides: BlogPost[] = toolCatalog
+  .filter((tool) => tool.slug !== "pdf-tools" && !existingArticleSlugs.has(`${tool.slug}-guide`))
+  .map((tool) => {
+    const slug = `${tool.slug}-guide`;
+    const categoryAdvice: Record<string, string[]> = {
+      Finance: ["Confirm the currency, period and compounding assumptions before comparing estimates.", "A calculator output is an estimate; verify loan, tax and investment details with the relevant provider."],
+      Math: ["Check that every input uses the expected unit and range.", "Test the result with a small example you can calculate independently."],
+      Text: ["Keep a copy of the original text before making bulk edits.", "Review punctuation, line breaks and non-English characters in the result."],
+      Developer: ["Test normal, malformed and boundary inputs before using output in production.", "Never paste live passwords, API keys or confidential tokens into a tool."],
+      Business: ["Confirm whether values are gross or net and whether fees or taxes are included.", "Use estimates for planning, then verify important decisions against source records."],
+      Image: ["Review the output at its intended display size and on a second device.", "Keep the original image before replacing or publishing a converted asset."]
+    };
+    const advice = categoryAdvice[tool.category] || categoryAdvice.Text;
+    const useCase: Record<string,string> = {
+      "reading-time-calculator":"A useful example is estimating how long a visitor may need to read a blog article. Long technical or academic material often takes longer than the same word count in simple prose.",
+      "word-frequency-counter":"Paste an article draft to find repeated terms. Frequency can highlight repetition, but it does not tell you an ideal keyword density or guarantee search rankings.",
+      "csv-to-json":"For example, a CSV with a header row such as name,age and rows such as Asha,22 can be represented as an array of JSON objects. Quote cells that contain commas.",
+      "bmi-calculator":"Enter weight in kilograms and height in centimetres. Adult BMI categories are screening ranges only and do not diagnose health conditions.",
+      "bmr-calculator":"Enter age, height, weight and the equation input to estimate basal energy use. This is not a personal diet or medical recommendation.",
+      "password-strength-checker":"Use a long, unique password and a password manager. A local strength estimate cannot tell whether a password has appeared in a data breach.",
+      "business-days-calculator":"Choose a start and end date to count weekdays inclusively. The basic weekday count does not automatically exclude national or regional public holidays."
+    };
+    const example = useCase[tool.slug] || `For a practical check, start with a short sample relevant to your task. Run the ${tool.name.toLowerCase()}, inspect the result and compare it with an expected output before processing a larger input.`;
+    const steps = [`Open the ${tool.name} from the NIROJ Tools directory.`,`Enter the requested information and check units, format and available options.`,`Run the tool, review the output and copy the result only after checking it.`];
+    return {
+      slug,
+      title: `${tool.name}: Free Online Tool, Examples and Instructions`,
+      description: `Learn how to use the free ${tool.name.toLowerCase()}. See its purpose, practical steps, examples, limitations and related tools.`,
+      keyword: tool.keywords,
+      updated: "2026-11-01",
+      readTime: "4 min read",
+      intro: `${tool.description} This guide explains when the tool is useful, how to prepare your input and what to check before relying on the output.`,
+      sections: [
+        { heading: `What is the ${tool.name} used for?`, paragraphs: [tool.description, example, `The best results come from understanding the input format and the limits of the calculation or conversion. The tool is intended for a focused browser workflow, not as a replacement for specialist professional software.`] },
+        { heading: `How to use ${tool.name} step by step`, paragraphs: ["Start with a representative sample and avoid including sensitive information. Read each field label carefully before running the tool."], bullets: steps },
+        { heading: "Accuracy, privacy and limitations", paragraphs: [advice[0], advice[1], "Browser and device support can vary. If the output will be used for an important financial, legal, medical, security or production decision, verify it independently first."] }
+      ],
+      faqs: [
+        { question: `What does the ${tool.name} do?`, answer: tool.description },
+        { question: `How do I use the ${tool.name} online?`, answer: steps.join(" ") },
+        { question: "Is the result guaranteed to be correct?", answer: "No online utility can guarantee every result for every input. Check the format, assumptions and output, and independently verify anything important." }
+      ],
+      toolLinks: [{ label: tool.name, href: `/tools/${tool.slug}` }, ...toolCatalog.filter((related) => related.category === tool.category && related.slug !== tool.slug && related.slug !== "pdf-tools").slice(0,3).map((related) => ({ label: related.name, href: `/tools/${related.slug}` }))]
+    };
+  });
+
+
+export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts, ...catalogGuides];
 
 export function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug);

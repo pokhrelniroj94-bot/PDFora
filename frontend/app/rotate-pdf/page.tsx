@@ -10,7 +10,7 @@ export default function Page() {
       description="Rotate PDF pages online by 90, 180, or 270 degrees and download the corrected PDF quickly and easily."
       multiple={false}
       accept="application/pdf,.pdf"
-      downloadName="Niroj77-Rotated.pdf"
+      downloadName="PDFora-Rotated.pdf"
       queryField="degrees"
       queryDefault="90"
     />

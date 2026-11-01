@@ -5,8 +5,9 @@ const catalogSource = read("../components/toolCatalog.ts");
 const allTools = read("../components/AllTools.tsx");
 const quickTools = read("../components/QuickUtilityTools.tsx");
 const extraTools = read("../components/ExtraTools.tsx");
+const nepalTools = read("../components/NepalTools.tsx");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
-assert.equal(catalog.length, 100, `Expected 100 catalog tools, found ${catalog.length}`);
+assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
 const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);
 assert.ok(quickBlock, "Quick utility dispatch list is missing");
@@ -17,7 +18,8 @@ const conditionalCases = [...allTools.matchAll(/if\s*\(slug\s*===\s*"([^"]+)"/g)
 assert.equal(new Set(quickCases).size, quickCases.length, "Duplicate quick-tool handlers");
 assert.equal(new Set(extraCases).size, extraCases.length, "Duplicate extra-tool handlers");
 assert.deepEqual([...quickSlugs].sort(), [...quickCases].sort(), "Quick utility dispatch list and handlers differ");
-const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases]);
+const nepalCases = [...nepalTools.matchAll(/slug===\"([a-z0-9-]+)\"/g)].map((m) => m[1]);
+const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases]);
 if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {
   implemented.add("image-compressor");
   implemented.add("image-format-converter");

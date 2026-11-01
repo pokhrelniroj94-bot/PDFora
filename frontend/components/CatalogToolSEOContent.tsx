@@ -131,7 +131,7 @@ export default function CatalogToolSEOContent({
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Frequently asked questions about {title}</h2>
           <div className="mt-5 space-y-5">
-            {faqItems.map((item, index) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}
+            {faqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}
           </div>
         </section>
         <section className="rounded-2xl border border-teal-100 bg-teal-50 p-6 sm:p-8">

@@ -52,4 +52,5 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"savings-goal-calculator",name:"Savings Goal Calculator",category:"Business",description:"Estimate monthly savings needed to reach a target by a chosen date.",keywords:"savings goal monthly deposit calculator"},
 {slug:"url-query-parser",name:"URL Query String Parser",category:"Developer",description:"Parse a URL and inspect its query parameters in a readable table.",keywords:"url query string parser parameters decoder"},
 {slug:"xml-formatter-validator",name:"XML Formatter & Validator",category:"Developer",description:"Validate XML syntax and format XML documents with readable indentation.",keywords:"xml formatter validator pretty print xml beautifier"},
+{slug:"notes-to-pdf",name:"Notes to PDF",category:"PDF",description:"Write or paste notes, format the page and save them as a PDF using your browser's print dialog.",keywords:"notes to pdf convert text to pdf online notepad pdf maker create pdf from notes"},
 ];

@@ -28,9 +28,9 @@ export default function ToolDirectory() {
           <div>
             <p className="text-xs font-black uppercase tracking-widest text-teal-700">NIROJ Tools toolbox</p>
             <h2 className="mt-1 text-xl font-black text-slate-900">Explore all tools</h2>
-            <p className="mt-1 text-sm text-slate-600">Choose a task and move between PDF tools without returning to the homepage.</p>
+            <p className="mt-1 text-sm text-slate-600">PDF tools are here, with finance, text, developer and image utilities in our all-tools hub.</p>
           </div>
-          <Link href="/#tools" className="text-sm font-bold text-teal-700 hover:text-orange-600">Browse all tools →</Link>
+          <Link href="/tools" className="text-sm font-bold text-teal-700 hover:text-orange-600">Explore finance, text, developer &amp; image tools →</Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {groups.map(([label, ...paths]) => (

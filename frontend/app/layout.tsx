@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     "Free online tools for Nepal: NRB exchange rates, salary tax, electricity bills, Nepali dates, typing, public holidays, calculators and PDF document tools.",
   alternates: { canonical: "/" },
   openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "NIROJ Tools", title: "NIROJ Tools – Free Nepal Online Utilities, PDF & Calculators", description: "Use free Nepal tools for NRB forex rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF tasks." },
-  twitter: { card: "summary", title: "NIROJ Tools – Free Online PDF Tools", description: "Free tools to merge, split, compress, convert and edit PDFs online." },
+  twitter: { card: "summary", title: "Free Nepal Online Tools | NIROJ Tools", description: "NRB rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF utilities." },
   keywords: [
     "free Nepal online tools",
     "NRB exchange rate",

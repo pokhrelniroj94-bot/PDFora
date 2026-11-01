@@ -17,9 +17,9 @@ function CopyButton({value}:{value:string}) { return <button className="rounded-
 
 export function ToolsDirectory() {
  const [category,setCategory]=useState("All"),[query,setQuery]=useState("");
- const list=useMemo(()=>toolCatalog.filter(t=>(category==="All"||t.category===category)&&[t.name,t.description,t.keywords].join(" ").toLowerCase().includes(query.toLowerCase())),[category,query]);
+ const list=useMemo(()=>toolCatalog.filter(t=>t.slug!=="pdf-tools"&&(category==="All"||t.category===category)&&[t.name,t.description,t.keywords].join(" ").toLowerCase().includes(query.toLowerCase())),[category,query]);
  return <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-10 sm:px-6">
-  <div className="mb-8"><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">One place. Useful tools.</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Explore NIROJ Tools</h1><p className="mt-3 max-w-2xl text-slate-600">Free browser-based finance, text, developer, image and PDF utilities. Pick a category or search for a task.</p></div>
+  <div className="mb-8"><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">One place. Useful tools.</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Explore NIROJ Tools</h1><p className="mt-3 max-w-2xl text-slate-600">Browse 100 free browser-based finance, text, developer, image, SEO and productivity utilities. Pick a category or search for a task.</p><p className="mt-3 text-sm"><Link href="/#tools" className="font-semibold text-teal-700 underline">Looking for PDF editing and conversion? Browse the PDF toolbox.</Link></p></div>
   <div className="sticky top-0 z-10 -mx-4 mb-6 border-y border-slate-200 bg-white/95 px-4 py-3 backdrop-blur sm:static sm:mx-0 sm:rounded-2xl sm:border sm:p-4">
    <input className={box+" mb-3"} placeholder="Search tools..." value={query} onChange={e=>setQuery(e.target.value)} aria-label="Search tools"/>
    <div className="flex gap-2 overflow-x-auto pb-1">{categories.map(c=><button key={c} onClick={()=>setCategory(c)} className={"shrink-0 rounded-full px-4 py-2 text-sm font-semibold "+(category===c?"bg-teal-700 text-white":"bg-slate-100 text-slate-700 hover:bg-teal-50")}>{c}</button>)}</div>

@@ -11,7 +11,7 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"text-diff-checker",name:"Text Diff Checker",category:"Text",description:"Compare two text blocks and inspect added and removed lines.",keywords:"diff compare text code changes"},
 {slug:"json-formatter-validator",name:"JSON Formatter & Validator",category:"Developer",description:"Validate JSON and format or minify it instantly.",keywords:"json pretty print validator formatter"},
 {slug:"base64-encoder-decoder",name:"Base64 Encoder & Decoder",category:"Developer",description:"Encode plain text to Base64 or decode Base64 back to text.",keywords:"base64 encode decode"},
-{slug:"url-encoder-decoder",name:"URL Encoder & Decoder",category:"Developer",description:"Safely encode or decode URL components.",keywords:"url percent encode decode"},
+{slug:"url-encoder-decoder",name:"URL Encoder & Decoder",category:"Developer",description:"Safely encode or decode URL components using percent encoding for URLs and query values.",keywords:"url percent encode decode"},
 {slug:"hash-generator",name:"Hash Generator",category:"Developer",description:"Generate SHA-256 and SHA-1 hashes in your browser.",keywords:"hash sha256 sha1 md5 checksum"},
 {slug:"image-compressor",name:"Image Compressor",category:"Image",description:"Compress JPEG, PNG and WebP images in your browser.",keywords:"image compressor reduce size jpg png webp"},
 {slug:"image-format-converter",name:"Image Format Converter",category:"Image",description:"Convert images between PNG, JPEG and WebP formats.",keywords:"webp png jpg jpeg convert heic"},

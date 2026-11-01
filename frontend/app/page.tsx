@@ -343,8 +343,10 @@ export default function Home() {
 
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
             Merge PDF, split PDF, compress PDF, convert PDF to Word, Excel or JPG,
-            and edit documents online for free. No software installation needed.
+            and edit documents online for free. Explore 100 additional free tools for text, finance, images, SEO and developer tasks. No software installation needed.
           </p>
+
+          <div className="mt-5"><Link href="/tools" className="inline-flex rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-800">Explore all 100 online tools →</Link></div>
 
           {/* SEARCH */}
           <div className="mx-auto mt-8 flex max-w-2xl items-center rounded-2xl border border-teal-200 bg-white p-1.5 shadow-lg shadow-teal-900/5 ring-4 ring-teal-50 focus-within:border-teal-500">

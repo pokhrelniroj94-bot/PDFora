@@ -126,6 +126,26 @@ const tools: Tool[] = [
   { name: "Compare PDF", description: "Compare text in two PDFs and download a difference report.", icon: "C", category: "Edit", href: "/compare-pdf" },
   { name: "Add Blank Pages", description: "Append blank pages to the end of a PDF document.", icon: "B", category: "Edit", href: "/add-blank-pages" },
   { name: "Rotate Selected Pages", description: "Rotate chosen PDF pages without changing the others.", icon: "R", category: "Edit", href: "/rotate-selected-pages" },
+
+  { name: "Add Background", description: "Add a background layer to PDF pages.", icon: "B", category: "Edit", href: "/add-background" },
+  { name: "Add Bookmarks", description: "Create PDF bookmarks to navigate long documents.", icon: "B", category: "Organize", href: "/add-bookmarks" },
+  { name: "Bates Numbering", description: "Add sequential Bates identifiers to PDF pages.", icon: "N", category: "Organize", href: "/bates-numbering" },
+  { name: "Extract Bookmarks", description: "Export the bookmark outline from a PDF.", icon: "B", category: "Extract", href: "/extract-bookmarks" },
+  { name: "Extract Fonts", description: "Inspect and extract embedded PDF font resources where supported.", icon: "F", category: "Extract", href: "/extract-fonts" },
+  { name: "Extract Page Images", description: "Render individual PDF pages as image files.", icon: "I", category: "Extract", href: "/extract-page-images" },
+  { name: "OCR PDF", description: "Recognize text in scanned PDFs. OCR availability depends on server language-data setup.", icon: "O", category: "Convert", href: "/ocr-pdf" },
+  { name: "Page Counter", description: "Count pages and inspect the page structure of a PDF.", icon: "#", category: "Analyze", href: "/page-counter" },
+  { name: "PDF Information", description: "View PDF metadata, dimensions, encryption and document properties.", icon: "i", category: "Analyze", href: "/pdf-information" },
+  { name: "PDF to BMP", description: "Convert PDF pages into BMP images.", icon: "B", category: "Convert", href: "/pdf-to-bmp" },
+  { name: "PDF to CSV", description: "Extract tabular PDF data into CSV format where text tables are available.", icon: "C", category: "Convert", href: "/pdf-to-csv" },
+  { name: "PDF to JSON", description: "Export selectable PDF text and document structure as JSON.", icon: "J", category: "Convert", href: "/pdf-to-json" },
+  { name: "PDF to Markdown", description: "Convert selectable PDF text into Markdown.", icon: "M", category: "Convert", href: "/pdf-to-markdown" },
+  { name: "PDF to TIFF", description: "Convert PDF pages into TIFF images.", icon: "T", category: "Convert", href: "/pdf-to-tiff" },
+  { name: "Remove Annotations", description: "Remove supported comments and annotations from a PDF.", icon: "A", category: "Edit", href: "/remove-annotations" },
+  { name: "Remove Attachments", description: "Remove embedded file attachments from a PDF.", icon: "A", category: "Security", href: "/remove-attachments" },
+  { name: "Remove PDF Links", description: "Remove clickable link annotations from PDF pages.", icon: "L", category: "Security", href: "/remove-pdf-links" },
+  { name: "Remove PDF Metadata", description: "Clear document metadata from a PDF file.", icon: "M", category: "Security", href: "/remove-pdf-metadata" },
+  { name: "Split by Bookmarks", description: "Split a PDF into separate files using its bookmark outline.", icon: "S", category: "Organize", href: "/split-by-bookmarks" },
 ]; 
 
 const categories = [
@@ -135,6 +155,8 @@ const categories = [
   "Convert",
   "Edit",
   "Security",
+  "Extract",
+  "Analyze",
 ];
 
 const faqs = [

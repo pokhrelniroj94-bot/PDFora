@@ -66,7 +66,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         </header>
 
         <div className="mt-6 space-y-6">
-          {post.sections.map((section, index) => (
+          {post.sections.map((section) => (
             <section key={section.heading} className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
               <h2 className="text-xl font-black text-slate-950">{section.heading}</h2>
               {section.paragraphs.map((paragraph) => <p key={paragraph} className="mt-4 text-sm leading-8 text-slate-700">{paragraph}</p>)}

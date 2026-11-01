@@ -21,7 +21,7 @@ type Props = {
   extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string; multiline?: boolean }[];
 };
 
-export default function PDForaTool({
+export default function NIROJ ToolsTool({
   endpoint,
   title,
   description,
@@ -196,7 +196,7 @@ export default function PDForaTool({
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              PDFora
+              NIROJ Tools
             </span>
           </a>
 
@@ -220,7 +220,7 @@ export default function PDForaTool({
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-            PDFora Tool
+            NIROJ Tools Tool
           </p>
 
           <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
@@ -402,7 +402,7 @@ export default function PDForaTool({
           <InfoCard
             icon="🔒"
             title="Private"
-            description="Files are processed by the PDFora backend."
+            description="Files are processed by the NIROJ Tools backend."
           />
 
           <InfoCard

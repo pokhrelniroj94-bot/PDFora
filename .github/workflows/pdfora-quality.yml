@@ -40,3 +40,16 @@ jobs:
       - run: npm run build
       - name: Audit npm dependencies
         run: npm audit --omit=dev --audit-level=high
+
+  live-production:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install live smoke-test dependencies
+        run: pip install -r backend/requirements.txt requests
+      - name: Verify deployed Render backend
+        run: python backend/tests/live_production_smoke.py

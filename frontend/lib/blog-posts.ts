@@ -1,5 +1,26 @@
 import { additionalToolBlogPosts } from "./tool-guides";
 import { toolCatalog } from "../components/toolCatalog";
+const catalogGuidePosts: BlogPost[] = toolCatalog.filter((tool) => tool.slug !== "pdf-tools" && !additionalToolBlogPosts.some((post) => post.slug === tool.slug + "-guide")).map((tool) => ({
+ slug: tool.slug + "-guide",
+ title: tool.name + ": Free Online Tool – How It Works and How to Use It",
+ description: "Learn how to use " + tool.name + " online, understand its inputs, review examples and check the result before using it.",
+ keyword: tool.keywords, updated: "2026-11-01", readTime: "4 min read",
+ intro: tool.description + " This guide covers the purpose of the tool, a practical workflow, common checks and limitations so you can decide when the result is ready to use.",
+ sections: [
+  { heading: "What is " + tool.name + "?", paragraphs: [tool.description, "The tool is intended for a focused task in a browser. It helps reduce repetitive work, but the quality of the result still depends on accurate inputs and choosing the right options.", "Before processing important information, try a small sample and compare the output with a result you can verify independently."] },
+  { heading: "How to use " + tool.name + " step by step", paragraphs: ["Open the dedicated tool page from the NIROJ Tools directory. Read the field labels and make sure the values use the expected format and units. Enter a representative sample, run the tool and review the output before copying or saving it."], bullets: ["Open the " + tool.name + " page.", "Enter the requested text, values or settings in the labelled fields.", "Run the tool and inspect the complete result, including any warnings.", "Copy or download the output only after checking it against your intended task."] },
+  { heading: "Examples, accuracy and limitations", paragraphs: ["Test the tool with a small example where you already know the expected result. Then try realistic input and check how it handles empty values, unusual characters and boundary cases.", "Some tasks depend on browser support, input formatting or assumptions in the calculation. Results are not professional financial, medical, legal, tax or security advice. Confirm important decisions using an authoritative source.", "Avoid entering passwords, access tokens or confidential personal information into online tools unless you have reviewed how the service handles that data."] }
+ ],
+ faqs: [
+  { question: "Is " + tool.name + " free to use?", answer: "This NIROJ Tools page is offered as a free browser-based utility. Current limits and browser compatibility are shown on the live tool page." },
+  { question: "How do I get the best result from " + tool.name + "?", answer: "Use the expected input format, check units and options, start with a small sample and review the result before copying it." },
+  { question: "Does " + tool.name + " work on mobile?", answer: "The page is designed for modern browsers. Available controls and processing support can vary by device and browser." },
+  { question: "Can I use the result for an important decision?", answer: "Verify important results independently. A browser utility is a practical aid, not a substitute for an authoritative professional source." }
+ ],
+ toolLinks: [{ label: tool.name, href: "/tools/" + tool.slug }, ...toolCatalog.filter((other) => other.category === tool.category && other.slug !== tool.slug && other.slug !== "pdf-tools").slice(0, 3).map((other) => ({ label: other.name, href: "/tools/" + other.slug }))]
+}));
+
+import { toolCatalog } from "../components/toolCatalog";
 
 export type BlogSection = {
   heading: string;

@@ -4,8 +4,9 @@ import Link from "next/link";
 import { toolCatalog } from "./toolCatalog";
 import ExtraTools from "./ExtraTools";
 import QuickUtilityTools from "./QuickUtilityTools";
+import NepalTools from "./NepalTools";
 
-const categories = ["All","Finance","Text","Developer","Image","SEO","Math","Business","PDF"];
+const categories = ["All","Nepal","Finance","Text","Developer","Image","SEO","Math","Business","PDF"];
 const box = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-teal-600 focus:outline-none";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const panel = "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm";
@@ -32,6 +33,7 @@ export function ToolsDirectory() {
 
 export default function ToolWorkspace({slug}:{slug:string}) {
  const tool=toolCatalog.find(t=>t.slug===slug);
+ if(["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter"].includes(slug)) return <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><div className="mb-7 mt-5"><p className="text-xs font-black uppercase tracking-widest text-teal-700">Nepal utility</p><h1 className="mt-2 text-3xl font-black text-slate-950">{toolCatalog.find(t=>t.slug===slug)?.name}</h1><p className="mt-2 text-slate-600">{toolCatalog.find(t=>t.slug===slug)?.description}</p></div><section className={panel}><NepalTools slug={slug}/></section><p className="mt-6 text-xs leading-5 text-slate-500">Check important official, financial or legal information independently before relying on a calculation.</p></main>;
  if(slug==="pdf-tools") return <main className="mx-auto min-h-screen max-w-3xl px-4 py-16"><p className="text-xs font-black uppercase tracking-widest text-teal-700">PDF tools</p><h1 className="mt-2 text-3xl font-black text-slate-950">Explore 50+ PDF tools</h1><p className="mt-3 text-slate-600">Open the existing PDF toolbox for document conversion, editing, organization and security tools.</p><Link href="/" className="mt-6 inline-flex rounded-xl bg-teal-700 px-5 py-3 font-bold text-white">Browse PDF tools →</Link></main>;
  if(!tool) return <main className="mx-auto max-w-3xl px-4 py-20"><h1 className="text-2xl font-bold">Tool not found</h1><Link className="mt-4 inline-block text-teal-700 underline" href="/tools">Browse all tools</Link></main>;
  return <main className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><div className="mb-7 mt-5"><p className="text-xs font-black uppercase tracking-widest text-teal-700">{tool.category} tool</p><h1 className="mt-2 text-3xl font-black text-slate-950">{tool.name}</h1><p className="mt-2 text-slate-600">{tool.description}</p></div><section className={panel}><ToolBody slug={slug}/></section><p className="mt-6 text-xs leading-5 text-slate-500">Your text and calculations are processed in your browser unless a tool explicitly needs an external public data source. Results are estimates and should be checked before financial or business decisions.</p></main>;

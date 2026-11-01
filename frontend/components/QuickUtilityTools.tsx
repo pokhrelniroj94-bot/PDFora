@@ -3,8 +3,6 @@
 import { useState } from "react";
 
 type Values = Record<string, string>;
-const textTools = new Set(["word-frequency-counter","reading-time-calculator","line-counter","sentence-counter","email-extractor","url-extractor","phone-number-extractor","number-extractor","hashtag-extractor","remove-duplicate-words","find-replace-text","palindrome-checker","acronym-generator","camel-case-converter","snake-case-converter","kebab-case-converter","html-tag-stripper"]);
-const devTools = new Set(["text-to-binary","binary-to-text","text-to-hex","hex-to-text","morse-code-translator","json-to-yaml","json-escape-unescape","csv-to-json","url-validator","email-validator","password-strength-checker","unix-timestamp-converter","px-rem-converter","css-gradient-generator"]);
 const defaults: Record<string, Values> = {
 "word-frequency-counter":{text:"Tools save time. Useful tools save time."},
 "reading-time-calculator":{text:"Paste your article here.",wpm:"200"},

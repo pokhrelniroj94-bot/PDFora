@@ -87,7 +87,7 @@ function NotesToPDF() {
  const makePdf=()=>{
   if(!notes.trim()){setMessage("Please write or paste your notes first.");return;}
   const safe=(s:string)=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
-  const win=window.open("","_blank","noopener,noreferrer");
+  const win=window.open("","_blank");
   if(!win){setMessage("Allow pop-ups for this site, then try again.");return;}
   win.document.open();
   win.document.write("<!doctype html><html><head><meta charset='utf-8'><title>"+safe(title||"Notes")+"</title><style>@page{size:"+size+";margin:20mm}body{font-family:Arial,sans-serif;color:#172033;font-size:"+Math.max(9,Math.min(24,Number(fontSize)||12))+"pt;line-height:1.65}h1{font-size:22pt;margin:0 0 18pt;border-bottom:1px solid #ddd;padding-bottom:10pt}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}</style></head><body><h1>"+safe(title||"My Notes")+"</h1><pre>"+safe(notes)+"</pre><script>window.onload=()=>{window.focus();window.print()}<\/script></body></html>");

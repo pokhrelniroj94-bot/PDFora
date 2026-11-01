@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
 type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; rates: ForexRate[]; error?: string };
@@ -53,6 +53,13 @@ const holidays = [
   { name: "Guru Nanak Jayanti", bs: "Date to be announced", ad: "", note: "Sikh community", type: "To be announced" },
 ];
 
+async function fetchLatestForex(): Promise<ForexResponse> {
+  const response = await fetch("/api/nepal-forex", { cache: "no-store" });
+  const json = await response.json() as ForexResponse;
+  if (!response.ok) throw new Error(json.error || "Could not load NRB rates.");
+  return json;
+}
+
 function ForexTool() {
   const [data, setData] = useState<ForexResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,26 +67,37 @@ function ForexTool() {
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState("100");
   const [direction, setDirection] = useState("foreign-to-npr");
-  const load = useCallback(async () => {
-    try {
-      const response = await fetch("/api/nepal-forex", { cache: "no-store" });
-      const json = await response.json() as ForexResponse;
-      if (!response.ok) throw new Error(json.error || "Could not load NRB rates.");
-      setData(json);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not load NRB rates.");
-    } finally { setLoading(false); }
+  useEffect(() => {
+    let active = true;
+    const initialLoad = async () => {
+      try {
+        const json = await fetchLatestForex();
+        if (active) setData(json);
+      } catch (e) {
+        if (active) setError(e instanceof Error ? e.message : "Could not load NRB rates.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    void initialLoad();
+    return () => { active = false; };
   }, []);
-  useEffect(() => { void load(); }, [load]);
+  const refresh = async () => {
+    setLoading(true);
+    setError("");
+    try { setData(await fetchLatestForex()); }
+    catch (e) { setError(e instanceof Error ? e.message : "Could not load NRB rates."); }
+    finally { setLoading(false); }
+  };
   const selected = data?.rates.find((item) => item.code === currency) ?? data?.rates[0];
   const value = Number(amount);
-  const valid = Number.isFinite(value) && value >= 0 && !!selected;
+  const valid = amount.trim() !== "" && Number.isFinite(value) && value >= 0 && !!selected;
   const converted = selected && valid
     ? direction === "foreign-to-npr" ? value * selected.buy / selected.unit : value * selected.unit / selected.sell
     : null;
   return <div className="space-y-4">
     <div><h2 className="text-lg font-bold">Nepal Rastra Bank Daily Exchange Rates</h2><p className="mt-1 text-sm text-slate-600">Official NRB buying and selling rates. The latest available published working-day rate is shown.</p></div>
-    <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-slate-600">{data ? `Rate date: ${data.rateDate}` : "Loading official rate date…"}</p><button className="rounded-lg border px-3 py-2 text-sm font-semibold" disabled={loading} onClick={() => { setLoading(true); setError(""); void load(); }}>{loading ? "Refreshing…" : "Refresh rates"}</button></div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-slate-600">{data ? `Rate date: ${data.rateDate}` : "Loading official rate date…"}</p><button className="rounded-lg border px-3 py-2 text-sm font-semibold" disabled={loading} onClick={() => void refresh()}>{loading ? "Refreshing…" : "Refresh rates"}</button></div>
     {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{error}</p>}
     {data && <div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[560px] text-left text-sm"><thead className="bg-slate-100"><tr><th className="p-3">Currency</th><th className="p-3 text-right">Unit</th><th className="p-3 text-right">Buying (NPR)</th><th className="p-3 text-right">Selling (NPR)</th></tr></thead><tbody>{data.rates.map((item) => <tr key={item.code} className="border-t"><td className="p-3"><span className="font-semibold">{item.code}</span><span className="ml-2 text-slate-500">{item.name}</span></td><td className="p-3 text-right">{item.unit}</td><td className="p-3 text-right tabular-nums">{item.buy.toFixed(4)}</td><td className="p-3 text-right tabular-nums">{item.sell.toFixed(4)}</td></tr>)}</tbody></table></div>}
     <div className="rounded-xl border p-4"><h3 className="font-bold">NRB rate converter</h3><div className="mt-3 grid gap-3 sm:grid-cols-2"><label><span className={label}>Currency</span><select className={field} value={selected?.code ?? currency} onChange={(e) => setCurrency(e.target.value)}>{(data?.rates ?? []).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label><label><span className={label}>Conversion</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option></select></label></div><div className="mt-3"><Field title="Amount" value={amount} onChange={setAmount}/></div>{converted !== null && selected && <div className="mt-4"><Result>{direction === "foreign-to-npr" ? `${value.toLocaleString()} ${selected.code} ≈ ${npr(converted)}` : `${npr(value)} ≈ ${converted.toLocaleString("en-IN", { maximumFractionDigits: 4 })} ${selected.code}`}\nRate unit: ${selected.unit} ${selected.code}\nRate date: ${data?.rateDate}</Result></div>}</div>

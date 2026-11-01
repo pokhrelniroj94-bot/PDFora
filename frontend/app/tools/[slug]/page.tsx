@@ -34,9 +34,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: "Should I verify the result?", a: "Yes. Check important outputs independently, especially before financial, legal, medical, security or production use." }
   ];
   const software = { "@context": "https://schema.org", "@type": "SoftwareApplication", name: tool.name, applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description: tool.description, url: `${site}/tools/${slug}`, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } };
-  const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
+  const breadcrumb = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [\n    { "@type": "ListItem", position: 1, name: "Home", item: site },\n    { "@type": "ListItem", position: 2, name: "All Tools", item: `${site}/tools` },\n    { "@type": "ListItem", position: 3, name: tool.name, item: `${site}/tools/${slug}` },\n  ] };\n  const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
   return <>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }} />\n    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
     <ToolWorkspace slug={slug} />
     <section className="mx-auto max-w-4xl px-4 pb-12">

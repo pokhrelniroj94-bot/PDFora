@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.title,
     description: post.description,
     alternates: { canonical: url },
-    keywords: [post.keyword, "PDF tutorial", "online PDF tools", "NIROJ Tools"],
+    keywords: [post.keyword, "free online tools", "tool tutorial", "how-to guide", "NIROJ Tools"],
     openGraph: { type: "article", url, siteName: "NIROJ Tools", title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated },
     twitter: { card: "summary", title: post.title, description: post.description },
   };
@@ -40,7 +40,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
     author: { "@type": "Organization", name: "NIROJ Tools", url: baseUrl },
     publisher: { "@type": "Organization", name: "NIROJ Tools", url: baseUrl },
   };
-  const faqSchema = {
+  const breadcrumbSchema = {\n    "@context": "https://schema.org",\n    "@type": "BreadcrumbList",\n    itemListElement: [\n      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },\n      { "@type": "ListItem", position: 2, name: "Guides", item: `${baseUrl}/blog` },\n      { "@type": "ListItem", position: 3, name: post.title, item: `${baseUrl}/blog/${post.slug}` },\n    ],\n  };\n  const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: post.faqs.map((faq) => ({
@@ -85,19 +85,19 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             </div>
           </section>
           <section className="rounded-3xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
-            <h2 className="text-xl font-black text-slate-950">Try a related PDF tool</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-700">Continue with the relevant NIROJ Tools tool when you are ready to process your document.</p>
+            <h2 className="text-xl font-black text-slate-950">Try a related tool</h2>
+            <p className="mt-2 text-sm leading-7 text-slate-700">Continue with a related NIROJ Tools utility when you are ready to put this guide into practice.</p>
             <div className="mt-4 flex flex-wrap gap-3">
               {post.toolLinks.map((tool) => <Link key={tool.href} href={tool.href} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
             </div>
           </section>
         </div>
         <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6 text-sm">
-          <Link href="/blog" className="font-bold text-teal-700 hover:underline">← All PDF guides</Link>
+          <Link href="/blog" className="font-bold text-teal-700 hover:underline">← All guides</Link>
           <Link href="/" className="font-bold text-teal-700 hover:underline">NIROJ Tools home</Link>
         </div>
       </article>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />\n      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </main>
   );

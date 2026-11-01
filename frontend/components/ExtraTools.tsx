@@ -17,7 +17,7 @@ const config:Record<string,F[]> = {
 "whitespace-cleaner":[{key:"text",label:"Text",value:"  Remove   extra spaces  \n\n and blank lines. "}],
 "character-frequency":[{key:"text",label:"Text",value:"banana"}],
 "password-generator":[{key:"len",label:"Length (8–128)",type:"number",value:"20"},{key:"count",label:"Number to generate (1–10)",type:"number",value:"3"}],
-"uuid-generator":[],
+"uuid-generator":[],"url-query-parser":[{key:"text",label:"Full URL",value:"https://example.com/search?q=pdf&page=2"}],
 "html-encoder-decoder":[{key:"text",label:"HTML or plain text",value:"<h1>Hello & welcome</h1>"},{key:"mode",label:"Mode (encode or decode)",value:"encode"}],
 "regex-tester":[{key:"pattern",label:"Regular expression",value:"\\bcat\\b"},{key:"flags",label:"Flags (g, i, m)",value:"gi"},{key:"text",label:"Test text",value:"Cat, catalog, cat."}],
 "jwt-decoder":[{key:"text",label:"JWT token",value:""}],
@@ -62,6 +62,7 @@ export default function ExtraTools({slug}:{slug:string}){
  case "character-frequency":{const m=new Map<string,number>();for(const c of val("text"))m.set(c,(m.get(c)||0)+1);s=[...m].sort((a,b)=>b[1]-a[1]).map(([c,n])=>(c===" "?"[space]":c)+" : "+n).join("\n");break;}
  case "password-generator":{const len=Math.max(8,Math.min(128,Math.floor(num("len")))),count=Math.max(1,Math.min(10,Math.floor(num("count")))),chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*()-_=+";s=Array.from({length:count},()=>Array.from({length:len},()=>chars[crypto.getRandomValues(new Uint32Array(1))[0]%chars.length]).join("")).join("\n");break;}
  case "uuid-generator":s=Array.from({length:5},()=>crypto.randomUUID()).join("\n");break;
+ case "url-query-parser":{const u=new URL(val("text"));s="URL: "+u.origin+u.pathname+"\n"+[...u.searchParams].map(([k,v])=>k+" = "+v).join("\n");if(!u.searchParams.size)s+="No query parameters found.";break;}
  case "html-encoder-decoder":{if(val("mode")==="decode"){const e=document.createElement("textarea");e.innerHTML=val("text");s=e.value;}else s=escapeHtml(val("text"));break;}
  case "regex-tester":{const r=new RegExp(val("pattern"),val("flags")),g=new RegExp(r.source,r.flags.includes("g")?r.flags:r.flags+"g"),m=[...val("text").matchAll(g)];s=m.length?m.map(x=>"Match: "+x[0]+" at index "+x.index).join("\n"):"No matches found.";break;}
  case "jwt-decoder":{const p=val("text").trim().split(".");if(p.length!==3)throw Error("A JWT must have three dot-separated parts.");const d=(x:string)=>JSON.parse(decodeURIComponent(Array.from(atob(x.replace(/-/g,"+").replace(/_/g,"/")),c=>"%"+c.charCodeAt(0).toString(16).padStart(2,"0")).join("")));s="Header:\n"+JSON.stringify(d(p[0]),null,2)+"\nPayload:\n"+JSON.stringify(d(p[1]),null,2)+"\n\nDecoding does not verify the signature.";break;}

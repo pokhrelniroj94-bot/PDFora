@@ -1,3 +1,5 @@
+import { additionalToolBlogPosts } from "./tool-guides";
+
 export type BlogSection = {
   heading: string;
   paragraphs: string[];
@@ -17,7 +19,7 @@ export type BlogPost = {
   toolLinks: { label: string; href: string }[];
 };
 
-export const blogPosts: BlogPost[] = [
+const editorialBlogPosts: BlogPost[] = [
   {
     slug: "compress-pdf-to-under-1mb-online",
     title: "How to Compress a PDF to Under 1MB Online",
@@ -195,6 +197,8 @@ export const blogPosts: BlogPost[] = [
     toolLinks: [{ label: "PDF to Word", href: "/pdf-to-word" }, { label: "PDF to Text", href: "/pdf-to-text" }, { label: "PDF to Excel", href: "/pdf-to-excel" }]
   }
 ];
+
+export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts];
 
 export function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug);

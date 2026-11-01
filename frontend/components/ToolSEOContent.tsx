@@ -61,7 +61,7 @@ export default function ToolSEOContent({ slug }: { slug: string }) {
           <div className="mt-5 space-y-5">
             <div>
               <h3 className="font-bold text-slate-950">How do I {guide.name.toLowerCase()} online?</h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">Open PDFora's {guide.name} tool, select the source PDF, use the available controls, process the file and review the downloaded result.</p>
+              <p className="mt-2 text-sm leading-7 text-slate-600">Open PDFora&apos;s {guide.name} tool, select the source PDF, use the available controls, process the file and review the downloaded result.</p>
             </div>
             <div>
               <h3 className="font-bold text-slate-950">Can I use PDFora {guide.name} on my phone?</h3>

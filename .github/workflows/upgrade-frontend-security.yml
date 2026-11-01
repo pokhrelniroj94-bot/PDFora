@@ -39,5 +39,6 @@ jobs:
           git add frontend/package.json frontend/package-lock.json
           if ! git diff --cached --quiet; then
             git commit -m "security: upgrade vulnerable frontend dependencies [skip ci]"
-            git push origin security-next-upgrade
+            git pull --rebase origin security-next-upgrade
+            git push origin HEAD:security-next-upgrade
           fi

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getToolGuide } from "../../lib/tool-guides";
+import { getToolGuide } from "../lib/tool-guides";
 
 export default function ToolSEOContent({ slug }: { slug: string }) {
   const guide = getToolGuide(slug);

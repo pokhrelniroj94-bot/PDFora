@@ -62,6 +62,13 @@ export default function RootLayout({
 
       <body className="min-h-full flex flex-col">
         {children}
+        <footer className="border-t border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-600">
+          <a href="/blog" className="font-semibold text-teal-700 hover:underline">PDF Guides &amp; Tutorials</a>
+          <span className="mx-2">·</span>
+          <a href="/about" className="hover:underline">About PDFora</a>
+          <span className="mx-2">·</span>
+          <a href="/contact" className="hover:underline">Contact</a>
+        </footer>
         <ToolDirectory />
         <Script
           id="pdfora-structured-data"

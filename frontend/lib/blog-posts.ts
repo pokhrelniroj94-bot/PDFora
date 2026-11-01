@@ -18,6 +18,7 @@ export type BlogPost = {
   sections: BlogSection[];
   faqs: { question: string; answer: string }[];
   toolLinks: { label: string; href: string }[];
+  sources?: { label: string; url: string }[];
 };
 
 const editorialBlogPosts: BlogPost[] = [

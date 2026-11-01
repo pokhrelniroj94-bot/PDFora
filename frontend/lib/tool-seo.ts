@@ -66,7 +66,7 @@ export function getToolMetadata(slug: string): Metadata {
   const name = tool?.name ?? slug.split("-").map((part) => part[0]?.toUpperCase() + part.slice(1)).join(" ");
   const intent = tool?.intent ?? `${name} online free`;
   const detail = tool?.detail ?? `Use PDFora to ${intent}. Follow the on-page instructions and download your processed document.`;
-  const title = `${intent.replace(" online", " Online").replace(" PDF", " PDF")} Free`;
+  const title = `${name} Online Free`;
   const description = `${detail} Free online PDF tool with no software installation required.`;
   const url = `${baseUrl}/${slug}`;
   return {

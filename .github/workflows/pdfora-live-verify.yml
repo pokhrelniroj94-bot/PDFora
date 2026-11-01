@@ -2,6 +2,8 @@ name: PDFora post-deploy PDF regression
 on:
   push:
     branches: [pdfora-live-verify]
+  pull_request:
+    branches: [master]
 permissions:
   contents: read
 jobs:

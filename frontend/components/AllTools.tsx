@@ -52,7 +52,6 @@ function ToolBody({slug}:{slug:string}) {
  const set=(k:string,x:string)=>setValues(p=>({...p,[k]:x}));
  const num=(k:string,d=0)=>Number(v(k,String(d)))||0;
  const field=(key:string,title:string,placeholder="",def="")=><Field title={title}><input className={box} value={v(key,def)} placeholder={placeholder} onChange={e=>set(key,e.target.value)}/></Field>;
- const select=(key:string,title:string,opts:string[],def="")=><Field title={title}><select className={box} value={v(key,def||opts[0])} onChange={e=>set(key,e.target.value)}>{opts.map(o=><option key={o}>{o}</option>)}</select></Field>;
  const action=(title:string,fn:()=>void)=><button onClick={fn} className="mt-4 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-teal-800">{title}</button>;
  const result=(s:string)=>setOutput(s);
  const imageTool=slug==="image-compressor"||slug==="image-format-converter";

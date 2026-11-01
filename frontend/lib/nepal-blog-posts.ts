@@ -106,4 +106,65 @@ export const nepalBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "Nepali Number Converter", href: "/tools/nepali-number-converter" }, { label: "VAT Calculator", href: "/tools/nepali-vat-calculator" }]
   }
+  ,
+  {
+    slug: "nepali-calendar-bs-month-guide", title: "Nepali Calendar 2083: How to Read BS Dates and AD Weekdays",
+    description: "Use a Bikram Sambat month calendar to match Nepali dates with Gregorian dates and weekdays.", keyword: "Nepali calendar 2083", updated: "2026-11-01", readTime: "4 min read",
+    intro: "Nepali dates are used for school forms, government documents, festivals and everyday planning. A month view that shows both BS and AD dates can reduce confusion when a form asks for an English date.",
+    sections: [
+      { heading: "What the Nepali calendar shows", paragraphs: ["The Bikram Sambat calendar has twelve months, from Baisakh through Chaitra. Month lengths are not identical to Gregorian months, so a fixed year offset cannot convert a date accurately.", "The NIROJ Tools calendar pairs each BS day with its Gregorian date and weekday. It currently does not label public holidays, tithi or festivals."] },
+      { heading: "How to view a BS month", bullets: ["Open the Nepali Calendar tool.", "Enter a BS year within the supported range.", "Choose the month.", "Select Show Calendar to see matching AD dates and weekdays.", "For official holidays, compare the result with the current government holiday notice."] },
+      { heading: "Check dates before official use", paragraphs: ["Use the date printed on your certificate or official record. A calendar is a conversion aid, not proof of a person's date of birth or document issue date."] }
+    ],
+    faqs: [{ question: "Does it show public holidays?", answer: "The current month view shows BS dates, AD dates and weekdays, not holidays or festivals." }, { question: "Can I view 2083 BS?", answer: "Yes, within the supported calendar range." }],
+    toolLinks: [{ label: "Nepali Calendar", href: "/tools/nepali-calendar" }, { label: "BS to AD Date Converter", href: "/tools/nepali-date-converter" }]
+  },
+  {
+    slug: "neb-gpa-calculator-nepal-guide", title: "NEB GPA Calculator Nepal: Credit Hours and Grade Points Explained",
+    description: "Understand the credit-weighted GPA formula and calculate an estimated NEB GPA from subject grade points.", keyword: "NEB GPA calculator Nepal", updated: "2026-11-01", readTime: "5 min read",
+    intro: "Students often need to calculate an estimated GPA from subject grades and credit hours. The weighted formula matters because subjects may not all carry the same credit hours.",
+    sections: [
+      { heading: "The weighted GPA formula", paragraphs: ["GPA = sum of (subject credit hours × subject grade point) divided by total credit hours. A subject with more credit hours contributes more to the final GPA.", "The NEB publication by the Provincial Examination Management Office, Karnali, describes the credit-hour weighted GPA formula. Use the credit hours and grade points from the current official rules and your grade sheet."] },
+      { heading: "How to use the calculator", bullets: ["Enter each subject name.", "Enter the subject credit hours from the official course structure or grade sheet.", "Choose the grade point shown on your result.", "Add or remove subject rows as needed.", "Compare the estimate with your official transcript."] },
+      { heading: "Important limitations", paragraphs: ["The calculator uses a commonly used letter-grade scale as a helper. It cannot decide eligibility, pass status, practical/theory weighting or special grading rules. Check the current NEB directive and your school/college."] }
+    ],
+    faqs: [{ question: "How is GPA calculated?", answer: "Multiply each subject's grade point by its credit hours, add the products, then divide by total credit hours." }, { question: "Can I use this for TU BBA GPA?", answer: "TU programmes may use different rules. Check your faculty's grading regulation." }],
+    toolLinks: [{ label: "NEB GPA Calculator", href: "/tools/neb-gpa-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }]
+  },
+  {
+    slug: "loksewa-online-form-photo-resizer-guide", title: "How to Resize a Photo to 50KB or 200KB for Loksewa and Online Forms",
+    description: "Compress a photo in your browser to a chosen KB limit and understand why official image dimensions still matter.", keyword: "Loksewa photo resizer 50KB", updated: "2026-11-01", readTime: "4 min read",
+    intro: "Many online applications set a maximum photo file size. A photo that is too large may fail to upload even when it looks correct on screen. Compressing it to a required KB limit can help.",
+    sections: [
+      { heading: "How to reduce a photo file size", bullets: ["Open the Loksewa and Online Form Photo Resizer.", "Choose the original image.", "Select a file-size target such as 50 KB or 200 KB.", "Choose a maximum image dimension and resize.", "Check the downloaded image against the vacancy or application notice."] },
+      { heading: "File size is not image dimensions", paragraphs: ["A 50 KB image can still have the wrong width, height, aspect ratio, background or crop. Some forms require particular pixel dimensions or a signature format.", "The tool compresses the image to a selected size target. It does not know the rules of every Loksewa, bank or government portal."] },
+      { heading: "Keep an original copy", paragraphs: ["Keep an untouched copy of the original image. Review the compressed image for blur before uploading. The browser-based tool processes the image locally on your device."] }
+    ],
+    faqs: [{ question: "Can I make a photo exactly 50 KB?", answer: "The tool aims to produce a file at or below the selected size target; the final size can be smaller." }, { question: "Will it guarantee upload acceptance?", answer: "No. Follow the exact pixel dimensions, aspect ratio, background and file type in the application notice." }],
+    toolLinks: [{ label: "Loksewa Photo Resizer", href: "/tools/loksewa-photo-resizer" }]
+  },
+  {
+    slug: "nepse-share-buy-sell-profit-calculator-guide", title: "NEPSE Share Calculator: Estimate Buy Cost, Selling Charges and Profit",
+    description: "Estimate NEPSE share transaction cost and profit using editable broker commission, SEBON, DP and CGT assumptions.", keyword: "NEPSE share buy sell calculator", updated: "2026-11-01", readTime: "5 min read",
+    intro: "The profit on a share trade is not always just the selling price minus the buying price. Transaction charges and capital gains tax assumptions affect the final amount received.",
+    sections: [
+      { heading: "What to include", paragraphs: ["Start with share quantity and buy and sell prices. Add broker commission and applicable regulatory charges to the purchase and sale sides. A depository participant charge may also apply on a sale.", "Capital gains tax depends on investor category and holding period. Use the current applicable rate rather than assuming one rate applies to every trade."] },
+      { heading: "How to use the calculator", bullets: ["Enter share quantity and purchase price.", "Enter the expected selling price.", "Enter current broker commission and SEBON rates.", "Enter applicable DP charge and CGT assumption.", "Review estimated purchase cost and net profit."] },
+      { heading: "Verify current charges", paragraphs: ["Brokerage schedules and tax rules can change. The tool keeps rates editable and does not claim to fetch live broker tariffs. Confirm rates with your broker, CDSC, SEBON and tax authority before trading."] }
+    ],
+    faqs: [{ question: "Does it show live NEPSE prices?", answer: "No. Enter your own buy and sell prices." }, { question: "Is CGT fixed for everyone?", answer: "No. Tax can depend on holding period and investor category. Confirm current rules." }],
+    toolLinks: [{ label: "NEPSE Share Calculator", href: "/tools/nepal-share-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }]
+  },
+  {
+    slug: "english-to-nepali-digits-converter-guide", title: "English to Nepali Numbers: Convert 123 into १२३",
+    description: "Convert English digits to Nepali Devanagari digits and back while keeping the rest of your text unchanged.", keyword: "English to Nepali digits converter", updated: "2026-11-01", readTime: "3 min read",
+    intro: "Nepali documents and messages often use Devanagari digits, while websites, spreadsheets and international forms may use English digits. A digit converter makes it easy to switch the number characters.",
+    sections: [
+      { heading: "Nepali and English digit mapping", paragraphs: ["The digits map one-to-one: 0 = ०, 1 = १, 2 = २, 3 = ३, 4 = ४, 5 = ५, 6 = ६, 7 = ७, 8 = ८ and 9 = ९.", "Only digits change. Letters, spaces, punctuation and other text remain unchanged."] },
+      { heading: "Convert digits in a sentence", bullets: ["Paste a number or sentence into the Nepali Unicode Digit Converter.", "Copy the Nepali-digit output for a Nepali document.", "Switch back to English digits when a system requires ASCII numerals."] }
+    ],
+    faqs: [{ question: "Does this translate English words into Nepali?", answer: "No. It converts digit characters only." }, { question: "Will punctuation and text be preserved?", answer: "Yes. Only digit characters are replaced." }],
+    toolLinks: [{ label: "Nepali Digit Converter", href: "/tools/nepali-digit-converter" }, { label: "Nepali Number to Words", href: "/tools/nepali-number-converter" }]
+  }
+
 ];

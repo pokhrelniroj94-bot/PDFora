@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
 type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; rates: ForexRate[]; error?: string };
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
-const button = "rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50";
 const npr = (value: number) => "NPR " + value.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 function Field({ title, value, onChange, type = "number", min = "0" }: { title: string; value: string; onChange: (value: string) => void; type?: string; min?: string }) {
   return <label className="block"><span className={label}>{title}</span><input className={field} type={type} min={min} value={value} onChange={(event) => onChange(event.target.value)} /></label>;
@@ -61,7 +60,7 @@ function ForexTool() {
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState("100");
   const [direction, setDirection] = useState("foreign-to-npr");
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true); setError("");
     try {
       const response = await fetch("/api/nepal-forex", { cache: "no-store" });
@@ -72,8 +71,8 @@ function ForexTool() {
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not load NRB rates.");
     } finally { setLoading(false); }
-  };
-  useEffect(() => { void load(); }, []);
+  }, [currency]);
+  useEffect(() => { void load(); }, [load]);
   const selected = data?.rates.find((item) => item.code === currency);
   const value = Number(amount);
   const valid = Number.isFinite(value) && value >= 0 && !!selected;

@@ -24,7 +24,7 @@ jobs:
       - name: Upgrade Next.js to patched release
         run: npm install next@16.4.3 --save-exact
       - name: Apply compatible security fixes
-        run: npm audit fix
+        run: npm audit fix || echo "Non-blocking development advisories remain; the production audit below is the release gate."
       - name: Lint
         run: npm run lint
       - name: Production build

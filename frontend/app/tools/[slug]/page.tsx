@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import ToolWorkspace from "../../../components/AllTools";
 import { toolCatalog } from "../../../components/toolCatalog";
 
-const site = "https://niroj.com.np";
+const site = "https://pd-fora.vercel.app";
 export function generateStaticParams() {
   return toolCatalog.map((tool) => ({ slug: tool.slug }));
 }

@@ -5,11 +5,11 @@ import { blogPosts } from "../../lib/blog-posts";
 export const metadata: Metadata = {
   title: "Tools, Tutorials & Practical Guides",
   description: "Practical guides for free PDF, text, developer, image, finance and productivity tools.",
-  alternates: { canonical: "https://niroj.com.np/blog" },
+  alternates: { canonical: "https://pd-fora.vercel.app/blog" },
   openGraph: {
     title: "Tools, Tutorials & Practical Guides | NIROJ Tools",
     description: "Step-by-step Practical guides and practical document tips.",
-    url: "https://niroj.com.np/blog",
+    url: "https://pd-fora.vercel.app/blog",
     siteName: "NIROJ Tools",
     type: "website",
   },

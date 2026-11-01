@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://niroj.com.np"),
+  metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
     default: "Free Online Tools: PDF, Image, Text & More | NIROJ Tools",
     template: "%s | NIROJ Tools",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   description:
     "Free online tools for PDF documents and everyday digital tasks. Convert, edit, organize and process files directly in your browser.",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", url: "https://niroj.com.np/", siteName: "NIROJ Tools", title: "NIROJ Tools – Free Online PDF Tools: Merge, Compress & Convert", description: "Free online PDF, image, text and productivity tools." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/", siteName: "NIROJ Tools", title: "NIROJ Tools – Free Online PDF Tools: Merge, Compress & Convert", description: "Free online PDF, image, text and productivity tools." },
   twitter: { card: "summary", title: "NIROJ Tools – Free Online PDF Tools", description: "Free tools to merge, split, compress, convert and edit PDFs online." },
   keywords: [
     "free PDF tools",
@@ -81,22 +81,22 @@ export default function RootLayout({
               "@graph": [
                 {
                   "@type": "WebSite",
-                  "@id": "https://niroj.com.np/#website",
+                  "@id": "https://pd-fora.vercel.app/#website",
                   name: "NIROJ Tools",
-                  url: "https://niroj.com.np/",
+                  url: "https://pd-fora.vercel.app/",
                   inLanguage: "en",
                 },
                 {
                   "@type": "Organization",
-                  "@id": "https://niroj.com.np/#organization",
+                  "@id": "https://pd-fora.vercel.app/#organization",
                   name: "NIROJ Tools",
-                  url: "https://niroj.com.np/",
+                  url: "https://pd-fora.vercel.app/",
                 },
                 {
                   "@type": "SoftwareApplication",
-                  "@id": "https://niroj.com.np/#application",
+                  "@id": "https://pd-fora.vercel.app/#application",
                   name: "NIROJ Tools",
-                  url: "https://niroj.com.np/",
+                  url: "https://pd-fora.vercel.app/",
                   applicationCategory: "UtilitiesApplication",
                   operatingSystem: "Any",
                   description:

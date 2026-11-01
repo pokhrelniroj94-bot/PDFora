@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost } from "../../../lib/blog-posts";
 
-const baseUrl = "https://niroj.com.np";
+const baseUrl = "https://pd-fora.vercel.app";
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));

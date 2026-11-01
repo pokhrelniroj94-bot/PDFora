@@ -189,4 +189,106 @@ export const nepalBlogPosts: BlogPost[] = [
     toolLinks: [{ label: "Preeti Unicode Converter", href: "/tools/preeti-unicode-converter" }, { label: "Nepali Digit Converter", href: "/tools/nepali-digit-converter" }]
   }
 
+  ,
+  {
+    slug: "nepal-rastra-bank-daily-exchange-rates-guide",
+    title: "Nepal Rastra Bank Exchange Rate Today: How to Check USD, INR and Other Currencies",
+    description: "Learn how to read NRB buying and selling rates, currency units and convert foreign currency into Nepalese rupees.",
+    keyword: "Nepal Rastra Bank exchange rate today",
+    updated: "2026-11-01",
+    readTime: "5 min read",
+    intro: "People sending remittances, travelling abroad, paying for imports or comparing foreign-currency values often need the Nepal Rastra Bank reference exchange rate. NRB publishes buying and selling prices, and some currencies are quoted in units of 10 or 100 rather than one.",
+    sections: [
+      { heading: "What are NRB buying and selling rates?", paragraphs: ["The buying rate is the reference amount in NPR at which a bank buys a foreign currency. The selling rate is the reference amount at which a bank sells that currency. Individual banks and money changers may quote different rates.", "Always check the unit shown beside the currency. For example, if the rate is quoted per 100 Indian rupees, divide or multiply using that 100-unit basis rather than treating the rate as one INR."] },
+      { heading: "How to use the NRB rate tool", bullets: ["Open the NRB Daily Exchange Rates tool.", "Refresh to load the latest rate published by NRB.", "Find the currency code and check its unit, buying rate and selling rate.", "For foreign currency to NPR, use the buying-rate calculation.", "For NPR to foreign currency, use the selling-rate calculation."] },
+      { heading: "Why the latest date may be earlier than today", paragraphs: ["NRB publishes rates on working days. Weekends and public holidays may have no new rate. The tool checks a short recent date range and displays the latest rate record returned by NRB."] }
+    ],
+    faqs: [
+      { question: "Are NRB rates the same as remittance rates?", answer: "Not necessarily. Remittance providers and individual banks may offer their own rates and fees." },
+      { question: "Why does INR show a unit of 100?", answer: "The NRB publishes some currencies against a quoted unit such as 100 or 10. The converter uses the unit supplied by the API." },
+      { question: "Does the tool use live rates?", answer: "It requests the latest available published NRB rate when you refresh; it does not guarantee intraday bank rates." }
+    ],
+    toolLinks: [{ label: "NRB Exchange Rates", href: "/tools/nepal-forex-rates" }, { label: "General Currency Converter", href: "/tools/currency-converter" }]
+  },
+  {
+    slug: "nepal-salary-income-tax-calculator-2083-84-guide",
+    title: "Nepal Salary Tax Calculator 2083/84: Understand the New Income Tax Slabs",
+    description: "Understand progressive personal income tax bands for FY 2083/84 and estimate annual and monthly tax on taxable income.",
+    keyword: "Nepal salary tax calculator 2083/84",
+    updated: "2026-11-01",
+    readTime: "6 min read",
+    intro: "Salary tax in Nepal is progressive: different portions of taxable income are charged at different rates. A useful estimate starts with annual taxable income, then applies each band in order rather than applying one percentage to the entire salary.",
+    sections: [
+      { heading: "How progressive tax works", paragraphs: ["The FY 2083/84 natural-person tax-rate notice published by the Inland Revenue Department lists the current individual tax bands. The first band is NPR 1,000,000 at 1% where the charge applies, followed by NPR 500,000 at 10%, NPR 1,000,000 at 20%, NPR 1,500,000 at 27%, and income above NPR 4,000,000 at 29%.", "Some statutory situations are exempt from the 1% first-band charge. Taxable income is not always the same as gross salary: eligible deductions, contributions and allowances may affect the calculation."] },
+      { heading: "How to estimate monthly salary tax", bullets: ["Find annual taxable income after eligible deductions.", "Enter that annual figure in the FY 2083/84 salary tax calculator.", "Select the first-band exemption only if it genuinely applies to your case.", "Review the band-by-band tax and monthly average.", "Compare the estimate with your employer payroll statement or an IRD-approved calculation."] },
+      { heading: "What this calculator does not decide", paragraphs: ["This estimate is for resident natural persons and does not automatically account for every rebate, insurance deduction, retirement contribution, special income category, non-resident case or individual tax credit. Confirm your situation with IRD or a qualified tax professional."] }
+    ],
+    faqs: [
+      { question: "Is the tax rate applied to the full salary?", answer: "No. Each progressive rate applies only to the portion of taxable income in its band." },
+      { question: "Is the 1% first band charged for everyone?", answer: "No. The law contains exceptions. Select the exemption only when the statutory conditions apply." },
+      { question: "Is the result the exact take-home pay?", answer: "No. It is a tax estimate and excludes payroll items or deductions that are not entered." }
+    ],
+    toolLinks: [{ label: "Nepal Salary Tax Calculator", href: "/tools/nepal-salary-tax-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }]
+  },
+  {
+    slug: "nea-electricity-bill-calculator-nepal-guide",
+    title: "NEA Electricity Bill Calculator Nepal: Units, Meter Capacity and VAT Explained",
+    description: "Estimate a domestic electricity bill using monthly units, meter capacity, block rates and current tax assumptions.",
+    keyword: "NEA electricity bill calculator Nepal",
+    updated: "2026-11-01",
+    readTime: "6 min read",
+    intro: "A household electricity bill depends on monthly units consumed, the meter capacity and the applicable minimum and energy charges. Block billing means the price of each band applies only to the units within that band.",
+    sections: [
+      { heading: "How domestic block billing works", paragraphs: ["The estimator uses a published single-phase domestic schedule for 5A, 15A, 30A and 60A connections. The first block and monthly minimum charge differ by meter size, while higher consumption blocks use their respective unit rates.", "It also includes an estimated 5% VAT on energy charges above 50 units and an optional 2% early-payment rebate. These assumptions should be checked against the latest bill and official tariff guidance."] },
+      { heading: "How to estimate your bill", bullets: ["Check your monthly consumption in kWh (units) from the meter reading.", "Choose the meter capacity printed on your bill or meter card.", "Select the early-payment rebate only if you expect to pay within the eligible period.", "Review the energy charge, minimum charge, VAT and estimated total.", "Compare the estimate with the current bill and official ERC calculator."] },
+      { heading: "When not to use this estimator", paragraphs: ["This estimator is for single-phase domestic connections only. Commercial, industrial, three-phase, time-of-day and special tariff customers need the applicable tariff category and demand charges. Use the official Electricity Regulatory Commission calculator for those cases."] }
+    ],
+    faqs: [
+      { question: "Does it calculate commercial electricity bills?", answer: "No. It estimates single-phase domestic bills only. Use the official ERC calculator for commercial or other categories." },
+      { question: "Why is my NEA bill different?", answer: "Your bill may include arrears, meter/account adjustments, tariff changes or other items not included in this estimate." },
+      { question: "Is the estimate an official bill?", answer: "No. The actual bill issued by NEA is final. Check current ERC and NEA tariff information." }
+    ],
+    toolLinks: [{ label: "NEA Electricity Bill Calculator", href: "/tools/nepal-electricity-bill-calculator" }]
+  },
+  {
+    slug: "nepal-public-holidays-2083-calendar-guide",
+    title: "Nepal Government Public Holidays 2083: Full Calendar and Regional Notes",
+    description: "Search the 2083 BS public holiday list with AD dates, national holidays and community-specific observances.",
+    keyword: "Nepal public holidays 2083",
+    updated: "2026-11-01",
+    readTime: "6 min read",
+    intro: "Nepal's public holiday notice includes national holidays as well as dates that apply only to particular regions, communities or groups. Checking the scope of a holiday matters when planning government visits, school work, travel or business deadlines.",
+    sections: [
+      { heading: "National and restricted holidays", paragraphs: ["The Ministry of Home Affairs publishes the annual government and public holiday notice. Some entries are nationwide, while others apply to the Kathmandu Valley, particular communities, women employees, educational institutions or specific Terai and Hill districts.", "Several lunar observances may be announced later after the date is confirmed. A calendar should label these as to be announced rather than guessing a date."] },
+      { heading: "How to search the 2083 calendar", bullets: ["Open the Nepal Public Holidays 2083 tool.", "Search by holiday name, BS date or AD date.", "Use the category filters to show national, regional, community-specific or to-be-announced entries.", "Open the Ministry of Home Affairs notice before relying on a date for an official deadline."] },
+      { heading: "Check local and institutional notices", paragraphs: ["Provincial governments, local bodies, schools, banks and private employers may follow additional or different closure notices. The calendar is a searchable guide to the published federal list, not a promise that every institution will close."] }
+    ],
+    faqs: [
+      { question: "Are all listed holidays nationwide?", answer: "No. Some dates apply only to specified regions or communities. Read the notes beside each entry." },
+      { question: "Why are some dates marked TBA?", answer: "Some lunar or locally determined observances require a later official announcement." },
+      { question: "Where can I verify the official notice?", answer: "Use the Ministry of Home Affairs Government and Public Holidays 2083 page linked from the calendar." }
+    ],
+    toolLinks: [{ label: "Nepal Public Holidays 2083", href: "/tools/nepal-public-holidays-2083" }, { label: "Nepali Calendar", href: "/tools/nepali-calendar" }]
+  },
+  {
+    slug: "nepali-unicode-typing-online-guide",
+    title: "How to Type Nepali Online Using an English Keyboard",
+    description: "Convert Romanized Nepali words into Devanagari Unicode text for messages, documents and online forms.",
+    keyword: "Nepali Unicode typing online",
+    updated: "2026-11-01",
+    readTime: "4 min read",
+    intro: "You do not need a physical Nepali keyboard to write Nepali text. A Romanized typing tool lets you type Nepali sounds with English letters and convert the result into Devanagari Unicode.",
+    sections: [
+      { heading: "Romanized typing is not translation", paragraphs: ["Typing namaste and converting it to नमस्ते changes the script based on pronunciation. It does not translate an English sentence into Nepali meaning.", "Different spellings can produce different results, so names, formal words and uncommon terms should be reviewed."] },
+      { heading: "How to type Nepali Unicode", bullets: ["Open the Nepali Unicode Typing tool.", "Type a Nepali word using Roman letters, such as namaste or dhanyabad.", "Convert the text and review the Devanagari output.", "Edit the output if a spelling needs correction.", "Copy the text or download it as a UTF-8 text file."] },
+      { heading: "Unicode versus legacy Preeti fonts", paragraphs: ["Unicode Nepali is suitable for modern websites, email, messaging and documents. Old Preeti-font text uses a legacy character mapping and should be converted with a separate Preeti-to-Unicode tool rather than treated as ordinary Romanized Nepali."] }
+    ],
+    faqs: [
+      { question: "Does this tool translate English into Nepali?", answer: "No. It transliterates Romanized Nepali sounds into Devanagari script." },
+      { question: "Can I paste the output into Word and Facebook?", answer: "Yes. The output is Unicode text and can be copied into applications that support Devanagari." },
+      { question: "Can it convert old Preeti documents?", answer: "Use the separate Preeti ↔ Unicode converter for legacy Preeti-encoded text." }
+    ],
+    toolLinks: [{ label: "Nepali Unicode Typing", href: "/tools/nepali-unicode-typing" }, { label: "Preeti Unicode Converter", href: "/tools/preeti-unicode-converter" }]
+  }
+
 ];

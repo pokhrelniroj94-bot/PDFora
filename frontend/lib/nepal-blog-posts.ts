@@ -296,4 +296,27 @@ export const nepalBlogPosts: BlogPost[] = [
     sources: [{ label: "Nepalify open-source typing library", url: "https://github.com/suvash/nepalify" }],
   }
 
+  ,
+  {
+    slug: "nepal-mobile-number-format-checker-guide",
+    title: "Nepal Mobile Number Format: Check 96, 97, 98 and +977 Numbers",
+    description: "Learn the basic 10-digit Nepal mobile format, country code +977 and how to check a number's format before using it in a form.",
+    keyword: "Nepal mobile number format checker",
+    updated: "2026-11-01",
+    readTime: "4 min read",
+    intro: "Nepal mobile numbers use a 10-digit national format. Online forms may ask for the local number or the international +977 format, so checking the digits and country code before submitting can prevent simple formatting mistakes.",
+    sections: [
+      { heading: "Basic Nepal mobile number format", paragraphs: ["The National Numbering Allocation Plan published by the Nepal Telecommunications Authority describes cellular mobile numbers as 10 digits, with the first two digits used as the system code. The 96, 97 and 98 ranges are used in the national numbering plan.", "Ncell has also announced new numbers beginning with 971. Prefix allocations and operator ranges can change, so a format check should not be treated as proof that a number is active or belongs to a particular person."] },
+      { heading: "How to format a number with +977", bullets: ["Enter the 10-digit local mobile number.", "If the number already starts with +977, the checker removes the country code before validating the national part.", "Use the generated +977 format when an international form asks for a country code.", "Check the number against the original SIM or account record before submitting."] },
+      { heading: "What a format checker cannot confirm", paragraphs: ["A valid-looking number may be inactive, unassigned, suspended or incorrectly entered. The tool checks the number pattern only; it does not connect to telecom operator systems or verify SIM ownership."] }
+    ],
+    faqs: [
+      { question: "How many digits are in a Nepal mobile number?", answer: "The national mobile number format uses 10 digits, excluding the +977 country code." },
+      { question: "Does +977 count as part of the 10 digits?", answer: "No. +977 is Nepal's international country calling code and is written before the 10-digit national number." },
+      { question: "Can the tool verify whether a SIM is active?", answer: "No. It checks number formatting only, not network status, ownership or SIM activation." }
+    ],
+    toolLinks: [{ label: "Nepal Phone Number Validator", href: "/tools/nepal-phone-validator" }],
+    sources: [{ label: "Nepal Telecommunications Authority: National Numbering Allocation Plan", url: "https://nta.gov.np/uploads/contents/National%20Numbering%20Allocation%20Plan.pdf" }, { label: "Ncell announcement of the 971 number range", url: "https://www.ncell.com.np/en/about/media-room/press-release/ncell-begins-issuing-new-mobile-numbers-starting-with-971" }]
+  }
+
 ];

@@ -1,6 +1,6 @@
 import * as Astronomy from "astronomy-engine";
 
-export const NEPAL_LOCATIONS = [
+export const NEPAL_LOCATIONS: Array<{ id: string; name: string; latitude: number; longitude: number; elevation: number; timeZone?: string }> = [
   { id: "kathmandu", name: "Kathmandu", latitude: 27.7172, longitude: 85.3240, elevation: 1400 },
   { id: "ilam", name: "Ilam", latitude: 26.9094, longitude: 87.9282, elevation: 1200 },
   { id: "biratnagar", name: "Biratnagar", latitude: 26.4525, longitude: 87.2718, elevation: 80 },

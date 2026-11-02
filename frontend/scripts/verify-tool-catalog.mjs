@@ -125,6 +125,6 @@ assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes(
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
 assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-refresh headlines");
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
-assert.ok(homepage.includes('const categories = ["All", "PDF", ...Array.from(new Set(allTools.map((tool) => tool.category)))'), "Homepage category filters must include every tool category");
+assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

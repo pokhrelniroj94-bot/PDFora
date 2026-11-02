@@ -10,7 +10,7 @@ const config: Record<CategoryKey, { title: string; description: string }> = {
 };
 
 function belongsToCategory(tool: Tool, category: CategoryKey) {
-  if (category === "pdf") return tool.kind === "pdf";
+  if (category === "pdf") return tool.kind === "pdf" || tool.slug === "notes-to-pdf";
   if (category === "calculators") {
     return tool.category === "Calculators" || /calculator/i.test(tool.slug) || /calculator/i.test(tool.name);
   }

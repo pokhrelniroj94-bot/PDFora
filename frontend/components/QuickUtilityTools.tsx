@@ -46,9 +46,9 @@ const romanPairs:[number,string][]=[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[
 function toRoman(value:number){let n=value,out="";for(const [v,s] of romanPairs)while(n>=v){out+=s;n-=v;}return out;}
 function fromRoman(s:string){const map:Record<string,number>={I:1,V:5,X:10,L:50,C:100,D:500,M:1000};let n=0;for(let i=0;i<s.length;i++){const v=map[s[i]],next=map[s[i+1]]||0;if(!v)throw Error("Invalid Roman numeral.");n+=v<next?-v:v;}if(n<1||n>3999||toRoman(n)!==s)throw Error("Use a canonical Roman numeral from I to MMMCMXCIX.");return n;}
 export default function QuickUtilityTools({slug}:{slug:string}) {
- const initial=defaults[slug]||{text:""};const [v,setV]=useState<Values>(initial);const [out,setOut]=useState("");const [error,setError]=useState("");
+ const initial=defaults[slug]||{text:""};const [v,setV]=useState<Values>(initial);const [out,setOut]=useState("");const [error,setError]=useState("");const [busy,setBusy]=useState(false);
  const get=(k:string)=>v[k]??"";const n=(k:string)=>{const x=Number(get(k));if(!Number.isFinite(x))throw Error("Enter valid numbers.");return x;};
- const run=()=>{setError("");setOut("");try{const t=get("text");let result="";
+ const run=()=>{if(busy)return;setBusy(true);window.setTimeout(()=>{setError("");setOut("");try{const t=get("text");let result="";
  switch(slug){
  case "word-frequency-counter":{const m=new Map<string,number>();words(t.toLowerCase().replace(/[^\p{L}\p{N}'-]+/gu," ")).forEach(w=>m.set(w,(m.get(w)||0)+1));result=[...m].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).map(([w,c])=>w+" — "+c).join("\n")||"No words found.";break;}
  case "reading-time-calculator":{const count=words(t).length,wpm=Math.max(1,n("wpm"));result=count+" words\nEstimated reading time: "+(count/wpm<1?Math.max(1,Math.ceil(count/wpm*60))+" seconds":(count/wpm).toFixed(1)+" minutes");break;}
@@ -101,11 +101,11 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  default:throw Error("This utility is not available yet. Please use the directory to find another tool.");
  }
  setOut(result);
- }catch(e){setError(e instanceof Error?e.message:"Could not process this input.");}};
+ }catch(e){setError(e instanceof Error?e.message:"Could not process this input.");}finally{setBusy(false);}},80);};
  if(!initial)return <p className="text-sm text-slate-600">This tool is not configured.</p>;
  return <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
   <div className="grid gap-4 sm:grid-cols-2">{Object.entries(v).map(([key,value])=><label key={key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{labels[key]||key}</span><input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={key==="date"||key==="start"||key==="end"?"date":slug==="css-gradient-generator"&&(key==="a"||key==="b")?"color":"text"} inputMode={numeric.has(key)?"decimal":"text"} value={value} onChange={e=>setV(p=>({...p,[key]:e.target.value}))}/></label>)}</div>
-  <div className="flex flex-wrap gap-2"><button onClick={run} className="min-h-11 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800 active:scale-[.98]">Run tool</button><button onClick={()=>{setV(initial);setOut("");setError("");}} className="rounded-xl border px-4 py-2.5 text-sm">Reset</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">Copy result</button>}</div>
+  <div className="flex flex-wrap gap-2"><button onClick={run} disabled={busy} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800 active:scale-[.98] disabled:opacity-70">{busy&&<span className="pdfora-spinner" aria-hidden="true"/>}{busy?"Working…":"Run tool"}</button><button onClick={()=>{setV(initial);setOut("");setError("");}} className="rounded-xl border px-4 py-2.5 text-sm">Reset</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">Copy result</button>}</div>
   {error&&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{error}</p>}
   {out&&<div aria-live="polite" className="pdfora-result rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5"><pre className="whitespace-pre-wrap break-words font-sans text-base leading-7">{out}</pre></div>}
   <p className="text-xs leading-5 text-slate-500">Runs in your browser. Check important results independently. This tool does not send your input to a server.</p>

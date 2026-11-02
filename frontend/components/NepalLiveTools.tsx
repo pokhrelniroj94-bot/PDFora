@@ -181,8 +181,8 @@ Estimated recipient amount: {npr(net)}</Result>:<p role="alert" className="text-
   const dp = number(dpFee), grossGain = sale - cost;
   const sellCharges = sellBroker.amount + sellSebon + dp;
   const taxableGain = Math.max(0, grossGain - sellCharges);
-  const taxRate = investorType === "institution" ? 10 : holdingPeriod === "long" ? 3.75 : 5;
-  const tax = taxableGain * taxRate / 100;
+  const capitalGainsTaxRate = investorType === "institution" ? 10 : holdingPeriod === "long" ? 3.75 : 5;
+  const tax = taxableGain * capitalGainsTaxRate / 100;
   const net = grossGain - sellCharges - tax;
   return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal IPO Profit / Loss Calculator</h3><p className="text-sm text-slate-600">Estimate IPO purchase cost, selling proceeds, broker charges, SEBON fee, DP charge and capital-gains tax.</p></div>
     <div className="grid gap-3 sm:grid-cols-2">
@@ -202,7 +202,7 @@ DP charge: {npr(dp)}
 Total selling charges: {npr(sellCharges)}
 Gross gain / loss: {npr(grossGain)}
 Estimated taxable gain: {npr(taxableGain)}
-CGT rate: {taxRate}%
+CGT rate: {capitalGainsTaxRate}%
 Estimated capital-gains tax: {npr(tax)}
 Net profit / loss: {npr(net)}
 Return on IPO purchase cost: {cost > 0 ? (net / cost * 100).toFixed(2) : "0.00"}%</Result>:<p role="alert" className="text-sm text-red-700">Enter a positive whole-share quantity, a positive IPO price, a non-negative selling price and valid charges.</p>}

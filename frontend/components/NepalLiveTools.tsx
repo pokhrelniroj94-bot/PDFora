@@ -8,6 +8,8 @@ type ForexResponse = { source: string; requestedDate: string; rateDate: string; 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const npr = (value: number) => "NPR " + value.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function nepseBrokerCharge(value: number) { const rate = value <= 50000 ? 0.36 : value <= 500000 ? 0.33 : value <= 2000000 ? 0.31 : value <= 10000000 ? 0.27 : 0.24; return { rate, amount: Math.max(10, value * rate / 100) }; }
+
 function Field({ title, value, onChange, type = "number", min = "0" }: { title: string; value: string; onChange: (value: string) => void; type?: string; min?: string }) {
   return <label className="block"><span className={label}>{title}</span><input className={field} type={type} min={min} value={value} onChange={(event) => onChange(event.target.value)} /></label>;
 }
@@ -152,7 +154,8 @@ function NepalFinanceTools({ slug }: { slug: string }) {
   const [brokerFee, setBrokerFee] = useState("0.36");
   const [sebonFee, setSebonFee] = useState("0.015");
   const [dpFee, setDpFee] = useState("25");
-  const [capitalTax, setCapitalTax] = useState("5");
+  const [holdingPeriod, setHoldingPeriod] = useState("short");
+  const [investorType, setInvestorType] = useState("individual");
   const number = (value: string) => Number(value);
   const valid = (values: string[]) => values.every((value) => value.trim() !== "" && Number.isFinite(number(value)) && number(value) >= 0);
   if (slug === "nepal-fixed-deposit-calculator") {
@@ -172,18 +175,44 @@ After-tax maturity value: {npr(maturity-tax)}</Result>:<p role="alert" className
 Transfer fee: {npr(number(transferFee))}
 Estimated recipient amount: {npr(net)}</Result>:<p role="alert" className="text-sm text-red-700">Enter a valid amount, positive exchange rate and non-negative fee.</p>}<p className="text-xs text-slate-500">Enter the rate and fee quoted by your provider. Actual remittance payouts can include provider-specific spreads, promotions, correspondent-bank deductions and recipient fees.</p></div>;
   }
-  const ok = valid([shares, ipoPrice, salePrice, brokerFee, sebonFee, dpFee, capitalTax]) && number(shares) > 0 && number(ipoPrice) > 0 && number(brokerFee) <= 100 && number(sebonFee) <= 100 && number(capitalTax) <= 100;
   const quantity = number(shares), cost = quantity * number(ipoPrice), sale = quantity * number(salePrice);
-  const commission = sale * number(brokerFee) / 100, sebon = sale * number(sebonFee) / 100;
-  const grossGain = sale - cost, taxableGain = Math.max(0, grossGain - commission - sebon - number(dpFee));
-  const tax = taxableGain * number(capitalTax) / 100, net = sale - commission - sebon - number(dpFee) - tax - cost;
-  return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal IPO Profit / Loss Calculator</h3><p className="text-sm text-slate-600">Estimate your IPO share outcome using editable transaction charges and tax assumptions.</p></div><div className="grid gap-3 sm:grid-cols-2"><FinanceField title="IPO shares (kitta)"><input className={field} type="number" min="1" value={shares} onChange={e=>setShares(e.target.value)}/></FinanceField><FinanceField title="IPO allotment price (NPR/share)"><input className={field} type="number" min="0.01" value={ipoPrice} onChange={e=>setIpoPrice(e.target.value)}/></FinanceField><FinanceField title="Selling price (NPR/share)"><input className={field} type="number" min="0" value={salePrice} onChange={e=>setSalePrice(e.target.value)}/></FinanceField><FinanceField title="Broker commission (%)"><input className={field} type="number" min="0" max="100" step="0.001" value={brokerFee} onChange={e=>setBrokerFee(e.target.value)}/></FinanceField><FinanceField title="SEBON fee (%)"><input className={field} type="number" min="0" max="100" step="0.001" value={sebonFee} onChange={e=>setSebonFee(e.target.value)}/></FinanceField><FinanceField title="DP charge (NPR)"><input className={field} type="number" min="0" value={dpFee} onChange={e=>setDpFee(e.target.value)}/></FinanceField><FinanceField title="Capital-gains tax assumption (%)"><input className={field} type="number" min="0" max="100" step="0.1" value={capitalTax} onChange={e=>setCapitalTax(e.target.value)}/></FinanceField></div>{ok?<Result>Purchase cost: {npr(cost)}
+  const ok = valid([shares, ipoPrice, salePrice, sebonFee, dpFee]) && quantity > 0 && Number.isInteger(quantity) && number(ipoPrice) > 0 && number(salePrice) >= 0 && number(sebonFee) <= 100;
+  const buyBroker = nepseBrokerCharge(cost), sellBroker = nepseBrokerCharge(sale);
+  const buySebon = cost * number(sebonFee) / 100, sellSebon = sale * number(sebonFee) / 100;
+  const dp = number(dpFee), grossGain = sale - cost;
+  const buyCharges = buyBroker.amount + buySebon, sellCharges = sellBroker.amount + sellSebon + dp;
+  const taxableGain = Math.max(0, grossGain - buyCharges - sellCharges);
+  const taxRate = investorType === "institution" ? 10 : holdingPeriod === "long" ? 3.75 : 5;
+  const tax = taxableGain * taxRate / 100;
+  const net = grossGain - buyCharges - sellCharges - tax;
+  return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal IPO Profit / Loss Calculator</h3><p className="text-sm text-slate-600">Estimate IPO purchase cost, selling proceeds, broker charges, SEBON fee, DP charge and capital-gains tax.</p></div>
+    <div className="grid gap-3 sm:grid-cols-2">
+      <FinanceField title="IPO shares (kitta)"><input className={field} type="number" min="1" step="1" value={shares} onChange={e=>setShares(e.target.value)}/></FinanceField>
+      <FinanceField title="IPO allotment price (NPR/share)"><input className={field} type="number" min="0.01" step="0.01" value={ipoPrice} onChange={e=>setIpoPrice(e.target.value)}/></FinanceField>
+      <FinanceField title="Selling price (NPR/share)"><input className={field} type="number" min="0" step="0.01" value={salePrice} onChange={e=>setSalePrice(e.target.value)}/></FinanceField>
+      <FinanceField title="SEBON transaction fee (%)"><input className={field} type="number" min="0" max="100" step="0.001" value={sebonFee} onChange={e=>setSebonFee(e.target.value)}/></FinanceField>
+      <FinanceField title="DP charge (NPR)"><input className={field} type="number" min="0" value={dpFee} onChange={e=>setDpFee(e.target.value)}/></FinanceField>
+      <FinanceField title="Investor type"><select className={field} value={investorType} onChange={e=>setInvestorType(e.target.value)}><option value="individual">Individual</option><option value="institution">Institution / company</option></select></FinanceField>
+      {investorType === "individual" && <FinanceField title="Share holding period"><select className={field} value={holdingPeriod} onChange={e=>setHoldingPeriod(e.target.value)}><option value="short">365 days or less · 5% CGT</option><option value="long">More than 365 days · 3.75% CGT</option></select></FinanceField>}
+    </div>
+    {ok?<Result>Purchase value: {npr(cost)}
+Buy broker commission ({buyBroker.rate}% slab, min. NPR 10): {npr(buyBroker.amount)}
+Buy SEBON fee: {npr(buySebon)}
+Total purchase cost: {npr(cost + buyCharges)}
 Gross sale value: {npr(sale)}
+Sell broker commission ({sellBroker.rate}% slab, min. NPR 10): {npr(sellBroker.amount)}
+Sell SEBON fee: {npr(sellSebon)}
+DP charge: {npr(dp)}
+Total selling charges: {npr(sellCharges)}
 Gross gain / loss: {npr(grossGain)}
-Estimated sale charges: {npr(commission+sebon+number(dpFee))}
+Estimated taxable gain: {npr(taxableGain)}
+CGT rate: {taxRate}%
 Estimated capital-gains tax: {npr(tax)}
 Net profit / loss: {npr(net)}
-Return on purchase cost: {cost>0?(net/cost*100).toFixed(2):"0.00"}%</Result>:<p role="alert" className="text-sm text-red-700">Enter valid quantities, prices and percentage assumptions.</p>}<p className="text-xs text-slate-500">This is a simplified estimate. Actual broker commission tiers, SEBON/DP charges, holding-period CGT rates, minimum fees and settlement rules may differ. Verify current rates with your broker and IRD before trading.</p></div>;
+Return on total purchase cost: {cost + buyCharges > 0 ? (net / (cost + buyCharges) * 100).toFixed(2) : "0.00"}%</Result>:<p role="alert" className="text-sm text-red-700">Enter a positive whole-share quantity, a positive IPO price, a non-negative selling price and valid charges.</p>}
+    <p className="text-xs leading-5 text-slate-500">Broker commission uses the published equity transaction slabs and a NPR 10 minimum per side. The estimate includes buy-side costs when calculating taxable gain. Bonus-share cost basis, multiple lots, unusual corporate actions and broker-specific settlement differences are not modelled.</p>
+    <div className="flex flex-wrap gap-3 text-xs"><a className="font-semibold text-teal-800 underline" href="https://ssl.com.np/trading-commission-and-fees" target="_blank" rel="noreferrer">Broker fee schedule</a><a className="font-semibold text-teal-800 underline" href="https://www.sebon.gov.np/" target="_blank" rel="noreferrer">SEBON</a><a className="font-semibold text-teal-800 underline" href="https://www.sharesansar.com/newsdetail/capital-gains-tax-rates-reduced-decision-published-in-gazette-2026-09-22" target="_blank" rel="noreferrer">2026 CGT update</a></div>
+  </div>;
 }
 
 function SalaryTaxTool() {

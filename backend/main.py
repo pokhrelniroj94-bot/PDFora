@@ -162,10 +162,12 @@ async def security_headers_and_temp_cleanup(request: Request, call_next):
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
-    response.headers["Content-Security-Policy"] = (
-        "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; "
-        "form-action 'none'; object-src 'none'"
-    )
+    # Keep the interactive FastAPI docs usable in local development.
+    if not request.url.path.startswith(("/docs", "/redoc")) and request.url.path != "/openapi.json":
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; "
+            "form-action 'none'; object-src 'none'"
+        )
 
     if request.url.scheme == "https" or os.getenv("RENDER", "").lower() == "true":
         response.headers["Strict-Transport-Security"] = "max-age=31536000"

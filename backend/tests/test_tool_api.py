@@ -218,7 +218,7 @@ def test_fake_pdf_extension_is_rejected_before_processing():
         files={
             "file": (
                 "not-really-a-pdf.pdf",
-                b"MZ\\x90\\x00This is not a PDF",
+                b"MZ" + bytes([0x90, 0x00]) + b"This is not a PDF",
                 "application/pdf",
             )
         },
@@ -236,14 +236,16 @@ def test_empty_upload_is_rejected():
 
 
 def test_rate_limit_returns_429_for_api_post(monkeypatch):
-    from main import _LOCAL_RATE_LIMITS, RATE_LIMIT_PER_ROUTE_PER_MINUTE
+    from main import _LOCAL_RATE_LIMITS, app
+    from fastapi.testclient import TestClient
 
     _LOCAL_RATE_LIMITS.clear()
     monkeypatch.setattr("main.RATE_LIMIT_PER_ROUTE_PER_MINUTE", 1)
     monkeypatch.setattr("main.RATE_LIMIT_PER_IP_PER_HOUR", 100)
 
-    first = client.post("/api/rate-limit-probe")
-    second = client.post("/api/rate-limit-probe")
+    local_client = TestClient(app)
+    first = local_client.post("/api/rate-limit-probe")
+    second = local_client.post("/api/rate-limit-probe")
 
     assert first.status_code == 404
     assert second.status_code == 429

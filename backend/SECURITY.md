@@ -5,7 +5,7 @@
 Set these environment variables in the Render service:
 
 - `APP_ENV=production` — disables FastAPI Swagger, ReDoc and OpenAPI routes.
-- `CORS_ALLOWED_ORIGINS=https://pd-fora.vercel.app` — exact comma-separated frontend origins only. Add a custom production domain only if it serves this same frontend.
+- `CORS_ALLOWED_ORIGINS=https://pd-fora.vercel.app,https://www.pd-fora.vercel.app,https://niroj.com.np,https://www.niroj.com.np` — exact comma-separated frontend origins only. Remove any domain that does not serve this frontend.
 - `CLEANUP_ADMIN_TOKEN` — generate a long random secret (at least 32 bytes) and keep it only in Render. The `POST /api/cleanup` endpoint returns 404 unless the matching `X-Admin-Token` header is supplied.
 
 Do not put `CLEANUP_ADMIN_TOKEN` in any frontend environment variable or browser code. No public frontend cleanup call should be added.

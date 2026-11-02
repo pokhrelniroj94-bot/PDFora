@@ -56,8 +56,8 @@ export default function NepalTools({slug}:{slug:string}) {
   const fmt=(n:number)=>n.toLocaleString("en-IN",{maximumFractionDigits:2});
   return <Panel>
    <div><h2 className="text-lg font-bold">NEB GPA Calculator</h2><p className="mt-1 text-sm text-slate-600">Add each subject, its credit hours and the grade point shown on your grade sheet. The calculator gives a credit-weighted GPA.</p></div>
-   <div className="grid grid-cols-[minmax(0,1fr)_76px_100px] gap-2 text-xs font-bold text-slate-600"><span>Subject</span><span>Credits</span><span>Grade point</span></div>
-   <div className="space-y-2">{subjects.map((s,i)=><div key={i} className="grid grid-cols-[minmax(0,1fr)_76px_100px] gap-2">
+   <div className="grid grid-cols-[minmax(0,1fr)_64px_90px] gap-2 text-xs font-bold sm:grid-cols-[minmax(0,1fr)_76px_100px] text-slate-600"><span>Subject</span><span>Credits</span><span>Grade point</span></div>
+   <div className="space-y-2">{subjects.map((s,i)=><div key={i} className="grid grid-cols-[minmax(0,1fr)_64px_90px] gap-2 sm:grid-cols-[minmax(0,1fr)_76px_100px]">
     <input aria-label={`Subject ${i+1} name`} className={field} value={s.name} onChange={e=>setSubjects(p=>p.map((x,j)=>j===i?{...x,name:e.target.value}:x))}/>
     <input aria-label={`Subject ${i+1} credit hours`} className={field} type="number" min="0.01" step="0.5" value={s.credit} onChange={e=>setSubjects(p=>p.map((x,j)=>j===i?{...x,credit:e.target.value}:x))}/>
     <select aria-label={`Subject ${i+1} grade point`} className={field} value={s.grade} onChange={e=>setSubjects(p=>p.map((x,j)=>j===i?{...x,grade:e.target.value}:x))}>{grades.map(([g,p])=><option key={g} value={p}>{g} ({p})</option>)}</select>

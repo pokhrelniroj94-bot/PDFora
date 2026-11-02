@@ -209,3 +209,43 @@ def test_api_directory_includes_every_operational_tool():
     assert "pdf-to-excel" in tools
     assert "ocr" not in tools
     assert len(tools) == 49
+
+
+
+def test_fake_pdf_extension_is_rejected_before_processing():
+    response = client.post(
+        "/api/pdf-info",
+        files={
+            "file": (
+                "not-really-a-pdf.pdf",
+                b"MZ\\x90\\x00This is not a PDF",
+                "application/pdf",
+            )
+        },
+    )
+    assert response.status_code == 400
+    assert "PDF" in response.json()["detail"]
+
+
+def test_empty_upload_is_rejected():
+    response = client.post(
+        "/api/pdf-info",
+        files={"file": ("empty.pdf", b"", "application/pdf")},
+    )
+    assert response.status_code == 400
+
+
+def test_rate_limit_returns_429_for_api_post(monkeypatch):
+    from main import _LOCAL_RATE_LIMITS, RATE_LIMIT_PER_ROUTE_PER_MINUTE
+
+    _LOCAL_RATE_LIMITS.clear()
+    monkeypatch.setattr("main.RATE_LIMIT_PER_ROUTE_PER_MINUTE", 1)
+    monkeypatch.setattr("main.RATE_LIMIT_PER_IP_PER_HOUR", 100)
+
+    first = client.post("/api/rate-limit-probe")
+    second = client.post("/api/rate-limit-probe")
+
+    assert first.status_code == 404
+    assert second.status_code == 429
+    assert second.headers.get("retry-after") == "60"
+    _LOCAL_RATE_LIMITS.clear()

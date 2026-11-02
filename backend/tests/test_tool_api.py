@@ -282,6 +282,20 @@ def test_current_vercel_preview_origin_is_allowed_by_cors():
     assert response.headers.get("access-control-allow-origin") == origin
 
 
+def test_untrusted_vercel_like_origin_is_rejected_by_cors():
+    origin = "https://pd-fora-attacker-example.vercel.app"
+    response = TestClient(app).options(
+        "/api/merge",
+        headers={
+            "Origin": origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert response.status_code == 400
+    assert response.headers.get("access-control-allow-origin") != origin
+
+
 def test_backend_security_headers_are_present():
     response = TestClient(app).get("/health")
     assert response.status_code == 200

@@ -58,7 +58,7 @@ export async function GET(request: Request) {
     );
   }
   const manifest = manifestResult.status === "fulfilled" ? manifestResult.value : { availableMonths: [], latestDate: undefined };
-  const isIndex = INDEX_SYMBOLS.has(symbol);
+  const isIndex = INDEX_SYMBOLS.has(symbol) || sectorMeta.some((sector) => sector.indexCode === symbol);
   const historyKind = isIndex ? "indices" : "ltp";
   const historyManifest = historyKind === "indices"
     ? manifest

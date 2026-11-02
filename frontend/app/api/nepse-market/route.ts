@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const BASE = "https://shubhamnpk.github.io/yonepse";
+const BASE = "https://raw.githubusercontent.com/Shubhamnpk/yonepse/main";
 const INDEX_SYMBOLS = new Set(["NEPSE", "SENSIND", "FLOATIND", "SENSFLTIND", "BANKSUBIND", "DEVBANKIND", "FININD", "HOTELIND", "HYDPOWIND", "INVIDX", "LIFINSIND", "MANPROCIND", "MICRFININD", "MUTUALIND", "NONLIFIND", "OTHERSIND", "TRDIND"]);
 type Json = Record<string, unknown>;
-async function read<T>(path: string, revalidateSeconds = 900): Promise<T> {
+async function read<T>(path: string, revalidateSeconds = 300): Promise<T> {
   const response = await fetch(BASE + path, {
     headers: { Accept: "application/json" },
     next: { revalidate: revalidateSeconds },
@@ -26,8 +26,8 @@ export async function GET(request: Request) {
   const [liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.allSettled([
     read<unknown[]>("/data/market/live.json", 60),
     read<unknown[]>("/data/nepse_data.json"),
-    read<unknown[]>("/data/market/indices.json"),
-    read<Json>("/data/market/status.json"),
+    read<unknown[]>("/data/market/indices.json", 60),
+    read<Json>("/data/market/status.json", 60),
     read<unknown[]>("/data/market/summary.json"),
     read<Json>("/data/market/top_stocks.json"),
     read<unknown[]>("/data/market/sector_indices.json"),
@@ -111,6 +111,7 @@ export async function GET(request: Request) {
     period,
     source: usingLiveQuotes ? "YONEPSE live quote snapshot" : "YONEPSE fallback quote snapshot",
     sourceUpdatedAt: (stocks as Array<{ last_updated?: string }>).reduce((latest, stock) => stock.last_updated && stock.last_updated > latest ? stock.last_updated : latest, ""),
+    sourceCheckedAt: new Date().toISOString(),
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
     status: pick(statusResult, {}),
     indices,
@@ -123,6 +124,6 @@ export async function GET(request: Request) {
     partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {
-    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
+    headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30" },
   });
 }

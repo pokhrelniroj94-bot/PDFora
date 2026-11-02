@@ -4,18 +4,13 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import AdsterraNative from "./components/AdsterraNative";
-import { allTools, catalogTools, pdfTools, type Tool } from "../lib/tool-directory";
+import { allTools, type Tool } from "../lib/tool-directory";
 
 const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
   loading: () => <div className="grid min-h-40 place-items-center rounded-3xl border border-white/10 bg-slate-900/5 text-sm text-slate-500">Loading Nepal market updates…</div>,
 });
 
-const tools = pdfTools;
-
-const categories = [
-  "All", "PDF", "Organize", "Optimize", "Convert", "Edit", "Security", "Extract", "Analyze",
-  "Finance", "Text", "Developer", "Image", "Math", "SEO", "Business", "Nepal",
-];
+const categories = ["All", "PDF", ...Array.from(new Set(allTools.map((tool) => tool.category))).sort((a, b) => a.localeCompare(b))];
 
 const faqs = [
   {
@@ -149,7 +144,7 @@ export default function Home() {
       return matchesCategory && (tokens.length === 0 || tokens.every((token) => searchable.includes(token)));
     });
   }, [query, category]);
-  const popularTools = [...tools.filter((tool) => tool.popular), ...catalogTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))];
+  const popularTools = Array.from(new Map([...allTools.filter((tool) => tool.popular), ...allTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))].map((tool) => [tool.href, tool])).values()).slice(0, 9);
   const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
 
   return (
@@ -276,23 +271,6 @@ export default function Home() {
         <AdsterraNative />
       </div>
 
-      {/* NEPAL MARKET UPDATES */}
-      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="mb-5">
-          <p className="text-xs font-black uppercase tracking-widest text-rose-600">Nepal market desk</p>
-          <h2 className="mt-1 text-2xl font-black">NEPSE, IPO &amp; Nepal market news</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Automatically refreshed market headlines, IPO updates and practical Nepal finance tools. Verify market-sensitive information with the official source.</p>
-        </div>
-        <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <Link href="/tools/nepse-market-news" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 font-bold text-rose-900 hover:bg-rose-100">📰 NEPSE &amp; IPO News <span className="mt-1 block text-xs font-medium">Latest headlines</span></Link>
-          <Link href="/tools/nepal-share-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">📈 Share Profit Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Buy, sell &amp; charges</span></Link>
-          <Link href="/tools/nepse-dividend-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💸 Dividend Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Cash &amp; bonus estimate</span></Link>
-          <Link href="/tools/nepal-forex-rates" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💱 NRB Forex Rates <span className="mt-1 block text-xs font-medium text-slate-500">Official buying &amp; selling</span></Link>
-          <Link href="/market" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 font-bold text-teal-950 hover:border-teal-400">📊 NEPSE Market Dashboard <span className="mt-1 block text-xs font-medium text-teal-800">Index charts, stock prices &amp; market movers</span></Link>
-        </div>
-        <NepalMarketNews />
-      </section>
-
       {/* ALL TOOLS */}
       <section
         id="tools"
@@ -374,6 +352,25 @@ export default function Home() {
       </section>
 
       {/* Non-intrusive ad after the main tool discovery area */}
+
+      {/* NEPAL MARKET UPDATES */}
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <div className="mb-5">
+          <p className="text-xs font-black uppercase tracking-widest text-rose-600">Nepal market desk</p>
+          <h2 className="mt-1 text-2xl font-black">NEPSE, IPO &amp; Nepal market news</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Automatically refreshed market headlines, IPO updates and practical Nepal finance tools. Verify market-sensitive information with the official source.</p>
+        </div>
+        <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Link href="/tools/nepse-market-news" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 font-bold text-rose-900 hover:bg-rose-100">📰 NEPSE &amp; IPO News <span className="mt-1 block text-xs font-medium">Latest headlines</span></Link>
+          <Link href="/tools/nepal-share-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">📈 Share Profit Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Buy, sell &amp; charges</span></Link>
+          <Link href="/tools/nepse-dividend-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💸 Dividend Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Cash &amp; bonus estimate</span></Link>
+          <Link href="/tools/nepal-forex-rates" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💱 NRB Forex Rates <span className="mt-1 block text-xs font-medium text-slate-500">Official buying &amp; selling</span></Link>
+          <Link href="/market" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 font-bold text-teal-950 hover:border-teal-400">📊 NEPSE Market Dashboard <span className="mt-1 block text-xs font-medium text-teal-800">Index charts, stock prices &amp; market movers</span></Link>
+        </div>
+        <NepalMarketNews />
+      </section>
+
+
 
       {/* WHY PDFORA */}
       <section className="border-y border-slate-200 bg-white px-4 py-14 sm:px-6">

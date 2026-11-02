@@ -6,9 +6,12 @@ const BACKEND_URL = (process.env.PDFORA_BACKEND_URL || "https://pdfora-493r.onre
 
 export async function GET(request: Request) {
   const incoming = new URL(request.url);
-  const target = new URL("/api/nepal-forex", BACKEND_URL);
+  const wantsHistory = incoming.searchParams.get("history") === "1";
+  const target = new URL(wantsHistory ? "/api/nepal-forex/history" : "/api/nepal-forex", BACKEND_URL);
   const requestedDate = incoming.searchParams.get("date");
-  if (requestedDate) target.searchParams.set("date", requestedDate);
+  const currency = incoming.searchParams.get("currency");
+  if (requestedDate && !wantsHistory) target.searchParams.set("date", requestedDate);
+  if (wantsHistory && currency) target.searchParams.set("currency", currency);
 
   try {
     const upstream = await fetch(target, {

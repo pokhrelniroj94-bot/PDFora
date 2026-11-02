@@ -1,0 +1,119 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import NepalMarketNews from "./NepalMarketNews";
+
+type Stock = { symbol: string; name: string; ltp: number; previous_close: number; change: number; percent_change: number; high: number; low: number; volume: number; turnover: number; trades: number; last_updated?: string };
+type Index = { index: string; currentValue?: number; close: number; high: number; low: number; previousClose: number; change: number; perChange: number; generatedTime?: string };
+type Point = { date: string; close: number; open?: number; high?: number; low?: number; volume?: number; turnover?: number; trades?: number };
+type Summary = { detail: string; value: number | string };
+type MarketData = { symbol: string; source: string; sourceUpdatedAt: string; latestHistoryDate: string | null; status: { is_open?: boolean; last_checked?: string }; indices: Index[]; summary: Summary[]; topStocks: Record<string, Stock[]>; sectors: Array<{ indexName?: string; indexCode?: string; description?: string }>; stocks: Stock[]; points: Point[]; partial?: boolean; error?: string };
+const n = (v: unknown, digits = 2) => typeof v === "number" && Number.isFinite(v) ? v.toLocaleString("en-IN", { maximumFractionDigits: digits }) : "—";
+const money = (v: unknown) => typeof v === "number" && Number.isFinite(v) ? "Rs. " + v.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "—";
+const pctClass = (v: number) => v > 0 ? "text-emerald-700" : v < 0 ? "text-rose-700" : "text-slate-600";
+const card = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5";
+function formatDate(value?: string | null) { if (!value) return "—"; const date = new Date(value); return Number.isNaN(date.getTime()) ? value : date.toLocaleString("en-NP", { dateStyle: "medium", timeStyle: "short" }); }
+
+function MarketChart({ points, symbol, style }: { points: Point[]; symbol: string; style: "line" | "candles" }) {
+  if (!points.length) return <div className="grid h-72 place-items-center rounded-xl bg-slate-50 text-sm text-slate-500">Historical chart data is not available for this symbol and period yet.</div>;
+  const width = 1000, height = 300, left = 54, right = 18, top = 18, bottom = 28;
+  const values = points.flatMap(p => [p.close, p.high ?? p.close, p.low ?? p.close]).filter(Number.isFinite);
+  const min = Math.min(...values), max = Math.max(...values), range = max - min || 1;
+  const x = (i: number) => left + (i / Math.max(points.length - 1, 1)) * (width - left - right);
+  const y = (v: number) => top + ((max - v) / range) * (height - top - bottom);
+  const path = points.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + "," + y(p.close).toFixed(1)).join(" ");
+  const area = path + " L" + x(points.length - 1) + "," + (height - bottom) + " L" + x(0) + "," + (height - bottom) + " Z";
+  const ma = points.map((_, i) => {
+    const slice = points.slice(Math.max(0, i - 19), i + 1);
+    return slice.reduce((sum, p) => sum + p.close, 0) / slice.length;
+  });
+  const maPath = ma.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1)).join(" ");
+  const ticks = Array.from({ length: 5 }, (_, i) => min + range * i / 4);
+  const maxVol = Math.max(...points.map(p => p.volume ?? 0), 1);
+  return <div className="space-y-2">
+    <div className="overflow-hidden rounded-xl bg-slate-950 p-2 sm:p-4">
+      <svg viewBox={"0 0 " + width + " " + height} className="w-full" role="img" aria-label={symbol + " historical price chart"}>
+        {ticks.map((v, i) => <g key={i}><line x1={left} x2={width-right} y1={y(v)} y2={y(v)} stroke="#334155" strokeDasharray="4 6"/><text x={left-9} y={y(v)+4} textAnchor="end" fontSize="13" fill="#94a3b8">{v.toFixed(0)}</text></g>)}
+        {style === "candles" && symbol === "NEPSE" ? points.map((p, i) => {
+          const up = (p.close ?? 0) >= (p.open ?? p.close ?? 0);
+          const candleW = Math.max(3, Math.min(16, (width-left-right) / points.length * .58));
+          const topY = y(Math.max(p.open ?? p.close, p.close));
+          const bottomY = y(Math.min(p.open ?? p.close, p.close));
+          return <g key={p.date}><line x1={x(i)} x2={x(i)} y1={y(p.high ?? p.close)} y2={y(p.low ?? p.close)} stroke={up ? "#34d399" : "#fb7185"} strokeWidth="2"/><rect x={x(i)-candleW/2} y={topY} width={candleW} height={Math.max(2,bottomY-topY)} fill={up ? "#10b981" : "#f43f5e"} rx="1"/></g>;
+        }) : <><path d={area} fill="#0d9488" opacity=".17"/><path d={path} fill="none" stroke="#2dd4bf" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round"/><path d={maPath} fill="none" stroke="#fbbf24" strokeWidth="1.8" strokeDasharray="7 5"/></>}
+        <text x={left} y={height-5} fill="#94a3b8" fontSize="12">{points[0].date}</text>
+        <text x={width-right} y={height-5} textAnchor="end" fill="#94a3b8" fontSize="12">{points[points.length-1].date}</text>
+      </svg>
+    </div>
+    <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500"><span className="inline-flex items-center gap-2"><span className="h-2 w-5 rounded bg-teal-500"/>{style === "candles" && symbol === "NEPSE" ? "OHLC candles" : "Closing price"}</span>{!(style === "candles" && symbol === "NEPSE") && <span className="inline-flex items-center gap-2"><span className="h-0.5 w-5 border-t-2 border-dashed border-amber-500"/>20-session average</span>}<span>{points.length} sessions</span></div>
+    <div className="overflow-hidden rounded-xl bg-slate-50 p-2"><p className="px-2 pb-1 text-[11px] font-bold uppercase tracking-wide text-slate-500">Volume</p><svg viewBox={"0 0 " + width + " 84"} className="w-full" role="img" aria-label={symbol + " daily volume chart"}>{points.map((p,i)=>{const w=Math.max(2,(width-left-right)/points.length*.65);const h=(p.volume??0)/maxVol*65;return <rect key={p.date} x={x(i)-w/2} y={76-h} width={w} height={h} rx="1" fill="#0f766e" opacity=".7"/>;})}</svg></div>
+  </div>;
+}
+
+export default function NepseMarketDashboard() {
+  const [symbol,setSymbol]=useState("NEPSE");
+  const [period,setPeriod]=useState("3M");
+  const [chartStyle,setChartStyle]=useState<"line"|"candles">("candles");
+  const [query,setQuery]=useState("");
+  const [sort,setSort]=useState("turnover");
+  const [data,setData]=useState<MarketData|null>(null);
+  const [loading,setLoading]=useState(true);
+  const [error,setError]=useState("");
+  const load=useCallback(async (nextSymbol=symbol,nextPeriod=period) => {
+    try {
+      const response=await fetch("/api/nepse-market?symbol="+encodeURIComponent(nextSymbol)+"&period="+nextPeriod,{cache:"no-store"});
+      const json=await response.json() as MarketData;
+      if(!response.ok) throw new Error(json.error||"Market data unavailable.");
+      setData(json); setError("");
+    } catch(e) { setError(e instanceof Error?e.message:"Market data temporarily unavailable."); }
+    finally { setLoading(false); }
+  },[symbol,period]);
+  useEffect(()=>{setLoading(true);void load(symbol,period);const timer=window.setInterval(()=>void load(symbol,period),5*60*1000);return()=>window.clearInterval(timer);},[load,symbol,period]);
+  const stocks=useMemo(()=>{
+    const filtered=(data?.stocks??[]).filter(s=>(s.symbol+" "+s.name).toLowerCase().includes(query.toLowerCase()));
+    return [...filtered].sort((a,b)=>sort==="gainers"?b.percent_change-a.percent_change:sort==="losers"?a.percent_change-b.percent_change:sort==="volume"?b.volume-a.volume:b.turnover-a.turnover).slice(0,40);
+  },[data,query,sort]);
+  const mainIndex=data?.indices.find(i=>i.index.toLowerCase().includes("nepse index"))??data?.indices[0];
+  const selectedStock=data?.stocks.find(s=>s.symbol===symbol);
+  const headline=selectedStock?selectedStock.name:"NEPSE Index";
+  const value=selectedStock?.ltp??mainIndex?.currentValue??mainIndex?.close;
+  const change=selectedStock?.change??mainIndex?.change??0;
+  const changePct=selectedStock?.percent_change??mainIndex?.perChange??0;
+  const metrics=(data?.summary??[]).slice(0,4);
+  const chooseSymbol=(next:string)=>{setSymbol(next);setChartStyle(next==="NEPSE"?"candles":"line");setLoading(true);};
+  return <main className="min-h-screen bg-slate-50 text-slate-950">
+    <section className="bg-[#071b1b] px-4 py-10 text-white sm:px-6">
+      <div className="mx-auto max-w-7xl">
+        <Link href="/" className="text-sm font-semibold text-teal-200 hover:underline">← PDFora home</Link>
+        <div className="mt-5 flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-300">PDFora Market Desk</p><h1 className="mt-2 text-3xl font-black sm:text-4xl">NEPSE Market Dashboard</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Market snapshot, index and stock charts, sector performance, top movers and company price history.</p></div><div className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm"><span className={"mr-2 inline-block h-2 w-2 rounded-full "+(data?.status?.is_open?"bg-emerald-400":"bg-slate-400")}/>{data?.status?.is_open?"Market reported open":"Market reported closed / snapshot"}<p className="mt-1 text-xs text-slate-400">Feed refreshes approximately every 30 minutes</p></div></div>
+      </div>
+    </section>
+    <div className="mx-auto max-w-7xl space-y-7 px-4 py-8 sm:px-6">
+      {error&&<div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">{error} <a href="https://www.nepalstock.com.np/" target="_blank" rel="noreferrer" className="font-bold underline">Open official NEPSE</a></div>}
+      {data?.partial&&<p role="status" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">Some secondary market datasets did not load. Core quotes and index data are still available.</p>}
+      <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-slate-500">Source: {data?.source??"YONEPSE public dataset"} · Latest quote snapshot: {formatDate(data?.sourceUpdatedAt)}</p><button onClick={()=>{setLoading(true);void load(symbol,period);}} disabled={loading} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{loading?"Loading…":"Refresh market data"}</button></div>
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{(data?.indices??[]).map(idx=><button key={idx.index} onClick={()=>chooseSymbol("NEPSE")} className={"rounded-2xl border bg-white p-4 text-left shadow-sm "+(idx.index.toLowerCase().includes("nepse index")?"border-teal-400 ring-1 ring-teal-100":"border-slate-200")}><p className="text-xs font-semibold text-slate-500">{idx.index}</p><p className="mt-2 text-2xl font-black tabular-nums">{n(idx.currentValue??idx.close)}</p><p className={"mt-1 text-sm font-bold "+pctClass(idx.perChange)}>{idx.change>0?"+":""}{n(idx.change)} ({idx.perChange>0?"+":""}{n(idx.perChange)}%)</p></button>)}</section>
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{metrics.map(m=><div key={m.detail} className={card}><p className="text-xs font-semibold text-slate-500">{m.detail}</p><p className="mt-2 text-xl font-black tabular-nums">{typeof m.value==="number"?n(m.value,0):m.value}</p></div>)}</section>
+      <section className={card}>
+        <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-wide text-teal-700">Price chart</p><h2 className="mt-1 text-xl font-black">{headline}</h2><p className="mt-1 text-sm text-slate-500">{symbol} · {period} history · Latest archive date: {data?.latestHistoryDate??"—"}</p></div><div className="text-right"><p className="text-2xl font-black tabular-nums">{money(value)}</p><p className={"text-sm font-bold "+pctClass(changePct)}>{change>0?"+":""}{n(change)} ({changePct>0?"+":""}{n(changePct)}%)</p></div></div>
+        <div className="mt-4 flex flex-wrap gap-2"><label className="sr-only" htmlFor="market-symbol">Stock symbol</label><input id="market-symbol" value={symbol==="NEPSE"?"NEPSE":symbol} onChange={e=>setSymbol(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,16))} onKeyDown={e=>{if(e.key==="Enter"){setLoading(true);void load(symbol,period);}}} className="w-40 rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Symbol e.g. NABIL"/><button onClick={()=>{setLoading(true);void load(symbol,period);}} className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white">Load chart</button><div className="flex rounded-lg bg-slate-100 p-1">{["1M","3M","1Y"].map(p=><button key={p} onClick={()=>setPeriod(p)} className={"rounded-md px-3 py-1.5 text-xs font-bold "+(period===p?"bg-white shadow":"text-slate-600")}>{p}</button>)}</div>{symbol==="NEPSE"&&<div className="flex rounded-lg bg-slate-100 p-1"><button onClick={()=>setChartStyle("candles")} className={"rounded-md px-3 py-1.5 text-xs font-bold "+(chartStyle==="candles"?"bg-white shadow":"text-slate-600")}>Candles</button><button onClick={()=>setChartStyle("line")} className={"rounded-md px-3 py-1.5 text-xs font-bold "+(chartStyle==="line"?"bg-white shadow":"text-slate-600")}>Line</button></div>}</div>
+        <div className="mt-5">{loading&&!data?<p className="py-20 text-center text-sm text-slate-500">Loading market chart…</p>:<MarketChart points={data?.points??[]} symbol={symbol} style={chartStyle}/>}</div>
+        <p className="mt-3 text-xs leading-5 text-slate-500">Charts use archived daily index OHLC or stock LTP snapshots. This is delayed/periodic public data, not an exchange-authorized tick feed or a trading terminal.</p>
+      </section>
+      <section className="grid gap-4 lg:grid-cols-2">
+        <div className={card}><h2 className="text-lg font-black">Top gainers</h2><div className="mt-3 space-y-2">{(data?.topStocks?.top_gainer??[]).slice(0,8).map(s=><button key={s.symbol} onClick={()=>chooseSymbol(s.symbol)} className="flex w-full justify-between gap-3 border-b border-slate-100 py-2 text-left text-sm last:border-0"><span className="font-bold">{s.symbol}</span><span className="font-bold text-emerald-700">+{n(s.percent_change)}%</span></button>)}{!data?.topStocks?.top_gainer?.length&&<p className="text-sm text-slate-500">Gainer list unavailable in this snapshot.</p>}</div></div>
+        <div className={card}><h2 className="text-lg font-black">Top losers</h2><div className="mt-3 space-y-2">{(data?.topStocks?.top_loser??[]).slice(0,8).map(s=><button key={s.symbol} onClick={()=>chooseSymbol(s.symbol)} className="flex w-full justify-between gap-3 border-b border-slate-100 py-2 text-left text-sm last:border-0"><span className="font-bold">{s.symbol}</span><span className="font-bold text-rose-700">{n(s.percent_change)}%</span></button>)}{!data?.topStocks?.top_loser?.length&&<p className="text-sm text-slate-500">Loser list unavailable in this snapshot.</p>}</div></div>
+      </section>
+      <section className={card}>
+        <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-xl font-black">Listed companies</h2><p className="mt-1 text-sm text-slate-500">Search by symbol or company name. Select a row to load its price chart.</p></div><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search NABIL, NICA, bank…" className="w-full max-w-sm rounded-xl border border-slate-300 px-3 py-2.5 text-sm"/></div>
+        <div className="mt-4 flex flex-wrap gap-2">{[["turnover","Turnover"],["gainers","Gainers"],["losers","Losers"],["volume","Volume"]].map(([key,label])=><button key={key} onClick={()=>setSort(key)} className={"rounded-full px-3 py-2 text-xs font-bold "+(sort===key?"bg-teal-700 text-white":"bg-slate-100 text-slate-700")}>{label}</button>)}</div>
+        <div className="mt-4 overflow-x-auto"><table className="w-full min-w-[760px] text-left text-sm"><thead className="bg-slate-100 text-xs uppercase text-slate-500"><tr><th className="p-3">Symbol</th><th className="p-3">Company</th><th className="p-3 text-right">LTP</th><th className="p-3 text-right">Change</th><th className="p-3 text-right">Volume</th><th className="p-3 text-right">Turnover</th></tr></thead><tbody>{stocks.map(s=><tr key={s.symbol} className={"cursor-pointer border-t border-slate-100 hover:bg-teal-50 "+(symbol===s.symbol?"bg-teal-50":"")} onClick={()=>chooseSymbol(s.symbol)}><td className="p-3 font-black text-teal-800">{s.symbol}</td><td className="max-w-[280px] truncate p-3 text-slate-600">{s.name}</td><td className="p-3 text-right font-semibold tabular-nums">{n(s.ltp)}</td><td className={"p-3 text-right font-bold tabular-nums "+pctClass(s.percent_change)}>{s.percent_change>0?"+":""}{n(s.percent_change)}%</td><td className="p-3 text-right tabular-nums">{n(s.volume,0)}</td><td className="p-3 text-right tabular-nums">{money(s.turnover)}</td></tr>)}</tbody></table></div>
+        <p className="mt-3 text-xs text-slate-500">Showing up to 40 matching securities from the current source snapshot.</p>
+      </section>
+      <section className={card}><h2 className="text-xl font-black">Sector indices</h2><div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{(data?.sectors??[]).map(s=><div key={s.indexCode??s.indexName} className="rounded-xl bg-slate-50 p-3"><p className="font-semibold">{s.indexName??s.indexCode}</p><p className="mt-1 text-xs text-slate-500">{s.description??"Sector reference"}</p></div>)}</div></section>
+      <section className={card}><h2 className="text-xl font-black">Nepal market updates</h2><div className="mt-4"><NepalMarketNews/></div><div className="mt-5 flex flex-wrap gap-4 text-sm font-semibold"><Link href="/tools/nepse-market-news" className="text-teal-700 underline">NEPSE & IPO news</Link><Link href="/tools/nepse-dividend-calculator" className="text-teal-700 underline">Dividend calculator</Link><Link href="/tools/nepal-share-calculator" className="text-teal-700 underline">Share profit calculator</Link><a href="https://www.nepalstock.com.np/" target="_blank" rel="noreferrer" className="text-teal-700 underline">Official NEPSE</a></div></section>
+      <p className="pb-8 text-xs leading-5 text-slate-500">Data source: YONEPSE public dataset, which republishes exchange and community data. Verify prices, notices and corporate actions with NEPSE before making investment decisions. PDFora does not provide investment advice.</p>
+    </div>
+  </main>;
+}

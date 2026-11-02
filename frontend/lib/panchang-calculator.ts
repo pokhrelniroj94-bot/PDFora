@@ -168,14 +168,19 @@ function daylightPeriod(sunrise: Date, sunset: Date, segment: number): string {
   return `${localTime(start)} – ${localTime(end)}`;
 }
 
+function localISODate(date: Date): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(date);
+  const part = (type: string) => parts.find((item) => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
 function dateIsValid(date: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
   const localMidnight = new Date(`${date}T00:00:00+05:45`);
   if (Number.isNaN(localMidnight.getTime())) return false;
-  const formatted = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
-  }).format(localMidnight);
-  return formatted === date;
+  return localISODate(localMidnight) === date;
 }
 
 export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
@@ -197,8 +202,8 @@ export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
 
   const sunrise = sunriseEvent.date;
   const sunset = sunsetEvent.date;
-  const localSunriseDate = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).format(sunrise);
-  const localSunsetDate = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).format(sunset);
+  const localSunriseDate = localISODate(sunrise);
+  const localSunsetDate = localISODate(sunset);
   if (localSunriseDate !== input.date || localSunsetDate !== input.date || sunset <= sunrise) {
     throw new Error("Sunrise or sunset did not fall on the selected Nepal civil date. Please verify the location.");
   }

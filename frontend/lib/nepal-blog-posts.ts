@@ -363,5 +363,58 @@ export const nepalBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "NEPSE Dividend & Bonus Share Calculator", href: "/tools/nepse-dividend-calculator" }, { label: "NEPSE Share Buy/Sell Calculator", href: "/tools/nepal-share-calculator" }],
     sources: [{ label: "Nepal Stock Exchange", url: "https://www.nepalstock.com/" }, { label: "CDSC", url: "https://cdsc.com.np/" }, { label: "Inland Revenue Department", url: "https://ird.gov.np/" }]
-  }
+  },
+
+  {
+    slug: "nepal-fixed-deposit-calculator-guide",
+    title: "Nepal Fixed Deposit Calculator: Estimate FD Interest and Maturity",
+    description: "Learn how to estimate fixed-deposit maturity value, compounding and tax assumptions when comparing Nepal bank FD products.",
+    keyword: "Nepal fixed deposit calculator",
+    updated: "2026-11-02",
+    readTime: "5 min read",
+    intro: "A fixed deposit estimate helps compare how principal, interest rate, deposit term and compounding frequency affect maturity value. The final bank payout depends on the product's own terms and current tax rules.",
+    sections: [
+      { heading: "What inputs affect FD maturity?", paragraphs: ["The principal is the amount deposited, the annual interest rate is the advertised return, and the term determines how long interest can accrue. Compounding frequency affects how often earned interest is added to the balance."] },
+      { heading: "How to use the calculator", bullets: ["Enter the deposit amount in NPR.", "Enter the bank's annual interest rate and term in months.", "Choose the compounding frequency stated by the bank.", "Set an appropriate tax assumption and review gross interest and estimated maturity."] },
+      { heading: "Important limitations", paragraphs: ["Banks may use different day-count conventions, interest payout options, minimum terms, premature withdrawal penalties and withholding rules. Confirm the exact product disclosure and current IRD guidance before depositing."] }
+    ],
+    faqs: [{ question: "Does every Nepal bank compound FD interest quarterly?", answer: "No. Compounding and payout rules depend on the specific bank product. Use the terms published by the bank." }],
+    toolLinks: [{ label: "Nepal Fixed Deposit Calculator", href: "/tools/nepal-fixed-deposit-calculator" }],
+    sources: [{ label: "Nepal Rastra Bank", url: "https://www.nrb.org.np/" }, { label: "Inland Revenue Department", url: "https://ird.gov.np/" }]
+  },
+  {
+    slug: "nepal-remittance-calculator-guide",
+    title: "Nepal Remittance Calculator: Estimate the NPR Amount Received",
+    description: "Understand how exchange rates and transfer fees affect the amount received by a family in Nepal.",
+    keyword: "Nepal remittance calculator",
+    updated: "2026-11-02",
+    readTime: "5 min read",
+    intro: "A remittance payout depends on the amount sent, the provider's exchange rate and any transfer or recipient fee. Comparing the final NPR amount is more useful than comparing an exchange rate alone.",
+    sections: [
+      { heading: "How remittance payout is estimated", paragraphs: ["Multiply the amount sent by the quoted NPR exchange rate, then subtract any fee charged in NPR. If the provider deducts a fee from the sending currency, convert that fee consistently before comparing offers."] },
+      { heading: "How to compare providers", bullets: ["Check the recipient amount, not just the advertised rate.", "Confirm who pays the transfer fee.", "Check whether intermediary or recipient-bank charges apply.", "Compare quotes for the same sending amount and payout method."] },
+      { heading: "Important limitations", paragraphs: ["The calculator does not connect to remittance companies or fetch a live quote. Actual exchange rates and fees vary by provider, destination, transfer method and time."] }
+    ],
+    faqs: [{ question: "Does this show live remittance rates?", answer: "No. Enter the rate and fees quoted by your chosen provider." }],
+    toolLinks: [{ label: "Nepal Remittance Calculator", href: "/tools/nepal-remittance-calculator" }],
+    sources: [{ label: "Nepal Rastra Bank", url: "https://www.nrb.org.np/" }]
+  },
+  {
+    slug: "nepal-ipo-profit-calculator-guide",
+    title: "Nepal IPO Profit Calculator: Kitta, Selling Charges and Tax",
+    description: "Estimate IPO share profit or loss after broker commission, SEBON fee, DP charge and capital-gains tax assumptions.",
+    keyword: "Nepal IPO profit calculator",
+    updated: "2026-11-02",
+    readTime: "6 min read",
+    intro: "IPO allotment does not guarantee a profit. The final result depends on the sale price, share quantity, broker tariff, transaction fees and applicable capital-gains tax.",
+    sections: [
+      { heading: "Calculate the gross gain or loss", paragraphs: ["Multiply the allotted share quantity by the sale price to estimate gross sale value. Subtract the original allotment cost to find the gross gain or loss before selling charges."] },
+      { heading: "Include selling charges", bullets: ["Enter the actual allotted kitta and IPO price.", "Use a realistic sale price scenario.", "Update broker commission, SEBON fee and DP charge from the current tariff.", "Select a tax assumption only after checking the applicable holding-period rule."] },
+      { heading: "Important limitations", paragraphs: ["This is a planning estimate, not a broker contract note. Charges, minimum fees, tax treatment and settlement rules can change. Confirm current terms with your broker and the Inland Revenue Department."] }
+    ],
+    faqs: [{ question: "Does the tool know the actual listing price?", answer: "No. The sale price is an assumption entered by the user and may differ from the market price." }],
+    toolLinks: [{ label: "Nepal IPO Profit Calculator", href: "/tools/nepal-ipo-profit-calculator" }, { label: "NEPSE Share Calculator", href: "/tools/nepal-share-calculator" }],
+    sources: [{ label: "Nepal Stock Exchange", url: "https://www.nepalstock.com/" }, { label: "Inland Revenue Department", url: "https://ird.gov.np/" }]
+  },
+
 ];

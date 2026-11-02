@@ -35,7 +35,7 @@ const bsToAd = (year, month, day) => {
 assert.equal(bsToAd(2083,1,1), "2026-04-14", "2083 New Year anchor must match published calendar");
 assert.equal(bsToAd(2083,7,1), "2026-10-18", "Kartik 1, 2083 must match published calendar");
 assert.equal(bsToAd(2083,12,30), "2027-04-13", "2083 Chaitra 30 must match published calendar");
-assert.ok(nepalTools.includes('timeZone: "Asia/Kathmandu"'), "Today date must use Nepal's civil timezone");
+assert.ok(nepalTools.includes('function kathmanduISODate(timeZone = "Asia/Kathmandu")'), "Local date helper must default to Nepal civil timezone and accept city-specific time zones");
 assert.ok(nepalTools.includes("new DateConverter(") && nepalTools.includes(".toAd()"), "Calendar grid must derive each day from the exact BS converter");
 assert.ok(nepalTools.includes("y>2083"), "Calendar UI must not expose unverified future BS years");
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");

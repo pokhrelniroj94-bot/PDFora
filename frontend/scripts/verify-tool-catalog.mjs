@@ -77,7 +77,7 @@ const nepalSlugs = [...catalogSource.matchAll(/\\{slug:"([^"]+)",name:"[^"]+",ca
 const missingNepalGuides = nepalSlugs.filter((slug) => !nepalBlogPosts.includes('href: "/tools/' + slug + '"'));
 assert.deepEqual(missingNepalGuides, [], "Nepal tools without dedicated guides: " + missingNepalGuides.join(", "));
 assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf("...catalogGuides"), "Dedicated Nepal guides must take precedence over generated generic guides");
-const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator","nepal-fixed-deposit-calculator","nepal-remittance-calculator","nepal-ipo-profit-calculator"];
+const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator","nepal-fixed-deposit-calculator","nepal-remittance-calculator","nepal-ipo-profit-calculator","nepal-panchang-today"];
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
 assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
@@ -105,6 +105,8 @@ assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO
 assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weighted grade points");
 assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
+assert.ok(nepalTools.includes('https://usemiti.com/embed/today?style=panchanga') && nepalTools.includes("Miti (Yarsa Himalaya)") && nepalTools.includes("CC BY 4.0"), "Panchang tool must use the disclosed source embed and attribution");
+assert.ok(allTools.includes('"nepal-panchang-today"'), "Panchang tool must be routed to the Nepal utility workspace");
 
 const toolDirectory = read("../lib/tool-directory.ts");
 const homepage = read("../app/page.tsx");

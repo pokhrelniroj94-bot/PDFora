@@ -61,8 +61,7 @@ export const astrologyBlogPosts: BlogPost[] = [
       { question: "What are the eight Ashtakoota factors?", answer: "Varna (1), Vashya (2), Tara (3), Yoni (4), Graha Maitri (5), Gana (6), Bhakoot (7) and Nadi (8), for a total of 36 points." },
       { question: "Is 18 out of 36 a guaranteed pass mark?", answer: "No. It is a widely used traditional convention, not a scientific test or guarantee of marriage success." },
       { question: "Why can Vashya or Yoni scores differ between websites?", answer: "Different printed texts and editions contain variant tables, and some calculators transpose bride/groom rows and columns or apply parihara differently." }
-    ]
-
+    ],
     toolLinks: [{ label: "Open the 36 Guna Milan calculator", href: "/tools/nepali-guna-milan" }],
     sources: [{ label: "Ashtakoota table method and printed-source references", url: "https://thetelugucalendar.com/marriage-matching/method/" }],
   },

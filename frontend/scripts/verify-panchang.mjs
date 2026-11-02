@@ -12,9 +12,13 @@ const sunrise = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, +1, localM
 assert.ok(sunrise, "Sunrise should be calculable for Kathmandu.");
 const sunset = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, -1, sunrise, 1, 0);
 assert.ok(sunset, "Sunset should be calculable for Kathmandu.");
-const localDate = (instant) => new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
-}).format(instant);
+const localDate = (instant) => {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(instant);
+  const part = (type) => parts.find((item) => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
+};
 assert.equal(localDate(sunrise.date), date, "Sunrise must fall on the requested Nepal civil date.");
 assert.equal(localDate(sunset.date), date, "Sunset must fall on the requested Nepal civil date.");
 assert.ok(sunset.date > sunrise.date, "Sunset must follow sunrise.");

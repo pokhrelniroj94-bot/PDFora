@@ -6,13 +6,19 @@ declare global { interface Window { PreetiConverter?: new () => { convert(text:s
 const months = ["बैशाख","जेठ","असार","साउन","भदौ","असोज","कात्तिक","मंसिर","पुस","माघ","फागुन","चैत"];
 const nepaliDigits = (s:string) => s.replace(/\d/g, d => "०१२३४५६७८९"[Number(d)]);
 const englishDigits = (s:string) => s.replace(/[०-९]/g, d => String("०१२३४५६७८९".indexOf(d)));
+const monthEnglish = ["Baisakh","Jestha","Asar","Shrawan","Bhadra","Ashoj","Kartik","Mangsir","Poush","Magh","Falgun","Chaitra"];
+function kathmanduISODate() {
+ const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+ const part = (type: string) => parts.find((item) => item.type === type)?.value ?? "";
+ return `${part("year")}-${part("month")}-${part("day")}`;
+}
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 function Input({title,value,onChange,type="text",placeholder=""}:{title:string;value:string;onChange:(v:string)=>void;type?:string;placeholder?:string}) { return <label className="block"><span className={label}>{title}</span><input className={field} type={type} value={value} placeholder={placeholder} onChange={e=>onChange(e.target.value)}/></label>; }
 function Output({children}:{children:React.ReactNode}) { return <div aria-live="polite" className="mt-4 whitespace-pre-wrap break-words rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5">{children}</div>; }
 function Panel({children}:{children:React.ReactNode}) { return <div className="space-y-4">{children}</div>; }
 export default function NepalTools({slug}:{slug:string}) {
- const [mode,setMode]=useState("ad-bs"),[date,setDate]=useState(""),[result,setResult]=useState(""),[ready,setReady]=useState(false);
+ const [mode,setMode]=useState("ad-bs"),[date,setDate]=useState(""),[result,setResult]=useState(""),[ready,setReady]=useState(false),[todayAD,setTodayAD]=useState("");
  const [amount,setAmount]=useState("1000"),[rate,setRate]=useState("13"),[taxMode,setTaxMode]=useState("add");
  const [ropani,setRopani]=useState("0"),[aana,setAana]=useState("0"),[paisa,setPaisa]=useState("0"),[daam,setDaam]=useState("0"),[area,setArea]=useState("5476");
  const [bigha,setBigha]=useState("0"),[kattha,setKattha]=useState("0"),[dhur,setDhur]=useState("0");
@@ -42,14 +48,54 @@ export default function NepalTools({slug}:{slug:string}) {
    return ()=>{script.onload=null;script.onerror=null;};
   }
   if(["nepali-date-converter","nepali-calendar"].includes(slug)){
+   const today = kathmanduISODate();
+   setTodayAD(today);
+   if(slug === "nepali-date-converter") setDate((current) => current || today);
+   if(slug === "nepali-calendar") {
+    const bs = new DateConverter(today).toBs();
+    setCalendarYear(String(bs.year));
+    setCalendarMonth(String(bs.month));
+   }
    Promise.resolve().then(()=>setReady(true));
   }
  },[slug]);
- const runDate=()=>{try{const clean=englishDigits(date.trim()).replace(/[/.]/g,"-");if(!/^\d{4}-\d{1,2}-\d{1,2}$/.test(clean))throw Error("Date format YYYY-MM-DD ma halnuhos.");const normalized=clean.split("-").map((part,i)=>i===0?part:part.padStart(2,"0")).join("-");const c=new DateConverter(normalized);const d=mode==="ad-bs"?c.toBs():c.toAd();const day=d.day;const formatted=mode==="ad-bs"?`${d.year}-${String(d.month).padStart(2,"0")}-${String(d.date).padStart(2,"0")} BS (${months[d.month-1]})`:`${d.year}-${String(d.month).padStart(2,"0")}-${String(d.date).padStart(2,"0")} AD`;setResult(`${formatted}\nWeekday: ${day}\nNepali digits: ${nepaliDigits(formatted)}`);}catch(e){setResult(e instanceof Error?e.message:"Invalid date.");}};
+ const runDate=()=>{try{const clean=englishDigits(date.trim()).replace(/[/.]/g,"-");if(!/^\\d{4}-\\d{1,2}-\\d{1,2}$/.test(clean))throw Error("Date format YYYY-MM-DD ma halnuhos.");const normalized=clean.split("-").map((part,i)=>i===0?part:part.padStart(2,"0")).join("-");const c=new DateConverter(normalized);const d=mode==="ad-bs"?c.toBs():c.toAd();const day=d.day;const iso=`${d.year}-${String(d.month).padStart(2,"0")}-${String(d.date).padStart(2,"0")}`;const bsMonth=Number(normalized.split("-")[1]);const formatted=mode==="ad-bs"?`AD: ${normalized} (Gregorian)\\nBS: ${iso} · ${monthEnglish[d.month-1]} / ${months[d.month-1]}`:`BS: ${normalized} · ${monthEnglish[bsMonth-1]} / ${months[bsMonth-1]}\\nAD: ${iso} (Gregorian)`;setResult(`${formatted}\\nWeekday: ${day}\\nNepali digits: ${nepaliDigits(iso)}`);}catch(e){setResult(e instanceof Error?e.message:"Invalid date.");}};
 
  if(slug==="preeti-unicode-converter"){const convert=()=>{try{if(!window.PreetiConverter)throw Error("Converter is still loading.");const engine=new window.PreetiConverter();const output=preetiMode==="to-unicode"?engine.convert(preetiText):engine.reverseConvert(preetiText);setResult(output);}catch(e){setResult(e instanceof Error?e.message:"Conversion failed.");}};return <Panel><div><h2 className="text-lg font-bold">Preeti ↔ Nepali Unicode Converter</h2><p className="mt-1 text-sm text-slate-600">Old Preeti font text lai Unicode Nepali ma, ra Unicode lai Preeti encoding ma convert garnuhos.</p></div><label><span className={label}>Conversion direction</span><select className={field} value={preetiMode} onChange={e=>{setPreetiMode(e.target.value);setResult("");}}><option value="to-unicode">Preeti → Unicode Nepali</option><option value="to-preeti">Unicode Nepali → Preeti</option></select></label><label className="block"><span className={label}>Paste text</span><textarea className={field+" min-h-40"} value={preetiText} onChange={e=>setPreetiText(e.target.value)}/></label><button disabled={!preetiReady} onClick={convert} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">{preetiReady?"Convert text":"Loading converter…"}</button>{result&&<><Output>{result}</Output><button onClick={()=>void navigator.clipboard?.writeText(result)} className="rounded-lg border px-4 py-2 text-sm font-semibold">Copy converted text</button></>}<p className="text-xs text-slate-500">Use this for text actually encoded in Preeti. Mixed English and Preeti content may need manual review. Keep your original text; the conversion library loads from jsDelivr.</p></Panel>;}
  if(slug==="nepali-digit-converter"){const out=digitsText.replace(/[0-9]/g,d=>"०१२३४५६७८९"[Number(d)]).replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d)));return <Panel><div><h2 className="text-lg font-bold">Nepali Unicode Digit Converter</h2><p className="mt-1 text-sm text-slate-600">English 0–9 ↔ नेपाली ०–९ digits. Text ko aru character jastakai rahanchha.</p></div><Input title="Text or numbers" value={digitsText} onChange={setDigitsText}/><Output>नेपाली अंक: {digitsText.replace(/[0-9]/g,d=>"०१२३४५६७८९"[Number(d)])}\nEnglish digits: {out}</Output><button onClick={()=>void navigator.clipboard?.writeText(out)} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white">Copy English digits</button></Panel>;}
- if(slug==="nepali-calendar"){const build=()=>{try{const y=Number(calendarYear),m=Number(calendarMonth);if(!Number.isInteger(y)||y<1975||y>2099||m<1||m>12)throw Error("Year 1975–2099 ra month 1–12 enter garnuhos.");const start=new Date(Math.max(Date.UTC(y-57,3,1),Date.UTC(1918,3,13))),end=new Date(Math.min(Date.UTC(y-56,4,15),Date.UTC(2043,3,13)));const rows:{day:number;ad:string;weekday:string}[]=[];for(let d=new Date(start);d<=end;d.setUTCDate(d.getUTCDate()+1)){const ad=d.toISOString().slice(0,10);const bs=new DateConverter(ad).toBs();if(bs.year===y&&bs.month===m)rows.push({day:bs.date,ad,weekday:d.toLocaleDateString("en-US",{weekday:"short",timeZone:"UTC"})});}if(!rows.length)throw Error("This month was not found in the calendar data.");setCalendarRows(rows);}catch(e){setResult(e instanceof Error?e.message:"Could not build calendar.");}};return <Panel><div><h2 className="text-lg font-bold">Nepali Calendar (BS)</h2><p className="mt-1 text-sm text-slate-600">Choose a Bikram Sambat month to see its AD dates and weekdays. Calendar data range: 1975–2099 BS.</p></div><div className="grid grid-cols-2 gap-3"><Input title="BS year" value={calendarYear} onChange={setCalendarYear} type="number"/><label><span className={label}>Month</span><select className={field} value={calendarMonth} onChange={e=>setCalendarMonth(e.target.value)}>{months.map((m,i)=><option key={m} value={i+1}>{m}</option>)}</select></label></div><button onClick={build} disabled={!ready} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">{ready?"Show calendar":"Loading calendar data…"}</button>{result&&<Output>{result}</Output>}{calendarRows.length>0&&<div className="overflow-x-auto"><table className="w-full border-collapse text-sm"><thead><tr className="bg-slate-100"><th className="p-2 text-left">BS day</th><th className="p-2 text-left">AD date</th><th className="p-2 text-left">Weekday</th></tr></thead><tbody>{calendarRows.map(row=><tr key={row.day} className="border-b"><td className="p-2 font-semibold">{row.day}</td><td className="p-2">{row.ad}</td><td className="p-2">{row.weekday}</td></tr>)}</tbody></table></div>}<p className="text-xs text-slate-500">Festival and public-holiday labels are not included. Verify official holiday notices separately.</p></Panel>;}
+ if(slug==="nepali-calendar"){
+  const build=()=>{
+   try{
+    const y=Number(calendarYear),m=Number(calendarMonth);
+    if(!Number.isInteger(y)||y<1975||y>2099||!Number.isInteger(m)||m<1||m>12) throw Error("Supported calendar range: BS 1975–2099. Month must be 1–12.");
+    const rows:{day:number;ad:string;weekday:string}[]=[];
+    for(let day=1;day<=32;day++){
+     try{
+      const converted=new DateConverter(`${y}-${String(m).padStart(2,"0")}-${String(day).padStart(2,"0")}`).toAd();
+      const ad=`${converted.year}-${String(converted.month).padStart(2,"0")}-${String(converted.date).padStart(2,"0")}`;
+      rows.push({day,ad,weekday:converted.day});
+     }catch{break;}
+    }
+    if(!rows.length) throw Error("No published calendar data was found for this month.");
+    setCalendarRows(rows);setResult("");
+   }catch(e){setCalendarRows([]);setResult(e instanceof Error?e.message:"Could not build calendar.");}
+  };
+  const firstWeekday=calendarRows.length?new Date(`${calendarRows[0].ad}T00:00:00Z`).getUTCDay():0;
+  const cells:(typeof calendarRows[number]|null)[]=[...Array(firstWeekday).fill(null),...calendarRows];
+  const weekdayLabels=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  return <Panel>
+   <div><h2 className="text-lg font-bold">Nepali Calendar (BS)</h2><p className="mt-1 text-sm text-slate-600">Choose a Bikram Sambat year and month. Each BS date is converted with the bundled year-by-year calendar table, not a fixed year offset.</p></div>
+   <div className="grid grid-cols-2 gap-3"><Input title="BS year" value={calendarYear} onChange={setCalendarYear} type="number"/><label><span className={label}>Month</span><select className={field} value={calendarMonth} onChange={e=>setCalendarMonth(e.target.value)}>{months.map((name,i)=><option key={name} value={i+1}>{monthEnglish[i]} · {name}</option>)}</select></label></div>
+   <div className="flex flex-wrap items-center gap-2"><button onClick={build} disabled={!ready} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">{ready?"Show calendar":"Loading calendar data…"}</button><button onClick={()=>{const today=new DateConverter(kathmanduISODate()).toBs();setCalendarYear(String(today.year));setCalendarMonth(String(today.month));}} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Go to today</button></div>
+   {result&&<Output>{result}</Output>}
+   {calendarRows.length>0&&<section aria-label={`${monthEnglish[Number(calendarMonth)-1]} ${calendarYear} calendar`} className="space-y-3">
+    <div className="flex flex-wrap items-baseline justify-between gap-2"><h3 className="text-lg font-bold">{monthEnglish[Number(calendarMonth)-1]} {calendarYear} BS · {months[Number(calendarMonth)-1]}</h3><p className="text-xs text-slate-500">{calendarRows[0].ad} – {calendarRows[calendarRows.length-1].ad} AD</p></div>
+    <div className="grid grid-cols-7 gap-1.5">{weekdayLabels.map(day=><div key={day} className="py-2 text-center text-xs font-bold text-slate-500">{day}</div>)}{cells.map((row,index)=>row?<div key={row.day} className={`min-h-20 rounded-xl border p-2 text-center ${row.ad===todayAD?"border-teal-500 bg-teal-50 ring-1 ring-teal-300":"border-slate-200 bg-white"}`}><p className="text-lg font-black text-slate-900">{nepaliDigits(String(row.day))}</p><p className="mt-1 text-[11px] text-slate-600">{row.ad.slice(8,10)} {row.ad.slice(5,7)}</p>{row.ad===todayAD&&<span className="mt-1 inline-block text-[10px] font-bold text-teal-800">Today</span>}</div>:<div key={`blank-${index}`} aria-hidden="true" className="min-h-20 rounded-xl bg-slate-50/70"/> )}</div>
+    <p className="text-xs text-slate-500">The highlighted day is today in Asia/Kathmandu. Weekday placement is derived from the corresponding Gregorian date.</p>
+   </section>}
+   <p className="text-xs leading-5 text-slate-500">Calendar conversion data covers BS 1975–2099. Public holidays and tithi labels are not inferred from this date table; consult the official Nepali Panchanga and government notices for religious or legal observances.</p>
+  </Panel>;
+ }
  if(slug==="neb-gpa-calculator"){
   const validSubjects=subjects.length>0&&subjects.every(x=>x.name.trim()!==""&&x.credit.trim()!==""&&x.grade.trim()!==""&&Number.isFinite(Number(x.credit))&&Number(x.credit)>0&&Number.isFinite(Number(x.grade))&&Number(x.grade)>=0&&Number(x.grade)<=4);
   const total=subjects.reduce((sum,x)=>sum+(Number(x.credit)||0),0);

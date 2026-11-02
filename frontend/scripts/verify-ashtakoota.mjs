@@ -12,13 +12,21 @@ function readArray(name) {
     const char = source[i];
     if (inString) {
       if (escaped) escaped = false;
-      else if (char === "\\\\") escaped = true;
+      else if (char === "\\") escaped = true;
       else if (char === '"') inString = false;
       continue;
     }
     if (char === '"') inString = true;
     else if (char === "[") depth++;
-    else if (char === "]" && --depth === 0) const literal = source.slice(start, i + 1).replace(/,\\s*([}\\]])/g, "$1").replace(/(^|[\\[\\s,])\\.(\\d)/g, (_match, prefix, digit) => prefix + "0." + digit);\n      return JSON.parse(literal);
+    else if (char === "]") {
+      depth--;
+      if (depth === 0) {
+        const literal = source.slice(start, i + 1)
+          .replace(/,\s*([}\]])/g, "$1")
+          .replace(/(^|[\[\s,])\.(\d)/g, (_match, prefix, digit) => prefix + "0." + digit);
+        return JSON.parse(literal);
+      }
+    }
   }
   throw new Error("Could not parse array " + name);
 }

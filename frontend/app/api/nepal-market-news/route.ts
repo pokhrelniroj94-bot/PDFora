@@ -5,10 +5,10 @@ type Story = { title: string; link: string; publishedAt: string; source: string 
 const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
 function clean(value: string) {
-  return value.replace(/<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>/g, "$1")
+  return value.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-    .replace(/&#\\d+;/g, " ").replace(/\\s+/g, " ").trim();
+    .replace(/&#\d+;/g, " ").replace(/\s+/g, " ").trim();
 }
 
 async function readFeed(query: string): Promise<Story[]> {
@@ -22,7 +22,7 @@ async function readFeed(query: string): Promise<Story[]> {
   if (!response.ok) throw new Error("News provider returned an error");
   const xml = await response.text();
   const cutoff = Date.now() - MAX_AGE_MS;
-  const stories = [...xml.matchAll(/<item\\b[^>]*>([\\s\\S]*?)<\\/item>/gi)].map((match): Story | null => {
+  const stories = [...xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/gi)].map((match): Story | null => {
     const item = match[1];
     const value = (tag: string) => clean(item.match(new RegExp("<" + tag + "(?:\\s[^>]*)?>([\\s\\S]*?)<\\/" + tag + ">", "i"))?.[1] ?? "");
     const title = value("title");
@@ -30,7 +30,7 @@ async function readFeed(query: string): Promise<Story[]> {
     const pubDate = value("pubDate");
     const source = value("source") || "Google News feed";
     const published = new Date(pubDate);
-    if (!title || !/^https:\\/\\//i.test(link) || Number.isNaN(published.getTime()) || published.getTime() < cutoff) return null;
+    if (!title || !/^https:\/\//i.test(link) || Number.isNaN(published.getTime()) || published.getTime() < cutoff) return null;
     return { title, link, publishedAt: published.toISOString(), source };
   }).filter((story): story is Story => story !== null);
   const unique = new Map<string, Story>();

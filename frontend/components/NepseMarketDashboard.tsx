@@ -20,10 +20,11 @@ const indexCodeByName: Record<string, string> = {
   "Sensitive Float Index": "SENSFLTIND", "Banking SubIndex": "BANKSUBIND",
   "Development Bank Index": "DEVBANKIND", "Finance Index": "FININD",
   "Hotels And Tourism Index": "HOTELIND", "HydroPower Index": "HYDPOWIND",
-  "Investment Index": "INVIDX", "Life Insurance Index": "LIFINSIND",
+  "Investment Index": "INVIDX", "Life Insurance Index": "LIFINSIND", "Life Insurance": "LIFINSIND",
   "Manufacturing And Processing": "MANPROCIND", "Microfinance Index": "MICRFININD",
-  "Mutual Fund Index": "MUTUALIND", "Non Life Insurance Index": "NONLIFIND",
-  "Others Index": "OTHERSIND", "Trading Index": "TRDIND",
+  "Mutual Fund Index": "MUTUALIND", "Mutual Fund": "MUTUALIND",
+  "Non Life Insurance Index": "NONLIFIND", "Non Life Insurance": "NONLIFIND",
+  "Others Index": "OTHERSIND", "Others": "OTHERSIND", "Trading Index": "TRDIND",
 };
 const indexSymbols = new Set(Object.values(indexCodeByName));
 function formatDate(value?: string | null) { if (!value) return "—"; const date = new Date(value); return Number.isNaN(date.getTime()) ? value : date.toLocaleString("en-NP", { dateStyle: "medium", timeStyle: "short" }); }

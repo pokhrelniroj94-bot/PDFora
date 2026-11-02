@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type Story = { title: string; link: string; publishedAt: string; source: string };
 type Feed = { market: Story[]; ipo: Story[]; updatedAt: string; warning?: string };
@@ -19,7 +19,7 @@ export default function NepalMarketNews() {
   const [feed, setFeed] = useState<Feed | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true); setError("");
     try {
       const response = await fetch("/api/nepal-market-news", { cache: "no-store" });
@@ -28,8 +28,8 @@ export default function NepalMarketNews() {
       setFeed(json);
     } catch (e) { setError(e instanceof Error ? e.message : "News feed is temporarily unavailable."); }
     finally { setLoading(false); }
-  };
-  useEffect(() => { void load(); }, []);
+  }, []);
+  useEffect(() => { void load(); }, [load]);
   return <div className="space-y-4">
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div><h2 className="text-xl font-black text-slate-950">Nepal Stock Market & IPO News</h2><p className="mt-1 text-sm text-slate-600">Automatically refreshed headlines from Google News search feeds. Open each story at its publisher.</p></div>

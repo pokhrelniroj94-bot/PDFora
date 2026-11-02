@@ -73,16 +73,9 @@ export default function CatalogToolSEOContent({
 }) {
   const advice = categoryAdvice[tool.category] ?? categoryAdvice.Math;
   const title = tool.name;
-  const faqItems = [
-    { q: `What does the ${title} do?`, a: tool.description },
-    { q: `How do I use the ${title}?`, a: `Open this page, enter or upload the information requested by the ${title}, check the available options, run the tool and review the result before copying or downloading it.` },
-    { q: "Is the result guaranteed to be correct?", a: "No. Results depend on the input, the method and any assumptions described on this page. Verify important outputs independently, especially before financial, legal, medical, security or production use." },
-    { q: "Can I use this tool on a phone?", a: "The page is designed for modern browsers. The exact experience can vary by device, browser, screen size and file permissions. If a control does not work, try an updated browser or a desktop device." },
-    { q: "What should I do if the result looks wrong?", a: "Check the input format, units, selected options and any error message. Try a small sample and compare the output with a known result. Do not rely on an unexpected result until you understand the cause." },
-    { q: "Should I enter confidential information?", a: "Avoid entering passwords, payment details, personal identifiers or confidential business data unless you have reviewed the site&apos;s privacy information and are comfortable with the processing involved." },
-    ...questions.slice(0, 3).map((item) => ({ q: item.q, a: item.a }))
-  ];
-  const uniqueFaqItems = faqItems.filter((item, index) => faqItems.findIndex((candidate) => candidate.q === item.q) === index);
+  // Keep only FAQs written for this tool or its category. This avoids
+  // repeating the same generic FAQ block across every catalog URL.
+  const uniqueFaqItems = questions.slice(0, 4);
   return (
     <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">
       <div className="space-y-6">
@@ -107,43 +100,23 @@ export default function CatalogToolSEOContent({
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Example and practical use cases</h2>
           <p className="mt-4 leading-8 text-slate-700">{advice.example}</p>
-          <p className="mt-4 leading-8 text-slate-700">A useful habit is to write down the input and expected output for one simple test. If the result matches, move on to the real task. If it does not, check the units, punctuation, selected mode and any assumptions before trying again. This small test can prevent mistakes from being repeated across a larger file or dataset.</p>
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Accuracy, assumptions and limitations</h2>
           <p className="mt-4 leading-8 text-slate-700">{advice.accuracy}</p>
-          <p className="mt-4 leading-8 text-slate-700">The tool should be used for the task described on this page. It does not replace a qualified professional, an official government or financial record, a specialist application, or the instructions of the organisation receiving your result. If the output affects money, eligibility, compliance, health, legal rights or production systems, confirm it using an authoritative source.</p>
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Tips for a reliable workflow</h2>
           <p className="mt-4 leading-8 text-slate-700">{advice.workflow}</p>
-          <p className="mt-4 leading-8 text-slate-700">Use a modern, updated browser and a stable connection. If the page appears stuck, wait for the current action to finish before retrying. For a file-based task, check that the file is in the expected format and is not damaged or password-protected unless the tool explicitly supports it. For a calculation, check every unit and decimal separator.</p>
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Common mistakes to avoid</h2>
           <p className="mt-4 leading-8 text-slate-700">{advice.mistakes}</p>
-          <p className="mt-4 leading-8 text-slate-700">Another avoidable mistake is using an output without opening or checking it. A successful message only indicates that the tool completed its operation; it does not prove that the result meets every external requirement. Always review the final output before sharing, submitting or publishing it.</p>
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Privacy and safe use</h2>
           <p className="mt-4 leading-8 text-slate-700">Only provide the information needed to complete the task. Do not enter passwords, authentication codes, bank card details or other secrets into a general-purpose utility. For personal documents or business records, read the site&apos;s privacy information and consider whether you are authorised to upload or process the material. If you are unsure, use a non-sensitive sample first.</p>
           <p className="mt-4 leading-8 text-slate-700">When a result is important, keep a source copy and retain any supporting records required by your organisation. If you discover an error, return to the original input, correct it and repeat the process rather than trying to patch an unreliable output.</p>
-        </section>
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-          <h2 className="text-xl font-black text-slate-950">Who can benefit from this tool?</h2>
-          <p className="mt-4 leading-8 text-slate-700">This utility is intended for people who need to complete the task described above without installing a separate desktop application. Depending on the category, it may fit a student&apos;s study workflow, a small business owner&apos;s routine calculations, a developer&apos;s quick checks, a content creator&apos;s text or image preparation, or someone completing a Nepal-specific everyday task. Choose it because its purpose matches your actual requirement, not simply because it appears in a list of online tools.</p>
-          <p className="mt-4 leading-8 text-slate-700">If you are comparing several utilities, look at the accepted input, the output format, the options available and any stated limitations. A tool that appears similar may use a different formula, conversion rule or file-processing method. When the task is important, compare the result with a trusted reference or the original source document.</p>
-        </section>
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-          <h2 className="text-xl font-black text-slate-950">Troubleshooting: what to check when it does not work</h2>
-          <p className="mt-4 leading-8 text-slate-700">If the tool does not accept your input, first check that the information is in the format requested by the page. Remove accidental spaces, confirm the selected unit or file type, and make sure required fields are not empty. For a file upload, try a smaller sample and confirm that the file opens normally on your device. For a calculation, recheck decimal separators, date format, currency and the time period.</p>
-          <p className="mt-4 leading-8 text-slate-700">If the page appears unresponsive, wait for the current operation to finish before submitting again. Refreshing during an upload or processing step may interrupt the task. You can also try an updated browser or another device to determine whether the problem is specific to the browser. If an error message appears, read it carefully and avoid repeatedly submitting the same invalid input.</p>
-          <p className="mt-4 leading-8 text-slate-700">When the output is unexpected, return to the original input and change one setting at a time. Compare a small test case with a known answer. This makes it easier to identify whether the issue comes from the input, the selected option, a file limitation or the assumptions used by the tool.</p>
-        </section>
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-          <h2 className="text-xl font-black text-slate-950">Choosing the right online tool</h2>
-          <p className="mt-4 leading-8 text-slate-700">Before choosing a utility, define the output you need and check whether the receiving website, school, employer or service provider has its own instructions. For example, a document upload may require a particular file format or size; a finance estimate may need a specific fiscal year and tax category; and a developer workflow may require a particular encoding or data structure. These requirements should guide your choice of tool.</p>
-          <p className="mt-4 leading-8 text-slate-700">Use a dedicated specialist application when you need advanced editing, regulated calculations, official certification, high-volume processing or guarantees that this browser-based utility does not provide. The online tool is best treated as a convenient helper for the task it explicitly supports. Keep a record of important assumptions and verify the final result before relying on it.</p>
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Frequently asked questions about {title}</h2>

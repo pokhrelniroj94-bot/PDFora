@@ -49,7 +49,7 @@ const tools: Record<string, { name: string; intent: string; detail: string }> = 
   "remove-attachments": { name: "Remove PDF Attachments", intent: "remove attachments from PDF", detail: "Remove embedded file attachments from a PDF document." },
   "remove-pdf-links": { name: "Remove PDF Links", intent: "remove links from PDF online", detail: "Remove clickable link annotations from PDF pages." },
   "remove-pdf-metadata": { name: "Remove PDF Metadata", intent: "remove metadata from PDF online", detail: "Clear document metadata from a PDF file." },
-  "split-by-bookmarks": { name: "Split PDF by Bookmarks", intent: "split PDF by bookmarks", detail: "Split a PDF into separate documents using its bookmark outline." },,
+  "split-by-bookmarks": { name: "Split PDF by Bookmarks", intent: "split PDF by bookmarks", detail: "Split a PDF into separate documents using its bookmark outline." },
   "nepal-fixed-deposit-calculator": { name: "Nepal Fixed Deposit Calculator", intent: "calculate Nepal bank fixed deposit interest and maturity", detail: "Estimate FD interest, compounding and after-tax maturity value using editable assumptions." },
   "nepal-remittance-calculator": { name: "Nepal Remittance Calculator", intent: "calculate Nepal remittance payout in NPR", detail: "Estimate the NPR amount received after an exchange rate and transfer fee." },
   "nepal-ipo-profit-calculator": { name: "Nepal IPO Profit Calculator", intent: "calculate Nepal IPO share profit after selling charges", detail: "Estimate IPO share profit or loss after broker commission, SEBON fee, DP charge and tax assumptions." },

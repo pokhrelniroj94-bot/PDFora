@@ -140,6 +140,12 @@ for (const slug of ["nepal-fixed-deposit-calculator","nepal-remittance-calculato
   assert.ok(seoContent.includes('"' + slug + '"' ), "Missing dedicated SEO advice: " + slug);
   assert.ok(nepalBlogPosts.includes('href: "/tools/' + slug + '"' ), "Missing dedicated Nepal guide: " + slug);
 }
+
+const dividendTool = nepalLiveTools.slice(nepalLiveTools.indexOf("function NepseDividendTool()"), nepalLiveTools.indexOf("export default function NepalLiveTools"));
+assert.ok(dividendTool.includes("Tax assumption only"), "Dividend calculator must clearly label tax as an editable assumption");
+assert.ok(dividendTool.includes("bonusWhole") && dividendTool.includes("bonusFraction"), "Dividend calculator must show whole-share estimate and fractional remainder separately");
+assert.ok(dividendTool.includes("aria-live=\\"polite\\"") && dividendTool.includes("Calculation breakdown"), "Dividend calculator results must be accessible and clearly presented");
+assert.ok(dividendTool.includes("not an official dividend or CDSC allotment confirmation"), "Dividend calculator must disclose that results are estimates only");
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");

@@ -12,7 +12,7 @@ const defaults: Record<string, Values> = {
 "url-extractor":{text:"Visit https://example.com and https://example.org/help"},
 "phone-number-extractor":{text:"Call +977-9812345678 or 01-5551234"},
 "number-extractor":{text:"Invoice 2026 total 1250.50, tax 13%"},
-"hashtag-extractor":{text:"Launching #NirojTools today! #productivity #tools"},
+"hashtag-extractor":{text:"Launching #PDFora today! #productivity #tools"},
 "remove-duplicate-words":{text:"the the quick brown fox fox"},
 "find-replace-text":{text:"Hello world. Hello again.",find:"Hello",replace:"Hi"},
 "text-to-binary":{text:"Hello"},"binary-to-text":{text:"01001000 01101001"},

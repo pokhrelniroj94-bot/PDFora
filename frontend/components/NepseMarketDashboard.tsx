@@ -29,7 +29,7 @@ const indexCodeByName: Record<string, string> = {
 const indexSymbols = new Set(Object.values(indexCodeByName));
 function formatDate(value?: string | null) { if (!value) return "—"; const date = new Date(value); return Number.isNaN(date.getTime()) ? value : date.toLocaleString("en-NP", { dateStyle: "medium", timeStyle: "short" }); }
 
-function MarketChart({ points, symbol, style }: { points: Point[]; symbol: string; style: "line" | "candles" }) {
+function MarketChart({ points, symbol, style, isIndex }: { points: Point[]; symbol: string; style: "line" | "candles"; isIndex: boolean }) {
   if (!points.length) return <div className="grid h-72 place-items-center rounded-xl bg-slate-50 text-sm text-slate-500">Historical chart data is not available for this symbol and period yet.</div>;
   const width = 1000, height = 300, left = 54, right = 18, top = 18, bottom = 28;
   const values = points.flatMap(p => [p.close, p.high ?? p.close, p.low ?? p.close]).filter(Number.isFinite);
@@ -45,7 +45,7 @@ function MarketChart({ points, symbol, style }: { points: Point[]; symbol: strin
   const maPath = ma.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1)).join(" ");
   const ticks = Array.from({ length: 5 }, (_, i) => min + range * i / 4);
   const maxVol = Math.max(...points.map(p => p.volume ?? 0), 1);
-  const showCandles = style === "candles" && indexSymbols.has(symbol);
+  const showCandles = style === "candles" && isIndex;
   return <div className="space-y-2">
     <div className="overflow-hidden rounded-xl bg-slate-950 p-2 sm:p-4">
       <svg viewBox={"0 0 " + width + " " + height} className="w-full" role="img" aria-label={symbol + " historical price chart"}>
@@ -119,7 +119,8 @@ export default function NepseMarketDashboard() {
   const change=selectedStock?.change??selectedIndex?.change??selectedSector?.change??mainIndex?.change??0;
   const changePct=selectedStock?.percent_change??selectedIndex?.perChange??selectedSector?.perChange??mainIndex?.perChange??0;
   const metrics=(data?.summary??[]).slice(0,4);
-  const chooseSymbol=(next:string)=>{setSymbol(next);setSymbolInput(next);setChartStyle(indexSymbols.has(next)?"candles":"line");setLoading(true);};
+  const isIndexSymbol = (candidate: string) => indexSymbols.has(candidate) || Boolean(data?.sectors.some((sector) => sector.indexCode === candidate));
+  const chooseSymbol=(next:string)=>{setSymbol(next);setSymbolInput(next);setChartStyle(isIndexSymbol(next)?"candles":"line");setLoading(true);};
   return <main className="min-h-screen bg-slate-50 text-slate-950">
     <section className="bg-[#071b1b] px-4 py-10 text-white sm:px-6">
       <div className="mx-auto max-w-7xl">
@@ -135,8 +136,8 @@ export default function NepseMarketDashboard() {
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{metrics.map(m=><div key={m.detail} className={card}><p className="text-xs font-semibold text-slate-500">{m.detail}</p><p className="mt-2 text-xl font-black tabular-nums">{typeof m.value==="number"?n(m.value,0):m.value}</p></div>)}</section>
       <section className={card}>
         <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-wide text-teal-700">Price chart</p><h2 className="mt-1 text-xl font-black">{headline}</h2><p className="mt-1 text-sm text-slate-500">{symbol} · {period} history · Latest archive date: {data?.latestHistoryDate??"—"}</p></div><div className="text-right"><p className="text-2xl font-black tabular-nums">{money(value)}</p><p className={"text-sm font-bold "+pctClass(changePct)}>{change>0?"+":""}{n(change)} ({changePct>0?"+":""}{n(changePct)}%)</p></div></div>
-        <div className="mt-4 flex flex-wrap gap-2"><label className="sr-only" htmlFor="market-symbol">Stock symbol</label><input id="market-symbol" value={symbolInput} onChange={e=>setSymbolInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,16))} onKeyDown={e=>{if(e.key==="Enter"&&symbolInput.length>=2)chooseSymbol(symbolInput)}} className="w-40 rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Symbol e.g. NABIL"/><button onClick={()=>{if(symbolInput.length>=2)chooseSymbol(symbolInput);}} className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white">Load chart</button><div className="flex rounded-lg bg-slate-100 p-1">{["1M","3M","1Y"].map(p=><button key={p} onClick={()=>{setLoading(true);setPeriod(p);}} className={"rounded-md px-3 py-1.5 text-xs font-bold "+(period===p?"bg-white shadow":"text-slate-600")}>{p}</button>)}</div>{indexSymbols.has(symbol)&&<div className="flex rounded-lg bg-slate-100 p-1"><button onClick={()=>setChartStyle("candles")} className={"rounded-md px-3 py-1.5 text-xs font-bold "+(chartStyle==="candles"?"bg-white shadow":"text-slate-600")}>Candles</button><button onClick={()=>setChartStyle("line")} className={"rounded-md px-3 py-1.5 text-xs font-bold "+(chartStyle==="line"?"bg-white shadow":"text-slate-600")}>Line</button></div>}</div>
-        <div className="mt-5">{loading&&!data?<p className="py-20 text-center text-sm text-slate-500">Loading market chart…</p>:<MarketChart points={data?.points??[]} symbol={symbol} style={chartStyle}/>}</div>
+        <div className="mt-4 flex flex-wrap gap-2"><label className="sr-only" htmlFor="market-symbol">Stock symbol</label><input id="market-symbol" value={symbolInput} onChange={e=>setSymbolInput(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,16))} onKeyDown={e=>{if(e.key==="Enter"&&symbolInput.length>=2)chooseSymbol(symbolInput)}} className="w-40 rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Symbol e.g. NABIL"/><button onClick={()=>{if(symbolInput.length>=2)chooseSymbol(symbolInput);}} className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white">Load chart</button><div className="flex rounded-lg bg-slate-100 p-1">{["1M","3M","1Y"].map(p=><button key={p} onClick={()=>{setLoading(true);setPeriod(p);}} className={"rounded-md px-3 py-1.5 text-xs font-bold "+(period===p?"bg-white shadow":"text-slate-600")}>{p}</button>)}</div>{isIndexSymbol(symbol)&&<div className="flex rounded-lg bg-slate-100 p-1"><button onClick={()=>setChartStyle("candles")} className={"rounded-md px-3 py-1.5 text-xs font-bold "+(chartStyle==="candles"?"bg-white shadow":"text-slate-600")}>Candles</button><button onClick={()=>setChartStyle("line")} className={"rounded-md px-3 py-1.5 text-xs font-bold "+(chartStyle==="line"?"bg-white shadow":"text-slate-600")}>Line</button></div>}</div>
+        <div className="mt-5">{loading&&!data?<p className="py-20 text-center text-sm text-slate-500">Loading market chart…</p>:<MarketChart points={data?.points??[]} symbol={symbol} style={chartStyle} isIndex={isIndexSymbol(symbol)}/>}</div>
         <p className="mt-3 text-xs leading-5 text-slate-500">Quotes use YONEPSE’s latest available snapshot. Its upstream dataset is refreshed about hourly on weekdays during market hours, so the 5-minute page refresh checks for new snapshots but does not create real-time prices. Historical charts use archived daily index OHLC or stock LTP snapshots. This is not an exchange-authorized tick-by-tick trading terminal.</p>
       </section>
       <section className="grid gap-4 lg:grid-cols-2">

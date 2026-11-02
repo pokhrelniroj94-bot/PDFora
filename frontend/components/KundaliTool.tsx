@@ -15,6 +15,7 @@ export default function KundaliTool() {
   const [placeName,setPlaceName]=useState("");
   const [latitude,setLatitude]=useState("");
   const [longitude,setLongitude]=useState("");
+  const [timeZone,setTimeZone]=useState("Asia/Kathmandu");
   const [result,setResult]=useState<KundaliResult|null>(null);
   const [error,setError]=useState("");
   const [busy,setBusy]=useState(false);
@@ -24,7 +25,7 @@ export default function KundaliTool() {
     try{
       if(!birthTime) throw new Error("कृपया जन्मको सही समय राख्नुहोस्। लग्न र भावका लागि जन्मसमय आवश्यक हुन्छ।");
       if(placeId==="custom"&&(!latitude.trim()||!longitude.trim())) throw new Error("अन्य स्थान छान्दा वास्तविक अक्षांश र देशान्तर दुवै राख्नुहोस्। खाली मानलाई शून्य मानेर गलत कुण्डली बनाइँदैन।");
-      const calculated=calculateJanmaKundali({name,dateSystem,birthDate:birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))),birthTime,placeId,placeName,latitude:Number(latitude),longitude:Number(longitude)});
+      const calculated=calculateJanmaKundali({name,dateSystem,birthDate:birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))),birthTime,placeId,placeName,latitude:Number(latitude),longitude:Number(longitude),timeZone});
       setResult(calculated);
     }catch(e){setError(e instanceof Error?e.message:"कुण्डली गणना गर्न सकिएन। विवरण जाँच्नुहोस्।");}
     finally{setBusy(false);}
@@ -53,7 +54,7 @@ export default function KundaliTool() {
         <span className="mt-1 block text-xs font-normal text-slate-500">२४-घण्टा ढाँचा, जस्तै ०६:३५ वा १८:२०</span>
       </label>
       <label className="text-sm font-semibold text-slate-800 sm:col-span-2">जन्मस्थान
-        <select className={box} value={placeId} onChange={e=>setPlaceId(e.target.value)}>
+        <select className={box} value={placeId} onChange={e=>{setPlaceId(e.target.value);const selected=KUNDALI_PLACES.find(p=>p.id===e.target.value);if(selected?.timeZone)setTimeZone(selected.timeZone);}}>
           {KUNDALI_PLACES.map(place=><option key={place.id} value={place.id}>{place.name} ({place.en})</option>)}
           <option value="custom">अन्य स्थान — ठ्याक्कै निर्देशाङ्क राख्नुहोस्</option>
         </select>
@@ -61,8 +62,9 @@ export default function KundaliTool() {
           <label className="text-xs font-semibold">स्थानको नाम<input className={box} value={placeName} onChange={e=>setPlaceName(e.target.value)} placeholder="जस्तै: फिक्कल, इलाम"/></label>
           <label className="text-xs font-semibold">अक्षांश (Latitude)<input className={box} type="number" min="-90" max="90" step="0.000001" value={latitude} onChange={e=>setLatitude(e.target.value)}/></label>
           <label className="text-xs font-semibold">देशान्तर (Longitude)<input className={box} type="number" min="-180" max="180" step="0.000001" value={longitude} onChange={e=>setLongitude(e.target.value)}/></label>
+          <label className="text-xs font-semibold sm:col-span-3">समय क्षेत्र (IANA time zone)<input className={box} value={timeZone} onChange={e=>setTimeZone(e.target.value)} placeholder="Asia/Kolkata"/></label>
         </div>}
-        <span className="mt-1 block text-xs font-normal text-slate-500">सहरका विकल्पमा सहर-केन्द्रका निर्देशाङ्क प्रयोग हुन्छन्। बढी शुद्ध लग्नका लागि जन्मस्थलको वास्तविक latitude/longitude राख्न सक्नुहुन्छ। नेपालका सबै स्थानका लागि समय क्षेत्र Asia/Kathmandu प्रयोग हुन्छ।</span>
+        <span className="mt-1 block text-xs font-normal text-slate-500">सहरका विकल्पमा सहर-केन्द्रका निर्देशाङ्क प्रयोग हुन्छन्। बढी शुद्ध लग्नका लागि जन्मस्थलको वास्तविक latitude/longitude राख्न सक्नुहुन्छ। नेपालका सहरमा Asia/Kathmandu र भारतका सहरमा Asia/Kolkata स्वतः प्रयोग हुन्छ। अन्य देशका लागि निर्देशाङ्कसँगै सही IANA time zone राख्नुहोस्।</span>
       </label>
     </div>
 

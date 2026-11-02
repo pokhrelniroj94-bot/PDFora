@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const groups = [
-  ["Organize", "/merge-pdf", "/split-pdf", "/reorder-pdf", "/delete-pages", "/extract-pages", "/add-blank-pages", "/remove-blank-pages", "/add-bookmarks", "/split-by-bookmarks"],
+  ["Organize", "/merge-pdf", "/split-pdf", "/reorder-pdf", "/delete-pages", "/extract-pages", "/add-blank-pages", "/remove-blank-pages", "/add-bookmarks", "/split-by-bookmarks", "/bates-numbering"],
   ["Optimize", "/compress-pdf"],
   ["Convert", "/pdf-to-word", "/pdf-to-excel", "/pdf-to-jpg", "/images-to-pdf", "/pdf-to-png", "/pdf-to-webp", "/pdf-to-text", "/pdf-to-html", "/pdf-to-tiff", "/pdf-to-bmp", "/pdf-to-markdown", "/pdf-to-json", "/pdf-to-csv"],
   ["Edit", "/rotate-pdf", "/rotate-selected-pages", "/crop-pdf", "/watermark", "/add-page-numbers", "/header-footer", "/grayscale-pdf", "/flatten-pdf", "/repair-pdf", "/add-background"],

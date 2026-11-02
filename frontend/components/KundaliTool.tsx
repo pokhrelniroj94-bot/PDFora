@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import DateConverter from "../lib/nepali-date-converter";
 import { calculateJanmaKundali, KUNDALI_PLACES, type KundaliResult } from "../lib/kundali-calculator";
 
 const box = "mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100";
-const n = (value:number, digits=2) => new Intl.NumberFormat("ne-NP",{maximumFractionDigits:digits}).format(value);
+const n = (value:number, digits=2, locale="ne-NP") => new Intl.NumberFormat(locale,{maximumFractionDigits:digits}).format(value);
+const HINDI_PLACES: Record<string,string> = {kathmandu:"काठमांडू",ilam:"इलाम",biratnagar:"विराटनगर",pokhara:"पोखरा",janakpur:"जनकपुर",nepalgunj:"नेपालगंज",dhangadhi:"धनगढ़ी",birgunj:"बीरगंज",dharan:"धरान",butwal:"बुटवल",bharatpur:"भरतपुर",delhi:"दिल्ली",mumbai:"मुंबई",kolkata:"कोलकाता",chennai:"चेन्नई",bengaluru:"बेंगलुरु",hyderabad:"हैदराबाद",jaipur:"जयपुर",varanasi:"वाराणसी",lucknow:"लखनऊ",ahmedabad:"अहमदाबाद",pune:"पुणे",bhopal:"भोपाल"};
 const ASTRO_NAMES: Record<string, { en: string; hi: string }> = {
   "सूर्य":{en:"Sun",hi:"सूर्य"},"चन्द्र":{en:"Moon",hi:"चंद्र"},"मङ्गल":{en:"Mars",hi:"मंगल"},"बुध":{en:"Mercury",hi:"बुध"},"बृहस्पति":{en:"Jupiter",hi:"बृहस्पति"},"शुक्र":{en:"Venus",hi:"शुक्र"},"शनि":{en:"Saturn",hi:"शनि"},"राहु":{en:"Rahu",hi:"राहु"},"केतु":{en:"Ketu",hi:"केतु"},
   "मेष":{en:"Aries",hi:"मेष"},"वृष":{en:"Taurus",hi:"वृषभ"},"मिथुन":{en:"Gemini",hi:"मिथुन"},"कर्कट":{en:"Cancer",hi:"कर्क"},"सिंह":{en:"Leo",hi:"सिंह"},"कन्या":{en:"Virgo",hi:"कन्या"},"तुला":{en:"Libra",hi:"तुला"},"वृश्चिक":{en:"Scorpio",hi:"वृश्चिक"},"धनु":{en:"Sagittarius",hi:"धनु"},"मकर":{en:"Capricorn",hi:"मकर"},"कुम्भ":{en:"Aquarius",hi:"कुंभ"},"मीन":{en:"Pisces",hi:"मीन"},
@@ -17,6 +19,8 @@ export default function KundaliTool() {
   const [language,setLanguage]=useState<"ne"|"en"|"hi">("ne");
   const tr=(ne:string,en:string,hi:string)=>language==="ne"?ne:language==="hi"?hi:en;
   const astro=(value:string)=>language==="ne"?value:(ASTRO_NAMES[value]?.[language]??value);
+  const num=(value:number,digits=2)=>num(value,digits,language==="ne"?"ne-NP":language==="hi"?"hi-IN":"en-IN");
+  const placeText=(place:typeof KUNDALI_PLACES[number])=>language==="ne"?place.name:language==="hi"?(HINDI_PLACES[place.id]??place.en):place.en;
   const [dateSystem,setDateSystem]=useState<"BS"|"AD">("BS");
   const [birthDate,setBirthDate]=useState("२०५८-०१-०१");
   const [birthTime,setBirthTime]=useState("");
@@ -28,15 +32,16 @@ export default function KundaliTool() {
   const [result,setResult]=useState<KundaliResult|null>(null);
   const [error,setError]=useState("");
   const [busy,setBusy]=useState(false);
+  const changeDateSystem=(next:"BS"|"AD")=>{if(next===dateSystem)return;try{const raw=birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d)));const converted=new DateConverter(raw);const value=next==="AD"?converted.toAd():converted.toBs();setBirthDate([value.year,String(value.month).padStart(2,"0"),String(value.date).padStart(2,"0")].join("-"));}catch{setBirthDate("");}setDateSystem(next);};
 
   const submit=()=>{
     setError("");setResult(null);setBusy(true);
     try{
-      if(!birthTime) throw new Error("कृपया जन्मको सही समय राख्नुहोस्। लग्न र भावका लागि जन्मसमय आवश्यक हुन्छ।");
-      if(placeId==="custom"&&(!latitude.trim()||!longitude.trim())) throw new Error("अन्य स्थान छान्दा वास्तविक अक्षांश र देशान्तर दुवै राख्नुहोस्। खाली मानलाई शून्य मानेर गलत कुण्डली बनाइँदैन।");
+      if(!birthTime) throw new Error(tr("कृपया जन्मको सही समय राख्नुहोस्। लग्न र भावका लागि जन्मसमय आवश्यक हुन्छ।","Please enter the exact local birth time. Birth time is required to calculate the ascendant and houses.","कृपया जन्म का सही स्थानीय समय दर्ज करें। लग्न और भाव की गणना के लिए जन्म समय आवश्यक है।"));
+      if(placeId==="custom"&&(!latitude.trim()||!longitude.trim())) throw new Error(tr("अन्य स्थान छान्दा वास्तविक अक्षांश र देशान्तर दुवै राख्नुहोस्।","For a custom place, enter both the actual latitude and longitude.","अन्य स्थान चुनने पर सही अक्षांश और देशांतर दोनों दर्ज करें।"));
       const calculated=calculateJanmaKundali({name,dateSystem,birthDate:birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))),birthTime,placeId,placeName,latitude:Number(latitude),longitude:Number(longitude),timeZone});
       setResult(calculated);
-    }catch(e){setError(e instanceof Error?e.message:"कुण्डली गणना गर्न सकिएन। विवरण जाँच्नुहोस्।");}
+    }catch(e){setError(e instanceof Error?e.message:tr("कुण्डली गणना गर्न सकिएन। विवरण जाँच्नुहोस्।","Could not calculate the birth chart. Please check your details.","कुंडली की गणना नहीं हो सकी। कृपया विवरण जाँचें।"));}
     finally{setBusy(false);}
   };
 
@@ -48,11 +53,11 @@ export default function KundaliTool() {
 
     <div className="grid gap-4 sm:grid-cols-2">
       <label className="text-sm font-semibold text-slate-800">{tr("नाम (ऐच्छिक)","Name (optional)","नाम (वैकल्पिक)")}
-        <input className={box} value={name} onChange={e=>setName(e.target.value)} placeholder="पूरा नाम"/>
+        <input className={box} value={name} onChange={e=>setName(e.target.value)} placeholder={tr("पूरा नाम","Full name","पूरा नाम")}/>
       </label>
       <label className="text-sm font-semibold text-slate-800">{tr("मिति प्रणाली","Date system","तिथि प्रणाली")}
-        <select className={box} value={dateSystem} onChange={e=>{setDateSystem(e.target.value as "BS"|"AD");setBirthDate(e.target.value==="BS"?"२०५८-०१-०१":"2001-04-14");}}>
-          <option value="BS">विक्रम संवत् (वि.सं.)</option><option value="AD">Gregorian (AD)</option>
+        <select className={box} value={dateSystem} onChange={e=>changeDateSystem(e.target.value as "BS"|"AD")}>
+          <option value="BS">{tr("विक्रम संवत् (वि.सं.)","Bikram Sambat (BS)","विक्रम संवत (वि.सं.)")}</option><option value="AD">{tr("ईस्वी संवत् (ई.सं.)","Gregorian (AD)","ईस्वी संवत (ई.सं.)")}</option>
         </select>
       </label>
       <label className="text-sm font-semibold text-slate-800">{tr("जन्ममिति","Birth date","जन्म तिथि")} ({dateSystem==="BS"?"वि.सं. YYYY-MM-DD":"AD YYYY-MM-DD"})
@@ -60,15 +65,15 @@ export default function KundaliTool() {
       </label>
       <label className="text-sm font-semibold text-slate-800">{tr("जन्मसमय (स्थानीय समय)","Birth time (local)","जन्म समय (स्थानीय)")}
         <input className={box} type="time" value={birthTime} onChange={e=>setBirthTime(e.target.value)}/>
-        <span className="mt-1 block text-xs font-normal text-slate-500">२४-घण्टा ढाँचा, जस्तै ०६:३५ वा १८:२०</span>
+        <span className="mt-1 block text-xs font-normal text-slate-500">{tr("२४-घण्टा ढाँचा, जस्तै ०६:३५ वा १८:२०","24-hour format, e.g. 06:35 or 18:20","२४ घंटे का प्रारूप, जैसे ०६:३५ या १८:२०")}</span>
       </label>
       <label className="text-sm font-semibold text-slate-800 sm:col-span-2">{tr("जन्मस्थान","Birthplace","जन्म स्थान")}
-        <select className={box} value={placeId} onChange={e=>{setPlaceId(e.target.value);const selected=KUNDALI_PLACES.find(p=>p.id===e.target.value);if(selected?.timeZone)setTimeZone(selected.timeZone);if(e.target.value==="delhi"||e.target.value==="mumbai"||e.target.value==="kolkata"||e.target.value==="chennai"||e.target.value==="bengaluru"||e.target.value==="hyderabad"||e.target.value==="jaipur"||e.target.value==="varanasi"||e.target.value==="lucknow"||e.target.value==="ahmedabad"||e.target.value==="pune"||e.target.value==="bhopal"){setDateSystem("AD");setBirthDate("2001-04-14");}else if(e.target.value!=="custom"){setDateSystem("BS");setBirthDate("२०५८-०१-०१");}}}>
-          {KUNDALI_PLACES.map(place=><option key={place.id} value={place.id}>{place.name} ({place.en})</option>)}
-          <option value="custom">अन्य स्थान — ठ्याक्कै निर्देशाङ्क राख्नुहोस्</option>
+        <select className={box} value={placeId} onChange={e=>{setPlaceId(e.target.value);const selected=KUNDALI_PLACES.find(p=>p.id===e.target.value);if(selected?.timeZone)setTimeZone(selected.timeZone);}}>
+          {KUNDALI_PLACES.map(place=><option key={place.id} value={place.id}>{placeText(place)}</option>)}
+          <option value="custom">{tr("अन्य स्थान — ठ्याक्कै निर्देशाङ्क राख्नुहोस्","Other place — enter exact coordinates","अन्य स्थान — सही निर्देशांक दर्ज करें")}</option>
         </select>
         {placeId==="custom"&&<div className="mt-3 grid gap-3 sm:grid-cols-3">
-          <label className="text-xs font-semibold">{tr("स्थानको नाम","Place name","स्थान का नाम")}<input className={box} value={placeName} onChange={e=>setPlaceName(e.target.value)} placeholder="जस्तै: फिक्कल, इलाम"/></label>
+          <label className="text-xs font-semibold">{tr("स्थानको नाम","Place name","स्थान का नाम")}<input className={box} value={placeName} onChange={e=>setPlaceName(e.target.value)} placeholder={tr("जस्तै: फिक्कल, इलाम","e.g. Fikkal, Ilam","जैसे: फिक्कल, इलाम")}/></label>
           <label className="text-xs font-semibold">{tr("अक्षांश (Latitude)","Latitude","अक्षांश (Latitude)")}<input className={box} type="number" min="-90" max="90" step="0.000001" value={latitude} onChange={e=>setLatitude(e.target.value)}/></label>
           <label className="text-xs font-semibold">{tr("देशान्तर (Longitude)","Longitude","देशांतर (Longitude)")}<input className={box} type="number" min="-180" max="180" step="0.000001" value={longitude} onChange={e=>setLongitude(e.target.value)}/></label>
           <label className="text-xs font-semibold sm:col-span-3">{tr("समय क्षेत्र (IANA time zone)","Time zone (IANA)","समय क्षेत्र (IANA)")}<input className={box} value={timeZone} onChange={e=>setTimeZone(e.target.value)} placeholder="Asia/Kolkata"/></label>
@@ -82,17 +87,17 @@ export default function KundaliTool() {
 
     {result&&<div className="space-y-6" id="kundali-result">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 pb-4">
-        <div><p className="text-xs font-bold uppercase tracking-wide text-teal-700">{tr("जन्मकुण्डली रिपोर्ट","Birth chart report","जन्म कुंडली रिपोर्ट")}</p><h2 className="mt-1 text-2xl font-black text-slate-950">{result.name||"जन्मकुण्डली"}</h2><p className="mt-1 text-sm text-slate-600">{result.birthDateBS} BS · {result.birthDateAD} AD · {result.birthTime} · {result.place}</p></div>
+        <div><p className="text-xs font-bold uppercase tracking-wide text-teal-700">{tr("जन्मकुण्डली रिपोर्ट","Birth chart report","जन्म कुंडली रिपोर्ट")}</p><h2 className="mt-1 text-2xl font-black text-slate-950">{result.name||tr("जन्मकुण्डली","Birth chart","जन्म कुंडली")}</h2><p className="mt-1 text-sm text-slate-600">{result.birthDateBS} {tr("वि.सं.","BS","वि.सं.")} · {result.birthDateAD} {tr("ई.सं.","AD","ई.सं.")} · {result.birthTime} · {placeId==="custom"?placeName:(KUNDALI_PLACES.find(p=>p.id===placeId)?placeText(KUNDALI_PLACES.find(p=>p.id===placeId)!):result.place)}</p></div>
         <button type="button" onClick={()=>window.print()} className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">{tr("प्रिन्ट / PDF","Print / PDF","प्रिंट / PDF")}</button>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {[[tr("लग्न","Ascendant","लग्न"),astro(result.lagna)],[tr("चन्द्र राशि","Moon sign","चंद्र राशि"),astro(result.moonSign)],[tr("जन्म नक्षत्र","Birth Nakshatra","जन्म नक्षत्र"),astro(result.janmaNakshatra)],[tr("नक्षत्र पाद","Pada","पाद"),n(result.janmaPada,0)]].map(([label,value])=><div key={label} className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 text-lg font-black text-slate-900">{value}</p></div>)}
+        {[[tr("लग्न","Ascendant","लग्न"),astro(result.lagna)],[tr("चन्द्र राशि","Moon sign","चंद्र राशि"),astro(result.moonSign)],[tr("जन्म नक्षत्र","Birth Nakshatra","जन्म नक्षत्र"),astro(result.janmaNakshatra)],[tr("नक्षत्र पाद","Pada","पाद"),num(result.janmaPada,0)]].map(([label,value])=><div key={label} className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 text-lg font-black text-slate-900">{value}</p></div>)}
       </div>
       <section>
         <h3 className="mb-3 text-lg font-bold text-slate-900">{tr("राशि कुण्डली (D1)","Rashi chart (D1)","राशि कुंडली (D1)")}</h3>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
           {result.houses.map(house=><div key={house.house} className="min-h-24 rounded-xl border border-amber-200 bg-amber-50/60 p-3">
-            <p className="text-xs text-slate-500">{n(house.house,0)} भाव</p><p className="font-bold text-slate-900">{astro(house.sign)}</p><p className="mt-2 text-sm font-semibold text-teal-800">{house.planets.map(astro).join(" · ")||"—"}</p>
+            <p className="text-xs text-slate-500">{num(house.house,0)} भाव</p><p className="font-bold text-slate-900">{astro(house.sign)}</p><p className="mt-2 text-sm font-semibold text-teal-800">{house.planets.map(astro).join(" · ")||"—"}</p>
           </div>)}
         </div>
         <p className="mt-2 text-xs text-slate-500">भाव गणना: Whole-sign house प्रणाली। ग्रहका छोटा नाम: सू सूर्य, च चन्द्र, मं मङ्गल, बु बुध, गु बृहस्पति, शु शुक्र, श शनि, रा राहु, के केतु।</p>
@@ -102,14 +107,14 @@ export default function KundaliTool() {
         <div className="overflow-x-auto rounded-xl border border-slate-200">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead className="bg-slate-50 text-xs text-slate-600"><tr>{["ग्रह","राशि","अंश","नक्षत्र","पाद","भाव","गति"].map(x=><th key={x} className="px-3 py-3 font-semibold">{x}</th>)}</tr></thead>
-            <tbody>{result.planets.map(p=><tr key={p.key} className="border-t border-slate-100"><td className="px-3 py-3 font-semibold">{astro(p.name)}</td><td className="px-3 py-3">{astro(p.sign)}</td><td className="px-3 py-3 tabular-nums">{n(p.degree,0)}° {n(p.minute,0)}′</td><td className="px-3 py-3">{astro(p.nakshatra)}</td><td className="px-3 py-3">{n(p.pada,0)}</td><td className="px-3 py-3">{n(p.house,0)}</td><td className="px-3 py-3">{p.retrograde?tr("वक्री","Retrograde","वक्री"):tr("मार्गी","Direct","मार्गी")}</td></tr>)}</tbody>
+            <tbody>{result.planets.map(p=><tr key={p.key} className="border-t border-slate-100"><td className="px-3 py-3 font-semibold">{astro(p.name)}</td><td className="px-3 py-3">{astro(p.sign)}</td><td className="px-3 py-3 tabular-nums">{num(p.degree,0)}° {num(p.minute,0)}′</td><td className="px-3 py-3">{astro(p.nakshatra)}</td><td className="px-3 py-3">{num(p.pada,0)}</td><td className="px-3 py-3">{num(p.house,0)}</td><td className="px-3 py-3">{p.retrograde?tr("वक्री","Retrograde","वक्री"):tr("मार्गी","Direct","मार्गी")}</td></tr>)}</tbody>
           </table>
         </div>
       </section>
       <section>
         <h3 className="mb-3 text-lg font-bold text-slate-900">{tr("विम्शोत्तरी महादशा","Vimshottari Mahadasha","विंशोत्तरी महादशा")}</h3>
         <p className="mb-3 text-sm text-slate-600">{tr("हालको महादशा:","Current Mahadasha:","वर्तमान महादशा:")} <strong className="text-teal-800">{astro(result.currentDasha)}</strong></p>
-        <div className="overflow-x-auto rounded-xl border border-slate-200"><table className="w-full min-w-[480px] text-left text-sm"><thead className="bg-slate-50 text-xs text-slate-600"><tr><th className="px-3 py-3">महादशा स्वामी</th><th className="px-3 py-3">अवधि सुरु</th><th className="px-3 py-3">समाप्ति मिति</th><th className="px-3 py-3">अवधि (वर्ष)</th></tr></thead><tbody>{result.dasha.map((d,i)=><tr key={i} className={"border-t border-slate-100 "+(d.current?"bg-teal-50 font-bold":"")}><td className="px-3 py-3">{astro(d.lord)}{d.current?" · "+tr("हाल","Current","वर्तमान"):""}</td><td className="px-3 py-3">{d.start}</td><td className="px-3 py-3">{d.end}</td><td className="px-3 py-3">{n(d.years,2)}</td></tr>)}</tbody></table></div>
+        <div className="overflow-x-auto rounded-xl border border-slate-200"><table className="w-full min-w-[480px] text-left text-sm"><thead className="bg-slate-50 text-xs text-slate-600"><tr><th className="px-3 py-3">महादशा स्वामी</th><th className="px-3 py-3">अवधि सुरु</th><th className="px-3 py-3">समाप्ति मिति</th><th className="px-3 py-3">अवधि (वर्ष)</th></tr></thead><tbody>{result.dasha.map((d,i)=><tr key={i} className={"border-t border-slate-100 "+(d.current?"bg-teal-50 font-bold":"")}><td className="px-3 py-3">{astro(d.lord)}{d.current?" · "+tr("हाल","Current","वर्तमान"):""}</td><td className="px-3 py-3">{d.start}</td><td className="px-3 py-3">{d.end}</td><td className="px-3 py-3">{num(d.years,2)}</td></tr>)}</tbody></table></div>
       </section>
       <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">
         <p className="font-bold text-slate-800">{tr("गणना विधि र सीमाहरू","Calculation method and limitations","गणना विधि और सीमाएं")}</p>

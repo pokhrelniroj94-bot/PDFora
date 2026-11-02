@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF to PNG Online | PDFora",
+  title: "PDF to PNG Online",
   description: "Convert each PDF page into a high-resolution PNG image. Download all pages as a ZIP file.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-png" },
 };

@@ -130,4 +130,6 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"nepali-janma-kundali",name:"Janma Kundali / जन्मकुण्डली / जन्म कुंडली",category:"Kundali & Astrology",description:"Create a Vedic birth chart using birth date, exact local time and birthplace. Supports Bikram Sambat or Gregorian dates, Nepal and Indian cities, Lagna, Rashi, Nakshatra, planetary positions and Vimshottari Mahadasha.",keywords:"janma kundali janam kundli birth chart vedic astrology India Nepal जन्म कुण्डली जन्मकुंडली लग्न राशि नक्षत्र ग्रह दशा antardasha horoscope kundali online Hindi Nepali English" },
 
 {slug:"nepali-guna-milan",name:"36 Guna Milan / अष्टकूट गुण मिलान",category:"Kundali & Astrology",description:"Compare bride and groom Moon signs and birth nakshatras with a documented traditional Ashtakoota 36-guna table in Nepali, Hindi and English.",keywords:"36 guna milan ashtakoota kundli matching marriage horoscope bride groom guna score varna vashya tara yoni graha maitri gana bhakoot nadi अष्टकूट ३६ गुण मिलान कुण्डली मिलान कुंडली मिलान विवाह गुण मिलान"}
+,
+{slug:"invoice-quotation-maker",name:"Invoice & Quotation Maker",category:"Business Tools",description:"Create professional invoices and quotations with editable items, tax, discounts, multiple currencies and print-to-PDF export.",keywords:"invoice maker quotation generator estimate bill receipt business invoice Nepal NPR"}
 ];

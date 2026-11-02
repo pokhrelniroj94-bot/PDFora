@@ -13,8 +13,8 @@ export default function KundaliTool() {
   const [birthTime,setBirthTime]=useState("");
   const [placeId,setPlaceId]=useState("kathmandu");
   const [placeName,setPlaceName]=useState("");
-  const [latitude,setLatitude]=useState("27.7172");
-  const [longitude,setLongitude]=useState("85.3240");
+  const [latitude,setLatitude]=useState("");
+  const [longitude,setLongitude]=useState("");
   const [result,setResult]=useState<KundaliResult|null>(null);
   const [error,setError]=useState("");
   const [busy,setBusy]=useState(false);
@@ -23,6 +23,7 @@ export default function KundaliTool() {
     setError("");setResult(null);setBusy(true);
     try{
       if(!birthTime) throw new Error("कृपया जन्मको सही समय राख्नुहोस्। लग्न र भावका लागि जन्मसमय आवश्यक हुन्छ।");
+      if(placeId==="custom"&&(!latitude.trim()||!longitude.trim())) throw new Error("अन्य स्थान छान्दा वास्तविक अक्षांश र देशान्तर दुवै राख्नुहोस्। खाली मानलाई शून्य मानेर गलत कुण्डली बनाइँदैन।");
       const calculated=calculateJanmaKundali({name,dateSystem,birthDate:birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))),birthTime,placeId,placeName,latitude:Number(latitude),longitude:Number(longitude)});
       setResult(calculated);
     }catch(e){setError(e instanceof Error?e.message:"कुण्डली गणना गर्न सकिएन। विवरण जाँच्नुहोस्।");}

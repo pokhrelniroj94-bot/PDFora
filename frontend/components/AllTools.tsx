@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { toolCatalog } from "./toolCatalog";
@@ -41,6 +41,16 @@ function CopyButton({value}:{value:string}) { return <button className="rounded-
 
 export function ToolsDirectory() {
  const [category,setCategory]=useState("All"),[query,setQuery]=useState("");
+ const searchRef=useRef<HTMLInputElement>(null);
+ useEffect(()=>{
+  const onKeyDown=(event:KeyboardEvent)=>{
+   const target=event.target as HTMLElement|null;
+   if(event.key==="/"&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&!target?.matches("input, textarea, select, [contenteditable=\"true\"]")){event.preventDefault();searchRef.current?.focus();}
+   if(event.key==="Escape"&&document.activeElement===searchRef.current&&query)setQuery("");
+  };
+  window.addEventListener("keydown",onKeyDown);
+  return ()=>window.removeEventListener("keydown",onKeyDown);
+ },[query]);
  const list=useMemo(()=>allTools.filter(t=>{
   const matchesCategory=category==="All"||(category==="PDF Tools"?t.kind==="pdf":t.category===category);
   return matchesCategory&&matchesToolSearch(t,query);
@@ -50,8 +60,8 @@ export function ToolsDirectory() {
   <div className="sticky top-[72px] z-20 -mx-4 mb-7 border-y border-slate-200/80 bg-white/95 px-4 py-3 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:rounded-2xl sm:border sm:p-4">
    <div className="relative mb-3">
     <label htmlFor="tool-directory-search" className="sr-only">Search all PDFora tools</label>
-    <input id="tool-directory-search" type="search" autoComplete="off" className={box+" pr-20"} placeholder="Search by tool, task or keyword — English / नेपाली" value={query} onChange={e=>setQuery(e.target.value)} aria-controls="tool-directory-results"/>
-    {query&&<button type="button" onClick={()=>setQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-3 py-1.5 text-xs font-bold text-teal-800 hover:bg-teal-50" aria-label="Clear tool search">Clear</button>}
+    <input ref={searchRef} id="tool-directory-search" type="search" autoComplete="off" className={box+" pr-20"} placeholder="Search by tool, task or keyword — English / नेपाली" value={query} onChange={e=>setQuery(e.target.value)} aria-controls="tool-directory-results"/>
+    {query&&<button type="button" onClick={()=>setQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-3 py-1.5 text-xs font-bold text-teal-800 hover:bg-teal-50" aria-label="Clear tool search">Clear</button>}<kbd className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[10px] font-bold text-slate-500 sm:block" aria-hidden="true">/</kbd>
    </div>
    <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Filter tools by category">{categories.map(c=>{const count=c==="All"?allTools.length:c==="PDF Tools"?allTools.filter(t=>t.kind==="pdf").length:allTools.filter(t=>t.category===c).length;return <button key={c} type="button" onClick={()=>setCategory(c)} aria-pressed={category===c} className={"min-h-11 shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition "+(category===c?"bg-teal-700 text-white shadow-sm":"bg-slate-100 text-slate-700 hover:bg-teal-50")}>{c}<span className={"ml-2 text-[11px] "+(category===c?"text-teal-100":"text-slate-500")}>{count}</span></button>;})}</div>
   </div>

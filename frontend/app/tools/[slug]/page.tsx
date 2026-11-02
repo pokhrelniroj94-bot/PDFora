@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const fallbackDescription = `${tool.description.replace(/[.!?]$/, "")}. Use PDFora online to complete this task and check the result before saving or sharing.`;
   const description = seo?.description ?? (fallbackDescription.length <= 160
     ? fallbackDescription
-    : `${fallbackDescription.slice(0, 157).replace(/\\s+\\S*$/, "").trimEnd()}...`);
+    : `${fallbackDescription.slice(0, 157).replace(/\s+\S*$/, "").trimEnd()}...`);
   const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
   return {

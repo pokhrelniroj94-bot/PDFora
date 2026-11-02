@@ -149,7 +149,7 @@ const rawPdfTools: Array<Omit<Tool, "kind" | "slug" | "keywords">> = [
 export const pdfTools: Tool[] = rawPdfTools.map((tool) => ({
   ...tool,
   kind: "pdf",
-  slug: tool.href.replace(/^\\//, ""),
+  slug: tool.href.startsWith("/") ? tool.href.slice(1) : tool.href,
   keywords: [tool.name, tool.description, tool.href.replaceAll("-", " ")].join(" "),
 }));
 

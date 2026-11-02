@@ -184,7 +184,7 @@ assert.ok(ashtakoota.includes("Muhurta Chintamani") && ashtakoota.includes("ASHT
 assert.ok(ashtakoota.includes("bhakootCancelled") && ashtakoota.includes("nadiCancelled"), "Bhakoot and Nadi parihara must be reported separately from raw scores");
 assert.ok(ashtakoota.includes("scores.some(s=>s.score<0||s.score>s.max)"), "Ashtakoota must reject scores outside each koota's maximum");
 assert.ok(gunaComponent.includes('useState<Language>("ne")') && gunaComponent.includes('setLanguage("hi")') && gunaComponent.includes('setLanguage("en")'), "Guna Milan interface must support Nepali, Hindi and English");
-assert.ok(gunaComponent.includes("Print / Save PDF") && gunaComponent.includes("ASHTAKOOTA_SOURCE_URL"), "Guna Milan report must provide print and source reference");
+assert.ok(gunaComponent.includes("{t.print}") && gunaComponent.includes("ASHTAKOOTA_SOURCE_URL") && gunaComponent.includes("ASHTAKOOTA_REFERENCE_TABLES"), "Guna Milan report must provide print and source reference");
 assert.ok(catalogSource.includes('slug:"nepali-guna-milan"'), "36-guna tool must be registered in the canonical catalog");
 assert.ok(allTools.includes('slug==="nepali-guna-milan"') && allTools.includes("<GunaMilanTool />"), "36-guna tool must be routed to its dedicated calculator");
 assert.ok(toolPage.includes('"nepali-guna-milan": { title:'), "36-guna page must have dedicated SEO metadata");

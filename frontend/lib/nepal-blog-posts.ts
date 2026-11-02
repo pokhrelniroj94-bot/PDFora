@@ -417,4 +417,47 @@ export const nepalBlogPosts: BlogPost[] = [
     sources: [{ label: "Nepal Stock Exchange", url: "https://www.nepalstock.com/" }, { label: "Inland Revenue Department", url: "https://ird.gov.np/" }]
   },
 
+  {
+    slug: "janam-kundli-lagna-rashi-nakshatra-dasha-guide",
+    title: "Janam Kundli Guide: Lagna, Rashi, Nakshatra and Vimshottari Dasha",
+    description: "Understand Vedic birth chart basics, birth time and time zones, Lagna, Moon sign, nakshatra, houses and Vimshottari dasha for India and Nepal.",
+    keyword: "janam kundli, janam kundli online, kundli lagna rashi nakshatra, Vedic birth chart India",
+    updated: "2026-11-02",
+    readTime: "7 min read",
+    intro: "A Janam Kundli is a traditional Vedic astrology chart calculated from birth date, local birth time and birthplace. Correct coordinates and time-zone conversion matter: India uses Asia/Kolkata while Nepal uses Asia/Kathmandu, a 15-minute difference. Astrology is a traditional belief system, not a scientifically proven way to predict life events.",
+    sections: [
+      { heading: "Birth details and local time", paragraphs: ["Use the time from a reliable birth record and choose the actual birthplace. Do not use Nepal's time zone for an Indian birth. City-centre coordinates are approximate; enter precise coordinates for a village or a birth near an ascendant boundary."] },
+      { heading: "Lagna, Rashi and houses", paragraphs: ["Lagna (Ascendant) is the sign rising on the eastern horizon at the birth moment. Rashi commonly refers to the Moon sign in Indian usage. The D1 chart places planets in signs and houses according to a selected house convention. Lagna and Moon sign are different chart factors."] },
+      { heading: "Nakshatra and pada", paragraphs: ["The sidereal zodiac is commonly divided into 27 nakshatras, each spanning 13 degrees and 20 minutes. Each nakshatra has four padas. Ayanamsha and birth-time differences can matter near a boundary."] },
+      { heading: "Vimshottari Mahadasha", paragraphs: ["Vimshottari is a traditional 120-year planetary-period sequence. Its starting period and birth balance are derived from the Moon's position in its birth nakshatra. Dates depend on the selected year-length convention and precise lunar longitude."] },
+      { heading: "Compare charts carefully", paragraphs: ["Use matching date, time zone, coordinates, ayanamsha, node choice and house system when comparing software. Astrological interpretations are not scientifically validated predictions and should not replace professional advice."] }
+    ],
+    faqs: [
+      { question: "Can I create a Kundli for someone born in India?", answer: "Yes. Select a supported Indian city or enter precise coordinates and the correct time zone, such as Asia/Kolkata." },
+      { question: "What is the difference between Lagna and Rashi?", answer: "Lagna is the sign rising at the eastern horizon at birth. Rashi commonly refers to the Moon sign." },
+      { question: "Does birth time affect Kundli?", answer: "Yes. The ascendant and houses can change with birth time, especially near sign boundaries." }
+    ],
+    toolLinks: [{ label: "Janma Kundali / Birth Chart", href: "/tools/nepali-janma-kundali" }, { label: "Hindu Panchang Calculator", href: "/tools/nepal-panchang-calculator" }]
+  },
+  {
+    slug: "hindu-panchang-tithi-nakshatra-yoga-karana-guide",
+    title: "Hindu Panchang Guide: Tithi, Nakshatra, Yoga and Karana",
+    description: "Learn the five limbs of Hindu Panchang and why tithi, local sunrise, city and regional calendar conventions matter in India and Nepal.",
+    keyword: "Hindu panchang, tithi today, nakshatra today, panchang calculator India Nepal",
+    updated: "2026-11-02",
+    readTime: "6 min read",
+    intro: "A Hindu Panchang is a traditional lunisolar almanac. Its five main limbs are tithi, vara (weekday), nakshatra, yoga and karana. Displayed values and festival observances can depend on local sunrise, geography and regional tradition.",
+    sections: [
+      { heading: "What is a Tithi?", paragraphs: ["A tithi is based on the angular separation of the geocentric Moon and Sun. There are 30 tithis in a lunar month: 15 in Shukla Paksha and 15 in Krishna Paksha. A tithi can begin or end at any time, not only midnight."] },
+      { heading: "Nakshatra, Yoga and Karana", paragraphs: ["Nakshatra tracks the Moon through 27 sidereal sectors. Yoga uses the combined sidereal longitudes of the Sun and Moon. Karana is half of a tithi. Regional almanacs may apply additional traditional rules for observances."] },
+      { heading: "Why city and sunrise matter", paragraphs: ["Sunrise and sunset depend on latitude, longitude, elevation and date. A Panchang for Delhi should not reuse Kathmandu sunrise. Local time-zone conversion is also required. India and Nepal do not necessarily follow the same official or regional almanac for every festival, so confirm important observances with a trusted local Panchang."] },
+      { heading: "Calculation limitations", paragraphs: ["Online calculations can use different ephemerides, ayanamsha values, sunrise definitions and rounding rules. City-centre coordinates are approximate. Compare settings and source data, not only the displayed tithi name."] }
+    ],
+    faqs: [
+      { question: "Is tithi the same everywhere in India?", answer: "The astronomical tithi is global at a given instant, but the tithi assigned to a local Panchang day and festival observance can depend on local sunrise and regional rules." },
+      { question: "Why can a tithi span two dates?", answer: "A tithi can begin or end at any time of day and may cross local midnight or sunrise." },
+      { question: "Can I use this Panchang calculator in India?", answer: "Yes, supported Indian cities use Asia/Kolkata for local time display. It is an astronomical reference, not a replacement for a regional official almanac." }
+    ],
+    toolLinks: [{ label: "Hindu Panchang Calculator", href: "/tools/nepal-panchang-calculator" }, { label: "Janma Kundali / Birth Chart", href: "/tools/nepali-janma-kundali" }]
+  }
 ];

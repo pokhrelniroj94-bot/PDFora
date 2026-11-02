@@ -20,9 +20,9 @@ import hmac
 import ipaddress
 import asyncio
 import json
-import threading
-import urllib.parse
 import urllib.request
+import urllib.parse
+import threading
 from contextvars import ContextVar
 import pdfplumber
 
@@ -125,7 +125,6 @@ app.add_middleware(
         "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
         "https://pd-fora-git-premium-redesign-pokhrelniroj94-7012s-projects.vercel.app",
     ],
-    allow_origin_regex=r"https://pd-fora-[a-z0-9-]+-pokhrelniroj94-7012s-projects\.vercel\.app",
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
@@ -573,7 +572,9 @@ async def nepal_forex(date: str | None = Query(default=None)):
         raise HTTPException(status_code=400, detail="Date must be a valid YYYY-MM-DD value.")
 
     start = (selected - timedelta(days=10)).isoformat()
-    key = "rates:" + requested
+    # Keep a stable cache key for the live/latest view so a new day can still
+    # fall back to the last successful published rate if NRB is temporarily down.
+    key = "rates:latest" if date is None else "rates:" + requested
 
     def load():
         records = _nrb_fetch_records(start, requested)
@@ -1486,11 +1487,11 @@ async def watermark_pdf(
     except HTTPException:
         raise
 
-    except Exception:
-        logging.getLogger("pdfora.errors").exception("Watermark processing failed")
+    except Exception as exc:
+
         raise HTTPException(
             status_code=500,
-            detail="Watermark failed. Please retry or contact support."
+            detail=f"Watermark failed: {str(exc)}"
         )
 
     finally:
@@ -1635,13 +1636,12 @@ async def pdf_to_excel(
         cleanup_job(job)
         raise
 
-    except Exception:
-        logging.getLogger("pdfora.errors").exception("PDF to Excel conversion failed")
+    except Exception as exc:
         cleanup_job(job)
 
         raise HTTPException(
             status_code=500,
-            detail="PDF to Excel conversion failed. Please retry or contact support."
+            detail=f"PDF to Excel conversion failed: {str(exc)}"
         )
 
 @app.post("/api/cleanup")
@@ -1756,8 +1756,8 @@ async def pdf_to_word(
     except HTTPException:
         raise
 
-    except Exception:
-        logging.getLogger("pdfora.errors").exception("PDF to Word conversion failed")
+    except Exception as exc:
+
         shutil.rmtree(
             job,
             ignore_errors=True
@@ -1765,7 +1765,7 @@ async def pdf_to_word(
 
         raise HTTPException(
             status_code=500,
-            detail="PDF to Word conversion failed. Please retry or contact support."
+            detail=f"PDF to Word conversion failed: {str(exc)}"
         )
 
     finally:

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import ContactForm from "../../components/ContactForm";
+import { SITE_NAME, SITE_URL } from "../../lib/site-config";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Contact PDFora with feedback, technical questions and tool support requests.",
-  alternates: { canonical: "https://pd-fora.vercel.app/contact" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/contact", siteName: "PDFora", title: "Contact PDFora", description: "Contact PDFora with feedback, technical questions and tool support requests." },
+  alternates: { canonical: `${SITE_URL}/contact` },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/contact", siteName: SITE_NAME, title: "Contact PDFora", description: "Contact PDFora with feedback, technical questions and tool support requests.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Contact PDFora" }] },
+  twitter: { card: "summary_large_image", title: "Contact PDFora", description: "Contact PDFora with feedback, technical questions and tool support requests.", images: ["/opengraph-image"] },
 };
 
 export default function ContactPage() {
@@ -94,6 +97,8 @@ export default function ContactPage() {
 
             </div>
           </div>
+
+          <ContactForm />
 
           <div className="mt-8 rounded-3xl border border-violet-100 bg-violet-50 p-6 text-center">
             <p className="text-sm text-slate-600">

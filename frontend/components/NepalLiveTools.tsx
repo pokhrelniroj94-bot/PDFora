@@ -85,7 +85,7 @@ function ForexTool() {
   const [amount, setAmount] = useState("100");
   const [direction, setDirection] = useState("foreign-to-npr");
   const [history, setHistory] = useState<ForexHistoryPoint[]>([]);
-  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(true);
   const [historyError, setHistoryError] = useState("");
   useEffect(() => {
     let active = true;
@@ -111,6 +111,8 @@ function ForexTool() {
   };
   useEffect(() => {
     let active = true;
+    setHistoryLoading(true);
+    setHistoryError("");
     fetch("/api/nepal-forex?history=1&currency=" + encodeURIComponent(currency), { cache: "no-store" })
       .then(async (response) => { const json = await response.json() as { history?: ForexHistoryPoint[]; error?: string }; if (!response.ok) throw new Error(json.error || "Historical rates unavailable."); return json; })
       .then((json) => { if (active) setHistory(json.history ?? []); })
@@ -126,7 +128,7 @@ function ForexTool() {
     : null;
   return <div className="space-y-4">
     <div><h2 className="text-lg font-bold">Nepal Rastra Bank Daily Exchange Rates</h2><p className="mt-1 text-sm text-slate-600">Official NRB buying and selling rates. The latest available published working-day rate is shown.</p></div>
-    <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-slate-600">{data ? `Rate date: ${data.rateDate}` : "Loading official rate date…"}</p><button className="rounded-lg border px-3 py-2 text-sm font-semibold" disabled={loading} onClick={() => void refresh()}>{loading ? "Refreshing…" : "Refresh rates"}</button></div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-slate-600">{data ? `Rate date: ${data.rateDate}` : "Loading official rate date…"}</p><button className="rounded-lg border px-3 py-2 text-sm font-semibold" disabled={loading} onClick={() => void refresh()}>{loading ? <span className="inline-flex items-center gap-2"><span className="pdfora-spinner" aria-hidden="true"/>Refreshing…</span> : "Refresh rates"}</button></div>
     {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{error}</p>}
     {data && <div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[560px] text-left text-sm"><thead className="bg-slate-100"><tr><th className="p-3">Currency</th><th className="p-3 text-right">Unit</th><th className="p-3 text-right">Buying (NPR)</th><th className="p-3 text-right">Selling (NPR)</th></tr></thead><tbody>{data.rates.map((item) => <tr key={item.code} className="border-t"><td className="p-3"><span className="font-semibold">{item.code}</span><span className="ml-2 text-slate-500">{item.name}</span></td><td className="p-3 text-right">{item.unit}</td><td className="p-3 text-right tabular-nums">{item.buy.toFixed(4)}</td><td className="p-3 text-right tabular-nums">{item.sell.toFixed(4)}</td></tr>)}</tbody></table></div>}
     <div className="rounded-xl border p-4"><h3 className="font-bold">NRB rate converter</h3><div className="mt-3 grid gap-3 sm:grid-cols-2"><label><span className={label}>Currency</span><select className={field} value={selected?.code ?? currency} onChange={(e) => { setHistoryLoading(true); setHistoryError(""); setCurrency(e.target.value); }}>{(data?.rates ?? []).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label><label><span className={label}>Conversion</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option></select></label></div><div className="mt-3"><Field title="Amount" value={amount} onChange={setAmount}/></div>{converted !== null && selected && <div className="mt-4"><Result>{direction === "foreign-to-npr" ? `${value.toLocaleString()} ${selected.code} ≈ ${npr(converted)}` : `${npr(value)} ≈ ${converted.toLocaleString("en-IN", { maximumFractionDigits: 4 })} ${selected.code}`}\nRate unit: ${selected.unit} ${selected.code}\nRate date: ${data?.rateDate}</Result></div>}</div>

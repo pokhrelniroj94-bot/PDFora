@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Add Page Numbers Online | PDFora",
+  title: "Add Page Numbers Online",
   description: "Add page numbers to every page of your PDF.",
   alternates: { canonical: "https://pd-fora.vercel.app/add-page-numbers" },
 };

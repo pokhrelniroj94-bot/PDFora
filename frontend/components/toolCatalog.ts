@@ -1,6 +1,6 @@
 export type ToolInfo = { slug: string; name: string; category: string; description: string; keywords: string };
 export const toolCatalog: ToolInfo[] = [
-{slug:"pdf-tools",name:"Explore 50+ PDF Tools",category:"PDF",description:"Open the full PDF toolbox for merging, splitting, compressing, converting, editing and securing documents.",keywords:"pdf merge split compress convert edit tools"},
+{slug:"pdf-tools",name:"Explore PDF Tools",category:"PDF",description:"Open the full PDF toolbox for merging, splitting, compressing, converting, editing and securing documents.",keywords:"pdf merge split compress convert edit tools"},
 {slug:"loan-emi-calculator",name:"Loan & EMI Calculator",category:"Calculators",description:"Calculate monthly EMI, total interest and total repayment.",keywords:"loan emi interest installment mortgage finance"},
 {slug:"compound-interest-sip-calculator",name:"Compound Interest & SIP Calculator",category:"Calculators",description:"Estimate compound growth and monthly SIP investment value.",keywords:"compound interest sip investment return"},
 {slug:"discount-percentage-calculator",name:"Discount & Percentage Calculator",category:"Calculators",description:"Calculate discounts, percentages and percentage change.",keywords:"discount percentage shopping sale"},
@@ -130,4 +130,8 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"nepali-janma-kundali",name:"Janma Kundali / जन्मकुण्डली / जन्म कुंडली",category:"Kundali & Astrology",description:"Create a Vedic birth chart using birth date, exact local time and birthplace. Supports Bikram Sambat or Gregorian dates, Nepal and Indian cities, Lagna, Rashi, Nakshatra, planetary positions and Vimshottari Mahadasha.",keywords:"janma kundali janam kundli birth chart vedic astrology India Nepal जन्म कुण्डली जन्मकुंडली लग्न राशि नक्षत्र ग्रह दशा antardasha horoscope kundali online Hindi Nepali English" },
 
 {slug:"nepali-guna-milan",name:"36 Guna Milan / अष्टकूट गुण मिलान",category:"Kundali & Astrology",description:"Compare bride and groom Moon signs and birth nakshatras with a documented traditional Ashtakoota 36-guna table in Nepali, Hindi and English.",keywords:"36 guna milan ashtakoota kundli matching marriage horoscope bride groom guna score varna vashya tara yoni graha maitri gana bhakoot nadi अष्टकूट ३६ गुण मिलान कुण्डली मिलान कुंडली मिलान विवाह गुण मिलान"}
+,
+{slug:"invoice-quotation-maker",name:"Invoice & Quotation Maker",category:"Business Tools",description:"Create professional invoices and quotations with editable items, tax, discounts, multiple currencies and print-to-PDF export.",keywords:"invoice maker quotation generator estimate bill receipt business invoice Nepal NPR"}
+,
+{slug:"cover-letter-generator",name:"Cover Letter Generator",category:"Career Tools",description:"Draft a tailored job application cover letter with editable details, live preview, copy and text download.",keywords:"cover letter generator job application letter career resume application Nepal" }
 ];

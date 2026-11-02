@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import AdsterraNative from "./components/AdsterraNative";
 import { allTools, type Tool } from "../lib/tool-directory";
@@ -27,7 +27,7 @@ const faqs = [
   {
     question: "What PDF tools are available?",
     answer:
-      "PDFora provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
+      "PDFora provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR text recognition is coming soon and is not counted among available tools.",
   },
   {
     question: "How are my files processed?",
@@ -103,6 +103,23 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handleSearchShortcut = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isTyping = target?.matches("input, textarea, select, [contenteditable=\"true\"]");
+      if (event.key === "/" && !event.ctrlKey && !event.metaKey && !event.altKey && !isTyping) {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+      if (event.key === "Escape" && document.activeElement === searchInputRef.current && query) {
+        setQuery("");
+      }
+    };
+    window.addEventListener("keydown", handleSearchShortcut);
+    return () => window.removeEventListener("keydown", handleSearchShortcut);
+  }, [query]);
 
 
 
@@ -118,6 +135,21 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f7f6] text-slate-950">
+      <a href="#tools" className="sr-only z-[100] rounded-lg bg-white px-4 py-3 font-bold text-teal-800 focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:shadow-xl">Skip to tools</a>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((faq) => ({
+              "@type": "Question",
+              name: faq.question,
+              acceptedAnswer: { "@type": "Answer", text: faq.answer },
+            })),
+          }),
+        }}
+      />
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgba(15,23,42,0.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -176,7 +208,8 @@ export default function Home() {
             <div className="mt-10 max-w-2xl rounded-2xl border border-white/15 bg-white/[0.08] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl focus-within:border-teal-300/60">
               <div className="flex items-center gap-3">
                 <span className="pl-3 text-xl text-teal-200" aria-hidden="true">⌕</span>
-                <input id="homepage-tool-search" type="search" autoComplete="off" value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); }} placeholder="Search by tool, task or keyword — English / नेपाली" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" aria-controls="homepage-tool-search-results" />
+                <input ref={searchInputRef} id="homepage-tool-search" type="search" autoComplete="off" value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); }} placeholder="Search by tool, task or keyword — English / नेपाली" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" aria-controls="homepage-tool-search-results" />
+                <kbd className="hidden rounded-lg border border-white/15 bg-white/10 px-2 py-1 text-[10px] font-bold text-slate-300 sm:inline-flex" aria-hidden="true">/</kbd>
                 {query && <button type="button" onClick={() => setQuery("")} className="rounded-xl px-3 py-2 text-xs font-bold text-slate-300 hover:bg-white/10">Clear</button>}
               </div>
             </div>
@@ -431,7 +464,7 @@ export default function Home() {
             { href: "/tools/nepal-public-holidays-2083", title: "Nepal Public Holidays 2083", desc: "Search national, regional and community holidays." },
           ].map((item) => <Link key={item.href} href={item.href} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-blue-400 hover:shadow-sm"><h3 className="font-bold text-slate-900">{item.title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p><span className="mt-4 inline-block text-sm font-semibold text-blue-700">Open tool →</span></Link>)}
         </div>
-        <Link href="/tools" className="mt-6 inline-flex rounded-xl bg-blue-700 px-5 py-3 text-sm font-bold text-white">Explore all 175 tools</Link>
+        <Link href="/tools" className="mt-6 inline-flex rounded-xl bg-blue-700 px-5 py-3 text-sm font-bold text-white">Explore all {allTools.length} tools</Link>
       </section>
 
       {/* FAQ */}
@@ -486,11 +519,12 @@ export default function Home() {
                   </span>
                 </button>
 
-                {isOpen && (
-                  <div className="border-t border-slate-100 px-5 py-4 text-sm leading-6 text-slate-600">
-                    {faq.answer}
-                  </div>
-                )}
+                <div
+                  hidden={!isOpen}
+                  className="border-t border-slate-100 px-5 py-4 text-sm leading-6 text-slate-600"
+                >
+                  {faq.answer}
+                </div>
               </div>
             );
           })}

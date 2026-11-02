@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { SITE_NAME, SITE_URL } from "../../lib/site-config";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Learn how PDFora processes uploaded files, calculator inputs, technical data, cookies, analytics and advertising.",
-  alternates: { canonical: "https://pd-fora.vercel.app/privacy" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "How PDFora handles uploaded files, technical data, cookies, analytics and advertising." },
+  alternates: { canonical: `${SITE_URL}/privacy` },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: SITE_NAME, title: "PDFora Privacy Policy", description: "How PDFora handles uploaded files, technical data, cookies, analytics and advertising.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora privacy policy" }] },
+  twitter: { card: "summary_large_image", title: "PDFora Privacy Policy", description: "Learn how PDFora handles uploaded files, technical data, cookies, analytics and advertising.", images: ["/opengraph-image"] },
 };
 
 export default function PrivacyPage() {
@@ -21,7 +23,7 @@ export default function PrivacyPage() {
           <div>
             <h2 className="mb-2 text-2xl font-semibold">2. Files you upload</h2>
             <p>When you use a PDF or image tool that requires an upload, your selected file is transmitted over HTTPS to PDFora&apos;s processing backend so the requested operation can be completed. The backend validates and temporarily stores the upload while it is being processed. Output files are returned to your browser.</p>
-            <p className="mt-2">Temporary processing files are scheduled for cleanup after the response has been sent. Abandoned temporary jobs are also removed by periodic cleanup logic. PDFora does not provide a permanent user file library or account-based file history. Do not upload documents unless you are authorised to share them with the service.</p>
+            <p className="mt-2">The backend removes temporary job files after it finishes sending the processing response. If a request is interrupted, abandoned job folders are eligible for removal when the backend cleanup routine next runs. We do not promise a fixed deletion time for interrupted requests. PDFora does not provide a permanent user file library or account-based file history. Do not upload documents unless you are authorised to share them with the service.</p>
           </div>
           <div>
             <h2 className="mb-2 text-2xl font-semibold">3. Calculator and personal inputs</h2>

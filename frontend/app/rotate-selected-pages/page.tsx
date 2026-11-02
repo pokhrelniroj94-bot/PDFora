@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Rotate Selected PDF Pages Online | PDFora",
+  title: "Rotate Selected PDF Pages Online",
   description: "Rotate specific PDF pages by 90, 180 or 270 degrees. Enter page numbers or rotate every page and download the result free.",
   alternates: { canonical: "https://pd-fora.vercel.app/rotate-selected-pages" },
 };

@@ -3,12 +3,11 @@ import { getToolGuide } from "../../lib/tool-guides";
 
 const guide = getToolGuide("pdf-to-word");
 export const metadata: Metadata = {
-  title: `${guide?.name ?? "PDF tool"} Online | PDFora`,
-  description: guide ? `${guide.purpose} ${guide.keyword}. Use PDFora online and inspect the output before sharing.`.slice(0, 160) : "Use this free PDF tool online with PDFora.",
+  title: `${guide?.name ?? "PDF tool"} Online`,
+  description: guide ? `${guide.purpose} Use PDFora online and inspect the output before sharing.`.slice(0, 160) : "Use this free PDF tool online with PDFora.",
   keywords: [guide?.name ?? "PDF tool", guide?.keyword ?? "PDF tool online", "free online PDF tool"],
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-word" },
-  openGraph: { type: "website", title: `${guide?.name ?? "PDF tool"} Online | PDFora`, description: guide?.purpose ?? "Use a free online PDF tool with PDFora.", url: "https://pd-fora.vercel.app/pdf-to-word", siteName: "PDFora" },
-};
+  };
 
 import Niroj77Tool from "../../components/Niroj77Tool";
 
@@ -33,8 +32,8 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Convert PDF files to editable Word documents online with PDFora.
-              Upload your PDF, process it in your browser and download the
-              converted Word document quickly and easily.
+              Upload your PDF for temporary processing on PDFora's backend,
+              then download and review the converted Word document.
             </p>
           </div>
 

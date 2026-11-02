@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Compare PDF Files Online | PDFora",
+  title: "Compare PDF Files Online",
   description: "Compare the selectable text in two PDF documents online and download a difference report with PDFora.",
   keywords: ["compare PDF files", "PDF comparison online", "compare two PDF documents"],
   alternates: { canonical: "https://pd-fora.vercel.app/compare-pdf" },

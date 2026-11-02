@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Grayscale PDF Online | PDFora",
+  title: "Grayscale PDF Online",
   description: "Convert PDF pages to grayscale. Pages are rasterized, so selectable text may not be preserved.",
   alternates: { canonical: "https://pd-fora.vercel.app/grayscale-pdf" },
 };

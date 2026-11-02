@@ -2,17 +2,25 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { blogPosts } from "../../lib/blog-posts";
 import AdsterraNative from "../components/AdsterraNative";
+import { SITE_NAME, SITE_URL } from "../../lib/site-config";
 
 export const metadata: Metadata = {
   title: "Practical PDF & Nepal Guides – Tutorials and How-to Articles",
   description: "Step-by-step guides for PDF tasks, Nepal calculators, exchange rates, tax estimates, electricity bills, Nepali typing, BS dates and online tools.",
-  alternates: { canonical: "https://pd-fora.vercel.app/blog" },
+  alternates: { canonical: `${SITE_URL}/blog` },
   openGraph: {
-    title: "Practical PDF & Nepal Guides – Tutorials and How-to Articles | PDFora",
+    title: `Practical PDF & Nepal Guides – Tutorials and How-to Articles | ${SITE_NAME}`,
     description: "Learn PDF workflows and practical Nepal tools through clear tutorials, worked examples, FAQs and official reference links.",
-    url: "https://pd-fora.vercel.app/blog",
-    siteName: "PDFora",
+    url: `${SITE_URL}/blog`,
+    siteName: SITE_NAME,
     type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora practical guides and tutorials" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Practical PDF & Nepal Guides | ${SITE_NAME}`,
+    description: "Step-by-step guides for PDF tasks, Nepal calculators, exchange rates, tax estimates and online tools.",
+    images: ["/opengraph-image"],
   },
 };
 

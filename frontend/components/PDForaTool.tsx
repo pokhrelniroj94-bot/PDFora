@@ -374,6 +374,13 @@ export default function PDForaTool({
             )}
           </button>
 
+          {loading && (
+            <div className="mt-4 space-y-2" role="status" aria-live="polite" aria-label="PDF processing in progress">
+              <div className="pdfora-processing"><span className="pdfora-spinner" aria-hidden="true" /> <span>Uploading and processing your file. Please keep this page open.</span></div>
+              <div className="pdfora-progress-track" aria-hidden="true" />
+              <p className="text-center text-xs text-slate-500">Large files or an idle server may take longer. Your result will download when ready.</p>
+            </div>
+          )}
           {/* Message */}
           {message && (
             <div

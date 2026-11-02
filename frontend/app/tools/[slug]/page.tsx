@@ -5,8 +5,9 @@ import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
 import { toolCatalog } from "../../../components/toolCatalog";
 import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
+import { SITE_URL } from "../../../lib/site-config";
 
-const site = "https://pd-fora.vercel.app";
+const site = SITE_URL;
 export function generateStaticParams() {
   return toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ slug: tool.slug }));
 }
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
-    "nepal-share-calculator": { title: "NEPSE Share Profit Calculator – Broker Fees & CGT", description: "Estimate NEPSE share buy cost and net profit with transaction-value broker commission slabs, SEBON and DP fees, and CGT based on holding period and investor type." },
+    "nepal-share-calculator": { title: "NEPSE Share Profit Calculator – Broker Fees & CGT", description: "Estimate NEPSE share cost and net profit with broker commission, SEBON and DP fees, plus capital gains tax based on holding period and investor type." },
     "nepali-date-converter": { title: "Nepali Date Converter – BS to AD and AD to BS", description: "Convert Bikram Sambat Nepali dates to Gregorian AD dates and back. See Nepali month names, weekday and Devanagari digits." },
     "nepali-number-converter": { title: "Nepali Number Converter – Number to Words & Digits", description: "Convert numbers into English words using thousand, lakh and crore and display the same number in Nepali Devanagari digits." },
     "nepal-phone-validator": { title: "Nepal Mobile Number Checker – +977 Format", description: "Check the common 10-digit Nepal mobile number format and display its international +977 format. No call or SIM lookup is performed." },
@@ -26,9 +27,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepali-digit-converter": { title: "Nepali Unicode Digit Converter – English to Nepali", description: "Convert English digits 0–9 to Nepali Devanagari digits and back while preserving the rest of your text." },
     "nepali-calendar": { title: "Nepali Calendar 2083 – BS Month and AD Dates", description: "View Bikram Sambat calendar months with corresponding Gregorian dates and weekdays. Check the supported BS calendar range." },
     "nepal-panchang-today": { title: "Today’s Nepali Panchang – Tithi & Sunrise", description: "See today’s Kathmandu tithi, Panchang and sunrise/sunset from Miti, which verifies its data against Nepal’s official Rashtriya Panchanga. Kathmandu-only view." },
-    "nepal-panchang-calculator": { title: "Hindu Panchang Calculator – Tithi, Nakshatra & Panchang for India and Nepal", description: "Calculate local sunrise-based tithi, nakshatra, yoga, karana, sunrise, sunset and Rahu Kaal for supported cities in India and Nepal. Times use the selected city time zone." },
-    "nepali-guna-milan": { title: "36 Guna Milan Calculator – Traditional Ashtakoota Matching", description: "Compare two birth charts using a documented traditional 36-point Ashtakoota table: Varna, Vashya, Tara, Yoni, Graha Maitri, Gana, Bhakoot and Nadi. Available in Nepali, Hindi and English." },
-    "nepali-janma-kundali": { title: "Free Janam Kundli Online – Vedic Birth Chart, Lagna, Rashi & Dasha", description: "Create a Vedic Janma Kundali using birth date, exact local time and birthplace. Supports Nepal and Indian cities, BS and AD dates, D1 Rashi and D9 Navamsa charts, Lagna, Rashi, Nakshatra and Vimshottari Mahadasha." },
+    "nepal-panchang-calculator": { title: "Panchang Calculator – Tithi, Nakshatra & Rahu Kaal", description: "Calculate tithi, nakshatra, yoga, karana, sunrise, sunset and Rahu Kaal for supported cities in India and Nepal using local time." },
+    "nepali-guna-milan": { title: "36 Guna Milan Calculator – Traditional Ashtakoota Matching", description: "Compare birth charts with the traditional 36-point Ashtakoota system. Includes eight matching factors and supports Nepali, Hindi and English." },
+    "nepali-janma-kundali": { title: "Free Janam Kundli – Vedic Birth Chart & Dasha", description: "Create a Vedic birth chart from birth date, local time and place. Supports Nepal and India, BS and AD dates, D1 and D9 charts, Lagna, Rashi and Dasha." },
     "loksewa-photo-resizer": { title: "Loksewa Photo Resizer – Compress to 50KB, 100KB or 200KB", description: "Resize and compress a photo for Nepal online forms with 50KB, 100KB or 200KB targets. Check official photo rules before uploading." },
     "preeti-unicode-converter": { title: "Preeti to Unicode Converter – Nepali Text", description: "Convert legacy Preeti-encoded Nepali text to Unicode Devanagari and convert Unicode Nepali text back to Preeti." },
     "nepal-salary-tax-calculator": { title: "Nepal Salary Tax Calculator FY 2083/84", description: "Estimate Nepal resident individual income tax for FY 2083/84 using progressive tax bands. Review annual and monthly tax estimates." },
@@ -73,16 +74,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
   };
   const seo = seoOverrides[slug];
-  const title = seo?.title ?? `Free ${tool.name} Online`;
+  const fallbackTitle = `${tool.name} – Free Online Tool`;
+  const title = seo?.title ?? (fallbackTitle.length <= 60 ? fallbackTitle : `${tool.name.slice(0, 42).trimEnd()} – Online Tool`);
   const socialTitle = `${tool.name} Online | PDFora`;
   const fallbackDescription = `${tool.description.replace(/[.!?]$/, "")}. Use PDFora online to complete this task and check the result before saving or sharing.`;
   const description = seo?.description ?? (fallbackDescription.length <= 160
     ? fallbackDescription
     : `${fallbackDescription.slice(0, 157).replace(/\s+\S*$/, "").trimEnd()}...`);
-  const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
   return {
-    title, description, keywords,
+    title, description,
     alternates: { canonical },
     robots: { index: slug !== "ocr-pdf", follow: true },
     openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
@@ -449,8 +450,21 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     ],
   };
   const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
+  const howTo = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: `How to use ${tool.name}`,
+    description: tool.description,
+    step: [
+      { "@type": "HowToStep", position: 1, name: "Prepare your input", text: `Read the instructions for ${tool.name} and prepare the file or values requested by the tool.` },
+      { "@type": "HowToStep", position: 2, name: "Enter details", text: "Enter the required information and check units, formats and options before continuing." },
+      { "@type": "HowToStep", position: 3, name: "Run the tool", text: "Use the Calculate, Convert, Generate or Process control shown on the page." },
+      { "@type": "HowToStep", position: 4, name: "Review the result", text: "Check the output, assumptions and limitations. Save or copy it only after confirming it is suitable for your task." },
+    ],
+  };
   return <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
     <ToolWorkspace slug={slug} />

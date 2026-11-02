@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF to WebP Online | PDFora",
+  title: "PDF to WebP Online",
   description: "Convert PDF pages into WebP images and download them together as a ZIP file.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-webp" },
 };

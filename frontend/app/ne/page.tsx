@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SITE_NAME, SITE_URL } from "../../lib/site-config";
 
-const site = "https://pd-fora.vercel.app";
+const site = SITE_URL;
 
 export const metadata: Metadata = {
   title: "नि:शुल्क PDF उपकरण र नेपालका अनलाइन टुलहरू",
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
     title: "PDFora नेपाली — PDF Tools र नेपालका उपयोगी टुलहरू",
     description: "PDF सम्बन्धी काम र नेपालका दैनिक उपयोगी अनलाइन टुलहरू एउटै ठाउँमा।",
     url: `${site}/ne`,
-    siteName: "PDFora",
+    siteName: SITE_NAME,
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora नेपाली अनलाइन टुलहरू" }],
   },
   twitter: {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Extract Fonts from PDF Online | PDFora",
+  title: "Extract Fonts from PDF Online",
   description: "Extract embedded font files from PDF documents and download available fonts in a ZIP archive.",
   alternates: { canonical: "https://pd-fora.vercel.app/extract-fonts" },
 };

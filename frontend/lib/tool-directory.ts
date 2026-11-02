@@ -131,7 +131,7 @@ const rawPdfTools: Array<Omit<Tool, "kind" | "slug" | "keywords">> = [
   { name: "Extract Bookmarks", description: "Export the bookmark outline from a PDF.", icon: "B", category: "Extract", href: "/extract-bookmarks" },
   { name: "Extract Fonts", description: "Inspect and extract embedded PDF font resources where supported.", icon: "F", category: "Extract", href: "/extract-fonts" },
   { name: "Extract Page Images", description: "Render individual PDF pages as image files.", icon: "I", category: "Extract", href: "/extract-page-images" },
-  { name: "OCR PDF", description: "Recognize text in scanned PDFs. OCR availability depends on server language-data setup.", icon: "O", category: "Convert", href: "/ocr-pdf" },
+  { name: "OCR PDF", description: "Coming soon: recognize and extract text from scanned PDF documents.", icon: "O", category: "Convert", href: "/ocr-pdf" },
   { name: "Page Counter", description: "Count pages and inspect the page structure of a PDF.", icon: "#", category: "Analyze", href: "/page-counter" },
   { name: "PDF Information", description: "View PDF metadata, dimensions, encryption and document properties.", icon: "i", category: "Analyze", href: "/pdf-information" },
   { name: "PDF to BMP", description: "Convert PDF pages into BMP images.", icon: "B", category: "Convert", href: "/pdf-to-bmp" },

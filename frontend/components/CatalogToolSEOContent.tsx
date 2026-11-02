@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ToolInfo } from "./toolCatalog";
+import { SITE_URL } from "../lib/site-config";
 
 type Question = { q: string; a: string };
 
@@ -71,7 +72,54 @@ export default function CatalogToolSEOContent({
   related: ToolInfo[];
   guideSlug?: string;
 }) {
-  const uniqueFaqItems = questions.slice(0, 4);
+  const gunaFaqItems: Question[] = [
+    { q: "What information is required for 36 Guna Milan?", a: "Enter both people’s birth date, exact local birth time and birthplace. Select BS or AD correctly. The calculator derives the Moon sign and birth nakshatra before applying its stated Ashtakoota table convention." },
+    { q: "What do the 36 points represent?", a: "The eight kootas are Varna (1), Vashya (2), Tara (3), Yoni (4), Graha Maitri (5), Gana (6), Bhakoot (7) and Nadi (8), for a total maximum of 36 points." },
+    { q: "Does 18 out of 36 guarantee a suitable match?", a: "No. Eighteen is a conventional threshold used by some families, not a scientific test, a pass/fail verdict or a guarantee of a successful marriage. Review each koota and any stated traditional exception separately." },
+    { q: "Why can another Panchang or astrologer give a different score?", a: "Birth-time accuracy, city coordinates, ayanamsha and the traditional Vashya or Yoni table edition can affect the Moon sign, nakshatra or score. This page identifies the table convention it uses; other traditions may differ." },
+  ];
+  const uniqueFaqItems = tool.slug === "nepali-guna-milan" ? gunaFaqItems : questions.slice(0, 4);
+  const pageUrl = `${SITE_URL}/tools/${tool.slug}`;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        name: tool.name,
+        description: tool.description,
+        url: pageUrl,
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        breadcrumb: { "@id": `${pageUrl}#breadcrumb` }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+          { "@type": "ListItem", position: 2, name: "All tools", item: `${SITE_URL}/tools` },
+          { "@type": "ListItem", position: 3, name: tool.name, item: pageUrl }
+        ]
+      },
+      {
+        "@type": "SoftwareApplication",
+        name: tool.name,
+        applicationCategory: "UtilitiesApplication",
+        operatingSystem: "Any",
+        description: tool.description,
+        url: pageUrl,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: uniqueFaqItems.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a }
+        }))
+      }
+    ]
+  };
   if (tool.slug === "nepali-date-converter") {
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
@@ -102,7 +150,8 @@ export default function CatalogToolSEOContent({
         <h2 className="text-xl font-black text-slate-950">Related Nepal tools</h2>
         <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
       </section>
-    </div></article>;
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>;
   }
   if (["neb-gpa-calculator","nepal-land-area-converter","nepali-vat-calculator","nepal-share-calculator"].includes(tool.slug)) {
     const guides: Record<string, { eyebrow: string; heading: string; intro: string; steps: string[]; formula: string; example: string; caution: string }> = {
@@ -151,7 +200,8 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and important limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.caution}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related tools</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read related guide</Link>}</div></section>
-    </div></article>;
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>;
   }
   const nepalGuides: Record<string, { heading: string; intro: string; steps: string[]; example: string; note: string }> = {
     "nepali-date-converter": {
@@ -255,7 +305,8 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.note}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related Nepal tools</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read related guide</Link>}</div></section>
-    </div></article>;
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>;
   }
 
   if (tool.slug === "nepse-market-news" || tool.slug === "nepse-dividend-calculator") {
@@ -270,7 +321,8 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Official sources and limitations</h2><p className="mt-4 leading-8 text-slate-700">{news ? "Search feeds can contain duplicate stories, delayed coverage or results that mention a keyword without confirming an event. Headlines are not official notices, verified live prices, investment advice or a recommendation to buy or sell." : "The calculator does not connect to a Demat account, verify book-closure eligibility, determine fractional entitlements or calculate every investor's tax situation. Company resolutions and current law determine the final amount."}</p><div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold"><a className="text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noreferrer">NEPSE</a><a className="text-teal-700 underline" href="https://www.sebon.gov.np/" target="_blank" rel="noreferrer">SEBON</a><a className="text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noreferrer">CDSC Mero Share</a></div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-5 space-y-5">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}</div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related Nepal tools and guides</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white">Read the detailed guide</Link>}</div></section>
-    </div></article>;
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>;
   }
   if (tool.slug === "nepal-forex-rates") {
     return (
@@ -325,11 +377,18 @@ export default function CatalogToolSEOContent({
             <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read the NRB exchange-rate guide</Link>}</div>
           </section>
         </div>
-      </article>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>
     );
   }
 
   const toolAdvice: Record<string, { example: string; accuracy: string; workflow: string; mistakes: string }> = {
+    "nepali-guna-milan": {
+      example: "Enter both people’s birth details, calculate their Moon signs and birth nakshatras, then inspect the eight separate koota scores. The maximums are 1, 2, 3, 4, 5, 6, 7 and 8 points, adding to 36.",
+      accuracy: "The result depends on the entered local birth time, selected birthplace coordinates and the browser-based Moon-position calculation using a Lahiri/Chitrapaksha approximation. Vashya and Yoni tables vary across texts and editions; this tool follows the named Muhurta Chintamani convention and identifies its limitations.",
+      workflow: "First verify the bride’s and groom’s Moon sign and nakshatra against a trusted birth chart. Then review each koota, the raw total and any parihara shown separately. Keep the raw score distinct from traditional exceptions.",
+      mistakes: "Do not swap bride and groom when reading directional tables, enter a BS date as AD, assume a city-centre coordinate is an exact birthplace, or treat 18 points as a scientific pass/fail threshold. This is a traditional astrological convention, not evidence of relationship compatibility."
+    },
     "loan-emi-calculator": { example: "For a NPR 1,000,000 loan at 10% annual interest over 60 months, compare the monthly EMI with the total repayment and total interest. The result assumes a reducing-balance loan with monthly payments.", accuracy: "The estimate excludes lender-specific fees, insurance, floating-rate changes, penalties and payment-date conventions. Your bank's repayment schedule is authoritative.", workflow: "Change one input at a time—principal, annual rate or loan term—and compare how EMI and total interest move. A longer term may lower the EMI but increase total interest.", mistakes: "Do not enter a monthly interest rate in the annual-rate field. Check that the term is in months and that the displayed amount is in the same currency as the loan." },
     "compound-interest-sip-calculator": { example: "Enter a monthly contribution, investment period, expected annual return and any initial investment. The calculator assumes month-end contributions and a constant monthly return.", accuracy: "Investment returns are not guaranteed. The estimate does not automatically account for market volatility, fees, taxes, inflation or missed contributions.", workflow: "Compare conservative, base and optimistic return assumptions. Also compare the final value with the total amount invested so the estimated gain is clear.", mistakes: "Do not treat an assumed annual return as a guaranteed rate or confuse monthly contribution with the initial lump-sum investment." },
     "discount-percentage-calculator": { example: "A product priced at NPR 1,000 with a 20% discount costs NPR 800 before any extra fees. The tool also calculates what percentage one value is of another.", accuracy: "The result is arithmetic only and does not include delivery charges, coupons, tax or store-specific terms unless they are included in the input.", workflow: "Enter the original price and discount rate, then compare the final price and savings. Use the percentage fields separately when you want to calculate one value as a share of another.", mistakes: "Enter 20 for 20%, not 0.20. Check that the discount is between 0 and 100 and that the original price is not negative." },
@@ -467,6 +526,7 @@ export default function CatalogToolSEOContent({
     mistakes: `For the ${title.toLowerCase()}, avoid unsupported input formats, mismatched units and assumptions that are not shown by the tool. ${categoryFallback.mistakes}`
   };
   const advice = toolAdvice[tool.slug] ?? generatedAdvice;
+
   const preparation: Record<string, string> = {
     PDF: "Keep an untouched copy of the original PDF. Check whether it contains scans, forms, bookmarks, annotations or digital signatures that may affect the result.",
     Finance: "Have the principal or amount, rate, currency and calculation period ready. Check whether the rate is annual or monthly and whether fees or taxes are included.",
@@ -478,7 +538,11 @@ export default function CatalogToolSEOContent({
     Business: "Collect the relevant cost, selling price, revenue, wage or target figures. Confirm the time period and whether tax is included before calculating.",
     Nepal: "Check the applicable fiscal year, BS or AD date, NPR amount, local unit and eligibility conditions. Verify official matters with the responsible Nepalese authority."
   };
-  const inputNote = preparation[tool.category] ?? "Prepare the source information requested by the tool and check the units, format and assumptions before processing.";
+  const inputNote = tool.slug === "nepali-guna-milan"
+    ? "Have each person’s birth date, exact local birth time and birthplace ready. Confirm whether each date is BS or AD."
+    : tool.slug === "nepal-panchang-calculator"
+      ? "Choose a Gregorian date and one supported Nepal or Indian city. The result is calculated for that location’s local sunrise."
+      : preparation[tool.category] ?? "Prepare the source information requested by the tool and check the units, format and assumptions before processing.";
   // Keep only FAQs written for this tool or its category.
   return (
     <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">
@@ -492,12 +556,34 @@ export default function CatalogToolSEOContent({
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">How to use the {title} step by step</h2>
           <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
-            <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
-            <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>
-            <li><strong>Enter a representative sample.</strong> If the task is unfamiliar, start with a small sample or values whose expected result you can check. This helps reveal input mistakes early.</li>
-            <li><strong>Use the available control.</strong> Some tools update automatically as you type; others require a Convert, Calculate or Process action. Follow the control shown in the workspace.</li>
-            <li><strong>Review the output.</strong> Check the result, compare it with the original or a known answer, and look for missing content, unexpected formatting or implausible values.</li>
-            <li><strong>Save or copy only after checking.</strong> Use the output only when it meets the requirements of your task. Keep the original until you no longer need it.</li>
+            {tool.slug === "nepali-guna-milan" ? <>
+              <li><strong>Enter both birth records.</strong> Add each person’s birth date, exact local birth time and birthplace. A missing or approximate birth time can change the calculated Moon position.</li>
+              <li><strong>Select the correct calendar.</strong> Choose Bikram Sambat (BS) or Gregorian (AD) separately for each person and enter the date in the displayed YYYY-MM-DD format.</li>
+              <li><strong>Check the birthplace.</strong> Select the closest supported city. The calculator uses city-centre coordinates, so a boundary result may differ from a chart calculated with exact coordinates.</li>
+              <li><strong>Calculate and inspect the Moon details.</strong> Confirm the displayed Moon sign and birth nakshatra for both people before interpreting the eight koota scores.</li>
+              <li><strong>Review all eight kootas.</strong> Read the score, maximum points, traditional basis and any separately reported parihara. Do not add a parihara to the raw total unless the chosen tradition explicitly defines that adjustment.</li>
+              <li><strong>Print only after verification.</strong> Compare important birth-chart details with a trusted local astrologer or panchang before using the result for a family decision.</li>
+            </> : tool.slug === "nepal-panchang-today" ? <>
+              <li><strong>Open the embedded daily view.</strong> The page is fixed to Kathmandu and displays the current civil day supplied by Miti.</li>
+              <li><strong>Check the provider’s displayed date.</strong> Confirm the Kathmandu date and the provider’s coverage before interpreting tithi or timing.</li>
+              <li><strong>Read the Panchang and sunrise/sunset values.</strong> Treat the embed as a source display; PDFora does not calculate a replacement if the provider is unavailable.</li>
+              <li><strong>Keep the location fixed.</strong> Do not apply Kathmandu sunrise, tithi boundaries or ritual timings to another district.</li>
+              <li><strong>Verify important observances.</strong> Compare festival and muhurta decisions with the official Nepal Rashtriya Panchanga and a local approved calendar.</li>
+            </> : tool.slug === "nepal-panchang-calculator" ? <>
+              <li><strong>Choose a Gregorian date.</strong> Enter the date you want to examine; the calculator does not infer a festival date from the current day.</li>
+              <li><strong>Select the nearest supported city.</strong> Sunrise and sunset are calculated using that city’s coordinates and local time zone.</li>
+              <li><strong>Calculate the Panchang.</strong> The tithi, nakshatra, yoga and karana are evaluated at local sunrise, which anchors the displayed Panchang day.</li>
+              <li><strong>Read the end times.</strong> An end time may fall on the following civil date; check the date shown beside it.</li>
+              <li><strong>Review daytime periods.</strong> Rahu Kaal, Yamaganda and Gulika are traditional daytime divisions, not personalized auspicious-muhurta recommendations.</li>
+              <li><strong>Verify ritual decisions.</strong> Compare festival observance and important muhurta with the official Nepal Rashtriya Panchanga or an approved local calendar.</li>
+            </> : <>
+              <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
+              <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>
+              <li><strong>Enter a representative sample.</strong> If the task is unfamiliar, start with a small sample or values whose expected result you can check. This helps reveal input mistakes early.</li>
+              <li><strong>Use the available control.</strong> Some tools update automatically as you type; others require a Convert, Calculate or Process action. Follow the control shown in the workspace.</li>
+              <li><strong>Review the output.</strong> Check the result, compare it with the original or a known answer, and look for missing content, unexpected formatting or implausible values.</li>
+              <li><strong>Save or copy only after checking.</strong> Use the output only when it meets the requirements of your task. Keep the original until you no longer need it.</li>
+            </>}
           </ol>
           
         </section>
@@ -535,6 +621,7 @@ export default function CatalogToolSEOContent({
           <p className="mt-4 text-sm leading-7 text-slate-600">For the best result, read the instructions on the tool page, test a small input and verify the final output before using it in an important task.</p>
         </section>
       </div>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
     </article>
   );
 }

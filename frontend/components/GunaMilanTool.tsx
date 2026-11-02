@@ -19,6 +19,7 @@ export default function GunaMilanTool(){
  const [groom,setGroom]=useState<PersonForm>(initial(""));
  const [result,setResult]=useState<GunaMilanResult|null>(null);
  const [error,setError]=useState("");
+ const [busy,setBusy]=useState(false);
 
  const t=copy[language];
  const terms:Record<string,{ne:string;hi:string}>={
@@ -89,14 +90,19 @@ export default function GunaMilanTool(){
   </div>
  </section>;
  const calculate=()=>{
+  if(busy)return;
   setError("");setResult(null);
   if(!bride.birthDate||!bride.birthTime||!groom.birthDate||!groom.birthTime){setError(t.requiredError);return;}
-  try{
-   const make=(p:PersonForm):KundaliInput=>({name:p.name,dateSystem:p.dateSystem,birthDate:normalizeDateDigits(p.birthDate),birthTime:p.birthTime,placeId:p.placeId});
-   const b=calculateJanmaKundali(make(bride));
-   const g=calculateJanmaKundali(make(groom));
-   setResult(calculateAshtakoota(b,g));
-  }catch(e){setError(e instanceof Error?localizedError(e.message):t.error);}
+  setBusy(true);
+  window.setTimeout(()=>{
+   try{
+    const make=(p:PersonForm):KundaliInput=>({name:p.name,dateSystem:p.dateSystem,birthDate:normalizeDateDigits(p.birthDate),birthTime:p.birthTime,placeId:p.placeId});
+    const b=calculateJanmaKundali(make(bride));
+    const g=calculateJanmaKundali(make(groom));
+    setResult(calculateAshtakoota(b,g));
+   }catch(e){setError(e instanceof Error?localizedError(e.message):t.error);}
+   finally{setBusy(false);}
+  },80);
  };
  const fmt=(n:number)=>new Intl.NumberFormat(language==="ne"?"ne-NP":language==="hi"?"hi-IN":"en-IN",{maximumFractionDigits:1}).format(n);
  const total=result?.total??0;
@@ -105,7 +111,7 @@ export default function GunaMilanTool(){
  return <div className="space-y-5">
   <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-2xl font-black text-slate-950">{t.title}</h2><p className="mt-1 text-sm leading-6 text-slate-600">{t.desc}</p></div><div className="flex gap-1 rounded-xl border border-slate-200 bg-white p-1" aria-label="Language"><button type="button" onClick={()=>setLanguage("ne")} aria-pressed={language==="ne"} className={"rounded-lg px-3 py-2 text-xs font-bold "+(language==="ne"?"bg-teal-700 text-white":"text-slate-700")}>नेपाली</button><button type="button" onClick={()=>setLanguage("hi")} aria-pressed={language==="hi"} className={"rounded-lg px-3 py-2 text-xs font-bold "+(language==="hi"?"bg-teal-700 text-white":"text-slate-700")}>हिन्दी</button><button type="button" onClick={()=>setLanguage("en")} aria-pressed={language==="en"} className={"rounded-lg px-3 py-2 text-xs font-bold "+(language==="en"?"bg-teal-700 text-white":"text-slate-700")}>English</button></div></div>
   <div className="grid gap-4 md:grid-cols-2">{person("bride",bride)}{person("groom",groom)}</div>
-  <button type="button" onClick={calculate} className="w-full rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">{t.calculate}</button>
+  <button type="button" onClick={calculate} disabled={busy} className="w-full min-h-12 rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-800 active:scale-[.99] disabled:cursor-wait disabled:opacity-70 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">{busy?<span className="inline-flex items-center justify-center gap-2"><span className="pdfora-spinner" aria-hidden="true"/>{language==="ne"?"गणना हुँदैछ…":language==="hi"?"गणना हो रही है…":"Calculating…"}</span>:t.calculate}</button>
   {error&&<p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">{t.error}: {error}</p>}
   {result&&<div id="guna-milan-result" aria-live="polite" className="space-y-5 rounded-2xl border border-teal-200 bg-white p-4 sm:p-6">
    <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center"><div><p className="text-sm font-semibold text-slate-500">{t.total}</p><p className="mt-1 text-4xl font-black tabular-nums text-teal-800">{fmt(total)} <span className="text-base font-semibold text-slate-500">{t.of} 36</span></p></div><div className="rounded-xl bg-slate-50 p-3 text-sm"><p><b>{t.brideValue}:</b> {localSign(result.bride.moonSign)} · {localNak(result.bride.janmaNakshatra)} ({result.bride.janmaPada})</p><p className="mt-1"><b>{t.groomValue}:</b> {localSign(result.groom.moonSign)} · {localNak(result.groom.janmaNakshatra)} ({result.groom.janmaPada})</p></div></div>

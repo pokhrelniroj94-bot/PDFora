@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Extract PDF Bookmarks Online Free | PDFora",
+  title: "Extract PDF Bookmarks Online Free",
   description: "Extract PDF bookmarks and table of contents with page numbers into a text report. Free online PDF bookmark extractor.",
   alternates: { canonical: "https://pd-fora.vercel.app/extract-bookmarks" },
 };

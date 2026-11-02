@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Extract Images from PDF Pages | PDFora",
+  title: "Extract Images from PDF Pages",
   description: "Extract embedded images from PDF pages and download the original image files in a ZIP archive.",
   alternates: { canonical: "https://pd-fora.vercel.app/extract-page-images" },
 };

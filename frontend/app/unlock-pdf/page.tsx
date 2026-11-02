@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Unlock PDF Online | PDFora",
+  title: "Unlock PDF Online",
   description: "Remove PDF password protection when you know the correct password.",
   alternates: { canonical: "https://pd-fora.vercel.app/unlock-pdf" },
 };

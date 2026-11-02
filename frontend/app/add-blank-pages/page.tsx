@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Add Blank Pages to PDF Online Free | PDFora",
+  title: "Add Blank Pages to PDF Online Free",
   description: "Insert blank pages at the end of a PDF online. Choose how many pages to add and download your updated PDF with PDFora.",
   alternates: { canonical: "https://pd-fora.vercel.app/add-blank-pages" },
 };

@@ -39,7 +39,7 @@ function CopyButton({value}:{value:string}) { return <button className="rounded-
 export function ToolsDirectory() {
  const [category,setCategory]=useState("All"),[query,setQuery]=useState("");
  const list=useMemo(()=>{
-  const normalize=(value:string)=>value.toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+  const normalize=(value:string)=>value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").trim();
   const tokens=normalize(query).split(" ").filter(Boolean);
   return allTools.filter(t=>{
    const matchesCategory=category==="All"||(category==="PDF"?(t.kind==="pdf"||t.category==="PDF"):t.category===category);

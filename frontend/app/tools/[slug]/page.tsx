@@ -322,6 +322,51 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does valid JSON mean my API payload is correct?", a: "No. Syntax validation does not confirm that required fields, data types or application-specific schema rules are satisfied." },
       { q: "Can I use comments in JSON?", a: "Strict JSON does not support comments or trailing commas. Remove them before validating standard JSON." }
     ],
+    "currency-converter": [
+      { q: "Where do currency exchange rates come from?", a: "The rate source and timestamp are displayed by the tool where available. Rates from banks, remittance providers and card networks can differ." },
+      { q: "Will I receive exactly the converted amount?", a: "Not necessarily. Providers may apply their own buying or selling rate, spread and service fees." },
+      { q: "Why can the rate date be older than today?", a: "Some public rate sources update only on working days. Weekends and public holidays may leave the previous published rate as the latest available." }
+    ],
+    "password-generator": [
+      { q: "How long should a generated password be?", a: "Use a long, unique password that meets the destination service's requirements. A password manager can generate and store it safely." },
+      { q: "Should I reuse a generated password?", a: "No. Use a different password for each account so a breach at one service does not expose other accounts." },
+      { q: "Where should I save the password?", a: "Save it directly in a reputable password manager. Avoid plain-text notes, public documents or sending passwords in messages." }
+    ],
+    "password-strength-checker": [
+      { q: "Does a strong score guarantee password security?", a: "No. A score is only a heuristic and cannot prove that a password is unique or has not appeared in a data breach." },
+      { q: "Should I enter my real password into a checker?", a: "Only if you have verified how the page processes and protects input. Safer practice is to test a sample rather than reuse an actual account password." },
+      { q: "What makes a password safer?", a: "Length, uniqueness and unpredictable generation matter. A password manager helps create and store different passwords for every account." }
+    ],
+    "image-compressor": [
+      { q: "Will image compression reduce quality?", a: "It can, especially with lossy formats such as JPEG and WebP. Inspect the exported image at its intended display size." },
+      { q: "Can I compress an image to an exact file size?", a: "A target size may be approximate because the final bytes depend on image content, dimensions and encoding settings." },
+      { q: "Should I keep the original image?", a: "Yes. Keep an untouched copy so you can retry with a different quality or dimension setting." }
+    ],
+    "base64-encoder-decoder": [
+      { q: "Is Base64 encryption?", a: "No. Base64 is a reversible encoding that changes how bytes are represented. It does not protect information with a secret key." },
+      { q: "Can I decode a Base64 string?", a: "Yes. Choose decode mode and provide valid Base64 input. The decoded bytes must also match the expected text encoding." },
+      { q: "Is it safe to encode passwords in Base64?", a: "No. Anyone can decode Base64. Never use it as password protection or secret storage." }
+    ],
+    "hash-generator": [
+      { q: "Can a hash be converted back to the original text?", a: "A cryptographic hash is designed to be one-way; it is not a reversible encoding." },
+      { q: "Which hash algorithm should I use?", a: "For general modern integrity checks, SHA-256 is preferable to legacy MD5 or SHA-1. Follow the security requirements of your application." },
+      { q: "Is a hash the same as encryption?", a: "No. Encryption is reversible with a key; hashing produces a fixed-size digest and has no decryption step." }
+    ],
+    "url-encoder-decoder": [
+      { q: "What does URL encoding do?", a: "It represents characters that are not safe or reserved in a URL component using percent-encoded bytes." },
+      { q: "Should I encode the entire URL?", a: "Usually no. Encode the query value or individual path component, not URL separators such as the scheme, slashes and query delimiters." },
+      { q: "Why do spaces sometimes appear as plus signs?", a: "HTML form encoding commonly represents spaces as plus signs, while percent encoding often uses %20. Use the convention required by the destination." }
+    ],
+    "reading-time-calculator": [
+      { q: "How is reading time estimated?", a: "The estimate divides the word count by an assumed reading speed, usually expressed in words per minute." },
+      { q: "Is the reading time exact?", a: "No. Reading speed varies with topic, language, formatting, tables and reader familiarity." },
+      { q: "Can I change the reading speed?", a: "Use the available words-per-minute setting if provided, and compare estimates using the same speed assumption." }
+    ],
+    "random-number-generator": [
+      { q: "Are the minimum and maximum values included?", a: "The tool describes an inclusive range, meaning both the entered minimum and maximum may be generated." },
+      { q: "Can the generator avoid duplicate values?", a: "Check whether a unique-values option is enabled. Independent random draws can repeat unless uniqueness is specifically enforced." },
+      { q: "Can I use it for an official lottery?", a: "No. Do not use a general-purpose browser utility as a certified or regulated lottery drawing system." }
+    ],
     "nepali-date-converter": [
       { q: "Which dates does the Nepali date converter support?", a: "It supports Bikram Sambat dates from 1975-01-01 through 2099-12-30 and Gregorian dates from 1918-04-13 through 2043-04-13. Dates outside this range are rejected." },
       { q: "Can I convert both AD to BS and BS to AD?", a: "Yes. Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD), then enter the date in year-month-day order." },

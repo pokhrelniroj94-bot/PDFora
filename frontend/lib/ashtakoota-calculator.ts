@@ -3,21 +3,9 @@ import type { KundaliResult } from "./kundali-calculator";
 export const ASHTAKOOTA_SOURCE = "Muhurta Chintamani, Vivaha-prakarana (verses 21–37), Piyushadhara commentary and Kedar Datt Joshi Hindi tika; cross-checked with Nemichandra Shastri, Bharatiya Jyotish (1970), chapter 5, and B. V. Raman, Muhurtha (1948).";
 export const ASHTAKOOTA_SOURCE_URL = "https://thetelugucalendar.com/marriage-matching/method/";
 
-export const KOOTAS = [
-  { key: "varna", ne: "वर्ण", hi: "वर्ण", en: "Varna", max: 1 },
-  { key: "vashya", ne: "वश्य", hi: "वश्य", en: "Vashya", max: 2 },
-  { key: "tara", ne: "तारा", hi: "तारा", en: "Tara (Dina)", max: 3 },
-  { key: "yoni", ne: "योनि", hi: "योनि", en: "Yoni", max: 4 },
-  { key: "grahaMaitri", ne: "ग्रह मैत्री", hi: "ग्रह मैत्री", en: "Graha Maitri", max: 5 },
-  { key: "gana", ne: "गण", hi: "गण", en: "Gana", max: 6 },
-  { key: "bhakoot", ne: "भकूट", hi: "भकूट", en: "Bhakoot (Rashi)", max: 7 },
-  { key: "nadi", ne: "नाडी", hi: "नाड़ी", en: "Nadi", max: 8 },
-] as const;
-
 const SIGNS = ["मेष","वृष","मिथुन","कर्कट","सिंह","कन्या","तुला","वृश्चिक","धनु","मकर","कुम्भ","मीन"];
 const SIGN_EN = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
 const NAKSHATRAS = ["अश्विनी","भरणी","कृत्तिका","रोहिणी","मृगशिरा","आर्द्रा","पुनर्वसु","पुष्य","आश्लेषा","मघा","पूर्वाफाल्गुनी","उत्तराफाल्गुनी","हस्त","चित्रा","स्वाती","विशाखा","अनुराधा","ज्येष्ठा","मूल","पूर्वाषाढा","उत्तराषाढा","श्रवण","धनिष्ठा","शतभिषा","पूर्वाभाद्रपदा","उत्तराभाद्रपदा","रेवती"];
-const NAK_EN = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha","Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"];
 
 const VARNA = ["Kshatriya","Vaishya","Shudra","Brahmin","Kshatriya","Vaishya","Shudra","Brahmin","Kshatriya","Vaishya","Shudra","Brahmin"];
 const VASHYA = ["Chatushpada","Chatushpada","Dvipada","Jalachara","Chatushpada","Dvipada","Dvipada","Keeta","Chatushpada","Jalachara","Jalachara","Jalachara"];
@@ -95,17 +83,6 @@ function rashiIndex(name:string):number {
  if(index>=0) return index;
  return SIGN_EN.indexOf(name);
 }
-function grahaMaitriValue(brideLord:string,groomLord:string):number {
- const a=naturalRelation(brideLord,groomLord), b=naturalRelation(groomLord,brideLord);
- if(a==="same") return 5;
- if(a==="friend"&&b==="friend") return 5;
- if((a==="friend"&&b==="neutral")||(a==="neutral"&&b==="friend")) return 4;
- if(a==="neutral"&&b==="neutral") return 3;
- if((a==="friend"&&b==="enemy")||(a==="enemy"&&b==="friend")) return 1;
- if((a==="neutral"&&b==="enemy")||(a==="enemy"&&b==="neutral")) return .5;
- return 0;
-}
-
 export interface GunaPersonInput {
  name: string;
  dateSystem: "AD"|"BS";
@@ -136,7 +113,7 @@ export function calculateAshtakoota(bride:KundaliResult,groom:KundaliResult):Gun
  const vashyaScore=lookup(VASHYA_TABLE,VASHYA_ORDER,VASHYA[br],VASHYA_ORDER,VASHYA[gr]);
  const taraScore=taraValue(bi,gi);
  const yoniScore=lookup(YONI_TABLE,YONI_ORDER,YONI[bi],YONI_ORDER,YONI[gi]);
- const grahaScore=grahaMaitriValue(SIGN_LORD[br],SIGN_LORD[gr]);
+ const grahaScore=lookup(GRAHA_TABLE,GRAHA_ORDER,SIGN_LORD[br],GRAHA_ORDER,SIGN_LORD[gr]);
  const ganaScore=lookup(GANA_TABLE,GANA_ORDER,GANA[bi],GANA_ORDER,GANA[gi]);
  const distance=(gr-br+12)%12;
  const bhakootDosha=[1,11,4,8,5,7].includes(distance);

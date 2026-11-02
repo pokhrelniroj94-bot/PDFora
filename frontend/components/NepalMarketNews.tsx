@@ -19,21 +19,39 @@ export default function NepalMarketNews() {
   const [feed, setFeed] = useState<Feed | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const load = useCallback(async () => {
-    setLoading(true); setError("");
-    try {
-      const response = await fetch("/api/nepal-market-news", { cache: "no-store" });
-      const json = await response.json() as Feed & { error?: string };
-      if (!response.ok) throw new Error(json.error || "News feed is temporarily unavailable.");
-      setFeed(json);
-    } catch (e) { setError(e instanceof Error ? e.message : "News feed is temporarily unavailable."); }
-    finally { setLoading(false); }
+
+  const fetchFeed = useCallback(async () => {
+    const response = await fetch("/api/nepal-market-news", { cache: "no-store" });
+    const json = await response.json() as Feed & { error?: string };
+    if (!response.ok) throw new Error(json.error || "News feed is temporarily unavailable.");
+    return json;
   }, []);
-  useEffect(() => { void load(); }, [load]);
+
+  useEffect(() => {
+    let active = true;
+    fetchFeed()
+      .then((json) => { if (active) setFeed(json); })
+      .catch((e: unknown) => { if (active) setError(e instanceof Error ? e.message : "News feed is temporarily unavailable."); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [fetchFeed]);
+
+  async function refresh() {
+    setLoading(true);
+    setError("");
+    try {
+      setFeed(await fetchFeed());
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "News feed is temporarily unavailable.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return <div className="space-y-4">
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div><h2 className="text-xl font-black text-slate-950">Nepal Stock Market & IPO News</h2><p className="mt-1 text-sm text-slate-600">Automatically refreshed headlines from Google News search feeds. Open each story at its publisher.</p></div>
-      <button type="button" onClick={() => void load()} disabled={loading} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-60">{loading ? "Refreshing…" : "Refresh news"}</button>
+      <button type="button" onClick={refresh} disabled={loading} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-60">{loading ? "Refreshing…" : "Refresh news"}</button>
     </div>
     {loading && <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">Loading the latest headlines…</p>}
     {error && <p role="alert" className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">{error}</p>}

@@ -32,7 +32,7 @@ const panel = "rounded-[1.75rem] border border-slate-200/80 bg-white p-5 shadow-
 function Field({title,children}:{title:string;children:React.ReactNode}) { return <label className="block"><span className={label}>{title}</span>{children}</label>; }
 function Result({children}:{children:React.ReactNode}) { return <div className="mt-4 rounded-xl bg-teal-50 p-4 text-sm text-teal-950">{children}</div>; }
 function money(n:number,currency=""):string { return currency+" "+(Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):"—"); }
-function downloadText(name:string,text:string,type="text/plain") { const a=document.createElement("a"); const u=URL.createObjectURL(new Blob([text],{type})); a.href=u;a.download=name;a.click();URL.revokeObjectURL(u); }
+function downloadText(name:string,text:string,type="text/plain") { const a=document.createElement("a"); const u=URL.createObjectURL(new Blob([text],{type})); a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(u),1000); }
 function CopyButton({value}:{value:string}) { return <button className="rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-slate-50" onClick={()=>navigator.clipboard?.writeText(value)}>Copy</button>; }
 
 export function ToolsDirectory() {

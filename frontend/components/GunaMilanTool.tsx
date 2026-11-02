@@ -72,7 +72,8 @@ export default function GunaMilanTool(){
  };
  const update=<K extends keyof PersonForm>(who:"bride"|"groom",key:K,value:PersonForm[K])=>{
   const setter=who==="bride"?setBride:setGroom;
-  setter(old=>({...old,[key]:value}));
+  if(key==="dateSystem") setter(old=>({...old,dateSystem:value as PersonForm["dateSystem"],birthDate:""}));
+  else setter(old=>({...old,[key]:value}));
  };
  const fieldClass="mt-1 w-full min-w-0 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100";
  const person=(who:"bride"|"groom",data:PersonForm)=> <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
@@ -80,7 +81,7 @@ export default function GunaMilanTool(){
   <div className="grid gap-3 sm:grid-cols-2">
    <label className="text-sm font-semibold text-slate-700 sm:col-span-2">{t.name}<input className={fieldClass} value={data.name} onChange={e=>update(who,"name",e.target.value)} placeholder=""/></label>
    <label className="text-sm font-semibold text-slate-700">{t.system}<select className={fieldClass} value={data.dateSystem} onChange={e=>update(who,"dateSystem",e.target.value as PersonForm["dateSystem"])}><option value="AD">{t.ad}</option><option value="BS">{t.bs}</option></select></label>
-   <label className="text-sm font-semibold text-slate-700">{t.date}<input required type="date" inputMode="numeric" className={fieldClass} value={data.birthDate} onChange={e=>update(who,"birthDate",e.target.value)}/><span className="mt-1 block text-xs font-normal text-slate-500">{data.dateSystem==="BS"?t.bsHint:t.adHint}</span></label>
+   <label className="text-sm font-semibold text-slate-700">{t.date}<input required type={data.dateSystem==="BS"?"text":"date"} inputMode={data.dateSystem==="BS"?"numeric":undefined} pattern={data.dateSystem==="BS"?"[0-9]{4}-[0-9]{2}-[0-9]{2}":undefined} maxLength={data.dateSystem==="BS"?10:undefined} placeholder={data.dateSystem==="BS"?"2083-01-01":""} className={fieldClass} value={data.birthDate} onChange={e=>update(who,"birthDate",e.target.value)}/><span className="mt-1 block text-xs font-normal text-slate-500">{data.dateSystem==="BS"?t.bsHint:t.adHint}</span></label>
    <label className="text-sm font-semibold text-slate-700">{t.time}<input required type="time" className={fieldClass} value={data.birthTime} onChange={e=>update(who,"birthTime",e.target.value)}/></label>
    <label className="text-sm font-semibold text-slate-700">{t.place}<select className={fieldClass} value={data.placeId} onChange={e=>update(who,"placeId",e.target.value)}>{KUNDALI_PLACES.map(p=><option key={p.id} value={p.id}>{p.name} — {p.en}</option>)}</select></label>
   </div>

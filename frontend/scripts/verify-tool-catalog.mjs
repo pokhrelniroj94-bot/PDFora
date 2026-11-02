@@ -50,7 +50,7 @@ const nepalSlugs = [...catalogSource.matchAll(/\\{slug:"([^"]+)",name:"[^"]+",ca
 const missingNepalGuides = nepalSlugs.filter((slug) => !nepalBlogPosts.includes('href: "/tools/' + slug + '"'));
 assert.deepEqual(missingNepalGuides, [], "Nepal tools without dedicated guides: " + missingNepalGuides.join(", "));
 assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf("...catalogGuides"), "Dedicated Nepal guides must take precedence over generated generic guides");
-const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
+const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator","nepal-fixed-deposit-calculator","nepal-remittance-calculator","nepal-ipo-profit-calculator"];
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
 assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
@@ -78,8 +78,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 119, "Expected 119 catalog utilities");
-assert.equal(allHrefs.length, 168, "Expected 168 available tools (49 PDF tools + 119 catalog utilities)");
+assert.equal(catalog.length, 122, "Expected 122 catalog utilities");
+assert.equal(allHrefs.length, 171, "Expected 171 available tools (49 PDF tools + 122 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
@@ -132,6 +132,13 @@ assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
 assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-refresh headlines");
+for (const slug of ["nepal-fixed-deposit-calculator","nepal-remittance-calculator","nepal-ipo-profit-calculator"]) {
+  assert.ok(catalogSource.includes('slug:"' + slug + '"' ), "Missing Nepal finance catalog entry: " + slug);
+  assert.ok(nepalLiveTools.includes('"' + slug + '"' ), "Missing Nepal finance tool handler: " + slug);
+  assert.ok(toolPage.includes('"' + slug + '"' ), "Missing SEO metadata or FAQ coverage: " + slug);
+  assert.ok(seoContent.includes('"' + slug + '"' ), "Missing dedicated SEO advice: " + slug);
+  assert.ok(nepalBlogPosts.includes('href: "/tools/' + slug + '"' ), "Missing dedicated Nepal guide: " + slug);
+}
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");

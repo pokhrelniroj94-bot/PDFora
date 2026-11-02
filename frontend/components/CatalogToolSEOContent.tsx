@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ToolInfo } from "./toolCatalog";
+import { SITE_URL } from "../lib/site-config";
 
 type Question = { q: string; a: string };
 
@@ -479,6 +480,47 @@ export default function CatalogToolSEOContent({
     mistakes: `For the ${title.toLowerCase()}, avoid unsupported input formats, mismatched units and assumptions that are not shown by the tool. ${categoryFallback.mistakes}`
   };
   const advice = toolAdvice[tool.slug] ?? generatedAdvice;
+  const pageUrl = `${SITE_URL}/tools/${tool.slug}`;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        name: tool.name,
+        description: tool.description,
+        url: pageUrl,
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        breadcrumb: { "@id": `${pageUrl}#breadcrumb` }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+          { "@type": "ListItem", position: 2, name: "All tools", item: `${SITE_URL}/tools` },
+          { "@type": "ListItem", position: 3, name: tool.name, item: pageUrl }
+        ]
+      },
+      {
+        "@type": "SoftwareApplication",
+        name: tool.name,
+        applicationCategory: "UtilitiesApplication",
+        operatingSystem: "Any",
+        description: tool.description,
+        url: pageUrl,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: uniqueFaqItems.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a }
+        }))
+      }
+    ]
+  };
   const preparation: Record<string, string> = {
     PDF: "Keep an untouched copy of the original PDF. Check whether it contains scans, forms, bookmarks, annotations or digital signatures that may affect the result.",
     Finance: "Have the principal or amount, rate, currency and calculation period ready. Check whether the rate is annual or monthly and whether fees or taxes are included.",
@@ -573,6 +615,7 @@ export default function CatalogToolSEOContent({
           <p className="mt-4 text-sm leading-7 text-slate-600">For the best result, read the instructions on the tool page, test a small input and verify the final output before using it in an important task.</p>
         </section>
       </div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
     </article>
   );
 }

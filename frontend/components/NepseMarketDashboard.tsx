@@ -82,7 +82,24 @@ export default function NepseMarketDashboard() {
     } catch(e) { setError(e instanceof Error?e.message:"Market data temporarily unavailable."); }
     finally { setLoading(false); }
   },[symbol,period]);
-  useEffect(()=>{void load(symbol,period);const timer=window.setInterval(()=>void load(symbol,period),5*60*1000);return()=>window.clearInterval(timer);},[load,symbol,period]);
+  useEffect(()=>{
+    let active=true;
+    const refresh=async()=>{
+      try {
+        const response=await fetch("/api/nepse-market?symbol="+encodeURIComponent(symbol)+"&period="+period,{cache:"no-store"});
+        const json=await response.json() as MarketData;
+        if(!response.ok) throw new Error(json.error||"Market data unavailable.");
+        if(active){setData(json);setError("");}
+      } catch(e) {
+        if(active) setError(e instanceof Error?e.message:"Market data temporarily unavailable.");
+      } finally {
+        if(active) setLoading(false);
+      }
+    };
+    void refresh();
+    const timer=window.setInterval(()=>void refresh(),5*60*1000);
+    return()=>{active=false;window.clearInterval(timer);};
+  },[symbol,period]);
   const stocks=useMemo(()=>{
     const filtered=(data?.stocks??[]).filter(s=>(s.symbol+" "+s.name).toLowerCase().includes(query.toLowerCase()));
     return [...filtered].sort((a,b)=>sort==="gainers"?b.percent_change-a.percent_change:sort==="losers"?a.percent_change-b.percent_change:sort==="volume"?b.volume-a.volume:b.turnover-a.turnover).slice(0,40);

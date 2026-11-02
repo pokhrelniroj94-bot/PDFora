@@ -63,6 +63,7 @@ export default function NepseMarketDashboard() {
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState("");
   const load=useCallback(async (nextSymbol=symbol,nextPeriod=period) => {
+    setLoading(true);
     try {
       const response=await fetch("/api/nepse-market?symbol="+encodeURIComponent(nextSymbol)+"&period="+nextPeriod,{cache:"no-store"});
       const json=await response.json() as MarketData;
@@ -71,7 +72,7 @@ export default function NepseMarketDashboard() {
     } catch(e) { setError(e instanceof Error?e.message:"Market data temporarily unavailable."); }
     finally { setLoading(false); }
   },[symbol,period]);
-  useEffect(()=>{setLoading(true);void load(symbol,period);const timer=window.setInterval(()=>void load(symbol,period),5*60*1000);return()=>window.clearInterval(timer);},[load,symbol,period]);
+  useEffect(()=>{void load(symbol,period);const timer=window.setInterval(()=>void load(symbol,period),5*60*1000);return()=>window.clearInterval(timer);},[load,symbol,period]);
   const stocks=useMemo(()=>{
     const filtered=(data?.stocks??[]).filter(s=>(s.symbol+" "+s.name).toLowerCase().includes(query.toLowerCase()));
     return [...filtered].sort((a,b)=>sort==="gainers"?b.percent_change-a.percent_change:sort==="losers"?a.percent_change-b.percent_change:sort==="volume"?b.volume-a.volume:b.turnover-a.turnover).slice(0,40);

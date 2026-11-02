@@ -40,12 +40,20 @@ async function readFeed(query: string): Promise<Story[]> {
 
 export async function GET() {
   try {
-    const [market, ipo] = await Promise.all([
+    const [marketResult, ipoResult] = await Promise.allSettled([
       readFeed("NEPSE Nepal stock market shares trading"),
       readFeed("Nepal IPO FPO share allotment public issue"),
     ]);
+    const market = marketResult.status === "fulfilled" ? marketResult.value : [];
+    const ipo = ipoResult.status === "fulfilled" ? ipoResult.value : [];
+    if (market.length === 0 && ipo.length === 0) {
+      throw new Error("Both Nepal news feeds are temporarily unavailable");
+    }
+    const warning = marketResult.status === "rejected" || ipoResult.status === "rejected"
+      ? "Some headlines could not be loaded. The available news category is still shown."
+      : undefined;
     return Response.json(
-      { market, ipo, updatedAt: new Date().toISOString(), maxAgeDays: 7 },
+      { market, ipo, updatedAt: new Date().toISOString(), maxAgeDays: 7, warning },
       { headers: { "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800" } },
     );
   } catch {

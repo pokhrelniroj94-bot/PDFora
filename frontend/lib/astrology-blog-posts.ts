@@ -62,5 +62,8 @@ export const astrologyBlogPosts: BlogPost[] = [
       { question: "Is 18 out of 36 a guaranteed pass mark?", answer: "No. It is a widely used traditional convention, not a scientific test or guarantee of marriage success." },
       { question: "Why can Vashya or Yoni scores differ between websites?", answer: "Different printed texts and editions contain variant tables, and some calculators transpose bride/groom rows and columns or apply parihara differently." }
     ]
+
+    toolLinks: [{ label: "Open the 36 Guna Milan calculator", href: "/tools/nepali-guna-milan" }],
+    sources: [{ label: "Ashtakoota table method and printed-source references", url: "https://thetelugucalendar.com/marriage-matching/method/" }],
   },
 ];

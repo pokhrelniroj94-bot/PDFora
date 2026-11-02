@@ -1,4 +1,5 @@
 import Link from "next/link";
+import AdsterraNative from "../../components/AdsterraNative";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost } from "../../../lib/blog-posts";
@@ -105,6 +106,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             </div>
           </section>
         </div>
+        <div className="mt-8"><AdsterraNative /></div>
         <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6 text-sm">
           <Link href="/blog" className="font-bold text-teal-700 hover:underline">← All guides</Link>
           <Link href="/" className="font-bold text-teal-700 hover:underline">PDFora home</Link>

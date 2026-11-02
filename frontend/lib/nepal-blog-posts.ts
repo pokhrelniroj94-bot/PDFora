@@ -375,7 +375,7 @@ export const nepalBlogPosts: BlogPost[] = [
     intro: "A fixed deposit estimate helps compare how principal, interest rate, deposit term and compounding frequency affect maturity value. The final bank payout depends on the product's own terms and current tax rules.",
     sections: [
       { heading: "What inputs affect FD maturity?", paragraphs: ["The principal is the amount deposited, the annual interest rate is the advertised return, and the term determines how long interest can accrue. Compounding frequency affects how often earned interest is added to the balance."] },
-      { heading: "How to use the calculator", bullets: ["Enter the deposit amount in NPR.", "Enter the bank's annual interest rate and term in months.", "Choose the compounding frequency stated by the bank.", "Set an appropriate tax assumption and review gross interest and estimated maturity."] },
+      { heading: "How to use the calculator", paragraphs: ["Follow these steps using the terms shown in the bank\u0027s current FD product disclosure."], bullets: ["Enter the deposit amount in NPR.", "Enter the bank's annual interest rate and term in months.", "Choose the compounding frequency stated by the bank.", "Set an appropriate tax assumption and review gross interest and estimated maturity."] },
       { heading: "Important limitations", paragraphs: ["Banks may use different day-count conventions, interest payout options, minimum terms, premature withdrawal penalties and withholding rules. Confirm the exact product disclosure and current IRD guidance before depositing."] }
     ],
     faqs: [{ question: "Does every Nepal bank compound FD interest quarterly?", answer: "No. Compounding and payout rules depend on the specific bank product. Use the terms published by the bank." }],
@@ -392,7 +392,7 @@ export const nepalBlogPosts: BlogPost[] = [
     intro: "A remittance payout depends on the amount sent, the provider's exchange rate and any transfer or recipient fee. Comparing the final NPR amount is more useful than comparing an exchange rate alone.",
     sections: [
       { heading: "How remittance payout is estimated", paragraphs: ["Multiply the amount sent by the quoted NPR exchange rate, then subtract any fee charged in NPR. If the provider deducts a fee from the sending currency, convert that fee consistently before comparing offers."] },
-      { heading: "How to compare providers", bullets: ["Check the recipient amount, not just the advertised rate.", "Confirm who pays the transfer fee.", "Check whether intermediary or recipient-bank charges apply.", "Compare quotes for the same sending amount and payout method."] },
+      { heading: "How to compare providers", paragraphs: ["Use the same transfer amount and payout currency when comparing quotes."], bullets: ["Check the recipient amount, not just the advertised rate.", "Confirm who pays the transfer fee.", "Check whether intermediary or recipient-bank charges apply.", "Compare quotes for the same sending amount and payout method."] },
       { heading: "Important limitations", paragraphs: ["The calculator does not connect to remittance companies or fetch a live quote. Actual exchange rates and fees vary by provider, destination, transfer method and time."] }
     ],
     faqs: [{ question: "Does this show live remittance rates?", answer: "No. Enter the rate and fees quoted by your chosen provider." }],
@@ -409,7 +409,7 @@ export const nepalBlogPosts: BlogPost[] = [
     intro: "IPO allotment does not guarantee a profit. The final result depends on the sale price, share quantity, broker tariff, transaction fees and applicable capital-gains tax.",
     sections: [
       { heading: "Calculate the gross gain or loss", paragraphs: ["Multiply the allotted share quantity by the sale price to estimate gross sale value. Subtract the original allotment cost to find the gross gain or loss before selling charges."] },
-      { heading: "Include selling charges", bullets: ["Enter the actual allotted kitta and IPO price.", "Use a realistic sale price scenario.", "Update broker commission, SEBON fee and DP charge from the current tariff.", "Select a tax assumption only after checking the applicable holding-period rule."] },
+      { heading: "Include selling charges", paragraphs: ["Add each current selling charge so the estimate reflects net proceeds rather than only the gross price difference."], bullets: ["Enter the actual allotted kitta and IPO price.", "Use a realistic sale price scenario.", "Update broker commission, SEBON fee and DP charge from the current tariff.", "Select a tax assumption only after checking the applicable holding-period rule."] },
       { heading: "Important limitations", paragraphs: ["This is a planning estimate, not a broker contract note. Charges, minimum fees, tax treatment and settlement rules can change. Confirm current terms with your broker and the Inland Revenue Department."] }
     ],
     faqs: [{ question: "Does the tool know the actual listing price?", answer: "No. The sale price is an assumption entered by the user and may differ from the market price." }],

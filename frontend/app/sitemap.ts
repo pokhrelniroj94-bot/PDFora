@@ -4,12 +4,13 @@ import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
 
 const baseUrl = "https://pd-fora.vercel.app";
+const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const legacyPdfEntries: MetadataRoute.Sitemap = legacyToolSlugs.map((slug) => ({
     url: `${baseUrl}/${slug}`,
     changeFrequency: "monthly",
-    priority: ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"].includes(slug) ? 0.9 : 0.7,
+    priority: prioritySlugs.has(slug) ? 0.9 : 0.7,
   }));
 
   // Every catalog tool gets exactly one sitemap URL. Existing PDF routes retain

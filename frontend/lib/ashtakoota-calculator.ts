@@ -125,6 +125,10 @@ export function calculateAshtakoota(bride:KundaliResult,groom:KundaliResult):Gun
  const sameRashiDifferentNakshatra=br===gr&&bi!==gi;
  const sameNakshatraDifferentRashi=bi===gi&&br!==gr;
  const nadiCancelled=nadiDosha&&(sameRashiDifferentNakshatra||sameNakshatraDifferentRashi);
+ const brideMoonNavamsa=bride.planets.find((planet)=>planet.key==="Moon")?.navamsaSign ?? "";
+ const groomMoonNavamsa=groom.planets.find((planet)=>planet.key==="Moon")?.navamsaSign ?? "";
+ const brideNavamsaIndex=rashiIndex(brideMoonNavamsa), groomNavamsaIndex=rashiIndex(groomMoonNavamsa);
+ const ganaCancelled=naturalRelation(SIGN_LORD[br],SIGN_LORD[gr])==="friend" && brideNavamsaIndex>=0 && groomNavamsaIndex>=0 && naturalRelation(SIGN_LORD[brideNavamsaIndex],SIGN_LORD[groomNavamsaIndex])==="friend";
  const nadiScore=nadiDosha?0:8;
  const scores:GunaKootaScore[]=[
   {key:"varna",ne:"वर्ण",hi:"वर्ण",en:"Varna",score:vScore,max:1,brideValue:VARNA[br],groomValue:VARNA[gr],note:"Moon-sign varna; groom's class equal to or higher than bride's receives 1."},
@@ -138,6 +142,7 @@ export function calculateAshtakoota(bride:KundaliResult,groom:KundaliResult):Gun
  ];
  const exceptions:string[]=[];
  if(bhakootCancelled) exceptions.push("Bhakoot parihara: Moon-sign lords are the same or mutual friends. The raw score remains 0; the traditional exception is displayed separately.");
+ if(ganaCancelled) exceptions.push("Gana parihara: Rashi lords and Navamsa lords are mutual friends. The raw score remains unchanged; the traditional exception is displayed separately.");
  if(nadiCancelled) exceptions.push("Nadi parihara: same Rashi with different Nakshatras, or same Nakshatra in different Rashis. The raw score remains 0; the traditional exception is displayed separately.");
  if(br===gr&&bi===gi&&bride.janmaPada!==groom.janmaPada) exceptions.push("Same Rashi and Nakshatra but different padas: the cited source describes this as an auspicious exception.");
  if(br===gr&&bi===gi&&bride.janmaPada===groom.janmaPada) exceptions.push("Same Rashi, Nakshatra and pada: the cited source does not describe this as the different-pada exception.");

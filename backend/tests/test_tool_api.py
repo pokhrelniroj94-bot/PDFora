@@ -251,3 +251,32 @@ def test_rate_limit_returns_429_for_api_post(monkeypatch):
     assert second.status_code == 429
     assert second.headers.get("retry-after") == "60"
     _LOCAL_RATE_LIMITS.clear()
+
+
+
+def test_backend_security_headers_are_present():
+    response = TestClient(app).get("/health")
+    assert response.status_code == 200
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert response.headers["x-frame-options"] == "DENY"
+    assert response.headers["referrer-policy"] == "strict-origin-when-cross-origin"
+    assert "frame-ancestors 'none'" in response.headers["content-security-policy"]
+
+
+def test_root_does_not_disclose_internal_name_or_version():
+    response = TestClient(app).get("/")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
+def test_temp_job_is_removed_after_file_response():
+    from main import TEMP_DIR
+
+    before = set(TEMP_DIR.iterdir())
+    response = TestClient(app).post(
+        "/api/pdf-info",
+        files={"file": ("sample.pdf", make_sample_pdf(), "application/pdf")},
+    )
+    assert response.status_code == 200
+    after = set(TEMP_DIR.iterdir())
+    assert after == before

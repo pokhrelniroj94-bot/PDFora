@@ -104,7 +104,7 @@ export default function CatalogToolSEOContent({
       </section>
     </div></article>;
   }
-  if (["neb-gpa-calculator","nepal-land-area-converter","nepal-vat-calculator","nepal-share-calculator"].includes(tool.slug)) {
+  if (["neb-gpa-calculator","nepal-land-area-converter","nepali-vat-calculator","nepal-share-calculator"].includes(tool.slug)) {
     const guides: Record<string, { eyebrow: string; heading: string; intro: string; steps: string[]; formula: string; example: string; caution: string }> = {
       "neb-gpa-calculator": {
         eyebrow: "NEB education calculator",

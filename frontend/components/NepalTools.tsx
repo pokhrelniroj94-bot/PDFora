@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import DateConverter from "../lib/nepali-date-converter";
+import { calculateNepalPanchang, NEPAL_LOCATIONS, type PanchangResult } from "../lib/panchang-calculator";
 
 declare global { interface Window { PreetiConverter?: new () => { convert(text:string):string; reverseConvert(text:string):string } } }
 const months = ["बैशाख","जेठ","असार","साउन","भदौ","असोज","कात्तिक","मंसिर","पुस","माघ","फागुन","चैत"];
@@ -26,6 +27,7 @@ export default function NepalTools({slug}:{slug:string}) {
  const [digitsText,setDigitsText]=useState("नेपाल 2083 साल");
  const [preetiText,setPreetiText]=useState("g]kfn ;/sf/sf"),[preetiMode,setPreetiMode]=useState("to-unicode"),[preetiReady,setPreetiReady]=useState(false);
  const [calendarYear,setCalendarYear]=useState("2083"),[calendarMonth,setCalendarMonth]=useState("1"),[calendarRows,setCalendarRows]=useState<{day:number;ad:string;weekday:string}[]>([]);
+ const [panchangDate,setPanchangDate]=useState(""),[panchangCity,setPanchangCity]=useState("kathmandu"),[panchangResult,setPanchangResult]=useState<PanchangResult|null>(null),[panchangError,setPanchangError]=useState("");
  const [photo,setPhoto]=useState<File|null>(null),[photoLimit,setPhotoLimit]=useState("200"),[photoSize,setPhotoSize]=useState("600");
  const [subjects,setSubjects]=useState(Array.from({length:6},(_,i)=>({name:"Subject "+(i+1),credit:"3",grade:"3.2"})));
  const [shares,setShares]=useState("100"),[buyPrice,setBuyPrice]=useState("200"),[sellPrice,setSellPrice]=useState("220"),[brokerRate,setBrokerRate]=useState("0.36"),[sebonRate,setSebonRate]=useState("0.015"),[dpCharge,setDpCharge]=useState("25"),[cgtRate,setCgtRate]=useState("5");
@@ -47,6 +49,7 @@ export default function NepalTools({slug}:{slug:string}) {
    document.head.appendChild(script);
    return ()=>{script.onload=null;script.onerror=null;};
   }
+  if(slug==="nepal-panchang-calculator") setPanchangDate(kathmanduISODate());
   if(["nepali-date-converter","nepali-calendar"].includes(slug)){
    const today = kathmanduISODate();
    setTodayAD(today);

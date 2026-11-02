@@ -37,7 +37,7 @@ const norm = (angle: number) => ((angle % 360) + 360) % 360;
 const rad = (deg: number) => deg * Math.PI / 180;
 const deg = (r: number) => r * 180 / Math.PI;
 const nepaliNumber = (value: number, digits = 2) => new Intl.NumberFormat("ne-NP", { maximumFractionDigits: digits }).format(value);
-const nepaliDigits = (value: string | number) => String(value).replace(/\\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]);
+const nepaliDigits = (value: string | number) => String(value).replace(/\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]);
 
 function localWallTimeToUtc(date: string, time: string, timeZone = "Asia/Kathmandu"): Date {
   const [year, month, day] = date.split("-").map(Number);

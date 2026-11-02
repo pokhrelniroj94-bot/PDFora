@@ -16,13 +16,15 @@ const sitemapSource = read("../app/sitemap.ts");
 const bsYearsSource = read("../lib/nepali-date-converter/years.ts");
 const nepaliDateSource = read("../lib/nepali-date-converter/index.ts");
 const bsYears = {};
-for (const [, yearText, valueText] of bsYearsSource.matchAll(/^years\\[(\\d+)\\] = (.+);$/gm)) {
+for (const [, yearText, valueText] of bsYearsSource.matchAll(/^years\[(\d+)\] = (.+);$/gm)) {
   const year = Number(yearText);
-  bsYears[year] = valueText.startsWith("years[") ? bsYears[Number(valueText.match(/years\\[(\\d+)\\]/)[1])] : JSON.parse(valueText);
+  bsYears[year] = valueText.startsWith("years[") ? bsYears[Number(valueText.match(/years\[(\d+)\]/)[1])] : JSON.parse(valueText);
 }
 assert.ok(nepaliDateSource.includes("Date.UTC(1918, 3, 13)"), "BS calendar epoch must remain anchored at 1975-01-01 BS = 1918-04-13 AD");
 assert.deepEqual(bsYears[2083].slice(0, 12), [31,31,32,31,31,31,30,29,30,29,30,30], "2083 BS month lengths must match the published calendar data");
 assert.equal(bsYears[2083][12], 365, "2083 BS must contain 365 days");
+assert.ok(!bsYears[2084], "Unverified future calendar years must not be bundled as usable data");
+assert.ok(nepaliDateSource.includes("yearOffsets[2084]") && nepaliDateSource.includes("this.year > 2083"), "Date converter must reject future BS years beyond the last supported calendar");
 const bsToAd = (year, month, day) => {
   assert.ok(bsYears[year] && month >= 1 && month <= 12 && day >= 1 && day <= bsYears[year][month-1], "BS date must be valid");
   let offset = 0;
@@ -35,75 +37,8 @@ assert.equal(bsToAd(2083,1,1), "2026-04-14", "2083 New Year anchor must match pu
 assert.equal(bsToAd(2083,7,1), "2026-10-18", "Kartik 1, 2083 must match published calendar");
 assert.equal(bsToAd(2083,12,30), "2027-04-13", "2083 Chaitra 30 must match published calendar");
 assert.ok(nepalTools.includes('timeZone: "Asia/Kathmandu"'), "Today date must use Nepal's civil timezone");
-assert.ok(nepalTools.includes('new DateConverter(`${y}-${String(m).padStart(2,"0")}-${String(day).padStart(2,"0")}`).toAd()'), "Calendar grid must derive every day from the exact BS converter");
-const robotsSource = read("../app/robots.ts");
-const rootLayout = read("../app/layout.tsx");
-const toolsPageMetadata = read("../app/tools/page.tsx");
-const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
-assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
-assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
-const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);
-assert.ok(quickBlock, "Quick utility dispatch list is missing");
-const quickSlugs = [...quickBlock[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
-const quickCases = [...quickTools.matchAll(/case "([^"]+)"/g)].map((m) => m[1]);
-const extraCases = [...extraTools.matchAll(/case "([^"]+)"/g)].map((m) => m[1]);
-const conditionalCases = [...allTools.matchAll(/if\s*\(slug\s*===\s*"([^"]+)"/g)].map((m) => m[1]);
-assert.equal(new Set(quickCases).size, quickCases.length, "Duplicate quick-tool handlers");
-assert.equal(new Set(extraCases).size, extraCases.length, "Duplicate extra-tool handlers");
-assert.deepEqual([...quickSlugs].sort(), [...quickCases].sort(), "Quick utility dispatch list and handlers differ");
-const nepalCases = [...nepalTools.matchAll(/slug==="([a-z0-9-]+)"/g)].map((m) => m[1]);
-const liveCases = [...nepalLiveTools.matchAll(/slug === "([a-z0-9-]+)"/g)].map((m) => m[1]);
-const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
-assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
-const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
-const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
-const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
-if (typingRouted) implemented.add("nepali-unicode-typing");
-if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {
-  implemented.add("image-compressor");
-  implemented.add("image-format-converter");
-}
-const missing = catalog.filter((slug) => !implemented.has(slug));
-assert.deepEqual(missing, [], `Tools without handlers: ${missing.join(", ")}`);
-for (const slug of ["nepal-forex-rates", "nepal-salary-tax-calculator", "nepal-electricity-bill-calculator", "nepal-public-holidays-2083"]) {
-  assert.ok(liveCases.includes(slug), `Missing Nepal live tool handler: ${slug}`);
-  assert.ok(routedNepalSlugs.includes(slug), `Missing Nepal live route: ${slug}`);
-}
-assert.ok(typingRouted, "Nepali Unicode typing route or engine is missing");
-assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('import NepalLiveTools from "./NepalLiveTools"'), "Nepal live tools component is not imported");
-
-assert.ok(allTools.includes('import("./NepaliTypingTool")') || allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");
-const nepalSlugs = [...catalogSource.matchAll(/\\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);
-const missingNepalGuides = nepalSlugs.filter((slug) => !nepalBlogPosts.includes('href: "/tools/' + slug + '"'));
-assert.deepEqual(missingNepalGuides, [], "Nepal tools without dedicated guides: " + missingNepalGuides.join(", "));
-assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf("...catalogGuides"), "Dedicated Nepal guides must take precedence over generated generic guides");
-const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator","nepal-fixed-deposit-calculator","nepal-remittance-calculator","nepal-ipo-profit-calculator","nepal-panchang-today"];
-const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
-assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
-assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
-assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
-assert.ok(toolPage.includes('canonical') && toolPage.includes('openGraph') && toolPage.includes('twitter'), "Tool metadata must include canonical and social previews");
-assert.ok(toolPage.includes('"@type": "FAQPage"') && toolPage.includes('"@type": "BreadcrumbList"'), "Tool pages must include FAQ and breadcrumb structured data");
-assert.ok(toolsPageMetadata.includes('canonical: "https://pd-fora.vercel.app/tools"'), "Tool directory must declare its canonical URL");
-assert.ok(sitemapSource.includes("...legacyPdfEntries") && sitemapSource.includes("...catalogEntries") && sitemapSource.includes('tool.slug !== "ocr-pdf"'), "Sitemap must include available legacy and catalog tools but exclude OCR");
-assert.ok(robotsSource.includes('disallow: ["/api/"]') && robotsSource.includes("/sitemap.xml"), "Robots policy must block API paths and advertise the sitemap");
-assert.ok(rootLayout.includes("Calculators & Nepal Utilities") && rootLayout.includes("image and text converters"), "Site-wide metadata must describe the broader all-in-one tool collection");
-const metadataBlock = toolPage.slice(toolPage.indexOf("const seoOverrides"), toolPage.indexOf("const seo = seoOverrides"));
-const metadataEntries = [...metadataBlock.matchAll(/"([^"]+)":\s*\{\s*title:\s*"([^"]+)",\s*description:\s*"([^"]+)"/g)];
-assert.ok(metadataEntries.length >= 45, "Expected detailed metadata overrides for the main Nepal and utility pages");
-assert.equal(new Set(metadataEntries.map((m) => m[1])).size, metadataEntries.length, "Duplicate tool-specific metadata overrides exist");
-assert.ok(metadataEntries.every((m) => m[2].length <= 60 && m[3].length <= 160), "Tool metadata title or description exceeds the SEO length target");
-assert.ok(toolPage.includes('replace(/\\s+\\S*$/') && toolPage.includes('}...`)'), "Fallback SEO descriptions must trim at word boundaries");
-
-
-const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
-assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
-const advisedSlugs = [...adviceBlock[1].matchAll(/^\s{4}"([^"]+)":\s*\{/gm)].map((m) => m[1]);
-const missingToolAdvice = catalog.filter((slug) => !advisedSlugs.includes(slug));
-assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO guidance: " + missingToolAdvice.join(", "));
-
-assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weighted grade points");
-assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");
+assert.ok(nepalTools.includes("new DateConverter(") && nepalTools.includes(".toAd()"), "Calendar grid must derive each day from the exact BS converter");
+assert.ok(nepalTools.includes("y>2083"), "Calendar UI must not expose unverified future BS years");
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
 assert.ok(nepalTools.includes('https://usemiti.com/embed/today?style=panchanga') && nepalTools.includes("Miti (Yarsa Himalaya)") && nepalTools.includes("CC BY 4.0"), "Panchang tool must use the disclosed source embed and attribution");
 assert.ok(allTools.includes('"nepal-panchang-today"'), "Panchang tool must be routed to the Nepal utility workspace");

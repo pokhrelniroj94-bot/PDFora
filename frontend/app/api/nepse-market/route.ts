@@ -36,13 +36,13 @@ export async function GET(request: Request) {
   }
   const [liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.allSettled([
     read<unknown[]>("/data/market/live.json", 60),
-    read<unknown[]>("/data/nepse_data.json"),
+    read<unknown[]>("/data/nepse_data.json", 60),
     read<unknown[]>("/data/market/indices.json", 60),
     read<Json>("/data/market/status.json", 60),
-    read<unknown[]>("/data/market/summary.json"),
-    read<Json>("/data/market/top_stocks.json"),
-    read<unknown[]>("/data/market/sector_indices.json"),
-    read<Json>("/data/market/supply_demand.json"),
+    read<unknown[]>("/data/market/summary.json", 60),
+    read<Json>("/data/market/top_stocks.json", 60),
+    read<unknown[]>("/data/market/sector_indices.json", 60),
+    read<Json>("/data/market/supply_demand.json", 60),
     read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json"),
     read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json"),
   ]);

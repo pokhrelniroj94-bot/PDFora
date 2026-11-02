@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Edit PDF Metadata Online | PDFora",
+  title: "Edit PDF Metadata Online",
   description: "Update document title, author, subject and keywords.",
   alternates: { canonical: "https://pd-fora.vercel.app/edit-pdf-metadata" },
 };

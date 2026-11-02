@@ -9,7 +9,7 @@ import requests
 from pypdf import PdfReader
 
 
-BASE = os.environ.get("PDFORA_API", "https://pdfora-503r.onrender.com").rstrip("/")
+BASE = os.environ.get("PDFORA_API", "https://pdfora-493r.onrender.com").rstrip("/")
 PASSWORD = "PDFora-Live-Regression-Password"
 
 

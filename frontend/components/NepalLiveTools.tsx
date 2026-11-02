@@ -289,16 +289,50 @@ function NepseDividendTool() {
   const [faceValue, setFaceValue] = useState("100");
   const [taxRate, setTaxRate] = useState("5");
   const quantity = Number(shares), cash = Number(cashRate), bonus = Number(bonusRate), face = Number(faceValue), tax = Number(taxRate);
-  const valid = [quantity, cash, bonus, face, tax].every(Number.isFinite) && quantity > 0 && Number.isInteger(quantity) && cash >= 0 && bonus >= 0 && face > 0 && tax >= 0 && tax <= 100;
+  const valid = [quantity, cash, bonus, face, tax].every(Number.isFinite) && [shares,cashRate,bonusRate,faceValue,taxRate].every(v=>v.trim()!=="") && quantity > 0 && Number.isInteger(quantity) && cash >= 0 && bonus >= 0 && face > 0 && tax >= 0 && tax <= 100;
   const cashGross = quantity * face * cash / 100;
   const cashTax = cashGross * tax / 100;
-  const bonusShares = quantity * bonus / 100;
-  return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">NEPSE Cash Dividend & Bonus Share Calculator</h2><p className="mt-1 text-sm text-slate-600">Estimate cash dividend on the editable face value, after an editable withholding-tax assumption, and calculate bonus shares.</p></div>
-    <div className="grid gap-3 sm:grid-cols-2"><Field title="Shares held" value={shares} onChange={setShares}/><Field title="Cash dividend (%)" value={cashRate} onChange={setCashRate}/><Field title="Bonus shares (%)" value={bonusRate} onChange={setBonusRate}/><Field title="Face value per share (NPR)" value={faceValue} onChange={setFaceValue}/><Field title="Cash dividend tax assumption (%)" value={taxRate} onChange={setTaxRate}/></div>
-    {valid ? <Result>Eligible shares: {quantity.toLocaleString("en-IN")}\nGross cash dividend (face value basis): {npr(cashGross)}\nEstimated withholding tax: {npr(cashTax)}\nEstimated cash dividend after tax: {npr(cashGross - cashTax)}\nEstimated bonus shares: {bonusShares.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</Result> : <p role="alert" className="text-sm text-red-700">Enter a positive whole share quantity and valid non-negative percentages.</p>}
-    <p className="text-xs leading-5 text-slate-500">This is a percentage-based estimate, not an allotment confirmation. Fractional bonus entitlements, book closure eligibility, withholding rules and company-specific terms may change the final credited amount. Verify the declared corporate action and tax treatment with the company, CDSC and IRD.</p>
-    <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noreferrer">NEPSE official</a><a className="font-semibold text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noreferrer">Mero Share</a></div>
+  const cashNet = cashGross - cashTax;
+  const bonusExact = quantity * bonus / 100;
+  const bonusWhole = Math.floor(bonusExact + 1e-10);
+  const bonusFraction = Math.max(0, bonusExact - bonusWhole);
+  const metric = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm";
+  return <div className="space-y-5">
+    <div><h2 className="text-lg font-bold">NEPSE Cash Dividend & Bonus Share Calculator</h2><p className="mt-1 text-sm leading-6 text-slate-600">Enter the corporate-action percentages from the company notice. Results update automatically and separate cash payout from estimated bonus-share entitlement.</p></div>
+    <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <h3 className="mb-3 text-sm font-bold text-slate-900">Your shareholding and company announcement</h3>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field title="Eligible shares held (whole shares)" value={shares} onChange={setShares}/>
+        <Field title="Cash dividend (%)" value={cashRate} onChange={setCashRate}/>
+        <Field title="Bonus shares (%)" value={bonusRate} onChange={setBonusRate}/>
+        <Field title="Face value per share (NPR)" value={faceValue} onChange={setFaceValue}/>
+        <Field title="Withholding-tax assumption (%)" value={taxRate} onChange={setTaxRate}/>
+      </div>
+      <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900"><strong>Tax assumption only:</strong> This is an editable input, not a statement of the current legal rate. Confirm the applicable withholding treatment before relying on the estimate.</p>
+    </section>
+    {valid ? <section aria-live="polite" className="space-y-3">
+      <div className="rounded-2xl bg-slate-950 p-5 text-white shadow-sm">
+        <p className="text-sm font-medium text-slate-300">Estimated cash dividend after assumed tax</p>
+        <p className="mt-1 text-3xl font-bold tracking-tight tabular-nums">{npr(cashNet)}</p>
+        <p className="mt-2 text-xs text-slate-300">Based on {quantity.toLocaleString("en-IN")} eligible shares · {cash}% cash dividend · {tax}% editable tax assumption</p>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className={metric}><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Gross cash dividend</p><p className="mt-1 text-xl font-bold tabular-nums text-slate-900">{npr(cashGross)}</p><p className="mt-1 text-xs text-slate-500">Before assumed withholding tax</p></div>
+        <div className={metric}><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Estimated tax deduction</p><p className="mt-1 text-xl font-bold tabular-nums text-rose-700">{npr(cashTax)}</p><p className="mt-1 text-xs text-slate-500">At your entered {tax}% assumption</p></div>
+        <div className={metric}><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Bonus entitlement (calculated)</p><p className="mt-1 text-xl font-bold tabular-nums text-teal-700">{bonusExact.toLocaleString("en-IN", { maximumFractionDigits: 4 })} shares</p><p className="mt-1 text-xs text-slate-500">Exact percentage-based estimate</p></div>
+        <div className={metric}><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Whole-share estimate</p><p className="mt-1 text-xl font-bold tabular-nums text-slate-900">{bonusWhole.toLocaleString("en-IN")} shares</p><p className="mt-1 text-xs text-slate-500">Fractional part: {bonusFraction.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</p></div>
+      </div>
+      <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+        <h4 className="font-bold text-slate-900">Calculation breakdown</h4>
+        <dl className="mt-2 space-y-2 text-slate-600">
+          <div className="flex justify-between gap-3"><dt>Gross cash dividend</dt><dd className="shrink-0 font-semibold tabular-nums text-slate-900">{npr(cashGross)}</dd></div>
+          <div className="flex justify-between gap-3"><dt>After assumed tax</dt><dd className="shrink-0 font-semibold tabular-nums text-slate-900">{npr(cashNet)}</dd></div>
+          <div className="flex justify-between gap-3"><dt>Bonus entitlement</dt><dd className="shrink-0 font-semibold tabular-nums text-slate-900">{bonusExact.toLocaleString("en-IN", { maximumFractionDigits: 4 })} shares</dd></div>
+        </dl>
+      </div>
+    </section> : <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">Enter a positive whole share quantity, a positive face value, and valid percentages. Tax assumption must be between 0 and 100. Leave no field empty.</p>}
+    <p className="text-xs leading-5 text-slate-500">Estimate only—not an official dividend or CDSC allotment confirmation. The whole-share figure is a mathematical display, not a claim about how the company/CDSC will treat fractional entitlements. Eligibility depends on book-closure rules and the company’s notice; final cash, tax and bonus credits may differ. Verify with the company, NEPSE, CDSC and IRD.</p>
+    <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noreferrer">NEPSE official</a><a className="font-semibold text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noreferrer">Mero Share / CDSC</a><a className="font-semibold text-teal-700 underline" href="https://www.ird.gov.np/" target="_blank" rel="noreferrer">Inland Revenue Department</a></div>
   </div>;
 }
 

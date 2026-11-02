@@ -3,10 +3,10 @@
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
-  --brand: #2563eb;
-  --brand-strong: #1d4ed8;
-  --brand-soft: #dbeafe;
-  --brand-accent: #f97316;
+  --brand: #0f766e;
+  --brand-strong: #115e59;
+  --brand-soft: #ccfbf1;
+  --brand-accent: #e11d48;
 }
 
 @theme inline {
@@ -23,7 +23,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   text-rendering: optimizeLegibility;
 }
-::selection { background: #bfdbfe; color: #1e3a8a; }
-:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+::selection { background: #99f6e4; color: #134e4a; }
+:focus-visible { outline: 3px solid #0f766e; outline-offset: 3px; }
 input, button, a { -webkit-tap-highlight-color: transparent; }
 button, a { transition-duration: 180ms; }

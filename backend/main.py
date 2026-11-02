@@ -136,6 +136,20 @@ def validate_pdf_upload(file: UploadFile):
         raise HTTPException(status_code=415, detail="The uploaded file must be a PDF.")
 
 
+async def read_upload_limited(file: UploadFile, max_bytes: int) -> bytes:
+    chunks = []
+    total = 0
+    while True:
+        chunk = await file.read(1024 * 1024)
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > max_bytes:
+            raise HTTPException(status_code=413, detail="The combined upload size must not exceed 50 MB.")
+        chunks.append(chunk)
+    return b"".join(chunks)
+
+
 async def save_upload(
     file: UploadFile,
     path: Path
@@ -555,10 +569,10 @@ async def images_to_pdf(
     try:
         for file in files:
             validate_filename(file.filename)
-            data = await file.read()
+            if (file.content_type or "").lower() not in {"image/jpeg", "image/png", "image/webp", "application/octet-stream", ""}:
+                raise HTTPException(status_code=415, detail="Only JPEG, PNG and WEBP images are supported.")
+            data = await read_upload_limited(file, MAX_FILE_SIZE - total_upload_size)
             total_upload_size += len(data)
-            if total_upload_size > MAX_FILE_SIZE:
-                raise HTTPException(status_code=413, detail="The combined image upload size must not exceed 50 MB.")
 
             try:
                 image = Image.open(io.BytesIO(data))
@@ -580,8 +594,9 @@ async def images_to_pdf(
                     image
                 )
 
+            except HTTPException:
+                raise
             except Exception:
-
                 raise HTTPException(
                     status_code=400,
                     detail=f"Invalid image: {file.filename}"

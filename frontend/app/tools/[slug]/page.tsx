@@ -12,7 +12,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool) return { title: "Tool not found", robots: { index: false, follow: true } };
-  const title = `${tool.name} – Free Online Tool | PDFora`;
+  const title = `${tool.name} Online`;
+  const socialTitle = `${title} | PDFora`;
   const description = tool.description.length > 155 ? tool.description.slice(0, 152).trimEnd() + "..." : tool.description;
   const canonical = `${site}/tools/${tool.slug}`;
   return {

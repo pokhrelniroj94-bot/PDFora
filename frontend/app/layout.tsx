@@ -18,32 +18,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
-    default: "Free Nepal Online Tools: PDF, Tax, Forex, Calendar & More | PDFora",
+    default: "Free Online PDF Tools & Nepal Utilities | PDFora",
     template: "%s | PDFora",
   },
   description:
-    "Free online tools for Nepal: NRB exchange rates, salary tax, electricity bills, Nepali dates, typing, public holidays, calculators and PDF document tools.",
-  openGraph: { type: "website", siteName: "PDFora", title: "PDFora – Free Nepal Online Utilities, PDF & Calculators", description: "Use free Nepal tools for NRB forex rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF tasks." },
-  twitter: { card: "summary", title: "Free Nepal Online Tools | PDFora", description: "NRB rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF utilities." },
-  keywords: [
-    "free Nepal online tools",
-    "NRB exchange rate",
-    "Nepal salary tax calculator",
-    "NEA electricity bill calculator",
-    "Nepali date converter",
-    "Nepali Unicode typing",
-    "Nepal public holidays",
-    "free PDF tools",
-    "online PDF tools",
-    "PDFora PDF tools",
-    "PDF converter",
-    "PDF to Word",
-    "PDF to JPG",
-    "JPG to PDF",
-    "Compress PDF",
-    "Merge PDF",
-    "Split PDF",
-  ],
+    "Use free online PDF tools to merge, split, compress and convert documents, plus practical calculators and utilities for Nepal.",
+  openGraph: { type: "website", siteName: "PDFora", title: "Free Online PDF Tools & Nepal Utilities | PDFora", description: "Merge, split, compress and convert PDF files online. Explore practical calculators and useful Nepal utilities with PDFora.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora free online tools" }] },
+  twitter: { card: "summary_large_image", title: "Free Online PDF Tools & Nepal Utilities | PDFora", description: "Merge, split, compress and convert PDF files online, plus practical Nepal calculators and utilities.", images: ["/opengraph-image"] },
   robots: {
     index: true,
     follow: true,
@@ -68,9 +49,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <footer className="border-t border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-600">
-          <a href="/tools" className="font-semibold text-teal-700 hover:underline">All Tools</a>
+          <a href="/tools" className="font-semibold text-blue-700 hover:underline">All Tools</a>
           <span className="mx-2">·</span>
-          <a href="/blog" className="font-semibold text-teal-700 hover:underline">Guides &amp; Tutorials</a>
+          <a href="/blog" className="font-semibold text-blue-700 hover:underline">Guides &amp; Tutorials</a>
           <span className="mx-2">·</span>
           <a href="/about" className="hover:underline">About PDFora</a>
           <span className="mx-2">·</span>

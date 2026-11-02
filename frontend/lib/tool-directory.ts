@@ -148,7 +148,7 @@ const rawPdfTools: Array<Omit<Tool, "kind" | "slug" | "keywords">> = [
 
 export const pdfTools: Tool[] = rawPdfTools.map((tool) => ({
   ...tool,
-  kind: "pdf",
+  kind: "pdf" as const,
   slug: tool.href.startsWith("/") ? tool.href.slice(1) : tool.href,
   keywords: [tool.name, tool.description, tool.href.replaceAll("-", " ")].join(" "),
 }));
@@ -158,7 +158,8 @@ const catalogSearchAliases: Record<string, string> = {
   "notes-to-pdf": "notes to PDF notebook typed notes text document print save export study notes class notes",
 };
 
-export const catalogTools: Tool[] = toolCatalog
+export const catalogTools: Tool[] = [
+  ...toolCatalog
   .filter((tool) => tool.slug !== "pdf-tools")
   .map((tool) => ({
     name: tool.name,
@@ -166,10 +167,12 @@ export const catalogTools: Tool[] = toolCatalog
     icon: tool.category,
     category: tool.category,
     href: "/tools/" + tool.slug,
-    kind: "utility",
+    kind: "utility" as const,
     slug: tool.slug,
     keywords: [tool.keywords, catalogSearchAliases[tool.slug] ?? ""].join(" "),
-  }));
+  })),
+  { name: "NEPSE Market Dashboard", description: "Explore periodic NEPSE market snapshots, listed-company prices, index and sector performance, top movers and historical charts.", icon: "NEPSE", category: "NEPSE", href: "/market", kind: "utility", slug: "nepse-market-dashboard", keywords: "NEPSE market dashboard stock prices share market listed companies index sector top gainers losers turnover history chart Nepal stock exchange" },
+];
 
 // One canonical directory for homepage search and the full /tools directory.
 // OCR is intentionally excluded until its backend language data is enabled.

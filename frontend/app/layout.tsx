@@ -18,13 +18,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
-    default: "Free Online PDF Tools & Nepal Utilities | PDFora",
+    default: "Free Online PDF Tools, Calculators & Nepal Utilities | PDFora",
     template: "%s | PDFora",
   },
   description:
-    "Use free online PDF tools to merge, split, compress and convert documents, plus practical calculators and utilities for Nepal.",
-  openGraph: { type: "website", siteName: "PDFora", title: "Free Online PDF Tools & Nepal Utilities | PDFora", description: "Merge, split, compress and convert PDF files online. Explore practical calculators and useful Nepal utilities with PDFora.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora free online tools" }] },
-  twitter: { card: "summary_large_image", title: "Free Online PDF Tools & Nepal Utilities | PDFora", description: "Merge, split, compress and convert PDF files online, plus practical Nepal calculators and utilities.", images: ["/opengraph-image"] },
+    "Use free online PDF tools, calculators, image and text converters, developer utilities and practical Nepal-focused tools in one place.",
+  openGraph: { type: "website", siteName: "PDFora", title: "Free Online PDF Tools, Calculators & Nepal Utilities | PDFora", description: "Merge, split, compress and convert PDFs, use practical calculators and image, text and Nepal-focused utilities with PDFora.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora free online tools" }] },
+  twitter: { card: "summary_large_image", title: "Free Online PDF Tools, Calculators & Nepal Utilities | PDFora", description: "Use PDF converters, calculators, image and text tools, developer helpers and practical Nepal utilities online.", images: ["/opengraph-image"] },
   robots: {
     index: true,
     follow: true,

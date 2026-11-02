@@ -23,17 +23,37 @@ const names: Record<string, string> = {
   "/sign-pdf": "Sign PDF", "/edit-pdf-metadata": "Edit PDF Metadata",
 };
 
+const categoryLinks = [
+  { href: "/tools/calculators", title: "Calculators", description: "Finance, business, math and everyday calculators", icon: "🧮" },
+  { href: "/tools/pdf", title: "PDF Tools", description: "Merge, split, compress, convert, edit and secure PDFs", icon: "📄" },
+  { href: "/tools/nepal", title: "Nepal Tools", description: "Nepali calendar, Panchang, Kundali, NEPSE and more", icon: "🇳🇵" },
+  { href: "/tools", title: "All Tools", description: "Browse the complete searchable tool directory", icon: "🧰" },
+];
+
 export default function ToolDirectory() {
   return (
-    <section aria-label="Explore PDFora PDF tools" className="border-t border-teal-100 bg-white px-4 py-10 sm:px-6">
+    <section aria-label="Explore PDFora tools" className="border-t border-teal-100 bg-white px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-6xl">
+        <div className="mb-5">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">PDFora toolbox</p>
+          <h2 className="mt-1 text-xl font-black text-slate-900">Explore tools by category</h2>
+          <p className="mt-1 text-sm text-slate-600">Choose a category to see only the tools you need.</p>
+        </div>
+        <nav aria-label="Browse tool categories" className="mb-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {categoryLinks.map((item) => (
+            <Link key={item.href} href={item.href} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-teal-300 hover:bg-teal-50">
+              <span className="text-2xl" aria-hidden="true">{item.icon}</span>
+              <span className="mt-2 block font-bold text-slate-900">{item.title}</span>
+              <span className="mt-1 block text-sm leading-5 text-slate-600">{item.description}</span>
+            </Link>
+          ))}
+        </nav>
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="text-xs font-black uppercase tracking-widest text-teal-700">PDFora toolbox</p>
-            <h2 className="mt-1 text-xl font-black text-slate-900">Explore all tools</h2>
-            <p className="mt-1 text-sm text-slate-600">PDF tools are here, with finance, text, developer and image utilities in our all-tools hub.</p>
+            <h2 className="text-xl font-black text-slate-900">Explore PDF tools</h2>
+            <p className="mt-1 text-sm text-slate-600">Quick links to PDF processing tools.</p>
           </div>
-          <Link href="/tools" className="text-sm font-bold text-teal-700 hover:text-orange-600">Explore finance, text, developer &amp; image tools →</Link>
+          <Link href="/tools/pdf" className="text-sm font-bold text-teal-700 hover:text-orange-600">View all PDF tools →</Link>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {groups.map(([label, ...paths]) => (

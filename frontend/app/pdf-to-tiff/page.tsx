@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF to TIFF Converter Online | PDFora",
+  title: "PDF to TIFF Converter Online",
   description: "Convert PDF pages to TIFF images online. Download high-quality TIFF page images in one ZIP archive with PDFora.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-tiff" },
 };

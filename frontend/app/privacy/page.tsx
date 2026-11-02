@@ -34,8 +34,8 @@ export default function PrivacyPage() {
           </div>
           <div>
             <h2 className="mb-2 text-2xl font-semibold">5. Analytics, cookies and advertising</h2>
-            <p>Google Analytics may be enabled through the website&apos;s deployment configuration to measure visits and general usage. Advertisement units may load third-party advertising technology, including Adsterra. Depending on the services enabled and your settings, these providers may use cookies or similar technologies and process information such as IP address, device or browser information, approximate location, page activity and ad interactions.</p>
-            <p className="mt-2">Google and advertising providers process information under their own privacy policies and controls. You can manage or clear cookies through your browser settings. Blocking cookies or third-party scripts may affect analytics or advertising functionality.</p>
+            <p>Google Analytics and Adsterra advertising scripts are not loaded unless you grant the corresponding optional consent in the PDFora privacy banner. You may accept all optional services, reject them, or choose analytics and advertising separately. Your choice is stored in this browser&apos;s local storage so the site can remember it. If you reject or do not choose optional services, those scripts remain disabled. When enabled, these providers may use cookies or similar technologies and process information such as IP address, device or browser information, approximate location, page activity and ad interactions.</p>
+            <p className="mt-2">You can reopen Cookie settings using the control at the bottom-left of the website and change your choice at any time. Google and advertising providers process information under their own privacy policies and controls. You can also manage or clear browser storage and cookies through your browser settings.</p>
           </div>
           <div>
             <h2 className="mb-2 text-2xl font-semibold">6. Third-party infrastructure and data sources</h2>

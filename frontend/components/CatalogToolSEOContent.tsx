@@ -515,6 +515,12 @@ export default function CatalogToolSEOContent({
               <li><strong>Calculate and inspect the Moon details.</strong> Confirm the displayed Moon sign and birth nakshatra for both people before interpreting the eight koota scores.</li>
               <li><strong>Review all eight kootas.</strong> Read the score, maximum points, traditional basis and any separately reported parihara. Do not add a parihara to the raw total unless the chosen tradition explicitly defines that adjustment.</li>
               <li><strong>Print only after verification.</strong> Compare important birth-chart details with a trusted local astrologer or panchang before using the result for a family decision.</li>
+            </> : tool.slug === "nepal-panchang-today" ? <>
+              <li><strong>Open the embedded daily view.</strong> The page is fixed to Kathmandu and displays the current civil day supplied by Miti.</li>
+              <li><strong>Check the provider’s displayed date.</strong> Confirm the Kathmandu date and the provider’s coverage before interpreting tithi or timing.</li>
+              <li><strong>Read the Panchang and sunrise/sunset values.</strong> Treat the embed as a source display; PDFora does not calculate a replacement if the provider is unavailable.</li>
+              <li><strong>Keep the location fixed.</strong> Do not apply Kathmandu sunrise, tithi boundaries or ritual timings to another district.</li>
+              <li><strong>Verify important observances.</strong> Compare festival and muhurta decisions with the official Nepal Rashtriya Panchanga and a local approved calendar.</li>
             </> : tool.slug === "nepal-panchang-calculator" ? <>
               <li><strong>Choose a Gregorian date.</strong> Enter the date you want to examine; the calculator does not infer a festival date from the current day.</li>
               <li><strong>Select the nearest supported city.</strong> Sunrise and sunset are calculated using that city’s coordinates and local time zone.</li>

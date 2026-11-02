@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ToolsDirectory } from "../../components/AllTools";
 
 export const metadata: Metadata = {
@@ -23,5 +24,14 @@ export const metadata: Metadata = {
 };
 
 export default function ToolsPage() {
-  return <ToolsDirectory />;
+  return (
+    <>
+      <nav aria-label="Tool categories" className="mx-auto flex w-full max-w-7xl flex-wrap gap-2 px-4 pt-8 sm:px-6 lg:px-8">
+        <Link href="/tools/calculators" className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-400 hover:text-teal-800">Calculators</Link>
+        <Link href="/tools/pdf" className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-400 hover:text-teal-800">PDF Tools</Link>
+        <Link href="/tools/nepal" className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-teal-400 hover:text-teal-800">Nepal Tools</Link>
+      </nav>
+      <ToolsDirectory />
+    </>
+  );
 }

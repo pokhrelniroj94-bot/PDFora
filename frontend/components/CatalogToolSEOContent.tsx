@@ -154,6 +154,13 @@ export default function CatalogToolSEOContent({
     </div></article>;
   }
   const nepalGuides: Record<string, { heading: string; intro: string; steps: string[]; example: string; note: string }> = {
+    "nepali-vat-calculator": {
+      heading: "Calculate 13% Nepal VAT and extract VAT from an inclusive price",
+      intro: "Use this calculator to add Nepal's standard 13% value added tax to a base price, or separate the VAT component from a VAT-inclusive total. The rate field is editable, so check whether a special rate or exemption applies to your transaction before calculating.",
+      steps: ["Enter the amount in NPR, making clear whether it is before VAT or already VAT-inclusive.", "Keep the default 13% rate for a standard-rate example, or change it only when the applicable tax treatment is confirmed.", "Choose Add VAT for a base price or Extract VAT for an amount that already includes VAT.", "Review the base amount, VAT amount and final total separately, then compare the figures with the invoice."],
+      example: "For a base price of NPR 1,000 at 13%, VAT is NPR 130 and the total is NPR 1,130. If NPR 1,130 already includes 13% VAT, the VAT component is NPR 130 and the base amount is NPR 1,000.",
+      note: "This is an arithmetic calculator, not a determination that a supply is taxable at 13%. Nepal VAT registration, zero-rated supplies, exemptions, input-tax credits, invoice rules and other conditions depend on the VAT Act and current IRD guidance. Confirm the correct treatment with IRD or a qualified tax professional."
+    },
     "nepali-number-converter": {
       heading: "Convert numbers into English words and Nepali digits",
       intro: "Enter a whole number to display its Devanagari digits and English number words using the thousand, lakh and crore grouping system. This is useful when preparing amounts, forms and notes that need Indian/Nepal-style number grouping.",

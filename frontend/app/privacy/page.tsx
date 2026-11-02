@@ -4,7 +4,8 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Learn how PDFora processes uploaded files, calculator inputs, technical data, cookies, analytics and advertising.",
   alternates: { canonical: "https://pd-fora.vercel.app/privacy" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "How PDFora handles uploaded files, technical data, cookies, analytics and advertising." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "How PDFora handles uploaded files, technical data, cookies, analytics and advertising.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora privacy policy" }] },
+  twitter: { card: "summary_large_image", title: "PDFora Privacy Policy", description: "Learn how PDFora handles uploaded files, technical data, cookies, analytics and advertising.", images: ["/opengraph-image"] },
 };
 
 export default function PrivacyPage() {

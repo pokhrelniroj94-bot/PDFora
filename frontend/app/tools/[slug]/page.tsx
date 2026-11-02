@@ -377,7 +377,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Can I use it for an official lottery?", a: "No. Do not use a general-purpose browser utility as a certified or regulated lottery drawing system." }
     ],
     "nepali-date-converter": [
-      { q: "Which dates does the Nepali date converter support?", a: "It supports Bikram Sambat dates from 1975-01-01 through 2099-12-30 and Gregorian dates from 1918-04-13 through 2043-04-13. Dates outside this range are rejected." },
+      { q: "Which dates does the Nepali date converter support?", a: "It supports Bikram Sambat dates from 1975-01-01 through 2083-12-30 and Gregorian dates from 1918-04-13 through 2027-04-13. Future BS years are not extrapolated; they are added only when published calendar data is available." },
       { q: "Can I convert both AD to BS and BS to AD?", a: "Yes. Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD), then enter the date in year-month-day order." },
       { q: "Does it accept Nepali digits?", a: "Yes. The converter accepts Devanagari numerals as well as English digits and supports common date separators." },
       { q: "Is the converted date an official government record?", a: "No. It is an online conversion aid. Verify dates used for legal, financial or government records against the original document and relevant authority." }

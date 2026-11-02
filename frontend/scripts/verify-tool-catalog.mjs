@@ -55,7 +55,14 @@ const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
 assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
+
+const adviceBlock = seoContent.match(/const toolAdvice:[\\s\\S]*?=\\s*\\{([\\s\\S]*?)\\n\\s*\\};/);
+assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
+const advisedSlugs = [...adviceBlock[1].matchAll(/^\\s{4}"([^"]+)":\\s*\\{/gm)].map((m) => m[1]);
+const missingToolAdvice = catalog.filter((slug) => !advisedSlugs.includes(slug));
+assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO guidance: " + missingToolAdvice.join(", "));
+
 assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weighted grade points");
 assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
-console.log(`Verified ${catalog.length} unique tools, Nepal utility SEO guides, FAQ metadata and key calculator formulas.`);
+console.log(`Verified ${catalog.length} unique tools, individual SEO guidance for every tool, Nepal utility guides, FAQ metadata and key calculator formulas.`);

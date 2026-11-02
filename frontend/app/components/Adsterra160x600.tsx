@@ -1,9 +1,12 @@
 ﻿"use client";
 
 import { useEffect } from "react";
+import { usePrivacyConsent } from "../../components/PrivacyConsent";
 
 export default function Adsterra160x600() {
+  const { consent } = usePrivacyConsent();
   useEffect(() => {
+    if (!consent?.ads) return;
     const container = document.getElementById("adsterra-160x600");
     if (!container || container.dataset.loaded === "true") return;
 
@@ -28,7 +31,9 @@ export default function Adsterra160x600() {
     const script = document.createElement("script");
     script.src = "https://bauval.org/22/df82e8fddbed0dbc2cf5e53b28bc3d77";
     container.appendChild(script);
-  }, []);
+  }, [consent?.ads]);
+
+  if (!consent?.ads) return null;
 
   return (
     <section className="hidden lg:block mx-auto w-full py-8" aria-label="Advertisement">

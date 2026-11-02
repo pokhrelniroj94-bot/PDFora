@@ -4,12 +4,12 @@ import { blogPosts } from "../../lib/blog-posts";
 import AdsterraNative from "../components/AdsterraNative";
 
 export const metadata: Metadata = {
-  title: "Nepal Guides: NRB Rates, Tax, Electricity, Holidays & Tools",
-  description: "Practical Nepal guides for NRB exchange rates, FY 2083/84 salary tax, NEA electricity bills, government holidays, Nepali typing, BS dates, land units and online tools.",
+  title: "Practical PDF & Nepal Guides – Tutorials and How-to Articles",
+  description: "Step-by-step guides for PDF tasks, Nepal calculators, exchange rates, tax estimates, electricity bills, Nepali typing, BS dates and online tools.",
   alternates: { canonical: "https://pd-fora.vercel.app/blog" },
   openGraph: {
-    title: "Nepal Guides: NRB Rates, Tax, Electricity, Holidays & Tools | PDFora",
-    description: "Helpful Nepal-focused guides for exchange rates, salary tax, electricity bills, public holidays, Nepali typing, date conversion and documents.",
+    title: "Practical PDF & Nepal Guides – Tutorials and How-to Articles | PDFora",
+    description: "Learn PDF workflows and practical Nepal tools through clear tutorials, worked examples, FAQs and official reference links.",
     url: "https://pd-fora.vercel.app/blog",
     siteName: "PDFora",
     type: "website",

@@ -54,7 +54,39 @@ async function fetchOfficialPageRates(requestedDate: string): Promise<RateRespon
   }
   return rates.length ? { source: "Nepal Rastra Bank (official published page)", requestedDate, rateDate: parsedDate.toISOString().slice(0, 10), publishedOn: null, rates } : null;
 }
+
+async function fetchJsonHistory(currencyCode: string): Promise<{ source: string; currency: string; history: Array<{ date: string; buy: number; sell: number }> } | null> {
+  const end = new Date(nepalToday() + "T00:00:00Z");
+  const start = new Date(end);
+  start.setUTCDate(start.getUTCDate() - 90);
+  const endpoint = new URL("https://www.nrb.org.np/api/forex/v1/rates");
+  endpoint.search = new URLSearchParams({ page: "1", per_page: "100", from: start.toISOString().slice(0, 10), to: end.toISOString().slice(0, 10) }).toString();
+  const response = await fetch(endpoint, { headers: { Accept: "application/json", "User-Agent": "PDFora-NRB-Forex/1.0" }, cache: "no-store", signal: AbortSignal.timeout(10000) });
+  if (!response.ok) return null;
+  const payload = await response.json() as { data?: { payload?: Array<{ date?: string; rates?: Array<{ currency?: { ISO3?: string; iso3?: string; unit?: number | string }; buy?: number | string; sell?: number | string }> }> | null } };
+  const records = Array.isArray(payload.data?.payload) ? payload.data.payload : [];
+  const history = records.flatMap((record) => {
+    const item = (record.rates ?? []).find((rate) => String(rate.currency?.ISO3 ?? rate.currency?.iso3 ?? "").toUpperCase() === currencyCode);
+    const unit = Number(item?.currency?.unit ?? 1), buy = Number(item?.buy), sell = Number(item?.sell);
+    return record.date && item && Number.isFinite(unit) && unit > 0 && Number.isFinite(buy) && Number.isFinite(sell)
+      ? [{ date: record.date, buy: buy / unit, sell: sell / unit }] : [];
+  }).sort((a, b) => a.date.localeCompare(b.date));
+  return history.length ? { source: "Nepal Rastra Bank", currency: currencyCode, history } : null;
+}
+
 export async function GET(request: Request) {
+  const params = new URL(request.url).searchParams;
+  if (params.get("history") === "1") {
+    const currency = (params.get("currency") || "USD").toUpperCase();
+    if (!/^[A-Z]{3}$/.test(currency)) return Response.json({ error: "Invalid currency code." }, { status: 400 });
+    try {
+      const history = await fetchJsonHistory(currency);
+      if (!history) return Response.json({ error: "NRB historical rates are not available for this currency and period." }, { status: 502 });
+      return Response.json(history, { headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200" } });
+    } catch {
+      return Response.json({ error: "Could not retrieve NRB historical rates. Please retry later." }, { status: 502 });
+    }
+  }
   const requested = new URL(request.url).searchParams.get("date") || nepalToday();
   if (!validDate(requested)) return Response.json({ error: "Date must be a valid YYYY-MM-DD value." }, { status: 400 });
   const end = new Date(`${requested}T00:00:00Z`), start = new Date(end);

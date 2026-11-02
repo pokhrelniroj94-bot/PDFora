@@ -7,13 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:tools": "node scripts/verify-tool-catalog.mjs"
+    "verify:tools": "node scripts/verify-tool-catalog.mjs && node scripts/verify-panchang.mjs",
+    "verify:panchang": "node scripts/verify-panchang.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.1",
     "next": "16.4.3",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "astronomy-engine": "2.1.19"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

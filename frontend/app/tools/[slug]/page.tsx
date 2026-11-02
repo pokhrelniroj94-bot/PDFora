@@ -18,20 +18,26 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
-    "nepal-share-calculator": { title: "NEPSE Share Profit Calculator – Broker Fees & CGT", description: "Estimate NEPSE share buy cost, sale proceeds, broker commission, SEBON fee, DP charge, CGT and net profit using editable assumptions." },
+    "nepal-share-calculator": { title: "NEPSE Share Profit Calculator – Broker Fees & CGT", description: "Estimate NEPSE share buy cost and net profit with transaction-value broker commission slabs, SEBON and DP fees, and CGT based on holding period and investor type." },
     "nepali-date-converter": { title: "Nepali Date Converter – BS to AD and AD to BS", description: "Convert Bikram Sambat Nepali dates to Gregorian AD dates and back. See Nepali month names, weekday and Devanagari digits." },
     "nepali-number-converter": { title: "Nepali Number Converter – Number to Words & Digits", description: "Convert numbers into English words using thousand, lakh and crore and display the same number in Nepali Devanagari digits." },
     "nepal-phone-validator": { title: "Nepal Mobile Number Checker – +977 Format", description: "Check the common 10-digit Nepal mobile number format and display its international +977 format. No call or SIM lookup is performed." },
     "gold-tola-gram-converter": { title: "Tola to Gram Converter – Nepali Gold Weight", description: "Convert gold and silver weight between tola and grams using 1 tola = 11.6638038 grams. Fast two-way conversion." },
     "nepali-digit-converter": { title: "Nepali Unicode Digit Converter – English to Nepali", description: "Convert English digits 0–9 to Nepali Devanagari digits and back while preserving the rest of your text." },
     "nepali-calendar": { title: "Nepali Calendar 2083 – BS Month and AD Dates", description: "View Bikram Sambat calendar months with corresponding Gregorian dates and weekdays. Check the supported BS calendar range." },
+    "nepal-panchang-today": { title: "Today’s Nepali Panchang – Tithi & Sunrise", description: "See today’s Kathmandu tithi, Panchang and sunrise/sunset from Miti, which verifies its data against Nepal’s official Rashtriya Panchanga. Kathmandu-only view." },
+    "nepal-panchang-calculator": { title: "Hindu Panchang Calculator – Tithi, Nakshatra & Panchang for India and Nepal", description: "Calculate local sunrise-based tithi, nakshatra, yoga, karana, sunrise, sunset and Rahu Kaal for supported cities in India and Nepal. Times use the selected city time zone." },
+    "nepali-janma-kundali": { title: "Free Janam Kundli Online – Vedic Birth Chart, Lagna, Rashi & Dasha", description: "Create a Vedic Janma Kundali using birth date, exact local time and birthplace. Supports Nepal and Indian cities, BS and AD dates, D1 Rashi and D9 Navamsa charts, Lagna, Rashi, Nakshatra and Vimshottari Mahadasha." },
     "loksewa-photo-resizer": { title: "Loksewa Photo Resizer – Compress to 50KB, 100KB or 200KB", description: "Resize and compress a photo for Nepal online forms with 50KB, 100KB or 200KB targets. Check official photo rules before uploading." },
     "preeti-unicode-converter": { title: "Preeti to Unicode Converter – Nepali Text", description: "Convert legacy Preeti-encoded Nepali text to Unicode Devanagari and convert Unicode Nepali text back to Preeti." },
     "nepal-salary-tax-calculator": { title: "Nepal Salary Tax Calculator FY 2083/84", description: "Estimate Nepal resident individual income tax for FY 2083/84 using progressive tax bands. Review annual and monthly tax estimates." },
     "nepal-electricity-bill-calculator": { title: "NEA Electricity Bill Calculator – Nepal Domestic", description: "Estimate a Nepal single-phase domestic electricity bill from monthly units and meter capacity, including energy blocks and VAT assumptions." },
     "nepse-dividend-calculator": { title: "NEPSE Dividend Calculator – Cash Dividend & Bonus", description: "Estimate NEPSE cash dividend after editable withholding tax and calculate bonus shares from your eligible share quantity." },
     "nepal-public-holidays-2083": { title: "Nepal Public Holidays 2083 – BS and AD Calendar", description: "Browse Nepal public holidays for 2083 BS with Gregorian dates and notes for national, regional and community-specific holidays." },
-    "nepal-forex-rates": { title: "Nepal Rastra Bank Forex Rates – NPR Exchange Rates", description: "View Nepal Rastra Bank currency buying and selling rates and estimate NPR conversions using the published currency units." },
+    "nepal-forex-rates": { title: "Nepal Rastra Bank Forex Rates & Charts – NPR Exchange Rates", description: "See official NRB currency buying and selling rates, convert NPR and explore historical daily charts. Open TradingView charts for supported currency pairs." },
+    "nepal-fixed-deposit-calculator": { title: "Nepal Fixed Deposit Calculator – FD Interest & Maturity", description: "Estimate Nepal bank fixed-deposit interest, compound maturity value and after-tax return using an editable annual rate and compounding frequency." },
+    "nepal-remittance-calculator": { title: "Nepal Remittance Calculator – Calculate NPR Received", description: "Estimate how much NPR a recipient gets after an exchange rate and remittance transfer fee. Compare payout assumptions in Nepal." },
+    "nepal-ipo-profit-calculator": { title: "Nepal IPO Profit Calculator – Kitta, Charges & CGT", description: "Estimate Nepal IPO profit or loss after tiered secondary-market selling commission, SEBON fee, DP charge and CGT based on holding period and investor type." },
     "loan-emi-calculator": { title: "Loan EMI Calculator – Monthly Payment & Interest", description: "Calculate monthly loan EMI, total repayment and total interest from principal, annual interest rate and loan term in months." },
     "compound-interest-sip-calculator": { title: "SIP & Compound Interest Calculator – Future Value", description: "Estimate SIP future value, total monthly investments and projected gain using an expected annual return and investment period." },
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
@@ -68,7 +74,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;
   const socialTitle = `${tool.name} Online | PDFora`;
-  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")}. Use PDFora online to complete this task and check the result before saving or sharing.`.slice(0, 160);
+  const fallbackDescription = `${tool.description.replace(/[.!?]$/, "")}. Use PDFora online to complete this task and check the result before saving or sharing.`;
+  const description = seo?.description ?? (fallbackDescription.length <= 160
+    ? fallbackDescription
+    : `${fallbackDescription.slice(0, 157).replace(/\s+\S*$/, "").trimEnd()}...`);
   const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
   return {
@@ -370,7 +379,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Can I use it for an official lottery?", a: "No. Do not use a general-purpose browser utility as a certified or regulated lottery drawing system." }
     ],
     "nepali-date-converter": [
-      { q: "Which dates does the Nepali date converter support?", a: "It supports Bikram Sambat dates from 1975-01-01 through 2099-12-30 and Gregorian dates from 1918-04-13 through 2043-04-13. Dates outside this range are rejected." },
+      { q: "Which dates does the Nepali date converter support?", a: "It supports Bikram Sambat dates from 1975-01-01 through 2083-12-30 and Gregorian dates from 1918-04-13 through 2027-04-13. Future BS years are not extrapolated; they are added only when published calendar data is available." },
       { q: "Can I convert both AD to BS and BS to AD?", a: "Yes. Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD), then enter the date in year-month-day order." },
       { q: "Does it accept Nepali digits?", a: "Yes. The converter accepts Devanagari numerals as well as English digits and supports common date separators." },
       { q: "Is the converted date an official government record?", a: "No. It is an online conversion aid. Verify dates used for legal, financial or government records against the original document and relevant authority." }
@@ -391,6 +400,40 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Is the result an official CDSC credit?", a: "No. Confirm eligibility, final tax and credited shares with the company, CDSC and Mero Share." }
     ],
     
+    "nepal-fixed-deposit-calculator": [
+      { q: "Does this match every Nepal bank FD product?", a: "No. Banks may use different day-count, compounding, payout, tax and premature-withdrawal rules. Confirm the specific product terms." },
+      { q: "Is the interest tax assumption guaranteed?", a: "No. It is editable for estimation. Check current IRD rules and your personal tax treatment." }
+    ],
+    "nepal-remittance-calculator": [
+      { q: "Does the calculator fetch live remittance rates?", a: "No. Enter the rate and fee quoted by your provider. Actual payout rates and fees can vary by service and destination." },
+      { q: "Can the recipient receive less than this estimate?", a: "Yes. Intermediary-bank deductions, provider charges, exchange-rate spreads or recipient fees may affect the final amount." }
+    ],
+    "nepal-ipo-profit-calculator": [
+      { q: "Does the calculator include broker fees on IPO allotment?", a: "No. IPO allotment is treated as a primary-market purchase. Broker commission, SEBON fee and DP charge are estimated for the later secondary-market sale." },
+      { q: "How is capital-gains tax estimated?", a: "The calculator uses 5% for an individual holding shares for 365 days or less, 3.75% for more than 365 days, and 10% for an institution. Verify the current Gazette and your tax status." },
+      { q: "Does it guarantee the IPO listing price?", a: "No. The sale price is an input chosen by the user; listing and market prices can move." }
+    ],
+    "nepal-panchang-calculator": [
+      { q: "How is this Nepal Panchang calculated?", a: "The calculator uses Astronomy Engine ephemerides for the Sun and Moon, Lahiri/Chitrapaksha sidereal conversion for nakshatra and yoga, and local sunrise as the Panchang day anchor. The selected city coordinates and Nepal time zone are used for sunrise and sunset." },
+      { q: "Does this exactly match Nepal's official Rashtriya Panchanga?", a: "Not necessarily. This is an astronomical reference using a documented calculation convention. The official Nepal Rashtriya Panchanga may apply traditional siddhanta, regional and ritual conventions that produce differences." },
+      { q: "Which locations can I calculate?", a: "The current version provides city-centre coordinates for Kathmandu, Ilam, Biratnagar, Pokhara, Janakpur, Nepalgunj, Dhangadhi, Birgunj, Dharan, Butwal and Bharatpur." },
+      { q: "Does it provide wedding muhurta or festival decisions?", a: "No. It does not infer personalized auspicious times or decide festival observance. Confirm important rituals with the official Nepal Panchanga and an approved local calendar." }
+    ],
+    "nepali-janma-kundali": [
+      { q: "जन्मकुण्डली बनाउन के-के चाहिन्छ?", a: "जन्ममिति, जन्मसमय र जन्मस्थान आवश्यक हुन्छ। भारत वा नेपालका सहर छान्न सकिन्छ; अन्य देशका लागि निर्देशाङ्क र IANA समय क्षेत्र चाहिन्छ। लग्न र भावको गणनामा केही मिनेटको समय फरकले पनि नतिजा बदल्न सक्छ।" },
+      { q: "के नेपाली विक्रम संवत् मिति राख्न मिल्छ?", a: "मिल्छ। हालको BS converter ले १९७५ देखि २०८३ सालसम्मको प्रकाशित मिति तालिका प्रयोग गर्छ। यो दायराबाहिरको जन्ममितिका लागि AD विकल्प प्रयोग गर्नुहोस्।" },
+      { q: "कुन ज्योतिषीय पद्धति प्रयोग हुन्छ?", a: "ग्रहका geocentric apparent ecliptic positions, Lahiri/Chitrapaksha sidereal conversion, whole-sign houses, mean Rahu/Ketu र Vimshottari Mahadasha प्रयोग हुन्छ। फरक अयनांश वा भाव पद्धति अपनाउने सफ्टवेयरसँग केही अन्तर आउन सक्छ।" },
+      { q: "के यो Hamro Patro सँग ठ्याक्कै मिल्छ?", a: "Hamro Patro को आन्तरिक ephemeris, ayanamsa र house-system configuration सार्वजनिक रूपमा पुष्टि नभएकाले ठ्याक्कै उस्तै हुने ग्यारेन्टी गर्न सकिँदैन। महत्त्वपूर्ण प्रयोगअघि अर्को विश्वसनीय पञ्चाङ्ग वा ज्योतिष सफ्टवेयरसँग विवरण मिलाउनुहोस्।" },
+      { q: "जन्मस्थान किन आवश्यक छ?", a: "जन्मस्थानको अक्षांश, देशान्तर र समय क्षेत्रले स्थानीय sidereal time र लग्न गणनामा असर गर्छ। भारतका लागि Asia/Kolkata र नेपालका लागि Asia/Kathmandu स्वतः प्रयोग हुन्छ। सहर-केन्द्रका निर्देशाङ्क अनुमानित हुन्छन्; थप शुद्धताका लागि सही निर्देशाङ्क राख्नुहोस्।" },
+      { q: "Can I make a Janam Kundli for an Indian birthplace?", a: "Yes. Select Delhi, Mumbai, Kolkata, Chennai, Bengaluru, Hyderabad, Jaipur, Varanasi, Lucknow, Ahmedabad, Pune or Bhopal. The calculator applies Asia/Kolkata to these Indian cities. Other places require coordinates and the correct IANA time zone." },
+      { q: "क्या कुंडली हिंदी और अंग्रेज़ी में देख सकते हैं?", a: "हाँ। कुंडली टूल में नेपाली, English और हिन्दी भाषा चुनने का विकल्प है।" },
+      { q: "मेरो जन्म विवरण कहाँ पठाइन्छ?", a: "कुण्डली गणना तपाईंको ब्राउजरमै हुन्छ। नाम, जन्ममिति, समय र स्थान कुनै गणना API मा पठाइँदैन वा स्वचालित रूपमा सुरक्षित गरिँदैन।" }
+    ],
+    "nepal-panchang-today": [
+      { q: "Which location does the daily Panchang show?", a: "The embedded daily Panchang is for Kathmandu, Nepal only. Do not apply its timings to another district." },
+      { q: "Can I choose a past date or another city?", a: "No. This is a live Kathmandu daily reference. Use the separate Hindu Panchang Calculator for a selectable date and supported Nepal or Indian city city." },
+      { q: "Where does the daily Panchang data come from?", a: "The embedded view is supplied by Miti (Yarsa Himalaya), which documents its source data, published coverage and attribution on its own site." }
+    ],
   };
   const questions = questionsBySlug[slug] ?? defaultQuestions;
   const canonicalUrl = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getToolGuide } from "../../lib/tool-guides";
+import Niroj77Tool from "../../components/Niroj77Tool";
 
 const guide = getToolGuide("rotate-pdf");
 export const metadata: Metadata = {

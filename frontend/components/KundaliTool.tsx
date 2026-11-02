@@ -56,7 +56,7 @@ export default function KundaliTool() {
         <span className="mt-1 block text-xs font-normal text-slate-500">२४-घण्टा ढाँचा, जस्तै ०६:३५ वा १८:२०</span>
       </label>
       <label className="text-sm font-semibold text-slate-800 sm:col-span-2">{tr("जन्मस्थान","Birthplace","जन्म स्थान")}
-        <select className={box} value={placeId} onChange={e=>{setPlaceId(e.target.value);const selected=KUNDALI_PLACES.find(p=>p.id===e.target.value);if(selected?.timeZone)setTimeZone(selected.timeZone);}}>
+        <select className={box} value={placeId} onChange={e=>{setPlaceId(e.target.value);const selected=KUNDALI_PLACES.find(p=>p.id===e.target.value);if(selected?.timeZone)setTimeZone(selected.timeZone);if(e.target.value==="delhi"||e.target.value==="mumbai"||e.target.value==="kolkata"||e.target.value==="chennai"||e.target.value==="bengaluru"||e.target.value==="hyderabad"||e.target.value==="jaipur"||e.target.value==="varanasi"||e.target.value==="lucknow"||e.target.value==="ahmedabad"||e.target.value==="pune"||e.target.value==="bhopal"){setDateSystem("AD");setBirthDate("2001-04-14");}else if(e.target.value!=="custom"){setDateSystem("BS");setBirthDate("२०५८-०१-०१");}}}>
           {KUNDALI_PLACES.map(place=><option key={place.id} value={place.id}>{place.name} ({place.en})</option>)}
           <option value="custom">अन्य स्थान — ठ्याक्कै निर्देशाङ्क राख्नुहोस्</option>
         </select>

@@ -153,6 +153,97 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related tools</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read related guide</Link>}</div></section>
     </div></article>;
   }
+  const nepalGuides: Record<string, { heading: string; intro: string; steps: string[]; example: string; note: string }> = {
+    "nepali-number-converter": {
+      heading: "Convert numbers into English words and Nepali digits",
+      intro: "Enter a whole number to display its Devanagari digits and English number words using the thousand, lakh and crore grouping system. This is useful when preparing amounts, forms and notes that need Indian/Nepal-style number grouping.",
+      steps: ["Enter a whole number using English or Nepali digits.", "Check the English words and Devanagari digit output.", "Copy the result only after checking the number against your source.", "For cheques or legal documents, follow the wording format required by the receiving institution."],
+      example: "For example, 125000 is grouped as 1 lakh 25 thousand. The tool also displays the digits as १,२,५,०,०,०.",
+      note: "The current tool supports whole numbers in its stated range and English words with lakh/crore grouping. It does not provide full Nepali-language spelling for every large number; verify wording before using it on an official cheque or document."
+    },
+    "nepal-phone-validator": {
+      heading: "Check Nepal mobile number format and +977 country code",
+      intro: "Check whether a mobile number matches the common 10-digit Nepal mobile format and view its international form with the +977 country code. This is a format check only.",
+      steps: ["Enter the mobile number with or without spaces, hyphens or brackets.", "You may include the +977 or 977 country prefix.", "Review the local 10-digit number and international format.", "If the format is rejected, compare it with the number provided by the mobile operator."],
+      example: "A local number such as 98XXXXXXXX is displayed internationally as +977 98XXXXXXXX when it matches the accepted format.",
+      note: "A valid-looking number does not prove that a SIM is active, assigned, reachable or registered to a particular person. The tool does not contact telecom networks."
+    },
+    "gold-tola-gram-converter": {
+      heading: "Convert gold and silver weight between tola and grams",
+      intro: "Convert a jewellery or bullion weight from tola to grams, or grams back to tola. The converter uses the standard mass relationship of one tola to approximately 11.6638038 grams.",
+      steps: ["Choose Tola to grams or Grams to tola.", "Enter the weight as a non-negative number.", "Read the converted weight and the conversion factor.", "Use the weight shown on the jeweller's scale for a purchase or sale calculation."],
+      example: "1 tola = 11.6638 grams approximately. Therefore, 2.5 tola is about 29.1595 grams.",
+      note: "This tool converts weight only. It does not provide live gold prices, purity testing, making charges, wastage, hallmark verification or a jewellery valuation."
+    },
+    "nepali-digit-converter": {
+      heading: "Convert English digits to Nepali Devanagari digits",
+      intro: "Convert the numerals 0–9 between English and Nepali Devanagari while leaving the rest of the text unchanged. It is useful for Nepali documents, notices, dates and everyday text.",
+      steps: ["Type or paste a line containing numbers and text.", "Review the Nepali digit output and the English digit output.", "Choose the version you need and copy it.", "Check dates, phone numbers and account references carefully before submitting a form."],
+      example: "The text 'नेपाल 2083 साल' becomes 'नेपाल २०८३ साल' in Nepali-digit form.",
+      note: "Only the digits are converted. Words, punctuation, spaces and other characters remain as entered; the tool does not translate the text."
+    },
+    "nepali-calendar": {
+      heading: "View a Bikram Sambat month with Gregorian dates",
+      intro: "Choose a BS year and month to view the corresponding AD dates and weekdays. This calendar view is designed for checking date correspondence, not for replacing an official holiday notice.",
+      steps: ["Enter a Bikram Sambat year within the displayed supported range.", "Choose one of the 12 Nepali months.", "Select Show calendar and review each BS day with its AD date and weekday.", "Check official government notices separately for public holidays and regional observances."],
+      example: "A calendar row pairs one BS day with the Gregorian date on which that day falls and the weekday name.",
+      note: "The calendar data has a defined supported range and may not include festival names or every local observance. Verify public holidays with the relevant government notice."
+    },
+    "loksewa-photo-resizer": {
+      heading: "Resize and compress a photo for Loksewa and Nepal online forms",
+      intro: "Prepare a JPEG photo under a selected 50 KB, 100 KB or 200 KB target and limit its maximum width or height. This can help with online forms that specify a file-size limit.",
+      steps: ["Select a copy of the photo you want to resize.", "Choose the file-size target required by the form.", "Choose the maximum image dimension.", "Resize and download the JPEG, then check its file size and appearance before uploading."],
+      example: "If an application form permits a photo up to 100 KB, select the 100 KB target and confirm that the downloaded file is below that limit.",
+      note: "A file-size target alone does not guarantee compliance. Forms may also require a specific aspect ratio, pixel dimensions, background, crop or file format. Follow the exact vacancy or government notice."
+    },
+    "preeti-unicode-converter": {
+      heading: "Convert legacy Preeti Nepali text to Unicode",
+      intro: "Convert text encoded in the legacy Preeti font mapping into standard Unicode Devanagari, or reverse Unicode Nepali text back to Preeti encoding. This is useful when moving older Nepali documents into modern applications.",
+      steps: ["Choose Preeti to Unicode or Unicode to Preeti.", "Paste text that is actually encoded in the selected format.", "Select Convert text and inspect the output.", "Copy the converted text and check it in the destination app with a compatible font."],
+      example: "A paragraph copied from an old Preeti-encoded document may look like Latin characters until it is converted to Unicode Nepali.",
+      note: "This converts character encoding, not the meaning of text. Mixed fonts, unsupported glyphs, formatting and non-Preeti text may need manual correction. Keep the original document."
+    },
+    "nepal-salary-tax-calculator": {
+      heading: "Estimate Nepal individual salary tax for FY 2083/84",
+      intro: "Use annual salary and the calculator's available tax-status and deduction inputs to estimate resident individual income tax for the selected fiscal year. Progressive bands apply to portions of taxable income rather than one flat rate to the entire salary.",
+      steps: ["Choose the correct tax status and applicable options shown in the calculator.", "Enter annual salary and any supported deductions or allowances.", "Review the tax calculated in each band, total annual tax and monthly equivalent.", "Compare the estimate with payroll calculations and current Inland Revenue Department guidance."],
+      example: "With progressive taxation, the first portion of taxable income is charged at its band rate, and only income in a higher band is charged at the higher rate.",
+      note: "This estimate is based on the stated FY 2083/84 assumptions and does not automatically cover every benefit, deduction, credit, employment type or special tax status. Confirm the current law and your circumstances with IRD or a tax professional."
+    },
+    "nepal-electricity-bill-calculator": {
+      heading: "Estimate a Nepal domestic electricity bill from monthly units",
+      intro: "Estimate a single-phase domestic electricity bill by entering monthly energy consumption in units (kWh) and selecting the meter capacity supported by the calculator. The estimate separates energy-block charges and applicable minimum or VAT assumptions.",
+      steps: ["Enter the total units consumed during the billing period.", "Choose the single-phase meter capacity matching your NEA connection.", "Review the estimated energy charge, minimum charge and VAT components.", "Compare the estimate with your actual NEA bill and the current tariff notice."],
+      example: "If a household consumes 100 units in a month, the calculator applies the applicable energy blocks rather than multiplying every unit by one flat rate.",
+      note: "The estimator is limited to the connection types and assumptions stated in the tool. It is not suitable for commercial, industrial or unsupported three-phase tariffs. Confirm the applicable tariff and bill adjustments with NEA."
+    },
+    "nepal-public-holidays-2083": {
+      heading: "Check Nepal public holidays for Bikram Sambat 2083",
+      intro: "Browse the 2083 BS holiday calendar and check each listed holiday's corresponding Gregorian date and any national, regional or community-specific note supplied with the calendar.",
+      steps: ["Browse or search the holiday list by name or date.", "Check the BS date and its corresponding AD date.", "Read whether the notice applies nationally or only to a specified region or community.", "Confirm any work, school or bank closure with the latest official notice."],
+      example: "A holiday listed with both BS and AD dates lets you match a Nepali calendar date to the Gregorian date used by many digital calendars.",
+      note: "Government holiday lists can be amended and local closures may differ. Confirm the latest notice from the Government of Nepal or the relevant provincial or local authority before making travel or work plans."
+    },
+    "nepali-unicode-typing": {
+      heading: "Type Nepali Unicode using a Roman English keyboard",
+      intro: "Type Romanized Nepali with an English keyboard and convert the input into Devanagari Unicode text in your browser. You can then copy the result into messages, assignments, forms or documents that support Unicode.",
+      steps: ["Click the typing area and enter Nepali words using Roman letters.", "Review the Devanagari suggestions or converted text as you type.", "Correct names, uncommon words and punctuation before copying.", "Paste the Unicode text into the destination application and check font support."],
+      example: "Romanized input such as 'namaste' can be converted into the corresponding Nepali Unicode text, depending on the transliteration mapping.",
+      note: "Romanized typing is phonetic and may offer multiple spellings for the same sound. Review names, technical terms and official text manually; the tool does not translate English into Nepali."
+    }
+  };
+  if (tool.category === "Nepal" && nepalGuides[tool.slug]) {
+    const guide = nepalGuides[tool.slug];
+    return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Nepal utility guide</p><h2 className="mt-2 text-2xl font-black text-slate-950">{guide.heading}</h2><p className="mt-4 leading-8 text-slate-700">{guide.intro}</p></section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">How to use the tool</h2><ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">{guide.steps.map((step) => <li key={step}>{step}</li>)}</ol></section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Example</h2><p className="mt-3 leading-8 text-slate-700">{guide.example}</p></section>
+      <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.note}</p></section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related Nepal tools</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read related guide</Link>}</div></section>
+    </div></article>;
+  }
+
   if (tool.slug === "nepse-market-news" || tool.slug === "nepse-dividend-calculator") {
     const news = tool.slug === "nepse-market-news";
     const heading = news ? "Nepal stock market headlines, IPO and FPO updates" : "Calculate NEPSE cash dividend and bonus shares";

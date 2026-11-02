@@ -42,7 +42,7 @@ export const astrologyBlogPosts: BlogPost[] = [
       { question: "Can I use this Panchang calculator in India?", answer: "Yes, supported Indian cities use Asia/Kolkata for local time display. It is an astronomical reference, not a replacement for a regional official almanac." }
     ],
     toolLinks: [{ label: "Hindu Panchang Calculator", href: "/tools/nepal-panchang-calculator" }, { label: "Janma Kundali / Birth Chart", href: "/tools/nepali-janma-kundali" }]
-  }
+  },
 
   {
     slug: "36-guna-milan-ashtakoota-explained-nepali-hindi-english",

@@ -67,13 +67,6 @@ function lahiriAyanamsa(date: Date): number {
   return 23.857092 + 1.3969713 * t + 0.0003086 * t * t;
 }
 
-function meanObliquity(date: Date): number {
-  const jd = date.getTime() / DAY_MS + 2440587.5;
-  const t = (jd - 2451545.0) / 36525;
-  const arcsec = 84381.406 - 46.836769 * t - 0.0001831 * t*t + 0.00200340*t**3 - 5.76e-7*t**4 - 4.34e-8*t**5;
-  return arcsec / 3600;
-}
-
 function meanNode(date: Date): number {
   const jd = date.getTime() / DAY_MS + 2440587.5;
   const t = (jd - 2451545.0) / 36525;

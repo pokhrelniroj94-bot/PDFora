@@ -12,9 +12,11 @@ export const metadata: Metadata = {
     description: "Explore PDF processing, calculators, image conversion, text utilities, developer tools, SEO checkers and practical Nepal-focused tools.",
     url: "https://pd-fora.vercel.app/tools",
     siteName: "PDFora",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora all tools directory" }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
+    images: ["/opengraph-image"],
     title: "Free Online PDF, Calculator, Text & Nepal Tools | PDFora",
     description: "Find PDF tools, calculators, text and developer utilities, SEO checkers, image tools and useful Nepal converters in one place.",
   },

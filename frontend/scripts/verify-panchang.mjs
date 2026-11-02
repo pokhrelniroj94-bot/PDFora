@@ -41,6 +41,7 @@ assert.ok(nakshatraIndex >= 0 && nakshatraIndex < 27, "Nakshatra index must be i
 assert.ok(yogaIndex >= 0 && yogaIndex < 27, "Yoga index must be in the 27-yoga cycle.");
 assert.ok(ayanamsa > 20 && ayanamsa < 30, "Lahiri ayanamsa must remain within a plausible range.");
 assert.equal(tithiIndex, 22, "Kathmandu 2026-11-02 sunrise reference is Krishna Ashtami.");
+assert.equal(nakshatraIndex, 8, "Kathmandu 2026-11-02 sunrise reference is Ashlesha nakshatra.");
 assert.equal(yogaIndex, 22, "Kathmandu 2026-11-02 sunrise reference is Shubha yoga.");
 assert.equal(karanaIndex, 45, "Kathmandu 2026-11-02 sunrise reference is Kaulava karana.");
 const localClock = (instant) => new Intl.DateTimeFormat("en-GB", {

@@ -160,4 +160,32 @@ for (const slug of ["nepali-date-converter","nepali-calendar","nepal-public-holi
   assert.ok(row && row.includes('category:"Date & Calendar"'), "Date and calendar tool must use the Date & Calendar category: " + slug);
 }
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
+
+const ashtakoota = read("../lib/ashtakoota-calculator.ts");
+const gunaComponent = read("../components/GunaMilanTool.tsx");
+const parseConstArray = (name) => {
+  const match = ashtakoota.match(new RegExp("const " + name + " = (\\\\[[\\\\s\\\\S]*?\\\\]);"));
+  assert.ok(match, "Missing Ashtakoota lookup table: " + name);
+  return JSON.parse(match[1]);
+};
+for (const name of ["VARNA","VASHYA","SIGN_LORD","GANA","NADI","YONI"]) {
+  assert.equal(parseConstArray(name).length, name === "VARNA" || name === "VASHYA" || name === "SIGN_LORD" ? 12 : 27, name + " must map all 12 signs or 27 nakshatras");
+}
+for (const name of ["VASHYA_TABLE","GRAHA_TABLE","GANA_TABLE","YONI_TABLE"]) {
+  const table = parseConstArray(name);
+  assert.ok(table.every((row) => Array.isArray(row) && row.length === table.length), name + " must be a square lookup matrix");
+  assert.ok(table.flat().every((score) => typeof score === "number" && score >= 0), name + " must contain non-negative numeric scores");
+}
+assert.equal(parseConstArray("YONI_TABLE").length, 14, "Yoni matrix must cover all 14 traditional animal classes");
+assert.equal(parseConstArray("YONI_TABLE").flat().length, 196, "Yoni matrix must contain 196 pairings");
+assert.equal(parseConstArray("GRAHA_TABLE").length, 7, "Graha Maitri matrix must cover seven classical planetary lords");
+assert.ok(ashtakoota.includes("Muhurta Chintamani") && ashtakoota.includes("ASHTAKOOTA_SOURCE_URL"), "Ashtakoota convention must identify its source");
+assert.ok(ashtakoota.includes("bhakootCancelled") && ashtakoota.includes("nadiCancelled"), "Bhakoot and Nadi parihara must be reported separately from raw scores");
+assert.ok(ashtakoota.includes("scores.some(s=>s.score<0||s.score>s.max)"), "Ashtakoota must reject scores outside each koota's maximum");
+assert.ok(gunaComponent.includes('useState<Language>("ne")') && gunaComponent.includes('setLanguage("hi")') && gunaComponent.includes('setLanguage("en")'), "Guna Milan interface must support Nepali, Hindi and English");
+assert.ok(gunaComponent.includes("Print / Save PDF") && gunaComponent.includes("ASHTAKOOTA_SOURCE_URL"), "Guna Milan report must provide print and source reference");
+assert.ok(catalogSource.includes('slug:"nepali-guna-milan"'), "36-guna tool must be registered in the canonical catalog");
+assert.ok(allTools.includes('slug==="nepali-guna-milan"') && allTools.includes("<GunaMilanTool />"), "36-guna tool must be routed to its dedicated calculator");
+assert.ok(toolPage.includes('"nepali-guna-milan": { title:'), "36-guna page must have dedicated SEO metadata");
+
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including shared multilingual search, EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

@@ -23,7 +23,7 @@ export default function NepalTools({slug}:{slug:string}) {
  const [subjects,setSubjects]=useState(Array.from({length:6},(_,i)=>({name:"Subject "+(i+1),credit:"3",grade:"3.2"})));
  const [shares,setShares]=useState("100"),[buyPrice,setBuyPrice]=useState("200"),[sellPrice,setSellPrice]=useState("220"),[brokerRate,setBrokerRate]=useState("0.36"),[sebonRate,setSebonRate]=useState("0.015"),[dpCharge,setDpCharge]=useState("25"),[cgtRate,setCgtRate]=useState("5");
  useEffect(()=>{ if(slug==="preeti-unicode-converter"){if(window.PreetiConverter){Promise.resolve().then(()=>setPreetiReady(true));return;}const existing=document.querySelector<HTMLScriptElement>('script[data-preeti-converter]');if(existing){existing.addEventListener("load",()=>setPreetiReady(!!window.PreetiConverter));return;}const script=document.createElement("script");script.src="https://cdn.jsdelivr.net/npm/@dpr4dhan/preeti-to-unicode@1.0.2/preeti-to-unicode.js";script.async=true;script.dataset.preetiConverter="true";script.onload=()=>setPreetiReady(!!window.PreetiConverter);script.onerror=()=>setResult("Preeti converter library could not load. Check your internet connection and reload.");document.head.appendChild(script);return;} if(!["nepali-date-converter","nepali-calendar"].includes(slug))return;
- if(window.DateConverter){setReady(true);return;}
+ if(window.DateConverter){Promise.resolve().then(()=>setReady(true));return;}
  let cancelled=false;
  document.querySelector<HTMLScriptElement>('script[data-nepali-date-converter]')?.remove();
  const sources=[

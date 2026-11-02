@@ -481,7 +481,7 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "क्या जन्म समय गलत होने से कुंडली बदलती है?", answer: "हां। विशेषकर राशि सीमा के पास लग्न और भाव बदल सकते हैं।" }
     ],
     toolLinks: [{ label: "ऑनलाइन जन्म कुंडली", href: "/tools/nepali-janma-kundali" }, { label: "हिंदू पंचांग कैलकुलेटर", href: "/tools/nepal-panchang-calculator" }]
-  }
+  },
   {
     slug: "aaj-ka-panchang-tithi-nakshatra-yoga-karana-hindi-guide",
     title: "आज का पंचांग: तिथि, नक्षत्र, योग और करण क्या होते हैं?",

@@ -83,7 +83,7 @@ const querySynonyms: Record<string, string[]> = {
   dollar: ["forex", "currency", "usd"], paisa: ["money", "currency"], पैसा: ["money", "currency"],
   miti: ["date", "calendar"], मिति: ["date", "calendar"], पात्रो: ["calendar", "date"],
   jagga: ["land", "area", "ropani"], जग्गा: ["land", "area"], bijuli: ["electricity", "bill"],
-  jankari: ["information", "details"], khojne: ["search", "find"],
+  jankari: ["information", "details"], khojne: ["search", "find"],\n  क्याल्कुलेटर: ["calculator", "calculate"], गणक: ["calculator", "calculate"],\n  रूपान्तरण: ["convert", "converter"], बदल्ने: ["convert", "converter"],\n  फाइल: ["file", "pdf", "document"], दस्तावेज: ["document", "pdf"],\n  ब्याज: ["interest", "rate"], आम्दानी: ["income", "salary"],\n  समय: ["time", "duration"], छुट्टी: ["holiday", "calendar"],\n  सुन: ["gold", "tola"],
 };
 
 const ignoredWords = new Set(["the", "a", "an", "and", "for", "to", "of", "in", "online", "free", "tool", "tools", "garne", "gara", "garna", "ko", "ka", "ki", "ma", "lai", "kasari", "chahiyo", "xa", "cha", "hunxa", "garnu", "गर्ने", "गर्नु", "गर", "को", "का", "की", "मा", "लाई", "कसरी", "चाहियो", "छ", "हुन्छ"]);

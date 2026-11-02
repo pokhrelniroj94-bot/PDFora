@@ -94,7 +94,7 @@ const loanSearchText = normalizeSearch([loanToolLine, "EMI calculator loan insta
 assert.ok(["emi", "calculator"].every((token) => loanSearchText.includes(token)), "EMI Calculator cannot be found by homepage search terms");
 const notesToolLine = catalogSource.split("\n").find((line) => line.includes('slug:"notes-to-pdf"'));
 assert.ok(notesToolLine, "Notes to PDF is missing from the catalog");
-assert.ok(notesToolLine.includes('category:"Document & Text"'), "Notes to PDF must be grouped under the PDF category");
+assert.ok(notesToolLine.includes('category:"Document & Text"'), "Notes to PDF must be grouped with Document & Text tools");
 assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesToPDF />'), "Notes to PDF handler is missing");
 
 const marketApi = read("../app/api/nepse-market/route.ts");

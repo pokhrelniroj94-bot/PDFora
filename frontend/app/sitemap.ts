@@ -73,6 +73,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    {
+      url: `${baseUrl}/ne`,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
     ...toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ url: `${baseUrl}/tools/${tool.slug}`, changeFrequency: "monthly" as const, priority: 0.7 })),
     ...toolEntries,

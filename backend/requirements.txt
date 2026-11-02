@@ -1,4 +1,4 @@
-﻿fastapi
+fastapi
 uvicorn[standard]
 python-multipart
 pypdf
@@ -8,3 +8,4 @@ python-docx
 openpyxl==3.1.5
 pdfplumber
 redis>=5,<7
+certifi>=2025.1.31

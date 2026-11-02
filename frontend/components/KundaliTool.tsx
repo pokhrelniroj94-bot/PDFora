@@ -12,6 +12,9 @@ export default function KundaliTool() {
   const [birthDate,setBirthDate]=useState("२०५८-०१-०१");
   const [birthTime,setBirthTime]=useState("");
   const [placeId,setPlaceId]=useState("kathmandu");
+  const [placeName,setPlaceName]=useState("");
+  const [latitude,setLatitude]=useState("27.7172");
+  const [longitude,setLongitude]=useState("85.3240");
   const [result,setResult]=useState<KundaliResult|null>(null);
   const [error,setError]=useState("");
   const [busy,setBusy]=useState(false);
@@ -20,7 +23,7 @@ export default function KundaliTool() {
     setError("");setResult(null);setBusy(true);
     try{
       if(!birthTime) throw new Error("कृपया जन्मको सही समय राख्नुहोस्। लग्न र भावका लागि जन्मसमय आवश्यक हुन्छ।");
-      const calculated=calculateJanmaKundali({name,dateSystem,birthDate:birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))),birthTime,placeId});
+      const calculated=calculateJanmaKundali({name,dateSystem,birthDate:birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))),birthTime,placeId,placeName,latitude:Number(latitude),longitude:Number(longitude)});
       setResult(calculated);
     }catch(e){setError(e instanceof Error?e.message:"कुण्डली गणना गर्न सकिएन। विवरण जाँच्नुहोस्।");}
     finally{setBusy(false);}
@@ -51,8 +54,14 @@ export default function KundaliTool() {
       <label className="text-sm font-semibold text-slate-800 sm:col-span-2">जन्मस्थान
         <select className={box} value={placeId} onChange={e=>setPlaceId(e.target.value)}>
           {KUNDALI_PLACES.map(place=><option key={place.id} value={place.id}>{place.name} ({place.en})</option>)}
+          <option value="custom">अन्य स्थान — ठ्याक्कै निर्देशाङ्क राख्नुहोस्</option>
         </select>
-        <span className="mt-1 block text-xs font-normal text-slate-500">हाल उपलब्ध स्थानका सहर-केन्द्रका निर्देशाङ्क प्रयोग हुन्छन्। गाउँ वा टाढाको स्थान भए नजिकको सहर रोज्दा लग्नको सीमामा फरक पर्न सक्छ।</span>
+        {placeId==="custom"&&<div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <label className="text-xs font-semibold">स्थानको नाम<input className={box} value={placeName} onChange={e=>setPlaceName(e.target.value)} placeholder="जस्तै: फिक्कल, इलाम"/></label>
+          <label className="text-xs font-semibold">अक्षांश (Latitude)<input className={box} type="number" min="-90" max="90" step="0.000001" value={latitude} onChange={e=>setLatitude(e.target.value)}/></label>
+          <label className="text-xs font-semibold">देशान्तर (Longitude)<input className={box} type="number" min="-180" max="180" step="0.000001" value={longitude} onChange={e=>setLongitude(e.target.value)}/></label>
+        </div>}
+        <span className="mt-1 block text-xs font-normal text-slate-500">सहरका विकल्पमा सहर-केन्द्रका निर्देशाङ्क प्रयोग हुन्छन्। बढी शुद्ध लग्नका लागि जन्मस्थलको वास्तविक latitude/longitude राख्न सक्नुहुन्छ। नेपालका सबै स्थानका लागि समय क्षेत्र Asia/Kathmandu प्रयोग हुन्छ।</span>
       </label>
     </div>
 

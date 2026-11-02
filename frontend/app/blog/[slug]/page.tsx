@@ -3,8 +3,9 @@ import AdsterraNative from "../../components/AdsterraNative";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost } from "../../../lib/blog-posts";
+import { SITE_NAME, SITE_URL } from "../../../lib/site-config";
 
-const baseUrl = "https://pd-fora.vercel.app";
+const baseUrl = SITE_URL;
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -19,8 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.title,
     description: post.description,
     alternates: { canonical: url },
-    keywords: [post.keyword, "free online tools", "tool tutorial", "how-to guide", "PDFora"],
-    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${post.title} | PDFora` }] },
+    openGraph: { type: "article", url, siteName: SITE_NAME, title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${post.title} | PDFora` }] },
     twitter: { card: "summary_large_image", title: post.title, description: post.description, images: ["/opengraph-image"] },
   };
 }

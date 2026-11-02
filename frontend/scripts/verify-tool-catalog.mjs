@@ -203,4 +203,16 @@ assert.ok(toolPage.includes('"nepali-guna-milan": { title:'), "36-guna page must
 assert.ok(blogIndex.includes('import { astrologyBlogPosts } from "./astrology-blog-posts"') && blogIndex.includes("...astrologyBlogPosts"), "Astrology and Ashtakoota guides must be included in the public blog index and sitemap source");
 assert.ok(astrologyGuides.includes('slug: "36-guna-milan-ashtakoota-explained-nepali-hindi-english"') && astrologyGuides.includes('href: "/tools/nepali-guna-milan"'), "Ashtakoota SEO guide must link to the live matching tool");
 
+
+const consentProvider = read("../components/PrivacyConsent.tsx");
+const analyticsComponent = read("../components/ConsentAwareAnalytics.tsx");
+const nativeAdComponent = read("../app/components/AdsterraNative.tsx");
+const skyscraperAdComponent = read("../app/components/Adsterra160x600.tsx");
+const rootLayout = read("../app/layout.tsx");
+assert.ok(consentProvider.includes("pdfora-privacy-consent-v1") && consentProvider.includes("Reject optional") && consentProvider.includes("Accept all"), "Privacy consent must persist explicit accept/reject choices");
+assert.ok(analyticsComponent.includes("!consent?.analytics || !gaId"), "Google Analytics must remain disabled until analytics consent is granted");
+assert.ok(nativeAdComponent.includes("if (!consent?.ads) return null"), "Native advertising must remain disabled until ad consent is granted");
+assert.ok(skyscraperAdComponent.includes("if (!consent?.ads) return null"), "Skyscraper advertising must remain disabled until ad consent is granted");
+assert.ok(rootLayout.includes("<PrivacyConsentProvider>") && rootLayout.includes("<ConsentAwareAnalytics />") && !rootLayout.includes("<GoogleAnalytics gaId="), "Root layout must load optional analytics only inside the consent provider");
+
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including shared multilingual search, EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

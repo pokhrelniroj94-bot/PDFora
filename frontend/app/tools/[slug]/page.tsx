@@ -14,9 +14,29 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
-  const title = `Free ${tool.name} Online`;
+  const seoOverrides: Record<string, { title: string; description: string }> = {
+    "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours | PDFora", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
+    "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur | PDFora", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
+    "nepal-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT | PDFora", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
+    "nepal-share-calculator": { title: "NEPSE Share Profit Calculator – Broker Fees & CGT | PDFora", description: "Estimate NEPSE share buy cost, sale proceeds, broker commission, SEBON fee, DP charge, CGT and net profit using editable assumptions." },
+    "nepali-date-converter": { title: "Nepali Date Converter – BS to AD and AD to BS | PDFora", description: "Convert Bikram Sambat Nepali dates to Gregorian AD dates and back. See Nepali month names, weekday and Devanagari digits." },
+    "nepali-number-converter": { title: "Nepali Number Converter – Number to Words & Digits | PDFora", description: "Convert numbers into English words using thousand, lakh and crore and display the same number in Nepali Devanagari digits." },
+    "nepal-phone-validator": { title: "Nepal Mobile Number Checker – +977 Format | PDFora", description: "Check the common 10-digit Nepal mobile number format and display its international +977 format. No call or SIM lookup is performed." },
+    "gold-tola-gram-converter": { title: "Tola to Gram Converter – Nepali Gold Weight | PDFora", description: "Convert gold and silver weight between tola and grams using 1 tola = 11.6638038 grams. Fast two-way conversion." },
+    "nepali-digit-converter": { title: "Nepali Unicode Digit Converter – English to Nepali | PDFora", description: "Convert English digits 0–9 to Nepali Devanagari digits and back while preserving the rest of your text." },
+    "nepali-calendar": { title: "Nepali Calendar 2083 – BS Month and AD Dates | PDFora", description: "View Bikram Sambat calendar months with corresponding Gregorian dates and weekdays. Check the supported BS calendar range." },
+    "loksewa-photo-resizer": { title: "Loksewa Photo Resizer – Compress to 50KB, 100KB or 200KB | PDFora", description: "Resize and compress a photo for Nepal online forms with 50KB, 100KB or 200KB targets. Check official photo rules before uploading." },
+    "preeti-unicode-converter": { title: "Preeti to Unicode Converter – Nepali Text | PDFora", description: "Convert legacy Preeti-encoded Nepali text to Unicode Devanagari and convert Unicode Nepali text back to Preeti." },
+    "nepal-salary-tax-calculator": { title: "Nepal Salary Tax Calculator FY 2083/84 | PDFora", description: "Estimate Nepal resident individual income tax for FY 2083/84 using progressive tax bands. Review annual and monthly tax estimates." },
+    "nepal-electricity-bill-calculator": { title: "NEA Electricity Bill Calculator – Nepal Domestic | PDFora", description: "Estimate a Nepal single-phase domestic electricity bill from monthly units and meter capacity, including energy blocks and VAT assumptions." },
+    "nepse-dividend-calculator": { title: "NEPSE Dividend Calculator – Cash Dividend & Bonus | PDFora", description: "Estimate NEPSE cash dividend after editable withholding tax and calculate bonus shares from your eligible share quantity." },
+    "nepal-public-holidays-2083": { title: "Nepal Public Holidays 2083 – BS and AD Calendar | PDFora", description: "Browse Nepal public holidays for 2083 BS with Gregorian dates and notes for national, regional and community-specific holidays." },
+    "nepal-forex-rates": { title: "Nepal Rastra Bank Forex Rates – NPR Exchange Rates | PDFora", description: "View Nepal Rastra Bank currency buying and selling rates and estimate NPR conversions using the published currency units." }
+  };
+  const seo = seoOverrides[slug];
+  const title = seo?.title ?? `Free ${tool.name} Online`;
   const socialTitle = `${tool.name} Online | PDFora`;
-  const description = `${tool.description.replace(/[.!?]$/, "")}. Use this free online ${tool.category.toLowerCase()} tool on PDFora. Review the result before saving or sharing.`.slice(0, 160);
+  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")}. Use this free online ${tool.category.toLowerCase()} tool on PDFora. Review the result before saving or sharing.`.slice(0, 160);
   const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
   return {

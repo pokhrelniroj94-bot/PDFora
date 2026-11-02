@@ -64,3 +64,10 @@ export function countBusinessDays(start: string, end: string, weekendDays: numbe
   }
   return Math.abs(count);
 }
+
+export function addCalendarDays(start: string, days: number): string {
+  const date = parseDateOnly(start);
+  if (!Number.isSafeInteger(days)) throw new RangeError("Days must be a whole safe integer.");
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}

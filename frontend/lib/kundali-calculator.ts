@@ -137,6 +137,7 @@ export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
     dateAD = `${ad.year}-${String(ad.month).padStart(2,"0")}-${String(ad.date).padStart(2,"0")}`;
   }
   const [year,month,day] = dateAD.split("-").map(Number);
+  if (year < 1800 || year > 2100) throw new Error("हालको गणना १८०० देखि २१०० AD सम्मका जन्ममितिका लागि मात्र परीक्षण गरिएको छ।");
   const dateCheck = new Date(Date.UTC(year,month-1,day));
   if (dateCheck.getUTCFullYear()!==year || dateCheck.getUTCMonth()!==month-1 || dateCheck.getUTCDate()!==day) throw new Error("जन्ममिति मान्य छैन।");
   const birth = localWallTimeToUtc(dateAD,input.birthTime);

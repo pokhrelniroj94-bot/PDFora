@@ -572,7 +572,9 @@ async def nepal_forex(date: str | None = Query(default=None)):
         raise HTTPException(status_code=400, detail="Date must be a valid YYYY-MM-DD value.")
 
     start = (selected - timedelta(days=10)).isoformat()
-    key = "rates:" + requested
+    # Keep a stable cache key for the live/latest view so a new day can still
+    # fall back to the last successful published rate if NRB is temporarily down.
+    key = "rates:latest" if date is None else "rates:" + requested
 
     def load():
         records = _nrb_fetch_records(start, requested)

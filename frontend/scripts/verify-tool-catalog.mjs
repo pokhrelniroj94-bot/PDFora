@@ -57,5 +57,5 @@ assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ 
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weighted grade points");
 assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");
-assert.ok(nepalTools.includes("ndc-browser.js"), "Nepali date converter browser library fallback is missing");
+assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
 console.log(`Verified ${catalog.length} unique tools, Nepal utility SEO guides, FAQ metadata and key calculator formulas.`);

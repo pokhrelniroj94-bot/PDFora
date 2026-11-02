@@ -55,6 +55,18 @@ const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
 assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
+assert.ok(toolPage.includes('canonical') && toolPage.includes('openGraph') && toolPage.includes('twitter'), "Tool metadata must include canonical and social previews");
+assert.ok(toolPage.includes('"@type": "FAQPage"') && toolPage.includes('"@type": "BreadcrumbList"'), "Tool pages must include FAQ and breadcrumb structured data");
+assert.ok(toolsPageMetadata.includes('canonical: "https://pd-fora.vercel.app/tools"'), "Tool directory must declare its canonical URL");
+assert.ok(sitemapSource.includes("...legacyPdfEntries") && sitemapSource.includes("...catalogEntries") && sitemapSource.includes('tool.slug !== "ocr-pdf"'), "Sitemap must include available legacy and catalog tools but exclude OCR");
+assert.ok(robotsSource.includes('disallow: ["/api/"]') && robotsSource.includes("/sitemap.xml"), "Robots policy must block API paths and advertise the sitemap");
+assert.ok(rootLayout.includes("Calculators & Nepal Utilities") && rootLayout.includes("image and text converters"), "Site-wide metadata must describe the broader all-in-one tool collection");
+const metadataBlock = toolPage.slice(toolPage.indexOf("const seoOverrides"), toolPage.indexOf("const seo = seoOverrides"));
+const metadataEntries = [...metadataBlock.matchAll(/"([^"]+)":\\s*\\{\\s*title:\\s*"([^"]+)",\\s*description:\\s*"([^"]+)"/g)];
+assert.ok(metadataEntries.length >= 45, "Expected detailed metadata overrides for the main Nepal and utility pages");
+assert.equal(new Set(metadataEntries.map((m) => m[1])).size, metadataEntries.length, "Duplicate tool-specific metadata overrides exist");
+assert.ok(metadataEntries.every((m) => m[2].length <= 60 && m[3].length <= 160), "Tool metadata title or description exceeds the SEO length target");
+
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
 assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
@@ -70,6 +82,10 @@ const toolDirectory = read("../lib/tool-directory.ts");
 const homepage = read("../app/page.tsx");
 const directoryComponent = read("../components/AllTools.tsx");
 const sharedSearch = read("../lib/tool-search.ts");
+const sitemapSource = read("../app/sitemap.ts");
+const robotsSource = read("../app/robots.ts");
+const rootLayout = read("../app/layout.tsx");
+const toolsPageMetadata = read("../app/tools/page.tsx");
 const pdfBlock = toolDirectory.split("const rawPdfTools")[1]?.split("\n];")[0];
 assert.ok(pdfBlock, "Canonical PDF tool list is missing");
 const pdfHrefs = pdfBlock.split("\n").map((line) => line.match(/href: "([^"]+)"/)?.[1]).filter(Boolean);
@@ -89,6 +105,11 @@ assert.ok(homepage.includes('tool.kind === "pdf" || tool.category === "PDF"'), "
 assert.ok(homepage.includes("matchesToolSearch(tool, query)") && directoryComponent.includes("matchesToolSearch(t,query)"), "Homepage and /tools directory must use the same shared search function");
 assert.ok(sharedSearch.includes("tool.keywords") && sharedSearch.includes("toolAliases"), "Shared search must include tool keywords and task aliases");
 assert.ok(sharedSearch.includes("querySynonyms") && sharedSearch.includes("editDistanceAtMostOne"), "Shared search must support multilingual synonyms and typo tolerance");
+assert.ok(homepage.includes('id="homepage-tool-search"') && homepage.includes('type="search"'), "Homepage search input must be identifiable and use search semantics");
+assert.ok(directoryComponent.includes('id="tool-directory-search"') && directoryComponent.includes('type="search"'), "/tools search input must be identifiable and use search semantics");
+assert.ok(homepage.includes("Search by tool, task or keyword — English / नेपाली") && directoryComponent.includes("Search by tool, task or keyword — English / नेपाली"), "Both search bars must use the same clear multilingual prompt");
+assert.ok(directoryComponent.includes('aria-pressed={category===c}') && directoryComponent.includes('aria-live="polite"'), "Directory category filters and result count must be accessible");
+
 for (const term of ["jodne", "ghataune", "ghumaune", "फोटो", "कर", "मिति"]) {
   assert.ok(sharedSearch.includes(term), "Missing multilingual search alias: " + term);
 }

@@ -204,6 +204,20 @@ assert.ok(blogIndex.includes('import { astrologyBlogPosts } from "./astrology-bl
 assert.ok(astrologyGuides.includes('slug: "36-guna-milan-ashtakoota-explained-nepali-hindi-english"') && astrologyGuides.includes('href: "/tools/nepali-guna-milan"'), "Ashtakoota SEO guide must link to the live matching tool");
 
 
+const allToolsComponent = read("../components/AllTools.tsx");
+const extraToolsComponent = read("../components/ExtraTools.tsx");
+const quickToolsComponent = read("../components/QuickUtilityTools.tsx");
+const dispatchGroups = [...allToolsComponent.matchAll(/\\[([^\\]]{10,2000})\\]\\.includes\\(slug\\)/g)]
+  .flatMap((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1]));
+const directDispatch = [...allToolsComponent.matchAll(/slug===?"([^"]+)"/g)].map((match) => match[1]);
+const quickDispatch = [...(allToolsComponent.match(/const quickUtilitySlugs = \\[([^\\]]+)\\]/)?.[1] ?? "").matchAll(/"([^"]+)"/g)].map((match) => match[1]);
+const extraConfigs = [...extraToolsComponent.matchAll(/^"([^"]+)":\\[/gm)].map((match) => match[1]);
+const extraCases = [...extraToolsComponent.matchAll(/case "([^"]+)"/g)].map((match) => match[1]);
+const quickCases = [...quickToolsComponent.matchAll(/case "([^"]+)"/g)].map((match) => match[1]);
+const routedSlugs = new Set([...dispatchGroups, ...directDispatch, ...quickDispatch, ...extraConfigs, ...extraCases, ...quickCases]);
+const missingToolHandlers = catalog.filter((slug) => !routedSlugs.has(slug));
+assert.deepEqual(missingToolHandlers, [], "Every catalog tool must map to a route and implementation/configuration");
+
 const consentProvider = read("../components/PrivacyConsent.tsx");
 const analyticsComponent = read("../components/ConsentAwareAnalytics.tsx");
 const nativeAdComponent = read("../app/components/AdsterraNative.tsx");

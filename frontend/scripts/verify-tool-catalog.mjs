@@ -62,7 +62,7 @@ assert.ok(sitemapSource.includes("...legacyPdfEntries") && sitemapSource.include
 assert.ok(robotsSource.includes('disallow: ["/api/"]') && robotsSource.includes("/sitemap.xml"), "Robots policy must block API paths and advertise the sitemap");
 assert.ok(rootLayout.includes("Calculators & Nepal Utilities") && rootLayout.includes("image and text converters"), "Site-wide metadata must describe the broader all-in-one tool collection");
 const metadataBlock = toolPage.slice(toolPage.indexOf("const seoOverrides"), toolPage.indexOf("const seo = seoOverrides"));
-const metadataEntries = [...metadataBlock.matchAll(/"([^"]+)":\\s*\\{\\s*title:\\s*"([^"]+)",\\s*description:\\s*"([^"]+)"/g)];
+const metadataEntries = [...metadataBlock.matchAll(/"([^"]+)":\s*\{\s*title:\s*"([^"]+)",\s*description:\s*"([^"]+)"/g)];
 assert.ok(metadataEntries.length >= 45, "Expected detailed metadata overrides for the main Nepal and utility pages");
 assert.equal(new Set(metadataEntries.map((m) => m[1])).size, metadataEntries.length, "Duplicate tool-specific metadata overrides exist");
 assert.ok(metadataEntries.every((m) => m[2].length <= 60 && m[3].length <= 160), "Tool metadata title or description exceeds the SEO length target");

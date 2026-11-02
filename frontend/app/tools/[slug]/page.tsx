@@ -190,6 +190,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does it include interest or investment returns?", a: "No. It assumes you save the same amount each month and excludes interest, investment returns, fees and inflation." },
       { q: "What if I have already reached my target?", a: "The remaining amount and monthly savings needed are shown as zero when current savings meet or exceed the target." }
     ],
+    "nepali-vat-calculator": [
+      { q: "What is the standard Nepal VAT rate used by default?", a: "The calculator starts with a 13% rate. Confirm whether the supply is standard-rated, exempt or zero-rated before applying it." },
+      { q: "How do I add VAT to a price?", a: "Choose Add VAT and enter the pre-VAT base amount. The calculator shows the VAT amount and total including VAT." },
+      { q: "How do I extract VAT from a VAT-inclusive total?", a: "Choose Extract VAT and enter the total that already includes VAT. At 13%, the VAT component is 13/113 of that inclusive total." },
+      { q: "Does this calculator determine whether my sale is taxable?", a: "No. It performs arithmetic only. Check the VAT Act, current IRD guidance and your transaction's tax treatment." }
+    ],
     "nepali-number-converter": [
       { q: "Does it use the lakh and crore number system?", a: "Yes. English number words use thousand, lakh and crore grouping for the supported whole-number range." },
       { q: "Can it convert Nepali digits?", a: "It displays the entered number in Devanagari digits as well as English words." },

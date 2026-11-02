@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const BASE = "https://shubhamnpk.github.io/yonepse";
+const INDEX_SYMBOLS = new Set(["NEPSE", "SENSIND", "FLOATIND", "SENSFLTIND", "BANKSUBIND", "DEVBANKIND", "FININD", "HOTELIND", "HYDPOWIND", "INVIDX", "LIFINSIND", "MANPROCIND", "MICRFININD", "MUTUALIND", "NONLIFIND", "OTHERSIND", "TRDIND"]);
 type Json = Record<string, unknown>;
 async function read<T>(path: string): Promise<T> {
   const response = await fetch(BASE + path, {
@@ -41,7 +42,8 @@ export async function GET(request: Request) {
     );
   }
   const manifest = manifestResult.status === "fulfilled" ? manifestResult.value : { availableMonths: [] };
-  const historyKind = symbol === "NEPSE" ? "indices" : "ltp";
+  const isIndex = INDEX_SYMBOLS.has(symbol);
+  const historyKind = isIndex ? "indices" : "ltp";
   const historyManifest = historyKind === "indices"
     ? manifest
     : ltpManifestResult.status === "fulfilled" ? ltpManifestResult.value : { availableMonths: [] };
@@ -62,7 +64,7 @@ export async function GET(request: Request) {
       const date = dates[index];
       const close = Number(row[1]);
       if (!date || !Number.isFinite(close)) continue;
-      if (symbol === "NEPSE") {
+      if (isIndex) {
         points.push({ date, close, open: Number(row[2]), high: Number(row[3]), low: Number(row[4]), turnover: Number(row[5]), volume: Number(row[6]), trades: Number(row[7]) });
       } else {
         points.push({ date, close, volume: Number(row[2]), turnover: Number(row[3]), trades: Number(row[4]) });

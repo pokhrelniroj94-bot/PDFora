@@ -180,11 +180,16 @@ for (const name of ["VASHYA_TABLE","GRAHA_TABLE","GANA_TABLE","YONI_TABLE"]) {
 assert.equal(parseConstArray("YONI_TABLE").length, 14, "Yoni matrix must cover all 14 traditional animal classes");
 assert.equal(parseConstArray("YONI_TABLE").flat().length, 196, "Yoni matrix must contain 196 pairings");
 assert.equal(parseConstArray("GRAHA_TABLE").length, 7, "Graha Maitri matrix must cover seven classical planetary lords");
+assert.equal(parseConstArray("GANA_TABLE")[0][2], 1, "Deva bride / Rakshasa groom must use the directional 1-point cell");
+assert.equal(parseConstArray("GANA_TABLE")[2][0], 0, "Rakshasa bride / Deva groom must use the directional 0-point cell");
+assert.equal(parseConstArray("VASHYA_TABLE")[0][1], 0.5, "Vashya table must preserve half-point values");
+assert.equal(parseConstArray("YONI_TABLE")[0][8], 0, "Yoni table must preserve the traditional enemy pairing cell");
+
 assert.ok(ashtakoota.includes("Muhurta Chintamani") && ashtakoota.includes("ASHTAKOOTA_SOURCE_URL"), "Ashtakoota convention must identify its source");
 assert.ok(ashtakoota.includes("bhakootCancelled") && ashtakoota.includes("nadiCancelled"), "Bhakoot and Nadi parihara must be reported separately from raw scores");
 assert.ok(ashtakoota.includes("scores.some(s=>s.score<0||s.score>s.max)"), "Ashtakoota must reject scores outside each koota's maximum");
 assert.ok(gunaComponent.includes('useState<Language>("ne")') && gunaComponent.includes('setLanguage("hi")') && gunaComponent.includes('setLanguage("en")'), "Guna Milan interface must support Nepali, Hindi and English");
-assert.ok(gunaComponent.includes("{t.print}") && gunaComponent.includes("ASHTAKOOTA_SOURCE_URL") && gunaComponent.includes("ASHTAKOOTA_REFERENCE_TABLES"), "Guna Milan report must provide print and source reference");
+assert.ok(gunaComponent.includes("{t.print}") && gunaComponent.includes("ASHTAKOOTA_SOURCE_URL") && gunaComponent.includes("ASHTAKOOTA_REFERENCE_TABLES") && gunaComponent.includes("showTables") && gunaComponent.includes("requiredError"), "Guna Milan report must provide print and source reference");
 assert.ok(catalogSource.includes('slug:"nepali-guna-milan"'), "36-guna tool must be registered in the canonical catalog");
 assert.ok(allTools.includes('slug==="nepali-guna-milan"') && allTools.includes("<GunaMilanTool />"), "36-guna tool must be routed to its dedicated calculator");
 assert.ok(toolPage.includes('"nepali-guna-milan": { title:'), "36-guna page must have dedicated SEO metadata");

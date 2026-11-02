@@ -15,6 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
+    "cv-resume-builder": { title: "Free CV & Resume Builder – 5 Professional Templates | PDFora", description: "Build a professional CV online with five editable resume templates, ATS-friendly layout, live A4 preview, optional photo and print-ready PDF export. Your details stay in your browser." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
@@ -165,6 +166,14 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: "Does the tool replace official advice or verification?", a: "No. Confirm important legal, financial, government or compliance matters with the responsible authority." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
+    "cv-resume-builder": [
+      { q: "How can I create a CV with this free resume builder?", a: "Choose a template, enter your contact details, summary, skills, education and experience, then review the live A4 preview and select Print / Save as PDF." },
+      { q: "Which resume templates are available?", a: "Choose Modern, Professional, Minimal, Creative or ATS Friendly. You can also customise the accent colour and optionally add a profile photo." },
+      { q: "Can I make an ATS-friendly resume?", a: "Yes. Select ATS Friendly for a simple single-column, text-first layout. Screening systems differ, so no template can guarantee a pass; use standard headings and truthful role-specific keywords." },
+      { q: "Can I download my CV as a PDF?", a: "Use Print / Save as PDF and choose Save as PDF in your browser print dialog. You can also download a JSON backup to continue editing later." },
+      { q: "Are my personal details uploaded to PDFora?", a: "The builder creates the preview and PDF print page in your browser. Your resume details are not sent to a PDFora resume-generation server. Avoid using a shared or public device for sensitive information." },
+      { q: "Can I write a Nepali CV?", a: "You can enter Nepali Unicode text in the fields. The PDF uses available system fonts, so check the saved PDF to confirm that Devanagari characters display correctly on your device." }
+    ],
     "neb-gpa-calculator": [
       { q: "How is GPA calculated?", a: "Multiply each subject's grade point by its credit hours, add those weighted points, then divide by the total credit hours. GPA = Σ(credit × grade point) ÷ Σ(credit hours)." },
       { q: "Should I enter marks or grade points?", a: "Enter the grade point from your official grade sheet, not raw marks. Select the matching letter grade and enter the subject's credit hours." },

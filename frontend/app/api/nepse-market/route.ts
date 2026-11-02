@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   if (!/^[A-Z0-9]{2,16}$/.test(symbol)) {
     return Response.json({ error: "Invalid stock symbol." }, { status: 400 });
   }
-  const [stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, manifestResult] = await Promise.allSettled([
+  const [stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, manifestResult, ltpManifestResult] = await Promise.allSettled([
     read<unknown[]>("/data/nepse_data.json"),
     read<unknown[]>("/data/market/indices.json"),
     read<Json>("/data/market/status.json"),
@@ -30,6 +30,7 @@ export async function GET(request: Request) {
     read<Json>("/data/market/top_stocks.json"),
     read<unknown[]>("/data/market/sector_indices.json"),
     read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json"),
+    read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json"),
   ]);
   const stocks = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
   const indices = indicesResult.status === "fulfilled" && Array.isArray(indicesResult.value) ? indicesResult.value : [];
@@ -40,9 +41,12 @@ export async function GET(request: Request) {
     );
   }
   const manifest = manifestResult.status === "fulfilled" ? manifestResult.value : { availableMonths: [] };
-  const availableMonths = Array.isArray(manifest.availableMonths) ? manifest.availableMonths : [];
-  const selectedMonths = availableMonths.slice(-monthCount(period));
   const historyKind = symbol === "NEPSE" ? "indices" : "ltp";
+  const historyManifest = historyKind === "indices"
+    ? manifest
+    : ltpManifestResult.status === "fulfilled" ? ltpManifestResult.value : { availableMonths: [] };
+  const availableMonths = Array.isArray(historyManifest.availableMonths) ? historyManifest.availableMonths : [];
+  const selectedMonths = availableMonths.slice(-monthCount(period));
   const historyResults = await Promise.allSettled(
     selectedMonths.map((month) => read<Json>("/data/" + historyKind + "/monthly/" + month + ".json")),
   );
@@ -72,7 +76,7 @@ export async function GET(request: Request) {
     period,
     source: "YONEPSE public dataset",
     sourceUpdatedAt: (stocks as Array<{ last_updated?: string }>).reduce((latest, stock) => stock.last_updated && stock.last_updated > latest ? stock.last_updated : latest, ""),
-    latestHistoryDate: points.at(-1)?.date ?? manifest.latestDate ?? null,
+    latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
     status: pick(statusResult, {}),
     indices,
     summary: pick(summaryResult, []),
@@ -80,7 +84,7 @@ export async function GET(request: Request) {
     sectors: pick(sectorsResult, []),
     stocks,
     points,
-    partial: [statusResult, summaryResult, topResult, sectorsResult, manifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected"),
+    partial: [statusResult, summaryResult, topResult, sectorsResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {
     headers: { "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800" },

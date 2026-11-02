@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Add Bookmarks to PDF Online | PDFora",
+  title: "Add Bookmarks to PDF Online",
   description: "Add clickable bookmarks to PDF documents by entering page numbers and titles. Create a navigable PDF table of contents online.",
   alternates: { canonical: "https://pd-fora.vercel.app/add-bookmarks" },
 };

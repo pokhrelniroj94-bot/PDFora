@@ -18,7 +18,7 @@ function readArray(name) {
     }
     if (char === '"') inString = true;
     else if (char === "[") depth++;
-    else if (char === "]" && --depth === 0) return JSON.parse(source.slice(start, i + 1));
+    else if (char === "]" && --depth === 0) return JSON.parse(source.slice(start, i + 1).replace(/,\\s*([}\\]])/g, "$1"));
   }
   throw new Error("Could not parse array " + name);
 }

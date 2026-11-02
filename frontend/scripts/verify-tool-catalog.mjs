@@ -127,4 +127,10 @@ assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-re
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
+const calculations = read("../lib/calculations.ts");
+assert.ok(calculations.includes("calculateNepalSalaryTax") && calculations.includes("calculateSimpleInterest") && calculations.includes("countBusinessDays"), "Shared tested calculator functions are missing");
+assert.ok(quickTools.includes('import { addCalendarDays, calculateSimpleInterest, countBusinessDays }'), "Quick calculators must use the shared tested calculations");
+assert.ok(quickTools.includes('weekend:"saturday"') && quickTools.includes("Saturday only (Nepal)"), "Business-day calculator must expose Nepal's Saturday-only weekend option");
+assert.ok(nepalLiveTools.includes("calculation.effectiveRate.toFixed(2)") && !nepalLiveTools.includes("Effective tax rate: $"), "Salary-tax effective-rate formatting regression detected");
+assert.ok(toolPage.includes('"simple-interest-calculator": [') && toolPage.includes('"business-days-calculator": ['), "Calculator-specific FAQs are missing");
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

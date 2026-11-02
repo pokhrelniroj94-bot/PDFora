@@ -127,13 +127,13 @@ export function calculateAshtakoota(bride:KundaliResult,groom:KundaliResult):Gun
  const bhakootDosha=[1,11,4,8,5,7].includes(distance);
  const sameRashiLord=SIGN_LORD[br]===SIGN_LORD[gr];
  const mutualFriends=naturalRelation(SIGN_LORD[br],SIGN_LORD[gr])==="friend";
- const bhakootCancelled=bhakootDosha&&(sameRashiLord||mutualFriends)&&(!nadiDosha||nadiCancelled);
- const bhakootScore=bhakootDosha?0:7;
  const nadiDosha=NADI[bi]===NADI[gi];
  const sameRashiDifferentNakshatra=br===gr&&bi!==gi;
  const sameNakshatraDifferentRashi=bi===gi&&br!==gr;
  const sameNakshatraRashiDifferentPada=br===gr&&bi===gi&&bride.janmaPada!==groom.janmaPada;
  const nadiCancelled=nadiDosha&&(sameRashiDifferentNakshatra||sameNakshatraDifferentRashi||sameNakshatraRashiDifferentPada);
+ const bhakootCancelled=bhakootDosha&&(sameRashiLord||mutualFriends)&&(!nadiDosha||nadiCancelled);
+ const bhakootScore=bhakootDosha?0:7;
  const brideMoonNavamsa=bride.planets.find((planet)=>planet.key==="Moon")?.navamsaSign ?? "";
  const groomMoonNavamsa=groom.planets.find((planet)=>planet.key==="Moon")?.navamsaSign ?? "";
  const brideNavamsaIndex=rashiIndex(brideMoonNavamsa), groomNavamsaIndex=rashiIndex(groomMoonNavamsa);

@@ -136,7 +136,7 @@ _RATE_LIMIT_REDIS_LOCK = asyncio.Lock()
 _LOCAL_RATE_LIMITS: dict[str, tuple[int, float]] = {}
 _LOCAL_RATE_LIMIT_LOCK = asyncio.Lock()
 
-PDF_HEADER_PATTERN = re.compile(rb"%PDF-(?:1\\.[0-7]|2\\.0)")
+PDF_HEADER_PATTERN = re.compile(rb"%PDF-(?:1\.[0-7]|2\.0)")
 
 
 def _client_ip(request: Request) -> str:

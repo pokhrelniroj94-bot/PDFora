@@ -184,7 +184,7 @@ function localISODate(date: Date): string {
 }
 
 export function nepalLocalDateTimeToUtc(date: string, time: string): Date {
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date) || !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(time)) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) {
     throw new Error("Enter a valid Nepal local date and time.");
   }
   const naiveUtc = new Date(`${date}T${time}:00Z`);
@@ -192,7 +192,7 @@ export function nepalLocalDateTimeToUtc(date: string, time: string): Date {
   const zoneName = new Intl.DateTimeFormat("en-US", {
     timeZone: "Asia/Kathmandu", timeZoneName: "longOffset",
   }).formatToParts(naiveUtc).find((part) => part.type === "timeZoneName")?.value ?? "GMT+05:45";
-  const match = zoneName.match(/^GMT([+-])(\\d{1,2}):(\\d{2})(?::(\\d{2}))?$/);
+  const match = zoneName.match(/^GMT([+-])(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
   if (!match) throw new Error("Could not resolve the historical Nepal time-zone offset.");
   const sign = match[1] === "-" ? -1 : 1;
   const offsetMinutes = sign * (Number(match[2]) * 60 + Number(match[3]) + Number(match[4] ?? 0) / 60);

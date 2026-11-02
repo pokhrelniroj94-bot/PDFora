@@ -62,7 +62,7 @@ export async function GET(request: Request) {
   const from = start.toISOString().slice(0, 10);
   let result: RateResponse | null = null;
   try { result = await fetchJsonRates(from, requested); } catch { /* NRB JSON API may be temporarily unreachable */ }
-  if (!result) {
+  if (!result && requested === nepalToday()) {
     try { result = await fetchOfficialPageRates(requested); } catch { /* try the official HTML page as fallback */ }
   }
   if (!result) return Response.json({ error: "Could not retrieve published rates from Nepal Rastra Bank. Please retry or open the official NRB page." }, { status: 502, headers: { "Cache-Control": "no-store" } });

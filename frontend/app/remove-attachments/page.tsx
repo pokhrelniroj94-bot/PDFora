@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Remove Attachments from PDF Online | PDFora",
+  title: "Remove Attachments from PDF Online",
   description: "Remove embedded file attachments from a PDF document online. Download the updated PDF.",
   alternates: { canonical: "https://pd-fora.vercel.app/remove-attachments" },
 };

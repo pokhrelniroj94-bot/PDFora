@@ -15,6 +15,7 @@ import requests
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import main as pdfora_main  # noqa: E402
 from main import app  # noqa: E402
+ocr_client = TestClient(app)
 
 class ApiClient:
     def __init__(self, base_url: str):
@@ -183,7 +184,7 @@ def test_ocr_returns_searchable_pdf_for_scanned_pdf(monkeypatch):
         return result
 
     monkeypatch.setattr(pdfora_main.pytesseract, "image_to_pdf_or_hocr", fake_pdf)
-    response = post_pdf("/api/ocr", make_sample_pdf(), data={"languages": "eng+nep", "output_format": "searchable_pdf"})
+    response = ocr_client.post("/api/ocr", files={"file": ("scan.pdf", make_sample_pdf(), "application/pdf")}, data={"languages": "eng+nep", "output_format": "searchable_pdf"})
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("application/pdf")
     result = fitz.open(stream=response.content, filetype="pdf")
@@ -198,7 +199,7 @@ def test_ocr_extracts_text_from_uploaded_image(monkeypatch):
     image = Image.new("RGB", (120, 60), "white")
     image_bytes = io.BytesIO()
     image.save(image_bytes, format="PNG")
-    response = client.post(
+    response = ocr_client.post(
         "/api/ocr",
         files={"file": ("sample.png", image_bytes.getvalue(), "image/png")},
         data={"languages": "nep", "output_format": "txt"},
@@ -209,12 +210,12 @@ def test_ocr_extracts_text_from_uploaded_image(monkeypatch):
 
 def test_ocr_reports_missing_engine_and_invalid_language(monkeypatch):
     monkeypatch.setattr(pdfora_main.shutil, "which", lambda _: None)
-    response = post_pdf("/api/ocr", make_sample_pdf())
+    response = ocr_client.post("/api/ocr", files={"file": ("scan.pdf", make_sample_pdf(), "application/pdf")})
     assert response.status_code == 503
     assert "Tesseract" in response.json()["detail"]
 
     monkeypatch.setattr(pdfora_main.shutil, "which", lambda _: "/usr/bin/tesseract")
-    response = post_pdf("/api/ocr", make_sample_pdf(), data={"languages": "fra"})
+    response = ocr_client.post("/api/ocr", files={"file": ("scan.pdf", make_sample_pdf(), "application/pdf")}, data={"languages": "fra"})
     assert response.status_code == 400
 
 

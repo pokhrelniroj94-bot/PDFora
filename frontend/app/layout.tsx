@@ -5,6 +5,7 @@ import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
 import { PrivacyConsentProvider } from "../components/PrivacyConsent";
 import ConsentAwareAnalytics from "../components/ConsentAwareAnalytics";
+import { SITE_NAME, SITE_URL } from "../lib/site-config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,14 +18,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pd-fora.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Free Online PDF Tools, Calculators & Nepal Utilities | PDFora",
     template: "%s | PDFora",
   },
   description:
     "Use free online PDF tools, calculators, image and text converters, developer utilities and practical Nepal-focused tools in one place.",
-  openGraph: { type: "website", siteName: "PDFora", title: "Free Online PDF Tools, Calculators & Nepal Utilities | PDFora", description: "Merge, split, compress and convert PDFs, use practical calculators and image, text and Nepal-focused utilities with PDFora.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora free online tools" }] },
+  openGraph: { type: "website", siteName: SITE_NAME, title: "Free Online PDF Tools, Calculators & Nepal Utilities | PDFora", description: "Merge, split, compress and convert PDFs, use practical calculators and image, text and Nepal-focused utilities with PDFora.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora free online tools" }] },
   twitter: { card: "summary_large_image", title: "Free Online PDF Tools, Calculators & Nepal Utilities | PDFora", description: "Use PDF converters, calculators, image and text tools, developer helpers and practical Nepal utilities online.", images: ["/opengraph-image"] },
   robots: {
     index: true,
@@ -69,22 +70,22 @@ export default function RootLayout({
               "@graph": [
                 {
                   "@type": "WebSite",
-                  "@id": "https://pd-fora.vercel.app/#website",
-                  name: "PDFora",
-                  url: "https://pd-fora.vercel.app/",
+                  "@id": `${SITE_URL}/#website`,
+                  name: SITE_NAME,
+                  url: `${SITE_URL}/`,
                   inLanguage: ["en", "ne"],
                 },
                 {
                   "@type": "Organization",
-                  "@id": "https://pd-fora.vercel.app/#organization",
-                  name: "PDFora",
-                  url: "https://pd-fora.vercel.app/",
+                  "@id": `${SITE_URL}/#organization`,
+                  name: SITE_NAME,
+                  url: `${SITE_URL}/`,
                 },
                 {
                   "@type": "SoftwareApplication",
-                  "@id": "https://pd-fora.vercel.app/#application",
-                  name: "PDFora",
-                  url: "https://pd-fora.vercel.app/",
+                  "@id": `${SITE_URL}/#application`,
+                  name: SITE_NAME,
+                  url: `${SITE_URL}/`,
                   applicationCategory: "UtilitiesApplication",
                   operatingSystem: "Any",
                   description:

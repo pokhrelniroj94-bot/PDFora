@@ -27,6 +27,7 @@ import urllib.parse
 import threading
 from contextvars import ContextVar
 import pdfplumber
+import pytesseract
 
 try:
     import redis.asyncio as redis_async
@@ -2027,8 +2028,101 @@ async def repair_pdf(file: UploadFile = File(...)):
     finally: await file.close()
 
 @app.post("/api/ocr")
-async def ocr_pdf(file: UploadFile = File(...)):
-    raise HTTPException(status_code=501,detail="OCR is not enabled on this server yet. Tesseract OCR and language data must be installed before this tool can process files.")
+async def ocr_pdf(
+    file: UploadFile = File(...),
+    languages: str = Form("eng"),
+    output_format: str = Form("searchable_pdf"),
+):
+    """Recognize scanned PDF pages or common images using locally installed Tesseract."""
+    allowed_languages = {"eng", "nep", "hin"}
+    selected_languages = [part.strip().lower() for part in languages.split("+") if part.strip()]
+    if not selected_languages or len(selected_languages) != len(set(selected_languages)) or not set(selected_languages).issubset(allowed_languages):
+        raise HTTPException(status_code=400, detail="Choose English, Nepali, Hindi, or a combination of these languages.")
+    if output_format not in {"searchable_pdf", "txt"}:
+        raise HTTPException(status_code=400, detail="Output format must be searchable_pdf or txt.")
+
+    if not shutil.which("tesseract"):
+        raise HTTPException(status_code=503, detail="OCR service is temporarily unavailable because the Tesseract engine is not installed.")
+    try:
+        installed_languages = set(pytesseract.get_languages(config=""))
+    except pytesseract.TesseractNotFoundError:
+        raise HTTPException(status_code=503, detail="OCR service is temporarily unavailable because Tesseract could not be started.")
+    except Exception:
+        raise HTTPException(status_code=503, detail="OCR language data could not be loaded. Please try again later.")
+
+    missing_languages = set(selected_languages) - installed_languages
+    if missing_languages:
+        missing = ", ".join(sorted(missing_languages))
+        raise HTTPException(status_code=503, detail=f"OCR language data is not installed: {missing}.")
+    language_argument = "+".join(selected_languages)
+
+    job = create_job()
+    output = job / ("PDFora-OCR.pdf" if output_format == "searchable_pdf" else "PDFora-OCR-Text.txt")
+    is_pdf = (file.filename or "").lower().endswith(".pdf") or (file.content_type or "").lower() == "application/pdf"
+    is_image = (file.content_type or "").lower() in {"image/png", "image/jpeg", "image/webp"} and (file.filename or "").lower().endswith((".png", ".jpg", ".jpeg", ".webp"))
+    if not is_pdf and not is_image:
+        raise HTTPException(status_code=415, detail="Upload a PDF, PNG, JPG, JPEG or WebP file.")
+
+    try:
+        text_pages: list[str] = []
+        if is_pdf:
+            validate_pdf_upload(file)
+            source = job / "source.pdf"
+            await save_upload(file, source)
+            source_doc = fitz.open(source)
+            if len(source_doc) < 1:
+                source_doc.close()
+                raise HTTPException(status_code=422, detail="The uploaded PDF has no pages.")
+            if len(source_doc) > 20:
+                source_doc.close()
+                raise HTTPException(status_code=413, detail="OCR supports up to 20 PDF pages per request.")
+            searchable_doc = fitz.open()
+            try:
+                for page in source_doc:
+                    pixmap = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
+                    image = Image.open(io.BytesIO(pixmap.tobytes("png"))).convert("RGB")
+                    if output_format == "txt":
+                        text_pages.append(pytesseract.image_to_string(image, lang=language_argument, config="--psm 3"))
+                    else:
+                        page_pdf = pytesseract.image_to_pdf_or_hocr(image, extension="pdf", lang=language_argument, config="--psm 3")
+                        with fitz.open(stream=page_pdf, filetype="pdf") as recognized_page:
+                            searchable_doc.insert_pdf(recognized_page)
+                if output_format == "searchable_pdf":
+                    searchable_doc.save(output, garbage=4, deflate=True)
+            finally:
+                searchable_doc.close()
+                source_doc.close()
+        else:
+            raw_image = await read_upload_limited(file, MAX_FILE_SIZE)
+            try:
+                with Image.open(io.BytesIO(raw_image)) as source_image:
+                    if source_image.width * source_image.height > 35_000_000:
+                        raise HTTPException(status_code=413, detail="Image dimensions are too large for OCR. Please use an image under 35 megapixels.")
+                    image = source_image.convert("RGB")
+            except HTTPException:
+                raise
+            except Exception:
+                raise HTTPException(status_code=400, detail="The uploaded image is invalid or unsupported.")
+            if output_format == "txt":
+                text_pages.append(pytesseract.image_to_string(image, lang=language_argument, config="--psm 3"))
+            else:
+                output.write_bytes(pytesseract.image_to_pdf_or_hocr(image, extension="pdf", lang=language_argument, config="--psm 3"))
+
+        if output_format == "txt":
+            recognized_text = "\n\n".join(text_pages).strip()
+            if not recognized_text:
+                raise HTTPException(status_code=422, detail="No readable text was detected. Try a clearer scan or another language.")
+            output.write_text(recognized_text + "\n", encoding="utf-8")
+            return _tool_file_response(output, output.name, "text/plain; charset=utf-8")
+        return _tool_file_response(output, output.name, "application/pdf")
+    except HTTPException:
+        raise
+    except pytesseract.TesseractError:
+        raise HTTPException(status_code=422, detail="OCR could not read this file. Check the scan quality and selected language.")
+    except Exception:
+        raise HTTPException(status_code=422, detail="OCR could not process this file. Try a smaller or clearer document.")
+    finally:
+        await file.close()
 
 
 # ============================================================

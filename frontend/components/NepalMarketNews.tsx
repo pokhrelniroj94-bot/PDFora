@@ -63,6 +63,7 @@ export default function NepalMarketNews() {
     </div>
     {loading && <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">Loading the latest headlines…</p>}
     {error && <p role="alert" className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">{error}</p>}
+    {feed?.warning && <p role="status" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{feed.warning}</p>}
     {feed && <><div className="grid gap-4 lg:grid-cols-2"><StoryList title="NEPSE & Market Updates" stories={feed.market}/><StoryList title="IPO, FPO & Allotment Updates" stories={feed.ipo}/></div><p className="text-xs text-slate-500">Feed checked: {new Date(feed.updatedAt).toLocaleString("en-NP")}. Headlines are limited to the latest 7 days and duplicates are removed. Google News may still return unrelated coverage; verify market-sensitive information with NEPSE, SEBON, CDSC or the issuing company.</p></>}
     <div className="flex flex-wrap gap-4 text-sm font-semibold"><a className="text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noopener noreferrer">NEPSE official</a><a className="text-teal-700 underline" href="https://www.sebon.gov.np/" target="_blank" rel="noopener noreferrer">SEBON official</a><a className="text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noopener noreferrer">Mero Share</a></div>
   </div>;

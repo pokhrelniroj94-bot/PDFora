@@ -77,7 +77,7 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Nepal date utility</p>
         <h2 className="mt-2 text-2xl font-black text-slate-950">Convert Nepali Bikram Sambat dates to English AD dates</h2>
-        <p className="mt-4 leading-8 text-slate-700">Convert a Gregorian date into its Bikram Sambat (BS) equivalent, or convert a Nepali BS date into the Gregorian calendar. The converter supports dates from BS 1975 through BS 2099 and displays the weekday, Nepali month name and Devanagari digits.</p>
+        <p className="mt-4 leading-8 text-slate-700">Convert a Gregorian date into its Bikram Sambat (BS) equivalent, or convert a Nepali BS date into the Gregorian calendar. The converter supports dates from BS 1975 through BS 2083 and displays the weekday, Nepali month name and Devanagari digits.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">How to convert BS and AD dates</h2>
@@ -156,7 +156,7 @@ export default function CatalogToolSEOContent({
   const nepalGuides: Record<string, { heading: string; intro: string; steps: string[]; example: string; note: string }> = {
     "nepali-date-converter": {
       heading: "Convert Nepali Bikram Sambat (BS) dates to Gregorian AD dates and back",
-      intro: "Convert a date between Nepal's Bikram Sambat calendar and the Gregorian calendar. The converter runs locally in your browser using bundled calendar data, so the date calculation does not depend on a third-party CDN loading. It supports BS 1975–2099 and the corresponding Gregorian range.",
+      intro: "Convert a date between Nepal's Bikram Sambat calendar and the Gregorian calendar. The converter runs locally in your browser using bundled calendar data, so the date calculation does not depend on a third-party CDN loading. It supports BS 1975–2083 and the corresponding Gregorian range through 2027-04-13. Future years are not extrapolated.",
       steps: ["Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD).", "Enter the date in year-month-day order, such as 2026-01-01 or 2082-09-17.", "Use English or Devanagari digits; the converter normalizes supported date separators.", "Select Convert date and review the converted date, Nepali month name and weekday.", "For a government form, verify the date against the original document or relevant official record."],
       example: "For example, 2023-04-28 AD converts to 2080-01-15 BS (बैशाख), Friday. The result includes the date in Nepali digits as well.",
       note: "The converter uses a defined calendar-data range and rejects dates outside it or invalid month days rather than estimating. It does not determine public holidays, festival observances or official legal validity. Confirm important dates with the responsible authority."

@@ -13,6 +13,7 @@ from fastapi.testclient import TestClient
 import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import main as pdfora_main  # noqa: E402
 from main import app  # noqa: E402
 
 class ApiClient:
@@ -169,10 +170,52 @@ def test_all_available_pdf_tools_process_a_realistic_pdf():
     assert not failures, "\n".join(failures)
 
 
-def test_ocr_is_explicitly_unavailable_not_misreported_as_working():
+def test_ocr_returns_searchable_pdf_for_scanned_pdf(monkeypatch):
+    monkeypatch.setattr(pdfora_main.shutil, "which", lambda _: "/usr/bin/tesseract")
+    monkeypatch.setattr(pdfora_main.pytesseract, "get_languages", lambda config="": ["eng", "nep", "hin"])
+
+    def fake_pdf(*args, **kwargs):
+        doc = fitz.open()
+        page = doc.new_page()
+        page.insert_text((50, 70), "PDFora OCR fixture text")
+        result = doc.tobytes()
+        doc.close()
+        return result
+
+    monkeypatch.setattr(pdfora_main.pytesseract, "image_to_pdf_or_hocr", fake_pdf)
+    response = post_pdf("/api/ocr", make_sample_pdf(), data={"languages": "eng+nep", "output_format": "searchable_pdf"})
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("application/pdf")
+    result = fitz.open(stream=response.content, filetype="pdf")
+    assert "PDFora OCR fixture text" in result[0].get_text()
+    result.close()
+
+
+def test_ocr_extracts_text_from_uploaded_image(monkeypatch):
+    monkeypatch.setattr(pdfora_main.shutil, "which", lambda _: "/usr/bin/tesseract")
+    monkeypatch.setattr(pdfora_main.pytesseract, "get_languages", lambda config="": ["eng", "nep", "hin"])
+    monkeypatch.setattr(pdfora_main.pytesseract, "image_to_string", lambda *args, **kwargs: "नमस्ते PDFora OCR")
+    image = Image.new("RGB", (120, 60), "white")
+    image_bytes = io.BytesIO()
+    image.save(image_bytes, format="PNG")
+    response = client.post(
+        "/api/ocr",
+        files={"file": ("sample.png", image_bytes.getvalue(), "image/png")},
+        data={"languages": "nep", "output_format": "txt"},
+    )
+    assert response.status_code == 200
+    assert "नमस्ते PDFora OCR" in response.text
+
+
+def test_ocr_reports_missing_engine_and_invalid_language(monkeypatch):
+    monkeypatch.setattr(pdfora_main.shutil, "which", lambda _: None)
     response = post_pdf("/api/ocr", make_sample_pdf())
-    assert response.status_code == 501
-    assert "OCR is not enabled" in response.json()["detail"]
+    assert response.status_code == 503
+    assert "Tesseract" in response.json()["detail"]
+
+    monkeypatch.setattr(pdfora_main.shutil, "which", lambda _: "/usr/bin/tesseract")
+    response = post_pdf("/api/ocr", make_sample_pdf(), data={"languages": "fra"})
+    assert response.status_code == 400
 
 
 def test_pdf_information_handles_missing_metadata():
@@ -207,8 +250,8 @@ def test_api_directory_includes_every_operational_tool():
     tools = response.json()["tools"]
     assert len(tools) == len(set(tools))
     assert "pdf-to-excel" in tools
-    assert "ocr" not in tools
-    assert len(tools) == 49
+    assert "ocr" in tools
+    assert len(tools) == 50
 
 
 

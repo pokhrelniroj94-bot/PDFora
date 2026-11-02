@@ -833,7 +833,7 @@ function ToolCard({
   return (
     <Link
       href={tool.href}
-      className="group flex h-full flex-col rounded-[1.6rem] border border-slate-200/80 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,.045)] transition duration-300 hover:-translate-y-1.5 hover:border-teal-300 hover:shadow-[0_22px_55px_rgba(15,118,110,.12)] active:scale-[0.99]"
+      className="tool-card group flex h-full flex-col rounded-[1.6rem] border border-slate-200/80 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,.045)] transition duration-300 hover:-translate-y-1.5 hover:border-teal-300 hover:shadow-[0_22px_55px_rgba(15,118,110,.12)] active:scale-[0.99]"
       aria-label={`Open ${tool.name}`}
     >
       <div className="flex items-start justify-between gap-4">

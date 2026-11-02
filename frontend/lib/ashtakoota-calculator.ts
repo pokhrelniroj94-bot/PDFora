@@ -20,7 +20,7 @@ const NAKSHATRAS = ["अश्विनी","भरणी","कृत्ति�
 const NAK_EN = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha","Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"];
 
 const VARNA = ["Kshatriya","Vaishya","Shudra","Brahmin","Kshatriya","Vaishya","Shudra","Brahmin","Kshatriya","Vaishya","Shudra","Brahmin"];
-const VASHYA = ["Chatushpada","Chatushpada","Dvipada","Jalachara","Chatushpada","Dvipada","Dvipada","Keeta","Dvipada","Jalachara","Jalachara","Jalachara"];
+const VASHYA = ["Chatushpada","Chatushpada","Dvipada","Jalachara","Chatushpada","Dvipada","Dvipada","Keeta","Chatushpada","Jalachara","Jalachara","Jalachara"];
 const SIGN_LORD = ["Mars","Venus","Mercury","Moon","Sun","Mercury","Venus","Mars","Jupiter","Saturn","Saturn","Jupiter"];
 const VASHYA_ORDER = ["Dvipada","Chatushpada","Jalachara","Keeta"];
 const VASHYA_TABLE = [
@@ -40,11 +40,11 @@ const GRAHA_TABLE = [
   [0,.5,3,5,.5,5,5],
   [0,.5,.5,4,3,5,5],
 ];
-const GANA = ["Deva","Manushya","Rakshasa","Manushya","Rakshasa","Deva","Deva","Deva","Rakshasa","Rakshasa","Manushya","Manushya","Deva","Rakshasa","Deva","Rakshasa","Deva","Rakshasa","Rakshasa","Manushya","Manushya","Deva","Rakshasa","Rakshasa","Manushya","Manushya","Deva"];
+const GANA = ["Deva","Manushya","Rakshasa","Manushya","Deva","Manushya","Deva","Deva","Rakshasa","Rakshasa","Manushya","Manushya","Deva","Rakshasa","Deva","Rakshasa","Deva","Rakshasa","Rakshasa","Manushya","Manushya","Deva","Rakshasa","Rakshasa","Manushya","Manushya","Deva"];
 const GANA_ORDER = ["Deva","Manushya","Rakshasa"];
 const GANA_TABLE = [[6,5,1],[6,6,0],[0,0,6]];
-const NADI = ["Adi","Madhya","Antya","Madhya","Antya","Adi","Adi","Madhya","Antya","Antya","Madhya","Antya","Adi","Madhya","Antya","Antya","Adi","Madhya","Adi","Madhya","Antya","Antya","Madhya","Adi","Adi","Madhya","Antya"];
-const YONI = ["Horse","Elephant","Sheep","Serpent","Serpent","Dog","Cat","Sheep","Cat","Rat","Rat","Cow","Buffalo","Tiger","Deer","Tiger","Deer","Deer","Dog","Monkey","Mongoose","Monkey","Lion","Horse","Lion","Cow","Elephant"];
+const NADI = ["Adi","Madhya","Antya","Antya","Madhya","Adi","Adi","Madhya","Antya","Antya","Madhya","Adi","Adi","Madhya","Antya","Antya","Madhya","Adi","Adi","Madhya","Antya","Antya","Madhya","Adi","Adi","Madhya","Antya"];
+const YONI = ["Horse","Elephant","Sheep","Serpent","Serpent","Dog","Cat","Sheep","Cat","Rat","Rat","Cow","Buffalo","Tiger","Buffalo","Tiger","Deer","Deer","Dog","Monkey","Mongoose","Monkey","Lion","Horse","Lion","Cow","Elephant"];
 const YONI_ORDER = ["Horse","Elephant","Sheep","Serpent","Dog","Cat","Rat","Cow","Buffalo","Tiger","Deer","Monkey","Mongoose","Lion"];
 // Rows are bride yoni; columns are groom yoni. This is the corrected Muhurta Chintamani chart.
 const YONI_TABLE = [
@@ -90,11 +90,6 @@ function taraValue(brideIndex:number,groomIndex:number):number {
  const good=(n:number)=>![3,5,7].includes(n);
  return good(a)&&good(b)?3:good(a)||good(b)?1.5:0;
 }
-function navamsaSign(index:number,pada:number):number {
- // Nakshatra pada spans 3°20'; map to D9 sign from its exact pada sequence.
- const total = index*4+(pada-1);
- return Math.floor((total*40/9)%12);
-}
 function rashiIndex(name:string):number {
  const index=SIGNS.indexOf(name);
  if(index>=0) return index;
@@ -136,7 +131,6 @@ export function calculateAshtakoota(bride:KundaliResult,groom:KundaliResult):Gun
  const bi=NAKSHATRAS.indexOf(bride.janmaNakshatra), gi=NAKSHATRAS.indexOf(groom.janmaNakshatra);
  const br=rashiIndex(bride.moonSign), gr=rashiIndex(groom.moonSign);
  if(bi<0||gi<0||br<0||gr<0) throw new Error("Could not resolve Moon sign or birth nakshatra for traditional matching.");
- const varnaScore=VARNA[gr]<=VARNA[br]?1:0; // Order: Brahmin, Kshatriya, Vaishya, Shudra; groom must be same or higher.
  const vOrder=["Brahmin","Kshatriya","Vaishya","Shudra"];
  const vScore=vOrder.indexOf(VARNA[gr])<=vOrder.indexOf(VARNA[br])?1:0;
  const vashyaScore=lookup(VASHYA_TABLE,VASHYA_ORDER,VASHYA[br],VASHYA_ORDER,VASHYA[gr]);

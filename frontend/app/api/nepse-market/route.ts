@@ -4,10 +4,10 @@ export const revalidate = 0;
 const BASE = "https://shubhamnpk.github.io/yonepse";
 const INDEX_SYMBOLS = new Set(["NEPSE", "SENSIND", "FLOATIND", "SENSFLTIND", "BANKSUBIND", "DEVBANKIND", "FININD", "HOTELIND", "HYDPOWIND", "INVIDX", "LIFINSIND", "MANPROCIND", "MICRFININD", "MUTUALIND", "NONLIFIND", "OTHERSIND", "TRDIND"]);
 type Json = Record<string, unknown>;
-async function read<T>(path: string): Promise<T> {
+async function read<T>(path: string, revalidateSeconds = 900): Promise<T> {
   const response = await fetch(BASE + path, {
     headers: { Accept: "application/json" },
-    next: { revalidate: 900 },
+    next: { revalidate: revalidateSeconds },
     signal: AbortSignal.timeout(12000),
   });
   if (!response.ok) throw new Error("Market data source returned " + response.status + " for " + path);
@@ -23,8 +23,10 @@ export async function GET(request: Request) {
   if (!/^[A-Z0-9]{2,16}$/.test(symbol)) {
     return Response.json({ error: "Invalid stock symbol." }, { status: 400 });
   }
-  const [stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.allSettled([
+  const [liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.allSettled([
+    read<unknown[]>("/data/market/live.json", 60),
     read<unknown[]>("/data/nepse_data.json"),
+    read<unknown[]>("/data/market/indices.json"),
     read<unknown[]>("/data/market/indices.json"),
     read<Json>("/data/market/status.json"),
     read<unknown[]>("/data/market/summary.json"),
@@ -34,7 +36,10 @@ export async function GET(request: Request) {
     read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json"),
     read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json"),
   ]);
-  const stocks = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
+  const liveStocks = liveStocksResult.status === "fulfilled" && Array.isArray(liveStocksResult.value) ? liveStocksResult.value : [];
+  const fallbackStocks = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
+  const usingLiveQuotes = liveStocks.length > 0;
+  const stocks = usingLiveQuotes ? liveStocks : fallbackStocks;
   const indices = indicesResult.status === "fulfilled" && Array.isArray(indicesResult.value) ? indicesResult.value : [];
   if (!stocks.length && !indices.length) {
     return Response.json(
@@ -105,7 +110,7 @@ export async function GET(request: Request) {
   const response = {
     symbol,
     period,
-    source: "YONEPSE public dataset",
+    source: usingLiveQuotes ? "YONEPSE live quote snapshot" : "YONEPSE fallback quote snapshot",
     sourceUpdatedAt: (stocks as Array<{ last_updated?: string }>).reduce((latest, stock) => stock.last_updated && stock.last_updated > latest ? stock.last_updated : latest, ""),
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
     status: pick(statusResult, {}),
@@ -116,9 +121,9 @@ export async function GET(request: Request) {
     supplyDemand: pick(supplyDemandResult, {}),
     stocks,
     points,
-    partial: [stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
+    partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {
-    headers: { "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800" },
+    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
   });
 }

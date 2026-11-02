@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: post.description,
     alternates: { canonical: url },
     keywords: [post.keyword, "free online tools", "tool tutorial", "how-to guide", "PDFora"],
-    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated },
-    twitter: { card: "summary", title: post.title, description: post.description },
+    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: `${post.title} | PDFora` }] },
+    twitter: { card: "summary_large_image", title: post.title, description: post.description, images: ["/opengraph-image"] },
   };
 }
 

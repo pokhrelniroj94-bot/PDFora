@@ -18,6 +18,7 @@ import os
 import re
 import ipaddress
 import asyncio
+from contextvars import ContextVar
 import pdfplumber
 
 try:
@@ -121,11 +122,61 @@ app.add_middleware(
 )
 
 
+@app.middleware("http")
+async def security_headers_and_temp_cleanup(request: Request, call_next):
+    """Apply backend security headers and clean request temp files after responses."""
+    request_jobs: list[Path] = []
+    token = _REQUEST_TEMP_JOBS.set(request_jobs)
+
+    try:
+        response = await call_next(request)
+    except Exception:
+        for job in request_jobs:
+            cleanup_job(job)
+        raise
+    finally:
+        _REQUEST_TEMP_JOBS.reset(token)
+
+    if request_jobs:
+        if isinstance(response, FileResponse):
+            previous_background = response.background
+
+            async def finish_file_response():
+                if previous_background is not None:
+                    await previous_background()
+                for job in request_jobs:
+                    cleanup_job(job)
+
+            response.background = BackgroundTask(finish_file_response)
+        else:
+            for job in request_jobs:
+                cleanup_job(job)
+
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; "
+        "form-action 'none'; object-src 'none'"
+    )
+
+    if request.url.scheme == "https" or os.getenv("RENDER", "").lower() == "true":
+        response.headers["Strict-Transport-Security"] = "max-age=31536000"
+
+    if request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-store, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+
+    return response
+
+
 # ============================================================
 # SETTINGS
 # ============================================================
 
 MAX_FILE_SIZE = 50 * 1024 * 1024
+_REQUEST_TEMP_JOBS: ContextVar[list[Path] | None] = ContextVar("pdfora_request_temp_jobs", default=None)
 
 # Upload protection defaults. Redis is recommended for multi-instance deployments.
 RATE_LIMIT_PER_ROUTE_PER_MINUTE = int(os.getenv("PDFORA_RATE_LIMIT_PER_ROUTE", "20"))
@@ -243,6 +294,10 @@ def create_job():
         parents=True,
         exist_ok=True
     )
+
+    request_jobs = _REQUEST_TEMP_JOBS.get()
+    if request_jobs is not None:
+        request_jobs.append(directory)
 
     return directory
 
@@ -415,11 +470,8 @@ def cleanup_job(job: Path):
 @app.get("/")
 def root():
 
-    return {
-        "name": "NIROJ Tools",
-        "version": "4.0.1",
-        "status": "online"
-    }
+    # Keep the public health response intentionally minimal.
+    return {"status": "ok"}
 
 
 # ============================================================
@@ -442,8 +494,7 @@ def health():
 def api_info():
 
     return {
-        "service": "NIROJ Tools",
-        "version": "4.0.1",
+        "service": "PDFora API",
         "tools": [
             "merge",
             "split",

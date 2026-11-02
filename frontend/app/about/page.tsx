@@ -31,6 +31,17 @@ export default function AboutPage() {
           </div>
 
           <div>
+            <h2 className="mb-2 text-2xl font-semibold">Who built PDFora?</h2>
+            <p>
+              PDFora was created by Niroj Pokhrel as an independent project to
+              make practical online tools easier to access, especially for
+              everyday document tasks and useful Nepal-focused utilities.
+              The project is developed and improved over time based on
+              testing, feedback and the needs of its users.
+            </p>
+          </div>
+
+          <div>
             <h2 className="mb-2 text-2xl font-semibold">Our Mission</h2>
             <p>
               Our goal is to provide simple and useful document tools that

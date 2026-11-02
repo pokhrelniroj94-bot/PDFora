@@ -1,6 +1,6 @@
 import type { KundaliResult } from "./kundali-calculator";
 
-export const ASHTAKOOTA_SOURCE = "Muhurta Chintamani, Vivaha-prakarana (verses 21–37), Piyushadhara commentary and Kedar Datt Joshi Hindi tika; cross-checked with Nemichandra Shastri, Bharatiya Jyotish (1970), chapter 5, and B. V. Raman, Muhurtha (1948).";
+export const ASHTAKOOTA_SOURCE = "Daivajna Rama, Muhurta Chintamani, Vivaha-prakarana verses 21–37, Piyushadhara commentary and Kedar Datt Joshi Hindi tika/charts (pp. 329–355); cross-checked with Nemichandra Shastri, Bharatiya Jyotish (1970), chapter 5, and B. V. Raman, Muhurtha (1948).";
 export const ASHTAKOOTA_SOURCE_URL = "https://thetelugucalendar.com/marriage-matching/method/";
 
 const SIGNS = ["मेष","वृष","मिथुन","कर्कट","सिंह","कन्या","तुला","वृश्चिक","धनु","मकर","कुम्भ","मीन"];

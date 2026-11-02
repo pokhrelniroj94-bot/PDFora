@@ -132,4 +132,6 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"nepali-guna-milan",name:"36 Guna Milan / अष्टकूट गुण मिलान",category:"Kundali & Astrology",description:"Compare bride and groom Moon signs and birth nakshatras with a documented traditional Ashtakoota 36-guna table in Nepali, Hindi and English.",keywords:"36 guna milan ashtakoota kundli matching marriage horoscope bride groom guna score varna vashya tara yoni graha maitri gana bhakoot nadi अष्टकूट ३६ गुण मिलान कुण्डली मिलान कुंडली मिलान विवाह गुण मिलान"}
 ,
 {slug:"invoice-quotation-maker",name:"Invoice & Quotation Maker",category:"Business Tools",description:"Create professional invoices and quotations with editable items, tax, discounts, multiple currencies and print-to-PDF export.",keywords:"invoice maker quotation generator estimate bill receipt business invoice Nepal NPR"}
+,
+{slug:"cover-letter-generator",name:"Cover Letter Generator",category:"Career Tools",description:"Draft a tailored job application cover letter with editable details, live preview, copy and text download.",keywords:"cover letter generator job application letter career resume application Nepal" }
 ];

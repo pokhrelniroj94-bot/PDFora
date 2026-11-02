@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:tools": "node scripts/verify-tool-catalog.mjs && node scripts/verify-panchang.mjs",
+    "verify:tools": "node scripts/verify-tool-catalog.mjs && node scripts/verify-panchang.mjs && node scripts/verify-ashtakoota.mjs",
     "verify:panchang": "node scripts/verify-panchang.mjs"
   },
   "dependencies": {

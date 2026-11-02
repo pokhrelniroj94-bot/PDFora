@@ -1,6 +1,6 @@
 export type ToolInfo = { slug: string; name: string; category: string; description: string; keywords: string };
 export const toolCatalog: ToolInfo[] = [
-{slug:"pdf-tools",name:"Explore 50+ PDF Tools",category:"PDF",description:"Open the full PDF toolbox for merging, splitting, compressing, converting, editing and securing documents.",keywords:"pdf merge split compress convert edit tools"},
+{slug:"pdf-tools",name:"Explore PDF Tools",category:"PDF",description:"Open the full PDF toolbox for merging, splitting, compressing, converting, editing and securing documents.",keywords:"pdf merge split compress convert edit tools"},
 {slug:"loan-emi-calculator",name:"Loan & EMI Calculator",category:"Calculators",description:"Calculate monthly EMI, total interest and total repayment.",keywords:"loan emi interest installment mortgage finance"},
 {slug:"compound-interest-sip-calculator",name:"Compound Interest & SIP Calculator",category:"Calculators",description:"Estimate compound growth and monthly SIP investment value.",keywords:"compound interest sip investment return"},
 {slug:"discount-percentage-calculator",name:"Discount & Percentage Calculator",category:"Calculators",description:"Calculate discounts, percentages and percentage change.",keywords:"discount percentage shopping sale"},

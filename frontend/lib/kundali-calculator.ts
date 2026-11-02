@@ -118,6 +118,9 @@ export interface KundaliInput {
   birthDate: string;
   birthTime: string;
   placeId: string;
+  placeName?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface KundaliPlanet {
@@ -134,8 +137,13 @@ export interface KundaliResult {
 }
 
 export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
-  const place = KUNDALI_PLACES.find((item) => item.id === input.placeId);
-  if (!place) throw new Error("कृपया जन्मस्थान छान्नुहोस्।");
+  const selectedPlace = KUNDALI_PLACES.find((item) => item.id === input.placeId);
+  const place = input.placeId === "custom"
+    ? { name: input.placeName?.trim() || "अन्य स्थान", lat: Number(input.latitude), lon: Number(input.longitude) }
+    : selectedPlace ? { name: selectedPlace.name, lat: selectedPlace.lat, lon: selectedPlace.lon } : null;
+  if (!place || !Number.isFinite(place.lat) || !Number.isFinite(place.lon) || Math.abs(place.lat) > 90 || Math.abs(place.lon) > 180) {
+    throw new Error("जन्मस्थानका अक्षांश/देशान्तर मान्य छैनन्।");
+  }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(input.birthDate)) throw new Error("जन्ममिति YYYY-MM-DD ढाँचामा राख्नुहोस्।");
   if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(input.birthTime)) throw new Error("जन्मसमय २४-घण्टाको HH:MM ढाँचामा राख्नुहोस्।");
   let dateAD = input.birthDate;

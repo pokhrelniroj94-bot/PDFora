@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-export const maxDuration = 20;
+export const maxDuration = 60;
 
 const BACKEND_URL = (process.env.PDFORA_BACKEND_URL || "https://pdfora-493r.onrender.com").replace(/\/$/, "");
 
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
     const upstream = await fetch(target, {
       headers: { Accept: "application/json" },
       cache: "no-store",
-      signal: AbortSignal.timeout(17_000),
+      signal: AbortSignal.timeout(55_000),
     });
     const body = await upstream.text();
     let payload: unknown;

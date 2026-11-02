@@ -19,13 +19,43 @@ function stripHtml(value: string) {
     .replace(/<[^>]+>/g, " ").replace(/&nbsp;|&#160;/gi, " ").replace(/&amp;/gi, "&")
     .replace(/&#39;|&apos;/gi, "'").replace(/&quot;/gi, '"').replace(/\s+/g, " ").trim();
 }
-async function fetchJsonRates(from: string, to: string): Promise<RateResponse | null> {
+type NrbRateRecord = { date?: string; published_on?: string; rates?: Array<{ currency?: { ISO3?: string; iso3?: string; name?: string; unit?: number | string }; buy?: number | string; sell?: number | string }> };
+type NrbRatePayload = { status?: { code?: number }; data?: { payload?: NrbRateRecord[] | null } };
+
+async function fetchNrbJson(from: string, to: string): Promise<NrbRatePayload | null> {
   const endpoint = new URL("https://www.nrb.org.np/api/forex/v1/rates");
-  endpoint.search = new URLSearchParams({ page: "1", per_page: "100", from, to }).toString();
-  const response = await fetch(endpoint, { headers: { Accept: "application/json", "User-Agent": "PDFora-NRB-Forex/1.0" }, cache: "no-store", signal: AbortSignal.timeout(10000) });
-  if (!response.ok) return null;
-  const payload = await response.json() as { data?: { payload?: Array<{ date?: string; published_on?: string; rates?: Array<{ currency?: { ISO3?: string; iso3?: string; name?: string; unit?: number | string }; buy?: number | string; sell?: number | string }> }> | null } };
-  const records = Array.isArray(payload.data?.payload) ? payload.data.payload : [];
+  endpoint.search = new URLSearchParams({ from, to, per_page: "100", page: "1" }).toString();
+  // NRB is the only data authority here. Retry transient upstream failures, but never
+  // replace a failed official response with a third-party exchange-rate feed.
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          Accept: "application/json",
+          "User-Agent": "Mozilla/5.0 (compatible; PDForaForex/1.0; +https://pd-fora.vercel.app)",
+          Referer: "https://www.nrb.org.np/forex/",
+        },
+        cache: "no-store",
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!response.ok) {
+        console.warn("[nepal-forex] NRB API returned HTTP", response.status, "attempt", attempt + 1);
+      } else {
+        const payload = await response.json() as NrbRatePayload;
+        if (payload.status?.code === 200 || payload.data?.payload) return payload;
+        console.warn("[nepal-forex] NRB API returned an unexpected/empty payload", payload.status?.code);
+      }
+    } catch (error) {
+      console.warn("[nepal-forex] NRB API request failed", attempt + 1, error instanceof Error ? error.message : "unknown error");
+    }
+    if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
+  }
+  return null;
+}
+
+async function fetchJsonRates(from: string, to: string): Promise<RateResponse | null> {
+  const payload = await fetchNrbJson(from, to);
+  const records = Array.isArray(payload?.data?.payload) ? payload.data.payload : [];
   const latest = records.filter((item) => item.date && Array.isArray(item.rates)).sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
   if (!latest) return null;
   const rates = (latest.rates ?? []).map((item) => ({
@@ -59,12 +89,8 @@ async function fetchJsonHistory(currencyCode: string): Promise<{ source: string;
   const end = new Date(nepalToday() + "T00:00:00Z");
   const start = new Date(end);
   start.setUTCDate(start.getUTCDate() - 90);
-  const endpoint = new URL("https://www.nrb.org.np/api/forex/v1/rates");
-  endpoint.search = new URLSearchParams({ page: "1", per_page: "100", from: start.toISOString().slice(0, 10), to: end.toISOString().slice(0, 10) }).toString();
-  const response = await fetch(endpoint, { headers: { Accept: "application/json", "User-Agent": "PDFora-NRB-Forex/1.0" }, cache: "no-store", signal: AbortSignal.timeout(10000) });
-  if (!response.ok) return null;
-  const payload = await response.json() as { data?: { payload?: Array<{ date?: string; rates?: Array<{ currency?: { ISO3?: string; iso3?: string; unit?: number | string }; buy?: number | string; sell?: number | string }> }> | null } };
-  const records = Array.isArray(payload.data?.payload) ? payload.data.payload : [];
+  const payload = await fetchNrbJson(start.toISOString().slice(0, 10), end.toISOString().slice(0, 10));
+  const records = Array.isArray(payload?.data?.payload) ? payload.data.payload : [];
   const history = records.flatMap((record) => {
     const item = (record.rates ?? []).find((rate) => String(rate.currency?.ISO3 ?? rate.currency?.iso3 ?? "").toUpperCase() === currencyCode);
     const unit = Number(item?.currency?.unit ?? 1), buy = Number(item?.buy), sell = Number(item?.sell);

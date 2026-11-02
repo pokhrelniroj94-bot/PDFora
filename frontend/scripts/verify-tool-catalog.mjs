@@ -70,6 +70,7 @@ const metadataEntries = [...metadataBlock.matchAll(/"([^"]+)":\s*\{\s*title:\s*"
 assert.ok(metadataEntries.length >= 45, "Expected detailed metadata overrides for the main Nepal and utility pages");
 assert.equal(new Set(metadataEntries.map((m) => m[1])).size, metadataEntries.length, "Duplicate tool-specific metadata overrides exist");
 assert.ok(metadataEntries.every((m) => m[2].length <= 60 && m[3].length <= 160), "Tool metadata title or description exceeds the SEO length target");
+assert.ok(toolPage.includes('replace(/\\s+\\S*$/') && toolPage.includes('}...`)'), "Fallback SEO descriptions must trim at word boundaries");
 
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import AdsterraNative from "./components/AdsterraNative";
+import { toolCatalog } from "../components/toolCatalog";
 
 const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
   loading: () => <div className="grid min-h-40 place-items-center rounded-3xl border border-white/10 bg-slate-900/5 text-sm text-slate-500">Loading Nepal market updates…</div>,
@@ -150,17 +151,24 @@ const tools: Tool[] = [
   { name: "Remove PDF Links", description: "Remove clickable link annotations from PDF pages.", icon: "L", category: "Security", href: "/remove-pdf-links" },
   { name: "Remove PDF Metadata", description: "Clear document metadata from a PDF file.", icon: "M", category: "Security", href: "/remove-pdf-metadata" },
   { name: "Split by Bookmarks", description: "Split a PDF into separate files using its bookmark outline.", icon: "S", category: "Organize", href: "/split-by-bookmarks" },
-]; 
+];
+
+const catalogTools: Tool[] = toolCatalog
+  .filter((tool) => tool.slug !== "pdf-tools")
+  .map((tool) => ({
+    name: tool.name,
+    description: tool.description,
+    icon: tool.category,
+    category: tool.category,
+    href: "/tools/" + tool.slug,
+  }));
+
+// One source of truth for homepage search: PDF tools plus every catalog utility.
+const allTools: Tool[] = [...tools, ...catalogTools]; 
 
 const categories = [
-  "All",
-  "Organize",
-  "Optimize",
-  "Convert",
-  "Edit",
-  "Security",
-  "Extract",
-  "Analyze",
+  "All", "PDF", "Organize", "Optimize", "Convert", "Edit", "Security", "Extract", "Analyze",
+  "Finance", "Text", "Developer", "Image", "Math", "SEO", "Business", "Nepal",
 ];
 
 const faqs = [
@@ -288,7 +296,7 @@ export default function Home() {
   const filteredTools = useMemo(() => {
     const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     const tokens = normalize(query).split(" ").filter(Boolean);
-    return tools.filter((tool) => {
+    return allTools.filter((tool) => {
       if (tool.href === "/ocr-pdf") return false;
       const matchesCategory = category === "All" || tool.category === category;
       const searchable = normalize([tool.name, tool.description, tool.category, tool.href.replaceAll("-", " "), searchTerms[tool.href] || ""].join(" "));
@@ -452,13 +460,11 @@ export default function Home() {
             id="tools-heading"
             className="mt-1 text-2xl font-black"
           >
-            PDF tools
+            All tools in one place
           </h2>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-            Choose a tool below to complete your task online.
-            PDFora is designed to make common document tasks simple and
-            accessible.
+            Search and open every available PDF tool, calculator, text utility, developer helper, image tool and Nepal-focused service from this one directory.
           </p>
         </div>
 
@@ -481,7 +487,7 @@ export default function Home() {
           ))}
         </div>
 
-        {query.trim() && <p className="mb-4 text-sm text-slate-500" aria-live="polite">Showing {filteredTools.length} matching tools for “{query}”.</p>}
+        <p className="mb-4 text-sm text-slate-500" aria-live="polite">{query.trim() ? `Showing ${filteredTools.length} matching tools for “${query}”.` : `Browse ${filteredTools.length} tools. Search by name, task or keyword.`}</p>
         {filteredTools.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white px-5 py-14 text-center">
             <div

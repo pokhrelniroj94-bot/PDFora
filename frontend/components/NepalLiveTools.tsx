@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import NepalMarketNews from "./NepalMarketNews";
-import { calculateNepalSalaryTax } from "../lib/calculations";
+import { calculateNepalDomesticElectricityBill, calculateNepalSalaryTax } from "../lib/calculations";
 
 type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
 type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; rates: ForexRate[]; error?: string };
@@ -129,47 +129,21 @@ Effective tax rate: {calculation.effectiveRate.toFixed(2)}%</Result><div classNa
 
 function ElectricityTool() {
   const [units, setUnits] = useState("100");
-  const [meter, setMeter] = useState("5A");
+  const [meter, setMeter] = useState<"5A" | "15A" | "30A" | "60A">("5A");
   const [rebate, setRebate] = useState(true);
   const u = Number(units);
   const valid = units.trim() !== "" && Number.isFinite(u) && u >= 0 && u <= 100000;
-  const meterIndex = ["5A", "15A", "30A", "60A"].indexOf(meter);
-  const minimumByBand = [
-    [30, 50, 50, 75, 100, 150],
-    [50, 75, 75, 100, 125, 175],
-    [75, 100, 100, 125, 150, 200],
-    [125, 125, 125, 150, 200, 250],
-  ];
-  const bands = [
-    { max: 20, rate: [0, 4, 5, 6][meterIndex] },
-    { max: 30, rate: 6.5 },
-    { max: 50, rate: 8 },
-    { max: 100, rate: 9.5 },
-    { max: 250, rate: 9.5 },
-    { max: Infinity, rate: 11 },
-  ];
-  let prior = 0, energy = 0, above50Energy = 0;
-  for (const band of bands) {
-    const inBand = Math.max(0, Math.min(u, band.max) - prior);
-    energy += inBand * band.rate;
-    if (band.max > 50) above50Energy += inBand * band.rate;
-    prior = band.max;
-    if (u <= band.max) break;
-  }
-  // For a 5A meter, the first 20 units are charged at NPR 3/unit only when total use exceeds 20.
-  if (meter === "5A" && u > 20) energy += 20 * 3;
-  const bandIndex = u <= 20 ? 0 : u <= 30 ? 1 : u <= 50 ? 2 : u <= 100 ? 3 : u <= 250 ? 4 : 5;
-  const minimum = minimumByBand[Math.max(0, meterIndex)][bandIndex];
-  const subtotal = energy + minimum;
-  const rebateAmount = rebate ? subtotal * 0.02 : 0;
-  const vat = above50Energy * 0.05;
-  const total = subtotal - rebateAmount + vat;
+  const calculation = valid ? calculateNepalDomesticElectricityBill(u, meter, rebate) : null;
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">NEA Domestic Electricity Bill Estimator</h2><p className="mt-1 text-sm text-slate-600">Estimate a single-phase domestic bill from monthly units and meter capacity.</p></div>
-    <div className="grid gap-3 sm:grid-cols-2"><Field title="Monthly consumption (units / kWh)" value={units} onChange={setUnits}/><label><span className={label}>Meter capacity</span><select className={field} value={meter} onChange={(e) => setMeter(e.target.value)}>{["5A","15A","30A","60A"].map((m) => <option key={m}>{m}</option>)}</select></label></div>
+    <div><h2 className="text-lg font-bold">NEA Domestic Electricity Bill Estimator · FY 2083/84</h2><p className="mt-1 text-sm text-slate-600">Estimate a single-phase domestic bill from monthly units and meter capacity using the published block tariff assumptions.</p></div>
+    <div className="grid gap-3 sm:grid-cols-2"><Field title="Monthly consumption (units / kWh)" value={units} onChange={setUnits}/><label><span className={label}>Meter capacity</span><select className={field} value={meter} onChange={(e) => setMeter(e.target.value as typeof meter)}>{["5A","15A","30A","60A"].map((m) => <option key={m}>{m}</option>)}</select></label></div>
     <label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={rebate} onChange={(e) => setRebate(e.target.checked)}/> Assume 2% early-payment rebate (within 7 days)</label>
-    {valid ? <><Result>Energy charge: {npr(energy)}\nMonthly minimum charge: {npr(minimum)}\nEarly-payment rebate: −{npr(rebateAmount)}\nVAT estimate (5% on energy above 50 units): {npr(vat)}\nEstimated bill: {npr(total)}</Result><p className="text-xs text-slate-500">Energy is calculated progressively by consumption block. Minimum charge depends on the total-use band and meter capacity.</p></> : <p role="alert" className="text-sm text-red-700">Enter monthly units from 0 to 100,000.</p>}
-    <p className="text-xs leading-5 text-slate-500">Domestic single-phase estimate only. Excludes arrears, meter rent or other account-specific adjustments. Tariffs, VAT treatment and rebates may change; your NEA bill is final. For commercial, three-phase or official bill calculations, use the ERC calculator.</p>
+    {calculation ? <><Result>Energy charge: {npr(calculation.energy)}
+Monthly minimum charge: {npr(calculation.minimum)}
+Early-payment rebate: −{npr(calculation.rebate)}
+VAT estimate (5% on energy above 50 units): {npr(calculation.vat)}
+Estimated bill: {npr(calculation.total)}</Result><p className="text-xs text-slate-500">Energy is calculated progressively by consumption block. Minimum charge depends on the total-use band and meter capacity.</p></> : <p role="alert" className="text-sm text-red-700">Enter monthly units from 0 to 100,000.</p>}
+    <p className="text-xs leading-5 text-slate-500">FY 2083/84 domestic single-phase estimate only. Excludes arrears, meter rent or other account-specific adjustments. VAT and rebate assumptions may change; your NEA bill is final. For commercial, three-phase or official bill calculations, use the ERC calculator.</p>
     <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/electricity-calculator" target="_blank" rel="noreferrer">Official ERC electricity calculator</a><a className="font-semibold text-teal-700 underline" href="https://www.nea.org.np/en/pages/consumer-tariff-rates" target="_blank" rel="noreferrer">NEA consumer tariff rates</a></div>
   </div>;
 }

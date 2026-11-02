@@ -43,4 +43,24 @@ export const astrologyBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "Hindu Panchang Calculator", href: "/tools/nepal-panchang-calculator" }, { label: "Janma Kundali / Birth Chart", href: "/tools/nepali-janma-kundali" }]
   }
+
+  {
+    slug: "36-guna-milan-ashtakoota-explained-nepali-hindi-english",
+    title: "36 Guna Milan Explained: The Eight Ashtakoota Factors and Their Traditional Scores",
+    description: "Understand the traditional 36-point Ashtakoota marriage matching method, its eight kootas, table variations, parihara notes and limitations.",
+    keyword: "36 guna milan, ashtakoota, kundli matching, 36 गुण मिलान, अष्टकूट, गुण मिलान",
+    updated: "2026-11-02", readTime: "6 min read",
+    intro: "Ashtakoota Guna Milan is a traditional Jyotisha method that compares two Moon signs and birth nakshatras across eight factors. Its maximum is 36 points. It is a cultural and astrological tradition, not a scientifically validated measure of relationship quality or marriage outcomes.",
+    sections: [
+      { heading: "The eight kootas and their maximum points", paragraphs: ["Varna carries 1 point, Vashya 2, Tara 3, Yoni 4, Graha Maitri 5, Gana 6, Bhakoot 7 and Nadi 8. Together they total 36. The common convention reads the bride's value down the rows and the groom's value across the columns for directional tables.", "The eight factors are calculated from the Moon sign and birth nakshatra. Accurate local birth time, date and place matter because they determine the Moon's sidereal position and nakshatra."] },
+      { heading: "Why two calculators can show different scores", paragraphs: ["Printed sources and editions do not always use identical Vashya and Yoni tables. Some calculators also transpose directional tables or apply cancellation rules directly to the total. PDFora names the Muhurta Chintamani table convention it uses and displays Bhakoot, Gana and Nadi parihara notes separately from the raw koota scores.", "The 18-point minimum is widely used as a conventional threshold in modern practice, but the cited source tradition also considers individual kootas and exceptions. A total alone is not a complete horoscope assessment."] },
+      { heading: "Nepali, Hindi and English 36-guna calculator", paragraphs: ["The PDFora 36 Guna Milan tool accepts each person's AD or BS date, local birth time and a supported Nepal or India birthplace. It calculates both birth charts in the browser, then compares the Moon sign and nakshatra. The report can be viewed in नेपाली, हिन्दी or English and printed or saved as PDF.", "नेपालमा जन्ममिति BS मा छ भने BS छान्नुहोस्; भारतमा जन्मिएको भए सही स्थानीय समय र स्थान छान्नुहोस्। यदि जन्मसमय वा स्थान निश्चित छैन भने नतिजालाई अनुमानका रूपमा मात्र लिनुहोस्।"] },
+      { heading: "Traditional calculation is not a relationship verdict", paragraphs: ["Guna Milan is one historical matching convention. It does not measure communication, consent, shared values, safety, emotional maturity or the real-world quality of a relationship. Do not make a marriage decision solely from a numerical score; discuss any cultural or personal questions with the people involved and, if desired, a qualified practitioner who explains their method."] }
+    ],
+    faqs: [
+      { question: "What are the eight Ashtakoota factors?", answer: "Varna (1), Vashya (2), Tara (3), Yoni (4), Graha Maitri (5), Gana (6), Bhakoot (7) and Nadi (8), for a total of 36 points." },
+      { question: "Is 18 out of 36 a guaranteed pass mark?", answer: "No. It is a widely used traditional convention, not a scientific test or guarantee of marriage success." },
+      { question: "Why can Vashya or Yoni scores differ between websites?", answer: "Different printed texts and editions contain variant tables, and some calculators transpose bride/groom rows and columns or apply parihara differently." }
+    ]
+  },
 ];

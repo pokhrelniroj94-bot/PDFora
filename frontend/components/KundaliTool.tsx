@@ -5,11 +5,18 @@ import { calculateJanmaKundali, KUNDALI_PLACES, type KundaliResult } from "../li
 
 const box = "mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100";
 const n = (value:number, digits=2) => new Intl.NumberFormat("ne-NP",{maximumFractionDigits:digits}).format(value);
+const ASTRO_NAMES: Record<string, { en: string; hi: string }> = {
+  "सूर्य":{en:"Sun",hi:"सूर्य"},"चन्द्र":{en:"Moon",hi:"चंद्र"},"मङ्गल":{en:"Mars",hi:"मंगल"},"बुध":{en:"Mercury",hi:"बुध"},"बृहस्पति":{en:"Jupiter",hi:"बृहस्पति"},"शुक्र":{en:"Venus",hi:"शुक्र"},"शनि":{en:"Saturn",hi:"शनि"},"राहु":{en:"Rahu",hi:"राहु"},"केतु":{en:"Ketu",hi:"केतु"},
+  "मेष":{en:"Aries",hi:"मेष"},"वृष":{en:"Taurus",hi:"वृषभ"},"मिथुन":{en:"Gemini",hi:"मिथुन"},"कर्कट":{en:"Cancer",hi:"कर्क"},"सिंह":{en:"Leo",hi:"सिंह"},"कन्या":{en:"Virgo",hi:"कन्या"},"तुला":{en:"Libra",hi:"तुला"},"वृश्चिक":{en:"Scorpio",hi:"वृश्चिक"},"धनु":{en:"Sagittarius",hi:"धनु"},"मकर":{en:"Capricorn",hi:"मकर"},"कुम्भ":{en:"Aquarius",hi:"कुंभ"},"मीन":{en:"Pisces",hi:"मीन"},
+  "अश्विनी":{en:"Ashwini",hi:"अश्विनी"},"भरणी":{en:"Bharani",hi:"भरणी"},"कृत्तिका":{en:"Krittika",hi:"कृत्तिका"},"रोहिणी":{en:"Rohini",hi:"रोहिणी"},"मृगशिरा":{en:"Mrigashira",hi:"मृगशिरा"},"आर्द्रा":{en:"Ardra",hi:"आर्द्रा"},"पुनर्वसु":{en:"Punarvasu",hi:"पुनर्वसु"},"पुष्य":{en:"Pushya",hi:"पुष्य"},"आश्लेषा":{en:"Ashlesha",hi:"आश्लेषा"},"मघा":{en:"Magha",hi:"मघा"},"पूर्वाफाल्गुनी":{en:"Purva Phalguni",hi:"पूर्वाफाल्गुनी"},"उत्तराफाल्गुनी":{en:"Uttara Phalguni",hi:"उत्तराफाल्गुनी"},"हस्त":{en:"Hasta",hi:"हस्त"},"चित्रा":{en:"Chitra",hi:"चित्रा"},"स्वाती":{en:"Swati",hi:"स्वाती"},"विशाखा":{en:"Vishakha",hi:"विशाखा"},"अनुराधा":{en:"Anuradha",hi:"अनुराधा"},"ज्येष्ठा":{en:"Jyeshtha",hi:"ज्येष्ठा"},"मूल":{en:"Mula",hi:"मूल"},"पूर्वाषाढा":{en:"Purva Ashadha",hi:"पूर्वाषाढ़ा"},"उत्तराषाढा":{en:"Uttara Ashadha",hi:"उत्तराषाढ़ा"},"श्रवण":{en:"Shravana",hi:"श्रवण"},"धनिष्ठा":{en:"Dhanishta",hi:"धनिष्ठा"},"शतभिषा":{en:"Shatabhisha",hi:"शतभिषा"},"पूर्वाभाद्रपदा":{en:"Purva Bhadrapada",hi:"पूर्वाभाद्रपद"},"उत्तराभाद्रपदा":{en:"Uttara Bhadrapada",hi:"उत्तराभाद्रपद"},"रेवती":{en:"Revati",hi:"रेवती"},
+  "सू":{en:"Su",hi:"सू"},"च":{en:"Mo",hi:"चं"},"मं":{en:"Ma",hi:"मं"},"बु":{en:"Me",hi:"बु"},"गु":{en:"Ju",hi:"गु"},"शु":{en:"Ve",hi:"शु"},"श":{en:"Sa",hi:"श"},"रा":{en:"Ra",hi:"रा"},"के":{en:"Ke",hi:"के"}
+};
 
 export default function KundaliTool() {
   const [name,setName]=useState("");
   const [language,setLanguage]=useState<"ne"|"en"|"hi">("ne");
   const tr=(ne:string,en:string,hi:string)=>language==="ne"?ne:language==="hi"?hi:en;
+  const astro=(value:string)=>language==="ne"?value:(ASTRO_NAMES[value]?.[language]??value);
   const [dateSystem,setDateSystem]=useState<"BS"|"AD">("BS");
   const [birthDate,setBirthDate]=useState("२०५८-०१-०१");
   const [birthTime,setBirthTime]=useState("");
@@ -79,13 +86,13 @@ export default function KundaliTool() {
         <button type="button" onClick={()=>window.print()} className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">{tr("प्रिन्ट / PDF","Print / PDF","प्रिंट / PDF")}</button>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {[[tr("लग्न","Ascendant","लग्न"),result.lagna],[tr("चन्द्र राशि","Moon sign","चंद्र राशि"),result.moonSign],[tr("जन्म नक्षत्र","Birth Nakshatra","जन्म नक्षत्र"),result.janmaNakshatra],[tr("नक्षत्र पाद","Pada","पाद"),n(result.janmaPada,0)]].map(([label,value])=><div key={label} className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 text-lg font-black text-slate-900">{value}</p></div>)}
+        {[[tr("लग्न","Ascendant","लग्न"),astro(result.lagna)],[tr("चन्द्र राशि","Moon sign","चंद्र राशि"),astro(result.moonSign)],[tr("जन्म नक्षत्र","Birth Nakshatra","जन्म नक्षत्र"),astro(result.janmaNakshatra)],[tr("नक्षत्र पाद","Pada","पाद"),n(result.janmaPada,0)]].map(([label,value])=><div key={label} className="rounded-xl border border-slate-200 bg-white p-3"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 text-lg font-black text-slate-900">{value}</p></div>)}
       </div>
       <section>
         <h3 className="mb-3 text-lg font-bold text-slate-900">{tr("राशि कुण्डली (D1)","Rashi chart (D1)","राशि कुंडली (D1)")}</h3>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
           {result.houses.map(house=><div key={house.house} className="min-h-24 rounded-xl border border-amber-200 bg-amber-50/60 p-3">
-            <p className="text-xs text-slate-500">{n(house.house,0)} भाव</p><p className="font-bold text-slate-900">{house.sign}</p><p className="mt-2 text-sm font-semibold text-teal-800">{house.planets.join(" · ")||"—"}</p>
+            <p className="text-xs text-slate-500">{n(house.house,0)} भाव</p><p className="font-bold text-slate-900">{astro(house.sign)}</p><p className="mt-2 text-sm font-semibold text-teal-800">{house.planets.map(astro).join(" · ")||"—"}</p>
           </div>)}
         </div>
         <p className="mt-2 text-xs text-slate-500">भाव गणना: Whole-sign house प्रणाली। ग्रहका छोटा नाम: सू सूर्य, च चन्द्र, मं मङ्गल, बु बुध, गु बृहस्पति, शु शुक्र, श शनि, रा राहु, के केतु।</p>
@@ -95,14 +102,14 @@ export default function KundaliTool() {
         <div className="overflow-x-auto rounded-xl border border-slate-200">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead className="bg-slate-50 text-xs text-slate-600"><tr>{["ग्रह","राशि","अंश","नक्षत्र","पाद","भाव","गति"].map(x=><th key={x} className="px-3 py-3 font-semibold">{x}</th>)}</tr></thead>
-            <tbody>{result.planets.map(p=><tr key={p.key} className="border-t border-slate-100"><td className="px-3 py-3 font-semibold">{p.name}</td><td className="px-3 py-3">{p.sign}</td><td className="px-3 py-3 tabular-nums">{n(p.degree,0)}° {n(p.minute,0)}′</td><td className="px-3 py-3">{p.nakshatra}</td><td className="px-3 py-3">{n(p.pada,0)}</td><td className="px-3 py-3">{n(p.house,0)}</td><td className="px-3 py-3">{p.retrograde?"वक्री":"मार्गी"}</td></tr>)}</tbody>
+            <tbody>{result.planets.map(p=><tr key={p.key} className="border-t border-slate-100"><td className="px-3 py-3 font-semibold">{astro(p.name)}</td><td className="px-3 py-3">{astro(p.sign)}</td><td className="px-3 py-3 tabular-nums">{n(p.degree,0)}° {n(p.minute,0)}′</td><td className="px-3 py-3">{astro(p.nakshatra)}</td><td className="px-3 py-3">{n(p.pada,0)}</td><td className="px-3 py-3">{n(p.house,0)}</td><td className="px-3 py-3">{p.retrograde?tr("वक्री","Retrograde","वक्री"):tr("मार्गी","Direct","मार्गी")}</td></tr>)}</tbody>
           </table>
         </div>
       </section>
       <section>
         <h3 className="mb-3 text-lg font-bold text-slate-900">{tr("विम्शोत्तरी महादशा","Vimshottari Mahadasha","विंशोत्तरी महादशा")}</h3>
-        <p className="mb-3 text-sm text-slate-600">{tr("हालको महादशा:","Current Mahadasha:","वर्तमान महादशा:")} <strong className="text-teal-800">{result.currentDasha}</strong></p>
-        <div className="overflow-x-auto rounded-xl border border-slate-200"><table className="w-full min-w-[480px] text-left text-sm"><thead className="bg-slate-50 text-xs text-slate-600"><tr><th className="px-3 py-3">महादशा स्वामी</th><th className="px-3 py-3">अवधि सुरु</th><th className="px-3 py-3">समाप्ति मिति</th><th className="px-3 py-3">अवधि (वर्ष)</th></tr></thead><tbody>{result.dasha.map((d,i)=><tr key={i} className={"border-t border-slate-100 "+(d.current?"bg-teal-50 font-bold":"")}><td className="px-3 py-3">{d.lord}{d.current?" · हाल":""}</td><td className="px-3 py-3">{d.start}</td><td className="px-3 py-3">{d.end}</td><td className="px-3 py-3">{n(d.years,2)}</td></tr>)}</tbody></table></div>
+        <p className="mb-3 text-sm text-slate-600">{tr("हालको महादशा:","Current Mahadasha:","वर्तमान महादशा:")} <strong className="text-teal-800">{astro(result.currentDasha)}</strong></p>
+        <div className="overflow-x-auto rounded-xl border border-slate-200"><table className="w-full min-w-[480px] text-left text-sm"><thead className="bg-slate-50 text-xs text-slate-600"><tr><th className="px-3 py-3">महादशा स्वामी</th><th className="px-3 py-3">अवधि सुरु</th><th className="px-3 py-3">समाप्ति मिति</th><th className="px-3 py-3">अवधि (वर्ष)</th></tr></thead><tbody>{result.dasha.map((d,i)=><tr key={i} className={"border-t border-slate-100 "+(d.current?"bg-teal-50 font-bold":"")}><td className="px-3 py-3">{astro(d.lord)}{d.current?" · "+tr("हाल","Current","वर्तमान"):""}</td><td className="px-3 py-3">{d.start}</td><td className="px-3 py-3">{d.end}</td><td className="px-3 py-3">{n(d.years,2)}</td></tr>)}</tbody></table></div>
       </section>
       <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">
         <p className="font-bold text-slate-800">{tr("गणना विधि र सीमाहरू","Calculation method and limitations","गणना विधि और सीमाएं")}</p>

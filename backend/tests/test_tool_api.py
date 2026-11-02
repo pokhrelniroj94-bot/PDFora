@@ -209,3 +209,106 @@ def test_api_directory_includes_every_operational_tool():
     assert "pdf-to-excel" in tools
     assert "ocr" not in tools
     assert len(tools) == 49
+
+
+
+def test_fake_pdf_extension_is_rejected_before_processing():
+    response = client.post(
+        "/api/pdf-info",
+        files={
+            "file": (
+                "not-really-a-pdf.pdf",
+                b"MZ" + bytes([0x90, 0x00]) + b"This is not a PDF",
+                "application/pdf",
+            )
+        },
+    )
+    assert response.status_code == 400
+    assert "PDF" in response.json()["detail"]
+
+
+def test_empty_upload_is_rejected():
+    response = client.post(
+        "/api/pdf-info",
+        files={"file": ("empty.pdf", b"", "application/pdf")},
+    )
+    assert response.status_code == 400
+
+
+def test_rate_limit_returns_429_for_api_post(monkeypatch):
+    from main import _LOCAL_RATE_LIMITS, app
+    from fastapi.testclient import TestClient
+
+    _LOCAL_RATE_LIMITS.clear()
+    monkeypatch.setattr("main.RATE_LIMIT_PER_ROUTE_PER_MINUTE", 1)
+    monkeypatch.setattr("main.RATE_LIMIT_PER_IP_PER_HOUR", 100)
+
+    local_client = TestClient(app)
+    first = local_client.post("/api/rate-limit-probe")
+    second = local_client.post("/api/rate-limit-probe")
+
+    assert first.status_code == 404
+    assert second.status_code == 429
+    assert second.headers.get("retry-after") == "60"
+    _LOCAL_RATE_LIMITS.clear()
+
+
+
+def test_backend_security_headers_are_present():
+    response = TestClient(app).get("/health")
+    assert response.status_code == 200
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert response.headers["x-frame-options"] == "DENY"
+    assert response.headers["referrer-policy"] == "strict-origin-when-cross-origin"
+    assert "frame-ancestors 'none'" in response.headers["content-security-policy"]
+
+
+def test_root_does_not_disclose_internal_name_or_version():
+    response = TestClient(app).get("/")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
+def test_temp_job_is_removed_after_file_response():
+    from main import TEMP_DIR
+
+    before = set(TEMP_DIR.iterdir())
+    response = TestClient(app).post(
+        "/api/pdf-info",
+        files={"file": ("sample.pdf", make_sample_pdf(), "application/pdf")},
+    )
+    assert response.status_code == 200
+    after = set(TEMP_DIR.iterdir())
+    assert after == before
+
+
+
+def test_render_client_ip_prefers_cloudflare_visitor_ip(monkeypatch):
+    from main import _client_ip
+    from starlette.requests import Request
+
+    monkeypatch.setenv("RENDER", "true")
+    scope = {
+        "type": "http",
+        "method": "POST",
+        "path": "/api/pdf-info",
+        "headers": [
+            (b"cf-connecting-ip", b"203.0.113.7"),
+            (b"x-forwarded-for", b"198.51.100.8, 192.0.2.9"),
+        ],
+        "client": ("10.0.0.1", 1234),
+        "server": ("testserver", 80),
+        "scheme": "https",
+        "query_string": b"",
+        "root_path": "",
+        "http_version": "1.1",
+    }
+    request = Request(scope)
+    assert _client_ip(request) == "203.0.113.7"
+
+
+
+def test_local_api_docs_remain_accessible():
+    response = TestClient(app).get("/docs")
+    assert response.status_code == 200
+    assert "content-security-policy" not in response.headers

@@ -90,7 +90,9 @@ export default function PDForaTool({
     }
 
     setLoading(true);
-    setMessage("");
+    setMessage(
+      "Connecting to PDFora's processing server. If it has been idle, the first request may take up to a minute."
+    );
 
     try {
       const formData = new FormData();
@@ -119,6 +121,8 @@ export default function PDForaTool({
       const response = await fetch(url.toString(), {
         method: "POST",
         body: formData,
+        // Render may need time to wake an idle service. Allow a generous timeout.
+        signal: AbortSignal.timeout(180_000),
       });
 
       if (!response.ok) {
@@ -162,10 +166,18 @@ export default function PDForaTool({
     } catch (error) {
       console.error(error);
 
+      const timedOut =
+        error instanceof DOMException &&
+        (error.name === "TimeoutError" || error.name === "AbortError");
+
       setMessage(
-        error instanceof Error
-          ? error.message
-          : "Could not process the PDF."
+        timedOut
+          ? "The processing server took too long to respond. It may be waking up or busy. Please try again."
+          : error instanceof TypeError
+            ? "Could not connect to the processing server. Please check your connection and try again."
+            : error instanceof Error
+              ? error.message
+              : "Could not process the PDF."
       );
     } finally {
       setLoading(false);

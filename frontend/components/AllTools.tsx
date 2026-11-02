@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { toolCatalog } from "./toolCatalog";
+import { allTools } from "../lib/tool-directory";
 
 
 
@@ -17,7 +18,7 @@ const NepalTools = dynamic(() => import("./NepalTools"), { loading: ToolChunkLoa
 const NepalLiveTools = dynamic(() => import("./NepalLiveTools"), { loading: ToolChunkLoading });
 const NepaliTypingTool = dynamic(() => import("./NepaliTypingTool"), { loading: ToolChunkLoading });
 
-const categories = ["All","Nepal","Finance","Text","Developer","Image","SEO","Math","Business","PDF"];
+const categories = ["All", ...Array.from(new Set(allTools.map((tool) => tool.category))).sort((a, b) => a.localeCompare(b))];
 const toolIcons: Record<string, string> = { Nepal: "🇳🇵", Finance: "💰", Text: "✍️", Developer: "⌨️", Image: "🖼️", SEO: "🔎", Math: "➗", Business: "📊", PDF: "📄" };
 function getToolIcon(slug: string, category: string): string {
  const rules: [RegExp,string][] = [
@@ -37,15 +38,23 @@ function CopyButton({value}:{value:string}) { return <button className="rounded-
 
 export function ToolsDirectory() {
  const [category,setCategory]=useState("All"),[query,setQuery]=useState("");
- const list=useMemo(()=>toolCatalog.filter(t=>t.slug!=="pdf-tools"&&(category==="All"||t.category===category)&&[t.name,t.description,t.keywords].join(" ").toLowerCase().includes(query.toLowerCase())),[category,query]);
+ const list=useMemo(()=>{
+  const normalize=(value:string)=>value.toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+  const tokens=normalize(query).split(" ").filter(Boolean);
+  return allTools.filter(t=>{
+   const matchesCategory=category==="All"||(category==="PDF"?(t.kind==="pdf"||t.category==="PDF"):t.category===category);
+   const searchable=normalize([t.name,t.description,t.keywords,t.href].join(" "));
+   return matchesCategory&&(tokens.length===0||tokens.every(token=>searchable.includes(token)));
+  });
+ },[category,query]);
  return <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-  <div className="mb-9"><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">One place. Useful tools.</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Explore PDFora</h1><p className="mt-3 max-w-2xl text-slate-600">Find Nepal-focused NRB exchange rates, salary tax, electricity bills, public holidays, Nepali typing, BS dates, NEB GPA, Loksewa photo and NEPSE tools, alongside finance, text, developer, image, SEO and PDF utilities. Choose a category or search for a task.</p><p className="mt-3 text-sm"><Link href="/#tools" className="font-semibold text-teal-700 underline">Looking for PDF editing and conversion? Browse the PDF toolbox.</Link></p></div>
+  <div className="mb-9"><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">One place. Useful tools.</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Explore PDFora</h1><p className="mt-3 max-w-2xl text-slate-600">Browse every available PDF tool, calculator, text utility, developer tool, image converter, SEO helper and Nepal-focused utility from one searchable directory.</p><p className="mt-3 text-sm font-semibold text-teal-700">{allTools.length} available tools · OCR is listed separately only when its server support is enabled.</p></div>
   <div className="sticky top-[72px] z-20 -mx-4 mb-7 border-y border-slate-200/80 bg-white/95 px-4 py-3 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:rounded-2xl sm:border sm:p-4">
    <input className={box+" mb-3"} placeholder="Search tools..." value={query} onChange={e=>setQuery(e.target.value)} aria-label="Search tools"/>
    <div className="flex gap-2 overflow-x-auto pb-1">{categories.map(c=><button key={c} onClick={()=>setCategory(c)} className={"shrink-0 rounded-full px-4 py-2 text-sm font-semibold "+(category===c?"bg-teal-700 text-white":"bg-slate-100 text-slate-700 hover:bg-teal-50")}>{c}</button>)}</div>
   </div>
-  <p className="mb-4 text-sm text-slate-500">{list.length} tools</p>
-  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{list.map(t=><Link key={t.slug} href={"/tools/"+t.slug} className="group rounded-[1.5rem] border border-slate-200/80 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,.045)] transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,118,110,.12)]"><div className="mb-4 flex items-center justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-xl" aria-hidden="true">{getToolIcon(t.slug, t.category)}</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{t.category}</span></div><h2 className="font-bold text-slate-900 group-hover:text-teal-800">{t.name}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{t.description}</p><span className="mt-4 inline-flex text-sm font-bold text-teal-700">Open tool <span className="ml-2 transition group-hover:translate-x-1">→</span></span></Link>)}</div>
+  <p className="mb-4 text-sm text-slate-500">Showing {list.length} of {allTools.length} available tools</p>
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{list.map(t=><Link key={t.slug} href={t.href} className="group rounded-[1.5rem] border border-slate-200/80 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,.045)] transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,118,110,.12)]"><div className="mb-4 flex items-center justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-xl" aria-hidden="true">{getToolIcon(t.slug, t.category)}</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{t.category}</span></div><h2 className="font-bold text-slate-900 group-hover:text-teal-800">{t.name}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{t.description}</p><span className="mt-4 inline-flex text-sm font-bold text-teal-700">Open tool <span className="ml-2 transition group-hover:translate-x-1">→</span></span></Link>)}</div>
   {list.length===0&&<p className="rounded-xl bg-white p-8 text-center text-slate-600">No tools found. Try another search.</p>}
   <div className="mt-8"><AdsterraNative /></div>
  </main>;

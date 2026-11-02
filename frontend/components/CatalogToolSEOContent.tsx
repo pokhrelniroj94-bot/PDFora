@@ -123,9 +123,9 @@ export default function CatalogToolSEOContent({
           </section>
           <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">Accuracy, source and limitations</h2>
-            <p className="mt-4 leading-8 text-slate-700">The source is Nepal Rastra Bank's official foreign-exchange API and, if that endpoint is unavailable, its official published foreign-exchange page. The data is presented as an NRB reference rate, not as a guaranteed cash, card, bank-counter or remittance quote. Individual banks and money changers may publish different customer rates and fees.</p>
+            <p className="mt-4 leading-8 text-slate-700">The source is Nepal Rastra Bank&apos;s official foreign-exchange API and, if that endpoint is unavailable, its official published foreign-exchange page. The data is presented as an NRB reference rate, not as a guaranteed cash, card, bank-counter or remittance quote. Individual banks and money changers may publish different customer rates and fees.</p>
             <p className="mt-3 leading-8 text-slate-700">If rates cannot be retrieved, the tool shows an error and lets you retry; it does not silently present an old value as today&apos;s rate. For a payment, exchange or accounting decision, verify the rate directly with NRB or the financial provider handling the transaction.</p>
-            <a className="mt-3 inline-block text-sm font-semibold text-teal-700 underline" href="https://www.nrb.org.np/forex/" target="_blank" rel="noreferrer">Check Nepal Rastra Bank's official exchange rates</a>
+            <a className="mt-3 inline-block text-sm font-semibold text-teal-700 underline" href="https://www.nrb.org.np/forex/" target="_blank" rel="noreferrer">Check Nepal Rastra Bank&apos;s official exchange rates</a>
           </section>
           <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>

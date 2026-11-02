@@ -27,6 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
     { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/market`, changeFrequency: "daily", priority: 0.85 },
     ...legacyPdfEntries,
     ...catalogEntries,
     { url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.8 },

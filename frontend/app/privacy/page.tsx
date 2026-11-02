@@ -61,14 +61,20 @@ export default function PrivacyPage() {
               4. Cookies and Advertising
             </h2>
             <p>
-              PDFora may use cookies or similar technologies for website
-              functionality, analytics, and, if enabled in the future,
-              advertising services such as Google AdSense.
+              PDFora currently displays advertisements from third-party
+              advertising partners on pages where ad units are enabled,
+              including Adsterra. These providers may use cookies or similar
+              technologies to deliver ads, measure performance, limit
+              repeated ads, and help detect invalid activity.
             </p>
             <p className="mt-2">
-              Third-party advertising providers may use cookies to serve ads
-              based on a user&apos;s visits to this and other websites, subject to
-              their own privacy policies and applicable settings.
+              Depending on the provider and its settings, advertising
+              technologies may process information such as IP address,
+              browser or device details, approximate location, and ad
+              interactions. Third-party providers handle this information
+              under their own privacy policies. You can review your browser
+              cookie controls and the provider&apos;s available privacy or
+              advertising preferences.
             </p>
           </div>
 

@@ -20,10 +20,50 @@ html { color-scheme: light; scroll-behavior: smooth; }
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
 }
 ::selection { background: #99f6e4; color: #134e4a; }
 :focus-visible { outline: 3px solid #0f766e; outline-offset: 3px; }
 input, button, a { -webkit-tap-highlight-color: transparent; }
 button, a { transition-duration: 180ms; }
+
+
+/* PDFora premium interface refinements */
+:root {
+  color-scheme: light;
+  --surface: #ffffff;
+  --surface-muted: #f5f7f6;
+}
+html {
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  min-width: 320px;
+  background: var(--surface-muted);
+  font-feature-settings: "ss01" on, "cv11" on;
+}
+::selection {
+  background: #99f6e4;
+  color: #064e3b;
+}
+:focus-visible {
+  outline-color: #0d9488;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* Defer off-screen card rendering in long tool directories. */
+.tool-card,
+.tool-directory-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 280px;
+}

@@ -1,4 +1,14 @@
-﻿"use client";
+import type { Metadata } from "next";
+import { getToolGuide } from "../../lib/tool-guides";
+
+const guide = getToolGuide("extract-pages");
+export const metadata: Metadata = {
+  title: `${guide?.name ?? "PDF tool"} Online | PDFora`,
+  description: guide ? `${guide.purpose} ${guide.keyword}. Use PDFora online and inspect the output before sharing.`.slice(0, 160) : "Use this free PDF tool online with PDFora.",
+  keywords: [guide?.name ?? "PDF tool", guide?.keyword ?? "PDF tool online", "free online PDF tool"],
+  alternates: { canonical: "https://pd-fora.vercel.app/extract-pages" },
+  openGraph: { type: "website", title: `${guide?.name ?? "PDF tool"} Online | PDFora`, description: guide?.purpose ?? "Use a free online PDF tool with PDFora.", url: "https://pd-fora.vercel.app/extract-pages", siteName: "PDFora" },
+};
 
 import Niroj77Tool from "../../components/Niroj77Tool";
 

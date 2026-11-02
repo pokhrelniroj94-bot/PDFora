@@ -254,6 +254,20 @@ def test_rate_limit_returns_429_for_api_post(monkeypatch):
 
 
 
+def test_premium_redesign_preview_origin_is_allowed_by_cors():
+    origin = "https://pd-fora-git-premium-redesign-pokhrelniroj94-7012s-projects.vercel.app"
+    response = TestClient(app).options(
+        "/api/merge",
+        headers={
+            "Origin": origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == origin
+
+
 def test_backend_security_headers_are_present():
     response = TestClient(app).get("/health")
     assert response.status_code == 200
@@ -312,3 +326,26 @@ def test_local_api_docs_remain_accessible():
     response = TestClient(app).get("/docs")
     assert response.status_code == 200
     assert "content-security-policy" not in response.headers
+
+
+def test_non_pdf_mime_type_is_rejected_before_processing():
+    response = client.post(
+        "/api/pdf-info",
+        files={"file": ("sample.pdf", make_sample_pdf(), "text/html")},
+    )
+    assert response.status_code == 415
+
+
+def test_images_to_pdf_rejects_svg_upload():
+    response = client.post(
+        "/api/images-to-pdf",
+        files={"files": ("image.svg", b"<svg xmlns='http://www.w3.org/2000/svg'></svg>", "image/svg+xml")},
+    )
+    assert response.status_code == 415
+
+
+def test_cleanup_endpoint_is_not_public_without_admin_secret(monkeypatch):
+    monkeypatch.delenv("CLEANUP_ADMIN_TOKEN", raising=False)
+    response = TestClient(app).post("/api/cleanup")
+    assert response.status_code == 404
+

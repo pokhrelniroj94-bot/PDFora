@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Step-by-step guides for PDF tasks, Nepal calculators, exchange rates, tax estimates, electricity bills, Nepali typing, BS dates and online tools.",
   alternates: { canonical: `${SITE_URL}/blog` },
   openGraph: {
-    title: "Practical PDF & Nepal Guides – Tutorials and How-to Articles | ${SITE_NAME}",
+    title: `Practical PDF & Nepal Guides – Tutorials and How-to Articles | ${SITE_NAME}`,
     description: "Learn PDF workflows and practical Nepal tools through clear tutorials, worked examples, FAQs and official reference links.",
     url: `${SITE_URL}/blog`,
     siteName: SITE_NAME,
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Practical PDF & Nepal Guides | ${SITE_NAME}",
+    title: `Practical PDF & Nepal Guides | ${SITE_NAME}`,
     description: "Step-by-step guides for PDF tasks, Nepal calculators, exchange rates, tax estimates and online tools.",
     images: ["/opengraph-image"],
   },

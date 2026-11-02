@@ -1,13 +1,21 @@
 "use client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { toolCatalog } from "./toolCatalog";
-import ExtraTools from "./ExtraTools";
-import QuickUtilityTools from "./QuickUtilityTools";
-import NepalTools from "./NepalTools";
-import NepalLiveTools from "./NepalLiveTools";
-import NepaliTypingTool from "./NepaliTypingTool";
+
+
+
+
+
 import AdsterraNative from "../app/components/AdsterraNative";
+
+const ToolChunkLoading = () => <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm font-medium text-slate-500" role="status">Loading tool workspace…</div>;
+const ExtraTools = dynamic(() => import("./ExtraTools"), { loading: ToolChunkLoading });
+const QuickUtilityTools = dynamic(() => import("./QuickUtilityTools"), { loading: ToolChunkLoading });
+const NepalTools = dynamic(() => import("./NepalTools"), { loading: ToolChunkLoading });
+const NepalLiveTools = dynamic(() => import("./NepalLiveTools"), { loading: ToolChunkLoading });
+const NepaliTypingTool = dynamic(() => import("./NepaliTypingTool"), { loading: ToolChunkLoading });
 
 const categories = ["All","Nepal","Finance","Text","Developer","Image","SEO","Math","Business","PDF"];
 const toolIcons: Record<string, string> = { Nepal: "🇳🇵", Finance: "💰", Text: "✍️", Developer: "⌨️", Image: "🖼️", SEO: "🔎", Math: "➗", Business: "📊", PDF: "📄" };

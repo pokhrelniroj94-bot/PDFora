@@ -104,6 +104,55 @@ export default function CatalogToolSEOContent({
       </section>
     </div></article>;
   }
+  if (["neb-gpa-calculator","nepal-land-area-converter","nepal-vat-calculator","nepal-share-calculator"].includes(tool.slug)) {
+    const guides: Record<string, { eyebrow: string; heading: string; intro: string; steps: string[]; formula: string; example: string; caution: string }> = {
+      "neb-gpa-calculator": {
+        eyebrow: "NEB education calculator",
+        heading: "Calculate NEB GPA using subject credit hours and grade points",
+        intro: "Enter every subject shown on your grade sheet, including its credit hours and grade point. The calculator weights each subject by its credit hours, so a higher-credit subject contributes more to the final GPA than a lower-credit subject with the same grade point.",
+        steps: ["Add or remove subject rows until the list matches your grade sheet.", "Enter the subject name and its credit hours exactly as shown by your school.", "Choose the corresponding grade point from the grade-point column; do not enter raw marks.", "Review the weighted points for every subject, total credits and final GPA out of 4.00."],
+        formula: "GPA = Σ(subject credit hours × subject grade point) ÷ Σ(subject credit hours)",
+        example: "If a subject has 3 credit hours and a grade point of 4.0, it contributes 12 weighted points. If all subjects together contribute 72 weighted points across 20 credit hours, GPA = 72 ÷ 20 = 3.60.",
+        caution: "The displayed grade-point choices are a calculator assumption based on a commonly used NEB scale. Different programmes or updated directives may use different rules. Use the exact credit hours and grade points on your official grade sheet and confirm your result with NEB or your school."
+      },
+      "nepal-land-area-converter": {
+        eyebrow: "Nepal land measurement converter",
+        heading: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur",
+        intro: "Convert traditional hill-region and Terai-region land units into square feet and square metres. Enter the values in the matching section; the tool calculates each system independently so an empty square-foot field does not hide the hill-unit result.",
+        steps: ["For hill measurements, enter Ropani, Aana, Paisa and Daam in the first section.", "For a known square-foot area, enter the total in the square-feet section to see equivalent hill and Terai units.", "For Terai measurements, enter Bigha, Kattha and Dhur in the final section.", "Compare the square-foot and square-metre totals, then check the unit convention used in the original land record."],
+        formula: "Hill: 1 Ropani = 5,476 sq ft = 16 Aana = 64 Paisa = 256 Daam. Terai: 1 Bigha = 72,900 sq ft = 20 Kattha = 400 Dhur.",
+        example: "1 Ropani + 8 Aana = 5,476 + (8 × 342.25) = 8,214 square feet. One Bigha equals 72,900 square feet under the common Terai conversion.",
+        caution: "These are standard unit conversions, not a land survey or title verification. Plot boundaries, official recorded area and local cadastral details must be confirmed with the relevant Land Revenue Office or Survey Office before a purchase, sale or legal filing."
+      },
+      "nepal-vat-calculator": {
+        eyebrow: "Nepal VAT calculator",
+        heading: "Add 13% VAT to a price or extract VAT from an inclusive total",
+        intro: "Use the calculator to estimate VAT in Nepalese rupees. Choose whether the entered amount is before VAT or already includes VAT, and confirm the rate field before calculating.",
+        steps: ["Enter the base price or VAT-inclusive total in NPR.", "Check the VAT percentage; 13% is preselected but the field can be edited.", "Choose Add VAT to base price or Extract VAT from VAT-inclusive price.", "Review the base amount, VAT amount and final inclusive amount separately."],
+        formula: "Add VAT: VAT = base price × rate ÷ 100; total = base price + VAT. Extract VAT: base price = inclusive total ÷ (1 + rate ÷ 100).",
+        example: "At 13%, NPR 1,000 before VAT produces NPR 130 VAT and NPR 1,130 including VAT. If NPR 1,130 already includes 13% VAT, the pre-VAT amount is NPR 1,000.",
+        caution: "This is a simple arithmetic estimate. Exemptions, zero-rated supplies, registration status, invoice rules and special tax treatment are not assessed. Confirm the current law and transaction category with the Inland Revenue Department or a qualified tax professional."
+      },
+      "nepal-share-calculator": {
+        eyebrow: "NEPSE share profit calculator",
+        heading: "Estimate NEPSE share buying cost, selling proceeds and net profit",
+        intro: "Enter the number of shares, purchase price and expected selling price. The calculator estimates charges using the editable broker commission, SEBON fee, DP charge and CGT assumptions, then shows the difference between gross and estimated net profit.",
+        steps: ["Enter the whole-number share quantity and the buy price per share.", "Enter the expected sell price per share.", "Review broker commission, SEBON fee, DP charge and CGT assumptions; change them to match your transaction.", "Compare total buy cost, sale proceeds, charges, profit before CGT and estimated net profit."],
+        formula: "Gross profit = (sell price − buy price) × shares. Estimated net profit = gross profit − estimated buy charges − estimated sell charges − estimated CGT.",
+        example: "For 100 shares bought at NPR 200 and sold at NPR 220, gross price difference is NPR 2,000 before transaction charges and tax. The final estimate depends on the rates entered in the calculator.",
+        caution: "Broker commission tiers, SEBON and DP charges, capital-gains tax and holding-period rules can change or depend on investor type. The editable defaults are assumptions, not a live broker tariff. Use your broker's contract note and current tax rules for the final settlement."
+      }
+    };
+    const guide = guides[tool.slug];
+    if (guide) return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><p className="text-xs font-bold uppercase tracking-widest text-teal-700">{guide.eyebrow}</p><h2 className="mt-2 text-2xl font-black text-slate-950">{guide.heading}</h2><p className="mt-4 leading-8 text-slate-700">{guide.intro}</p></section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">How to use this calculator</h2><ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">{guide.steps.map((step) => <li key={step}>{step}</li>)}</ol></section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Formula and worked example</h2><p className="mt-3 rounded-xl bg-slate-50 p-4 font-semibold leading-7 text-slate-900">{guide.formula}</p><p className="mt-4 leading-8 text-slate-700">{guide.example}</p></section>
+      <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and important limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.caution}</p></section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related tools</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read related guide</Link>}</div></section>
+    </div></article>;
+  }
   if (tool.slug === "nepse-market-news" || tool.slug === "nepse-dividend-calculator") {
     const news = tool.slug === "nepse-market-news";
     const heading = news ? "Nepal stock market headlines, IPO and FPO updates" : "Calculate NEPSE cash dividend and bonus shares";

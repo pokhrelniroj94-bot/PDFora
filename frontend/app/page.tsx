@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import AdsterraNative from "./components/AdsterraNative";
 
 const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
   loading: () => <div className="grid min-h-40 place-items-center rounded-3xl border border-white/10 bg-slate-900/5 text-sm text-slate-500">Loading Nepal market updates…</div>,
@@ -414,6 +415,11 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* NON-INTRUSIVE NATIVE AD */}
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <AdsterraNative />
+      </div>
 
       {/* NEPAL MARKET UPDATES */}
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">

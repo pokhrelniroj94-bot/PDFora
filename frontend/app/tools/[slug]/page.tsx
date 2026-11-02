@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import ToolWorkspace from "../../../components/AllTools";
 import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
 import { toolCatalog } from "../../../components/toolCatalog";
@@ -14,12 +14,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
-  const title = `${tool.name} Online`;
-  const socialTitle = `${title} | PDFora`;
-  const description = tool.description.length > 155 ? tool.description.slice(0, 152).trimEnd() + "..." : tool.description;
+  const title = `Free ${tool.name} Online`;
+  const socialTitle = `${tool.name} Online | PDFora`;
+  const description = `${tool.description.replace(/[.!?]$/, "")}. Use this free online ${tool.category.toLowerCase()} tool on PDFora. Review the result before saving or sharing.`.slice(0, 160);
+  const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
   return {
-    title, description,
+    title, description, keywords,
     alternates: { canonical },
     robots: { index: slug !== "ocr-pdf", follow: true },
     openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
@@ -30,6 +31,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") notFound();
+  if (legacyToolSlugSet.has(slug)) permanentRedirect(`/${slug}`);
   const related = toolCatalog.filter((item) => item.category === tool.category && item.slug !== slug && item.slug !== "pdf-tools").slice(0, 4);
   const guide = blogPosts.find((post) => post.toolLinks.some((link) => link.href === `/tools/${slug}`));
   const categoryChecks: Record<string, string> = {
@@ -47,6 +49,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const defaultQuestions = [
     { q: `What does the ${tool.name} do?`, a: tool.description },
     { q: `What should I check when using the ${tool.name}?`, a: categoryNote },
+    { q: `What should I prepare before using the ${tool.name}?`, a: `${tool.description} Prepare the source information requested by the fields shown in the tool, and check units or file formats before processing.` },
     { q: `Can I rely on the ${tool.name} result as an official record?`, a: "No. This online utility is a practical aid. Confirm important financial, legal, government, medical or compliance results with the responsible authority or qualified professional." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {

@@ -411,6 +411,17 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does it use the current broker commission and tax automatically?", a: "No. Charges and tax assumptions are editable. Confirm the applicable broker tariff and capital-gains tax rate before selling." },
       { q: "Does it guarantee the IPO listing price?", a: "No. The sale price is an input chosen by the user; listing and market prices can move." }
     ],
+    "nepal-panchang-calculator": [
+      { q: "How is this Nepal Panchang calculated?", a: "The calculator uses Astronomy Engine ephemerides for the Sun and Moon, Lahiri/Chitrapaksha sidereal conversion for nakshatra and yoga, and local sunrise as the Panchang day anchor. The selected city coordinates and Nepal time zone are used for sunrise and sunset." },
+      { q: "Does this exactly match Nepal's official Rashtriya Panchanga?", a: "Not necessarily. This is an astronomical reference using a documented calculation convention. The official Nepal Rashtriya Panchanga may apply traditional siddhanta, regional and ritual conventions that produce differences." },
+      { q: "Which locations can I calculate?", a: "The current version provides city-centre coordinates for Kathmandu, Ilam, Biratnagar, Pokhara, Janakpur, Nepalgunj, Dhangadhi, Birgunj, Dharan, Butwal and Bharatpur." },
+      { q: "Does it provide wedding muhurta or festival decisions?", a: "No. It does not infer personalized auspicious times or decide festival observance. Confirm important rituals with the official Nepal Panchanga and an approved local calendar." }
+    ],
+    "nepal-panchang-today": [
+      { q: "Which location does the daily Panchang show?", a: "The embedded daily Panchang is for Kathmandu, Nepal only. Do not apply its timings to another district." },
+      { q: "Can I choose a past date or another city?", a: "No. This is a live Kathmandu daily reference. Use the separate Nepal Panchang Calculator for a selectable date and supported Nepal city." },
+      { q: "Where does the daily Panchang data come from?", a: "The embedded view is supplied by Miti (Yarsa Himalaya), which documents its source data, published coverage and attribution on its own site." }
+    ],
   };
   const questions = questionsBySlug[slug] ?? defaultQuestions;
   const canonicalUrl = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;

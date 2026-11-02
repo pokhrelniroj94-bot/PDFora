@@ -151,7 +151,6 @@ function NepalFinanceTools({ slug }: { slug: string }) {
   const [shares, setShares] = useState("10");
   const [ipoPrice, setIpoPrice] = useState("100");
   const [salePrice, setSalePrice] = useState("500");
-  const [brokerFee, setBrokerFee] = useState("0.36");
   const [sebonFee, setSebonFee] = useState("0.015");
   const [dpFee, setDpFee] = useState("25");
   const [holdingPeriod, setHoldingPeriod] = useState("short");

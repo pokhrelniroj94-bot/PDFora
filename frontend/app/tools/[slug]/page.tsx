@@ -1,4 +1,5 @@
-import { notFound, type Metadata } from "next";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import ToolWorkspace from "../../../components/AllTools";
 import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
 import { toolCatalog } from "../../../components/toolCatalog";

@@ -174,6 +174,11 @@ assert.ok(dividendTool.includes("bonusWhole") && dividendTool.includes("bonusFra
 assert.ok(dividendTool.includes('aria-live="polite"') && dividendTool.includes("Calculation breakdown"), "Dividend calculator results must be accessible and clearly presented");
 assert.ok(dividendTool.includes("not an official dividend or CDSC allotment confirmation"), "Dividend calculator must disclose that results are estimates only");
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
-assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
+assert.ok(homepage.includes('const categories = ["All", "PDF Tools", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include the unified PDF category and every tool category");
+assert.ok(homepage.includes('category === "PDF Tools" ? tool.kind === "pdf"'), "Homepage must filter all PDF tools through the unified PDF Tools category");
+for (const slug of ["nepali-date-converter","nepali-calendar","nepal-public-holidays-2083","date-difference-calculator","age-calculator"]) {
+  const row = catalogSource.split("\n").find((line) => line.includes('slug:"' + slug + '"'));
+  assert.ok(row && row.includes('category:"Date & Calendar"'), "Date and calendar tool must use the Date & Calendar category: " + slug);
+}
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including shared multilingual search, EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

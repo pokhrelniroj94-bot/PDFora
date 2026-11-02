@@ -3,7 +3,9 @@ import NepseMarketDashboard from "../../components/NepseMarketDashboard";
 
 export const metadata: Metadata = {
   title: "NEPSE Market Dashboard, Stock Prices & Charts | PDFora",
-  description: "Explore periodic NEPSE market snapshots, index and stock price charts, top gainers and losers, turnover, sector indices and historical daily data.",
+  description: "Check NEPSE index and listed-share prices, periodic market snapshots, top gainers and losers, turnover, sector performance and historical charts. Data is delayed by the upstream public source.",
+  keywords: ["NEPSE market dashboard", "NEPSE share prices", "Nepal stock market", "NEPSE index", "top gainers", "top losers", "sector indices", "stock price chart"],
+  robots: { index: true, follow: true },
   alternates: { canonical: "https://pd-fora.vercel.app/market" },
   openGraph: {
     type: "website",

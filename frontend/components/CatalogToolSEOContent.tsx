@@ -71,6 +71,63 @@ export default function CatalogToolSEOContent({
   related: ToolInfo[];
   guideSlug?: string;
 }) {
+  if (tool.slug === "nepal-forex-rates") {
+    return (
+      <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">
+        <div className="space-y-6">
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Nepal finance utility</p>
+            <h2 className="mt-2 text-2xl font-black text-slate-950">Nepal Rastra Bank exchange rates today</h2>
+            <p className="mt-4 leading-8 text-slate-700">Use this page to check Nepal Rastra Bank (NRB) foreign-currency buying and selling rates against the Nepalese rupee (NPR). The rate table is retrieved from NRB's published foreign-exchange data. It displays the publication date, currency code, quoted unit, buying rate and selling rate so you can compare currencies using the correct unit.</p>
+            <p className="mt-3 leading-8 text-slate-700">The converter supports both foreign currency to NPR and NPR to foreign currency calculations. It uses the NRB buying rate when converting foreign currency into NPR and the NRB selling rate when estimating how much foreign currency NPR can buy.</p>
+          </section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <h2 className="text-xl font-black text-slate-950">How to convert foreign currency to Nepalese rupees</h2>
+            <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
+              <li>Wait for the latest available NRB rate date and currency table to load.</li>
+              <li>Select the currency, such as USD, EUR, GBP, INR or JPY.</li>
+              <li>Choose foreign currency to NPR (buying) or NPR to foreign currency (selling).</li>
+              <li>Enter the amount and read the calculated estimate. Check the quoted unit shown for the currency.</li>
+              <li>For a bank transaction, confirm the actual rate and fees with your bank or remittance provider.</li>
+            </ol>
+          </section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <h2 className="text-xl font-black text-slate-950">How NRB buying and selling rates work</h2>
+            <p className="mt-4 leading-8 text-slate-700">The buying rate is the NPR amount represented by the quoted foreign-currency unit when a bank buys that currency. The selling rate is the NPR amount charged for the same quoted unit when a bank sells it. The selling rate is normally higher than the buying rate.</p>
+            <p className="mt-3 leading-8 text-slate-700">NRB may quote some currencies per 10 or 100 units instead of one unit. For example, if a currency is quoted per 100 units, the rate shown in the table applies to 100 units. PDFora uses the published unit in its calculations rather than assuming every rate is per one unit.</p>
+            <div className="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-7 text-slate-700">
+              <p className="font-bold text-slate-900">Calculation formulas</p>
+              <p>Foreign currency to NPR = amount × buying rate ÷ quoted unit</p>
+              <p>NPR to foreign currency = NPR amount × quoted unit ÷ selling rate</p>
+              <p className="mt-2 text-xs text-slate-500">These are reference-rate estimates before any bank spread, service fee or remittance charge.</p>
+            </div>
+          </section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <h2 className="text-xl font-black text-slate-950">Why the displayed rate date may not be today</h2>
+            <p className="mt-4 leading-8 text-slate-700">NRB publishes foreign-exchange rates on working days. If the page is opened on a weekend or public holiday, the latest available published working-day rate may be shown. A rate date earlier than today's date does not by itself mean the data is incorrect; check the publication date and compare it with NRB's official foreign-exchange page.</p>
+          </section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <h2 className="text-xl font-black text-slate-950">Accuracy, source and limitations</h2>
+            <p className="mt-4 leading-8 text-slate-700">The source is Nepal Rastra Bank's official foreign-exchange API and, if that endpoint is unavailable, its official published foreign-exchange page. The data is presented as an NRB reference rate, not as a guaranteed cash, card, bank-counter or remittance quote. Individual banks and money changers may publish different customer rates and fees.</p>
+            <p className="mt-3 leading-8 text-slate-700">If rates cannot be retrieved, the tool shows an error and lets you retry; it does not silently present an old value as today's rate. For a payment, exchange or accounting decision, verify the rate directly with NRB or the financial provider handling the transaction.</p>
+            <a className="mt-3 inline-block text-sm font-semibold text-teal-700 underline" href="https://www.nrb.org.np/forex/" target="_blank" rel="noreferrer">Check Nepal Rastra Bank's official exchange rates</a>
+          </section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+            <div className="mt-5 space-y-5">
+              {uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}
+            </div>
+          </section>
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <h2 className="text-xl font-black text-slate-950">Related Nepal tools</h2>
+            <p className="mt-3 leading-7 text-slate-700">Continue with another Nepal-focused calculator or converter:</p>
+            <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read the NRB exchange-rate guide</Link>}</div>
+          </section>
+        </div>
+      </article>
+    );
+  }
+
   const advice = categoryAdvice[tool.category] ?? categoryAdvice.Math;
   const title = tool.name;
   // Keep only FAQs written for this tool or its category. This avoids

@@ -44,6 +44,9 @@ assert.equal(tithiIndex, 22, "Kathmandu 2026-11-02 sunrise reference is Krishna 
 assert.equal(nakshatraIndex, 8, "Kathmandu 2026-11-02 sunrise reference is Ashlesha nakshatra.");
 assert.equal(yogaIndex, 22, "Kathmandu 2026-11-02 sunrise reference is Shubha yoga.");
 assert.equal(karanaIndex, 45, "Kathmandu 2026-11-02 sunrise reference is Kaulava karana.");
+const movableKaranas = ["Bava", "Balava", "Kaulava", "Taitila", "Garaja", "Vanija", "Vishti"];
+const karanaName = karanaIndex === 0 ? "Kimstughna" : karanaIndex <= 56 ? movableKaranas[(karanaIndex - 1) % 7] : ["Shakuni", "Chatushpada", "Naga"][karanaIndex - 57];
+assert.equal(karanaName, "Kaulava", "Karana sequence must begin with Kimstughna, then cycle through the seven movable karanas.");
 const localClock = (instant) => new Intl.DateTimeFormat("en-GB", {
   timeZone: "Asia/Kathmandu", hour: "2-digit", minute: "2-digit", hour12: false,
 }).format(instant);

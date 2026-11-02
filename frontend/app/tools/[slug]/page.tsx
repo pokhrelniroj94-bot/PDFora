@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { notFound, type Metadata } from "next";
 import ToolWorkspace from "../../../components/AllTools";
 import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
 import { toolCatalog } from "../../../components/toolCatalog";
@@ -12,7 +12,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
-  if (!tool) return { title: "Tool not found", robots: { index: false, follow: true } };
+  if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const title = `${tool.name} Online`;
   const socialTitle = `${title} | PDFora`;
   const description = tool.description.length > 155 ? tool.description.slice(0, 152).trimEnd() + "..." : tool.description;
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
-  if (!tool) return <ToolWorkspace slug={slug} />;
+  if (!tool || slug === "pdf-tools") notFound();
   const related = toolCatalog.filter((item) => item.category === tool.category && item.slug !== slug && item.slug !== "pdf-tools").slice(0, 4);
   const guide = blogPosts.find((post) => post.toolLinks.some((link) => link.href === `/tools/${slug}`));
   const defaultQuestions = [

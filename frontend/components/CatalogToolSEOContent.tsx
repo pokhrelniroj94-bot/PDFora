@@ -72,6 +72,38 @@ export default function CatalogToolSEOContent({
   guideSlug?: string;
 }) {
   const uniqueFaqItems = questions.slice(0, 4);
+  if (tool.slug === "nepali-date-converter") {
+    return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Nepal date utility</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Convert Nepali Bikram Sambat dates to English AD dates</h2>
+        <p className="mt-4 leading-8 text-slate-700">Convert a Gregorian date into its Bikram Sambat (BS) equivalent, or convert a Nepali BS date into the Gregorian calendar. The converter supports dates from BS 1975 through BS 2099 and displays the weekday, Nepali month name and Devanagari digits.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to convert BS and AD dates</h2>
+        <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
+          <li>Choose the conversion direction: English AD to Nepali BS, or Nepali BS to English AD.</li>
+          <li>Enter the date in year-month-day order, for example 2026-01-01 or 2082-09-17.</li>
+          <li>Select Convert date and wait for the result.</li>
+          <li>Check the converted year, month, day and weekday before copying it into a form or document.</li>
+        </ol>
+        <p className="mt-4 leading-7 text-slate-700">The converter accepts English or Nepali digits and common separators such as hyphens, slashes and dots. The date must be a real calendar date; invalid month lengths are rejected.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Supported date range and accuracy</h2>
+        <p className="mt-4 leading-8 text-slate-700">Bikram Sambat month lengths vary by year, so a reliable conversion must use published calendar data rather than adding a fixed number of years or days. This tool uses a date-conversion library with a defined supported range. Dates outside that range are rejected instead of estimated.</p>
+        <p className="mt-3 leading-8 text-slate-700">For citizenship records, passports, court documents, tax filings, banking records or government applications, compare the converted date with the original document and the relevant authority's calendar. This online result is not an official certificate.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Related Nepal tools</h2>
+        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
+      </section>
+    </div></article>;
+  }
   if (tool.slug === "nepse-market-news" || tool.slug === "nepse-dividend-calculator") {
     const news = tool.slug === "nepse-market-news";
     const heading = news ? "Nepal stock market headlines, IPO and FPO updates" : "Calculate NEPSE cash dividend and bonus shares";

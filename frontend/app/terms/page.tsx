@@ -15,7 +15,7 @@ export default function TermsPage() {
         <h1 className="mb-4 text-4xl font-bold">Terms of Service</h1>
 
         <p className="mb-8 text-gray-600">
-          Last updated: August 12, 2026
+          Last updated: November 2, 2026
         </p>
 
         <section className="space-y-6 leading-7">
@@ -89,7 +89,39 @@ export default function TermsPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              7. Intellectual Property
+              7. Tax, Finance and NEPSE Calculators
+            </h2>
+            <p>
+              Tax, salary, VAT, electricity, loan, investment, share-profit,
+              dividend and other financial calculators provide estimates based
+              on the inputs, assumptions, rates and dates shown by each tool.
+              They are not tax assessments, financial advice, investment
+              recommendations, broker statements or official bills. Rules,
+              fees, tariffs and market data can change and may depend on your
+              personal circumstances. Verify important results with the
+              Inland Revenue Department, Nepal Rastra Bank, NEA, NEPSE, SEBON,
+              your broker or another responsible official source before
+              making a decision.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="mb-2 text-2xl font-semibold">
+              8. Typed Signatures
+            </h2>
+            <p>
+              The Sign PDF tool places a visible typed name or signature mark
+              on a document. It is not a certificate-based digital signature,
+              does not independently verify the signer&apos;s identity and
+              does not guarantee legal validity, authenticity or acceptance
+              by a recipient. Check the requirements of the receiving
+              organisation before using it for an official document.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="mb-2 text-2xl font-semibold">
+              9. Intellectual Property
             </h2>
             <p>
               The PDFora website, branding, design, software, and original
@@ -101,7 +133,7 @@ export default function TermsPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              8. Third-Party Services and Advertising
+              10. Third-Party Services and Advertising
             </h2>
             <p>
               PDFora may use third-party hosting, analytics, advertising, and
@@ -112,7 +144,7 @@ export default function TermsPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              9. Limitation of Liability
+              11. Limitation of Liability
             </h2>
             <p>
               To the extent permitted by applicable law, PDFora and its
@@ -123,7 +155,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="mb-2 text-2xl font-semibold">10. Changes</h2>
+            <h2 className="mb-2 text-2xl font-semibold">12. Changes</h2>
             <p>
               We may update these Terms of Service from time to time. Continued
               use of PDFora after changes are published means you accept the
@@ -132,7 +164,7 @@ export default function TermsPage() {
           </div>
 
           <div>
-            <h2 className="mb-2 text-2xl font-semibold">11. Contact</h2>
+            <h2 className="mb-2 text-2xl font-semibold">13. Contact</h2>
             <p>
               If you have questions about these Terms of Service, please
               contact the PDFora team through the contact information provided

@@ -23,6 +23,21 @@ function stripHtml(value: string) {
 }
 type NrbRateRecord = { date?: string; published_on?: string; rates?: Array<{ currency?: { ISO3?: string; iso3?: string; name?: string; unit?: number | string }; buy?: number | string; sell?: number | string }> };
 type NrbRatePayload = { status?: { code?: number }; data?: { payload?: NrbRateRecord[] | null } };
+function describeFetchError(error: unknown): string {
+  const details: string[] = [];
+  let current: unknown = error;
+  for (let depth = 0; depth < 4 && current; depth++) {
+    if (current instanceof Error) {
+      details.push(current.name + ": " + current.message);
+      current = (current as Error & { cause?: unknown }).cause;
+    } else {
+      details.push(String(current));
+      break;
+    }
+  }
+  return details.join(" <- ").slice(0, 500) || "unknown fetch error";
+}
+
 
 async function fetchNrbJson(from: string, to: string): Promise<NrbRatePayload | null> {
   const endpoint = new URL("https://www.nrb.org.np/api/forex/v1/rates");
@@ -48,7 +63,7 @@ async function fetchNrbJson(from: string, to: string): Promise<NrbRatePayload | 
         console.warn("[nepal-forex] NRB API returned an unexpected/empty payload", payload.status?.code);
       }
     } catch (error) {
-      console.warn("[nepal-forex] NRB API request failed", attempt + 1, error instanceof Error ? error.message : "unknown error");
+      console.warn("[nepal-forex] NRB API request failed", attempt + 1, endpoint.hostname, describeFetchError(error));
     }
     if (attempt < 1) await new Promise((resolve) => setTimeout(resolve, 250));
   }
@@ -68,7 +83,10 @@ async function fetchJsonRates(from: string, to: string): Promise<RateResponse | 
 }
 async function fetchOfficialPageRates(requestedDate: string): Promise<RateResponse | null> {
   const response = await fetch("https://www.nrb.org.np/forex/", { headers: { Accept: "text/html", "User-Agent": "Mozilla/5.0 PDFora exchange-rate reader" }, cache: "no-store", signal: AbortSignal.timeout(8000) });
-  if (!response.ok) return null;
+  if (!response.ok) {
+    console.warn("[nepal-forex] NRB official page returned HTTP", response.status);
+    return null;
+  }
   const html = await response.text();
   const dateMatch = stripHtml(html).match(/Showing Exchange Rate for ([A-Za-z]+\s+\d{1,2},\s+\d{4})/i);
   if (!dateMatch) return null;
@@ -123,7 +141,8 @@ export async function GET(request: Request) {
   let result: RateResponse | null = null;
   try { result = await fetchJsonRates(from, requested); } catch { /* NRB JSON API may be temporarily unreachable */ }
   if (!result && requested === nepalToday()) {
-    try { result = await fetchOfficialPageRates(requested); } catch { /* try the official HTML page as fallback */ }
+    try { result = await fetchOfficialPageRates(requested); }
+    catch (error) { console.warn("[nepal-forex] NRB official HTML fallback failed", describeFetchError(error)); }
   }
   if (!result) return Response.json({ error: "Could not retrieve published rates from Nepal Rastra Bank. Please retry or open the official NRB page." }, { status: 502, headers: { "Cache-Control": "no-store" } });
   return Response.json(result, { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } });

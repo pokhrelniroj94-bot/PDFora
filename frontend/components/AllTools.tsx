@@ -11,9 +11,9 @@ import { matchesToolSearch } from "../lib/tool-search";
 
 
 import AdsterraNative from "../app/components/AdsterraNative";
-const CVResumeBuilder = dynamic(() => import("./CVResumeBuilder"), { loading: ToolChunkLoading });
 
 const ToolChunkLoading = () => <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm font-medium text-slate-500" role="status">Loading tool workspace…</div>;
+const CVResumeBuilder = dynamic(() => import("./CVResumeBuilder"), { loading: ToolChunkLoading });
 const ExtraTools = dynamic(() => import("./ExtraTools"), { loading: ToolChunkLoading });
 const QuickUtilityTools = dynamic(() => import("./QuickUtilityTools"), { loading: ToolChunkLoading });
 const NepalTools = dynamic(() => import("./NepalTools"), { loading: ToolChunkLoading });

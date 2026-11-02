@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import NepalMarketNews from "../components/NepalMarketNews";
+import dynamic from "next/dynamic";
+
+const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
+  loading: () => <div className="grid min-h-40 place-items-center rounded-3xl border border-white/10 bg-slate-900/5 text-sm text-slate-500">Loading Nepal market updates…</div>,
+});
 
 type Tool = {
   name: string;
@@ -294,20 +298,20 @@ export default function Home() {
   const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950">
+    <main className="min-h-screen overflow-hidden bg-[#f5f7f6] text-slate-950">
       {/* HEADER */}
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgba(15,23,42,0.04)] backdrop-blur-xl">
+        <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
             className="flex items-center gap-2"
             aria-label="PDFora home"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-sm font-black text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 via-emerald-600 to-cyan-700 text-sm font-black text-white shadow-lg shadow-teal-900/20">
               P
             </div>
 
-            <span className="text-xl font-black tracking-tight">
+            <span className="text-[22px] font-black tracking-tight text-slate-950">
               PDFora
             </span>
           </Link>
@@ -322,98 +326,62 @@ export default function Home() {
         </div>
       </header>
 
-      {/* HERO */}
-      <section className="border-b border-slate-200 bg-white px-4 pb-14 pt-14 sm:pb-20 sm:pt-20">
-        <div className="mx-auto max-w-4xl text-center">
-          <div
-            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-lg font-black text-blue-700"
-            aria-hidden="true"
-          >
-            PDF
-          </div>
-
-          <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-blue-700">
-            Free online PDF tools
-          </p>
-
-          <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-6xl">
-            Free PDF tools.
-            <br />
-            Made simple.
-          </h1>
-
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Merge PDF, split PDF, compress PDF, convert PDF to Word, Excel or JPG,
-            and edit documents online for free. Explore 100 additional free tools for text, finance, images, SEO and developer tasks. No software installation needed.
-          </p>
-
-          <div className="mt-5"><Link href="/tools" className="inline-flex rounded-xl bg-blue-700 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-blue-700">Explore all 100 online tools →</Link></div>
-
-          {/* SEARCH */}
-          <div className="mx-auto mt-8 flex max-w-2xl items-center rounded-2xl border border-blue-200 bg-white p-1.5 shadow-lg shadow-blue-900/5 ring-4 ring-blue-50 focus-within:border-blue-500">
-            <span
-              className="pl-3 text-lg text-slate-400"
-              aria-hidden="true"
-            >
-              ⌕
-            </span>
-
-            <input
-              value={query}
-              onChange={(event) => { setQuery(event.target.value); setCategory("All"); }}
-              placeholder="Search any task: merge, shrink, convert, password, page number..."
-              className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm outline-none"
-              aria-label="Search PDF tools"
-            />
-
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                className="mr-1 rounded-xl px-3 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100"
-              >
-                Clear
-              </button>
+      {/* PREMIUM HERO */}
+      <section className="relative isolate overflow-hidden bg-[#071b1b] px-4 pb-16 pt-14 text-white sm:px-6 sm:pb-24 sm:pt-20">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 opacity-40 [background-image:linear-gradient(rgba(148,220,205,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,220,205,.08)_1px,transparent_1px)] [background-size:52px_52px]" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-40 -top-52 -z-10 h-[34rem] w-[34rem] rounded-full bg-teal-400/20 blur-[110px]" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-64 left-[-8rem] -z-10 h-[30rem] w-[30rem] rounded-full bg-cyan-500/15 blur-[100px]" />
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.08fr_.92fr] lg:gap-10">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-teal-200/20 bg-white/[0.07] px-3.5 py-2 text-[11px] font-bold uppercase tracking-[.18em] text-teal-100 shadow-inner shadow-white/5">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(52,211,153,.9)]" />
+              Your everyday digital workspace
+            </div>
+            <h1 className="mt-7 max-w-3xl text-[2.65rem] font-black leading-[1.06] tracking-[-.045em] sm:text-6xl lg:text-[4.35rem]">
+              Get more done.
+              <span className="mt-1 block bg-gradient-to-r from-teal-200 via-emerald-300 to-cyan-200 bg-clip-text text-transparent">Without the busywork.</span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base sm:leading-8">
+              A smarter place for PDF editing, image conversion, calculations, text utilities and Nepal-focused tools. Fast workflows, simple controls and no software to install.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/tools" className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 px-6 py-3.5 text-sm font-extrabold text-[#062321] shadow-xl shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:shadow-emerald-400/20">Explore all tools <span className="ml-2">→</span></Link>
+              <Link href="#tools" className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/[0.06] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">Find a PDF tool</Link>
+            </div>
+            <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-slate-300">
+              <span className="inline-flex items-center gap-2"><span className="text-emerald-300">✓</span> Free-to-use tools</span>
+              <span className="inline-flex items-center gap-2"><span className="text-emerald-300">✓</span> Works on mobile</span>
+              <span className="inline-flex items-center gap-2"><span className="text-emerald-300">✓</span> No installation</span>
+            </div>
+            <div className="mt-10 max-w-2xl rounded-2xl border border-white/15 bg-white/[0.08] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl focus-within:border-teal-300/60">
+              <div className="flex items-center gap-3">
+                <span className="pl-3 text-xl text-teal-200" aria-hidden="true">⌕</span>
+                <input value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); }} placeholder="What do you need to do?  e.g. merge PDF, compress image…" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" />
+                {query && <button type="button" onClick={() => setQuery("")} className="rounded-xl px-3 py-2 text-xs font-bold text-slate-300 hover:bg-white/10">Clear</button>}
+              </div>
+            </div>
+            {query.trim() && (
+              <div className="mt-3 max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[#102b2a] text-left shadow-2xl" role="region" aria-label="Live tool search results">
+                <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 text-xs"><span className="font-extrabold text-teal-100">Matching tools</span><span className="text-slate-400">{searchResults.length} results</span></div>
+                {searchResults.length ? <div className="divide-y divide-white/10">{searchResults.slice(0,6).map(tool=><Link key={tool.href} href={tool.href} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-white/[0.06]"><span className="min-w-0"><span className="block text-sm font-bold text-white">{tool.name}</span><span className="mt-0.5 block truncate text-xs text-slate-400">{tool.description}</span></span><span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold text-teal-100">{tool.category}</span></Link>)}</div> : <p className="px-4 py-5 text-sm text-slate-300">No matching tools. Try another search.</p>}
+              </div>
             )}
           </div>
-
-          {query.trim() && (
-            <div className="mx-auto mt-3 max-w-2xl overflow-hidden rounded-2xl border border-blue-100 bg-white text-left shadow-xl shadow-blue-900/10" role="region" aria-label="Live PDF tool search results">
-              <div className="flex items-center justify-between border-b border-slate-100 bg-blue-50/70 px-4 py-3 text-xs">
-                <span className="font-extrabold text-blue-900">Search results</span>
-                <span className="text-slate-500">{searchResults.length} matching tools</span>
+          <div className="relative mx-auto w-full max-w-[34rem] lg:ml-auto">
+            <div aria-hidden="true" className="absolute -inset-5 rounded-[2.5rem] bg-gradient-to-br from-teal-300/20 via-transparent to-cyan-400/10 blur-2xl" />
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-gradient-to-br from-[#153735] to-[#0c2525] p-4 shadow-[0_35px_100px_rgba(0,0,0,.38)] sm:p-6">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div><p className="text-[10px] font-bold uppercase tracking-[.2em] text-teal-200">PDFora workspace</p><p className="mt-1 text-sm font-bold text-white">Choose your next task</p></div>
+                <span className="rounded-xl border border-emerald-200/20 bg-emerald-300/10 px-3 py-1.5 text-[10px] font-bold text-emerald-200">ALL IN ONE</span>
               </div>
-              {searchResults.length ? (
-                <div className="divide-y divide-slate-100">
-                  {searchResults.slice(0, 6).map((tool) => (
-                    <Link key={tool.href} href={tool.href} className="flex items-center justify-between gap-4 px-4 py-3 transition hover:bg-blue-50">
-                      <span className="min-w-0">
-                        <span className="block text-sm font-bold text-slate-900">{tool.name}</span>
-                        <span className="mt-0.5 block text-xs text-slate-500">{tool.description}</span>
-                      </span>
-                      <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600">{tool.category}</span>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="px-4 py-5 text-sm text-slate-500">No matching tools. Try words such as merge, compress, password or Excel.</p>
-              )}
-              {searchResults.length > 6 && <p className="border-t border-slate-100 px-4 py-2 text-xs text-slate-500">Showing the first 6 results. All matching tools are filtered below.</p>}
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                {[{icon:"📄",name:"PDF tools",desc:"Edit & convert",tone:"from-rose-400/20 to-orange-300/5"},{icon:"🖼️",name:"Image tools",desc:"Compress & convert",tone:"from-violet-400/20 to-fuchsia-300/5"},{icon:"🧮",name:"Calculators",desc:"Math & finance",tone:"from-sky-400/20 to-cyan-300/5"},{icon:"🇳🇵",name:"Nepal tools",desc:"Local utilities",tone:"from-emerald-400/20 to-teal-300/5"}].map(item=><Link key={item.name} href="/tools" className={`group rounded-2xl border border-white/10 bg-gradient-to-br ${item.tone} p-4 transition hover:-translate-y-1 hover:border-teal-200/40`}><span className="text-2xl">{item.icon}</span><p className="mt-4 text-sm font-extrabold text-white">{item.name}</p><p className="mt-1 text-[11px] text-slate-300">{item.desc}</p><span className="mt-3 inline-flex text-xs font-bold text-teal-200 transition group-hover:translate-x-1">Explore →</span></Link>)}
+              </div>
+              <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-black/15 px-4 py-3">
+                <div><p className="text-xs font-bold text-white">One simple workspace</p><p className="mt-1 text-[10px] text-slate-400">Useful tools for everyday work</p></div><span className="text-2xl text-teal-200">✦</span>
+              </div>
             </div>
-          )}
-
-          <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs text-slate-500">
-            <span className="rounded-full bg-slate-100 px-3 py-2">
-              {tools.length - 1} available tools
-            </span>
-
-            <span className="rounded-full bg-slate-100 px-3 py-2">
-              No installation
-            </span>
-
-            <span className="rounded-full bg-slate-100 px-3 py-2">
-              Mobile friendly
-            </span>
+            <div className="relative mx-auto mt-4 flex max-w-[90%] items-center justify-center gap-5 text-[10px] font-semibold text-slate-400"><span>PDF</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>IMAGE</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>FINANCE</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>NEPAL</span></div>
           </div>
         </div>
       </section>
@@ -421,7 +389,7 @@ export default function Home() {
       {/* POPULAR TOOLS */}
       <section
         aria-labelledby="popular-heading"
-        className="mx-auto max-w-6xl px-4 py-12 sm:px-6"
+        className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8"
       >
         <div className="mb-5">
           <p className="text-xs font-black uppercase tracking-widest text-orange-600">
@@ -467,7 +435,7 @@ export default function Home() {
       <section
         id="tools"
         aria-labelledby="tools-heading"
-        className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-16 sm:px-6"
+        className="mx-auto max-w-7xl scroll-mt-20 px-4 pb-20 sm:px-6 lg:px-8"
       >
         <div className="mb-6">
           <p className="text-xs font-black uppercase tracking-widest text-orange-600">
@@ -588,7 +556,7 @@ export default function Home() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-orange-600">
             How it works
@@ -862,15 +830,14 @@ function ToolCard({
   tool: Tool;
   popular?: boolean;
 }) {
-  const unavailable = false;
   return (
     <Link
       href={tool.href}
-      className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg active:scale-[0.99]"
+      className="group flex h-full flex-col rounded-[1.6rem] border border-slate-200/80 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,.045)] transition duration-300 hover:-translate-y-1.5 hover:border-teal-300 hover:shadow-[0_22px_55px_rgba(15,118,110,.12)] active:scale-[0.99]"
       aria-label={`Open ${tool.name}`}
     >
       <div className="flex items-start justify-between gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 text-xl font-black text-teal-700" aria-hidden="true">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-xl font-black text-teal-800 ring-1 ring-teal-900/5" aria-hidden="true">
           {tool.category === "Finance" ? "💰" : tool.category === "Convert" ? "🔄" : tool.category === "Edit" ? "✏️" : tool.category === "Security" ? "🔒" : tool.category === "Organize" ? "🗂️" : tool.category === "Optimize" ? "⚡" : "📄"}
         </div>
 

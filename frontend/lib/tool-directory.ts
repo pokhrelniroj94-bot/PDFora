@@ -158,7 +158,8 @@ const catalogSearchAliases: Record<string, string> = {
   "notes-to-pdf": "notes to PDF notebook typed notes text document print save export study notes class notes",
 };
 
-export const catalogTools: Tool[] = toolCatalog
+export const catalogTools: Tool[] = [
+  ...toolCatalog
   .filter((tool) => tool.slug !== "pdf-tools")
   .map((tool) => ({
     name: tool.name,
@@ -169,7 +170,9 @@ export const catalogTools: Tool[] = toolCatalog
     kind: "utility",
     slug: tool.slug,
     keywords: [tool.keywords, catalogSearchAliases[tool.slug] ?? ""].join(" "),
-  }));
+  })),
+  { name: "NEPSE Market Dashboard", description: "Explore periodic NEPSE market snapshots, listed-company prices, index and sector performance, top movers and historical charts.", icon: "NEPSE", category: "NEPSE", href: "/market", kind: "utility", slug: "nepse-market-dashboard", keywords: "NEPSE market dashboard stock prices share market listed companies index sector top gainers losers turnover history chart Nepal stock exchange" },
+];
 
 // One canonical directory for homepage search and the full /tools directory.
 // OCR is intentionally excluded until its backend language data is enabled.

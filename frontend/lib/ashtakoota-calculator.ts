@@ -153,7 +153,7 @@ export function calculateAshtakoota(bride:KundaliResult,groom:KundaliResult):Gun
  const exceptions:string[]=[];
  if(bhakootCancelled) exceptions.push("Bhakoot parihara: Moon-sign lords are the same or mutual friends. The raw score remains 0; the traditional exception is displayed separately.");
  if(rashiNakshatraParihara) exceptions.push("Rashi/Nakshatra parihara: same Rashi with different Nakshatras, or same Nakshatra in different Rashis; the tradition cancels both Nadi and Gana dosha. Raw koota scores remain unchanged.");
- else if(ganaCancelled) exceptions.push("Gana parihara: Rashi lords and Navamsa lords are mutual friends. The raw score remains unchanged; the traditional exception is displayed separately.");
+ else else if(ganaCancelled) exceptions.push("Gana parihara: Rashi lords and Navamsa lords are mutual friends. The raw score remains unchanged; the traditional exception is displayed separately.");
  if(sameNakshatraRashiDifferentPada) exceptions.push("Same Rashi and Nakshatra but different padas: this is the auspicious v. 37 exception; Nadi and Gana dosha are cancelled, while raw scores remain unchanged.");
  if(br===gr&&bi===gi&&bride.janmaPada===groom.janmaPada) exceptions.push("Same Rashi, Nakshatra and pada: the cited source does not describe this as the different-pada exception.");
  const total=Number(scores.reduce((sum,item)=>sum+item.score,0).toFixed(2));

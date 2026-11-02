@@ -33,3 +33,8 @@ The exact calculation settings used internally by Hamro Patro are not publicly c
 
 ## Privacy
 The birth-chart calculations run in the user's browser. Do not send name, date, time or coordinates to an external calculation API or persist them without explicit user consent.
+
+
+## Navamsa D9
+
+The calculator derives each planet’s Navamsa sign by dividing its sidereal sign longitude into nine equal 3°20′ segments. The D9 ascendant is derived from the same division of the calculated sidereal ascendant. D9 houses are whole-sign houses counted from the D9 ascendant. This is a documented calculation convention; validate boundary cases against a trusted ephemeris before claiming exact parity with other astrology software.

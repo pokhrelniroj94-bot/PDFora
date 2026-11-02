@@ -115,7 +115,7 @@ export async function GET(request: Request) {
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
     status: pick(statusResult, {} as never),
     indices,
-    summary: pick(summaryResult, {} as never),
+    summary: pick(summaryResult, [] as never),
     topStocks: pick(topResult, {} as never),
     sectors,
     supplyDemand: pick(supplyDemandResult, {} as never),

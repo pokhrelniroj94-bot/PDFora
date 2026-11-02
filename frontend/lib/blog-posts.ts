@@ -1,6 +1,7 @@
 import { additionalToolBlogPosts } from "./tool-guides";
 import { toolCatalog } from "../components/toolCatalog";
 import { nepalBlogPosts } from "./nepal-blog-posts";
+import { astrologyBlogPosts } from "./astrology-blog-posts";
 export type BlogSection = {
   heading: string;
   paragraphs: string[];
@@ -290,7 +291,7 @@ const catalogGuides: BlogPost[] = toolCatalog
   });
 
 
-export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides];
+export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...astrologyBlogPosts, ...catalogGuides];
 
 export function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug);

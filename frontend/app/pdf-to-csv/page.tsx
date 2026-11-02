@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF to CSV Converter Online Free | PDFora",
+  title: "PDF to CSV Converter Online Free",
   description: "Extract tables from PDF files and export their cell values to CSV for Excel and spreadsheet workflows. Free PDF to CSV converter.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-csv" },
 };

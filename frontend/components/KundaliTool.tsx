@@ -19,7 +19,7 @@ export default function KundaliTool() {
   const [language,setLanguage]=useState<"ne"|"en"|"hi">("ne");
   const tr=(ne:string,en:string,hi:string)=>language==="ne"?ne:language==="hi"?hi:en;
   const astro=(value:string)=>language==="ne"?value:(ASTRO_NAMES[value]?.[language]??value);
-  const num=(value:number,digits=2)=>num(value,digits,language==="ne"?"ne-NP":language==="hi"?"hi-IN":"en-IN");
+  const num=(value:number,digits=2)=>n(value,digits,language==="ne"?"ne-NP":language==="hi"?"hi-IN":"en-IN");
   const placeText=(place:typeof KUNDALI_PLACES[number])=>language==="ne"?place.name:language==="hi"?(HINDI_PLACES[place.id]??place.en):place.en;
   const [dateSystem,setDateSystem]=useState<"BS"|"AD">("BS");
   const [birthDate,setBirthDate]=useState("२०५८-०१-०१");
@@ -68,7 +68,7 @@ export default function KundaliTool() {
         <span className="mt-1 block text-xs font-normal text-slate-500">{tr("२४-घण्टा ढाँचा, जस्तै ०६:३५ वा १८:२०","24-hour format, e.g. 06:35 or 18:20","२४ घंटे का प्रारूप, जैसे ०६:३५ या १८:२०")}</span>
       </label>
       <label className="text-sm font-semibold text-slate-800 sm:col-span-2">{tr("जन्मस्थान","Birthplace","जन्म स्थान")}
-        <select className={box} value={placeId} onChange={e=>{setPlaceId(e.target.value);const selected=KUNDALI_PLACES.find(p=>p.id===e.target.value);if(e.target.value!=="custom")setTimeZone(selected?.timeZone??"Asia/Kathmandu");}}>
+        <select className={box} value={placeId} onChange={e=>{setPlaceId(e.target.value);const selected=KUNDALI_PLACES.find(p=>p.id===e.target.value);if(e.target.value!=="custom"){const zone=selected?.timeZone??"Asia/Kathmandu";setTimeZone(zone);changeDateSystem(zone==="Asia/Kolkata"?"AD":"BS");}}}>
           {KUNDALI_PLACES.map(place=><option key={place.id} value={place.id}>{placeText(place)}</option>)}
           <option value="custom">{tr("अन्य स्थान — ठ्याक्कै निर्देशाङ्क राख्नुहोस्","Other place — enter exact coordinates","अन्य स्थान — सही निर्देशांक दर्ज करें")}</option>
         </select>

@@ -36,14 +36,17 @@ export default function KundaliTool() {
   const changeDateSystem=(next:"BS"|"AD")=>{if(next===dateSystem)return;try{const raw=birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))).trim();if(raw){const converted=new DateConverter(raw);const value=next==="AD"?converted.toAd():converted.toBs();setBirthDate([value.year,String(value.month).padStart(2,"0"),String(value.date).padStart(2,"0")].join("-"));}setDateSystem(next);setError("");}catch{setError(tr("यो मिति प्रणालीको समर्थित दायराभित्र मिति रूपान्तरण गर्न सकिएन। जन्ममिति जाँच्नुहोस्।","This date cannot be converted within the supported calendar range. Please check the birth date.","यह तिथि समर्थित कैलेंडर सीमा में परिवर्तित नहीं की जा सकी। कृपया जन्म तिथि जाँचें।"));}};
 
   const submit=()=>{
+    if(busy)return;
     setError("");setResult(null);setBusy(true);
-    try{
-      if(!birthTime) throw new Error(tr("कृपया जन्मको सही समय राख्नुहोस्। लग्न र भावका लागि जन्मसमय आवश्यक हुन्छ।","Please enter the exact local birth time. Birth time is required to calculate the ascendant and houses.","कृपया जन्म का सही स्थानीय समय दर्ज करें। लग्न और भाव की गणना के लिए जन्म समय आवश्यक है।"));
-      if(placeId==="custom"&&(!latitude.trim()||!longitude.trim())) throw new Error(tr("अन्य स्थान छान्दा वास्तविक अक्षांश र देशान्तर दुवै राख्नुहोस्।","For a custom place, enter both the actual latitude and longitude.","अन्य स्थान चुनने पर सही अक्षांश और देशांतर दोनों दर्ज करें।"));
-      const calculated=calculateJanmaKundali({name,dateSystem,birthDate:birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))),birthTime,placeId,placeName,latitude:Number(latitude),longitude:Number(longitude),timeZone});
-      setResult(calculated);
-    }catch(e){setError(e instanceof Error?localizedCalculationError(e.message):tr("कुण्डली गणना गर्न सकिएन। विवरण जाँच्नुहोस्।","Could not calculate the birth chart. Please check your details.","कुंडली की गणना नहीं हो सकी। कृपया विवरण जाँचें।"));}
-    finally{setBusy(false);}
+    window.setTimeout(()=>{
+      try{
+        if(!birthTime) throw new Error(tr("कृपया जन्मको सही समय राख्नुहोस्। लग्न र भावका लागि जन्मसमय आवश्यक हुन्छ।","Please enter the exact local birth time. Birth time is required to calculate the ascendant and houses.","कृपया जन्म का सही स्थानीय समय दर्ज करें। लग्न और भाव की गणना के लिए जन्म समय आवश्यक है।"));
+        if(placeId==="custom"&&(!latitude.trim()||!longitude.trim())) throw new Error(tr("अन्य स्थान छान्दा वास्तविक अक्षांश र देशान्तर दुवै राख्नुहोस्।","For a custom place, enter both the actual latitude and longitude.","अन्य स्थान चुनने पर सही अक्षांश और देशांतर दोनों दर्ज करें।"));
+        const calculated=calculateJanmaKundali({name,dateSystem,birthDate:birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))),birthTime,placeId,placeName,latitude:Number(latitude),longitude:Number(longitude),timeZone});
+        setResult(calculated);
+      }catch(e){setError(e instanceof Error?localizedCalculationError(e.message):tr("कुण्डली गणना गर्न सकिएन। विवरण जाँच्नुहोस्।","Could not calculate the birth chart. Please check your details.","कुंडली की गणना नहीं हो सकी। कृपया विवरण जाँचें।"));}
+      finally{setBusy(false);}
+    },80);
   };
 
   return <div className="space-y-6">
@@ -83,7 +86,7 @@ export default function KundaliTool() {
       </label>
     </div>
 
-    <button type="button" onClick={submit} disabled={busy} className="w-full rounded-xl bg-teal-700 px-5 py-3 font-bold text-white shadow-sm hover:bg-teal-800 disabled:cursor-wait disabled:opacity-60">{busy?tr("गणना हुँदैछ…","Calculating…","गणना हो रही है…"):tr("मेरो जन्मकुण्डली बनाउनुहोस्","Generate my Kundali","मेरी कुंडली बनाएं")}</button>
+    <button type="button" onClick={submit} disabled={busy} className="w-full rounded-xl bg-teal-700 px-5 py-3 font-bold text-white shadow-sm hover:bg-teal-800 disabled:cursor-wait disabled:opacity-60">{busy?<span className="inline-flex items-center justify-center gap-2"><span className="pdfora-spinner" aria-hidden="true"/>{tr("गणना हुँदैछ…","Calculating…","गणना हो रही है…")}</span>:tr("मेरो जन्मकुण्डली बनाउनुहोस्","Generate my Kundali","मेरी कुंडली बनाएं")}</button>
     {error&&<p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">{error}</p>}
 
     {result&&<div className="space-y-6" id="kundali-result">

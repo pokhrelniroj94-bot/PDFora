@@ -12,7 +12,19 @@ export const KUNDALI_PLACES = [
   { id: "birgunj", name: "वीरगञ्ज", en: "Birgunj", lat: 27.0104, lon: 84.8774 },
   { id: "dharan", name: "धरान", en: "Dharan", lat: 26.8125, lon: 87.2834 },
   { id: "butwal", name: "बुटवल", en: "Butwal", lat: 27.7006, lon: 83.4484 },
-  { id: "bharatpur", name: "भरतपुर", en: "Bharatpur", lat: 27.6833, lon: 84.4333 },
+  { id: "bharatpur", name: "भरतपुर", en: "Bharatpur, Nepal", lat: 27.6833, lon: 84.4333, timeZone: "Asia/Kathmandu" },
+  { id: "delhi", name: "दिल्ली", en: "Delhi, India", lat: 28.6139, lon: 77.2090, timeZone: "Asia/Kolkata" },
+  { id: "mumbai", name: "मुम्बई", en: "Mumbai, India", lat: 19.0760, lon: 72.8777, timeZone: "Asia/Kolkata" },
+  { id: "kolkata", name: "कोलकाता", en: "Kolkata, India", lat: 22.5726, lon: 88.3639, timeZone: "Asia/Kolkata" },
+  { id: "chennai", name: "चेन्नई", en: "Chennai, India", lat: 13.0827, lon: 80.2707, timeZone: "Asia/Kolkata" },
+  { id: "bengaluru", name: "बेंगलुरु", en: "Bengaluru, India", lat: 12.9716, lon: 77.5946, timeZone: "Asia/Kolkata" },
+  { id: "hyderabad", name: "हैदराबाद", en: "Hyderabad, India", lat: 17.3850, lon: 78.4867, timeZone: "Asia/Kolkata" },
+  { id: "jaipur", name: "जयपुर", en: "Jaipur, India", lat: 26.9124, lon: 75.7873, timeZone: "Asia/Kolkata" },
+  { id: "varanasi", name: "वाराणसी", en: "Varanasi, India", lat: 25.3176, lon: 82.9739, timeZone: "Asia/Kolkata" },
+  { id: "lucknow", name: "लखनऊ", en: "Lucknow, India", lat: 26.8467, lon: 80.9462, timeZone: "Asia/Kolkata" },
+  { id: "ahmedabad", name: "अहमदाबाद", en: "Ahmedabad, India", lat: 23.0225, lon: 72.5714, timeZone: "Asia/Kolkata" },
+  { id: "pune", name: "पुणे", en: "Pune, India", lat: 18.5204, lon: 73.8567, timeZone: "Asia/Kolkata" },
+  { id: "bhopal", name: "भोपाल", en: "Bhopal, India", lat: 23.2599, lon: 77.4126, timeZone: "Asia/Kolkata" },
 ] as const;
 
 const SIGNS = ["मेष", "वृष", "मिथुन", "कर्कट", "सिंह", "कन्या", "तुला", "वृश्चिक", "धनु", "मकर", "कुम्भ", "मीन"] as const;
@@ -120,6 +132,7 @@ export interface KundaliInput {
   placeName?: string;
   latitude?: number;
   longitude?: number;
+  timeZone?: string;
 }
 
 export interface KundaliPlanet {
@@ -138,8 +151,8 @@ export interface KundaliResult {
 export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
   const selectedPlace = KUNDALI_PLACES.find((item) => item.id === input.placeId);
   const place = input.placeId === "custom"
-    ? { name: input.placeName?.trim() || "अन्य स्थान", lat: Number(input.latitude), lon: Number(input.longitude) }
-    : selectedPlace ? { name: selectedPlace.name, lat: selectedPlace.lat, lon: selectedPlace.lon } : null;
+    ? { name: input.placeName?.trim() || "अन्य स्थान", lat: Number(input.latitude), lon: Number(input.longitude), timeZone: input.timeZone || "Asia/Kathmandu" }
+    : selectedPlace ? { name: selectedPlace.name, lat: selectedPlace.lat, lon: selectedPlace.lon, timeZone: selectedPlace.timeZone ?? "Asia/Kathmandu" } : null;
   if (!place || !Number.isFinite(place.lat) || !Number.isFinite(place.lon) || Math.abs(place.lat) > 90 || Math.abs(place.lon) > 180) {
     throw new Error("जन्मस्थानका अक्षांश/देशान्तर मान्य छैनन्।");
   }
@@ -154,7 +167,7 @@ export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
   if (year < 1800 || year > 2100) throw new Error("हालको गणना १८०० देखि २१०० AD सम्मका जन्ममितिका लागि मात्र परीक्षण गरिएको छ।");
   const dateCheck = new Date(Date.UTC(year,month-1,day));
   if (dateCheck.getUTCFullYear()!==year || dateCheck.getUTCMonth()!==month-1 || dateCheck.getUTCDate()!==day) throw new Error("जन्ममिति मान्य छैन।");
-  const birth = localWallTimeToUtc(dateAD,input.birthTime);
+  const birth = localWallTimeToUtc(dateAD,input.birthTime,place.timeZone);
   if (birth.getTime() > Date.now()) throw new Error("भविष्यको जन्ममिति राख्न मिल्दैन।");
   const ayanamsa = lahiriAyanamsa(birth);
   const lagnaLong = risingLongitude(birth,place.lat,place.lon);

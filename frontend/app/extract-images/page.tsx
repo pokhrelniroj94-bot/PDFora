@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Extract Images from PDF Online | PDFora",
+  title: "Extract Images from PDF Online",
   description: "Extract embedded images from a PDF into a ZIP archive.",
   alternates: { canonical: "https://pd-fora.vercel.app/extract-images" },
 };

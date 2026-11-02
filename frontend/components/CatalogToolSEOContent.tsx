@@ -93,7 +93,7 @@ export default function CatalogToolSEOContent({
           <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
             <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Nepal finance utility</p>
             <h2 className="mt-2 text-2xl font-black text-slate-950">Nepal Rastra Bank exchange rates today</h2>
-            <p className="mt-4 leading-8 text-slate-700">Use this page to check Nepal Rastra Bank (NRB) foreign-currency buying and selling rates against the Nepalese rupee (NPR). The rate table is retrieved from NRB's published foreign-exchange data. It displays the publication date, currency code, quoted unit, buying rate and selling rate so you can compare currencies using the correct unit.</p>
+            <p className="mt-4 leading-8 text-slate-700">Use this page to check Nepal Rastra Bank (NRB) foreign-currency buying and selling rates against the Nepalese rupee (NPR). The rate table is retrieved from NRB&apos;s published foreign-exchange data. It displays the publication date, currency code, quoted unit, buying rate and selling rate so you can compare currencies using the correct unit.</p>
             <p className="mt-3 leading-8 text-slate-700">The converter supports both foreign currency to NPR and NPR to foreign currency calculations. It uses the NRB buying rate when converting foreign currency into NPR and the NRB selling rate when estimating how much foreign currency NPR can buy.</p>
           </section>
           <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
@@ -119,12 +119,12 @@ export default function CatalogToolSEOContent({
           </section>
           <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">Why the displayed rate date may not be today</h2>
-            <p className="mt-4 leading-8 text-slate-700">NRB publishes foreign-exchange rates on working days. If the page is opened on a weekend or public holiday, the latest available published working-day rate may be shown. A rate date earlier than today's date does not by itself mean the data is incorrect; check the publication date and compare it with NRB's official foreign-exchange page.</p>
+            <p className="mt-4 leading-8 text-slate-700">NRB publishes foreign-exchange rates on working days. If the page is opened on a weekend or public holiday, the latest available published working-day rate may be shown. A rate date earlier than today&apos;s date does not by itself mean the data is incorrect; check the publication date and compare it with NRB&apos;s official foreign-exchange page.</p>
           </section>
           <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">Accuracy, source and limitations</h2>
             <p className="mt-4 leading-8 text-slate-700">The source is Nepal Rastra Bank's official foreign-exchange API and, if that endpoint is unavailable, its official published foreign-exchange page. The data is presented as an NRB reference rate, not as a guaranteed cash, card, bank-counter or remittance quote. Individual banks and money changers may publish different customer rates and fees.</p>
-            <p className="mt-3 leading-8 text-slate-700">If rates cannot be retrieved, the tool shows an error and lets you retry; it does not silently present an old value as today's rate. For a payment, exchange or accounting decision, verify the rate directly with NRB or the financial provider handling the transaction.</p>
+            <p className="mt-3 leading-8 text-slate-700">If rates cannot be retrieved, the tool shows an error and lets you retry; it does not silently present an old value as today&apos;s rate. For a payment, exchange or accounting decision, verify the rate directly with NRB or the financial provider handling the transaction.</p>
             <a className="mt-3 inline-block text-sm font-semibold text-teal-700 underline" href="https://www.nrb.org.np/forex/" target="_blank" rel="noreferrer">Check Nepal Rastra Bank's official exchange rates</a>
           </section>
           <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">

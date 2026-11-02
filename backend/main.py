@@ -1607,8 +1607,8 @@ async def pdf_to_word(
     except HTTPException:
         raise
 
-    except Exception as exc:
-
+    except Exception:
+        logging.getLogger("pdfora.errors").exception("PDF to Word conversion failed")
         shutil.rmtree(
             job,
             ignore_errors=True

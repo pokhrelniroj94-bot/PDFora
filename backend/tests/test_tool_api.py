@@ -280,3 +280,28 @@ def test_temp_job_is_removed_after_file_response():
     assert response.status_code == 200
     after = set(TEMP_DIR.iterdir())
     assert after == before
+
+
+
+def test_render_client_ip_prefers_cloudflare_visitor_ip(monkeypatch):
+    from main import _client_ip
+    from starlette.requests import Request
+
+    monkeypatch.setenv("RENDER", "true")
+    scope = {
+        "type": "http",
+        "method": "POST",
+        "path": "/api/pdf-info",
+        "headers": [
+            (b"cf-connecting-ip", b"203.0.113.7"),
+            (b"x-forwarded-for", b"198.51.100.8, 192.0.2.9"),
+        ],
+        "client": ("10.0.0.1", 1234),
+        "server": ("testserver", 80),
+        "scheme": "https",
+        "query_string": b"",
+        "root_path": "",
+        "http_version": "1.1",
+    }
+    request = Request(scope)
+    assert _client_ip(request) == "203.0.113.7"

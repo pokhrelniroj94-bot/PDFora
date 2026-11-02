@@ -18,11 +18,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const canonical = `${site}/tools/${tool.slug}`;
   return {
     title, description,
-    keywords: [...new Set([tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), "free online tool", "PDFora"])],
     alternates: { canonical },
     robots: { index: true, follow: true },
-    openGraph: { type: "website", title, description, url: canonical, siteName: "PDFora" },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
+    twitter: { card: "summary_large_image", title: socialTitle, description, images: [`/tools/${tool.slug}/opengraph-image`] },
   };
 }
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {

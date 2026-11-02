@@ -62,7 +62,7 @@ async def enforce_request_limits(request: Request, call_next):
     return response
 
 
-_origins = os.getenv("CORS_ALLOWED_ORIGINS", "https://pd-fora.vercel.app").split(",")
+_origins = os.getenv("CORS_ALLOWED_ORIGINS", "https://pd-fora.vercel.app,https://www.pd-fora.vercel.app,https://niroj.com.np,https://www.niroj.com.np").split(",")
 ALLOWED_ORIGINS = [origin.strip() for origin in _origins if origin.strip()]
 app.add_middleware(
     CORSMiddleware,
@@ -1744,9 +1744,13 @@ async def compare_pdfs(files: list[UploadFile] = File(...)):
     job=create_job()
     try:
         readers=[]
+        total_upload_size = 0
         for i,file in enumerate(files):
             validate_pdf_upload(file)
-            path=job/f"compare-{i}.pdf"; await save_upload(file,path)
+            path=job/f"compare-{i}.pdf"
+            total_upload_size += await save_upload(file,path)
+            if total_upload_size > MAX_FILE_SIZE:
+                raise HTTPException(status_code=413, detail="The combined upload size must not exceed 50 MB.")
             doc=fitz.open(path)
             readers.append([page.get_text("text") for page in doc])
             doc.close()

@@ -121,6 +121,7 @@ app.add_middleware(
         "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
         "https://pd-fora-git-premium-redesign-pokhrelniroj94-7012s-projects.vercel.app",
     ],
+    allow_origin_regex=r"https://pd-fora-[a-z0-9-]+-pokhrelniroj94-7012s-projects\.vercel\.app",
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
@@ -1336,11 +1337,11 @@ async def watermark_pdf(
     except HTTPException:
         raise
 
-    except Exception as exc:
-
+    except Exception:
+        logging.getLogger("pdfora.errors").exception("Watermark processing failed")
         raise HTTPException(
             status_code=500,
-            detail=f"Watermark failed: {str(exc)}"
+            detail="Watermark failed. Please retry or contact support."
         )
 
     finally:
@@ -1485,12 +1486,13 @@ async def pdf_to_excel(
         cleanup_job(job)
         raise
 
-    except Exception as exc:
+    except Exception:
+        logging.getLogger("pdfora.errors").exception("PDF to Excel conversion failed")
         cleanup_job(job)
 
         raise HTTPException(
             status_code=500,
-            detail=f"PDF to Excel conversion failed: {str(exc)}"
+            detail="PDF to Excel conversion failed. Please retry or contact support."
         )
 
 @app.post("/api/cleanup")
@@ -1605,8 +1607,8 @@ async def pdf_to_word(
     except HTTPException:
         raise
 
-    except Exception as exc:
-
+    except Exception:
+        logging.getLogger("pdfora.errors").exception("PDF to Word conversion failed")
         shutil.rmtree(
             job,
             ignore_errors=True
@@ -1614,7 +1616,7 @@ async def pdf_to_word(
 
         raise HTTPException(
             status_code=500,
-            detail=f"PDF to Word conversion failed: {str(exc)}"
+            detail="PDF to Word conversion failed. Please retry or contact support."
         )
 
     finally:

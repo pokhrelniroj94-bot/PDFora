@@ -2,9 +2,7 @@ name: PDFora backend validation
 
 on:
   pull_request:
-    branches:
-      - master
-      - niroj-tools-development
+    branches: ["**"]
     paths:
       - "backend/**"
       - ".github/workflows/backend-validation.yml"

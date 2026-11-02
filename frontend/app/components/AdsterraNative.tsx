@@ -1,8 +1,11 @@
 ﻿"use client";
 
 import Script from "next/script";
+import { usePrivacyConsent } from "../../components/PrivacyConsent";
 
 export default function AdsterraNative() {
+  const { consent } = usePrivacyConsent();
+  if (!consent?.ads) return null;
   return (
     <section
       aria-label="Advertisement"

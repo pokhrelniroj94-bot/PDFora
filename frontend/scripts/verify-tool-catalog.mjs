@@ -203,4 +203,30 @@ assert.ok(toolPage.includes('"nepali-guna-milan": { title:'), "36-guna page must
 assert.ok(blogIndex.includes('import { astrologyBlogPosts } from "./astrology-blog-posts"') && blogIndex.includes("...astrologyBlogPosts"), "Astrology and Ashtakoota guides must be included in the public blog index and sitemap source");
 assert.ok(astrologyGuides.includes('slug: "36-guna-milan-ashtakoota-explained-nepali-hindi-english"') && astrologyGuides.includes('href: "/tools/nepali-guna-milan"'), "Ashtakoota SEO guide must link to the live matching tool");
 
+
+const allToolsComponent = read("../components/AllTools.tsx");
+const extraToolsComponent = read("../components/ExtraTools.tsx");
+const quickToolsComponent = read("../components/QuickUtilityTools.tsx");
+const dispatchGroups = [...allToolsComponent.matchAll(/\[([^\]]{10,2000})\]\.includes\(slug\)/g)]
+  .flatMap((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1]));
+const directDispatch = [...allToolsComponent.matchAll(/slug===?"([^"]+)"/g)].map((match) => match[1]);
+const quickDispatch = [...(allToolsComponent.match(/const quickUtilitySlugs = \[([^\]]+)\]/)?.[1] ?? "").matchAll(/"([^"]+)"/g)].map((match) => match[1]);
+const extraConfigs = [...extraToolsComponent.matchAll(/^"([^"]+)":\[/gm)].map((match) => match[1]);
+const extraCases = [...extraToolsComponent.matchAll(/case "([^"]+)"/g)].map((match) => match[1]);
+const quickCases = [...quickToolsComponent.matchAll(/case "([^"]+)"/g)].map((match) => match[1]);
+const routedSlugs = new Set([...dispatchGroups, ...directDispatch, ...quickDispatch, ...extraConfigs, ...extraCases, ...quickCases]);
+const missingToolHandlers = catalog.filter((slug) => !routedSlugs.has(slug));
+assert.deepEqual(missingToolHandlers, [], "Every catalog tool must map to a route and implementation/configuration");
+
+const consentProvider = read("../components/PrivacyConsent.tsx");
+const analyticsComponent = read("../components/ConsentAwareAnalytics.tsx");
+const nativeAdComponent = read("../app/components/AdsterraNative.tsx");
+const skyscraperAdComponent = read("../app/components/Adsterra160x600.tsx");
+const rootLayout = read("../app/layout.tsx");
+assert.ok(consentProvider.includes("pdfora-privacy-consent-v1") && consentProvider.includes("Reject optional") && consentProvider.includes("Accept all") && consentProvider.includes("window.location.reload()"), "Privacy consent must persist explicit choices and unload optional scripts after revocation");
+assert.ok(analyticsComponent.includes("!consent?.analytics || !gaId"), "Google Analytics must remain disabled until analytics consent is granted");
+assert.ok(nativeAdComponent.includes("if (!consent?.ads) return null"), "Native advertising must remain disabled until ad consent is granted");
+assert.ok(skyscraperAdComponent.includes("if (!consent?.ads) return null"), "Skyscraper advertising must remain disabled until ad consent is granted");
+assert.ok(rootLayout.includes("<PrivacyConsentProvider>") && rootLayout.includes("<ConsentAwareAnalytics />") && !rootLayout.includes("<GoogleAnalytics gaId="), "Root layout must load optional analytics only inside the consent provider");
+
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including shared multilingual search, EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
+import { PrivacyConsentProvider } from "../components/PrivacyConsent";
+import ConsentAwareAnalytics from "../components/ConsentAwareAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({
 
 
       <body className="min-h-full flex flex-col">
+        <PrivacyConsentProvider>
         {children}
         <footer className="border-t border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-600">
           <a href="/tools" className="font-semibold text-blue-700 hover:underline">All Tools</a>
@@ -97,7 +99,8 @@ export default function RootLayout({
             }),
           }}
         />
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+        <ConsentAwareAnalytics />
+        </PrivacyConsentProvider>
       </body>
     </html>
   );

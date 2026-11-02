@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+// Allow time for the official NRB API plus the official HTML fallback on cold starts.
+export const maxDuration = 30;
 
 type Rate = { code: string; name: string; unit: number; buy: number; sell: number };
 type RateResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; rates: Rate[] };
@@ -27,7 +29,7 @@ async function fetchNrbJson(from: string, to: string): Promise<NrbRatePayload | 
   endpoint.search = new URLSearchParams({ from, to, per_page: "100", page: "1" }).toString();
   // NRB is the only data authority here. Retry transient upstream failures, but never
   // replace a failed official response with a third-party exchange-rate feed.
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const response = await fetch(endpoint, {
         headers: {
@@ -36,7 +38,7 @@ async function fetchNrbJson(from: string, to: string): Promise<NrbRatePayload | 
           Referer: "https://www.nrb.org.np/forex/",
         },
         cache: "no-store",
-        signal: AbortSignal.timeout(15000),
+        signal: AbortSignal.timeout(8000),
       });
       if (!response.ok) {
         console.warn("[nepal-forex] NRB API returned HTTP", response.status, "attempt", attempt + 1);
@@ -48,7 +50,7 @@ async function fetchNrbJson(from: string, to: string): Promise<NrbRatePayload | 
     } catch (error) {
       console.warn("[nepal-forex] NRB API request failed", attempt + 1, error instanceof Error ? error.message : "unknown error");
     }
-    if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
+    if (attempt < 1) await new Promise((resolve) => setTimeout(resolve, 250));
   }
   return null;
 }
@@ -65,7 +67,7 @@ async function fetchJsonRates(from: string, to: string): Promise<RateResponse | 
   return rates.length ? { source: "Nepal Rastra Bank", requestedDate: to, rateDate: latest.date!, publishedOn: latest.published_on ?? null, rates } : null;
 }
 async function fetchOfficialPageRates(requestedDate: string): Promise<RateResponse | null> {
-  const response = await fetch("https://www.nrb.org.np/forex/", { headers: { Accept: "text/html", "User-Agent": "Mozilla/5.0 PDFora exchange-rate reader" }, cache: "no-store", signal: AbortSignal.timeout(10000) });
+  const response = await fetch("https://www.nrb.org.np/forex/", { headers: { Accept: "text/html", "User-Agent": "Mozilla/5.0 PDFora exchange-rate reader" }, cache: "no-store", signal: AbortSignal.timeout(8000) });
   if (!response.ok) return null;
   const html = await response.text();
   const dateMatch = stripHtml(html).match(/Showing Exchange Rate for ([A-Za-z]+\s+\d{1,2},\s+\d{4})/i);

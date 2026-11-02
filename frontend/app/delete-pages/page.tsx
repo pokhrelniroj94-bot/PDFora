@@ -3,7 +3,7 @@ import { getToolGuide } from "../../lib/tool-guides";
 
 const guide = getToolGuide("delete-pages");
 export const metadata: Metadata = {
-  title: `${guide?.name ?? "PDF tool"} Online | PDFora`,
+  title: `${guide?.name ?? "PDF tool"} Online`,
   description: guide ? `${guide.purpose} ${guide.keyword}. Use PDFora online and inspect the output before sharing.`.slice(0, 160) : "Use this free PDF tool online with PDFora.",
   keywords: [guide?.name ?? "PDF tool", guide?.keyword ?? "PDF tool online", "free online PDF tool"],
   alternates: { canonical: "https://pd-fora.vercel.app/delete-pages" },

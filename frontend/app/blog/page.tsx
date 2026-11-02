@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { blogPosts } from "../../lib/blog-posts";
+import AdsterraNative from "../../components/AdsterraNative";
 
 export const metadata: Metadata = {
   title: "Nepal Guides: NRB Rates, Tax, Electricity, Holidays & Tools",
@@ -34,6 +35,7 @@ export default function BlogIndexPage() {
             </article>
           ))}
         </div>
+        <div className="mt-8"><AdsterraNative /></div>
         <div className="mt-10 rounded-3xl border border-teal-100 bg-teal-50 p-6">
           <h2 className="text-xl font-black text-slate-950">Need a tool now?</h2>
           <p className="mt-2 text-sm leading-7 text-slate-700">Use PDFora&apos;s free online tools to merge, split, compress and convert documents.</p>

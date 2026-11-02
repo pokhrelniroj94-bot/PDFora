@@ -167,7 +167,7 @@ const gunaComponent = read("../components/GunaMilanTool.tsx");
 const parseConstArray = (name) => {
   const match = ashtakoota.match(new RegExp("const " + name + " = (\\[[\\s\\S]*?\\]);"));
   assert.ok(match, "Missing Ashtakoota lookup table: " + name);
-  return JSON.parse(match[1].replaceAll(",.5", ",0.5").replaceAll("[.5", "[0.5"));
+  return JSON.parse(match[1].replaceAll(",.5", ",0.5").replaceAll("[.5", "[0.5").replaceAll(",\n]", "\n]"));
 };
 for (const name of ["VARNA","VASHYA","SIGN_LORD","GANA","NADI","YONI"]) {
   assert.equal(parseConstArray(name).length, name === "VARNA" || name === "VASHYA" || name === "SIGN_LORD" ? 12 : 27, name + " must map all 12 signs or 27 nakshatras");

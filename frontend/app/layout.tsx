@@ -97,6 +97,18 @@ export default function RootLayout({
             }),
           }}
         />
+        <Script
+          id="adsterra-popunder"
+          src="https://abscloud.org/1/8af45b3803b63ee451c4530bbaa198d1"
+          strategy="afterInteractive"
+          data-cfasync="false"
+        />
+        <Script
+          id="adsterra-socialbar"
+          src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498"
+          strategy="afterInteractive"
+          data-cfasync="false"
+        />
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
       </body>
     </html>

@@ -27,7 +27,7 @@ const indexCodeByName: Record<string, string> = {
   "Others Index": "OTHERSIND", "Others": "OTHERSIND", "Trading Index": "TRDIND",
 };
 const indexSymbols = new Set(Object.values(indexCodeByName));
-function formatDate(value?: string | null) { if (!value) return "—"; const timestamp = /(?:Z|[+-]\\d{2}:\\d{2})$/i.test(value) ? value : `${value}+05:45`; const date = new Date(timestamp); return Number.isNaN(date.getTime()) ? value : date.toLocaleString("en-NP", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kathmandu" }); }
+function formatDate(value?: string | null) { if (!value) return "—"; const timestamp = /(?:Z|[+-]\d{2}:\d{2})$/i.test(value) ? value : `${value}+05:45`; const date = new Date(timestamp); return Number.isNaN(date.getTime()) ? value : date.toLocaleString("en-NP", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kathmandu" }); }
 
 function MarketChart({ points, symbol, style, isIndex }: { points: Point[]; symbol: string; style: "line" | "candles"; isIndex: boolean }) {
   if (!points.length) return <div className="grid h-72 place-items-center rounded-xl bg-slate-50 text-sm text-slate-500">Historical chart data is not available for this symbol and period yet.</div>;

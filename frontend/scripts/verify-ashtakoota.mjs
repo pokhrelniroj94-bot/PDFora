@@ -1,5 +1,9 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import ts from "typescript";
+import os from "node:os";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 const source = fs.readFileSync(new URL("../lib/ashtakoota-calculator.ts", import.meta.url), "utf8");
 function readArray(name) {
@@ -71,10 +75,6 @@ console.log("Ashtakoota source-table audit passed: 4x4 Vashya, 7x7 Graha Maitri,
 
 
 // Execute the actual TypeScript calculator, not a duplicated JavaScript model.
-import ts from "typescript";
-import os from "node:os";
-import path from "node:path";
-import { pathToFileURL } from "node:url";
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-ashtakoota-"));
 try {
   const compiled = ts.transpileModule(source, {

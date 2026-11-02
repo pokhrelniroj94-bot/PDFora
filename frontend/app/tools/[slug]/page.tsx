@@ -3,10 +3,11 @@ import ToolWorkspace from "../../../components/AllTools";
 import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
 import { toolCatalog } from "../../../components/toolCatalog";
 import { blogPosts } from "../../../lib/blog-posts";
+import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
 
 const site = "https://pd-fora.vercel.app";
 export function generateStaticParams() {
-  return toolCatalog.map((tool) => ({ slug: tool.slug }));
+  return toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ slug: tool.slug }));
 }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -15,11 +16,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = `${tool.name} Online`;
   const socialTitle = `${title} | PDFora`;
   const description = tool.description.length > 155 ? tool.description.slice(0, 152).trimEnd() + "..." : tool.description;
-  const canonical = `${site}/tools/${tool.slug}`;
+  const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
   return {
     title, description,
     alternates: { canonical },
-    robots: { index: true, follow: true },
+    robots: { index: slug !== "ocr-pdf", follow: true },
     openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
     twitter: { card: "summary_large_image", title: socialTitle, description, images: [`/tools/${tool.slug}/opengraph-image`] },
   };
@@ -63,14 +64,15 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     ]
   };
   const questions = questionsBySlug[slug] ?? defaultQuestions;
-  const software = { "@context": "https://schema.org", "@type": "SoftwareApplication", name: tool.name, applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description: tool.description, url: `${site}/tools/${slug}`, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } };
+  const canonicalUrl = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
+  const software = { "@context": "https://schema.org", "@type": "SoftwareApplication", name: tool.name, applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description: tool.description, url: canonicalUrl, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } };
   const breadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: site },
       { "@type": "ListItem", position: 2, name: "All Tools", item: `${site}/tools` },
-      { "@type": "ListItem", position: 3, name: tool.name, item: `${site}/tools/${slug}` },
+      { "@type": "ListItem", position: 3, name: tool.name, item: canonicalUrl },
     ],
   };
   const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };

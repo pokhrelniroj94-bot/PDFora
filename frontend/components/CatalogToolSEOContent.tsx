@@ -71,7 +71,13 @@ export default function CatalogToolSEOContent({
   related: ToolInfo[];
   guideSlug?: string;
 }) {
-  const uniqueFaqItems = questions.slice(0, 4);
+  const gunaFaqItems: Question[] = [
+    { q: "What information is required for 36 Guna Milan?", a: "Enter both people’s birth date, exact local birth time and birthplace. Select BS or AD correctly. The calculator derives the Moon sign and birth nakshatra before applying its stated Ashtakoota table convention." },
+    { q: "What do the 36 points represent?", a: "The eight kootas are Varna (1), Vashya (2), Tara (3), Yoni (4), Graha Maitri (5), Gana (6), Bhakoot (7) and Nadi (8), for a total maximum of 36 points." },
+    { q: "Does 18 out of 36 guarantee a suitable match?", a: "No. Eighteen is a conventional threshold used by some families, not a scientific test, a pass/fail verdict or a guarantee of a successful marriage. Review each koota and any stated traditional exception separately." },
+    { q: "Why can another Panchang or astrologer give a different score?", a: "Birth-time accuracy, city coordinates, ayanamsha and the traditional Vashya or Yoni table edition can affect the Moon sign, nakshatra or score. This page identifies the table convention it uses; other traditions may differ." },
+  ];
+  const uniqueFaqItems = tool.slug === "nepali-guna-milan" ? gunaFaqItems : questions.slice(0, 4);
   if (tool.slug === "nepali-date-converter") {
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
@@ -478,7 +484,11 @@ export default function CatalogToolSEOContent({
     Business: "Collect the relevant cost, selling price, revenue, wage or target figures. Confirm the time period and whether tax is included before calculating.",
     Nepal: "Check the applicable fiscal year, BS or AD date, NPR amount, local unit and eligibility conditions. Verify official matters with the responsible Nepalese authority."
   };
-  const inputNote = preparation[tool.category] ?? "Prepare the source information requested by the tool and check the units, format and assumptions before processing.";
+  const inputNote = tool.slug === "nepali-guna-milan"
+    ? "Have each person’s birth date, exact local birth time and birthplace ready. Confirm whether each date is BS or AD."
+    : tool.slug === "nepal-panchang-calculator"
+      ? "Choose a Gregorian date and one supported Nepal or Indian city. The result is calculated for that location’s local sunrise."
+      : preparation[tool.category] ?? "Prepare the source information requested by the tool and check the units, format and assumptions before processing.";
   // Keep only FAQs written for this tool or its category.
   return (
     <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">
@@ -492,12 +502,28 @@ export default function CatalogToolSEOContent({
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">How to use the {title} step by step</h2>
           <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
-            <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
-            <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>
-            <li><strong>Enter a representative sample.</strong> If the task is unfamiliar, start with a small sample or values whose expected result you can check. This helps reveal input mistakes early.</li>
-            <li><strong>Use the available control.</strong> Some tools update automatically as you type; others require a Convert, Calculate or Process action. Follow the control shown in the workspace.</li>
-            <li><strong>Review the output.</strong> Check the result, compare it with the original or a known answer, and look for missing content, unexpected formatting or implausible values.</li>
-            <li><strong>Save or copy only after checking.</strong> Use the output only when it meets the requirements of your task. Keep the original until you no longer need it.</li>
+            {tool.slug === "nepali-guna-milan" ? <>
+              <li><strong>Enter both birth records.</strong> Add each person’s birth date, exact local birth time and birthplace. A missing or approximate birth time can change the calculated Moon position.</li>
+              <li><strong>Select the correct calendar.</strong> Choose Bikram Sambat (BS) or Gregorian (AD) separately for each person and enter the date in the displayed YYYY-MM-DD format.</li>
+              <li><strong>Check the birthplace.</strong> Select the closest supported city. The calculator uses city-centre coordinates, so a boundary result may differ from a chart calculated with exact coordinates.</li>
+              <li><strong>Calculate and inspect the Moon details.</strong> Confirm the displayed Moon sign and birth nakshatra for both people before interpreting the eight koota scores.</li>
+              <li><strong>Review all eight kootas.</strong> Read the score, maximum points, traditional basis and any separately reported parihara. Do not add a parihara to the raw total unless the chosen tradition explicitly defines that adjustment.</li>
+              <li><strong>Print only after verification.</strong> Compare important birth-chart details with a trusted local astrologer or panchang before using the result for a family decision.</li>
+            </> : tool.slug === "nepal-panchang-calculator" ? <>
+              <li><strong>Choose a Gregorian date.</strong> Enter the date you want to examine; the calculator does not infer a festival date from the current day.</li>
+              <li><strong>Select the nearest supported city.</strong> Sunrise and sunset are calculated using that city’s coordinates and local time zone.</li>
+              <li><strong>Calculate the Panchang.</strong> The tithi, nakshatra, yoga and karana are evaluated at local sunrise, which anchors the displayed Panchang day.</li>
+              <li><strong>Read the end times.</strong> An end time may fall on the following civil date; check the date shown beside it.</li>
+              <li><strong>Review daytime periods.</strong> Rahu Kaal, Yamaganda and Gulika are traditional daytime divisions, not personalized auspicious-muhurta recommendations.</li>
+              <li><strong>Verify ritual decisions.</strong> Compare festival observance and important muhurta with the official Nepal Rashtriya Panchanga or an approved local calendar.</li>
+            </> : <>
+              <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
+              <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>
+              <li><strong>Enter a representative sample.</strong> If the task is unfamiliar, start with a small sample or values whose expected result you can check. This helps reveal input mistakes early.</li>
+              <li><strong>Use the available control.</strong> Some tools update automatically as you type; others require a Convert, Calculate or Process action. Follow the control shown in the workspace.</li>
+              <li><strong>Review the output.</strong> Check the result, compare it with the original or a known answer, and look for missing content, unexpected formatting or implausible values.</li>
+              <li><strong>Save or copy only after checking.</strong> Use the output only when it meets the requirements of your task. Keep the original until you no longer need it.</li>
+            </>}
           </ol>
           
         </section>

@@ -449,8 +449,21 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     ],
   };
   const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
+  const howTo = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: `How to use ${tool.name}`,
+    description: tool.description,
+    step: [
+      { "@type": "HowToStep", position: 1, name: "Prepare your input", text: `Read the instructions for ${tool.name} and prepare the file or values requested by the tool.` },
+      { "@type": "HowToStep", position: 2, name: "Enter details", text: "Enter the required information and check units, formats and options before continuing." },
+      { "@type": "HowToStep", position: 3, name: "Run the tool", text: "Use the Calculate, Convert, Generate or Process control shown on the page." },
+      { "@type": "HowToStep", position: 4, name: "Review the result", text: "Check the output, assumptions and limitations. Save or copy it only after confirming it is suitable for your task." },
+    ],
+  };
   return <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howTo) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
     <ToolWorkspace slug={slug} />

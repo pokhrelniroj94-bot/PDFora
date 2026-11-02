@@ -60,10 +60,10 @@ export function getToolMetadata(slug: string): Metadata {
   const baseUrl = "https://pd-fora.vercel.app";
   if (slug === "ocr-pdf") {
     return {
-      title: "OCR PDF – Coming Soon",
-      description: "PDF text recognition is coming soon to PDFora.",
+      title: "OCR PDF Online – Nepali, English & Hindi",
+      description: "Extract Nepali, English and Hindi text from scanned PDFs and images. Create searchable PDFs or download extracted text with free PDFora OCR.",
       alternates: { canonical: `${baseUrl}/ocr-pdf` },
-      robots: { index: false, follow: true },
+      robots: { index: true, follow: true },
     };
   }
   const name = tool?.name ?? slug.split("-").map((part) => part[0]?.toUpperCase() + part.slice(1)).join(" ");

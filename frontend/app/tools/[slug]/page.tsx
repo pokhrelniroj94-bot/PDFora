@@ -267,6 +267,61 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does it translate English sentences into Nepali?", a: "No. It transliterates Romanized Nepali sounds; it is not a translation service." },
       { q: "Why should I review the converted words?", a: "Romanized input can map to multiple Nepali spellings, especially for names and uncommon words. Review the result before using it." }
     ],
+    "bmi-calculator": [
+      { q: "How is BMI calculated?", a: "BMI is weight in kilograms divided by height in metres squared. For example, 70 kg at 1.75 m gives a BMI of about 22.86." },
+      { q: "Does BMI measure body fat directly?", a: "No. BMI is a screening measure based on height and weight and does not directly measure body fat or individual health." },
+      { q: "Can I use adult BMI ranges for children?", a: "No. Children and teenagers need age- and sex-specific BMI-for-age interpretation from an appropriate health professional." }
+    ],
+    "bmr-calculator": [
+      { q: "What does BMR mean?", a: "Basal metabolic rate estimates the energy the body uses at rest to maintain basic functions." },
+      { q: "Is BMR the same as daily maintenance calories?", a: "No. Total daily energy expenditure also includes movement, exercise and digestion, so it is generally higher than BMR." },
+      { q: "Is the result an exact metabolic measurement?", a: "No. It is an equation-based estimate. A laboratory measurement may differ." }
+    ],
+    "unit-converter": [
+      { q: "Which units can I convert?", a: "The available categories include common length, mass, temperature and volume units. The options shown in the converter define the supported units." },
+      { q: "Can I convert any two units?", a: "Only compatible units should be converted, such as metres to feet or kilograms to pounds. Different physical quantities cannot be directly converted without additional information." },
+      { q: "Why is temperature conversion different?", a: "Celsius, Fahrenheit and Kelvin conversions use offset formulas, not just a simple multiplication factor." }
+    ],
+    "ratio-simplifier": [
+      { q: "How do I simplify a ratio?", a: "Divide both terms by their greatest common divisor. For example, 12:18 becomes 2:3 after dividing both terms by 6." },
+      { q: "Does simplifying change the ratio?", a: "No. Dividing both terms by the same non-zero factor preserves the relationship." },
+      { q: "Can I simplify ratios with different units?", a: "Convert both quantities to the same unit before simplifying so the comparison is meaningful." }
+    ],
+    "gcd-lcm-calculator": [
+      { q: "What is the difference between GCD and LCM?", a: "GCD is the largest integer that divides each input exactly; LCM is the smallest positive integer that is a multiple of each input." },
+      { q: "How can I check the answer for two positive integers?", a: "For two positive integers, GCD multiplied by LCM equals the product of the two numbers." },
+      { q: "Can I enter decimal values?", a: "Use integers when the calculator asks for whole numbers. Decimals are not standard inputs for integer GCD and LCM calculations." }
+    ],
+    "prime-number-checker": [
+      { q: "What is a prime number?", a: "A prime number is an integer greater than 1 with exactly two positive factors: 1 and itself." },
+      { q: "Is 1 a prime number?", a: "No. The number 1 has only one positive factor, so it is neither prime nor composite." },
+      { q: "Does the checker show factors for composite numbers?", a: "The tool can list factors for composite inputs where supported; review the output to see which integers divide the number exactly." }
+    ],
+    "business-days-calculator": [
+      { q: "Which days are excluded?", a: "The calculator excludes Saturdays and Sundays. It does not automatically remove every Nepal public holiday unless that feature is explicitly provided." },
+      { q: "Does it include the start and end dates?", a: "Check the date-count convention stated in the result. Inclusive business-day counts can differ from elapsed weekday counts." },
+      { q: "Are Nepal public holidays removed automatically?", a: "No. Treat this as a weekday count and check applicable government, regional or employer holidays separately." }
+    ],
+    "unix-timestamp-converter": [
+      { q: "What is a Unix timestamp?", a: "It is a count of seconds or milliseconds since 1970-01-01 00:00:00 UTC, depending on the format used by the source." },
+      { q: "How can I tell seconds from milliseconds?", a: "Common modern timestamps have about 10 digits in seconds and 13 digits in milliseconds, but validate the source format rather than relying only on digit count." },
+      { q: "Why does local time differ from UTC?", a: "UTC is a global reference time. Local display applies the selected or device timezone offset." }
+    ],
+    "aspect-ratio-calculator": [
+      { q: "What is an aspect ratio?", a: "It is the proportional relationship between width and height, commonly written as 16:9 or 4:3." },
+      { q: "Will the calculator resize my image file?", a: "No. It calculates proportions and dimensions; use an image editor or resizer to change the actual file." },
+      { q: "How do I avoid stretching an image?", a: "Keep the same aspect ratio when changing width or height, or crop the image if a different frame is required." }
+    ],
+    "word-character-counter": [
+      { q: "Does the counter include spaces?", a: "It displays the character counts according to the labels shown, including or excluding spaces where available." },
+      { q: "Why can counts differ from Microsoft Word or social media?", a: "Apps may count emoji, Unicode graphemes, punctuation and line breaks differently. Follow the limit of the platform where you will publish." },
+      { q: "Can I count Nepali text?", a: "Yes, paste Unicode Nepali text and review the count. Different software may treat combined characters and punctuation differently." }
+    ],
+    "json-formatter-validator": [
+      { q: "Does formatting JSON change its data?", a: "Pretty printing changes whitespace and indentation, not the parsed data structure. Minifying removes unnecessary whitespace." },
+      { q: "Does valid JSON mean my API payload is correct?", a: "No. Syntax validation does not confirm that required fields, data types or application-specific schema rules are satisfied." },
+      { q: "Can I use comments in JSON?", a: "Strict JSON does not support comments or trailing commas. Remove them before validating standard JSON." }
+    ],
     "nepali-date-converter": [
       { q: "Which dates does the Nepali date converter support?", a: "It supports Bikram Sambat dates from 1975-01-01 through 2099-12-30 and Gregorian dates from 1918-04-13 through 2043-04-13. Dates outside this range are rejected." },
       { q: "Can I convert both AD to BS and BS to AD?", a: "Yes. Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD), then enter the date in year-month-day order." },

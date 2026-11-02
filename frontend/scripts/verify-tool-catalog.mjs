@@ -97,4 +97,20 @@ const notesToolLine = catalogSource.split("\n").find((line) => line.includes('sl
 assert.ok(notesToolLine, "Notes to PDF is missing from the catalog");
 assert.ok(notesToolLine.includes('category:"PDF"'), "Notes to PDF must be grouped under the PDF category");
 assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesToPDF />'), "Notes to PDF handler is missing");
-console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search and Notes to PDF.`);
+
+const marketApi = read("../app/api/nepse-market/route.ts");
+const marketDashboard = read("../components/NepseMarketDashboard.tsx");
+const marketPage = read("../app/market/page.tsx");
+const newsApi = read("../app/api/nepal-market-news/route.ts");
+const newsComponent = read("../components/NepalMarketNews.tsx");
+assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
+assert.ok(marketApi.includes('source: usingLiveQuotes ? "YONEPSE live quote snapshot"'), "NEPSE API must identify the live quote source");
+assert.ok(marketApi.includes('s-maxage=60'), "NEPSE API response cache must allow frequent quote updates");
+assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
+assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
+assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market dashboard route is missing");
+assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market Dashboard"), "Homepage must link to the dedicated NEPSE market dashboard");
+assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");
+assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
+assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-refresh headlines");
+console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

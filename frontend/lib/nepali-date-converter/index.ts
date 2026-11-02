@@ -109,7 +109,7 @@ export default class DateConverter {
    * Sums the days from the epoch (1975-01-01 BS) to the given BS date, then
    * adds that offset to the epoch start AD date.
    *
-   * @param bsYear - Bikram Sambat year (1975-2099).
+   * @param bsYear - Bikram Sambat year (1975-2083).
    * @param bsMonth - Bikram Sambat month (1-12).
    * @param bsDay - Bikram Sambat day (1-32 depending on month).
    * @returns AD date as a JavaScript `Date` object.

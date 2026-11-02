@@ -67,3 +67,12 @@ body {
   content-visibility: auto;
   contain-intrinsic-size: auto 280px;
 }
+
+
+/* Mobile quick navigation: respect device safe areas and keep page content reachable. */
+@media (max-width: 767px) {
+  body { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+}
+
+/* Small, consistent interaction feedback across the workspace. */
+:where(button, a, input, select, textarea) { touch-action: manipulation; }

@@ -164,7 +164,7 @@ assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must s
 const ashtakoota = read("../lib/ashtakoota-calculator.ts");
 const gunaComponent = read("../components/GunaMilanTool.tsx");
 const parseConstArray = (name) => {
-  const match = ashtakoota.match(new RegExp("const " + name + " = (\\\\[[\\\\s\\\\S]*?\\\\]);"));
+  const match = ashtakoota.match(new RegExp("const " + name + " = (\\[[\\s\\S]*?\\]);"));
   assert.ok(match, "Missing Ashtakoota lookup table: " + name);
   return JSON.parse(match[1]);
 };

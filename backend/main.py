@@ -19,6 +19,12 @@ import re
 import hmac
 import ipaddress
 import asyncio
+import json
+import urllib.request
+import ssl
+import certifi
+import urllib.parse
+import threading
 from contextvars import ContextVar
 import pdfplumber
 
@@ -121,7 +127,6 @@ app.add_middleware(
         "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
         "https://pd-fora-git-premium-redesign-pokhrelniroj94-7012s-projects.vercel.app",
     ],
-    allow_origin_regex=r"https://pd-fora-[a-z0-9-]+-pokhrelniroj94-7012s-projects\.vercel\.app",
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
@@ -498,6 +503,154 @@ def cleanup_job(job: Path):
 
     except Exception:
         pass
+
+
+# ============================================================
+# NEPAL RASTRA BANK FOREIGN EXCHANGE RATES
+# ============================================================
+
+_NRB_CACHE: dict[str, tuple[float, dict]] = {}
+_NRB_CACHE_LOCK = threading.Lock()
+
+
+def _nrb_fetch_records(from_date: str, to_date: str) -> list[dict]:
+    """Fetch official NRB forex records with Python's verified system CA store."""
+    query = urllib.parse.urlencode({
+        "from": from_date,
+        "to": to_date,
+        "per_page": "100",
+        "page": "1",
+    })
+    url = "https://www.nrb.org.np/api/forex/v1/rates?" + query
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "application/json",
+            "User-Agent": "PDForaForex/1.0 (+https://pd-fora.vercel.app)",
+            "Referer": "https://www.nrb.org.np/forex/",
+        },
+    )
+    # urlopen validates TLS certificates using the runtime's trusted CA bundle.
+    tls_context = ssl.create_default_context(cafile=certifi.where())
+    with urllib.request.urlopen(request, timeout=15, context=tls_context) as response:
+        if response.status != 200:
+            raise RuntimeError(f"NRB API returned HTTP {response.status}")
+        payload = json.loads(response.read(5 * 1024 * 1024).decode("utf-8"))
+    records = (payload.get("data") or {}).get("payload") or []
+    if not isinstance(records, list):
+        raise RuntimeError("NRB API returned an unexpected response schema")
+    return records
+
+
+def _nrb_cached(key: str, ttl: int, loader):
+    now = time.monotonic()
+    with _NRB_CACHE_LOCK:
+        cached = _NRB_CACHE.get(key)
+        if cached and now - cached[0] < ttl:
+            return {**cached[1], "cached": True, "stale": False}
+    try:
+        result = loader()
+        with _NRB_CACHE_LOCK:
+            _NRB_CACHE[key] = (time.monotonic(), result)
+        return {**result, "cached": False, "stale": False}
+    except Exception:
+        import logging
+        logging.getLogger("pdfora.forex").exception("Official NRB forex request failed")
+        if cached:
+            return {**cached[1], "cached": True, "stale": True}
+        raise
+
+
+@app.get("/api/nepal-forex")
+async def nepal_forex(date: str | None = Query(default=None)):
+    """Return the latest official NRB rates on or before the requested date."""
+    from datetime import date as Date, timedelta
+
+    requested = date or time.strftime("%Y-%m-%d", time.gmtime(time.time() + 5 * 60 * 60 + 45 * 60))
+    try:
+        selected = Date.fromisoformat(requested)
+        if selected.isoformat() != requested:
+            raise ValueError
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Date must be a valid YYYY-MM-DD value.")
+
+    start = (selected - timedelta(days=10)).isoformat()
+    # Keep a stable cache key for the live/latest view so a new day can still
+    # fall back to the last successful published rate if NRB is temporarily down.
+    key = "rates:latest" if date is None else "rates:" + requested
+
+    def load():
+        records = _nrb_fetch_records(start, requested)
+        valid = [item for item in records if item.get("date") and isinstance(item.get("rates"), list)]
+        latest = max(valid, key=lambda item: str(item.get("date", "")), default=None)
+        if not latest:
+            raise RuntimeError("NRB has not published a rate for this date range")
+        rates = []
+        for item in latest.get("rates", []):
+            currency = item.get("currency") or {}
+            code = str(currency.get("ISO3") or currency.get("iso3") or "").upper()
+            name = str(currency.get("name") or "")
+            try:
+                unit, buy, sell = float(currency.get("unit") or 1), float(item.get("buy")), float(item.get("sell"))
+            except (TypeError, ValueError):
+                continue
+            if len(code) == 3 and code.isalpha() and name and unit > 0 and all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
+                rates.append({"code": code, "name": name, "unit": unit, "buy": buy, "sell": sell})
+        if not rates:
+            raise RuntimeError("NRB returned no valid currency rates")
+        return {
+            "source": "Nepal Rastra Bank",
+            "requestedDate": requested,
+            "rateDate": latest["date"],
+            "publishedOn": latest.get("published_on"),
+            "rates": rates,
+        }
+
+    try:
+        return await asyncio.to_thread(_nrb_cached, key, 300, load)
+    except Exception:
+        raise HTTPException(status_code=502, detail="Could not retrieve published rates from Nepal Rastra Bank. Please retry later.")
+
+
+@app.get("/api/nepal-forex/history")
+async def nepal_forex_history(currency: str = Query(default="USD", min_length=3, max_length=3)):
+    """Return 90 days of official NRB buying/selling rates, normalized per currency unit."""
+    from datetime import date as Date, timedelta, datetime, timezone
+
+    code = currency.upper()
+    if not code.isalpha():
+        raise HTTPException(status_code=400, detail="Invalid currency code.")
+    nepal_tz = timezone(timedelta(hours=5, minutes=45))
+    end = datetime.now(nepal_tz).date()
+    start = end - timedelta(days=90)
+    key = "history:" + code
+
+    def load():
+        records = _nrb_fetch_records(start.isoformat(), end.isoformat())
+        history = []
+        for record in records:
+            item = next((rate for rate in (record.get("rates") or [])
+                         if str((rate.get("currency") or {}).get("ISO3") or (rate.get("currency") or {}).get("iso3") or "").upper() == code), None)
+            if not item or not record.get("date"):
+                continue
+            currency_data = item.get("currency") or {}
+            try:
+                unit = float(currency_data.get("unit") or 1)
+                buy, sell = float(item.get("buy")), float(item.get("sell"))
+            except (TypeError, ValueError):
+                continue
+            if unit <= 0 or not all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
+                continue
+            history.append({"date": record["date"], "buy": buy / unit, "sell": sell / unit})
+        history.sort(key=lambda item: item["date"])
+        if not history:
+            raise RuntimeError(f"No NRB historical rates found for {code}")
+        return {"source": "Nepal Rastra Bank", "currency": code, "history": history}
+
+    try:
+        return await asyncio.to_thread(_nrb_cached, key, 3600, load)
+    except Exception:
+        raise HTTPException(status_code=502, detail="NRB historical rates are temporarily unavailable for this currency.")
 
 
 # ============================================================
@@ -1337,11 +1490,11 @@ async def watermark_pdf(
     except HTTPException:
         raise
 
-    except Exception:
-        logging.getLogger("pdfora.errors").exception("Watermark processing failed")
+    except Exception as exc:
+
         raise HTTPException(
             status_code=500,
-            detail="Watermark failed. Please retry or contact support."
+            detail=f"Watermark failed: {str(exc)}"
         )
 
     finally:
@@ -1486,13 +1639,12 @@ async def pdf_to_excel(
         cleanup_job(job)
         raise
 
-    except Exception:
-        logging.getLogger("pdfora.errors").exception("PDF to Excel conversion failed")
+    except Exception as exc:
         cleanup_job(job)
 
         raise HTTPException(
             status_code=500,
-            detail="PDF to Excel conversion failed. Please retry or contact support."
+            detail=f"PDF to Excel conversion failed: {str(exc)}"
         )
 
 @app.post("/api/cleanup")
@@ -1607,8 +1759,8 @@ async def pdf_to_word(
     except HTTPException:
         raise
 
-    except Exception:
-        logging.getLogger("pdfora.errors").exception("PDF to Word conversion failed")
+    except Exception as exc:
+
         shutil.rmtree(
             job,
             ignore_errors=True
@@ -1616,7 +1768,7 @@ async def pdf_to_word(
 
         raise HTTPException(
             status_code=500,
-            detail="PDF to Word conversion failed. Please retry or contact support."
+            detail=f"PDF to Word conversion failed: {str(exc)}"
         )
 
     finally:

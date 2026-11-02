@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Sign PDF Online | PDFora",
+  title: "Sign PDF Online",
   description: "Add a visible typed signature to the final page. This is not a certificate-based digital signature.",
   alternates: { canonical: "https://pd-fora.vercel.app/sign-pdf" },
 };

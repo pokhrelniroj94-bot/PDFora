@@ -154,6 +154,13 @@ export default function CatalogToolSEOContent({
     </div></article>;
   }
   const nepalGuides: Record<string, { heading: string; intro: string; steps: string[]; example: string; note: string }> = {
+    "nepali-date-converter": {
+      heading: "Convert Nepali Bikram Sambat (BS) dates to Gregorian AD dates and back",
+      intro: "Convert a date between Nepal's Bikram Sambat calendar and the Gregorian calendar. The converter runs locally in your browser using bundled calendar data, so the date calculation does not depend on a third-party CDN loading. It supports BS 1975–2099 and the corresponding Gregorian range.",
+      steps: ["Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD).", "Enter the date in year-month-day order, such as 2026-01-01 or 2082-09-17.", "Use English or Devanagari digits; the converter normalizes supported date separators.", "Select Convert date and review the converted date, Nepali month name and weekday.", "For a government form, verify the date against the original document or relevant official record."],
+      example: "For example, 2023-04-28 AD converts to 2080-01-15 BS (बैशाख), Friday. The result includes the date in Nepali digits as well.",
+      note: "The converter uses a defined calendar-data range and rejects dates outside it or invalid month days rather than estimating. It does not determine public holidays, festival observances or official legal validity. Confirm important dates with the responsible authority."
+    },
     "nepali-vat-calculator": {
       heading: "Calculate 13% Nepal VAT and extract VAT from an inclusive price",
       intro: "Use this calculator to add Nepal's standard 13% value added tax to a base price, or separate the VAT component from a VAT-inclusive total. The rate field is editable, so check whether a special rate or exemption applies to your transaction before calculating.",

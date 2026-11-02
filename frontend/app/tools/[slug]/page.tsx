@@ -53,6 +53,30 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: `Can I rely on the ${tool.name} result as an official record?`, a: "No. This online utility is a practical aid. Confirm important financial, legal, government, medical or compliance results with the responsible authority or qualified professional." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
+    "neb-gpa-calculator": [
+      { q: "How is GPA calculated?", a: "Multiply each subject's grade point by its credit hours, add those weighted points, then divide by the total credit hours. GPA = Σ(credit × grade point) ÷ Σ(credit hours)." },
+      { q: "Should I enter marks or grade points?", a: "Enter the grade point from your official grade sheet, not raw marks. Select the matching letter grade and enter the subject's credit hours." },
+      { q: "Why does a 4-credit subject affect GPA more?", a: "A subject with more credit hours has a larger weight in the calculation. For example, 4 credits at 3.5 contributes 14 weighted points, while 2 credits at 3.5 contributes 7." },
+      { q: "Is this an official NEB GPA result?", a: "No. This is an estimate using the displayed grade-point assumptions. Confirm your programme's grading scale and credit hours with the official NEB result or school." }
+    ],
+    "nepal-land-area-converter": [
+      { q: "How many square feet are in one ropani?", a: "One standard ropani is 5,476 square feet, equal to 16 aana, 64 paisa or 256 daam." },
+      { q: "How many square feet are in one bigha?", a: "The common Terai conversion is 72,900 square feet, equal to 20 kattha or 400 dhur." },
+      { q: "Can I convert ropani and bigha directly?", a: "Yes. The converter first converts each local unit to square feet, then shows equivalent values in the hill and Terai systems as well as square metres." },
+      { q: "Can I use this conversion for a land purchase or legal deed?", a: "Use it as a reference calculation only. Confirm the parcel's official area, boundary and unit with the cadastral record and relevant land revenue office." }
+    ],
+    "nepal-vat-calculator": [
+      { q: "What VAT rate is preselected?", a: "The calculator starts with 13%, but the rate field is editable. Confirm the applicable rate and tax treatment with current Inland Revenue Department guidance." },
+      { q: "How do I add VAT to a price?", a: "Multiply the pre-VAT amount by the VAT rate to get VAT, then add VAT to the base amount. At 13%, NPR 1,000 becomes NPR 1,130." },
+      { q: "How do I remove VAT from a VAT-inclusive amount?", a: "Divide the inclusive amount by 1 plus the VAT rate as a decimal. At 13%, divide by 1.13 to find the pre-VAT base." },
+      { q: "Is this an official tax assessment?", a: "No. It is a simple estimate and does not determine tax eligibility, exemptions or the correct treatment of a specific transaction." }
+    ],
+    "nepal-share-calculator": [
+      { q: "Does the share calculator include transaction charges?", a: "It estimates broker commission, SEBON fee, DP charge and capital-gains tax using the editable assumptions shown in the form." },
+      { q: "Are the default charges guaranteed to be current?", a: "No. Rates and tax treatment can change and may depend on transaction value, holding period and investor category. Confirm the current applicable charges." },
+      { q: "How is estimated net profit calculated?", a: "The tool subtracts estimated purchase and sale charges from the gross price difference, then subtracts the estimated CGT from positive profit." },
+      { q: "Does this guarantee the exact amount credited by my broker?", a: "No. It is a planning estimate, not a broker contract note or tax statement. Use your broker's final settlement report for the actual figure." }
+    ],
     "nepali-date-converter": [
       { q: "Which dates does the Nepali date converter support?", a: "It supports Bikram Sambat dates from 1975-01-01 through 2099-12-30 and Gregorian dates from 1918-04-13 through 2043-04-13. Dates outside this range are rejected." },
       { q: "Can I convert both AD to BS and BS to AD?", a: "Yes. Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD), then enter the date in year-month-day order." },

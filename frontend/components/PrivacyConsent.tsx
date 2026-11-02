@@ -52,7 +52,11 @@ export function PrivacyConsentProvider({ children }: { children: React.ReactNode
     } catch {
       // Consent remains effective for the current page view if storage is unavailable.
     }
-  }, []);
+    // Reload when optional access is withdrawn so already-loaded third-party scripts are unloaded.
+    if ((consent?.analytics && !next.analytics) || (consent?.ads && !next.ads)) {
+      window.location.reload();
+    }
+  }, [consent]);
 
   const openSettings = useCallback(() => {
     setAnalyticsChoice(consent?.analytics ?? false);

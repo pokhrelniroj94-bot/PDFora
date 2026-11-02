@@ -86,7 +86,7 @@ assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF
 assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");
 assert.ok(homepage.includes('tool.kind === "pdf" || tool.category === "PDF"'), "Homepage PDF category hides catalog PDF tools");
 assert.ok(homepage.includes("tool.keywords"), "Homepage search does not include tool keywords");
-assert.ok(homepage.includes("\\\\p{L}") && directoryComponent.includes("\\\\p{L}"), "Nepali Unicode search must be preserved on homepage and tools directory");
+assert.ok(homepage.includes("\\p{L}") && directoryComponent.includes("\\p{L}"), "Nepali Unicode search must be preserved on homepage and tools directory");
 
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must display every matching tool, not just a small fixed number");
 assert.ok(homepage.includes("max-h-[min(65vh,32rem)]") && homepage.includes("overflow-y-auto"), "Homepage search results must remain scrollable when many tools match");
@@ -94,7 +94,7 @@ assert.ok(homepage.includes("tokens.every((token) => searchable.includes(token))
 
 assert.ok(directoryComponent.includes("allTools.filter"), "The /tools directory is not using the unified tool directory");
 assert.ok(directoryComponent.includes("href={t.href}"), "The /tools directory does not preserve each tool's actual route");
-const normalizeSearch = (value) => value.toLowerCase().replace(/[^\\p{L}\\p{N}]+/gu, " ").trim();
+const normalizeSearch = (value) => value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 const loanToolLine = catalogSource.split("\n").find((line) => line.includes('slug:"loan-emi-calculator"'));
 assert.ok(loanToolLine?.includes('name:"Loan & EMI Calculator"'), "Loan & EMI Calculator is missing from the catalog");
 const loanSearchText = normalizeSearch([loanToolLine, "EMI calculator loan installment monthly payment"].join(" "));

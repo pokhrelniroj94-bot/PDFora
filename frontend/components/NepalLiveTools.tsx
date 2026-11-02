@@ -61,6 +61,20 @@ async function fetchLatestForex(): Promise<ForexResponse> {
   return json;
 }
 
+
+type ForexHistoryPoint = { date: string; buy: number; sell: number };
+function ForexHistoryChart({ points }: { points: ForexHistoryPoint[] }) {
+  if (points.length < 2) return <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">Not enough published NRB observations for a historical chart yet.</p>;
+  const width = 900, height = 260, left = 58, right = 18, top = 18, bottom = 34;
+  const values = points.flatMap((point) => [point.buy, point.sell]);
+  const min = Math.min(...values), max = Math.max(...values), range = max - min || 1;
+  const x = (index: number) => left + index / (points.length - 1) * (width - left - right);
+  const y = (value: number) => top + (max - value) / range * (height - top - bottom);
+  const buyPath = points.map((point, index) => (index ? "L" : "M") + x(index).toFixed(1) + "," + y(point.buy).toFixed(1)).join(" ");
+  const sellPath = points.map((point, index) => (index ? "L" : "M") + x(index).toFixed(1) + "," + y(point.sell).toFixed(1)).join(" ");
+  return <div className="space-y-2"><div className="overflow-hidden rounded-xl bg-slate-950 p-3"><svg viewBox={"0 0 "+width+" "+height} className="w-full" role="img" aria-label="NRB daily currency buying and selling rate history">{[0,1,2,3,4].map((tick)=><g key={tick}><line x1={left} x2={width-right} y1={top+tick*(height-top-bottom)/4} y2={top+tick*(height-top-bottom)/4} stroke="#334155" strokeDasharray="4 5"/><text x={left-8} y={top+tick*(height-top-bottom)/4+4} textAnchor="end" fontSize="12" fill="#94a3b8">{(max-range*tick/4).toFixed(2)}</text></g>)}<path d={buyPath} fill="none" stroke="#2dd4bf" strokeWidth="3"/><path d={sellPath} fill="none" stroke="#fbbf24" strokeWidth="3"/><text x={left} y={height-8} fill="#94a3b8" fontSize="12">{points[0].date}</text><text x={width-right} y={height-8} textAnchor="end" fill="#94a3b8" fontSize="12">{points[points.length-1].date}</text></svg></div><div className="flex flex-wrap gap-4 text-xs text-slate-600"><span className="inline-flex items-center gap-2"><span className="h-1 w-5 rounded bg-teal-500"/>Buying rate</span><span className="inline-flex items-center gap-2"><span className="h-1 w-5 rounded bg-amber-400"/>Selling rate</span><span>{points.length} published observations</span></div></div>;
+}
+
 function ForexTool() {
   const [data, setData] = useState<ForexResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -68,6 +82,9 @@ function ForexTool() {
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState("100");
   const [direction, setDirection] = useState("foreign-to-npr");
+  const [history, setHistory] = useState<ForexHistoryPoint[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState("");
   useEffect(() => {
     let active = true;
     const initialLoad = async () => {
@@ -90,6 +107,17 @@ function ForexTool() {
     catch (e) { setError(e instanceof Error ? e.message : "Could not load NRB rates."); }
     finally { setLoading(false); }
   };
+  useEffect(() => {
+    let active = true;
+    setHistoryLoading(true);
+    setHistoryError("");
+    fetch("/api/nepal-forex?history=1&currency=" + encodeURIComponent(currency), { cache: "no-store" })
+      .then(async (response) => { const json = await response.json() as { history?: ForexHistoryPoint[]; error?: string }; if (!response.ok) throw new Error(json.error || "Historical rates unavailable."); return json; })
+      .then((json) => { if (active) setHistory(json.history ?? []); })
+      .catch((error: unknown) => { if (active) setHistoryError(error instanceof Error ? error.message : "Historical rates unavailable."); })
+      .finally(() => { if (active) setHistoryLoading(false); });
+    return () => { active = false; };
+  }, [currency]);
   const selected = data?.rates.find((item) => item.code === currency) ?? data?.rates[0];
   const value = Number(amount);
   const valid = amount.trim() !== "" && Number.isFinite(value) && value >= 0 && !!selected;
@@ -102,6 +130,8 @@ function ForexTool() {
     {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{error}</p>}
     {data && <div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[560px] text-left text-sm"><thead className="bg-slate-100"><tr><th className="p-3">Currency</th><th className="p-3 text-right">Unit</th><th className="p-3 text-right">Buying (NPR)</th><th className="p-3 text-right">Selling (NPR)</th></tr></thead><tbody>{data.rates.map((item) => <tr key={item.code} className="border-t"><td className="p-3"><span className="font-semibold">{item.code}</span><span className="ml-2 text-slate-500">{item.name}</span></td><td className="p-3 text-right">{item.unit}</td><td className="p-3 text-right tabular-nums">{item.buy.toFixed(4)}</td><td className="p-3 text-right tabular-nums">{item.sell.toFixed(4)}</td></tr>)}</tbody></table></div>}
     <div className="rounded-xl border p-4"><h3 className="font-bold">NRB rate converter</h3><div className="mt-3 grid gap-3 sm:grid-cols-2"><label><span className={label}>Currency</span><select className={field} value={selected?.code ?? currency} onChange={(e) => setCurrency(e.target.value)}>{(data?.rates ?? []).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label><label><span className={label}>Conversion</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option></select></label></div><div className="mt-3"><Field title="Amount" value={amount} onChange={setAmount}/></div>{converted !== null && selected && <div className="mt-4"><Result>{direction === "foreign-to-npr" ? `${value.toLocaleString()} ${selected.code} ≈ ${npr(converted)}` : `${npr(value)} ≈ ${converted.toLocaleString("en-IN", { maximumFractionDigits: 4 })} ${selected.code}`}\nRate unit: ${selected.unit} ${selected.code}\nRate date: ${data?.rateDate}</Result></div>}</div>
+    <section className="space-y-3 rounded-xl border p-4"><div><h3 className="font-bold">Custom historical rate chart</h3><p className="mt-1 text-sm text-slate-600">Daily NRB reference buying and selling rates per one unit, based on available published observations over roughly the last 90 days. This is not an intraday trading feed.</p></div>{historyLoading ? <p className="text-sm text-slate-500">Loading historical NRB rates…</p> : historyError ? <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{historyError}</p> : <ForexHistoryChart points={history}/>}</section>
+    <section className="space-y-3 rounded-xl border p-4"><div><h3 className="font-bold">TradingView embedded Forex chart</h3><p className="mt-1 text-sm text-slate-600">Third-party market chart for the selected currency pair. Availability depends on the chart provider; USD/NPR may not be listed by every feed.</p></div><div className="overflow-hidden rounded-xl border bg-white"><iframe title={"TradingView "+currency+"/NPR forex chart"} src={"https://s.tradingview.com/widgetembed/?symbol="+encodeURIComponent(({USD:"FX_IDC:USDNPR",INR:"FX_IDC:INRNPR",EUR:"FX_IDC:EURNPR",GBP:"FX_IDC:GBPNPR",JPY:"FX_IDC:JPYINR",AUD:"FX_IDC:AUDNPR",CAD:"FX_IDC:CADNPR",CHF:"FX_IDC:CHFNPR"} as Record<string,string>)[currency] || "FX_IDC:USDNPR")+"&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&theme=light&style=1&timezone=Asia%2FKathmandu&withdateranges=1&hideideas=1&locale=en"} className="h-[420px] w-full" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen/></div><p className="text-xs text-slate-500">TradingView is an external chart service. Pair symbols and quotes may be unavailable, delayed or indicative. Use NRB published rates for official Nepal reference-rate checks.</p></section>
     <p className="text-xs text-slate-500">NRB reference rates are not necessarily the exact rates offered by individual banks, money changers or remittance providers. The API may show the previous published working day on weekends and holidays.</p>
     <a className="text-sm font-semibold text-teal-700 underline" href="https://www.nrb.org.np/forex" target="_blank" rel="noreferrer">View NRB official exchange-rate page</a>
   </div>;

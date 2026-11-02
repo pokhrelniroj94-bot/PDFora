@@ -209,7 +209,7 @@ const analyticsComponent = read("../components/ConsentAwareAnalytics.tsx");
 const nativeAdComponent = read("../app/components/AdsterraNative.tsx");
 const skyscraperAdComponent = read("../app/components/Adsterra160x600.tsx");
 const rootLayout = read("../app/layout.tsx");
-assert.ok(consentProvider.includes("pdfora-privacy-consent-v1") && consentProvider.includes("Reject optional") && consentProvider.includes("Accept all"), "Privacy consent must persist explicit accept/reject choices");
+assert.ok(consentProvider.includes("pdfora-privacy-consent-v1") && consentProvider.includes("Reject optional") && consentProvider.includes("Accept all") && consentProvider.includes("window.location.reload()"), "Privacy consent must persist explicit choices and unload optional scripts after revocation");
 assert.ok(analyticsComponent.includes("!consent?.analytics || !gaId"), "Google Analytics must remain disabled until analytics consent is granted");
 assert.ok(nativeAdComponent.includes("if (!consent?.ads) return null"), "Native advertising must remain disabled until ad consent is granted");
 assert.ok(skyscraperAdComponent.includes("if (!consent?.ads) return null"), "Skyscraper advertising must remain disabled until ad consent is granted");

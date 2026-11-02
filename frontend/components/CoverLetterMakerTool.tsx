@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const input = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100";
 const label = "mb-1 block text-xs font-bold uppercase tracking-wide text-slate-500";
@@ -18,8 +18,9 @@ export default function CoverLetterMakerTool() {
     const close=tone==="warm"?"I would appreciate the opportunity to discuss how I could contribute to your team. Thank you for your time and consideration.":"I welcome the opportunity to discuss how my background and abilities can support your team. Thank you for considering my application.";
     return [name.trim()||"Your Name", [email,phone].filter(Boolean).join(" | "), "", new Date().toLocaleDateString(), "", "Dear "+greeting+",", "", intro+" "+profile+strengths, "", why, "", close, "", "Sincerely,", name.trim()||"Your Name"].join("\n");
   },[name,email,phone,company,role,manager,skills,experience,motivation,tone]);
-  async function copy(){try{await navigator.clipboard.writeText(letter);setCopied(true);window.setTimeout(()=>setCopied(false),1800);}catch{setCopied(false);}}
-  function download(){const url=URL.createObjectURL(new Blob([letter],{type:"text/plain;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download="cover-letter.txt";a.click();URL.revokeObjectURL(url);}
+  const [draft,setDraft]=useState(letter); useEffect(()=>setDraft(letter),[letter]);
+  async function copy(){try{await navigator.clipboard.writeText(draft);setCopied(true);window.setTimeout(()=>setCopied(false),1800);}catch{setCopied(false);}}
+  function download(){const url=URL.createObjectURL(new Blob([draft],{type:"text/plain;charset=utf-8"}));const a=document.createElement("a");a.href=url;a.download="cover-letter.txt";a.click();URL.revokeObjectURL(url);}
   return <div className="space-y-5">
     <div><h2 className="text-xl font-black text-slate-950">Cover Letter Generator</h2><p className="mt-1 text-sm text-slate-600">Fill in your details to create an editable, job-specific cover letter. Review every claim before sending.</p></div>
     <div className="grid gap-4 sm:grid-cols-2">

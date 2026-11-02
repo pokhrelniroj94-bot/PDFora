@@ -326,6 +326,7 @@ export default function Home() {
           </Link>
 
           <Link href="/ne" className="mr-3 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-blue-700 hover:border-blue-400">नेपाली</Link>
+          <Link href="/market" className="mr-3 hidden rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 text-xs font-bold text-teal-800 hover:border-teal-400 sm:inline-flex">NEPSE Market</Link>
           <Link
             href="/tools"
             className="rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800"

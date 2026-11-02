@@ -32,10 +32,22 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   if (!tool || slug === "pdf-tools") notFound();
   const related = toolCatalog.filter((item) => item.category === tool.category && item.slug !== slug && item.slug !== "pdf-tools").slice(0, 4);
   const guide = blogPosts.find((post) => post.toolLinks.some((link) => link.href === `/tools/${slug}`));
+  const categoryChecks: Record<string, string> = {
+    PDF: "Check page order, layout, selectable text, links, forms and signatures in the exported file. Keep the original document until you have verified the result.",
+    Finance: "Check the currency, time period, rate, fees and assumptions. Compare the estimate with an official statement or provider quote before making a financial decision.",
+    Text: "Check punctuation, line breaks, spaces and Unicode characters in the result. Keep a copy of the original text before making bulk changes.",
+    Developer: "Test the output with a parser, test suite or independent implementation. Never treat encoding as encryption or paste secrets into a public utility.",
+    Image: "Inspect dimensions, file size, image quality, transparency and colour after export. Keep the original image in case you need to retry with different settings.",
+    Math: "Verify the formula, units, decimal precision and rounding. Test a simple example with a known answer before relying on a larger calculation.",
+    SEO: "Check the live page, canonical URL, indexability, search intent and actual search-platform reports. A tool score does not guarantee rankings or indexing.",
+    Business: "Confirm whether the inputs represent revenue, cost, margin, tax-inclusive prices or tax-exclusive prices. Record assumptions before using the result in a budget or quote.",
+    Nepal: "Check the applicable fiscal year, BS or AD date, currency, units, region and eligibility. Verify important results against the latest responsible government or provider notice."
+  };
+  const categoryNote = categoryChecks[tool.category] ?? "Check the input format, units and assumptions, then compare an important result with a trusted reference.";
   const defaultQuestions = [
     { q: `What does the ${tool.name} do?`, a: tool.description },
-    { q: "How do I use this online tool?", a: "Enter the requested values or paste your content, check the options, run the tool and review the output before copying or saving it." },
-    { q: "Should I verify the result?", a: "Yes. Check important outputs independently, especially before financial, legal, medical, security or production use." }
+    { q: `What should I check when using the ${tool.name}?`, a: categoryNote },
+    { q: `Can I rely on the ${tool.name} result as an official record?`, a: "No. This online utility is a practical aid. Confirm important financial, legal, government, medical or compliance results with the responsible authority or qualified professional." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
     "nepal-forex-rates": [

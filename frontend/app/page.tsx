@@ -849,8 +849,6 @@ function ToolCard({
       href={tool.href}
       className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg active:scale-[0.99]"
       aria-label={`Open ${tool.name}`}
-      aria-disabled={unavailable}
-      onClick={(event) => { if (unavailable) event.preventDefault(); }}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-sm font-black text-violet-600">
@@ -882,7 +880,7 @@ function ToolCard({
           {howToUse[tool.href] || "Open this tool, upload the required file, follow the options and download the result."}
         </p>
         <div className="mt-4 flex items-center justify-between text-sm font-bold text-teal-700">
-          <span>{unavailable ? "Coming soon" : "Open tool"}</span><span aria-hidden="true">→</span>
+          <span>Open tool</span><span aria-hidden="true">→</span>
         </div>
       </div>
     </Link>

@@ -161,6 +161,13 @@ function localTime(date: Date | null): string | null {
   }).format(date);
 }
 
+function endTimeLabel(date: Date | null, baseDate: string): string | null {
+  if (!date) return null;
+  const time = localTime(date);
+  const endingDate = localISODate(date);
+  return endingDate === baseDate ? time : `${time} (${endingDate})`;
+}
+
 function daylightPeriod(sunrise: Date, sunset: Date, segment: number): string {
   const duration = sunset.getTime() - sunrise.getTime();
   const start = new Date(sunrise.getTime() + duration * (segment - 1) / 8);
@@ -241,22 +248,22 @@ export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
     sunset: localTime(sunset) ?? "Unavailable",
     tithi: {
       name: tithi[0], nameNp: tithi[1], paksha,
-      endsAt: localTime(ends.tithi),
+      endsAt: endTimeLabel(ends.tithi, input.date),
     },
     nakshatra: {
       name: NAKSHATRAS[indices.nakshatra][0],
       nameNp: NAKSHATRAS[indices.nakshatra][1],
       pada: nakshatraPada,
-      endsAt: localTime(ends.nakshatra),
+      endsAt: endTimeLabel(ends.nakshatra, input.date),
     },
     yoga: {
       name: YOGAS[indices.yoga][0],
       nameNp: YOGAS[indices.yoga][1],
-      endsAt: localTime(ends.yoga),
+      endsAt: endTimeLabel(ends.yoga, input.date),
     },
     karana: {
       name: karana[0], nameNp: karana[1],
-      endsAt: localTime(ends.karana),
+      endsAt: endTimeLabel(ends.karana, input.date),
     },
     rahuKaal: daylightPeriod(sunrise, sunset, rahuSegments[weekdayIndex]),
     yamaganda: daylightPeriod(sunrise, sunset, yamaSegments[weekdayIndex]),

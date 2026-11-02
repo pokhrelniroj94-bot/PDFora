@@ -32,6 +32,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepse-dividend-calculator": { title: "NEPSE Dividend Calculator – Cash Dividend & Bonus | PDFora", description: "Estimate NEPSE cash dividend after editable withholding tax and calculate bonus shares from your eligible share quantity." },
     "nepal-public-holidays-2083": { title: "Nepal Public Holidays 2083 – BS and AD Calendar | PDFora", description: "Browse Nepal public holidays for 2083 BS with Gregorian dates and notes for national, regional and community-specific holidays." },
     "nepal-forex-rates": { title: "Nepal Rastra Bank Forex Rates – NPR Exchange Rates | PDFora", description: "View Nepal Rastra Bank currency buying and selling rates and estimate NPR conversions using the published currency units." }
+    "loan-emi-calculator": { title: "Loan EMI Calculator – Monthly Payment & Interest | PDFora", description: "Calculate monthly loan EMI, total repayment and total interest from principal, annual interest rate and loan term in months." },
+    "compound-interest-sip-calculator": { title: "SIP & Compound Interest Calculator – Future Value | PDFora", description: "Estimate SIP future value, total monthly investments and projected gain using an expected annual return and investment period." },
+    "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range | PDFora", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
+    "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin % | PDFora", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
+    "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue | PDFora", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
+    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease | PDFora", description: "Calculate percentage increase or decrease between an original value and a new value with a clear direction and percentage result." },
+    "age-calculator": { title: "Age Calculator – Exact Years, Months and Days | PDFora", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
+    "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide | PDFora", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
   };
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;

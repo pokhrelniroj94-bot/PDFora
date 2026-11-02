@@ -30,7 +30,7 @@ const box = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const panel = "rounded-[1.75rem] border border-slate-200/80 bg-white p-5 shadow-[0_18px_60px_rgba(15,23,42,.07)] sm:p-7";
 function Field({title,children}:{title:string;children:React.ReactNode}) { return <label className="block"><span className={label}>{title}</span>{children}</label>; }
-function Result({children}:{children:React.ReactNode}) { return <div className="mt-4 rounded-xl bg-teal-50 p-4 text-sm text-teal-950">{children}</div>; }
+function Result({children}:{children:React.ReactNode}) { return <div aria-live="polite" className="mt-4 rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5">{children}</div>; }
 function money(n:number,currency=""):string { return currency+" "+(Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):"—"); }
 function downloadText(name:string,text:string,type="text/plain") { const a=document.createElement("a"); const u=URL.createObjectURL(new Blob([text],{type})); a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(u),1000); }
 function CopyButton({value}:{value:string}) { return <button className="rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-slate-50" onClick={()=>navigator.clipboard?.writeText(value)}>Copy</button>; }

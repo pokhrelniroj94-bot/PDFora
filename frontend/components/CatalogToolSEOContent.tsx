@@ -71,6 +71,7 @@ export default function CatalogToolSEOContent({
   related: ToolInfo[];
   guideSlug?: string;
 }) {
+  const uniqueFaqItems = questions.slice(0, 4);
   if (tool.slug === "nepal-forex-rates") {
     return (
       <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">
@@ -130,9 +131,7 @@ export default function CatalogToolSEOContent({
 
   const advice = categoryAdvice[tool.category] ?? categoryAdvice.Math;
   const title = tool.name;
-  // Keep only FAQs written for this tool or its category. This avoids
-  // repeating the same generic FAQ block across every catalog URL.
-  const uniqueFaqItems = questions.slice(0, 4);
+  // Keep only FAQs written for this tool or its category.
   return (
     <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">
       <div className="space-y-6">

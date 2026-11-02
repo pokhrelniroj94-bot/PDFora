@@ -5,8 +5,9 @@ import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
 import { toolCatalog } from "../../../components/toolCatalog";
 import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
+import { SITE_URL } from "../../../lib/site-config";
 
-const site = "https://pd-fora.vercel.app";
+const site = SITE_URL;
 export function generateStaticParams() {
   return toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ slug: tool.slug }));
 }

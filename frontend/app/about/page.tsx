@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About",
   alternates: { canonical: "https://pd-fora.vercel.app/about" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/about", siteName: "PDFora", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/about", siteName: "PDFora", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "About PDFora" }] },
+  twitter: { card: "summary_large_image", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools.", images: ["/opengraph-image"] },
   description:
     "Learn about PDFora, an online platform for PDF processing and practical digital tools.",
 };

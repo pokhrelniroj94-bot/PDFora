@@ -44,22 +44,26 @@ function MarketChart({ points, symbol, style }: { points: Point[]; symbol: strin
   const maPath = ma.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1)).join(" ");
   const ticks = Array.from({ length: 5 }, (_, i) => min + range * i / 4);
   const maxVol = Math.max(...points.map(p => p.volume ?? 0), 1);
+  const showCandles = style === "candles" && indexSymbols.has(symbol);
   return <div className="space-y-2">
     <div className="overflow-hidden rounded-xl bg-slate-950 p-2 sm:p-4">
       <svg viewBox={"0 0 " + width + " " + height} className="w-full" role="img" aria-label={symbol + " historical price chart"}>
         {ticks.map((v, i) => <g key={i}><line x1={left} x2={width-right} y1={y(v)} y2={y(v)} stroke="#334155" strokeDasharray="4 6"/><text x={left-9} y={y(v)+4} textAnchor="end" fontSize="13" fill="#94a3b8">{v.toFixed(0)}</text></g>)}
-        {style === "candles" && indexSymbols.has(symbol) ? points.map((p, i) => {
-          const up = (p.close ?? 0) >= (p.open ?? p.close ?? 0);
+        {showCandles ? points.map((p, i) => {
+          const open = Number.isFinite(p.open) ? p.open! : p.close;
+          const high = Number.isFinite(p.high) ? p.high! : Math.max(open, p.close);
+          const low = Number.isFinite(p.low) ? p.low! : Math.min(open, p.close);
+          const up = p.close >= open;
           const candleW = Math.max(3, Math.min(16, (width-left-right) / points.length * .58));
-          const topY = y(Math.max(p.open ?? p.close, p.close));
-          const bottomY = y(Math.min(p.open ?? p.close, p.close));
-          return <g key={p.date}><line x1={x(i)} x2={x(i)} y1={y(p.high ?? p.close)} y2={y(p.low ?? p.close)} stroke={up ? "#34d399" : "#fb7185"} strokeWidth="2"/><rect x={x(i)-candleW/2} y={topY} width={candleW} height={Math.max(2,bottomY-topY)} fill={up ? "#10b981" : "#f43f5e"} rx="1"/></g>;
+          const topY = y(Math.max(open, p.close));
+          const bottomY = y(Math.min(open, p.close));
+          return <g key={p.date}><line x1={x(i)} x2={x(i)} y1={y(high)} y2={y(low)} stroke={up ? "#34d399" : "#fb7185"} strokeWidth="2"/><rect x={x(i)-candleW/2} y={topY} width={candleW} height={Math.max(2,bottomY-topY)} fill={up ? "#10b981" : "#f43f5e"} rx="1"/></g>;
         }) : <><path d={area} fill="#0d9488" opacity=".17"/><path d={path} fill="none" stroke="#2dd4bf" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round"/><path d={maPath} fill="none" stroke="#fbbf24" strokeWidth="1.8" strokeDasharray="7 5"/></>}
         <text x={left} y={height-5} fill="#94a3b8" fontSize="12">{points[0].date}</text>
         <text x={width-right} y={height-5} textAnchor="end" fill="#94a3b8" fontSize="12">{points[points.length-1].date}</text>
       </svg>
     </div>
-    <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500"><span className="inline-flex items-center gap-2"><span className="h-2 w-5 rounded bg-teal-500"/>{style === "candles" && symbol === "NEPSE" ? "OHLC candles" : "Closing price"}</span>{!(style === "candles" && symbol === "NEPSE") && <span className="inline-flex items-center gap-2"><span className="h-0.5 w-5 border-t-2 border-dashed border-amber-500"/>20-session average</span>}<span>{points.length} sessions</span></div>
+    <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500"><span className="inline-flex items-center gap-2"><span className="h-2 w-5 rounded bg-teal-500"/>{showCandles ? "OHLC candles" : "Closing price"}</span>{!showCandles && <span className="inline-flex items-center gap-2"><span className="h-0.5 w-5 border-t-2 border-dashed border-amber-500"/>20-session average</span>}<span>{points.length} sessions</span></div>
     <div className="overflow-hidden rounded-xl bg-slate-50 p-2"><p className="px-2 pb-1 text-[11px] font-bold uppercase tracking-wide text-slate-500">Volume</p><svg viewBox={"0 0 " + width + " 84"} className="w-full" role="img" aria-label={symbol + " daily volume chart"}>{points.map((p,i)=>{const w=Math.max(2,(width-left-right)/points.length*.65);const h=(p.volume??0)/maxVol*65;return <rect key={p.date} x={x(i)-w/2} y={76-h} width={w} height={h} rx="1" fill="#0f766e" opacity=".7"/>;})}</svg></div>
   </div>;
 }
@@ -119,7 +123,7 @@ export default function NepseMarketDashboard() {
     <section className="bg-[#071b1b] px-4 py-10 text-white sm:px-6">
       <div className="mx-auto max-w-7xl">
         <Link href="/" className="text-sm font-semibold text-teal-200 hover:underline">← PDFora home</Link>
-        <div className="mt-5 flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-300">PDFora Market Desk</p><h1 className="mt-2 text-3xl font-black sm:text-4xl">NEPSE Market Dashboard</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Market snapshot, index and stock charts, sector performance, top movers and company price history.</p></div><div className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm"><span className={"mr-2 inline-block h-2 w-2 rounded-full "+(data?.status?.is_open?"bg-emerald-400":"bg-slate-400")}/>{data?.status?.is_open?"Market reported open":"Market reported closed / snapshot"}<p className="mt-1 text-xs text-slate-400">Dashboard checks for quote updates every 60 seconds; source timestamps are shown below</p></div></div>
+        <div className="mt-5 flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-300">PDFora Market Desk</p><h1 className="mt-2 text-3xl font-black sm:text-4xl">NEPSE Market Dashboard</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Market snapshot, index and stock charts, sector performance, top movers and company price history.</p></div><div className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm"><span className={"mr-2 inline-block h-2 w-2 rounded-full "+(data?.status?.is_open?"bg-emerald-400":"bg-slate-400")}/>{data?.status?.is_open?"Market reported open":"Market reported closed / snapshot"}<p className="mt-1 text-xs text-slate-400">Page checks for a new source snapshot every 5 minutes; upstream quote data is usually refreshed about hourly on weekdays</p></div></div>
       </div>
     </section>
     <div className="mx-auto max-w-7xl space-y-7 px-4 py-8 sm:px-6">

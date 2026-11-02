@@ -32,6 +32,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepse-dividend-calculator": { title: "NEPSE Dividend Calculator – Cash Dividend & Bonus", description: "Estimate NEPSE cash dividend after editable withholding tax and calculate bonus shares from your eligible share quantity." },
     "nepal-public-holidays-2083": { title: "Nepal Public Holidays 2083 – BS and AD Calendar", description: "Browse Nepal public holidays for 2083 BS with Gregorian dates and notes for national, regional and community-specific holidays." },
     "nepal-forex-rates": { title: "Nepal Rastra Bank Forex Rates & Charts – NPR Exchange Rates", description: "View official NRB currency buying and selling rates, convert NPR, explore historical daily rate charts and open embedded market charts for supported currency pairs." },
+    "nepal-fixed-deposit-calculator": { title: "Nepal Fixed Deposit Calculator – FD Interest & Maturity", description: "Estimate Nepal bank fixed-deposit interest, compound maturity value and after-tax return using an editable annual rate and compounding frequency." },
+    "nepal-remittance-calculator": { title: "Nepal Remittance Calculator – Calculate NPR Received", description: "Estimate how much NPR a recipient gets after an exchange rate and remittance transfer fee. Compare payout assumptions in Nepal." },
+    "nepal-ipo-profit-calculator": { title: "Nepal IPO Profit Calculator – Kitta, Charges & CGT", description: "Estimate Nepal IPO share profit or loss after broker commission, SEBON fee, DP charge and an editable capital-gains tax assumption." },
     "loan-emi-calculator": { title: "Loan EMI Calculator – Monthly Payment & Interest", description: "Calculate monthly loan EMI, total repayment and total interest from principal, annual interest rate and loan term in months." },
     "compound-interest-sip-calculator": { title: "SIP & Compound Interest Calculator – Future Value", description: "Estimate SIP future value, total monthly investments and projected gain using an expected annual return and investment period." },
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
@@ -391,6 +394,18 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Is the result an official CDSC credit?", a: "No. Confirm eligibility, final tax and credited shares with the company, CDSC and Mero Share." }
     ],
     
+    "nepal-fixed-deposit-calculator": [
+      { q: "Does this match every Nepal bank FD product?", a: "No. Banks may use different day-count, compounding, payout, tax and premature-withdrawal rules. Confirm the specific product terms." },
+      { q: "Is the interest tax assumption guaranteed?", a: "No. It is editable for estimation. Check current IRD rules and your personal tax treatment." }
+    ],
+    "nepal-remittance-calculator": [
+      { q: "Does the calculator fetch live remittance rates?", a: "No. Enter the rate and fee quoted by your provider. Actual payout rates and fees can vary by service and destination." },
+      { q: "Can the recipient receive less than this estimate?", a: "Yes. Intermediary-bank deductions, provider charges, exchange-rate spreads or recipient fees may affect the final amount." }
+    ],
+    "nepal-ipo-profit-calculator": [
+      { q: "Does it use the current broker commission and tax automatically?", a: "No. Charges and tax assumptions are editable. Confirm the applicable broker tariff and capital-gains tax rate before selling." },
+      { q: "Does it guarantee the IPO listing price?", a: "No. The sale price is an input chosen by the user; listing and market prices can move." }
+    ],
   };
   const questions = questionsBySlug[slug] ?? defaultQuestions;
   const canonicalUrl = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;

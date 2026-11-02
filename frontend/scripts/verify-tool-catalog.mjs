@@ -189,6 +189,8 @@ assert.equal(parseConstArray("YONI_TABLE")[0][8], 0, "Yoni table must preserve t
 assert.ok(ashtakoota.includes("Muhurta Chintamani") && ashtakoota.includes("ASHTAKOOTA_SOURCE_URL"), "Ashtakoota convention must identify its source");
 assert.ok(ashtakoota.includes("bhakootCancelled") && ashtakoota.includes("nadiCancelled"), "Bhakoot and Nadi parihara must be reported separately from raw scores");
 assert.ok(ashtakoota.includes("(!nadiDosha||nadiCancelled)") && ashtakoota.includes("rashiNakshatraParihara") && ashtakoota.includes("sameNakshatraRashiDifferentPada"), "Bhakoot cancellation must require no unmitigated Nadi dosha, and classical Gana/Nadi exceptions must be applied");
+assert.ok(ashtakoota.indexOf("const nadiDosha=") < ashtakoota.indexOf("const bhakootCancelled="), "Nadi exception state must be initialized before Bhakoot cancellation is evaluated");
+
 
 assert.ok(ashtakoota.includes("scores.some(s=>s.score<0||s.score>s.max)"), "Ashtakoota must reject scores outside each koota's maximum");
 assert.ok(gunaComponent.includes('useState<Language>("ne")') && gunaComponent.includes('setLanguage("hi")') && gunaComponent.includes('setLanguage("en")'), "Guna Milan interface must support Nepali, Hindi and English");

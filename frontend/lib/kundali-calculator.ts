@@ -1,7 +1,7 @@
 import * as Astronomy from "astronomy-engine";
 import DateConverter from "./nepali-date-converter";
 
-export const KUNDALI_PLACES = [
+export const KUNDALI_PLACES: Array<{ id: string; name: string; en: string; lat: number; lon: number; timeZone?: string }> = [
   { id: "kathmandu", name: "काठमाडौं", en: "Kathmandu", lat: 27.7172, lon: 85.3240 },
   { id: "ilam", name: "इलाम", en: "Ilam", lat: 26.9094, lon: 87.9282 },
   { id: "biratnagar", name: "विराटनगर", en: "Biratnagar", lat: 26.4525, lon: 87.2718 },

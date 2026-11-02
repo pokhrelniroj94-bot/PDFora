@@ -125,6 +125,8 @@ export default function NirojToolsTool({
       const response = await fetch(url.toString(), {
         method: "POST",
         body: formData,
+        // Avoid an indefinitely hanging request while allowing Render to wake from idle.
+        signal: AbortSignal.timeout(180_000),
       });
 
       if (!response.ok) {
@@ -168,10 +170,15 @@ export default function NirojToolsTool({
     } catch (error) {
       console.error(error);
 
+      const timedOut =
+        error instanceof DOMException &&
+        (error.name === "TimeoutError" || error.name === "AbortError");
       setMessage(
-        error instanceof Error
-          ? error.message
-          : "Could not process the PDF."
+        timedOut
+          ? "The processing server took too long to respond. It may be waking up or busy. Please try again."
+          : error instanceof Error
+            ? error.message
+            : "Could not process the PDF."
       );
     } finally {
       setLoading(false);

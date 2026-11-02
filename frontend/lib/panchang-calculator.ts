@@ -51,7 +51,7 @@ const MOVABLE_KARANAS = [
   ["Taitila", "तैतिल"], ["Garaja", "गर"], ["Vanija", "वणिज"], ["Vishti", "विष्टि"],
 ] as const;
 const FIXED_KARANAS = [
-  ["Shakuni", "शकुनि"], ["Chatushpada", "चतुष्पद"], ["Naga", "नाग"], ["Kimstughna", "किंस्तुघ्न"],
+  ["Kimstughna", "किंस्तुघ्न"], ["Shakuni", "शकुनि"], ["Chatushpada", "चतुष्पद"], ["Naga", "नाग"],
 ] as const;
 
 const WEEKDAYS = [
@@ -220,9 +220,11 @@ export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
       ? ["Amavasya", "अमावस्या"]
       : TITHIS[tithiOrdinal];
   const paksha = indices.tithi < 15 ? "Shukla" : "Krishna";
-  const karana = indices.karana < 56
-    ? MOVABLE_KARANAS[indices.karana % 7]
-    : FIXED_KARANAS[indices.karana - 56];
+  const karana = indices.karana === 0
+    ? FIXED_KARANAS[0]
+    : indices.karana <= 56
+      ? MOVABLE_KARANAS[(indices.karana - 1) % 7]
+      : FIXED_KARANAS[indices.karana - 56];
   const weekdayIndex = new Date(`${input.date}T00:00:00Z`).getUTCDay();
   const [weekday, weekdayNp] = WEEKDAYS[weekdayIndex];
   const rahuSegments = [8, 2, 7, 5, 6, 4, 3];

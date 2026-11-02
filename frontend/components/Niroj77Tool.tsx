@@ -196,7 +196,7 @@ export default function NirojToolsTool({
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              NIROJ Tools
+              PDFora
             </span>
           </a>
 
@@ -220,7 +220,7 @@ export default function NirojToolsTool({
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-            NIROJ Tools Tool
+            PDFora Tool
           </p>
 
           <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
@@ -402,7 +402,7 @@ export default function NirojToolsTool({
           <InfoCard
             icon="🔒"
             title="Private"
-            description="Files are processed by the NIROJ Tools backend."
+            description="Files are processed by the PDFora backend."
           />
 
           <InfoCard

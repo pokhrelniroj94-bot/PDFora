@@ -52,14 +52,13 @@ export default function NepalTools({slug}:{slug:string}) {
   if(slug==="nepal-panchang-calculator") Promise.resolve().then(()=>setPanchangDate(kathmanduISODate()));
   if(["nepali-date-converter","nepali-calendar"].includes(slug)){
    const today = kathmanduISODate();
-   setTodayAD(today);
-   if(slug === "nepali-date-converter") setDate((current) => current || today);
-   if(slug === "nepali-calendar") {
-    const bs = new DateConverter(today).toBs();
-    setCalendarYear(String(bs.year));
-    setCalendarMonth(String(bs.month));
-   }
-   Promise.resolve().then(()=>setReady(true));
+   const bs = slug === "nepali-calendar" ? new DateConverter(today).toBs() : null;
+   Promise.resolve().then(()=>{
+    setTodayAD(today);
+    if(slug === "nepali-date-converter") setDate((current) => current || today);
+    if(bs){setCalendarYear(String(bs.year));setCalendarMonth(String(bs.month));}
+    setReady(true);
+   });
   }
  },[slug]);
  const runDate=()=>{try{const clean=englishDigits(date.trim()).replace(/[/.]/g,"-");if(!/^\\d{4}-\\d{1,2}-\\d{1,2}$/.test(clean))throw Error("Date format YYYY-MM-DD ma halnuhos.");const normalized=clean.split("-").map((part,i)=>i===0?part:part.padStart(2,"0")).join("-");const c=new DateConverter(normalized);const d=mode==="ad-bs"?c.toBs():c.toAd();const day=d.day;const iso=`${d.year}-${String(d.month).padStart(2,"0")}-${String(d.date).padStart(2,"0")}`;const bsMonth=Number(normalized.split("-")[1]);const formatted=mode==="ad-bs"?`AD: ${normalized} (Gregorian)\\nBS: ${iso} · ${monthEnglish[d.month-1]} / ${months[d.month-1]}`:`BS: ${normalized} · ${monthEnglish[bsMonth-1]} / ${months[bsMonth-1]}\\nAD: ${iso} (Gregorian)`;setResult(`${formatted}\\nWeekday: ${day}\\nNepali digits: ${nepaliDigits(iso)}`);}catch(e){setResult(e instanceof Error?e.message:"Invalid date.");}};

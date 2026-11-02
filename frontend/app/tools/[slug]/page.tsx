@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const seoOverrides: Record<string, { title: string; description: string }> = {
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours | PDFora", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur | PDFora", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
-    "nepal-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT | PDFora", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
+    "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT | PDFora", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
     "nepal-share-calculator": { title: "NEPSE Share Profit Calculator – Broker Fees & CGT | PDFora", description: "Estimate NEPSE share buy cost, sale proceeds, broker commission, SEBON fee, DP charge, CGT and net profit using editable assumptions." },
     "nepali-date-converter": { title: "Nepali Date Converter – BS to AD and AD to BS | PDFora", description: "Convert Bikram Sambat Nepali dates to Gregorian AD dates and back. See Nepali month names, weekday and Devanagari digits." },
     "nepali-number-converter": { title: "Nepali Number Converter – Number to Words & Digits | PDFora", description: "Convert numbers into English words using thousand, lakh and crore and display the same number in Nepali Devanagari digits." },
@@ -143,7 +143,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Can I convert ropani and bigha directly?", a: "Yes. The converter first converts each local unit to square feet, then shows equivalent values in the hill and Terai systems as well as square metres." },
       { q: "Can I use this conversion for a land purchase or legal deed?", a: "Use it as a reference calculation only. Confirm the parcel's official area, boundary and unit with the cadastral record and relevant land revenue office." }
     ],
-    "nepal-vat-calculator": [
+    "nepali-vat-calculator": [
       { q: "What VAT rate is preselected?", a: "The calculator starts with 13%, but the rate field is editable. Confirm the applicable rate and tax treatment with current Inland Revenue Department guidance." },
       { q: "How do I add VAT to a price?", a: "Multiply the pre-VAT amount by the VAT rate to get VAT, then add VAT to the base amount. At 13%, NPR 1,000 becomes NPR 1,130." },
       { q: "How do I remove VAT from a VAT-inclusive amount?", a: "Divide the inclusive amount by 1 plus the VAT rate as a decimal. At 13%, divide by 1.13 to find the pre-VAT base." },

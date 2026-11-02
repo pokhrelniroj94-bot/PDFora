@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import NepalMarketNews from "./NepalMarketNews";
+import { calculateNepalSalaryTax } from "../lib/calculations";
 
 type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
 type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; rates: ForexRate[]; error?: string };
@@ -112,29 +113,17 @@ function SalaryTaxTool() {
   const [firstBandExempt, setFirstBandExempt] = useState(false);
   const amount = Number(income);
   const valid = income.trim() !== "" && Number.isFinite(amount) && amount >= 0 && amount <= 1_000_000_000;
-  const bands = [
-    { limit: 1_000_000, rate: firstBandExempt ? 0 : 0.01 },
-    { limit: 500_000, rate: 0.10 },
-    { limit: 1_000_000, rate: 0.20 },
-    { limit: 1_500_000, rate: 0.27 },
-    { limit: Infinity, rate: 0.29 },
-  ];
-  let remaining = valid ? amount : 0;
-  let tax = 0;
-  const breakdown = bands.map((band) => {
-    const taxable = Math.min(remaining, band.limit);
-    remaining -= taxable;
-    const charge = taxable * band.rate;
-    tax += charge;
-    return { taxable, rate: band.rate, charge };
-  }).filter((item) => item.taxable > 0);
+  const calculation = valid ? calculateNepalSalaryTax(amount, firstBandExempt) : null;
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">Nepal Salary / Income Tax Calculator · FY 2083/84</h2><p className="mt-1 text-sm text-slate-600">Progressive estimate for a resident natural person using the published 2083/84 bands.</p></div>
+    <div><h2 className="text-lg font-bold">Nepal Salary / Income Tax Calculator · FY 2083/84</h2><p className="mt-1 text-sm text-slate-600">Progressive estimate for a resident natural person using the Inland Revenue Department's published 2083/84 bands.</p></div>
     <Field title="Annual taxable salary / income (NPR, after eligible deductions)" value={income} onChange={setIncome}/>
-    <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" checked={firstBandExempt} onChange={(e) => setFirstBandExempt(e.target.checked)}/><span>First NPR 1,000,000 band is exempt from the 1% charge under an applicable statutory exception.</span></label>
-    {valid ? <><Result>Estimated annual income tax: {npr(tax)}\nEstimated monthly tax: {npr(tax / 12)}\nEstimated monthly take-home from taxable income: {npr((amount - tax) / 12)}\nEffective tax rate: ${amount > 0 ? (tax / amount * 100).toFixed(2) : "0.00"}%</Result><div className="overflow-x-auto rounded-xl border"><table className="w-full text-sm"><thead className="bg-slate-100"><tr><th className="p-3 text-left">Taxable band portion</th><th className="p-3 text-right">Rate</th><th className="p-3 text-right">Tax</th></tr></thead><tbody>{breakdown.map((item, i) => <tr key={i} className="border-t"><td className="p-3">{npr(item.taxable)}</td><td className="p-3 text-right">{(item.rate * 100).toFixed(0)}%</td><td className="p-3 text-right">{npr(item.charge)}</td></tr>)}</tbody></table></div></> : <p role="alert" className="text-sm text-red-700">Enter a valid non-negative annual taxable income.</p>}
-    <p className="text-xs leading-5 text-slate-500">This is an estimate for resident natural persons only. It does not calculate every rebate, allowance, retirement contribution, insurance deduction, non-resident case or special income category. The 1% first-band charge has statutory exceptions. Verify your situation against the current IRD notice or a tax professional.</p>
-    <a className="text-sm font-semibold text-teal-700 underline" href="https://ird.gov.np/category/taxrateincentives/" target="_blank" rel="noreferrer">IRD official tax rates and incentives</a>
+    <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" checked={firstBandExempt} onChange={(e) => setFirstBandExempt(e.target.checked)}/><span>I qualify for the first-band 1% Social Security Tax exemption (for example, as an SSF contributor, pension-income recipient or sole proprietor). Select only if this statutory exception applies.</span></label>
+    {calculation ? <><Result>Estimated annual tax: {npr(calculation.tax)}
+Estimated monthly tax: {npr(calculation.tax / 12)}
+Monthly taxable income after estimated tax: {npr((amount - calculation.tax) / 12)}
+Effective tax rate: {calculation.effectiveRate.toFixed(2)}%</Result><div className="overflow-x-auto rounded-xl border"><table className="w-full text-sm"><thead className="bg-slate-100"><tr><th className="p-3 text-left">Taxable band portion</th><th className="p-3 text-right">Rate</th><th className="p-3 text-right">Tax</th></tr></thead><tbody>{calculation.breakdown.map((item, i) => <tr key={i} className="border-t"><td className="p-3">{npr(item.taxable)}</td><td className="p-3 text-right">{(item.rate * 100).toFixed(0)}%</td><td className="p-3 text-right">{npr(item.tax)}</td></tr>)}</tbody></table></div></> : <p role="alert" className="text-sm text-red-700">Enter a valid non-negative annual taxable income.</p>}
+    <p className="text-xs leading-5 text-slate-500">Estimate only for resident natural persons. Taxable income must already reflect eligible deductions; this calculator does not calculate PF, CIT, SSF contributions, insurance deductions, rebates, non-resident tax or every special income category. The 1% first-band exception is not a general tax-free allowance. Verify your circumstances against the current IRD notice or a tax professional.</p>
+    <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://ird.gov.np/category/taxrateincentives/" target="_blank" rel="noreferrer">IRD official tax rates and incentives</a><a className="font-semibold text-teal-700 underline" href="https://ird.gov.np/" target="_blank" rel="noreferrer">Inland Revenue Department</a></div>
   </div>;
 }
 

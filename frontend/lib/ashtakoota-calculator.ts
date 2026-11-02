@@ -132,12 +132,13 @@ export function calculateAshtakoota(bride:KundaliResult,groom:KundaliResult):Gun
  const nadiDosha=NADI[bi]===NADI[gi];
  const sameRashiDifferentNakshatra=br===gr&&bi!==gi;
  const sameNakshatraDifferentRashi=bi===gi&&br!==gr;
- const nadiCancelled=nadiDosha&&(sameRashiDifferentNakshatra||sameNakshatraDifferentRashi);
+ const sameNakshatraRashiDifferentPada=br===gr&&bi===gi&&bride.janmaPada!==groom.janmaPada;
+ const nadiCancelled=nadiDosha&&(sameRashiDifferentNakshatra||sameNakshatraDifferentRashi||sameNakshatraRashiDifferentPada);
  const brideMoonNavamsa=bride.planets.find((planet)=>planet.key==="Moon")?.navamsaSign ?? "";
  const groomMoonNavamsa=groom.planets.find((planet)=>planet.key==="Moon")?.navamsaSign ?? "";
  const brideNavamsaIndex=rashiIndex(brideMoonNavamsa), groomNavamsaIndex=rashiIndex(groomMoonNavamsa);
  const rashiNakshatraParihara=sameRashiDifferentNakshatra||sameNakshatraDifferentRashi;
- const ganaCancelled=rashiNakshatraParihara || (naturalRelation(SIGN_LORD[br],SIGN_LORD[gr])==="friend" && brideNavamsaIndex>=0 && groomNavamsaIndex>=0 && naturalRelation(SIGN_LORD[brideNavamsaIndex],SIGN_LORD[groomNavamsaIndex])==="friend");
+ const ganaCancelled=rashiNakshatraParihara || sameNakshatraRashiDifferentPada || (naturalRelation(SIGN_LORD[br],SIGN_LORD[gr])==="friend" && brideNavamsaIndex>=0 && groomNavamsaIndex>=0 && naturalRelation(SIGN_LORD[brideNavamsaIndex],SIGN_LORD[groomNavamsaIndex])==="friend");
  const nadiScore=nadiDosha?0:8;
  const scores:GunaKootaScore[]=[
   {key:"varna",ne:"वर्ण",hi:"वर्ण",en:"Varna",score:vScore,max:1,brideValue:VARNA[br],groomValue:VARNA[gr],note:"Moon-sign varna; groom's class equal to or higher than bride's receives 1."},
@@ -153,7 +154,7 @@ export function calculateAshtakoota(bride:KundaliResult,groom:KundaliResult):Gun
  if(bhakootCancelled) exceptions.push("Bhakoot parihara: Moon-sign lords are the same or mutual friends. The raw score remains 0; the traditional exception is displayed separately.");
  if(rashiNakshatraParihara) exceptions.push("Rashi/Nakshatra parihara: same Rashi with different Nakshatras, or same Nakshatra in different Rashis; the tradition cancels both Nadi and Gana dosha. Raw koota scores remain unchanged.");
  else if(ganaCancelled) exceptions.push("Gana parihara: Rashi lords and Navamsa lords are mutual friends. The raw score remains unchanged; the traditional exception is displayed separately.");
- if(br===gr&&bi===gi&&bride.janmaPada!==groom.janmaPada) exceptions.push("Same Rashi and Nakshatra but different padas: the cited source describes this as an auspicious exception.");
+ if(sameNakshatraRashiDifferentPada) exceptions.push("Same Rashi and Nakshatra but different padas: this is the auspicious v. 37 exception; Nadi and Gana dosha are cancelled, while raw scores remain unchanged.");
  if(br===gr&&bi===gi&&bride.janmaPada===groom.janmaPada) exceptions.push("Same Rashi, Nakshatra and pada: the cited source does not describe this as the different-pada exception.");
  const total=Number(scores.reduce((sum,item)=>sum+item.score,0).toFixed(2));
  if(total>36||scores.some(s=>s.score<0||s.score>s.max)) throw new Error("Internal Ashtakoota score validation failed.");

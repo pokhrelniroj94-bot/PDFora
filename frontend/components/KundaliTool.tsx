@@ -60,7 +60,7 @@ export default function KundaliTool() {
           <option value="BS">{tr("विक्रम संवत् (वि.सं.)","Bikram Sambat (BS)","विक्रम संवत (वि.सं.)")}</option><option value="AD">{tr("ईस्वी संवत् (ई.सं.)","Gregorian (AD)","ईस्वी संवत (ई.सं.)")}</option>
         </select>
       </label>
-      <label className="text-sm font-semibold text-slate-800">{tr("जन्ममिति","Birth date","जन्म तिथि")} ({dateSystem==="BS"?"वि.सं. YYYY-MM-DD":"AD YYYY-MM-DD"})
+      <label className="text-sm font-semibold text-slate-800">{tr("जन्ममिति","Birth date","जन्म तिथि")} ({dateSystem==="BS"?tr("वि.सं. YYYY-MM-DD","BS YYYY-MM-DD","वि.सं. YYYY-MM-DD"):tr("ई.सं. YYYY-MM-DD","AD YYYY-MM-DD","ई.सं. YYYY-MM-DD")})
         <input className={box} value={birthDate} onChange={e=>setBirthDate(e.target.value)} placeholder={dateSystem==="BS"?"२०५८-०१-०१":"2001-04-14"} inputMode="numeric"/>
       </label>
       <label className="text-sm font-semibold text-slate-800">{tr("जन्मसमय (स्थानीय समय)","Birth time (local)","जन्म समय (स्थानीय)")}
@@ -78,7 +78,7 @@ export default function KundaliTool() {
           <label className="text-xs font-semibold">{tr("देशान्तर (Longitude)","Longitude","देशांतर (Longitude)")}<input className={box} type="number" min="-180" max="180" step="0.000001" value={longitude} onChange={e=>setLongitude(e.target.value)}/></label>
           <label className="text-xs font-semibold sm:col-span-3">{tr("समय क्षेत्र (IANA time zone)","Time zone (IANA)","समय क्षेत्र (IANA)")}<input className={box} value={timeZone} onChange={e=>setTimeZone(e.target.value)} placeholder="Asia/Kolkata"/></label>
         </div>}
-        <span className="mt-1 block text-xs font-normal text-slate-500">सहरका विकल्पमा सहर-केन्द्रका निर्देशाङ्क प्रयोग हुन्छन्। बढी शुद्ध लग्नका लागि जन्मस्थलको वास्तविक latitude/longitude राख्न सक्नुहुन्छ। नेपालका सहरमा Asia/Kathmandu र भारतका सहरमा Asia/Kolkata स्वतः प्रयोग हुन्छ। अन्य देशका लागि निर्देशाङ्कसँगै सही IANA time zone राख्नुहोस्।</span>
+        <span className="mt-1 block text-xs font-normal text-slate-500">{tr("सहरका विकल्पमा सहर-केन्द्रका निर्देशाङ्क प्रयोग हुन्छन्। बढी शुद्ध लग्नका लागि जन्मस्थलको वास्तविक अक्षांश/देशान्तर राख्नुहोस्। नेपाल र भारतका समय क्षेत्र स्वतः चयन हुन्छन्।","Listed cities use city-centre coordinates. For a more precise ascendant, enter the exact birthplace coordinates. Nepal and India time zones are selected automatically.","सूचीबद्ध शहरों के लिए शहर-केंद्र के निर्देशांक उपयोग होते हैं। अधिक सटीक लग्न के लिए जन्मस्थान के वास्तविक निर्देशांक दर्ज करें। नेपाल और भारत के समय क्षेत्र अपने-आप चुने जाते हैं।")}</span>
       </label>
     </div>
 
@@ -87,7 +87,7 @@ export default function KundaliTool() {
 
     {result&&<div className="space-y-6" id="kundali-result">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 pb-4">
-        <div><p className="text-xs font-bold uppercase tracking-wide text-teal-700">{tr("जन्मकुण्डली रिपोर्ट","Birth chart report","जन्म कुंडली रिपोर्ट")}</p><h2 className="mt-1 text-2xl font-black text-slate-950">{result.name||tr("जन्मकुण्डली","Birth chart","जन्म कुंडली")}</h2><p className="mt-1 text-sm text-slate-600">{result.birthDateBS} {tr("वि.सं.","BS","वि.सं.")} · {result.birthDateAD} {tr("ई.सं.","AD","ई.सं.")} · {result.birthTime} · {placeId==="custom"?placeName:(KUNDALI_PLACES.find(p=>p.id===placeId)?placeText(KUNDALI_PLACES.find(p=>p.id===placeId)!):result.place)}</p></div>
+        <div><p className="text-xs font-bold uppercase tracking-wide text-teal-700">{tr("जन्मकुण्डली रिपोर्ट","Birth chart report","जन्म कुंडली रिपोर्ट")}</p><h2 className="mt-1 text-2xl font-black text-slate-950">{result.name||tr("जन्मकुण्डली","Birth chart","जन्म कुंडली")}</h2><p className="mt-1 text-sm text-slate-600">{result.birthDateBS.endsWith(" AD")?tr("वि.सं. उपलब्ध छैन","BS unavailable","वि.सं. उपलब्ध नहीं"):result.birthDateBS+" "+tr("वि.सं.","BS","वि.सं.")} · {result.birthDateAD} {tr("ई.सं.","AD","ई.सं.")} · {result.birthTime} · {placeId==="custom"?placeName:(KUNDALI_PLACES.find(p=>p.id===placeId)?placeText(KUNDALI_PLACES.find(p=>p.id===placeId)!):result.place)}</p></div>
         <button type="button" onClick={()=>window.print()} className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">{tr("प्रिन्ट / PDF","Print / PDF","प्रिंट / PDF")}</button>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

@@ -176,12 +176,12 @@ export default function Home() {
             <div className="mt-10 max-w-2xl rounded-2xl border border-white/15 bg-white/[0.08] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl focus-within:border-teal-300/60">
               <div className="flex items-center gap-3">
                 <span className="pl-3 text-xl text-teal-200" aria-hidden="true">⌕</span>
-                <input value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); }} placeholder="What do you need to do?  e.g. merge PDF, compress image…" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" />
+                <input id="homepage-tool-search" type="search" autoComplete="off" value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); }} placeholder="Search by tool, task or keyword — English / नेपाली" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" aria-controls="homepage-tool-search-results" />
                 {query && <button type="button" onClick={() => setQuery("")} className="rounded-xl px-3 py-2 text-xs font-bold text-slate-300 hover:bg-white/10">Clear</button>}
               </div>
             </div>
             {query.trim() && (
-              <div className="mt-3 max-h-[min(65vh,32rem)] max-w-2xl overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#102b2a] text-left shadow-2xl" role="region" aria-label="Live tool search results">
+              <div id="homepage-tool-search-results" className="mt-3 max-h-[min(65vh,32rem)] max-w-2xl overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#102b2a] text-left shadow-2xl" role="region" aria-label="Live tool search results" aria-live="polite">
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 text-xs"><span className="font-extrabold text-teal-100">All matching tools</span><span className="text-slate-400">{searchResults.length} results</span></div>
                 {searchResults.length ? <div className="divide-y divide-white/10">{searchResults.map(tool=><Link key={tool.href} href={tool.href} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-white/[0.06]"><span className="min-w-0"><span className="block text-sm font-bold text-white">{tool.name}</span><span className="mt-0.5 block truncate text-xs text-slate-400">{tool.description}</span></span><span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold text-teal-100">{tool.category}</span></Link>)}</div> : <p className="px-4 py-5 text-sm text-slate-300">No matching tools. Try another search.</p>}
               </div>

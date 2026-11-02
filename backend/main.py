@@ -21,6 +21,8 @@ import ipaddress
 import asyncio
 import json
 import urllib.request
+import ssl
+import certifi
 import urllib.parse
 import threading
 from contextvars import ContextVar
@@ -529,7 +531,8 @@ def _nrb_fetch_records(from_date: str, to_date: str) -> list[dict]:
         },
     )
     # urlopen validates TLS certificates using the runtime's trusted CA bundle.
-    with urllib.request.urlopen(request, timeout=15) as response:
+    tls_context = ssl.create_default_context(cafile=certifi.where())
+    with urllib.request.urlopen(request, timeout=15, context=tls_context) as response:
         if response.status != 200:
             raise RuntimeError(f"NRB API returned HTTP {response.status}")
         payload = json.loads(response.read(5 * 1024 * 1024).decode("utf-8"))

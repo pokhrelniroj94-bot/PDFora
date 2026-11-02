@@ -55,6 +55,20 @@ export default function GunaMilanTool(){
   return language==="ne"?"एउटै राशि र नक्षत्र तर फरक पादको परम्परागत अवस्था।":"समान राशि और नक्षत्र लेकिन अलग पाद की पारंपरिक स्थिति।";
  };
 
+ const localizedError=(message:string)=>{
+  const errors:[string,string,string][]=[
+   ["जन्मस्थानको समय क्षेत्र पत्ता लगाउन सकिएन।","Birthplace time zone could not be resolved.","जन्म स्थान का समय क्षेत्र निर्धारित नहीं हो सका।"],
+   ["यो स्थानीय जन्म समय मान्य छैन। मिति र समय फेरि जाँच्नुहोस्।","This local birth time is invalid. Check the date and time again.","यह स्थानीय जन्म समय अमान्य है। तिथि और समय फिर से जाँचें।"],
+   ["जन्मस्थानका अक्षांश/देशान्तर मान्य छैनन्।","Birthplace coordinates are invalid.","जन्म स्थान के निर्देशांक अमान्य हैं।"],
+   ["जन्ममिति YYYY-MM-DD ढाँचामा राख्नुहोस्।","Enter the birth date in YYYY-MM-DD format.","जन्म तिथि YYYY-MM-DD प्रारूप में दर्ज करें।"],
+   ["जन्मसमय २४-घण्टाको HH:MM ढाँचामा राख्नुहोस्।","Enter the birth time in 24-hour HH:MM format.","जन्म समय २४ घंटे के HH:MM प्रारूप में दर्ज करें।"],
+   ["हालको गणना १८०० देखि २१०० AD सम्मका जन्ममितिका लागि मात्र परीक्षण गरिएको छ।","The current calculation is tested for birth dates from 1800 through 2100 AD only.","वर्तमान गणना का परीक्षण केवल 1800 से 2100 ईस्वी की जन्म तिथियों के लिए किया गया है।"],
+   ["जन्ममिति मान्य छैन।","The birth date is invalid.","जन्म तिथि अमान्य है।"],
+   ["भविष्यको जन्ममिति राख्न मिल्दैन।","A future birth date is not allowed.","भविष्य की जन्म तिथि स्वीकार नहीं है।"]
+  ];
+  const match=errors.find(item=>item[0]===message);
+  return match?(language==="ne"?match[0]:language==="en"?match[1]:match[2]):message;
+ };
  const update=(who:"bride"|"groom",key:keyof PersonForm,value:string)=>{
   const setter=who==="bride"?setBride:setGroom;
   setter(old=>({...old,[key]:value}));
@@ -77,7 +91,7 @@ export default function GunaMilanTool(){
    const b=calculateJanmaKundali(make(bride));
    const g=calculateJanmaKundali(make(groom));
    setResult(calculateAshtakoota(b,g));
-  }catch(e){setError(e instanceof Error?e.message:t.error);}
+  }catch(e){setError(e instanceof Error?localizedError(e.message):t.error);}
  };
  const fmt=(n:number)=>new Intl.NumberFormat(language==="ne"?"ne-NP":language==="hi"?"hi-IN":"en-IN",{maximumFractionDigits:1}).format(n);
  const total=result?.total??0;

@@ -79,6 +79,47 @@ export default function CatalogToolSEOContent({
     { q: "Why can another Panchang or astrologer give a different score?", a: "Birth-time accuracy, city coordinates, ayanamsha and the traditional Vashya or Yoni table edition can affect the Moon sign, nakshatra or score. This page identifies the table convention it uses; other traditions may differ." },
   ];
   const uniqueFaqItems = tool.slug === "nepali-guna-milan" ? gunaFaqItems : questions.slice(0, 4);
+  const pageUrl = `${SITE_URL}/tools/${tool.slug}`;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        name: tool.name,
+        description: tool.description,
+        url: pageUrl,
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        breadcrumb: { "@id": `${pageUrl}#breadcrumb` }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+          { "@type": "ListItem", position: 2, name: "All tools", item: `${SITE_URL}/tools` },
+          { "@type": "ListItem", position: 3, name: tool.name, item: pageUrl }
+        ]
+      },
+      {
+        "@type": "SoftwareApplication",
+        name: tool.name,
+        applicationCategory: "UtilitiesApplication",
+        operatingSystem: "Any",
+        description: tool.description,
+        url: pageUrl,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: uniqueFaqItems.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a }
+        }))
+      }
+    ]
+  };
   if (tool.slug === "nepali-date-converter") {
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
@@ -109,7 +150,8 @@ export default function CatalogToolSEOContent({
         <h2 className="text-xl font-black text-slate-950">Related Nepal tools</h2>
         <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
       </section>
-    </div></article>;
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>;
   }
   if (["neb-gpa-calculator","nepal-land-area-converter","nepali-vat-calculator","nepal-share-calculator"].includes(tool.slug)) {
     const guides: Record<string, { eyebrow: string; heading: string; intro: string; steps: string[]; formula: string; example: string; caution: string }> = {
@@ -158,7 +200,8 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and important limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.caution}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related tools</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read related guide</Link>}</div></section>
-    </div></article>;
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>;
   }
   const nepalGuides: Record<string, { heading: string; intro: string; steps: string[]; example: string; note: string }> = {
     "nepali-date-converter": {
@@ -262,7 +305,8 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.note}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related Nepal tools</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read related guide</Link>}</div></section>
-    </div></article>;
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>;
   }
 
   if (tool.slug === "nepse-market-news" || tool.slug === "nepse-dividend-calculator") {
@@ -277,7 +321,8 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Official sources and limitations</h2><p className="mt-4 leading-8 text-slate-700">{news ? "Search feeds can contain duplicate stories, delayed coverage or results that mention a keyword without confirming an event. Headlines are not official notices, verified live prices, investment advice or a recommendation to buy or sell." : "The calculator does not connect to a Demat account, verify book-closure eligibility, determine fractional entitlements or calculate every investor's tax situation. Company resolutions and current law determine the final amount."}</p><div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold"><a className="text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noreferrer">NEPSE</a><a className="text-teal-700 underline" href="https://www.sebon.gov.np/" target="_blank" rel="noreferrer">SEBON</a><a className="text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noreferrer">CDSC Mero Share</a></div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-5 space-y-5">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}</div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related Nepal tools and guides</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white">Read the detailed guide</Link>}</div></section>
-    </div></article>;
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>;
   }
   if (tool.slug === "nepal-forex-rates") {
     return (
@@ -332,7 +377,8 @@ export default function CatalogToolSEOContent({
             <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read the NRB exchange-rate guide</Link>}</div>
           </section>
         </div>
-      </article>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    </article>
     );
   }
 
@@ -480,47 +526,7 @@ export default function CatalogToolSEOContent({
     mistakes: `For the ${title.toLowerCase()}, avoid unsupported input formats, mismatched units and assumptions that are not shown by the tool. ${categoryFallback.mistakes}`
   };
   const advice = toolAdvice[tool.slug] ?? generatedAdvice;
-  const pageUrl = `${SITE_URL}/tools/${tool.slug}`;
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebPage",
-        "@id": `${pageUrl}#webpage`,
-        name: tool.name,
-        description: tool.description,
-        url: pageUrl,
-        isPartOf: { "@id": `${SITE_URL}/#website` },
-        breadcrumb: { "@id": `${pageUrl}#breadcrumb` }
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${pageUrl}#breadcrumb`,
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
-          { "@type": "ListItem", position: 2, name: "All tools", item: `${SITE_URL}/tools` },
-          { "@type": "ListItem", position: 3, name: tool.name, item: pageUrl }
-        ]
-      },
-      {
-        "@type": "SoftwareApplication",
-        name: tool.name,
-        applicationCategory: "UtilitiesApplication",
-        operatingSystem: "Any",
-        description: tool.description,
-        url: pageUrl,
-        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: uniqueFaqItems.map((item) => ({
-          "@type": "Question",
-          name: item.q,
-          acceptedAnswer: { "@type": "Answer", text: item.a }
-        }))
-      }
-    ]
-  };
+
   const preparation: Record<string, string> = {
     PDF: "Keep an untouched copy of the original PDF. Check whether it contains scans, forms, bookmarks, annotations or digital signatures that may affect the result.",
     Finance: "Have the principal or amount, rate, currency and calculation period ready. Check whether the rate is annual or monthly and whether fees or taxes are included.",
@@ -615,7 +621,7 @@ export default function CatalogToolSEOContent({
           <p className="mt-4 text-sm leading-7 text-slate-600">For the best result, read the instructions on the tool page, test a small input and verify the final output before using it in an important task.</p>
         </section>
       </div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
     </article>
   );
 }

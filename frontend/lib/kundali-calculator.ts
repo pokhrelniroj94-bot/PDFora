@@ -106,6 +106,14 @@ function risingLongitude(date: Date, latitude: number, longitude: number): numbe
   return norm(deg(Math.atan2(a, -b)) - lahiriAyanamsa(date));
 }
 
+function navamsaSignFor(longitude: number): string {
+  const normalized = norm(longitude);
+  const signIndex = Math.floor(normalized / 30);
+  const degreeInSign = normalized - signIndex * 30;
+  const segment = Math.min(8, Math.floor(degreeInSign / (30 / 9)));
+  return SIGNS[(signIndex * 9 + segment) % 12];
+}
+
 function nakshatraFor(longitude: number) {
   const span = 360 / 27;
   const position = norm(longitude) / span;
@@ -143,13 +151,13 @@ export interface KundaliInput {
 
 export interface KundaliPlanet {
   key: string; name: string; short: string; longitude: number; sign: string; signIndex: number;
-  degree: number; minute: number; nakshatra: string; pada: number; house: number; retrograde: boolean;
+  degree: number; minute: number; nakshatra: string; pada: number; house: number; navamsaSign: string; retrograde: boolean;
 }
 
 export interface KundaliResult {
   name: string; birthDateAD: string; birthDateBS: string; birthTime: string; place: string;
-  lagna: string; lagnaDegree: number; moonSign: string; janmaNakshatra: string; janmaPada: number;
-  ayanamsa: number; planets: KundaliPlanet[]; houses: { house: number; sign: string; planets: string[] }[];
+  lagna: string; lagnaDegree: number; navamsaLagna: string; moonSign: string; janmaNakshatra: string; janmaPada: number;
+  ayanamsa: number; planets: KundaliPlanet[]; houses: { house: number; sign: string; planets: string[] }[]; navamsaHouses: { house: number; sign: string; planets: string[] }[];
   dasha: { lord: string; start: string; end: string; startAD: string; endAD: string; years: number; current: boolean }[];
   currentDasha: string; method: string;
 }
@@ -187,12 +195,12 @@ export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
     const signIndex = Math.floor(longitude/30);
     const inSign = longitude-signIndex*30;
     const nak = nakshatraFor(longitude);
-    return { key:graha.key,name:graha.name,short:graha.short,longitude,sign:SIGNS[signIndex],signIndex,degree:Math.floor(inSign),minute:Math.floor((inSign-Math.floor(inSign))*60),nakshatra:nak.name,pada:nak.pada,house:((signIndex-lagnaIndex+12)%12)+1,retrograde:speed<0 && graha.key!=="Sun" && graha.key!=="Moon" };
+    return { key:graha.key,name:graha.name,short:graha.short,longitude,sign:SIGNS[signIndex],signIndex,degree:Math.floor(inSign),minute:Math.floor((inSign-Math.floor(inSign))*60),nakshatra:nak.name,pada:nak.pada,house:((signIndex-lagnaIndex+12)%12)+1,navamsaSign:navamsaSignFor(longitude),retrograde:speed<0 && graha.key!=="Sun" && graha.key!=="Moon" };
   });
   const rahuLong = node, ketuLong = norm(node+180);
   for (const [key,name,short,longitude] of [["Rahu","राहु","रा",rahuLong],["Ketu","केतु","के",ketuLong]] as const) {
     const signIndex=Math.floor(longitude/30), inSign=longitude-signIndex*30, nak=nakshatraFor(longitude);
-    planetData.push({key,name,short,longitude,sign:SIGNS[signIndex],signIndex,degree:Math.floor(inSign),minute:Math.floor((inSign-Math.floor(inSign))*60),nakshatra:nak.name,pada:nak.pada,house:((signIndex-lagnaIndex+12)%12)+1,retrograde:key==="Rahu"});
+    planetData.push({key,name,short,longitude,sign:SIGNS[signIndex],signIndex,degree:Math.floor(inSign),minute:Math.floor((inSign-Math.floor(inSign))*60),nakshatra:nak.name,pada:nak.pada,house:((signIndex-lagnaIndex+12)%12)+1,navamsaSign:navamsaSignFor(longitude),retrograde:key==="Rahu"});
   }
   const moon = planetData.find((planet)=>planet.key==="Moon")!;
   const moonNak = nakshatraFor(moon.longitude);
@@ -215,6 +223,12 @@ export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
     const signIndex=(lagnaIndex+i)%12;
     return {house:i+1,sign:SIGNS[signIndex],planets:planetData.filter((planet)=>planet.house===i+1).map((planet)=>planet.short)};
   });
+  const navamsaLagna = navamsaSignFor(lagnaLong);
+  const navamsaLagnaIndex = SIGNS.indexOf(navamsaLagna as typeof SIGNS[number]);
+  const navamsaHouses = Array.from({length:12},(_,i)=>{
+    const signIndex=(navamsaLagnaIndex+i)%12;
+    return {house:i+1,sign:SIGNS[signIndex],planets:planetData.filter((planet)=>SIGNS.indexOf(planet.navamsaSign as typeof SIGNS[number])===signIndex).map((planet)=>planet.short)};
+  });
   const bsBirth = formatBS(new Date(Date.UTC(year,month-1,day)));
-  return {name:input.name.trim(),birthDateAD:dateAD,birthDateBS:bsBirth,birthTime:input.birthTime,place:place.name,lagna:SIGNS[lagnaIndex],lagnaDegree:lagnaLong%30,moonSign:moon.sign,janmaNakshatra:moon.nakshatra,janmaPada:moon.pada,ayanamsa,planets:planetData,houses,dasha,currentDasha,method:"Astronomy Engine · geocentric apparent ecliptic positions · Lahiri/Chitrapaksha · whole-sign houses · mean lunar node · Vimshottari Dasha"};
+  return {name:input.name.trim(),birthDateAD:dateAD,birthDateBS:bsBirth,birthTime:input.birthTime,place:place.name,lagna:SIGNS[lagnaIndex],lagnaDegree:lagnaLong%30,navamsaLagna,moonSign:moon.sign,janmaNakshatra:moon.nakshatra,janmaPada:moon.pada,ayanamsa,planets:planetData,houses,navamsaHouses,dasha,currentDasha,method:"Astronomy Engine · geocentric apparent ecliptic positions · Lahiri/Chitrapaksha · whole-sign houses · mean lunar node · Vimshottari Dasha"};
 }

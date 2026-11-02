@@ -93,7 +93,7 @@ function ToolBody({slug}:{slug:string}) {
  const set=(k:string,x:string)=>setValues(p=>({...p,[k]:x}));
  const num=(k:string,d=0)=>Number(v(k,String(d)))||0;
  const field=(key:string,title:string,placeholder="",def="")=><Field title={title}><input className={box} value={v(key,def)} placeholder={placeholder} onChange={e=>set(key,e.target.value)}/></Field>;
- const action=(title:string,fn:()=>void)=><button onClick={fn} className="mt-4 min-h-11 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800 active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">{title}</button>;
+ const action=(title:string,fn:()=>void)=><button disabled={busy} onClick={()=>{if(busy)return;setBusy(true);window.setTimeout(()=>{try{fn();}finally{setBusy(false);}},80);}} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800 active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-wait disabled:opacity-70">{busy&&<span className="pdfora-spinner" aria-hidden="true"/>}{busy?"Working…":title}</button>;
  const result=(s:string)=>setOutput(s);
  const imageTool=slug==="image-compressor"||slug==="image-format-converter";
  const [file,setFile]=useState<File|null>(null);

@@ -2,9 +2,9 @@
 
 ## Inputs
 - Date: Gregorian (AD) or Bikram Sambat (BS). BS conversion is restricted to the checked-in calendar table, 1975–2083 BS.
-- Time: local wall-clock time at the Nepal birthplace, entered to the nearest minute.
-- Place: a supported Nepal city-centre coordinate or user-entered latitude/longitude.
-- Time zone: IANA `Asia/Kathmandu`, including historical UTC offsets.
+- Time: local wall-clock time at the birthplace, entered to the nearest minute and converted with the selected IANA time zone. Supported Nepal cities use Asia/Kathmandu; supported Indian cities use Asia/Kolkata. Custom international locations must supply their correct IANA time zone.
+- Place: supported Nepal and Indian city-centre coordinates or user-entered latitude/longitude.
+- Time zone: IANA time-zone database, including historical UTC offsets for the selected location.
 
 ## Calculation conventions
 - Ephemeris: MIT-licensed Astronomy Engine 2.1.19.
@@ -26,7 +26,7 @@ The exact calculation settings used internally by Hamro Patro are not publicly c
 ## Known limitations
 - Tested date range is restricted to 1800–2100 AD.
 - BS input is available only within the converter's verified 1975–2083 BS data.
-- The city selector uses approximate city-centre coordinates; exact coordinates should be entered for rural birthplaces or when the ascendant is close to a sign boundary.
+- The city selector includes supported Nepal and Indian cities and uses approximate city-centre coordinates; exact coordinates and the correct IANA time zone should be entered for rural or international birthplaces, or when the ascendant is close to a sign boundary.
 - Birth time is entered to the nearest minute. An inaccurate or rounded birth time can change the ascendant and house placement.
 - This first release does not calculate Navamsa/D9, other divisional charts, Ashtakoota/36-guna matching, Mangal dosha or personalized muhurta.
 - Astrological interpretations are traditional beliefs, not scientifically validated predictions.

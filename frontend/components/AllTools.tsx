@@ -12,7 +12,7 @@ import { matchesToolSearch } from "../lib/tool-search";
 
 import AdsterraNative from "../app/components/AdsterraNative";
 
-const ToolChunkLoading = () => <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm font-medium text-slate-500" role="status">Loading tool workspace…</div>;
+const ToolChunkLoading = () => <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm font-medium text-slate-600" role="status"><span className="pdfora-spinner mx-auto block text-teal-700" aria-hidden="true"/><span>Loading your tool…</span><div className="pdfora-progress-track mx-auto max-w-xs" aria-hidden="true"/></div>;
 const ExtraTools = dynamic(() => import("./ExtraTools"), { loading: ToolChunkLoading });
 const QuickUtilityTools = dynamic(() => import("./QuickUtilityTools"), { loading: ToolChunkLoading });
 const NepalTools = dynamic(() => import("./NepalTools"), { loading: ToolChunkLoading });

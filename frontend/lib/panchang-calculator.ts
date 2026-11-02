@@ -183,9 +183,25 @@ function localISODate(date: Date): string {
   return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
+export function nepalLocalDateTimeToUtc(date: string, time: string): Date {
+  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date) || !/^([01]\\d|2[0-3]):[0-5]\\d$/.test(time)) {
+    throw new Error("Enter a valid Nepal local date and time.");
+  }
+  const naiveUtc = new Date(`${date}T${time}:00Z`);
+  if (Number.isNaN(naiveUtc.getTime())) throw new Error("Invalid local date and time.");
+  const zoneName = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kathmandu", timeZoneName: "longOffset",
+  }).formatToParts(naiveUtc).find((part) => part.type === "timeZoneName")?.value ?? "GMT+05:45";
+  const match = zoneName.match(/^GMT([+-])(\\d{1,2}):(\\d{2})(?::(\\d{2}))?$/);
+  if (!match) throw new Error("Could not resolve the historical Nepal time-zone offset.");
+  const sign = match[1] === "-" ? -1 : 1;
+  const offsetMinutes = sign * (Number(match[2]) * 60 + Number(match[3]) + Number(match[4] ?? 0) / 60);
+  return new Date(naiveUtc.getTime() - offsetMinutes * 60000);
+}
+
 function dateIsValid(date: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
-  const localMidnight = new Date(`${date}T00:00:00+05:45`);
+  const localMidnight = nepalLocalDateTimeToUtc(date, "00:00");
   if (Number.isNaN(localMidnight.getTime())) return false;
   return localISODate(localMidnight) === date;
 }
@@ -200,7 +216,7 @@ export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
   if (!Number.isFinite(elevation) || elevation < -500 || elevation > 9000) throw new Error("Enter a valid elevation in metres.");
 
   // Nepal uses UTC+05:45 year-round. SearchRiseSet returns UTC instants.
-  const localMidnightUtc = new Date(`${input.date}T00:00:00+05:45`);
+  const localMidnightUtc = nepalLocalDateTimeToUtc(input.date, "00:00");
   const observer = new Astronomy.Observer(input.latitude, input.longitude, elevation);
   const sunriseEvent = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, +1, localMidnightUtc, 1, 0);
   if (!sunriseEvent) throw new Error("Sunrise could not be calculated for this location and date.");

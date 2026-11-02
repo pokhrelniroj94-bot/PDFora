@@ -80,14 +80,22 @@ function meanNode(date: Date): number {
   return norm(125.04452 - 1934.136261*t + 0.0020708*t*t + t*t*t/450000);
 }
 
+function geocentricTropicalLongitude(body: Astronomy.Body, date: Date): number {
+  // EclipticLongitude() is heliocentric for planets: do not use it for a birth chart.
+  // Sun, Moon and planets need apparent geocentric ecliptic longitudes.
+  if (body === Astronomy.Body.Sun) return Astronomy.SunPosition(date).elon;
+  if (body === Astronomy.Body.Moon) return Astronomy.EclipticGeoMoon(date).lon;
+  return Astronomy.Ecliptic(Astronomy.GeoVector(body, date, true)).elon;
+}
+
 function siderealLongitude(body: Astronomy.Body, date: Date): number {
-  return norm(Astronomy.EclipticLongitude(body, date) - lahiriAyanamsa(date));
+  return norm(geocentricTropicalLongitude(body, date) - lahiriAyanamsa(date));
 }
 
 function risingLongitude(date: Date, latitude: number, longitude: number): number {
   const theta = rad(norm(Astronomy.SiderealTime(date) * 15 + longitude));
   const phi = rad(latitude);
-  const epsilon = rad(meanObliquity(date));
+  const epsilon = rad(Astronomy.e_tilt(new Astronomy.AstroTime(date)).tobl);
   const a = Math.cos(phi) * Math.cos(theta);
   const b = Math.cos(epsilon) * Math.cos(phi) * Math.sin(theta) + Math.sin(epsilon) * Math.sin(phi);
   return norm(deg(Math.atan2(a, -b)) - lahiriAyanamsa(date));

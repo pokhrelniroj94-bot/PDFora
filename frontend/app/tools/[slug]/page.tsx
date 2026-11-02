@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepal-forex-rates": { title: "Nepal Rastra Bank Forex Rates & Charts – NPR Exchange Rates", description: "See official NRB currency buying and selling rates, convert NPR and explore historical daily charts. Open TradingView charts for supported currency pairs." },
     "nepal-fixed-deposit-calculator": { title: "Nepal Fixed Deposit Calculator – FD Interest & Maturity", description: "Estimate Nepal bank fixed-deposit interest, compound maturity value and after-tax return using an editable annual rate and compounding frequency." },
     "nepal-remittance-calculator": { title: "Nepal Remittance Calculator – Calculate NPR Received", description: "Estimate how much NPR a recipient gets after an exchange rate and remittance transfer fee. Compare payout assumptions in Nepal." },
-    "nepal-ipo-profit-calculator": { title: "Nepal IPO Profit Calculator – Kitta, Charges & CGT", description: "Estimate Nepal IPO share profit or loss after broker commission, SEBON fee, DP charge and an editable capital-gains tax assumption." },
+    "nepal-ipo-profit-calculator": { title: "Nepal IPO Profit Calculator – Kitta, Charges & CGT", description: "Estimate Nepal IPO profit or loss after tiered secondary-market selling commission, SEBON fee, DP charge and CGT based on holding period and investor type." },
     "loan-emi-calculator": { title: "Loan EMI Calculator – Monthly Payment & Interest", description: "Calculate monthly loan EMI, total repayment and total interest from principal, annual interest rate and loan term in months." },
     "compound-interest-sip-calculator": { title: "SIP & Compound Interest Calculator – Future Value", description: "Estimate SIP future value, total monthly investments and projected gain using an expected annual return and investment period." },
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
@@ -408,7 +408,8 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Can the recipient receive less than this estimate?", a: "Yes. Intermediary-bank deductions, provider charges, exchange-rate spreads or recipient fees may affect the final amount." }
     ],
     "nepal-ipo-profit-calculator": [
-      { q: "Does it use the current broker commission and tax automatically?", a: "No. Charges and tax assumptions are editable. Confirm the applicable broker tariff and capital-gains tax rate before selling." },
+      { q: "Does the calculator include broker fees on IPO allotment?", a: "No. IPO allotment is treated as a primary-market purchase. Broker commission, SEBON fee and DP charge are estimated for the later secondary-market sale." },
+      { q: "How is capital-gains tax estimated?", a: "The calculator uses 5% for an individual holding shares for 365 days or less, 3.75% for more than 365 days, and 10% for an institution. Verify the current Gazette and your tax status." },
       { q: "Does it guarantee the IPO listing price?", a: "No. The sale price is an input chosen by the user; listing and market prices can move." }
     ],
     "nepal-panchang-calculator": [

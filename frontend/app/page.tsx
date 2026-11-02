@@ -135,7 +135,7 @@ export default function Home() {
 
 
   const filteredTools = useMemo(() => {
-    const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const normalize = (value: string) => value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
     const tokens = normalize(query).split(" ").filter(Boolean);
     return allTools.filter((tool) => {
       if (tool.href === "/ocr-pdf") return false;

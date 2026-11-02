@@ -224,6 +224,7 @@ const nativeAdComponent = read("../app/components/AdsterraNative.tsx");
 const skyscraperAdComponent = read("../app/components/Adsterra160x600.tsx");
 const rootLayout = read("../app/layout.tsx");
 const mobileQuickNav = read("../components/MobileQuickNav.tsx");
+const catalogSeo = read("../components/CatalogToolSEOContent.tsx");
 const globalStyles = read("../app/globals.css");
 assert.ok(consentProvider.includes("pdfora-privacy-consent-v1") && consentProvider.includes("Reject optional") && consentProvider.includes("Accept all") && consentProvider.includes("window.location.reload()"), "Privacy consent must persist explicit choices and unload optional scripts after revocation");
 assert.ok(analyticsComponent.includes("!consent?.analytics || !gaId"), "Google Analytics must remain disabled until analytics consent is granted");
@@ -233,5 +234,6 @@ assert.ok(rootLayout.includes("<PrivacyConsentProvider>") && rootLayout.includes
 assert.ok(rootLayout.includes("<MobileQuickNav />") && mobileQuickNav.includes('aria-label="Quick navigation"') && mobileQuickNav.includes("md:hidden"), "Mobile quick navigation must be present, labelled and hidden on desktop");
 assert.ok(globalStyles.includes("env(safe-area-inset-bottom)"), "Mobile layout must respect device safe-area insets");
 assert.ok(!catalogSource.includes('name:"Explore 50+ PDF Tools"'), "PDF tool directory must not claim an inaccurate tool count");
+assert.ok(catalogSeo.includes('"@type": "BreadcrumbList"') && catalogSeo.includes('"@type": "SoftwareApplication"') && catalogSeo.includes("JSON.stringify(structuredData)"), "Catalog tool pages must publish matching breadcrumb and software structured data");
 
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including shared multilingual search, EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

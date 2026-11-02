@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import * as Astronomy from "astronomy-engine";
 
 // Regression fixture: Kathmandu, 2 November 2026 (Asia/Kathmandu).
+// Reference values are cross-checked against DrikPanchang Kathmandu day data:
+// https://www.drikpanchang.com/panchang/month-panchang.html?geoname-id=1283240
 // The fixture validates the ephemeris API, local-day boundaries and the
 // mathematical domains used by the Panchang engine; it is not a religious
 // calendar certification.

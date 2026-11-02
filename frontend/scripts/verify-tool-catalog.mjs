@@ -69,6 +69,7 @@ assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalToo
 const toolDirectory = read("../lib/tool-directory.ts");
 const homepage = read("../app/page.tsx");
 const directoryComponent = read("../components/AllTools.tsx");
+const sharedSearch = read("../lib/tool-search.ts");
 const pdfBlock = toolDirectory.split("const rawPdfTools")[1]?.split("\n];")[0];
 assert.ok(pdfBlock, "Canonical PDF tool list is missing");
 const pdfHrefs = pdfBlock.split("\n").map((line) => line.match(/href: "([^"]+)"/)?.[1]).filter(Boolean);
@@ -85,12 +86,16 @@ assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loa
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
 assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");
 assert.ok(homepage.includes('tool.kind === "pdf" || tool.category === "PDF"'), "Homepage PDF category hides catalog PDF tools");
-assert.ok(homepage.includes("tool.keywords"), "Homepage search does not include tool keywords");
-assert.ok(homepage.includes("\\p{L}") && directoryComponent.includes("\\p{L}"), "Nepali Unicode search must be preserved on homepage and tools directory");
+assert.ok(homepage.includes("matchesToolSearch(tool, query)") && directoryComponent.includes("matchesToolSearch(t,query)"), "Homepage and /tools directory must use the same shared search function");
+assert.ok(sharedSearch.includes("tool.keywords") && sharedSearch.includes("toolAliases"), "Shared search must include tool keywords and task aliases");
+assert.ok(sharedSearch.includes("querySynonyms") && sharedSearch.includes("editDistanceAtMostOne"), "Shared search must support multilingual synonyms and typo tolerance");
+for (const term of ["jodne", "ghataune", "ghumaune", "फोटो", "कर", "मिति"]) {
+  assert.ok(sharedSearch.includes(term), "Missing multilingual search alias: " + term);
+}
 
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must display every matching tool, not just a small fixed number");
 assert.ok(homepage.includes("max-h-[min(65vh,32rem)]") && homepage.includes("overflow-y-auto"), "Homepage search results must remain scrollable when many tools match");
-assert.ok(homepage.includes("tokens.every((token) => searchable.includes(token))"), "Homepage search must match all query words across tool names, descriptions, routes and keywords");
+assert.ok(homepage.includes("matchesToolSearch(tool, query)"), "Homepage must use the shared search matcher");
 
 assert.ok(directoryComponent.includes("allTools.filter"), "The /tools directory is not using the unified tool directory");
 assert.ok(directoryComponent.includes("href={t.href}"), "The /tools directory does not preserve each tool's actual route");
@@ -149,4 +154,4 @@ assert.ok(dividendTool.includes("not an official dividend or CDSC allotment conf
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
-console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);
+console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including shared multilingual search, EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

@@ -32,10 +32,18 @@ from openpyxl import Workbook
 # APP
 # ============================================================
 
+IS_PRODUCTION = (
+    os.getenv("APP_ENV", "").lower() == "production"
+    or os.getenv("RENDER", "").lower() == "true"
+)
+
 app = FastAPI(
-    title="NIROJ Tools API",
+    title="PDFora API",
     version="4.0.1",
-    description="NIROJ Tools document processing API"
+    description="PDFora document processing API",
+    docs_url=None if IS_PRODUCTION else "/docs",
+    redoc_url=None if IS_PRODUCTION else "/redoc",
+    openapi_url=None if IS_PRODUCTION else "/openapi.json",
 )
 
 

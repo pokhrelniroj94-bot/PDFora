@@ -283,6 +283,7 @@ export default function Home() {
     const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     const tokens = normalize(query).split(" ").filter(Boolean);
     return tools.filter((tool) => {
+      if (tool.href === "/ocr-pdf") return false;
       const matchesCategory = category === "All" || tool.category === category;
       const searchable = normalize([tool.name, tool.description, tool.category, tool.href.replaceAll("-", " "), searchTerms[tool.href] || ""].join(" "));
       return matchesCategory && (tokens.length === 0 || tokens.every((token) => searchable.includes(token)));

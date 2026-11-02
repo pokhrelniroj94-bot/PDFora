@@ -166,7 +166,7 @@ function findAngaEnds(sunrise: Date): Record<AngaKey, Date | null> {
 function localTime(date: Date | null, timeZone = "Asia/Kathmandu"): string | null {
   if (!date) return null;
   return new Intl.DateTimeFormat("en-NP", {
-    timeZone: "Asia/Kathmandu",
+    timeZone,
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
@@ -175,8 +175,8 @@ function localTime(date: Date | null, timeZone = "Asia/Kathmandu"): string | nul
 
 function endTimeLabel(date: Date | null, baseDate: string, timeZone: string): string | null {
   if (!date) return null;
-  const time = localTime(date);
-  const endingDate = localISODate(date);
+  const time = localTime(date, timeZone);
+  const endingDate = localISODate(date, timeZone);
   return endingDate === baseDate ? time : `${time} (${endingDate})`;
 }
 
@@ -219,7 +219,8 @@ function dateIsValid(date: string, timeZone: string): boolean {
 }
 
 export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
-  const timeZone = input.timeZone ?? "Asia/Kathmandu";\n  if (!dateIsValid(input.date, timeZone)) throw new Error("Enter a valid Gregorian date in YYYY-MM-DD format.");
+  const timeZone = input.timeZone ?? "Asia/Kathmandu";
+  if (!dateIsValid(input.date, timeZone)) throw new Error("Enter a valid Gregorian date in YYYY-MM-DD format.");
   const dateYear = Number(input.date.slice(0, 4));
   if (dateYear < 1900 || dateYear > 2100) throw new Error("The astronomical calculator supports dates from 1900 through 2100.");
   if (!Number.isFinite(input.latitude) || input.latitude < -90 || input.latitude > 90) throw new Error("Latitude must be between -90° and 90°.");

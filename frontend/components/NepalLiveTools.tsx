@@ -176,14 +176,14 @@ Estimated recipient amount: {npr(net)}</Result>:<p role="alert" className="text-
   }
   const quantity = number(shares), cost = quantity * number(ipoPrice), sale = quantity * number(salePrice);
   const ok = valid([shares, ipoPrice, salePrice, sebonFee, dpFee]) && quantity > 0 && Number.isInteger(quantity) && number(ipoPrice) > 0 && number(salePrice) >= 0 && number(sebonFee) <= 100;
-  const buyBroker = nepseBrokerCharge(cost), sellBroker = nepseBrokerCharge(sale);
-  const buySebon = cost * number(sebonFee) / 100, sellSebon = sale * number(sebonFee) / 100;
+  const sellBroker = nepseBrokerCharge(sale);
+  const sellSebon = sale * number(sebonFee) / 100;
   const dp = number(dpFee), grossGain = sale - cost;
-  const buyCharges = buyBroker.amount + buySebon, sellCharges = sellBroker.amount + sellSebon + dp;
-  const taxableGain = Math.max(0, grossGain - buyCharges - sellCharges);
+  const sellCharges = sellBroker.amount + sellSebon + dp;
+  const taxableGain = Math.max(0, grossGain - sellCharges);
   const taxRate = investorType === "institution" ? 10 : holdingPeriod === "long" ? 3.75 : 5;
   const tax = taxableGain * taxRate / 100;
-  const net = grossGain - buyCharges - sellCharges - tax;
+  const net = grossGain - sellCharges - tax;
   return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal IPO Profit / Loss Calculator</h3><p className="text-sm text-slate-600">Estimate IPO purchase cost, selling proceeds, broker charges, SEBON fee, DP charge and capital-gains tax.</p></div>
     <div className="grid gap-3 sm:grid-cols-2">
       <FinanceField title="IPO shares (kitta)"><input className={field} type="number" min="1" step="1" value={shares} onChange={e=>setShares(e.target.value)}/></FinanceField>
@@ -195,9 +195,7 @@ Estimated recipient amount: {npr(net)}</Result>:<p role="alert" className="text-
       {investorType === "individual" && <FinanceField title="Share holding period"><select className={field} value={holdingPeriod} onChange={e=>setHoldingPeriod(e.target.value)}><option value="short">365 days or less · 5% CGT</option><option value="long">More than 365 days · 3.75% CGT</option></select></FinanceField>}
     </div>
     {ok?<Result>Purchase value: {npr(cost)}
-Buy broker commission ({buyBroker.rate}% slab, min. NPR 10): {npr(buyBroker.amount)}
-Buy SEBON fee: {npr(buySebon)}
-Total purchase cost: {npr(cost + buyCharges)}
+Total IPO purchase cost: {npr(cost)}
 Gross sale value: {npr(sale)}
 Sell broker commission ({sellBroker.rate}% slab, min. NPR 10): {npr(sellBroker.amount)}
 Sell SEBON fee: {npr(sellSebon)}
@@ -208,8 +206,8 @@ Estimated taxable gain: {npr(taxableGain)}
 CGT rate: {taxRate}%
 Estimated capital-gains tax: {npr(tax)}
 Net profit / loss: {npr(net)}
-Return on total purchase cost: {cost + buyCharges > 0 ? (net / (cost + buyCharges) * 100).toFixed(2) : "0.00"}%</Result>:<p role="alert" className="text-sm text-red-700">Enter a positive whole-share quantity, a positive IPO price, a non-negative selling price and valid charges.</p>}
-    <p className="text-xs leading-5 text-slate-500">Broker commission uses the published equity transaction slabs and a NPR 10 minimum per side. The estimate includes buy-side costs when calculating taxable gain. Bonus-share cost basis, multiple lots, unusual corporate actions and broker-specific settlement differences are not modelled.</p>
+Return on IPO purchase cost: {cost > 0 ? (net / cost * 100).toFixed(2) : "0.00"}%</Result>:<p role="alert" className="text-sm text-red-700">Enter a positive whole-share quantity, a positive IPO price, a non-negative selling price and valid charges.</p>}
+    <p className="text-xs leading-5 text-slate-500">IPO allotment is treated as a primary-market purchase with no broker commission or secondary-market SEBON fee on the buy side. Selling charges use the published equity slabs and a NPR 10 minimum. Bonus-share cost basis, multiple lots, unusual corporate actions and broker-specific settlement differences are not modelled.</p>
     <div className="flex flex-wrap gap-3 text-xs"><a className="font-semibold text-teal-800 underline" href="https://ssl.com.np/trading-commission-and-fees" target="_blank" rel="noreferrer">Broker fee schedule</a><a className="font-semibold text-teal-800 underline" href="https://www.sebon.gov.np/" target="_blank" rel="noreferrer">SEBON</a><a className="font-semibold text-teal-800 underline" href="https://www.sharesansar.com/newsdetail/capital-gains-tax-rates-reduced-decision-published-in-gazette-2026-09-22" target="_blank" rel="noreferrer">2026 CGT update</a></div>
   </div>;
 }

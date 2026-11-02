@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF to BMP Converter Online | PDFora",
+  title: "PDF to BMP Converter Online",
   description: "Convert PDF pages to BMP images online and download all converted images in a ZIP file.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-bmp" },
 };

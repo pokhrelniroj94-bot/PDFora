@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_NAME, SITE_URL } from "./site-config";
 
 const tools: Record<string, { name: string; intent: string; detail: string }> = {
   "merge-pdf": { name: "Merge PDF", intent: "merge PDF files online", detail: "Combine multiple PDF documents into one file and keep the selected file order." },
@@ -50,33 +51,35 @@ const tools: Record<string, { name: string; intent: string; detail: string }> = 
   "remove-pdf-links": { name: "Remove PDF Links", intent: "remove links from PDF online", detail: "Remove clickable link annotations from PDF pages." },
   "remove-pdf-metadata": { name: "Remove PDF Metadata", intent: "remove metadata from PDF online", detail: "Clear document metadata from a PDF file." },
   "split-by-bookmarks": { name: "Split PDF by Bookmarks", intent: "split PDF by bookmarks", detail: "Split a PDF into separate documents using its bookmark outline." },
+  "nepal-fixed-deposit-calculator": { name: "Nepal Fixed Deposit Calculator", intent: "calculate Nepal bank fixed deposit interest and maturity", detail: "Estimate FD interest, compounding and after-tax maturity value using editable assumptions." },
+  "nepal-remittance-calculator": { name: "Nepal Remittance Calculator", intent: "calculate Nepal remittance payout in NPR", detail: "Estimate the NPR amount received after an exchange rate and transfer fee." },
+  "nepal-ipo-profit-calculator": { name: "Nepal IPO Profit Calculator", intent: "calculate Nepal IPO share profit after selling charges", detail: "Estimate IPO share profit or loss after broker commission, SEBON fee, DP charge and tax assumptions." },
 };
 
 export function getToolMetadata(slug: string): Metadata {
   const tool = tools[slug];
-  const baseUrl = "https://pd-fora.vercel.app";
+  const baseUrl = SITE_URL;
   if (slug === "ocr-pdf") {
     return {
       title: "OCR PDF – Coming Soon",
-      description: "PDFora OCR is not enabled on the current processing server yet.",
+      description: `PDF text recognition is coming soon to ${SITE_NAME}.`,
       alternates: { canonical: `${baseUrl}/ocr-pdf` },
       robots: { index: false, follow: true },
     };
   }
   const name = tool?.name ?? slug.split("-").map((part) => part[0]?.toUpperCase() + part.slice(1)).join(" ");
   const intent = tool?.intent ?? `${name} online free`;
-  const detail = tool?.detail ?? `Use PDFora to ${intent}. Follow the on-page instructions and download your processed document.`;
+  const detail = tool?.detail ?? `Use ${SITE_NAME} to ${intent}. Follow the on-page instructions and download your processed document.`;
   // Keep titles concise and descriptions useful in search snippets.
   const title = `${name} Online Free`;
-  const description = `${detail} Use PDFora free in your browser; no installation required.`;
+  const description = `${detail} Use ${SITE_NAME} in your browser; no installation required.`;
   const url = `${baseUrl}/${slug}`;
   return {
     title,
     description,
-    keywords: [intent, `${name} free`, `${name} online`, "free online PDF tools", "PDFora"],
     alternates: { canonical: url },
-    openGraph: { type: "website", url, siteName: "PDFora", title: `${title} | PDFora`, description },
-    twitter: { card: "summary", title: `${title} | PDFora`, description },
+    openGraph: { type: "website", url, siteName: SITE_NAME, title: `${title} | ${SITE_NAME}`, description, images: [{ url: `/${slug}/opengraph-image`, width: 1200, height: 630, alt: `${name} on ${SITE_NAME}` }] },
+    twitter: { card: "summary_large_image", title: `${title} | ${SITE_NAME}`, description, images: [`/${slug}/opengraph-image`] },
     robots: { index: true, follow: true },
   };
 }

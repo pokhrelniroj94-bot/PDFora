@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Add Header or Footer Online | PDFora",
+  title: "Add Header or Footer Online",
   description: "Add a text header to each page of your PDF.",
   alternates: { canonical: "https://pd-fora.vercel.app/header-footer" },
 };

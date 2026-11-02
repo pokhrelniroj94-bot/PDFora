@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Protect PDF Online | PDFora",
+  title: "Protect PDF Online",
   description: "Encrypt your PDF with a password. Use at least 6 characters.",
   alternates: { canonical: "https://pd-fora.vercel.app/protect-pdf" },
 };

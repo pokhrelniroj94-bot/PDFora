@@ -3,22 +3,50 @@
 import Link from "next/link";
 import AdsterraNative from "../app/components/AdsterraNative";
 import { getToolGuide } from "../lib/tool-guides";
+import { SITE_NAME, SITE_URL } from "../lib/site-config";
 export default function ToolSEOContent({ slug }: { slug: string }) {
   const guide = getToolGuide(slug);
   if (!guide) return null;
+  const outputLabels: Record<string, string> = {
+    "pdf-to-word": "editable Word document (.docx)",
+    "pdf-to-excel": "Excel workbook (.xlsx)",
+    "pdf-to-jpg": "ZIP file containing JPG images",
+    "pdf-to-png": "ZIP file containing PNG images",
+    "pdf-to-webp": "ZIP file containing WebP images",
+    "pdf-to-tiff": "ZIP file containing TIFF images",
+    "pdf-to-bmp": "ZIP file containing BMP images",
+    "images-to-pdf": "PDF document",
+    "pdf-to-text": "plain-text file (.txt)",
+    "pdf-to-html": "HTML file",
+    "pdf-to-markdown": "Markdown file (.md)",
+    "pdf-to-json": "JSON file",
+    "pdf-to-csv": "CSV file",
+    "extract-images": "ZIP file containing extracted images",
+    "extract-page-images": "ZIP file containing page images",
+    "extract-fonts": "ZIP file containing supported font files",
+    "extract-bookmarks": "bookmark export file",
+    "page-counter": "page-count report",
+    "pdf-information": "PDF information report",
+    "compare-pdf": "PDF comparison report",
+  };
+  const outputLabel = outputLabels[slug] ?? "updated PDF";
   const faqs = [
     { q: `What does ${guide.name} do?`, a: guide.purpose },
-    { q: `How do I ${guide.name.toLowerCase()} online?`, a: guide.steps.join(" ") },
-    { q: `What should I check after using ${guide.name.toLowerCase()}?`, a: guide.caution },
+    { q: `How do I use ${guide.name} online?`, a: guide.steps.join(" ") },
+    { q: `What should I check after using ${guide.name}?`, a: guide.caution },
     { q: "Which PDF tasks may I need next?", a: `Depending on your document workflow, related tasks include ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}. Keep the original PDF and inspect each processed file before sharing it.` },
     { q: "Can I use this PDF tool on a phone?", a: "The tool is available in modern mobile browsers. File selection and download behaviour can vary by device, browser and available storage." },
     { q: "Should I keep a copy of the original PDF?", a: "Yes. Keep an untouched copy until you have opened and checked the final file and confirmed that it contains the pages and information you need." }
   ];
+  const pageUrl = `${SITE_URL}/${slug}`;
   const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
+  
+  const breadcrumbSchema = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` }, { "@type": "ListItem", position: 2, name: "PDF Tools", item: `${SITE_URL}/tools` }, { "@type": "ListItem", position: 3, name: guide.name, item: pageUrl }] };
+  const softwareSchema = { "@context": "https://schema.org", "@type": "SoftwareApplication", name: guide.name, applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description: guide.purpose, url: pageUrl, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } };
   return (
     <article className="mx-auto w-full max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-600">PDFora practical guide</p>
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-600">{SITE_NAME} practical guide</p>
         <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-950">What does {guide.name} do?</h2>
         <p className="mt-4 text-sm leading-8 text-slate-700">{guide.purpose}</p>
         <p className="mt-4 text-sm leading-8 text-slate-700">People search for phrases such as “{guide.keyword}” when they need to prepare a document for study, work, record keeping or an online submission. This guide explains the purpose of the operation, how to prepare a source file, what to check after processing and which limitations may affect the result. The exact controls are the ones displayed in the tool workspace above.</p>
@@ -26,11 +54,11 @@ export default function ToolSEOContent({ slug }: { slug: string }) {
       </section>
       <AdsterraNative />
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">How to {guide.name.toLowerCase()} step by step</h2>
+        <h2 className="text-xl font-black text-slate-950">How to use {guide.name} step by step</h2>
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-8 text-slate-700">
           <li>Open the {guide.name} workspace on this page and choose the PDF you want to process.</li>
           {guide.steps.map((step) => <li key={step}>{step}</li>)}
-          <li>Wait until processing has finished, download the generated PDF and open it in a separate PDF reader.</li>
+          <li>Wait until processing has finished, download the {outputLabel} and open it in the appropriate application to check the result.</li>
           <li>Compare the affected pages with your original document before sharing, printing or submitting the output.</li>
         </ol>
         <p className="mt-4 text-sm leading-8 text-slate-700">Use the controls that are actually available in the workspace. Different PDF operations have different settings, so do not assume that a page-selection option, compression level or editing control exists unless it is shown on this tool page.</p>
@@ -56,21 +84,10 @@ export default function ToolSEOContent({ slug }: { slug: string }) {
       </section>
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Privacy and safe document handling</h2>
-        <p className="mt-4 text-sm leading-8 text-slate-700">PDFs can contain personal details, signatures, addresses, financial records or confidential business information. Upload only documents you are authorised to process. Read the site&apos;s privacy information before using it for sensitive records, and consider testing the workflow with a non-sensitive sample first.</p>
-        <p className="mt-4 text-sm leading-8 text-slate-700">Do not share a processed document until you have checked that it contains only the information intended for the recipient. Removing visible text from a page is not necessarily the same as securely redacting underlying data. If you need legally reliable redaction, use a tool specifically designed for redaction and verify the result with an appropriate professional workflow.</p>
+        <p className="mt-4 text-sm leading-8 text-slate-700">Upload only files you are authorised to process. Files required by PDF tools are sent to PDFora’s backend for temporary processing; review the <Link href="/privacy" className="font-semibold text-violet-700 underline">Privacy Policy</Link> before uploading sensitive documents.</p>
       </section>
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">Troubleshooting common PDF problems</h2>
-        <p className="mt-4 text-sm leading-8 text-slate-700">If the PDF does not upload, first check that the file opens on your device and has the expected PDF extension and structure. A renamed image or document is not necessarily a valid PDF. Very large files, damaged files and password-protected documents may not be accepted by every operation. If the page displays a file-size or format limit, follow that limit rather than repeatedly uploading the same file.</p>
-        <p className="mt-4 text-sm leading-8 text-slate-700">If processing appears to stop, give the current request time to finish and check whether the browser is still working. Avoid pressing the action button several times, because repeated submissions can create duplicate jobs or downloads. If an error appears, note the message, check the input and try a smaller copy. You can also test with a simple PDF to see whether the issue is specific to the original document.</p>
-        <p className="mt-4 text-sm leading-8 text-slate-700">If the downloaded result does not look right, open it in another PDF reader and inspect the pages affected by the operation. Check page order, orientation, text visibility, image quality and file size. If the issue remains, return to the untouched source file and repeat the task with corrected settings rather than processing an already incorrect output again.</p>
-      </section>
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">Preparing PDFs for study, work and online forms</h2>
-        <p className="mt-4 text-sm leading-8 text-slate-700">PDF tools are commonly used to prepare assignments, scanned certificates, office reports, invoices, application documents and personal records. Each receiving organisation may have its own requirements. A college portal may specify page order or file size; an employer may request a readable CV; and an online form may accept only a particular file type. Check those instructions before changing the document.</p>
-        <p className="mt-4 text-sm leading-8 text-slate-700">For a study document, pay attention to page order, diagrams, equations and small text. For a business report, check tables, headers, footers and page numbering. For an application or certificate, avoid changing signed or certified content unless the issuing or receiving organisation permits it. A convenient online operation should never override the rules that apply to the document.</p>
-        <p className="mt-4 text-sm leading-8 text-slate-700">When preparing multiple documents, use clear filenames and a consistent process. Keep the source file, perform the required operation, inspect the result and only then move to the next task. This makes it easier to find the correct version later and reduces the risk of submitting an outdated or incomplete document.</p>
-      </section>
+      
+      
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
         <div className="mt-5 space-y-5">{faqs.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 text-sm leading-8 text-slate-600">{item.a}</p></div>)}</div>
@@ -83,6 +100,6 @@ export default function ToolSEOContent({ slug }: { slug: string }) {
           {guide.related.map((slug) => { const related = getToolGuide(slug); return related ? <Link key={slug} href={`/${slug}`} className="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-bold text-violet-800 hover:bg-violet-100">{related.name}</Link> : null; })}
         </div>
       </section>
-    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /></article>
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /></article>
   );
 }

@@ -4,6 +4,8 @@ export const metadata: Metadata = {
   title: "OCR PDF Online",
   description: "PDF text recognition is not currently available on PDFora.",
   alternates: { canonical: "https://pd-fora.vercel.app/ocr-pdf" },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/ocr-pdf", siteName: "PDFora", title: "OCR PDF Online – Coming Soon | PDFora", description: "PDF text recognition is not currently available on PDFora.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora OCR PDF coming soon" }] },
+  twitter: { card: "summary_large_image", title: "OCR PDF Online – Coming Soon | PDFora", description: "PDF text recognition is not currently available on PDFora.", images: ["/opengraph-image"] },
   robots: { index: false, follow: true },
 };
 

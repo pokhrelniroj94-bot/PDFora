@@ -363,5 +363,187 @@ export const nepalBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "NEPSE Dividend & Bonus Share Calculator", href: "/tools/nepse-dividend-calculator" }, { label: "NEPSE Share Buy/Sell Calculator", href: "/tools/nepal-share-calculator" }],
     sources: [{ label: "Nepal Stock Exchange", url: "https://www.nepalstock.com/" }, { label: "CDSC", url: "https://cdsc.com.np/" }, { label: "Inland Revenue Department", url: "https://ird.gov.np/" }]
+  },
+
+  {
+    slug: "nepal-fixed-deposit-calculator-guide",
+    title: "Nepal Fixed Deposit Calculator: Estimate FD Interest and Maturity",
+    description: "Learn how to estimate fixed-deposit maturity value, compounding and tax assumptions when comparing Nepal bank FD products.",
+    keyword: "Nepal fixed deposit calculator",
+    updated: "2026-11-02",
+    readTime: "5 min read",
+    intro: "A fixed deposit estimate helps compare how principal, interest rate, deposit term and compounding frequency affect maturity value. The final bank payout depends on the product's own terms and current tax rules.",
+    sections: [
+      { heading: "What inputs affect FD maturity?", paragraphs: ["The principal is the amount deposited, the annual interest rate is the advertised return, and the term determines how long interest can accrue. Compounding frequency affects how often earned interest is added to the balance."] },
+      { heading: "How to use the calculator", paragraphs: ["Follow these steps using the terms shown in the bank\u0027s current FD product disclosure."], bullets: ["Enter the deposit amount in NPR.", "Enter the bank's annual interest rate and term in months.", "Choose the compounding frequency stated by the bank.", "Set an appropriate tax assumption and review gross interest and estimated maturity."] },
+      { heading: "Important limitations", paragraphs: ["Banks may use different day-count conventions, interest payout options, minimum terms, premature withdrawal penalties and withholding rules. Confirm the exact product disclosure and current IRD guidance before depositing."] }
+    ],
+    faqs: [{ question: "Does every Nepal bank compound FD interest quarterly?", answer: "No. Compounding and payout rules depend on the specific bank product. Use the terms published by the bank." }],
+    toolLinks: [{ label: "Nepal Fixed Deposit Calculator", href: "/tools/nepal-fixed-deposit-calculator" }],
+    sources: [{ label: "Nepal Rastra Bank", url: "https://www.nrb.org.np/" }, { label: "Inland Revenue Department", url: "https://ird.gov.np/" }]
+  },
+  {
+    slug: "nepal-remittance-calculator-guide",
+    title: "Nepal Remittance Calculator: Estimate the NPR Amount Received",
+    description: "Understand how exchange rates and transfer fees affect the amount received by a family in Nepal.",
+    keyword: "Nepal remittance calculator",
+    updated: "2026-11-02",
+    readTime: "5 min read",
+    intro: "A remittance payout depends on the amount sent, the provider's exchange rate and any transfer or recipient fee. Comparing the final NPR amount is more useful than comparing an exchange rate alone.",
+    sections: [
+      { heading: "How remittance payout is estimated", paragraphs: ["Multiply the amount sent by the quoted NPR exchange rate, then subtract any fee charged in NPR. If the provider deducts a fee from the sending currency, convert that fee consistently before comparing offers."] },
+      { heading: "How to compare providers", paragraphs: ["Use the same transfer amount and payout currency when comparing quotes."], bullets: ["Check the recipient amount, not just the advertised rate.", "Confirm who pays the transfer fee.", "Check whether intermediary or recipient-bank charges apply.", "Compare quotes for the same sending amount and payout method."] },
+      { heading: "Important limitations", paragraphs: ["The calculator does not connect to remittance companies or fetch a live quote. Actual exchange rates and fees vary by provider, destination, transfer method and time."] }
+    ],
+    faqs: [{ question: "Does this show live remittance rates?", answer: "No. Enter the rate and fees quoted by your chosen provider." }],
+    toolLinks: [{ label: "Nepal Remittance Calculator", href: "/tools/nepal-remittance-calculator" }],
+    sources: [{ label: "Nepal Rastra Bank", url: "https://www.nrb.org.np/" }]
+  },
+  {
+    slug: "nepal-ipo-profit-calculator-guide",
+    title: "Nepal IPO Profit Calculator: Kitta, Selling Charges and Tax",
+    description: "Estimate IPO share profit or loss after broker commission, SEBON fee, DP charge and capital-gains tax assumptions.",
+    keyword: "Nepal IPO profit calculator",
+    updated: "2026-11-02",
+    readTime: "6 min read",
+    intro: "IPO allotment does not guarantee a profit. The final result depends on the sale price, share quantity, broker tariff, transaction fees and applicable capital-gains tax.",
+    sections: [
+      { heading: "Calculate the gross gain or loss", paragraphs: ["Multiply the allotted share quantity by the sale price to estimate gross sale value. Subtract the original allotment cost to find the gross gain or loss before selling charges."] },
+      { heading: "Include selling charges", paragraphs: ["Add each current selling charge so the estimate reflects net proceeds rather than only the gross price difference."], bullets: ["Enter the actual allotted kitta and IPO price.", "Use a realistic sale price scenario.", "Update broker commission, SEBON fee and DP charge from the current tariff.", "Select a tax assumption only after checking the applicable holding-period rule."] },
+      { heading: "Important limitations", paragraphs: ["This is a planning estimate, not a broker contract note. Charges, minimum fees, tax treatment and settlement rules can change. Confirm current terms with your broker and the Inland Revenue Department."] }
+    ],
+    faqs: [{ question: "Does the tool know the actual listing price?", answer: "No. The sale price is an assumption entered by the user and may differ from the market price." }],
+    toolLinks: [{ label: "Nepal IPO Profit Calculator", href: "/tools/nepal-ipo-profit-calculator" }, { label: "NEPSE Share Calculator", href: "/tools/nepal-share-calculator" }],
+    sources: [{ label: "Nepal Stock Exchange", url: "https://www.nepalstock.com/" }, { label: "Inland Revenue Department", url: "https://ird.gov.np/" }]
+  },
+
+  {
+    slug: "janam-kundli-lagna-rashi-nakshatra-dasha-guide",
+    title: "Janam Kundli Guide: Lagna, Rashi, Nakshatra and Vimshottari Dasha",
+    description: "Understand Vedic birth chart basics, birth time and time zones, Lagna, Moon sign, nakshatra, houses and Vimshottari dasha for India and Nepal.",
+    keyword: "janam kundli, janam kundli online, kundli lagna rashi nakshatra, Vedic birth chart India",
+    updated: "2026-11-02",
+    readTime: "7 min read",
+    intro: "A Janam Kundli is a traditional Vedic astrology chart calculated from birth date, local birth time and birthplace. Correct coordinates and time-zone conversion matter: India uses Asia/Kolkata while Nepal uses Asia/Kathmandu, a 15-minute difference. Astrology is a traditional belief system, not a scientifically proven way to predict life events.",
+    sections: [
+      { heading: "Birth details and local time", paragraphs: ["Use the time from a reliable birth record and choose the actual birthplace. Do not use Nepal's time zone for an Indian birth. City-centre coordinates are approximate; enter precise coordinates for a village or a birth near an ascendant boundary."] },
+      { heading: "Lagna, Rashi and houses", paragraphs: ["Lagna (Ascendant) is the sign rising on the eastern horizon at the birth moment. Rashi commonly refers to the Moon sign in Indian usage. The D1 chart places planets in signs and houses according to a selected house convention. Lagna and Moon sign are different chart factors."] },
+      { heading: "Nakshatra and pada", paragraphs: ["The sidereal zodiac is commonly divided into 27 nakshatras, each spanning 13 degrees and 20 minutes. Each nakshatra has four padas. Ayanamsha and birth-time differences can matter near a boundary."] },
+      { heading: "Vimshottari Mahadasha", paragraphs: ["Vimshottari is a traditional 120-year planetary-period sequence. Its starting period and birth balance are derived from the Moon's position in its birth nakshatra. Dates depend on the selected year-length convention and precise lunar longitude."] },
+      { heading: "Compare charts carefully", paragraphs: ["Use matching date, time zone, coordinates, ayanamsha, node choice and house system when comparing software. Astrological interpretations are not scientifically validated predictions and should not replace professional advice."] }
+    ],
+    faqs: [
+      { question: "Can I create a Kundli for someone born in India?", answer: "Yes. Select a supported Indian city or enter precise coordinates and the correct time zone, such as Asia/Kolkata." },
+      { question: "What is the difference between Lagna and Rashi?", answer: "Lagna is the sign rising at the eastern horizon at birth. Rashi commonly refers to the Moon sign." },
+      { question: "Does birth time affect Kundli?", answer: "Yes. The ascendant and houses can change with birth time, especially near sign boundaries." }
+    ],
+    toolLinks: [{ label: "Janma Kundali / Birth Chart", href: "/tools/nepali-janma-kundali" }, { label: "Hindu Panchang Calculator", href: "/tools/nepal-panchang-calculator" }]
+  },
+  {
+    slug: "hindu-panchang-tithi-nakshatra-yoga-karana-guide",
+    title: "Hindu Panchang Guide: Tithi, Nakshatra, Yoga and Karana",
+    description: "Learn the five limbs of Hindu Panchang and why tithi, local sunrise, city and regional calendar conventions matter in India and Nepal.",
+    keyword: "Hindu panchang, tithi today, nakshatra today, panchang calculator India Nepal",
+    updated: "2026-11-02",
+    readTime: "6 min read",
+    intro: "A Hindu Panchang is a traditional lunisolar almanac. Its five main limbs are tithi, vara (weekday), nakshatra, yoga and karana. Displayed values and festival observances can depend on local sunrise, geography and regional tradition.",
+    sections: [
+      { heading: "What is a Tithi?", paragraphs: ["A tithi is based on the angular separation of the geocentric Moon and Sun. There are 30 tithis in a lunar month: 15 in Shukla Paksha and 15 in Krishna Paksha. A tithi can begin or end at any time, not only midnight."] },
+      { heading: "Nakshatra, Yoga and Karana", paragraphs: ["Nakshatra tracks the Moon through 27 sidereal sectors. Yoga uses the combined sidereal longitudes of the Sun and Moon. Karana is half of a tithi. Regional almanacs may apply additional traditional rules for observances."] },
+      { heading: "Why city and sunrise matter", paragraphs: ["Sunrise and sunset depend on latitude, longitude, elevation and date. A Panchang for Delhi should not reuse Kathmandu sunrise. Local time-zone conversion is also required. India and Nepal do not necessarily follow the same official or regional almanac for every festival, so confirm important observances with a trusted local Panchang."] },
+      { heading: "Calculation limitations", paragraphs: ["Online calculations can use different ephemerides, ayanamsha values, sunrise definitions and rounding rules. City-centre coordinates are approximate. Compare settings and source data, not only the displayed tithi name."] }
+    ],
+    faqs: [
+      { question: "Is tithi the same everywhere in India?", answer: "The astronomical tithi is global at a given instant, but the tithi assigned to a local Panchang day and festival observance can depend on local sunrise and regional rules." },
+      { question: "Why can a tithi span two dates?", answer: "A tithi can begin or end at any time of day and may cross local midnight or sunrise." },
+      { question: "Can I use this Panchang calculator in India?", answer: "Yes, supported Indian cities use Asia/Kolkata for local time display. It is an astronomical reference, not a replacement for a regional official almanac." }
+    ],
+    toolLinks: [{ label: "Hindu Panchang Calculator", href: "/tools/nepal-panchang-calculator" }, { label: "Janma Kundali / Birth Chart", href: "/tools/nepali-janma-kundali" }]
+  },
+  {
+    slug: "janam-kundli-kaise-padhe-lagna-rashi-nakshatra-hindi",
+    title: "जन्म कुंडली कैसे पढ़ें? लग्न, राशि, नक्षत्र और महादशा की जानकारी",
+    description: "जन्म कुंडली के लग्न, चंद्र राशि, नक्षत्र, भाव और विंशोत्तरी महादशा को सरल हिंदी में समझें। जन्म समय और स्थान की शुद्धता क्यों जरूरी है, जानें।",
+    keyword: "जन्म कुंडली ऑनलाइन, जन्म कुंडली कैसे देखें, लग्न राशि नक्षत्र, हिंदी कुंडली, janam kundli",
+    updated: "2026-11-02",
+    readTime: "6 min read",
+    intro: "जन्म कुंडली एक पारंपरिक वैदिक ज्योतिषीय चार्ट है, जिसे जन्म तिथि, जन्म के स्थानीय समय और जन्म स्थान के आधार पर बनाया जाता है। सही समय क्षेत्र और स्थान के निर्देशांक जरूरी हैं। ज्योतिष की व्याख्याएं पारंपरिक मान्यताओं पर आधारित हैं; इन्हें वैज्ञानिक रूप से प्रमाणित भविष्यवाणी नहीं माना जाना चाहिए।",
+    sections: [
+      { heading: "1. जन्म तिथि, समय और स्थान सही भरें", paragraphs: ["जन्म प्रमाण या परिवार के विश्वसनीय रिकॉर्ड में दिया गया समय भरें और वास्तविक जन्म स्थान चुनें। भारत के लिए Asia/Kolkata और नेपाल के लिए Asia/Kathmandu समय क्षेत्र है; दोनों में 15 मिनट का अंतर है। भारतीय जन्म के लिए नेपाल का समय क्षेत्र न चुनें।", "शहर के केंद्र के निर्देशांक अनुमानित होते हैं। गांव या शहर से दूर जन्म स्थान के लिए सही अक्षांश, देशांतर और IANA समय क्षेत्र दें।"] },
+      { heading: "2. लग्न और चंद्र राशि में अंतर", paragraphs: ["लग्न वह राशि है जो जन्म के समय पूर्वी क्षितिज पर उदित हो रही होती है। सामान्य भारतीय प्रयोग में राशि अक्सर चंद्र राशि को कहा जाता है। लग्न और चंद्र राशि अलग-अलग ज्योतिषीय संकेत हैं।"] },
+      { heading: "3. नक्षत्र और चरण", paragraphs: ["निरयन राशि चक्र को सामान्यतः 27 नक्षत्रों में बांटा जाता है। प्रत्येक नक्षत्र 13 डिग्री 20 मिनट का होता है और उसके चार चरण होते हैं। अयनांश या जन्म समय में छोटा अंतर भी सीमा के पास परिणाम बदल सकता है।"] },
+      { heading: "4. विंशोत्तरी महादशा", paragraphs: ["विंशोत्तरी दशा पारंपरिक 120-वर्षीय ग्रह अवधि प्रणाली है। जन्म के समय चंद्रमा जिस नक्षत्र में होता है, उससे पहली महादशा और उसका शेष भाग निकाला जाता है। अलग गणना परंपराओं में दशा की तारीखें अलग हो सकती हैं।"] },
+      { heading: "5. ऑनलाइन कुंडली की तुलना कैसे करें", paragraphs: ["दो कुंडलियों की तुलना करते समय जन्म समय, समय क्षेत्र, निर्देशांक, अयनांश, राहु-केतु की गणना और भाव प्रणाली समान रखें। अलग सेटिंग होने पर परिणाम भी अलग हो सकते हैं।", "कुंडली को चिकित्सा, कानूनी, वित्तीय या अन्य पेशेवर सलाह का विकल्प न बनाएं।"] }
+    ],
+    faqs: [
+      { question: "क्या भारत में जन्मे व्यक्ति की कुंडली बना सकते हैं?", answer: "हां। समर्थित भारतीय शहर चुनें या सही निर्देशांक और Asia/Kolkata समय क्षेत्र के साथ अपना स्थान भरें।" },
+      { question: "लग्न और राशि में क्या अंतर है?", answer: "लग्न जन्म समय पर पूर्वी क्षितिज पर उदित राशि है। आम उपयोग में राशि से चंद्र राशि का अर्थ लिया जाता है।" },
+      { question: "क्या जन्म समय गलत होने से कुंडली बदलती है?", answer: "हां। विशेषकर राशि सीमा के पास लग्न और भाव बदल सकते हैं।" }
+    ],
+    toolLinks: [{ label: "ऑनलाइन जन्म कुंडली", href: "/tools/nepali-janma-kundali" }, { label: "हिंदू पंचांग कैलकुलेटर", href: "/tools/nepal-panchang-calculator" }]
+  },
+  {
+    slug: "aaj-ka-panchang-tithi-nakshatra-yoga-karana-hindi-guide",
+    title: "आज का पंचांग: तिथि, नक्षत्र, योग और करण क्या होते हैं?",
+    description: "हिंदू पंचांग के पांच अंगों, तिथि, नक्षत्र, योग, करण और स्थानीय सूर्योदय का महत्व सरल हिंदी में समझें।",
+    keyword: "आज का पंचांग, आज की तिथि, आज का नक्षत्र, हिंदी पंचांग, तिथि कैलकुलेटर",
+    updated: "2026-11-02",
+    readTime: "5 min read",
+    intro: "हिंदू पंचांग एक पारंपरिक चंद्र-सौर कैलेंडर है। इसके पांच मुख्य अंग तिथि, वार, नक्षत्र, योग और करण हैं। किसी दिन का पंचांग स्थानीय सूर्योदय, स्थान और क्षेत्रीय परंपरा के अनुसार समझा जाता है।",
+    sections: [
+      { heading: "तिथि क्या होती है?", paragraphs: ["तिथि सूर्य और चंद्रमा के बीच कोणीय दूरी पर आधारित होती है। एक चंद्र मास में शुक्ल पक्ष की 15 और कृष्ण पक्ष की 15 तिथियां होती हैं। तिथि आधी रात को ही शुरू या समाप्त नहीं होती; इसका समय दिन में कभी भी बदल सकता है।"] },
+      { heading: "नक्षत्र, योग और करण", paragraphs: ["नक्षत्र निरयन राशि चक्र में चंद्रमा की स्थिति बताता है। योग सूर्य और चंद्रमा की संयुक्त निरयन स्थिति से निकाला जाता है। करण आधी तिथि के बराबर होता है।"] },
+      { heading: "स्थान और सूर्योदय क्यों जरूरी हैं?", paragraphs: ["सूर्योदय और सूर्यास्त अक्षांश, देशांतर, ऊंचाई और तारीख पर निर्भर करते हैं। दिल्ली के पंचांग में काठमांडू का सूर्योदय इस्तेमाल नहीं करना चाहिए। स्थानीय समय क्षेत्र से ही सही घड़ी का समय मिलता है।", "भारत और नेपाल में पंचांग की कई अवधारणाएं समान हैं, लेकिन सभी त्योहारों के लिए सरकारी या क्षेत्रीय पंचांग और पालन नियम एक जैसे हों, यह जरूरी नहीं। महत्वपूर्ण व्रत और पूजा के लिए स्थानीय विश्वसनीय पंचांग देखें।"] },
+      { heading: "ऑनलाइन पंचांग की सीमाएं", paragraphs: ["अलग-अलग वेबसाइट अयनांश, खगोलीय डेटा, सूर्योदय की परिभाषा और राउंडिंग में अलग नियम अपना सकती हैं। इसलिए केवल तिथि का नाम नहीं, बल्कि गणना की विधि और स्रोत भी देखें।"] }
+    ],
+    faqs: [
+      { question: "क्या पूरे भारत में तिथि एक ही होती है?", answer: "एक ही क्षण पर खगोलीय तिथि समान होती है, लेकिन स्थानीय पंचांग में दिन की तिथि और त्योहार का पालन सूर्योदय तथा क्षेत्रीय नियमों पर निर्भर कर सकता है।" },
+      { question: "तिथि दो तारीखों में क्यों दिख सकती है?", answer: "तिथि किसी भी समय शुरू या समाप्त हो सकती है और स्थानीय मध्यरात्रि या सूर्योदय को पार कर सकती है।" },
+      { question: "क्या यह पंचांग कैलकुलेटर भारत में काम करता है?", answer: "हां, उपलब्ध भारतीय शहरों के लिए Asia/Kolkata स्थानीय समय इस्तेमाल होता है। इसे आधिकारिक क्षेत्रीय पंचांग का विकल्प न मानें।" }
+    ],
+    toolLinks: [{ label: "हिंदू पंचांग कैलकुलेटर", href: "/tools/nepal-panchang-calculator" }, { label: "जन्म कुंडली", href: "/tools/nepali-janma-kundali" }]
+  },
+  {
+    slug: "nepali-janma-kundali-lagna-rashi-nakshatra-guide",
+    title: "जन्मकुण्डली कसरी बनाउने? लग्न, राशि, नक्षत्र र नवांश बुझ्नुहोस्",
+    description: "जन्ममिति, सही स्थानीय समय र जन्मस्थानबाट जन्मकुण्डली कसरी बन्छ भन्ने जान्नुहोस्। लग्न, चन्द्र राशि, नक्षत्र, D1, नवांश D9 र विम्शोत्तरी महादशा सरल नेपालीमा बुझ्नुहोस्।",
+    keyword: "नेपाली जन्मकुण्डली, जन्मकुण्डली अनलाइन, लग्न राशि नक्षत्र, नवांश कुण्डली, D9",
+    updated: "2026-11-02",
+    readTime: "7 min read",
+    intro: "जन्मकुण्डली परम्परागत वैदिक ज्योतिषमा जन्मको मिति, स्थानीय समय र स्थानका आधारमा तयार गरिने चार्ट हो। जन्मस्थानको सही समय क्षेत्र र निर्देशाङ्क प्रयोग नगर्दा लग्न र भाव फरक पर्न सक्छन्। ज्योतिषीय व्याख्या परम्परागत विश्वासमा आधारित हुन्छ; यसलाई वैज्ञानिक रूपमा प्रमाणित भविष्यवाणी मान्नु हुँदैन।",
+    sections: [
+      { heading: "जन्ममिति, समय र स्थान किन सही हुनुपर्छ?", paragraphs: ["जन्म अभिलेखमा भएको स्थानीय समय प्रयोग गर्नुहोस्। नेपालका लागि Asia/Kathmandu र भारतका लागि Asia/Kolkata समय क्षेत्र हो; यी दुईमा १५ मिनेटको फरक छ। भारतमा जन्मिएको व्यक्तिको कुण्डली बनाउँदा नेपालकै समय क्षेत्र राख्नु हुँदैन।", "सहरका केन्द्रका निर्देशाङ्क अनुमानित हुन्छन्। गाउँ वा सहरबाहिरको जन्मस्थानका लागि वास्तविक अक्षांश, देशान्तर र सही IANA समय क्षेत्र राख्नु राम्रो हुन्छ।"] },
+      { heading: "लग्न र चन्द्र राशि फरक कुरा हुन्", paragraphs: ["जन्मको क्षणमा पूर्वी क्षितिजमा उदाउँदै गरेको राशि लग्न हो। सामान्य प्रयोगमा राशि भन्नाले प्रायः चन्द्र राशि बुझिन्छ। लग्न र चन्द्र राशि एउटै नहुन सक्छन्।"] },
+      { heading: "नक्षत्र, पाद र नवांश D9", paragraphs: ["निरयन राशि चक्रलाई २७ नक्षत्रमा विभाजन गरिन्छ। प्रत्येक नक्षत्रका चार पाद हुन्छन्। नवांश D9 मा प्रत्येक राशिलाई नौ बराबर भागमा विभाजन गरी ग्रह र लग्नको नवांश राशि निकालिन्छ। जन्मसमय वा अयनांशको सानो फरकले सीमामा नतिजा बदल्न सक्छ।"] },
+      { heading: "विम्शोत्तरी महादशा", paragraphs: ["विम्शोत्तरी दशा परम्परागत १२० वर्षे ग्रह-अवधि प्रणाली हो। जन्मको समयमा चन्द्रमा रहेको नक्षत्रबाट पहिलो महादशा र बाँकी अवधि निकालिन्छ। गणना परम्परा र वर्षको लम्बाइ फरक हुँदा मिति केही फरक आउन सक्छ।"] },
+      { heading: "अनलाइन कुण्डली कसरी जाँच्ने?", paragraphs: ["दुई कुण्डली तुलना गर्दा जन्मसमय, समय क्षेत्र, निर्देशाङ्क, अयनांश, राहु-केतुको विधि र भाव प्रणाली समान राख्नुहोस्। यो रिपोर्ट परम्परागत ज्योतिषीय गणना हो, स्वास्थ्य, कानुनी वा वित्तीय सल्लाहको विकल्प होइन।"] }
+    ],
+    faqs: [
+      { question: "के भारतमा जन्मिएको व्यक्तिको पनि कुण्डली बनाउन मिल्छ?", answer: "मिल्छ। उपलब्ध भारतीय सहर छान्नुहोस् वा सही निर्देशाङ्क र Asia/Kolkata समय क्षेत्र राखेर आफ्नै जन्मस्थान प्रविष्ट गर्नुहोस्।" },
+      { question: "लग्न र चन्द्र राशिमा के फरक छ?", answer: "लग्न जन्मको समयमा पूर्वी क्षितिजमा उदाएको राशि हो। चन्द्र राशि जन्मको समयमा चन्द्रमा रहेको राशि हो।" },
+      { question: "D9 नवांश कुण्डली के हो?", answer: "D9 नवांशमा प्रत्येक निरयन राशिलाई नौ बराबर भागमा बाँडेर ग्रह र लग्नको नवांश स्थिति निकालिन्छ।" }
+    ],
+    toolLinks: [{ label: "नेपाली जन्मकुण्डली", href: "/tools/nepali-janma-kundali" }, { label: "नेपाल र भारत पञ्चाङ्ग", href: "/tools/nepal-panchang-calculator" }]
+  },
+  {
+    slug: "nepali-hindu-panchang-tithi-nakshatra-guide",
+    title: "पञ्चाङ्ग कसरी हेर्ने? तिथि, नक्षत्र, योग, करण र सूर्योदय",
+    description: "हिन्दू पञ्चाङ्गका पाँच अङ्ग, तिथि, नक्षत्र, योग, करण र स्थानीय सूर्योदयको अर्थ सरल नेपालीमा बुझ्नुहोस्। नेपाल र भारतको स्थानीय समय किन महत्त्वपूर्ण छ, जान्नुहोस्।",
+    keyword: "नेपाली पञ्चाङ्ग, आजको तिथि, आजको नक्षत्र, तिथि गणना, पञ्चाङ्ग क्याल्कुलेटर",
+    updated: "2026-11-02",
+    readTime: "6 min read",
+    intro: "पञ्चाङ्ग परम्परागत चन्द्र-सौर पात्रो हो। यसका पाँच मुख्य अङ्ग तिथि, वार, नक्षत्र, योग र करण हुन्। दैनिक पञ्चाङ्गको व्याख्या स्थानीय सूर्योदय, स्थान र क्षेत्रीय परम्परासँग सम्बन्धित हुन्छ।",
+    sections: [
+      { heading: "तिथि के हो?", paragraphs: ["तिथि सूर्य र चन्द्रमाबीचको कोणीय दूरीका आधारमा निकालिन्छ। एक चन्द्र महिनामा शुक्ल पक्षका १५ र कृष्ण पक्षका १५ तिथि हुन्छन्। तिथि मध्यरातमा मात्र सुरु वा अन्त्य हुँदैन; दिनको जुनसुकै समयमा परिवर्तन हुन सक्छ।"] },
+      { heading: "नक्षत्र, योग र करण", paragraphs: ["नक्षत्रले निरयन राशि चक्रमा चन्द्रमाको स्थिति देखाउँछ। योग सूर्य र चन्द्रमाको संयुक्त निरयन देशान्तरबाट निकालिन्छ। करण आधा तिथिको अवधि हो।"] },
+      { heading: "स्थानीय सूर्योदय र समय क्षेत्र", paragraphs: ["सूर्योदय र सूर्यास्त अक्षांश, देशान्तर, उचाइ र मितिअनुसार फरक हुन्छन्। दिल्लीको पञ्चाङ्गमा काठमाडौंको सूर्योदय प्रयोग गर्नु हुँदैन। भारतका लागि Asia/Kolkata र नेपालका लागि Asia/Kathmandu समय क्षेत्र प्रयोग गर्नुपर्छ।", "नेपाल र भारतमा धेरै पञ्चाङ्ग अवधारणा समान भए पनि सबै पर्व, व्रत र पूजाका क्षेत्रीय नियम समान नहुन सक्छन्। महत्त्वपूर्ण धार्मिक observance का लागि स्थानीय विश्वसनीय पञ्चाङ्गसँग पुष्टि गर्नुहोस्।"] },
+      { heading: "अनलाइन पञ्चाङ्गका सीमाहरू", paragraphs: ["वेबसाइटअनुसार खगोलीय ephemeris, अयनांश, सूर्योदयको परिभाषा र rounding फरक हुन सक्छ। त्यसैले तिथि नाम मात्र होइन, गणना विधि र स्थान पनि जाँच्नुहोस्।"] }
+    ],
+    faqs: [
+      { question: "के नेपाल र भारतमा एउटै तिथि हुन्छ?", answer: "एउटै क्षणमा खगोलीय तिथि एउटै हुन्छ, तर स्थानीय पञ्चाङ्गको दिन र पर्व पालन सूर्योदय तथा क्षेत्रीय नियमअनुसार फरक हुन सक्छ।" },
+      { question: "तिथि दुई दिनमा किन देखिन्छ?", answer: "तिथि कुनै पनि समयमा सुरु वा अन्त्य हुन सक्छ र मध्यरात वा सूर्योदय पार गर्न सक्छ।" },
+      { question: "के पञ्चाङ्ग क्याल्कुलेटर भारतमा पनि चल्छ?", answer: "चल्छ। उपलब्ध भारतीय सहरका लागि Asia/Kolkata स्थानीय समय प्रयोग हुन्छ। यसलाई आधिकारिक क्षेत्रीय पञ्चाङ्गको विकल्प नमान्नुहोस्।" }
+    ],
+    toolLinks: [{ label: "नेपाल र भारत पञ्चाङ्ग", href: "/tools/nepal-panchang-calculator" }, { label: "नेपाली जन्मकुण्डली", href: "/tools/nepali-janma-kundali" }]
   }
 ];

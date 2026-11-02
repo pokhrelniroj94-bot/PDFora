@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Remove Blank PDF Pages Online | PDFora",
+  title: "Remove Blank PDF Pages Online",
   description: "Detect and remove pages that contain no selectable text, images or vector drawings.",
   alternates: { canonical: "https://pd-fora.vercel.app/remove-blank-pages" },
 };

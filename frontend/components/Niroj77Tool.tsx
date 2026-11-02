@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import ToolSEOContent from "./ToolSEOContent";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
@@ -423,7 +422,6 @@ export default function NirojToolsTool({
           />
         </div>
       </section>
-      <ToolSEOContent slug={currentSlug} />
     </main>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Remove PDF Metadata Online Free | PDFora",
+  title: "Remove PDF Metadata Online Free",
   description: "Remove hidden PDF metadata such as author, title, subject and keywords online. Download a cleaner PDF with PDFora.",
   alternates: { canonical: "https://pd-fora.vercel.app/remove-pdf-metadata" },
 };

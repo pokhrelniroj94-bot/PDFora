@@ -8,6 +8,8 @@ type ForexResponse = { source: string; requestedDate: string; rateDate: string; 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const npr = (value: number) => "NPR " + value.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function nepseBrokerCharge(value: number) { const rate = value <= 50000 ? 0.36 : value <= 500000 ? 0.33 : value <= 2000000 ? 0.31 : value <= 10000000 ? 0.27 : 0.24; return { rate, amount: Math.max(10, value * rate / 100) }; }
+
 function Field({ title, value, onChange, type = "number", min = "0" }: { title: string; value: string; onChange: (value: string) => void; type?: string; min?: string }) {
   return <label className="block"><span className={label}>{title}</span><input className={field} type={type} min={min} value={value} onChange={(event) => onChange(event.target.value)} /></label>;
 }
@@ -61,6 +63,20 @@ async function fetchLatestForex(): Promise<ForexResponse> {
   return json;
 }
 
+
+type ForexHistoryPoint = { date: string; buy: number; sell: number };
+function ForexHistoryChart({ points }: { points: ForexHistoryPoint[] }) {
+  if (points.length < 2) return <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">Not enough published NRB observations for a historical chart yet.</p>;
+  const width = 900, height = 260, left = 58, right = 18, top = 18, bottom = 34;
+  const values = points.flatMap((point) => [point.buy, point.sell]);
+  const min = Math.min(...values), max = Math.max(...values), range = max - min || 1;
+  const x = (index: number) => left + index / (points.length - 1) * (width - left - right);
+  const y = (value: number) => top + (max - value) / range * (height - top - bottom);
+  const buyPath = points.map((point, index) => (index ? "L" : "M") + x(index).toFixed(1) + "," + y(point.buy).toFixed(1)).join(" ");
+  const sellPath = points.map((point, index) => (index ? "L" : "M") + x(index).toFixed(1) + "," + y(point.sell).toFixed(1)).join(" ");
+  return <div className="space-y-2"><div className="overflow-hidden rounded-xl bg-slate-950 p-3"><svg viewBox={"0 0 "+width+" "+height} className="w-full" role="img" aria-label="NRB daily currency buying and selling rate history">{[0,1,2,3,4].map((tick)=><g key={tick}><line x1={left} x2={width-right} y1={top+tick*(height-top-bottom)/4} y2={top+tick*(height-top-bottom)/4} stroke="#334155" strokeDasharray="4 5"/><text x={left-8} y={top+tick*(height-top-bottom)/4+4} textAnchor="end" fontSize="12" fill="#94a3b8">{(max-range*tick/4).toFixed(2)}</text></g>)}<path d={buyPath} fill="none" stroke="#2dd4bf" strokeWidth="3"/><path d={sellPath} fill="none" stroke="#fbbf24" strokeWidth="3"/><text x={left} y={height-8} fill="#94a3b8" fontSize="12">{points[0].date}</text><text x={width-right} y={height-8} textAnchor="end" fill="#94a3b8" fontSize="12">{points[points.length-1].date}</text></svg></div><div className="flex flex-wrap gap-4 text-xs text-slate-600"><span className="inline-flex items-center gap-2"><span className="h-1 w-5 rounded bg-teal-500"/>Buying rate</span><span className="inline-flex items-center gap-2"><span className="h-1 w-5 rounded bg-amber-400"/>Selling rate</span><span>{points.length} published observations</span></div></div>;
+}
+
 function ForexTool() {
   const [data, setData] = useState<ForexResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -68,6 +84,9 @@ function ForexTool() {
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState("100");
   const [direction, setDirection] = useState("foreign-to-npr");
+  const [history, setHistory] = useState<ForexHistoryPoint[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [historyError, setHistoryError] = useState("");
   useEffect(() => {
     let active = true;
     const initialLoad = async () => {
@@ -90,6 +109,17 @@ function ForexTool() {
     catch (e) { setError(e instanceof Error ? e.message : "Could not load NRB rates."); }
     finally { setLoading(false); }
   };
+  useEffect(() => {
+    let active = true;
+    setHistoryLoading(true);
+    setHistoryError("");
+    fetch("/api/nepal-forex?history=1&currency=" + encodeURIComponent(currency), { cache: "no-store" })
+      .then(async (response) => { const json = await response.json() as { history?: ForexHistoryPoint[]; error?: string }; if (!response.ok) throw new Error(json.error || "Historical rates unavailable."); return json; })
+      .then((json) => { if (active) setHistory(json.history ?? []); })
+      .catch((error: unknown) => { if (active) setHistoryError(error instanceof Error ? error.message : "Historical rates unavailable."); })
+      .finally(() => { if (active) setHistoryLoading(false); });
+    return () => { active = false; };
+  }, [currency]);
   const selected = data?.rates.find((item) => item.code === currency) ?? data?.rates[0];
   const value = Number(amount);
   const valid = amount.trim() !== "" && Number.isFinite(value) && value >= 0 && !!selected;
@@ -98,12 +128,88 @@ function ForexTool() {
     : null;
   return <div className="space-y-4">
     <div><h2 className="text-lg font-bold">Nepal Rastra Bank Daily Exchange Rates</h2><p className="mt-1 text-sm text-slate-600">Official NRB buying and selling rates. The latest available published working-day rate is shown.</p></div>
-    <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-slate-600">{data ? `Rate date: ${data.rateDate}` : "Loading official rate date…"}</p><button className="rounded-lg border px-3 py-2 text-sm font-semibold" disabled={loading} onClick={() => void refresh()}>{loading ? "Refreshing…" : "Refresh rates"}</button></div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-slate-600">{data ? `Rate date: ${data.rateDate}` : "Loading official rate date…"}</p><button className="rounded-lg border px-3 py-2 text-sm font-semibold" disabled={loading} onClick={() => void refresh()}>{loading ? <span className="inline-flex items-center gap-2"><span className="pdfora-spinner" aria-hidden="true"/>Refreshing…</span> : "Refresh rates"}</button></div>
     {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{error}</p>}
     {data && <div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[560px] text-left text-sm"><thead className="bg-slate-100"><tr><th className="p-3">Currency</th><th className="p-3 text-right">Unit</th><th className="p-3 text-right">Buying (NPR)</th><th className="p-3 text-right">Selling (NPR)</th></tr></thead><tbody>{data.rates.map((item) => <tr key={item.code} className="border-t"><td className="p-3"><span className="font-semibold">{item.code}</span><span className="ml-2 text-slate-500">{item.name}</span></td><td className="p-3 text-right">{item.unit}</td><td className="p-3 text-right tabular-nums">{item.buy.toFixed(4)}</td><td className="p-3 text-right tabular-nums">{item.sell.toFixed(4)}</td></tr>)}</tbody></table></div>}
-    <div className="rounded-xl border p-4"><h3 className="font-bold">NRB rate converter</h3><div className="mt-3 grid gap-3 sm:grid-cols-2"><label><span className={label}>Currency</span><select className={field} value={selected?.code ?? currency} onChange={(e) => setCurrency(e.target.value)}>{(data?.rates ?? []).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label><label><span className={label}>Conversion</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option></select></label></div><div className="mt-3"><Field title="Amount" value={amount} onChange={setAmount}/></div>{converted !== null && selected && <div className="mt-4"><Result>{direction === "foreign-to-npr" ? `${value.toLocaleString()} ${selected.code} ≈ ${npr(converted)}` : `${npr(value)} ≈ ${converted.toLocaleString("en-IN", { maximumFractionDigits: 4 })} ${selected.code}`}\nRate unit: ${selected.unit} ${selected.code}\nRate date: ${data?.rateDate}</Result></div>}</div>
+    <div className="rounded-xl border p-4"><h3 className="font-bold">NRB rate converter</h3><div className="mt-3 grid gap-3 sm:grid-cols-2"><label><span className={label}>Currency</span><select className={field} value={selected?.code ?? currency} onChange={(e) => { setHistoryLoading(true); setHistoryError(""); setCurrency(e.target.value); }}>{(data?.rates ?? []).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label><label><span className={label}>Conversion</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option></select></label></div><div className="mt-3"><Field title="Amount" value={amount} onChange={setAmount}/></div>{converted !== null && selected && <div className="mt-4"><Result>{direction === "foreign-to-npr" ? `${value.toLocaleString()} ${selected.code} ≈ ${npr(converted)}` : `${npr(value)} ≈ ${converted.toLocaleString("en-IN", { maximumFractionDigits: 4 })} ${selected.code}`}\nRate unit: ${selected.unit} ${selected.code}\nRate date: ${data?.rateDate}</Result></div>}</div>
+    <section className="space-y-3 rounded-xl border p-4"><div><h3 className="font-bold">Custom historical rate chart</h3><p className="mt-1 text-sm text-slate-600">Daily NRB reference buying and selling rates per one unit, based on available published observations over roughly the last 90 days. This is not an intraday trading feed.</p></div>{historyLoading ? <p className="text-sm text-slate-500">Loading historical NRB rates…</p> : historyError ? <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{historyError}</p> : <ForexHistoryChart points={history}/>}</section>
+    <section className="space-y-3 rounded-xl border p-4"><div><h3 className="font-bold">TradingView embedded Forex chart</h3><p className="mt-1 text-sm text-slate-600">Third-party market chart for the selected currency pair. Availability depends on the chart provider; USD/NPR may not be listed by every feed.</p></div><div className="overflow-hidden rounded-xl border bg-white"><iframe title={"TradingView "+currency+"/NPR forex chart"} src={"https://s.tradingview.com/widgetembed/?symbol="+encodeURIComponent(({USD:"FX_IDC:USDNPR",INR:"FX_IDC:INRNPR",EUR:"FX_IDC:EURNPR",GBP:"FX_IDC:GBPNPR",JPY:"FX_IDC:JPYINR",AUD:"FX_IDC:AUDNPR",CAD:"FX_IDC:CADNPR",CHF:"FX_IDC:CHFNPR"} as Record<string,string>)[currency] || "FX_IDC:USDNPR")+"&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&theme=light&style=1&timezone=Asia%2FKathmandu&withdateranges=1&hideideas=1&locale=en"} className="h-[420px] w-full" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen/></div><p className="text-xs text-slate-500">TradingView is an external chart service. Pair symbols and quotes may be unavailable, delayed or indicative. Use NRB published rates for official Nepal reference-rate checks.</p></section>
     <p className="text-xs text-slate-500">NRB reference rates are not necessarily the exact rates offered by individual banks, money changers or remittance providers. The API may show the previous published working day on weekends and holidays.</p>
     <a className="text-sm font-semibold text-teal-700 underline" href="https://www.nrb.org.np/forex" target="_blank" rel="noreferrer">View NRB official exchange-rate page</a>
+  </div>;
+}
+
+
+function FinanceField({ title, children }: { title: string; children: React.ReactNode }) { return <label className="block"><span className={label}>{title}</span>{children}</label>; }
+function NepalFinanceTools({ slug }: { slug: string }) {
+  const [principal, setPrincipal] = useState("500000");
+  const [annualRate, setAnnualRate] = useState("7");
+  const [months, setMonths] = useState("12");
+  const [frequency, setFrequency] = useState("4");
+  const [taxRate, setTaxRate] = useState("5");
+  const [sendAmount, setSendAmount] = useState("500");
+  const [exchangeRate, setExchangeRate] = useState("135");
+  const [transferFee, setTransferFee] = useState("0");
+  const [shares, setShares] = useState("10");
+  const [ipoPrice, setIpoPrice] = useState("100");
+  const [salePrice, setSalePrice] = useState("500");
+  const [sebonFee, setSebonFee] = useState("0.015");
+  const [dpFee, setDpFee] = useState("25");
+  const [holdingPeriod, setHoldingPeriod] = useState("short");
+  const [investorType, setInvestorType] = useState("individual");
+  const number = (value: string) => Number(value);
+  const valid = (values: string[]) => values.every((value) => value.trim() !== "" && Number.isFinite(number(value)) && number(value) >= 0);
+  if (slug === "nepal-fixed-deposit-calculator") {
+    const ok = valid([principal, annualRate, months, taxRate]) && number(principal) > 0 && number(months) > 0 && number(annualRate) <= 100 && number(taxRate) <= 100;
+    const n = Number(frequency), p = number(principal), r = number(annualRate) / 100, t = number(months) / 12;
+    const maturity = ok ? p * Math.pow(1 + r / n, n * t) : 0;
+    const interest = maturity - p, tax = interest * number(taxRate) / 100;
+    return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal Fixed Deposit (FD) Calculator</h3><p className="text-sm text-slate-600">Estimate maturity value with periodic compounding and an editable tax assumption.</p></div><div className="grid gap-3 sm:grid-cols-2"><FinanceField title="Deposit amount (NPR)"><input className={field} type="number" min="1" value={principal} onChange={e=>setPrincipal(e.target.value)}/></FinanceField><FinanceField title="Annual interest rate (%)"><input className={field} type="number" min="0" max="100" step="0.01" value={annualRate} onChange={e=>setAnnualRate(e.target.value)}/></FinanceField><FinanceField title="Term (months)"><input className={field} type="number" min="1" value={months} onChange={e=>setMonths(e.target.value)}/></FinanceField><FinanceField title="Compounding frequency"><select className={field} value={frequency} onChange={e=>setFrequency(e.target.value)}><option value="1">Annually</option><option value="2">Half-yearly</option><option value="4">Quarterly</option><option value="12">Monthly</option></select></FinanceField><FinanceField title="Tax on interest (%)"><input className={field} type="number" min="0" max="100" step="0.01" value={taxRate} onChange={e=>setTaxRate(e.target.value)}/></FinanceField></div>{ok?<Result>Principal: {npr(p)}
+Gross interest: {npr(interest)}
+Estimated tax on interest: {npr(tax)}
+After-tax maturity value: {npr(maturity-tax)}</Result>:<p role="alert" className="text-sm text-red-700">Enter valid positive deposit and term values, with rates between 0 and 100.</p>}<p className="text-xs text-slate-500">Estimate only. Actual Nepal bank FD products may use different day-count, payout, compounding, premature-withdrawal and tax rules. Confirm the bank&apos;s offer and current tax treatment.</p></div>;
+  }
+  if (slug === "nepal-remittance-calculator") {
+    const gross = number(sendAmount) * number(exchangeRate), net = gross - number(transferFee);
+    const ok = valid([sendAmount, exchangeRate, transferFee]) && number(exchangeRate) > 0 && number(transferFee) <= gross;
+    return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal Remittance Calculator</h3><p className="text-sm text-slate-600">Estimate the NPR amount received after an editable transfer fee.</p></div><div className="grid gap-3 sm:grid-cols-2"><FinanceField title="Amount sent (foreign currency)"><input className={field} type="number" min="0" value={sendAmount} onChange={e=>setSendAmount(e.target.value)}/></FinanceField><FinanceField title="Exchange rate (NPR per 1 unit)"><input className={field} type="number" min="0.0001" step="0.0001" value={exchangeRate} onChange={e=>setExchangeRate(e.target.value)}/></FinanceField><FinanceField title="Transfer fee (NPR)"><input className={field} type="number" min="0" value={transferFee} onChange={e=>setTransferFee(e.target.value)}/></FinanceField></div>{ok?<Result>Gross NPR equivalent: {npr(gross)}
+Transfer fee: {npr(number(transferFee))}
+Estimated recipient amount: {npr(net)}</Result>:<p role="alert" className="text-sm text-red-700">Enter a valid amount, positive exchange rate and non-negative fee.</p>}<p className="text-xs text-slate-500">Enter the rate and fee quoted by your provider. Actual remittance payouts can include provider-specific spreads, promotions, correspondent-bank deductions and recipient fees.</p></div>;
+  }
+  const quantity = number(shares), cost = quantity * number(ipoPrice), sale = quantity * number(salePrice);
+  const ok = valid([shares, ipoPrice, salePrice, sebonFee, dpFee]) && quantity > 0 && Number.isInteger(quantity) && number(ipoPrice) > 0 && number(salePrice) > 0 && number(sebonFee) <= 100;
+  const sellBroker = nepseBrokerCharge(sale);
+  const sellSebon = sale * number(sebonFee) / 100;
+  const dp = number(dpFee), grossGain = sale - cost;
+  const sellCharges = sellBroker.amount + sellSebon + dp;
+  const taxableGain = Math.max(0, grossGain - sellCharges);
+  const capitalGainsTaxRate = investorType === "institution" ? 10 : holdingPeriod === "long" ? 3.75 : 5;
+  const tax = taxableGain * capitalGainsTaxRate / 100;
+  const net = grossGain - sellCharges - tax;
+  return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal IPO Profit / Loss Calculator</h3><p className="text-sm text-slate-600">Estimate IPO purchase cost, selling proceeds, broker charges, SEBON fee, DP charge and capital-gains tax.</p></div>
+    <div className="grid gap-3 sm:grid-cols-2">
+      <FinanceField title="IPO shares (kitta)"><input className={field} type="number" min="1" step="1" value={shares} onChange={e=>setShares(e.target.value)}/></FinanceField>
+      <FinanceField title="IPO allotment price (NPR/share)"><input className={field} type="number" min="0.01" step="0.01" value={ipoPrice} onChange={e=>setIpoPrice(e.target.value)}/></FinanceField>
+      <FinanceField title="Selling price (NPR/share)"><input className={field} type="number" min="0" step="0.01" value={salePrice} onChange={e=>setSalePrice(e.target.value)}/></FinanceField>
+      <FinanceField title="SEBON transaction fee (%)"><input className={field} type="number" min="0" max="100" step="0.001" value={sebonFee} onChange={e=>setSebonFee(e.target.value)}/></FinanceField>
+      <FinanceField title="DP charge (NPR)"><input className={field} type="number" min="0" value={dpFee} onChange={e=>setDpFee(e.target.value)}/></FinanceField>
+      <FinanceField title="Investor type"><select className={field} value={investorType} onChange={e=>setInvestorType(e.target.value)}><option value="individual">Individual</option><option value="institution">Institution / company</option></select></FinanceField>
+      {investorType === "individual" && <FinanceField title="Share holding period"><select className={field} value={holdingPeriod} onChange={e=>setHoldingPeriod(e.target.value)}><option value="short">365 days or less · 5% CGT</option><option value="long">More than 365 days · 3.75% CGT</option></select></FinanceField>}
+    </div>
+    {ok?<Result>IPO allotment cost: {npr(cost)}
+Gross sale value: {npr(sale)}
+Sell broker commission ({sellBroker.rate}% slab, min. NPR 10): {npr(sellBroker.amount)}
+Sell SEBON fee: {npr(sellSebon)}
+DP charge: {npr(dp)}
+Total selling charges: {npr(sellCharges)}
+Gross gain / loss: {npr(grossGain)}
+Estimated taxable gain: {npr(taxableGain)}
+CGT rate: {capitalGainsTaxRate}%
+Estimated capital-gains tax: {npr(tax)}
+Net profit / loss: {npr(net)}
+Return on IPO purchase cost: {cost > 0 ? (net / cost * 100).toFixed(2) : "0.00"}%</Result>:<p role="alert" className="text-sm text-red-700">Enter a positive whole-share quantity, a positive IPO price, a non-negative selling price and valid charges.</p>}
+    <p className="text-xs leading-5 text-slate-500">IPO allotment is treated as a primary-market purchase with no broker commission or secondary-market SEBON fee on the buy side. Selling charges use the published equity slabs and a NPR 10 minimum. Bonus-share cost basis, multiple lots, unusual corporate actions and broker-specific settlement differences are not modelled.</p>
+    <div className="flex flex-wrap gap-3 text-xs"><a className="font-semibold text-teal-800 underline" href="https://ssl.com.np/trading-commission-and-fees" target="_blank" rel="noreferrer">Broker fee schedule</a><a className="font-semibold text-teal-800 underline" href="https://www.sebon.gov.np/" target="_blank" rel="noreferrer">SEBON</a><a className="font-semibold text-teal-800 underline" href="https://www.sharesansar.com/newsdetail/capital-gains-tax-rates-reduced-decision-published-in-gazette-2026-09-22" target="_blank" rel="noreferrer">2026 CGT update</a></div>
   </div>;
 }
 
@@ -210,21 +316,56 @@ function NepseDividendTool() {
   const [faceValue, setFaceValue] = useState("100");
   const [taxRate, setTaxRate] = useState("5");
   const quantity = Number(shares), cash = Number(cashRate), bonus = Number(bonusRate), face = Number(faceValue), tax = Number(taxRate);
-  const valid = [quantity, cash, bonus, face, tax].every(Number.isFinite) && quantity > 0 && Number.isInteger(quantity) && cash >= 0 && bonus >= 0 && face > 0 && tax >= 0 && tax <= 100;
+  const valid = [quantity, cash, bonus, face, tax].every(Number.isFinite) && [shares,cashRate,bonusRate,faceValue,taxRate].every(v=>v.trim()!=="") && quantity > 0 && Number.isInteger(quantity) && cash >= 0 && bonus >= 0 && face > 0 && tax >= 0 && tax <= 100;
   const cashGross = quantity * face * cash / 100;
   const cashTax = cashGross * tax / 100;
-  const bonusShares = quantity * bonus / 100;
-  return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">NEPSE Cash Dividend & Bonus Share Calculator</h2><p className="mt-1 text-sm text-slate-600">Estimate cash dividend on the editable face value, after an editable withholding-tax assumption, and calculate bonus shares.</p></div>
-    <div className="grid gap-3 sm:grid-cols-2"><Field title="Shares held" value={shares} onChange={setShares}/><Field title="Cash dividend (%)" value={cashRate} onChange={setCashRate}/><Field title="Bonus shares (%)" value={bonusRate} onChange={setBonusRate}/><Field title="Face value per share (NPR)" value={faceValue} onChange={setFaceValue}/><Field title="Cash dividend tax assumption (%)" value={taxRate} onChange={setTaxRate}/></div>
-    {valid ? <Result>Eligible shares: {quantity.toLocaleString("en-IN")}\nGross cash dividend (face value basis): {npr(cashGross)}\nEstimated withholding tax: {npr(cashTax)}\nEstimated cash dividend after tax: {npr(cashGross - cashTax)}\nEstimated bonus shares: {bonusShares.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</Result> : <p role="alert" className="text-sm text-red-700">Enter a positive whole share quantity and valid non-negative percentages.</p>}
-    <p className="text-xs leading-5 text-slate-500">This is a percentage-based estimate, not an allotment confirmation. Fractional bonus entitlements, book closure eligibility, withholding rules and company-specific terms may change the final credited amount. Verify the declared corporate action and tax treatment with the company, CDSC and IRD.</p>
-    <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noreferrer">NEPSE official</a><a className="font-semibold text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noreferrer">Mero Share</a></div>
+  const cashNet = cashGross - cashTax;
+  const bonusExact = quantity * bonus / 100;
+  const bonusWhole = Math.floor(bonusExact + 1e-10);
+  const bonusFraction = Math.max(0, bonusExact - bonusWhole);
+  const metric = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm";
+  return <div className="space-y-5">
+    <div><h2 className="text-lg font-bold">NEPSE Cash Dividend & Bonus Share Calculator</h2><p className="mt-1 text-sm leading-6 text-slate-600">Enter the corporate-action percentages from the company notice. Results update automatically and separate cash payout from estimated bonus-share entitlement.</p></div>
+    <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <h3 className="mb-3 text-sm font-bold text-slate-900">Your shareholding and company announcement</h3>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field title="Eligible shares held (whole shares)" value={shares} onChange={setShares}/>
+        <Field title="Cash dividend (%)" value={cashRate} onChange={setCashRate}/>
+        <Field title="Bonus shares (%)" value={bonusRate} onChange={setBonusRate}/>
+        <Field title="Face value per share (NPR)" value={faceValue} onChange={setFaceValue}/>
+        <Field title="Withholding-tax assumption (%)" value={taxRate} onChange={setTaxRate}/>
+      </div>
+      <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900"><strong>Tax assumption only:</strong> This is an editable input, not a statement of the current legal rate. Confirm the applicable withholding treatment before relying on the estimate.</p>
+    </section>
+    {valid ? <section aria-live="polite" className="space-y-3">
+      <div className="rounded-2xl bg-slate-950 p-5 text-white shadow-sm">
+        <p className="text-sm font-medium text-slate-300">Estimated cash dividend after assumed tax</p>
+        <p className="mt-1 text-3xl font-bold tracking-tight tabular-nums">{npr(cashNet)}</p>
+        <p className="mt-2 text-xs text-slate-300">Based on {quantity.toLocaleString("en-IN")} eligible shares · {cash}% cash dividend · {tax}% editable tax assumption</p>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className={metric}><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Gross cash dividend</p><p className="mt-1 text-xl font-bold tabular-nums text-slate-900">{npr(cashGross)}</p><p className="mt-1 text-xs text-slate-500">Before assumed withholding tax</p></div>
+        <div className={metric}><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Estimated tax deduction</p><p className="mt-1 text-xl font-bold tabular-nums text-rose-700">{npr(cashTax)}</p><p className="mt-1 text-xs text-slate-500">At your entered {tax}% assumption</p></div>
+        <div className={metric}><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Bonus entitlement (calculated)</p><p className="mt-1 text-xl font-bold tabular-nums text-teal-700">{bonusExact.toLocaleString("en-IN", { maximumFractionDigits: 4 })} shares</p><p className="mt-1 text-xs text-slate-500">Exact percentage-based estimate</p></div>
+        <div className={metric}><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Whole-share estimate</p><p className="mt-1 text-xl font-bold tabular-nums text-slate-900">{bonusWhole.toLocaleString("en-IN")} shares</p><p className="mt-1 text-xs text-slate-500">Fractional part: {bonusFraction.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</p></div>
+      </div>
+      <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+        <h4 className="font-bold text-slate-900">Calculation breakdown</h4>
+        <dl className="mt-2 space-y-2 text-slate-600">
+          <div className="flex justify-between gap-3"><dt>Gross cash dividend</dt><dd className="shrink-0 font-semibold tabular-nums text-slate-900">{npr(cashGross)}</dd></div>
+          <div className="flex justify-between gap-3"><dt>After assumed tax</dt><dd className="shrink-0 font-semibold tabular-nums text-slate-900">{npr(cashNet)}</dd></div>
+          <div className="flex justify-between gap-3"><dt>Bonus entitlement</dt><dd className="shrink-0 font-semibold tabular-nums text-slate-900">{bonusExact.toLocaleString("en-IN", { maximumFractionDigits: 4 })} shares</dd></div>
+        </dl>
+      </div>
+    </section> : <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">Enter a positive whole share quantity, a positive face value, and valid percentages. Tax assumption must be between 0 and 100. Leave no field empty.</p>}
+    <p className="text-xs leading-5 text-slate-500">Estimate only—not an official dividend or CDSC allotment confirmation. The whole-share figure is a mathematical display, not a claim about how the company/CDSC will treat fractional entitlements. Eligibility depends on book-closure rules and the company’s notice; final cash, tax and bonus credits may differ. Verify with the company, NEPSE, CDSC and IRD.</p>
+    <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noreferrer">NEPSE official</a><a className="font-semibold text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noreferrer">Mero Share / CDSC</a><a className="font-semibold text-teal-700 underline" href="https://www.ird.gov.np/" target="_blank" rel="noreferrer">Inland Revenue Department</a></div>
   </div>;
 }
 
 export default function NepalLiveTools({ slug }: { slug: string }) {
   if (slug === "nepal-forex-rates") return <ForexTool/>;
+  if (["nepal-fixed-deposit-calculator","nepal-remittance-calculator","nepal-ipo-profit-calculator"].includes(slug)) return <NepalFinanceTools slug={slug}/>;
   if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool/>;
   if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool/>;
   if (slug === "nepal-public-holidays-2083") return <HolidayTool/>;

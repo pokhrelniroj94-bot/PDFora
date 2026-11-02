@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF to JSON Converter Online | PDFora",
+  title: "PDF to JSON Converter Online",
   description: "Convert PDF text and page layout into structured JSON with page numbers and text coordinates. Free online PDF to JSON tool.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-json" },
 };

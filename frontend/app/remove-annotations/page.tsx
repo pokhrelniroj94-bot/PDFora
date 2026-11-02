@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Remove PDF Annotations Online Free | PDFora",
+  title: "Remove PDF Annotations Online Free",
   description: "Remove comments, highlights and annotations from a PDF online while preserving the document pages. Download a clean PDF.",
   alternates: { canonical: "https://pd-fora.vercel.app/remove-annotations" },
 };

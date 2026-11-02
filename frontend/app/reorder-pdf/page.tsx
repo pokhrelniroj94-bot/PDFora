@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Reorder PDF Pages Online | PDFora",
+  title: "Reorder PDF Pages Online",
   description: "Rearrange PDF pages by entering their new order, such as 3,1,2.",
   alternates: { canonical: "https://pd-fora.vercel.app/reorder-pdf" },
 };

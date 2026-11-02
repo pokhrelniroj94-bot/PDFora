@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Crop PDF Online | PDFora",
+  title: "Crop PDF Online",
   description: "Crop page margins from your PDF. Enter margin in points (36 points = half an inch).",
   alternates: { canonical: "https://pd-fora.vercel.app/crop-pdf" },
 };

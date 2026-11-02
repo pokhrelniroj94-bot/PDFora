@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { SITE_NAME, SITE_URL } from "../../lib/site-config";
 
 export const metadata: Metadata = {
   title: "About",
-  alternates: { canonical: "https://pd-fora.vercel.app/about" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/about", siteName: "PDFora", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools." },
+  alternates: { canonical: `${SITE_URL}/about` },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/about", siteName: SITE_NAME, title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "About PDFora" }] },
+  twitter: { card: "summary_large_image", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools.", images: ["/opengraph-image"] },
   description:
     "Learn about PDFora, an online platform for PDF processing and practical digital tools.",
 };
@@ -26,6 +28,17 @@ export default function AboutPage() {
               document and PDF tasks easier. Our tools help users convert,
               merge, compress, edit, and process files directly from their
               browser.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="mb-2 text-2xl font-semibold">Who built PDFora?</h2>
+            <p>
+              PDFora was created by Niroj Pokhrel as an independent project to
+              make practical online tools easier to access, especially for
+              everyday document tasks and useful Nepal-focused utilities.
+              The project is developed and improved over time based on
+              testing, feedback and the needs of its users.
             </p>
           </div>
 

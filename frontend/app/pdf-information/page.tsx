@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF Information Tool Online Free | PDFora",
+  title: "PDF Information Tool Online Free",
   description: "Get PDF file information including page count, size, dimensions, title, author and encryption status. Download a detailed report.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-information" },
 };

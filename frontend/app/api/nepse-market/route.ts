@@ -1,10 +1,21 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const BASE = "https://shubhamnpk.github.io/yonepse";
+const BASE = "https://raw.githubusercontent.com/Shubhamnpk/yonepse/main";
 const INDEX_SYMBOLS = new Set(["NEPSE", "SENSIND", "FLOATIND", "SENSFLTIND", "BANKSUBIND", "DEVBANKIND", "FININD", "HOTELIND", "HYDPOWIND", "INVIDX", "LIFINSIND", "MANPROCIND", "MICRFININD", "MUTUALIND", "NONLIFIND", "OTHERSIND", "TRDIND"]);
+const INDEX_CODE_BY_NAME: Record<string, string> = {
+  "NEPSE": "NEPSE", "NEPSE Index": "NEPSE", "Sensitive": "SENSIND", "Sensitive Index": "SENSIND", "Float": "FLOATIND", "Float Index": "FLOATIND",
+  "Sensitive Float": "SENSFLTIND", "Sensitive Float Index": "SENSFLTIND", "Banking SubIndex": "BANKSUBIND",
+  "Development Bank Index": "DEVBANKIND", "Finance Index": "FININD",
+  "Hotels And Tourism Index": "HOTELIND", "HydroPower Index": "HYDPOWIND",
+  "Investment Index": "INVIDX", "Life Insurance Index": "LIFINSIND",
+  "Manufacturing And Processing": "MANPROCIND", "Microfinance Index": "MICRFININD",
+  "Mutual Fund Index": "MUTUALIND", "Mutual Fund": "MUTUALIND",
+  "Non Life Insurance Index": "NONLIFIND", "Non Life Insurance": "NONLIFIND",
+  "Others Index": "OTHERSIND", "Others": "OTHERSIND", "Trading Index": "TRDIND",
+};
 type Json = Record<string, unknown>;
-async function read<T>(path: string, revalidateSeconds = 900): Promise<T> {
+async function read<T>(path: string, revalidateSeconds = 300): Promise<T> {
   const response = await fetch(BASE + path, {
     headers: { Accept: "application/json" },
     next: { revalidate: revalidateSeconds },
@@ -25,13 +36,13 @@ export async function GET(request: Request) {
   }
   const [liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.allSettled([
     read<unknown[]>("/data/market/live.json", 60),
-    read<unknown[]>("/data/nepse_data.json"),
-    read<unknown[]>("/data/market/indices.json"),
-    read<Json>("/data/market/status.json"),
-    read<unknown[]>("/data/market/summary.json"),
-    read<Json>("/data/market/top_stocks.json"),
-    read<unknown[]>("/data/market/sector_indices.json"),
-    read<Json>("/data/market/supply_demand.json"),
+    read<unknown[]>("/data/nepse_data.json", 60),
+    read<unknown[]>("/data/market/indices.json", 60),
+    read<Json>("/data/market/status.json", 60),
+    read<unknown[]>("/data/market/summary.json", 60),
+    read<Json>("/data/market/top_stocks.json", 60),
+    read<unknown[]>("/data/market/sector_indices.json", 60),
+    read<Json>("/data/market/supply_demand.json", 60),
     read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json"),
     read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json"),
   ]);
@@ -47,7 +58,10 @@ export async function GET(request: Request) {
     );
   }
   const manifest = manifestResult.status === "fulfilled" ? manifestResult.value : { availableMonths: [], latestDate: undefined };
-  const isIndex = INDEX_SYMBOLS.has(symbol);
+  const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)
+    ? sectorsResult.value as Array<{ indexCode?: string; indexName?: string; description?: string }>
+    : [];
+  const isIndex = INDEX_SYMBOLS.has(symbol) || sectorMeta.some((sector) => sector.indexCode === symbol);
   const historyKind = isIndex ? "indices" : "ltp";
   const historyManifest = historyKind === "indices"
     ? manifest
@@ -77,13 +91,18 @@ export async function GET(request: Request) {
     }
   }
   points.sort((a, b) => a.date.localeCompare(b.date));
-  const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)
-    ? sectorsResult.value as Array<{ indexCode?: string; indexName?: string; description?: string }>
-    : [];
   const indexMonths = (Array.isArray(manifest.availableMonths) ? manifest.availableMonths : []).slice(-2);
   const indexHistoryResults = historyKind === "indices"
     ? historyResults
     : await Promise.allSettled(indexMonths.map((month) => read<Json>("/data/indices/monthly/" + month + ".json")));
+  // Sector cards must use the same current quote snapshot as the headline index cards.
+  // Historical archives can lag the live quote feed by a session or more; use them
+  // only as a clearly dated fallback when the live snapshot has no matching index.
+  const liveIndexByCode = new Map(
+    (indices as Array<{ index?: string; currentValue?: number; close?: number; change?: number; perChange?: number; generatedTime?: string }>)
+      .map((item) => [INDEX_CODE_BY_NAME[item.index ?? ""] ?? "", item] as const)
+      .filter(([code]) => Boolean(code)),
+  );
   const sectors = sectorMeta.map((sector) => {
     const history: Array<{ date: string; close: number }> = [];
     for (const result of indexHistoryResults) {
@@ -101,9 +120,18 @@ export async function GET(request: Request) {
     history.sort((a, b) => a.date.localeCompare(b.date));
     const latest = history[history.length - 1];
     const previous = history[history.length - 2];
-    const change = latest && previous ? latest.close - previous.close : null;
-    const perChange = latest && previous && previous.close !== 0 ? change! / previous.close * 100 : null;
-    return { ...sector, currentValue: latest?.close ?? null, change, perChange, latestDate: latest?.date ?? null };
+    const historicalChange = latest && previous ? latest.close - previous.close : null;
+    const historicalPerChange = latest && previous && previous.close !== 0 ? historicalChange! / previous.close * 100 : null;
+    const live = liveIndexByCode.get(sector.indexCode ?? "");
+    const liveValue = live?.currentValue ?? live?.close;
+    return {
+      ...sector,
+      currentValue: typeof liveValue === "number" && Number.isFinite(liveValue) ? liveValue : latest?.close ?? null,
+      change: typeof live?.change === "number" && Number.isFinite(live.change) ? live.change : historicalChange,
+      perChange: typeof live?.perChange === "number" && Number.isFinite(live.perChange) ? live.perChange : historicalPerChange,
+      latestDate: live?.generatedTime ?? latest?.date ?? null,
+      valueSource: live ? "current snapshot" : latest ? "historical archive" : "unavailable",
+    };
   });
   const pick = <T,>(result: PromiseSettledResult<T>, fallback: T): T => result.status === "fulfilled" ? result.value : fallback;
   const response = {
@@ -111,6 +139,7 @@ export async function GET(request: Request) {
     period,
     source: usingLiveQuotes ? "YONEPSE live quote snapshot" : "YONEPSE fallback quote snapshot",
     sourceUpdatedAt: (stocks as Array<{ last_updated?: string }>).reduce((latest, stock) => stock.last_updated && stock.last_updated > latest ? stock.last_updated : latest, ""),
+    sourceCheckedAt: new Date().toISOString(),
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
     status: pick(statusResult, {}),
     indices,
@@ -123,6 +152,6 @@ export async function GET(request: Request) {
     partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {
-    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },
+    headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30" },
   });
 }

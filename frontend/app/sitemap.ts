@@ -2,8 +2,9 @@ import { blogPosts } from "../lib/blog-posts";
 import type { MetadataRoute } from "next";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
+import { SITE_URL } from "../lib/site-config";
 
-const baseUrl = "https://pd-fora.vercel.app";
+const baseUrl = SITE_URL;
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {

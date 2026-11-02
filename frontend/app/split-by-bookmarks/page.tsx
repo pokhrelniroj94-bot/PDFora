@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Split PDF by Bookmarks Online | PDFora",
+  title: "Split PDF by Bookmarks Online",
   description: "Split a PDF into separate files using existing bookmarks and download the sections as a ZIP archive.",
   alternates: { canonical: "https://pd-fora.vercel.app/split-by-bookmarks" },
 };

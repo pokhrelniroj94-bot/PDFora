@@ -1,11 +1,23 @@
 ﻿"use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { usePrivacyConsent } from "../../components/PrivacyConsent";
 
 export default function Adsterra160x600() {
+  const { consent } = usePrivacyConsent();
+  const [adReady, setAdReady] = useState(false);
   useEffect(() => {
+    if (!consent?.ads) {
+      setAdReady(false);
+      return;
+    }
     const container = document.getElementById("adsterra-160x600");
-    if (!container || container.dataset.loaded === "true") return;
+    if (!container) return;
+    const checkCreative = () => setAdReady(Boolean(container.querySelector("iframe, ins, [data-ad]")));
+    checkCreative();
+    const observer = new MutationObserver(checkCreative);
+    observer.observe(container, { childList: true, subtree: true, attributes: true });
+    if (container.dataset.loaded === "true") return () => observer.disconnect();
 
     container.dataset.loaded = "true";
 
@@ -28,14 +40,17 @@ export default function Adsterra160x600() {
     const script = document.createElement("script");
     script.src = "https://bauval.org/22/df82e8fddbed0dbc2cf5e53b28bc3d77";
     container.appendChild(script);
-  }, []);
+    return () => observer.disconnect();
+  }, [consent?.ads]);
+
+  if (!consent?.ads) return null;
 
   return (
-    <section className="hidden lg:block mx-auto w-full py-8" aria-label="Advertisement">
+    <section className={adReady ? "hidden lg:block mx-auto w-full py-8" : "hidden"} aria-label="Advertisement">
       <p className="mb-3 text-center text-[10px] font-semibold uppercase tracking-widest text-slate-400">
         Advertisement
       </p>
-      <div className="mx-auto min-h-[600px] w-[160px]" id="adsterra-160x600" />
+      <div className="mx-auto w-[160px]" id="adsterra-160x600" />
     </section>
   );
 }

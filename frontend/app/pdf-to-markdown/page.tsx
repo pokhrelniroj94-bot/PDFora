@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF to Markdown Converter Online | PDFora",
+  title: "PDF to Markdown Converter Online",
   description: "Convert selectable PDF text into Markdown with page-by-page headings using PDFora.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-markdown" },
 };

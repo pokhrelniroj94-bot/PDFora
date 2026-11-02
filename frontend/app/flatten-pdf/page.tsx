@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Flatten PDF Online | PDFora",
+  title: "Flatten PDF Online",
   description: "Attempt to apply form widgets and remove annotations. Results can vary by PDF type.",
   alternates: { canonical: "https://pd-fora.vercel.app/flatten-pdf" },
 };

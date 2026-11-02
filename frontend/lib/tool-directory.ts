@@ -131,7 +131,7 @@ const rawPdfTools: Array<Omit<Tool, "kind" | "slug" | "keywords">> = [
   { name: "Extract Bookmarks", description: "Export the bookmark outline from a PDF.", icon: "B", category: "Extract", href: "/extract-bookmarks" },
   { name: "Extract Fonts", description: "Inspect and extract embedded PDF font resources where supported.", icon: "F", category: "Extract", href: "/extract-fonts" },
   { name: "Extract Page Images", description: "Render individual PDF pages as image files.", icon: "I", category: "Extract", href: "/extract-page-images" },
-  { name: "OCR PDF", description: "Recognize text in scanned PDFs. OCR availability depends on server language-data setup.", icon: "O", category: "Convert", href: "/ocr-pdf" },
+  { name: "OCR PDF", description: "Coming soon: recognize and extract text from scanned PDF documents.", icon: "O", category: "Convert", href: "/ocr-pdf" },
   { name: "Page Counter", description: "Count pages and inspect the page structure of a PDF.", icon: "#", category: "Analyze", href: "/page-counter" },
   { name: "PDF Information", description: "View PDF metadata, dimensions, encryption and document properties.", icon: "i", category: "Analyze", href: "/pdf-information" },
   { name: "PDF to BMP", description: "Convert PDF pages into BMP images.", icon: "B", category: "Convert", href: "/pdf-to-bmp" },
@@ -148,7 +148,7 @@ const rawPdfTools: Array<Omit<Tool, "kind" | "slug" | "keywords">> = [
 
 export const pdfTools: Tool[] = rawPdfTools.map((tool) => ({
   ...tool,
-  kind: "pdf",
+  kind: "pdf" as const,
   slug: tool.href.startsWith("/") ? tool.href.slice(1) : tool.href,
   keywords: [tool.name, tool.description, tool.href.replaceAll("-", " ")].join(" "),
 }));
@@ -158,7 +158,8 @@ const catalogSearchAliases: Record<string, string> = {
   "notes-to-pdf": "notes to PDF notebook typed notes text document print save export study notes class notes",
 };
 
-export const catalogTools: Tool[] = toolCatalog
+export const catalogTools: Tool[] = [
+  ...toolCatalog
   .filter((tool) => tool.slug !== "pdf-tools")
   .map((tool) => ({
     name: tool.name,
@@ -166,10 +167,12 @@ export const catalogTools: Tool[] = toolCatalog
     icon: tool.category,
     category: tool.category,
     href: "/tools/" + tool.slug,
-    kind: "utility",
+    kind: "utility" as const,
     slug: tool.slug,
     keywords: [tool.keywords, catalogSearchAliases[tool.slug] ?? ""].join(" "),
-  }));
+  })),
+  { name: "NEPSE Market Dashboard", description: "Explore periodic NEPSE market snapshots, listed-company prices, index and sector performance, top movers and historical charts.", icon: "NEPSE", category: "NEPSE", href: "/market", kind: "utility", slug: "nepse-market-dashboard", keywords: "NEPSE market dashboard stock prices share market listed companies index sector top gainers losers turnover history chart Nepal stock exchange" },
+];
 
 // One canonical directory for homepage search and the full /tools directory.
 // OCR is intentionally excluded until its backend language data is enabled.

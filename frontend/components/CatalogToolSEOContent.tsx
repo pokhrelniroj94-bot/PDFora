@@ -145,6 +145,19 @@ export default function CatalogToolSEOContent({
 
   const advice = categoryAdvice[tool.category] ?? categoryAdvice.Math;
   const title = tool.name;
+  const taskDescription = tool.description.replace(/[.!?]$/, "");
+  const preparation: Record<string, string> = {
+    PDF: "Keep an untouched copy of the original PDF. Check whether it contains scans, forms, bookmarks, annotations or digital signatures that may affect the result.",
+    Finance: "Have the principal or amount, rate, currency and calculation period ready. Check whether the rate is annual or monthly and whether fees or taxes are included.",
+    Text: "Prepare the exact text you want to process. Preserve a backup if you are replacing, removing, sorting or converting text in bulk.",
+    Developer: "Prepare a small representative sample and know the target format or encoding. Do not use real passwords, API keys, private tokens or confidential source code.",
+    Image: "Use a copy of the source image and check the required output format, dimensions, transparency and maximum file size before exporting.",
+    Math: "Check the units and input format for each value. For dates, identify the start and end date; for percentages, confirm whether the value is entered as a number or decimal.",
+    SEO: "Copy the exact page URL, title, description or content you intend to audit. Treat the output as a diagnostic aid and verify important findings on the live page.",
+    Business: "Collect the relevant cost, selling price, revenue, wage or target figures. Confirm the time period and whether tax is included before calculating.",
+    Nepal: "Check the applicable fiscal year, BS or AD date, NPR amount, local unit and eligibility conditions. Verify official matters with the responsible Nepalese authority."
+  };
+  const inputNote = preparation[tool.category] ?? "Prepare the source information requested by the tool and check the units, format and assumptions before processing.";
   // Keep only FAQs written for this tool or its category.
   return (
     <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">
@@ -153,19 +166,19 @@ export default function CatalogToolSEOContent({
           <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Complete tool guide</p>
           <h2 className="mt-2 text-2xl font-black text-slate-950">What is the {title}?</h2>
           <p className="mt-4 leading-8 text-slate-700">{tool.description} This page explains the purpose of the tool, the information to prepare, how to interpret the result and the checks worth making before you use it. The aim is to help you complete one clear task without installing extra software or guessing which settings to choose.</p>
-          <p className="mt-4 leading-8 text-slate-700">This {tool.category.toLowerCase()} utility is focused on one task: {tool.description} Use the controls shown above to provide the values or content requested by this specific tool. The expected result, supported formats and important assumptions depend on the task, so review the instructions and example before using the output in another application or decision.</p>
+          <p className="mt-4 leading-8 text-slate-700">Unlike a general-purpose editor, {title} is intended for the specific job described here: {taskDescription}. It is most useful when you already know the source material and the format or result you need. Review the tool labels and any limitations before relying on the output.</p>
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">How to use the {title} step by step</h2>
           <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
-            <li><strong>Prepare the input.</strong> Collect the source text, file, values or dates needed for the task. Check for missing information and keep a copy of anything you may need to restore.</li>
+            <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
             <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>
             <li><strong>Enter a representative sample.</strong> If the task is unfamiliar, start with a small sample or values whose expected result you can check. This helps reveal input mistakes early.</li>
             <li><strong>Run the tool.</strong> Submit the input once and wait for the operation to finish. Avoid repeatedly clicking the action while a request is still processing.</li>
             <li><strong>Review the output.</strong> Check the result, compare it with the original or a known answer, and look for missing content, unexpected formatting or implausible values.</li>
             <li><strong>Save or copy only after checking.</strong> Use the output only when it meets the requirements of your task. Keep the original until you no longer need it.</li>
           </ol>
-          <p className="mt-4 leading-8 text-slate-700">{tool.description} The exact controls can vary by utility, so follow the instructions displayed in the workspace rather than assuming every tool has the same fields or options.</p>
+          <p className="mt-4 leading-8 text-slate-700">Use this page when you need to {taskDescription.toLowerCase()}. Start with a representative input, inspect the output against the original or a known reference, and only then use the result in your next step. The available controls and supported input formats are shown in the tool workspace above.</p>
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Example and practical use cases</h2>

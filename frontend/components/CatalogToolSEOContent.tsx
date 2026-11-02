@@ -360,7 +360,7 @@ export default function CatalogToolSEOContent({
           <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Complete tool guide</p>
           <h2 className="mt-2 text-2xl font-black text-slate-950">What is the {title}?</h2>
           <p className="mt-4 leading-8 text-slate-700">{tool.description} This page explains the purpose of the tool, the information to prepare, how to interpret the result and the checks worth making before you use it. The aim is to help you complete one clear task without installing extra software or guessing which settings to choose.</p>
-          <p className="mt-4 leading-8 text-slate-700">Unlike a general-purpose editor, {title} is intended for the specific job described here: {taskDescription}. It is most useful when you already know the source material and the format or result you need. Review the tool labels and any limitations before relying on the output.</p>
+          
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">How to use the {title} step by step</h2>
@@ -368,11 +368,11 @@ export default function CatalogToolSEOContent({
             <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
             <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>
             <li><strong>Enter a representative sample.</strong> If the task is unfamiliar, start with a small sample or values whose expected result you can check. This helps reveal input mistakes early.</li>
-            <li><strong>Run the tool.</strong> Submit the input once and wait for the operation to finish. Avoid repeatedly clicking the action while a request is still processing.</li>
+            <li><strong>Use the available control.</strong> Some tools update automatically as you type; others require a Convert, Calculate or Process action. Follow the control shown in the workspace.</li>
             <li><strong>Review the output.</strong> Check the result, compare it with the original or a known answer, and look for missing content, unexpected formatting or implausible values.</li>
             <li><strong>Save or copy only after checking.</strong> Use the output only when it meets the requirements of your task. Keep the original until you no longer need it.</li>
           </ol>
-          <p className="mt-4 leading-8 text-slate-700">Use this page when you need to {taskDescription.toLowerCase()}. Start with a representative input, inspect the output against the original or a known reference, and only then use the result in your next step. The available controls and supported input formats are shown in the tool workspace above.</p>
+          
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Example and practical use cases</h2>
@@ -392,7 +392,7 @@ export default function CatalogToolSEOContent({
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Privacy and safe use</h2>
-          <p className="mt-4 leading-8 text-slate-700">Only provide the information needed to complete the task. Do not enter passwords, authentication codes, bank card details or other secrets into a general-purpose utility. For personal documents or business records, read the site&apos;s privacy information and consider whether you are authorised to upload or process the material. If you are unsure, use a non-sensitive sample first.</p>
+          <p className="mt-4 leading-8 text-slate-700">Use only the information needed for the task. Do not enter passwords, authentication codes, bank-card details, private keys or other secrets. For files or business records, review the site privacy policy and keep an untouched original until you have checked the output.</p>
           <p className="mt-4 leading-8 text-slate-700">When a result is important, keep a source copy and retain any supporting records required by your organisation. If you discover an error, return to the original input, correct it and repeat the process rather than trying to patch an unreliable output.</p>
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">

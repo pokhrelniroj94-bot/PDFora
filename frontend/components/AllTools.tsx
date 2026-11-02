@@ -19,7 +19,7 @@ const NepalTools = dynamic(() => import("./NepalTools"), { loading: ToolChunkLoa
 const NepalLiveTools = dynamic(() => import("./NepalLiveTools"), { loading: ToolChunkLoading });
 const NepaliTypingTool = dynamic(() => import("./NepaliTypingTool"), { loading: ToolChunkLoading });
 
-const categories = ["All", "PDF Tools", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)])).sort((a, b) => a.localeCompare(b))];
+const categories = ["All", "PDF Tools", ...Array.from(new Set(allTools.map((tool) => tool.category))).sort((a, b) => a.localeCompare(b))];
 const toolIcons: Record<string, string> = { "Nepal Tools": "🇳🇵", "Date & Calendar": "📅", "Panchang & Tithi": "🌙", "Kundali & Astrology": "🪐", Calculators: "🧮", "Document & Text": "✍️", "Developer Tools": "⌨️", "Image Tools": "🖼️", "SEO Tools": "🔎", PDF: "📄" };
 function getToolIcon(slug: string, category: string): string {
  const rules: [RegExp,string][] = [
@@ -40,7 +40,7 @@ function CopyButton({value}:{value:string}) { return <button className="rounded-
 export function ToolsDirectory() {
  const [category,setCategory]=useState("All"),[query,setQuery]=useState("");
  const list=useMemo(()=>allTools.filter(t=>{
-  const matchesCategory=category==="All"||(category==="PDF Tools"?t.kind==="pdf":category==="PDF"?(t.kind==="pdf"||t.category==="PDF"):t.category===category);
+  const matchesCategory=category==="All"||(category==="PDF Tools"?t.kind==="pdf":t.category===category);
   return matchesCategory&&matchesToolSearch(t,query);
  }),[category,query]);
  return <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Repair PDF Online | PDFora",
+  title: "Repair PDF Online",
   description: "Attempt to rewrite a damaged PDF. Repair is best-effort and cannot recover every corrupted file.",
   alternates: { canonical: "https://pd-fora.vercel.app/repair-pdf" },
 };

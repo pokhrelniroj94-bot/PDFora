@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF to HTML Online | PDFora",
+  title: "PDF to HTML Online",
   description: "Extract selectable PDF text into a simple HTML document. Scanned pages require OCR.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-html" },
 };

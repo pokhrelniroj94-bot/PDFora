@@ -37,6 +37,7 @@ const norm = (angle: number) => ((angle % 360) + 360) % 360;
 const rad = (deg: number) => deg * Math.PI / 180;
 const deg = (r: number) => r * 180 / Math.PI;
 const nepaliNumber = (value: number, digits = 2) => new Intl.NumberFormat("ne-NP", { maximumFractionDigits: digits }).format(value);
+const nepaliDigits = (value: string | number) => String(value).replace(/\\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]);
 
 function localWallTimeToUtc(date: string, time: string, timeZone = "Asia/Kathmandu"): Date {
   const [year, month, day] = date.split("-").map(Number);
@@ -101,8 +102,8 @@ function formatBS(date: Date): string {
   try {
     const y = date.getUTCFullYear(), m = String(date.getUTCMonth()+1).padStart(2,"0"), d = String(date.getUTCDate()).padStart(2,"0");
     const bs = new DateConverter(`${y}-${m}-${d}`).toBs();
-    return `${nepaliNumber(bs.year,0)}-${nepaliNumber(bs.month,0).padStart(2,"0")}-${nepaliNumber(bs.date,0).padStart(2,"0")}`;
-  } catch { return `${nepaliNumber(date.getUTCFullYear(),0)}-${nepaliNumber(date.getUTCMonth()+1,0).padStart(2,"0")}-${nepaliNumber(date.getUTCDate(),0).padStart(2,"0")} AD`; }
+    return `${nepaliDigits(bs.year)}-${nepaliDigits(String(bs.month).padStart(2,"0"))}-${nepaliDigits(String(bs.date).padStart(2,"0"))}`;
+  } catch { return `${nepaliDigits(date.getUTCFullYear())}-${nepaliDigits(String(date.getUTCMonth()+1).padStart(2,"0"))}-${nepaliDigits(String(date.getUTCDate()).padStart(2,"0"))} AD`; }
 }
 
 export interface KundaliInput {

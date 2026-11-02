@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import AdsterraNative from "../app/components/AdsterraNative";
@@ -406,7 +406,41 @@ export default function PDForaTool({
             description="Designed to work smoothly on phones and desktops."
           />
         </div>
-        <AdsterraNative />
+        {/* Crawlable tool guidance: keep useful content ahead of the ad unit. */}
+        <section
+          aria-labelledby="how-to-use-title"
+          className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7"
+        >
+          <h2 id="how-to-use-title" className="text-xl font-black tracking-tight">
+            How to use {title}
+          </h2>
+          <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-600">
+            <li>Select or drag and drop your PDF file into the upload area.</li>
+            <li>Enter any required options shown for this tool.</li>
+            <li>Select the process button and wait while PDFora prepares your file.</li>
+            <li>When processing finishes, your output file downloads automatically.</li>
+          </ol>
+          <h2 className="mt-6 text-lg font-black tracking-tight">
+            Is this PDF tool free to use?
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            You can use this PDFora tool online without installing desktop software.
+            Choose your file, run the selected operation, and download the result.
+          </p>
+          <h2 className="mt-6 text-lg font-black tracking-tight">
+            Are my files kept private?
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Files are sent securely to the PDFora processing service to complete
+            the requested operation. Avoid uploading documents containing
+            information you do not want processed online.
+          </p>
+        </section>
+
+        {/* Advertisement is intentionally outside the upload and processing flow. */}
+        <div className="mt-8 border-t border-slate-200 pt-2">
+          <AdsterraNative />
+        </div>
       </section>
     </main>
   );

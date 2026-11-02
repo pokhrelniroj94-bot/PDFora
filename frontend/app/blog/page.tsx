@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { blogPosts } from "../../lib/blog-posts";
-import AdsterraNative from "../../components/AdsterraNative";
+import AdsterraNative from "../components/AdsterraNative";
 
 export const metadata: Metadata = {
   title: "Nepal Guides: NRB Rates, Tax, Electricity, Holidays & Tools",

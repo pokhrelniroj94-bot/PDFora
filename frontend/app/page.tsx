@@ -118,6 +118,20 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#f5f7f6] text-slate-950">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.map((faq) => ({
+              "@type": "Question",
+              name: faq.question,
+              acceptedAnswer: { "@type": "Answer", text: faq.answer },
+            })),
+          }),
+        }}
+      />
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgba(15,23,42,0.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -486,11 +500,12 @@ export default function Home() {
                   </span>
                 </button>
 
-                {isOpen && (
-                  <div className="border-t border-slate-100 px-5 py-4 text-sm leading-6 text-slate-600">
-                    {faq.answer}
-                  </div>
-                )}
+                <div
+                  hidden={!isOpen}
+                  className="border-t border-slate-100 px-5 py-4 text-sm leading-6 text-slate-600"
+                >
+                  {faq.answer}
+                </div>
               </div>
             );
           })}

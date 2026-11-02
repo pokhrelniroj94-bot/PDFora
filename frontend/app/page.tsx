@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import AdsterraNative from "./components/AdsterraNative";
-import Adsterra160x600 from "./components/Adsterra160x600";
 import { useMemo, useState } from "react";
 
 type Tool = {
@@ -106,20 +104,20 @@ const tools: Tool[] = [
     category: "Security",
     href: "/watermark",
   },
-  { name: "Reorder PDF Pages", description: "Change the order of pages in a PDF document.", icon: "N", category: "Organize", href: "/reorder-pdf" },
-  { name: "Add Page Numbers", description: "Insert page numbers into your PDF.", icon: "N", category: "Edit", href: "/add-page-numbers" },
-  { name: "Crop PDF", description: "Crop page margins in a PDF.", icon: "N", category: "Edit", href: "/crop-pdf" },
-  { name: "Add Header or Footer", description: "Add a text header to every page.", icon: "N", category: "Edit", href: "/header-footer" },
-  { name: "Protect PDF", description: "Encrypt your PDF with a password.", icon: "N", category: "Security", href: "/protect-pdf" },
-  { name: "Unlock PDF", description: "Unlock a PDF using its existing password.", icon: "N", category: "Security", href: "/unlock-pdf" },
-  { name: "Sign PDF", description: "Add a visible typed signature to a PDF.", icon: "N", category: "Security", href: "/sign-pdf" },
-  { name: "PDF to PNG", description: "Convert PDF pages to PNG images.", icon: "N", category: "Convert", href: "/pdf-to-png" },
-  { name: "PDF to WebP", description: "Convert PDF pages to WebP images.", icon: "N", category: "Convert", href: "/pdf-to-webp" },
-  { name: "PDF to Text", description: "Extract selectable text from a PDF.", icon: "N", category: "Convert", href: "/pdf-to-text" },
-  { name: "Grayscale PDF", description: "Convert PDF pages to grayscale.", icon: "N", category: "Edit", href: "/grayscale-pdf" },
-  { name: "Flatten PDF", description: "Apply form appearances and remove annotations where supported.", icon: "N", category: "Edit", href: "/flatten-pdf" },
-  { name: "Edit PDF Metadata", description: "Change PDF title, author, subject and keywords.", icon: "N", category: "Edit", href: "/edit-pdf-metadata" },
-  { name: "Repair PDF", description: "Attempt best-effort recovery of damaged PDFs.", icon: "N", category: "Edit", href: "/repair-pdf" },
+  { name: "Reorder PDF Pages", description: "Change the order of pages in a PDF document.", icon: "↕", category: "Organize", href: "/reorder-pdf" },
+  { name: "Add Page Numbers", description: "Insert page numbers into your PDF.", icon: "#", category: "Edit", href: "/add-page-numbers" },
+  { name: "Crop PDF", description: "Crop page margins in a PDF.", icon: "⌗", category: "Edit", href: "/crop-pdf" },
+  { name: "Add Header or Footer", description: "Add a text header to every page.", icon: "H", category: "Edit", href: "/header-footer" },
+  { name: "Protect PDF", description: "Encrypt your PDF with a password.", icon: "🔒", category: "Security", href: "/protect-pdf" },
+  { name: "Unlock PDF", description: "Unlock a PDF using its existing password.", icon: "🔓", category: "Security", href: "/unlock-pdf" },
+  { name: "Sign PDF", description: "Add a visible typed signature to a PDF.", icon: "✍", category: "Security", href: "/sign-pdf" },
+  { name: "PDF to PNG", description: "Convert PDF pages to PNG images.", icon: "P", category: "Convert", href: "/pdf-to-png" },
+  { name: "PDF to WebP", description: "Convert PDF pages to WebP images.", icon: "W", category: "Convert", href: "/pdf-to-webp" },
+  { name: "PDF to Text", description: "Extract selectable text from a PDF.", icon: "T", category: "Convert", href: "/pdf-to-text" },
+  { name: "Grayscale PDF", description: "Convert PDF pages to grayscale.", icon: "◐", category: "Edit", href: "/grayscale-pdf" },
+  { name: "Flatten PDF", description: "Apply form appearances and remove annotations where supported.", icon: "▤", category: "Edit", href: "/flatten-pdf" },
+  { name: "Edit PDF Metadata", description: "Change PDF title, author, subject and keywords.", icon: "i", category: "Edit", href: "/edit-pdf-metadata" },
+  { name: "Repair PDF", description: "Attempt best-effort recovery of damaged PDFs.", icon: "🛠", category: "Edit", href: "/repair-pdf" },
   { name: "PDF to HTML", description: "Export selectable PDF text as an HTML document.", icon: "H", category: "Convert", href: "/pdf-to-html" },
   { name: "Extract Images", description: "Extract embedded images from a PDF into a ZIP file.", icon: "I", category: "Convert", href: "/extract-images" },
   { name: "Remove Blank Pages", description: "Detect and remove empty pages from a PDF.", icon: "B", category: "Edit", href: "/remove-blank-pages" },
@@ -129,7 +127,7 @@ const tools: Tool[] = [
 
   { name: "Add Background", description: "Add a background layer to PDF pages.", icon: "B", category: "Edit", href: "/add-background" },
   { name: "Add Bookmarks", description: "Create PDF bookmarks to navigate long documents.", icon: "B", category: "Organize", href: "/add-bookmarks" },
-  { name: "Bates Numbering", description: "Add sequential Bates identifiers to PDF pages.", icon: "N", category: "Organize", href: "/bates-numbering" },
+  { name: "Bates Numbering", description: "Add sequential Bates identifiers to PDF pages.", icon: "B", category: "Organize", href: "/bates-numbering" },
   { name: "Extract Bookmarks", description: "Export the bookmark outline from a PDF.", icon: "B", category: "Extract", href: "/extract-bookmarks" },
   { name: "Extract Fonts", description: "Inspect and extract embedded PDF font resources where supported.", icon: "F", category: "Extract", href: "/extract-fonts" },
   { name: "Extract Page Images", description: "Render individual PDF pages as image files.", icon: "I", category: "Extract", href: "/extract-page-images" },
@@ -161,34 +159,34 @@ const categories = [
 
 const faqs = [
   {
-    question: "Is NIROJ Tools free to use?",
+    question: "Is PDFora free to use?",
     answer:
-      "NIROJ Tools currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
+      "PDFora currently provides its available PDF tools without requiring a subscription. Availability and features may change as the platform develops.",
   },
   {
     question: "Do I need to install software?",
     answer:
-      "No. NIROJ Tools is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
+      "No. PDFora is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
   },
   {
     question: "What PDF tools are available?",
     answer:
-      "NIROJ Tools provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
+      "PDFora provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
   },
   {
     question: "How are my files processed?",
     answer:
-      "Files selected for processing are temporarily sent to the NIROJ Tools processing backend so the requested operation can be completed.",
+      "Files selected for processing are temporarily sent to the PDFora processing backend so the requested operation can be completed.",
   },
   {
     question: "Are my uploaded files stored permanently?",
     answer:
-      "NIROJ Tools is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
+      "PDFora is designed to process uploaded files temporarily rather than maintain a permanent personal file library. Please review our Privacy Policy for more information.",
   },
   {
-    question: "Can I use NIROJ Tools on my phone?",
+    question: "Can I use PDFora on my phone?",
     answer:
-      "Yes. NIROJ Tools is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
+      "Yes. PDFora is designed with a responsive interface so you can use its available tools from phones, tablets and desktop browsers.",
   },
 ];
 
@@ -285,6 +283,7 @@ export default function Home() {
     const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     const tokens = normalize(query).split(" ").filter(Boolean);
     return tools.filter((tool) => {
+      if (tool.href === "/ocr-pdf") return false;
       const matchesCategory = category === "All" || tool.category === category;
       const searchable = normalize([tool.name, tool.description, tool.category, tool.href.replaceAll("-", " "), searchTerms[tool.href] || ""].join(" "));
       return matchesCategory && (tokens.length === 0 || tokens.every((token) => searchable.includes(token)));
@@ -301,19 +300,19 @@ export default function Home() {
           <Link
             href="/"
             className="flex items-center gap-2"
-            aria-label="NIROJ Tools home"
+            aria-label="PDFora home"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-700 text-sm font-black text-white">
               P
             </div>
 
             <span className="text-xl font-black tracking-tight">
-              NIROJ Tools
+              PDFora
             </span>
           </Link>
 
           <Link
-            href="#tools"
+            href="/tools"
             className="rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800"
           >
             Explore Tools
@@ -454,7 +453,7 @@ export default function Home() {
       >
         <div className="mb-6">
           <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-            NIROJ Tools toolbox
+            PDFora toolbox
           </p>
 
           <h2
@@ -466,7 +465,7 @@ export default function Home() {
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
             Choose a tool below to complete your task online.
-            NIROJ Tools is designed to make common document tasks simple and
+            PDFora is designed to make common document tasks simple and
             accessible.
           </p>
         </div>
@@ -529,15 +528,13 @@ export default function Home() {
       </section>
 
       {/* Non-intrusive ad after the main tool discovery area */}
-      <AdsterraNative />
-      <Adsterra160x600 />
 
       {/* WHY PDFORA */}
       <section className="border-y border-slate-200 bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <p className="text-xs font-black uppercase tracking-widest text-violet-600">
-              Why NIROJ Tools
+              Why PDFora
             </p>
 
             <h2 className="mt-2 text-2xl font-black sm:text-3xl">
@@ -545,7 +542,7 @@ export default function Home() {
             </h2>
 
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-              NIROJ Tools focuses on making everyday PDF tasks easier to access
+              PDFora focuses on making everyday PDF tasks easier to access
               without requiring desktop software installation.
             </p>
           </div>
@@ -560,7 +557,7 @@ export default function Home() {
             <InfoCard
               icon="📱"
               title="Works across devices"
-              description="Use NIROJ Tools from modern desktop, tablet and mobile browsers with a responsive interface."
+              description="Use PDFora from modern desktop, tablet and mobile browsers with a responsive interface."
             />
 
             <InfoCard
@@ -588,7 +585,7 @@ export default function Home() {
           <StepCard
             number="01"
             title="Choose a tool"
-            description="Select the PDF operation you need from the NIROJ Tools toolbox."
+            description="Select the PDF operation you need from the PDFora toolbox."
           />
 
           <StepCard
@@ -644,7 +641,7 @@ export default function Home() {
           </h2>
 
           <p className="mt-3 text-sm text-slate-500">
-            Answers to common questions about using NIROJ Tools.
+            Answers to common questions about using PDFora.
           </p>
         </div>
 
@@ -694,8 +691,8 @@ export default function Home() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <InfoLink
               href="/about"
-              title="About NIROJ Tools"
-              description="Learn more about NIROJ Tools and its purpose."
+              title="About PDFora"
+              description="Learn more about PDFora and its purpose."
             />
 
             <InfoLink
@@ -713,7 +710,7 @@ export default function Home() {
             <InfoLink
               href="/terms"
               title="Terms of Service"
-              description="Read the terms that apply when using NIROJ Tools."
+              description="Read the terms that apply when using PDFora."
             />
           </div>
         </div>
@@ -728,14 +725,14 @@ export default function Home() {
               <Link
                 href="/"
                 className="flex items-center gap-2"
-                aria-label="NIROJ Tools home"
+                aria-label="PDFora home"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
                   N
                 </div>
 
                 <span className="text-xl font-black">
-                  NIROJ Tools
+                  PDFora
                 </span>
               </Link>
 
@@ -780,7 +777,7 @@ export default function Home() {
             {/* COMPANY */}
             <div>
               <h3 className="text-sm font-black">
-                NIROJ Tools
+                PDFora
               </h3>
 
               <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
@@ -809,11 +806,11 @@ export default function Home() {
             {/* ABOUT */}
             <div>
               <h3 className="text-sm font-black">
-                About NIROJ Tools
+                About PDFora
               </h3>
 
               <p className="mt-4 text-sm leading-6 text-slate-400">
-                NIROJ Tools is an all-in-one online utility platform. We are expanding from PDF tools into image, text, calculator, developer and productivity tools.
+                PDFora is an all-in-one online utility platform. We are expanding from PDF tools into image, text, calculator, developer and productivity tools.
               </p>
 
               <Link
@@ -827,7 +824,7 @@ export default function Home() {
 
           <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
             <p>
-              © 2026 NIROJ Tools. All rights reserved.
+              © 2026 PDFora. All rights reserved.
             </p>
 
             <p>
@@ -847,14 +844,12 @@ function ToolCard({
   tool: Tool;
   popular?: boolean;
 }) {
-  const unavailable = tool.href === "/ocr-pdf";
+  const unavailable = false;
   return (
     <Link
       href={tool.href}
       className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg active:scale-[0.99]"
       aria-label={`Open ${tool.name}`}
-      aria-disabled={unavailable}
-      onClick={(event) => { if (unavailable) event.preventDefault(); }}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-sm font-black text-violet-600">
@@ -886,7 +881,7 @@ function ToolCard({
           {howToUse[tool.href] || "Open this tool, upload the required file, follow the options and download the result."}
         </p>
         <div className="mt-4 flex items-center justify-between text-sm font-bold text-teal-700">
-          <span>{unavailable ? "Coming soon" : "Open tool"}</span><span aria-hidden="true">→</span>
+          <span>Open tool</span><span aria-hidden="true">→</span>
         </div>
       </div>
     </Link>

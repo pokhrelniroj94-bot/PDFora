@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of Service for Niroj77.",
+  description: "Terms of Service for PDFora.",
+  alternates: { canonical: "https://pd-fora.vercel.app/terms" },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms of Service for PDFora." },
 };
 
 export default function TermsPage() {
@@ -19,7 +21,7 @@ export default function TermsPage() {
           <div>
             <h2 className="mb-2 text-2xl font-semibold">1. Acceptance of Terms</h2>
             <p>
-              By accessing or using Niroj77, you agree to these Terms of
+              By accessing or using PDFora, you agree to these Terms of
               Service. If you do not agree with these terms, please do not use
               the website.
             </p>
@@ -28,7 +30,7 @@ export default function TermsPage() {
           <div>
             <h2 className="mb-2 text-2xl font-semibold">2. Our Services</h2>
             <p>
-              Niroj77 provides online tools for processing documents and files,
+              PDFora provides online tools for processing documents and files,
               including PDF conversion, merging, compression, editing, and
               other related services.
             </p>
@@ -42,7 +44,7 @@ export default function TermsPage() {
             <h2 className="mb-2 text-2xl font-semibold">3. User Files</h2>
             <p>
               You are responsible for the files and content you upload to
-              Niroj77. You should only upload files that you have the legal
+              PDFora. You should only upload files that you have the legal
               right to process.
             </p>
             <p className="mt-2">
@@ -56,7 +58,7 @@ export default function TermsPage() {
               4. Prohibited Use
             </h2>
             <p>
-              You must not use Niroj77 for unlawful, fraudulent, abusive, or
+              You must not use PDFora for unlawful, fraudulent, abusive, or
               harmful activities. You must not attempt to interfere with,
               damage, overload, or gain unauthorized access to our systems.
             </p>
@@ -67,7 +69,7 @@ export default function TermsPage() {
               5. Service Availability
             </h2>
             <p>
-              Niroj77 is provided on an availability basis. We do not guarantee
+              PDFora is provided on an availability basis. We do not guarantee
               that the website or any particular tool will always be available,
               uninterrupted, or error-free.
             </p>
@@ -89,7 +91,7 @@ export default function TermsPage() {
               7. Intellectual Property
             </h2>
             <p>
-              The Niroj77 website, branding, design, software, and original
+              The PDFora website, branding, design, software, and original
               content are protected by applicable intellectual property laws.
               You may not copy, reproduce, or redistribute our website or
               services without permission.
@@ -101,7 +103,7 @@ export default function TermsPage() {
               8. Third-Party Services and Advertising
             </h2>
             <p>
-              Niroj77 may use third-party hosting, analytics, advertising, and
+              PDFora may use third-party hosting, analytics, advertising, and
               other services. Your use of third-party services may also be
               subject to their respective terms and policies.
             </p>
@@ -112,7 +114,7 @@ export default function TermsPage() {
               9. Limitation of Liability
             </h2>
             <p>
-              To the extent permitted by applicable law, Niroj77 and its
+              To the extent permitted by applicable law, PDFora and its
               operators will not be responsible for losses or damages resulting
               from the use of the website, file processing, service
               interruptions, or reliance on processed files.
@@ -123,7 +125,7 @@ export default function TermsPage() {
             <h2 className="mb-2 text-2xl font-semibold">10. Changes</h2>
             <p>
               We may update these Terms of Service from time to time. Continued
-              use of Niroj77 after changes are published means you accept the
+              use of PDFora after changes are published means you accept the
               updated terms.
             </p>
           </div>
@@ -132,7 +134,7 @@ export default function TermsPage() {
             <h2 className="mb-2 text-2xl font-semibold">11. Contact</h2>
             <p>
               If you have questions about these Terms of Service, please
-              contact the Niroj77 team through the contact information provided
+              contact the PDFora team through the contact information provided
               on our website.
             </p>
           </div>

@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description: "Contact PDFora with feedback, technical questions and tool support requests.",
+  alternates: { canonical: "https://pd-fora.vercel.app/contact" },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/contact", siteName: "PDFora", title: "Contact PDFora", description: "Contact PDFora with feedback, technical questions and tool support requests." },
+};
+
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -34,34 +43,11 @@ export default function ContactPage() {
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Have a question, suggestion, feedback, or a problem with one
-              of our PDF tools? Contact the PDFora team.
+              Find information about PDFora, our tools, and how uploaded files are handled.
             </p>
           </div>
 
           <div className="mt-10 grid gap-5 md:grid-cols-2">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-xl">
-                📧
-              </div>
-
-              <h2 className="mt-5 text-lg font-black">
-                Email Support
-              </h2>
-
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                For support, technical problems, suggestions, or general
-                questions, contact us by email.
-              </p>
-
-              <a
-                href="mailto:zenvora966@gmail.com"
-                className="mt-5 inline-flex rounded-xl bg-violet-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-violet-700"
-              >
-                zenvora966@gmail.com
-              </a>
-            </div>
-
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-xl">
                 🛠️
@@ -102,24 +88,17 @@ export default function ContactPage() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                For questions about how PDFora handles information and
-                uploaded files, please contact us by email.
+                For details about how PDFora handles information and
+                uploaded files, please read our Privacy Policy.
               </p>
 
-              <a
-                href="mailto:zenvora966@gmail.com"
-                className="mt-4 inline-block text-sm font-bold text-violet-600 hover:underline"
-              >
-                Contact PDFora →
-              </a>
             </div>
           </div>
 
           <div className="mt-8 rounded-3xl border border-violet-100 bg-violet-50 p-6 text-center">
             <p className="text-sm text-slate-600">
               We recommend including the name of the PDF tool you were using
-              and a short description of the issue so we can investigate it
-              more effectively.
+              and a short description of the issue for your own reference.
             </p>
           </div>
 

@@ -52,6 +52,14 @@ const YONI_TABLE = [
  [1,0,1,2,1,2,1,1,3,2,2,2,2,4],
 ];
 
+export const ASHTAKOOTA_REFERENCE_TABLES = {
+ vashya: { labels: VASHYA_ORDER, values: VASHYA_TABLE },
+ grahaMaitri: { labels: GRAHA_ORDER, values: GRAHA_TABLE },
+ gana: { labels: GANA_ORDER, values: GANA_TABLE },
+ yoni: { labels: YONI_ORDER, values: YONI_TABLE },
+ rashis: SIGNS.map((name,index)=>({name,varna:VARNA[index],vashya:VASHYA[index],lord:SIGN_LORD[index]})),
+ nakshatras: NAKSHATRAS.map((name,index)=>({name,gana:GANA[index],nadi:NADI[index],yoni:YONI[index]})),
+};
 const FRIENDS: Record<string,string[]> = {
  Sun:["Moon","Mars","Jupiter"], Moon:["Sun","Mercury"], Mars:["Sun","Moon","Jupiter"],
  Mercury:["Sun","Venus"], Jupiter:["Sun","Moon","Mars"], Venus:["Mercury","Saturn"], Saturn:["Mercury","Venus"],

@@ -302,7 +302,7 @@ export default function Home() {
             className="flex items-center gap-2"
             aria-label="PDFora home"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-700 text-sm font-black text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-sm font-black text-white">
               P
             </div>
 
@@ -324,13 +324,13 @@ export default function Home() {
       <section className="border-b border-slate-200 bg-white px-4 pb-14 pt-14 sm:pb-20 sm:pt-20">
         <div className="mx-auto max-w-4xl text-center">
           <div
-            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-100 text-lg font-black text-teal-700"
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-lg font-black text-blue-700"
             aria-hidden="true"
           >
             PDF
           </div>
 
-          <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-teal-700">
+          <p className="mt-6 text-xs font-black uppercase tracking-[0.2em] text-blue-700">
             Free online PDF tools
           </p>
 
@@ -345,10 +345,10 @@ export default function Home() {
             and edit documents online for free. Explore 100 additional free tools for text, finance, images, SEO and developer tasks. No software installation needed.
           </p>
 
-          <div className="mt-5"><Link href="/tools" className="inline-flex rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-800">Explore all 100 online tools →</Link></div>
+          <div className="mt-5"><Link href="/tools" className="inline-flex rounded-xl bg-blue-700 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-blue-700">Explore all 100 online tools →</Link></div>
 
           {/* SEARCH */}
-          <div className="mx-auto mt-8 flex max-w-2xl items-center rounded-2xl border border-teal-200 bg-white p-1.5 shadow-lg shadow-teal-900/5 ring-4 ring-teal-50 focus-within:border-teal-500">
+          <div className="mx-auto mt-8 flex max-w-2xl items-center rounded-2xl border border-blue-200 bg-white p-1.5 shadow-lg shadow-blue-900/5 ring-4 ring-blue-50 focus-within:border-blue-500">
             <span
               className="pl-3 text-lg text-slate-400"
               aria-hidden="true"
@@ -376,15 +376,15 @@ export default function Home() {
           </div>
 
           {query.trim() && (
-            <div className="mx-auto mt-3 max-w-2xl overflow-hidden rounded-2xl border border-teal-100 bg-white text-left shadow-xl shadow-teal-900/10" role="region" aria-label="Live PDF tool search results">
-              <div className="flex items-center justify-between border-b border-slate-100 bg-teal-50/70 px-4 py-3 text-xs">
-                <span className="font-extrabold text-teal-900">Search results</span>
+            <div className="mx-auto mt-3 max-w-2xl overflow-hidden rounded-2xl border border-blue-100 bg-white text-left shadow-xl shadow-blue-900/10" role="region" aria-label="Live PDF tool search results">
+              <div className="flex items-center justify-between border-b border-slate-100 bg-blue-50/70 px-4 py-3 text-xs">
+                <span className="font-extrabold text-blue-900">Search results</span>
                 <span className="text-slate-500">{searchResults.length} matching tools</span>
               </div>
               {searchResults.length ? (
                 <div className="divide-y divide-slate-100">
                   {searchResults.slice(0, 6).map((tool) => (
-                    <Link key={tool.href} href={tool.href} className="flex items-center justify-between gap-4 px-4 py-3 transition hover:bg-teal-50">
+                    <Link key={tool.href} href={tool.href} className="flex items-center justify-between gap-4 px-4 py-3 transition hover:bg-blue-50">
                       <span className="min-w-0">
                         <span className="block text-sm font-bold text-slate-900">{tool.name}</span>
                         <span className="mt-0.5 block text-xs text-slate-500">{tool.description}</span>
@@ -422,7 +422,7 @@ export default function Home() {
         className="mx-auto max-w-6xl px-4 py-12 sm:px-6"
       >
         <div className="mb-5">
-          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
+          <p className="text-xs font-black uppercase tracking-widest text-orange-600">
             Popular
           </p>
 
@@ -452,7 +452,7 @@ export default function Home() {
         className="mx-auto max-w-6xl scroll-mt-20 px-4 pb-16 sm:px-6"
       >
         <div className="mb-6">
-          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
+          <p className="text-xs font-black uppercase tracking-widest text-orange-600">
             PDFora toolbox
           </p>
 
@@ -533,7 +533,7 @@ export default function Home() {
       <section className="border-y border-slate-200 bg-white px-4 py-14 sm:px-6">
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
-            <p className="text-xs font-black uppercase tracking-widest text-violet-600">
+            <p className="text-xs font-black uppercase tracking-widest text-orange-600">
               Why PDFora
             </p>
 
@@ -572,7 +572,7 @@ export default function Home() {
       {/* HOW IT WORKS */}
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
+          <p className="text-xs font-black uppercase tracking-widest text-orange-600">
             How it works
           </p>
 
@@ -605,7 +605,7 @@ export default function Home() {
       {/* NEPAL TOOLS */}
       <section aria-labelledby="nepal-tools-heading" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <div className="mb-6">
-          <p className="text-xs font-black uppercase tracking-widest text-teal-700">Made for everyday tasks in Nepal</p>
+          <p className="text-xs font-black uppercase tracking-widest text-blue-700">Made for everyday tasks in Nepal</p>
           <h2 id="nepal-tools-heading" className="mt-2 text-2xl font-black sm:text-3xl">Popular Nepal online tools</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Check NRB exchange rates, estimate salary tax and electricity bills, convert Nepali dates, type Unicode Nepali and find public holidays—all in one place.</p>
         </div>
@@ -617,9 +617,9 @@ export default function Home() {
             { href: "/tools/nepali-date-converter", title: "BS to AD Date Converter", desc: "Convert Bikram Sambat and Gregorian dates." },
             { href: "/tools/nepali-unicode-typing", title: "Nepali Unicode Typing", desc: "Type Romanized Nepali using an English keyboard." },
             { href: "/tools/nepal-public-holidays-2083", title: "Nepal Public Holidays 2083", desc: "Search national, regional and community holidays." },
-          ].map((item) => <Link key={item.href} href={item.href} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-teal-400 hover:shadow-sm"><h3 className="font-bold text-slate-900">{item.title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p><span className="mt-4 inline-block text-sm font-semibold text-teal-700">Open tool →</span></Link>)}
+          ].map((item) => <Link key={item.href} href={item.href} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-blue-400 hover:shadow-sm"><h3 className="font-bold text-slate-900">{item.title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p><span className="mt-4 inline-block text-sm font-semibold text-blue-700">Open tool →</span></Link>)}
         </div>
-        <Link href="/tools" className="mt-6 inline-flex rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white">Explore all 100+ tools</Link>
+        <Link href="/tools" className="mt-6 inline-flex rounded-xl bg-blue-700 px-5 py-3 text-sm font-bold text-white">Explore all 100+ tools</Link>
       </section>
 
       {/* FAQ */}
@@ -629,7 +629,7 @@ export default function Home() {
         className="mx-auto max-w-4xl scroll-mt-20 px-4 py-14 sm:px-6"
       >
         <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
+          <p className="text-xs font-black uppercase tracking-widest text-orange-600">
             FAQ
           </p>
 
@@ -728,7 +728,7 @@ export default function Home() {
                 aria-label="PDFora home"
               >
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
-                  N
+                  P
                 </div>
 
                 <span className="text-xl font-black">
@@ -815,7 +815,7 @@ export default function Home() {
 
               <Link
                 href="/about"
-                className="mt-4 inline-block text-sm font-bold text-white hover:text-violet-400"
+                className="mt-4 inline-block text-sm font-bold text-white hover:text-orange-400"
               >
                 Learn more →
               </Link>
@@ -848,16 +848,16 @@ function ToolCard({
   return (
     <Link
       href={tool.href}
-      className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg active:scale-[0.99]"
+      className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg active:scale-[0.99]"
       aria-label={`Open ${tool.name}`}
     >
       <div className="flex items-start justify-between gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-sm font-black text-violet-600">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-sm font-black text-orange-600">
           {tool.icon}
         </div>
 
         {popular ? (
-          <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-black text-violet-600">
+          <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[10px] font-black text-orange-600">
             Popular
           </span>
         ) : (
@@ -877,10 +877,10 @@ function ToolCard({
 
       <div className="mt-auto pt-4">
         <p className="rounded-xl bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-600">
-          <span className="font-extrabold text-teal-700">How to use:</span>{" "}
+          <span className="font-extrabold text-blue-700">How to use:</span>{" "}
           {howToUse[tool.href] || "Open this tool, upload the required file, follow the options and download the result."}
         </p>
-        <div className="mt-4 flex items-center justify-between text-sm font-bold text-teal-700">
+        <div className="mt-4 flex items-center justify-between text-sm font-bold text-blue-700">
           <span>Open tool</span><span aria-hidden="true">→</span>
         </div>
       </div>
@@ -928,7 +928,7 @@ function StepCard({
 }) {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="text-sm font-black text-violet-600">
+      <div className="text-sm font-black text-orange-600">
         {number}
       </div>
 
@@ -955,7 +955,7 @@ function InfoLink({
   return (
     <Link
       href={href}
-      className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-violet-300 hover:bg-white"
+      className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-orange-300 hover:bg-white"
     >
       <h3 className="text-sm font-black">
         {title}
@@ -965,7 +965,7 @@ function InfoLink({
         {description}
       </p>
 
-      <span className="mt-4 inline-block text-sm font-bold text-violet-600">
+      <span className="mt-4 inline-block text-sm font-bold text-orange-600">
         Learn more →
       </span>
     </Link>

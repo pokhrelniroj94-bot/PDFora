@@ -76,3 +76,70 @@ body {
 
 /* Small, consistent interaction feedback across the workspace. */
 :where(button, a, input, select, textarea) { touch-action: manipulation; }
+
+
+/* Friendly, lightweight motion and clear processing/result states. */
+@keyframes pdfora-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pdfora-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes pdfora-progress {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(260%); }
+}
+@keyframes pdfora-shimmer {
+  100% { background-position: -200% 0; }
+}
+.pdfora-result {
+  animation: pdfora-fade-up 260ms ease-out both;
+  overflow-wrap: anywhere;
+}
+.pdfora-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 9999px;
+  animation: pdfora-spin 700ms linear infinite;
+  vertical-align: -0.18em;
+}
+.pdfora-progress-track {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: #ccfbf1;
+}
+.pdfora-progress-track::after {
+  content: "";
+  display: block;
+  width: 38%;
+  height: 100%;
+  border-radius: inherit;
+  background: #0f766e;
+  animation: pdfora-progress 1.15s ease-in-out infinite;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .tool-directory-card { transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease; }
+}
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+button:active:not(:disabled), [role="button"]:active {
+  transform: scale(.98);
+}
+button:disabled {
+  cursor: not-allowed;
+}
+:focus-visible {
+  scroll-margin-block: 1rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdfora-result { animation: none !important; }
+  .pdfora-spinner, .pdfora-progress-track::after { animation: none !important; }
+  button:active:not(:disabled), [role="button"]:active { transform: none; }
+}

@@ -4,8 +4,8 @@ export const revalidate = 0;
 const BASE = "https://raw.githubusercontent.com/Shubhamnpk/yonepse/main";
 const INDEX_SYMBOLS = new Set(["NEPSE", "SENSIND", "FLOATIND", "SENSFLTIND", "BANKSUBIND", "DEVBANKIND", "FININD", "HOTELIND", "HYDPOWIND", "INVIDX", "LIFINSIND", "MANPROCIND", "MICRFININD", "MUTUALIND", "NONLIFIND", "OTHERSIND", "TRDIND"]);
 const INDEX_CODE_BY_NAME: Record<string, string> = {
-  "NEPSE Index": "NEPSE", "Sensitive Index": "SENSIND", "Float Index": "FLOATIND",
-  "Sensitive Float Index": "SENSFLTIND", "Banking SubIndex": "BANKSUBIND",
+  "NEPSE": "NEPSE", "NEPSE Index": "NEPSE", "Sensitive": "SENSIND", "Sensitive Index": "SENSIND", "Float": "FLOATIND", "Float Index": "FLOATIND",
+  "Sensitive Float": "SENSFLTIND", "Sensitive Float Index": "SENSFLTIND", "Banking SubIndex": "BANKSUBIND",
   "Development Bank Index": "DEVBANKIND", "Finance Index": "FININD",
   "Hotels And Tourism Index": "HOTELIND", "HydroPower Index": "HYDPOWIND",
   "Investment Index": "INVIDX", "Life Insurance Index": "LIFINSIND",

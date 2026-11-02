@@ -175,7 +175,7 @@ Transfer fee: {npr(number(transferFee))}
 Estimated recipient amount: {npr(net)}</Result>:<p role="alert" className="text-sm text-red-700">Enter a valid amount, positive exchange rate and non-negative fee.</p>}<p className="text-xs text-slate-500">Enter the rate and fee quoted by your provider. Actual remittance payouts can include provider-specific spreads, promotions, correspondent-bank deductions and recipient fees.</p></div>;
   }
   const quantity = number(shares), cost = quantity * number(ipoPrice), sale = quantity * number(salePrice);
-  const ok = valid([shares, ipoPrice, salePrice, sebonFee, dpFee]) && quantity > 0 && Number.isInteger(quantity) && number(ipoPrice) > 0 && number(salePrice) >= 0 && number(sebonFee) <= 100;
+  const ok = valid([shares, ipoPrice, salePrice, sebonFee, dpFee]) && quantity > 0 && Number.isInteger(quantity) && number(ipoPrice) > 0 && number(salePrice) > 0 && number(sebonFee) <= 100;
   const sellBroker = nepseBrokerCharge(sale);
   const sellSebon = sale * number(sebonFee) / 100;
   const dp = number(dpFee), grossGain = sale - cost;
@@ -194,8 +194,7 @@ Estimated recipient amount: {npr(net)}</Result>:<p role="alert" className="text-
       <FinanceField title="Investor type"><select className={field} value={investorType} onChange={e=>setInvestorType(e.target.value)}><option value="individual">Individual</option><option value="institution">Institution / company</option></select></FinanceField>
       {investorType === "individual" && <FinanceField title="Share holding period"><select className={field} value={holdingPeriod} onChange={e=>setHoldingPeriod(e.target.value)}><option value="short">365 days or less · 5% CGT</option><option value="long">More than 365 days · 3.75% CGT</option></select></FinanceField>}
     </div>
-    {ok?<Result>Purchase value: {npr(cost)}
-Total IPO purchase cost: {npr(cost)}
+    {ok?<Result>IPO allotment cost: {npr(cost)}
 Gross sale value: {npr(sale)}
 Sell broker commission ({sellBroker.rate}% slab, min. NPR 10): {npr(sellBroker.amount)}
 Sell SEBON fee: {npr(sellSebon)}

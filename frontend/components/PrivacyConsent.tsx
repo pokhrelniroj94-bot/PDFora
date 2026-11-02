@@ -36,7 +36,7 @@ export function PrivacyConsentProvider({ children }: { children: React.ReactNode
         }
       }
     } catch {
-      window.localStorage.removeItem(STORAGE_KEY);
+      // Storage may be unavailable in private browsing or restricted contexts.
     } finally {
       setReady(true);
     }

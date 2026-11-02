@@ -11,7 +11,7 @@ const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
   loading: () => <div className="grid min-h-40 place-items-center rounded-3xl border border-white/10 bg-slate-900/5 text-sm text-slate-500">Loading Nepal market updates…</div>,
 });
 
-const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)])).sort((a, b) => a.localeCompare(b))];
+const categories = ["All", "PDF Tools", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)])).sort((a, b) => a.localeCompare(b))];
 
 const faqs = [
   {
@@ -110,7 +110,7 @@ export default function Home() {
 
   const filteredTools = useMemo(() => allTools.filter((tool) => {
     if (tool.href === "/ocr-pdf") return false;
-    const matchesCategory = category === "All" || (category === "PDF" ? tool.kind === "pdf" || tool.category === "PDF" : tool.category === category);
+    const matchesCategory = category === "All" || (category === "PDF Tools" ? tool.kind === "pdf" : category === "PDF" ? tool.kind === "pdf" || tool.category === "PDF" : tool.category === category);
     return matchesCategory && matchesToolSearch(tool, query);
   }), [query, category]);
   const popularTools = Array.from(new Map([...allTools.filter((tool) => tool.popular), ...allTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))].map((tool) => [tool.href, tool])).values()).slice(0, 9);

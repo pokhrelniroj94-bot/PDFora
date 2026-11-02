@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF to Text Online | PDFora",
+  title: "PDF to Text Online",
   description: "Extract selectable text from each PDF page into a downloadable TXT file. Scanned pages require OCR.",
   alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-text" },
 };

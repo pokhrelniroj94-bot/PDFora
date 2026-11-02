@@ -303,7 +303,7 @@ export default function Home() {
       return matchesCategory && (tokens.length === 0 || tokens.every((token) => searchable.includes(token)));
     });
   }, [query, category]);
-  const popularTools = tools.filter((tool) => tool.popular);
+  const popularTools = [...tools.filter((tool) => tool.popular), ...catalogTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))];
   const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
 
   return (
@@ -413,7 +413,7 @@ export default function Home() {
           </h2>
 
           <p className="mt-2 text-sm text-slate-500">
-            Quickly access some of the most useful PDF processing tools.
+            Quick access to popular PDF tools, calculators and practical utilities.
           </p>
         </div>
 

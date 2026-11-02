@@ -199,11 +199,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does it calculate take-home salary?", a: "No. It shows gross estimates in the same currency unit entered for the hourly wage, before tax and deductions." },
       { q: "Does it include unpaid leave or overtime?", a: "No. The estimate assumes 52 paid weeks and does not model unpaid leave, overtime premiums, tax or benefits." }
     ],
-    "business-days-calculator": [
-      { q: "Which weekend pattern does it use by default?", a: "It defaults to Saturday-only weekends, commonly used for Nepal date planning. You can choose Saturday–Sunday, Friday–Saturday or no weekend days." },
-      { q: "Are Nepal public holidays excluded?", a: "No. The result excludes only the selected weekend days. Subtract applicable national, regional and organisation-specific holidays separately." },
-      { q: "Are the start and end dates included?", a: "Yes. The date range is inclusive, so a working start date and working end date are both counted." }
-    ],
     "average-calculator": [
       { q: "What statistics does the average calculator show?", a: "It calculates count, mean, median, mode and range from the numbers entered." },
       { q: "How should I separate the numbers?", a: "Use commas, semicolons or spaces between valid numbers. Avoid mixing text labels with the number list." },
@@ -315,9 +310,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does the checker show factors for composite numbers?", a: "The tool can list factors for composite inputs where supported; review the output to see which integers divide the number exactly." }
     ],
     "business-days-calculator": [
-      { q: "Which days are excluded?", a: "The calculator excludes Saturdays and Sundays. It does not automatically remove every Nepal public holiday unless that feature is explicitly provided." },
-      { q: "Does it include the start and end dates?", a: "Check the date-count convention stated in the result. Inclusive business-day counts can differ from elapsed weekday counts." },
-      { q: "Are Nepal public holidays removed automatically?", a: "No. Treat this as a weekday count and check applicable government, regional or employer holidays separately." }
+      { q: "Which weekend pattern does it use by default?", a: "It defaults to Saturday-only weekends, commonly used for Nepal date planning. You can choose Saturday–Sunday, Friday–Saturday or no weekend days." },
+      { q: "Are Nepal public holidays excluded?", a: "No. The result excludes only the selected weekend days. Subtract applicable national, regional and organisation-specific holidays separately." },
+      { q: "Are the start and end dates included?", a: "Yes. The date range is inclusive, so a working start date and working end date are both counted." }
     ],
     "unix-timestamp-converter": [
       { q: "What is a Unix timestamp?", a: "It is a count of seconds or milliseconds since 1970-01-01 00:00:00 UTC, depending on the format used by the source." },

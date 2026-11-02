@@ -27,8 +27,8 @@ export default function NepalTools({slug}:{slug:string}) {
  let cancelled=false;
  document.querySelector<HTMLScriptElement>('script[data-nepali-date-converter]')?.remove();
  const sources=[
-  "https://cdn.jsdelivr.net/npm/@remotemerge/nepali-date-converter@1.2.5/ndc-browser.js",
-  "https://unpkg.com/@remotemerge/nepali-date-converter@1.2.5/ndc-browser.js"
+  "https://cdn.jsdelivr.net/npm/@remotemerge/nepali-date-converter@1.2.5/dist/ndc-browser.js",
+  "https://unpkg.com/@remotemerge/nepali-date-converter@1.2.5/dist/ndc-browser.js"
  ];
  const loadSource=(index:number)=>{
   if(cancelled)return;

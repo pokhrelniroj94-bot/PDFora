@@ -48,6 +48,7 @@ assert.ok(allTools.includes('"nepal-panchang-calculator"') && nepalTools.include
 assert.ok(packageJson.includes('"astronomy-engine": "2.1.19"') && panchangEngine.includes('import * as Astronomy from "astronomy-engine"'), "MIT astronomy engine dependency is missing");
 assert.ok(panchangEngine.includes("SearchRiseSet") && panchangEngine.includes("EclipticGeoMoon") && panchangEngine.includes("SunPosition"), "Panchang must use astronomical ephemeris and location-based sunrise/sunset");
 assert.ok(panchangEngine.includes("23.85709") && panchangEngine.includes("Asia/Kathmandu") && panchangEngine.includes("findAngaEnds"), "Panchang must document Lahiri, Nepal timezone and sunrise-anchored transition calculations");
+assert.ok(panchangEngine.includes("indices.karana === 0") && panchangEngine.includes("(indices.karana - 1) % 7"), "Karana mapping must include Kimstughna at the opening half-tithi and the seven movable sequence");
 
 const toolDirectory = read("../lib/tool-directory.ts");
 const homepage = read("../app/page.tsx");

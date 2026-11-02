@@ -379,9 +379,16 @@ export default function CatalogToolSEOContent({
     "password-generator": { example: "A randomly generated 16-character password with a mix of character classes has far more possible combinations than a short predictable word.", accuracy: "Security depends on randomness, length, uniqueness and safe storage. A generated password is only as safe as the method and device used.", workflow: "Choose a suitable length and character set, generate a password, copy it directly to a password manager and avoid reusing it.", mistakes: "Do not send generated passwords in chat, store them in plain text or choose an unnecessarily restrictive character set that makes the password predictable." },
     "currency-converter": { example: "If the published rate is NPR 133 for USD 1, USD 10 converts to NPR 1,330 before any bank spread or fees.", accuracy: "Exchange-rate providers update at different times. Bank cash, card, remittance and market rates can differ from an indicative mid-market or central-bank reference.", workflow: "Check the rate source and timestamp, enter the amount and currencies, then compare the indicative result with the rate offered by your bank or provider.", mistakes: "Do not assume an online reference rate is the amount you will receive after fees or that buying and selling rates are identical." },
   };
-  const advice = toolAdvice[tool.slug] ?? categoryAdvice[tool.category] ?? categoryAdvice.Math;
   const title = tool.name;
   const taskDescription = tool.description.replace(/[.!?]$/, "");
+  const categoryFallback = categoryAdvice[tool.category] ?? categoryAdvice.Math;
+  const generatedAdvice = {
+    example: `For example, use the ${title.toLowerCase()} with a small input whose expected result you can check. ${taskDescription}. Compare the displayed output with the original input and the format or units required by the destination.`,
+    accuracy: `The ${title.toLowerCase()} processes the values or content you provide; its output is only as reliable as the input, selected options and supported formats. ${categoryFallback.accuracy}`,
+    workflow: `Start with a representative sample in the ${title.toLowerCase()}, check each displayed option and inspect the result before using it. ${categoryFallback.workflow}`,
+    mistakes: `For the ${title.toLowerCase()}, avoid unsupported input formats, mismatched units and assumptions that are not shown by the tool. ${categoryFallback.mistakes}`
+  };
+  const advice = toolAdvice[tool.slug] ?? generatedAdvice;
   const preparation: Record<string, string> = {
     PDF: "Keep an untouched copy of the original PDF. Check whether it contains scans, forms, bookmarks, annotations or digital signatures that may affect the result.",
     Finance: "Have the principal or amount, rate, currency and calculation period ready. Check whether the rate is annual or monthly and whether fees or taxes are included.",

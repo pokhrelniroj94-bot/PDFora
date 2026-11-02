@@ -130,7 +130,7 @@ def validate_pdf(filename: str | None):
 
 
 def validate_pdf_upload(file: UploadFile):
-    validate_pdf_upload(file)
+    validate_pdf(file.filename)
     allowed_types = {"application/pdf", "application/octet-stream", ""}
     if (file.content_type or "").lower() not in allowed_types:
         raise HTTPException(status_code=415, detail="The uploaded file must be a PDF.")

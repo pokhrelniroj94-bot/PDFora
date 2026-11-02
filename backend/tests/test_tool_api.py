@@ -268,6 +268,20 @@ def test_premium_redesign_preview_origin_is_allowed_by_cors():
     assert response.headers.get("access-control-allow-origin") == origin
 
 
+def test_current_vercel_preview_origin_is_allowed_by_cors():
+    origin = "https://pd-fora-git-repository-cleanup-audit-2026-11-02-pokhrelniroj94-7012s-projects.vercel.app"
+    response = TestClient(app).options(
+        "/api/merge",
+        headers={
+            "Origin": origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == origin
+
+
 def test_backend_security_headers_are_present():
     response = TestClient(app).get("/health")
     assert response.status_code == 200

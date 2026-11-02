@@ -13,6 +13,29 @@ const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
 const toolPage = read("../app/tools/[slug]/page.tsx");
 const sitemapSource = read("../app/sitemap.ts");
+const bsYearsSource = read("../lib/nepali-date-converter/years.ts");
+const nepaliDateSource = read("../lib/nepali-date-converter/index.ts");
+const bsYears = {};
+for (const [, yearText, valueText] of bsYearsSource.matchAll(/^years\\[(\\d+)\\] = (.+);$/gm)) {
+  const year = Number(yearText);
+  bsYears[year] = valueText.startsWith("years[") ? bsYears[Number(valueText.match(/years\\[(\\d+)\\]/)[1])] : JSON.parse(valueText);
+}
+assert.ok(nepaliDateSource.includes("Date.UTC(1918, 3, 13)"), "BS calendar epoch must remain anchored at 1975-01-01 BS = 1918-04-13 AD");
+assert.deepEqual(bsYears[2083].slice(0, 12), [31,31,32,31,31,31,30,29,30,29,30,30], "2083 BS month lengths must match the published calendar data");
+assert.equal(bsYears[2083][12], 365, "2083 BS must contain 365 days");
+const bsToAd = (year, month, day) => {
+  assert.ok(bsYears[year] && month >= 1 && month <= 12 && day >= 1 && day <= bsYears[year][month-1], "BS date must be valid");
+  let offset = 0;
+  for (let y = 1975; y < year; y++) offset += bsYears[y][12];
+  for (let m = 0; m < month-1; m++) offset += bsYears[year][m];
+  const date = new Date(Date.UTC(1918,3,13) + (offset + day - 1) * 86400000);
+  return date.toISOString().slice(0,10);
+};
+assert.equal(bsToAd(2083,1,1), "2026-04-14", "2083 New Year anchor must match published calendar");
+assert.equal(bsToAd(2083,7,1), "2026-10-18", "Kartik 1, 2083 must match published calendar");
+assert.equal(bsToAd(2083,12,30), "2027-04-13", "2083 Chaitra 30 must match published calendar");
+assert.ok(nepalTools.includes('timeZone: "Asia/Kathmandu"'), "Today date must use Nepal's civil timezone");
+assert.ok(nepalTools.includes('new DateConverter(`${y}-${String(m).padStart(2,"0")}-${String(day).padStart(2,"0")}`).toAd()'), "Calendar grid must derive every day from the exact BS converter");
 const robotsSource = read("../app/robots.ts");
 const rootLayout = read("../app/layout.tsx");
 const toolsPageMetadata = read("../app/tools/page.tsx");

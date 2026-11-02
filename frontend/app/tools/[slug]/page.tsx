@@ -97,6 +97,61 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "How is estimated net profit calculated?", a: "The tool subtracts estimated purchase and sale charges from the gross price difference, then subtracts the estimated CGT from positive profit." },
       { q: "Does this guarantee the exact amount credited by my broker?", a: "No. It is a planning estimate, not a broker contract note or tax statement. Use your broker's final settlement report for the actual figure." }
     ],
+    "nepali-number-converter": [
+      { q: "Does it use the lakh and crore number system?", a: "Yes. English number words use thousand, lakh and crore grouping for the supported whole-number range." },
+      { q: "Can it convert Nepali digits?", a: "It displays the entered number in Devanagari digits as well as English words." },
+      { q: "Does it spell every number in Nepali words?", a: "No. The current tool does not include full Nepali word spelling for every large number. Check the output and use another verified source if Nepali wording is required." }
+    ],
+    "nepal-phone-validator": [
+      { q: "Which Nepal mobile number formats are checked?", a: "The checker recognises common 10-digit mobile numbers beginning with 96, 97 or 98, with an optional +977 or 977 country prefix." },
+      { q: "Does a valid result mean the SIM is active?", a: "No. It checks number format only and does not contact telecom operators or confirm assignment, activity or reachability." },
+      { q: "How do I write a Nepal number internationally?", a: "Use +977 followed by the 10-digit local mobile number, without the local trunk prefix." }
+    ],
+    "gold-tola-gram-converter": [
+      { q: "How many grams are in one tola?", a: "One tola is approximately 11.6638038 grams." },
+      { q: "Can I convert grams back to tola?", a: "Yes. Select the grams-to-tola direction and enter the weight in grams." },
+      { q: "Does it calculate today's gold price?", a: "No. It converts weight only and does not include live gold prices, purity, making charges or wastage." }
+    ],
+    "nepali-digit-converter": [
+      { q: "Which digits does the converter change?", a: "It converts English numerals 0–9 to Nepali Devanagari numerals ०–९ and back." },
+      { q: "Does it translate the text too?", a: "No. It changes digits only; words, punctuation and spaces are preserved." },
+      { q: "Can I convert a full sentence with numbers?", a: "Yes. Paste the sentence and the converter changes the digits wherever they appear." }
+    ],
+    "nepali-calendar": [
+      { q: "Can I see both BS and AD dates?", a: "Yes. The calendar displays each Bikram Sambat day alongside its corresponding Gregorian date and weekday." },
+      { q: "Does the calendar show every public holiday?", a: "No. Festival and public-holiday labels may not be included. Check official holiday notices separately." },
+      { q: "What if my BS year is outside the supported range?", a: "The tool rejects years outside its published calendar-data range rather than estimating dates." }
+    ],
+    "loksewa-photo-resizer": [
+      { q: "Which file-size targets are available?", a: "The tool offers 50 KB, 100 KB and 200 KB targets, with selectable maximum image dimensions." },
+      { q: "Does it guarantee my Loksewa photo will be accepted?", a: "No. The form may also specify crop, aspect ratio, background, dimensions or file type. Follow the exact official notice." },
+      { q: "What format does the resized photo use?", a: "The tool exports the resized image as JPEG." }
+    ],
+    "preeti-unicode-converter": [
+      { q: "What does Preeti to Unicode conversion do?", a: "It maps text encoded with the legacy Preeti font layout into standard Unicode Devanagari text." },
+      { q: "Can I convert Unicode back to Preeti?", a: "Yes. Choose Unicode Nepali to Preeti before converting." },
+      { q: "Will it preserve document formatting?", a: "It converts text encoding, not full document layout. Check formatting and glyphs in the destination application." }
+    ],
+    "nepal-salary-tax-calculator": [
+      { q: "Which fiscal year does it calculate?", a: "The tool is labelled for Nepal FY 2083/84 and uses the progressive bands configured for that year." },
+      { q: "Does it apply one tax rate to all salary?", a: "No. It calculates the taxable portions across progressive bands." },
+      { q: "Is the result my final payroll tax?", a: "No. Allowances, deductions, rebates, employment category and personal circumstances can change the liability. Confirm with IRD or payroll." }
+    ],
+    "nepal-electricity-bill-calculator": [
+      { q: "Which meter capacities are supported?", a: "The estimator supports single-phase domestic 5A, 15A, 30A and 60A connections as labelled in the tool." },
+      { q: "Can I use it for commercial electricity bills?", a: "No. It is intended for the supported single-phase domestic tariff assumptions, not commercial or industrial tariffs." },
+      { q: "Will the estimate exactly match my NEA bill?", a: "Not necessarily. Check the current tariff, meter category, minimum charge, VAT and any adjustments on your actual bill." }
+    ],
+    "nepal-public-holidays-2083": [
+      { q: "Which year does this holiday calendar cover?", a: "It lists Nepal public holidays for Bikram Sambat 2083." },
+      { q: "Are all holidays applicable throughout Nepal?", a: "No. Some notices can apply only to specific regions, communities or institutions. Read the note for each holiday." },
+      { q: "Can holiday dates change?", a: "Government notices can be amended. Confirm the latest official announcement before making travel or work plans." }
+    ],
+    "nepali-unicode-typing": [
+      { q: "Can I type Nepali with an English keyboard?", a: "Yes. Enter Romanized Nepali and the tool converts it into Devanagari Unicode text." },
+      { q: "Does it translate English sentences into Nepali?", a: "No. It transliterates Romanized Nepali sounds; it is not a translation service." },
+      { q: "Why should I review the converted words?", a: "Romanized input can map to multiple Nepali spellings, especially for names and uncommon words. Review the result before using it." }
+    ],
     "nepali-date-converter": [
       { q: "Which dates does the Nepali date converter support?", a: "It supports Bikram Sambat dates from 1975-01-01 through 2099-12-30 and Gregorian dates from 1918-04-13 through 2043-04-13. Dates outside this range are rejected." },
       { q: "Can I convert both AD to BS and BS to AD?", a: "Yes. Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD), then enter the date in year-month-day order." },

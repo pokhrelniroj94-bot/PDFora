@@ -1,3 +1,5 @@
+import { usePathname } from "next/navigation";
+import ToolSEOContent from "./ToolSEOContent";
 "use client";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
@@ -21,6 +23,8 @@ type Props = {
 };
 
 export default function NirojToolsTool({
+  const pathname = usePathname();
+  const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
   endpoint,
   title,
   description,
@@ -418,6 +422,7 @@ export default function NirojToolsTool({
           />
         </div>
       </section>
+      <ToolSEOContent slug={currentSlug} />
     </main>
   );
 }

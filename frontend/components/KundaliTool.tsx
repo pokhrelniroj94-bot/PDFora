@@ -32,7 +32,7 @@ export default function KundaliTool() {
   const [result,setResult]=useState<KundaliResult|null>(null);
   const [error,setError]=useState("");
   const [busy,setBusy]=useState(false);
-  const changeDateSystem=(next:"BS"|"AD")=>{if(next===dateSystem)return;try{const raw=birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d)));const converted=new DateConverter(raw);const value=next==="AD"?converted.toAd():converted.toBs();setBirthDate([value.year,String(value.month).padStart(2,"0"),String(value.date).padStart(2,"0")].join("-"));}catch{setBirthDate("");}setDateSystem(next);};
+  const changeDateSystem=(next:"BS"|"AD")=>{if(next===dateSystem)return;try{const raw=birthDate.replace(/[०-९]/g,d=>String("०१२३४५६७८९".indexOf(d))).trim();if(raw){const converted=new DateConverter(raw);const value=next==="AD"?converted.toAd():converted.toBs();setBirthDate([value.year,String(value.month).padStart(2,"0"),String(value.date).padStart(2,"0")].join("-"));}setDateSystem(next);setError("");}catch{setError(tr("यो मिति प्रणालीको समर्थित दायराभित्र मिति रूपान्तरण गर्न सकिएन। जन्ममिति जाँच्नुहोस्।","This date cannot be converted within the supported calendar range. Please check the birth date.","यह तिथि समर्थित कैलेंडर सीमा में परिवर्तित नहीं की जा सकी। कृपया जन्म तिथि जाँचें।"));}};
 
   const submit=()=>{
     setError("");setResult(null);setBusy(true);
@@ -68,7 +68,7 @@ export default function KundaliTool() {
         <span className="mt-1 block text-xs font-normal text-slate-500">{tr("२४-घण्टा ढाँचा, जस्तै ०६:३५ वा १८:२०","24-hour format, e.g. 06:35 or 18:20","२४ घंटे का प्रारूप, जैसे ०६:३५ या १८:२०")}</span>
       </label>
       <label className="text-sm font-semibold text-slate-800 sm:col-span-2">{tr("जन्मस्थान","Birthplace","जन्म स्थान")}
-        <select className={box} value={placeId} onChange={e=>{setPlaceId(e.target.value);const selected=KUNDALI_PLACES.find(p=>p.id===e.target.value);if(selected?.timeZone)setTimeZone(selected.timeZone);}}>
+        <select className={box} value={placeId} onChange={e=>{setPlaceId(e.target.value);const selected=KUNDALI_PLACES.find(p=>p.id===e.target.value);if(e.target.value!=="custom")setTimeZone(selected?.timeZone??"Asia/Kathmandu");}}>
           {KUNDALI_PLACES.map(place=><option key={place.id} value={place.id}>{placeText(place)}</option>)}
           <option value="custom">{tr("अन्य स्थान — ठ्याक्कै निर्देशाङ्क राख्नुहोस्","Other place — enter exact coordinates","अन्य स्थान — सही निर्देशांक दर्ज करें")}</option>
         </select>

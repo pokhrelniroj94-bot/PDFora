@@ -62,7 +62,7 @@ assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind:
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
 assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");
-assert.ok(homepage.includes('tool.kind === "pdf" || tool.category === "PDF"'), "Homepage PDF category hides catalog PDF tools");
+assert.ok(homepage.includes('category === "PDF Tools" ? tool.kind === "pdf"'), "Homepage PDF Tools category must include all PDF routes");
 assert.ok(homepage.includes("matchesToolSearch(tool, query)") && directoryComponent.includes("matchesToolSearch(t,query)"), "Homepage and /tools directory must use the same shared search function");
 assert.ok(sharedSearch.includes("tool.keywords") && sharedSearch.includes("toolAliases"), "Shared search must include tool keywords and task aliases");
 assert.ok(sharedSearch.includes("querySynonyms") && sharedSearch.includes("editDistanceAtMostOne"), "Shared search must support multilingual synonyms and typo tolerance");
@@ -88,7 +88,7 @@ const loanSearchText = normalizeSearch([loanToolLine, "EMI calculator loan insta
 assert.ok(["emi", "calculator"].every((token) => loanSearchText.includes(token)), "EMI Calculator cannot be found by homepage search terms");
 const notesToolLine = catalogSource.split("\n").find((line) => line.includes('slug:"notes-to-pdf"'));
 assert.ok(notesToolLine, "Notes to PDF is missing from the catalog");
-assert.ok(notesToolLine.includes('category:"PDF"'), "Notes to PDF must be grouped under the PDF category");
+assert.ok(notesToolLine.includes('category:"Document & Text"'), "Notes to PDF must be grouped under the PDF category");
 assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesToPDF />'), "Notes to PDF handler is missing");
 
 const marketApi = read("../app/api/nepse-market/route.ts");

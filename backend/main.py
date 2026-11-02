@@ -119,6 +119,7 @@ app.add_middleware(
 
         # Vercel preview
         "https://pd-fora-dagpxk1pb-pokhrelniroj94-7012s-projects.vercel.app",
+        "https://pd-fora-git-premium-redesign-pokhrelniroj94-7012s-projects.vercel.app",
     ],
     allow_credentials=False,
     allow_methods=["GET", "POST"],

@@ -16,6 +16,7 @@ import zipfile
 import time
 import os
 import re
+import hmac
 import ipaddress
 import asyncio
 from contextvars import ContextVar
@@ -334,6 +335,29 @@ def validate_pdf(filename: str | None):
         )
 
 
+
+def validate_pdf_upload(file: UploadFile):
+    """Validate the filename and declared MIME type before reading a PDF upload."""
+    validate_pdf_upload(file)
+    allowed_types = {"application/pdf", "application/octet-stream", ""}
+    if (file.content_type or "").lower() not in allowed_types:
+        raise HTTPException(status_code=415, detail="The uploaded file must be a PDF.")
+
+
+async def read_upload_limited(file: UploadFile, max_bytes: int) -> bytes:
+    """Read an upload in bounded chunks so image uploads cannot bypass size limits."""
+    chunks: list[bytes] = []
+    total = 0
+    while True:
+        chunk = await file.read(1024 * 1024)
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > max_bytes:
+            raise HTTPException(status_code=413, detail="The combined upload size must not exceed 50 MB.")
+        chunks.append(chunk)
+    return b"".join(chunks)
+
 def has_pdf_signature(data: bytes) -> bool:
     """Check for a PDF header in the first 1,024 bytes, as permitted by PDF spec."""
     return PDF_HEADER_PATTERN.search(data[:1024]) is not None
@@ -549,7 +573,7 @@ async def merge_pdf(
 
         total_upload_size = 0
         for index, file in enumerate(files):
-            validate_pdf(file.filename)
+            validate_pdf_upload(file)
             input_file = job / f"{index}.pdf"
             total_upload_size += await save_upload(file, input_file)
             if total_upload_size > MAX_FILE_SIZE:
@@ -595,9 +619,7 @@ async def split_pdf(
     end_page: int | None = Query(None)
 ):
 
-    validate_pdf(
-        file.filename
-    )
+    validate_pdf_upload(file)
 
     job = create_job()
 
@@ -681,9 +703,7 @@ async def compress_pdf(
     file: UploadFile = File(...)
 ):
 
-    validate_pdf(
-        file.filename
-    )
+    validate_pdf_upload(file)
 
     job = create_job()
 
@@ -773,37 +793,24 @@ async def images_to_pdf(
     try:
         for file in files:
             validate_filename(file.filename)
-            data = await file.read()
+            if (file.content_type or "").lower() not in {"image/jpeg", "image/png", "image/webp", "application/octet-stream", ""}:
+                raise HTTPException(status_code=415, detail="Only JPEG, PNG and WEBP images are supported.")
+            data = await read_upload_limited(file, MAX_FILE_SIZE - total_upload_size)
             total_upload_size += len(data)
-            if total_upload_size > MAX_FILE_SIZE:
-                raise HTTPException(status_code=413, detail="The combined image upload size must not exceed 50 MB.")
 
             try:
-
-                image = Image.open(
-                    io.BytesIO(data)
-                )
-
+                image = Image.open(io.BytesIO(data))
+                if image.format not in {"JPEG", "PNG", "WEBP"}:
+                    raise ValueError("Unsupported image format")
+                if image.width * image.height > 25_000_000:
+                    raise HTTPException(status_code=413, detail="Images must not exceed 25 megapixels.")
                 image.verify()
-
-                image = Image.open(
-                    io.BytesIO(data)
-                )
-
-                image = image.convert(
-                    "RGB"
-                )
-
-                images.append(
-                    image
-                )
-
+                image = Image.open(io.BytesIO(data)).convert("RGB")
+                images.append(image)
+            except HTTPException:
+                raise
             except Exception:
-
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Invalid image: {file.filename}"
-                )
+                raise HTTPException(status_code=400, detail=f"Invalid image: {file.filename}")
 
         if not images:
 
@@ -848,9 +855,7 @@ async def pdf_to_jpg(
     file: UploadFile = File(...)
 ):
 
-    validate_pdf(
-        file.filename
-    )
+    validate_pdf_upload(file)
 
     job = create_job()
 
@@ -937,9 +942,7 @@ async def rotate_pdf(
     degrees: int = Query(90)
 ):
 
-    validate_pdf(
-        file.filename
-    )
+    validate_pdf_upload(file)
 
     if degrees not in [90, 180, 270]:
 
@@ -1006,9 +1009,7 @@ async def delete_pages(
     pages: str = Form(...)
 ):
 
-    validate_pdf(
-        file.filename
-    )
+    validate_pdf_upload(file)
 
     job = create_job()
 
@@ -1111,9 +1112,7 @@ async def extract_pages(
     pages: str = Form(...)
 ):
 
-    validate_pdf(
-        file.filename
-    )
+    validate_pdf_upload(file)
 
     job = create_job()
 
@@ -1204,9 +1203,7 @@ async def watermark_pdf(
     text: str = Form(...)
 ):
 
-    validate_pdf(
-        file.filename
-    )
+    validate_pdf_upload(file)
 
     text = text.strip()
 
@@ -1360,7 +1357,7 @@ async def watermark_pdf(
 async def pdf_to_excel(
     file: UploadFile = File(...)
 ):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
 
     job = create_job()
 
@@ -1491,7 +1488,11 @@ async def pdf_to_excel(
         )
 
 @app.post("/api/cleanup")
-def cleanup():
+def cleanup(request: Request):
+    admin_token = os.getenv("CLEANUP_ADMIN_TOKEN", "")
+    supplied_token = request.headers.get("X-Admin-Token", "")
+    if not admin_token or not hmac.compare_digest(supplied_token, admin_token):
+        raise HTTPException(status_code=404, detail="Not found")
 
     removed = 0
 
@@ -1540,9 +1541,7 @@ async def pdf_to_word(
     file: UploadFile = File(...)
 ):
 
-    validate_pdf(
-        file.filename
-    )
+    validate_pdf_upload(file)
 
     job = create_job()
 
@@ -1649,7 +1648,7 @@ def _parse_page_order(value: str, total: int) -> list[int]:
 
 @app.post("/api/reorder")
 async def reorder_pdf(file: UploadFile = File(...), order: str = Form(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"reordered.pdf"
@@ -1664,7 +1663,7 @@ async def reorder_pdf(file: UploadFile = File(...), order: str = Form(...)):
 
 @app.post("/api/page-numbers")
 async def add_page_numbers(file: UploadFile = File(...), position: str = Form("bottom-center"), start_number: int = Form(1), skip_first: bool = Form(False), font_size: int = Form(11)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if position not in {"bottom-center","bottom-left","bottom-right","top-center","top-left","top-right"} or not 1 <= font_size <= 36 or start_number < 0:
         raise HTTPException(status_code=400, detail="Invalid page-number settings.")
     job=create_job()
@@ -1682,7 +1681,7 @@ async def add_page_numbers(file: UploadFile = File(...), position: str = Form("b
 
 @app.post("/api/crop")
 async def crop_pdf(file: UploadFile = File(...), margin: float = Form(36), pages: str = Form("all")):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if margin < 0 or margin > 300: raise HTTPException(status_code=400,detail="Margin must be between 0 and 300 points.")
     job=create_job()
     try:
@@ -1702,7 +1701,7 @@ async def crop_pdf(file: UploadFile = File(...), margin: float = Form(36), pages
 
 @app.post("/api/header-footer")
 async def header_footer(file: UploadFile = File(...), header: str = Form(""), footer: str = Form(""), font_size: int = Form(10)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if len(header)>300 or len(footer)>300 or not 6<=font_size<=24 or (not header and not footer): raise HTTPException(status_code=400,detail="Enter header or footer text (up to 300 characters) and font size 6–24.")
     job=create_job()
     try:
@@ -1717,7 +1716,7 @@ async def header_footer(file: UploadFile = File(...), header: str = Form(""), fo
 
 @app.post("/api/protect")
 async def protect_pdf(file: UploadFile = File(...), password: str = Form(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if len(password)<6 or len(password)>128: raise HTTPException(status_code=400,detail="Password must be 6–128 characters.")
     job=create_job()
     try:
@@ -1736,7 +1735,7 @@ async def protect_pdf(file: UploadFile = File(...), password: str = Form(...)):
 
 @app.post("/api/unlock")
 async def unlock_pdf(file: UploadFile = File(...), password: str = Form(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"unlocked.pdf"; await save_upload(file,src); reader=PdfReader(str(src))
@@ -1752,7 +1751,7 @@ async def unlock_pdf(file: UploadFile = File(...), password: str = Form(...)):
 
 @app.post("/api/sign")
 async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if not signature_text.strip() or len(signature_text)>100: raise HTTPException(status_code=400,detail="Enter a signature name (maximum 100 characters).")
     job=create_job()
     try:
@@ -1767,7 +1766,7 @@ async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)
     finally: await file.close()
 
 async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job=create_job(); doc=None
     try:
         src=job/"input.pdf"; archive=job/f"images-{fmt}.zip"; await save_upload(file,src); doc=fitz.open(src)
@@ -1796,7 +1795,7 @@ async def pdf_to_webp(file: UploadFile = File(...), quality: int = Form(85)):
 
 @app.post("/api/pdf-to-text")
 async def pdf_to_text(file: UploadFile = File(...)):
-    validate_pdf(file.filename); job=create_job()
+    validate_pdf_upload(file); job=create_job()
     try:
         src=job/"input.pdf"; out=job/"extracted.txt"; await save_upload(file,src); doc=fitz.open(src)
         with open(out,"w",encoding="utf-8") as f:
@@ -1808,7 +1807,7 @@ async def pdf_to_text(file: UploadFile = File(...)):
 
 @app.post("/api/grayscale")
 async def grayscale_pdf(file: UploadFile = File(...)):
-    validate_pdf(file.filename); job=create_job()
+    validate_pdf_upload(file); job=create_job()
     try:
         src=job/"input.pdf"; out=job/"grayscale.pdf"; await save_upload(file,src); doc=fitz.open(src)
         if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for grayscale conversion.")
@@ -1825,7 +1824,7 @@ async def grayscale_pdf(file: UploadFile = File(...)):
 
 @app.post("/api/flatten")
 async def flatten_pdf(file: UploadFile = File(...)):
-    validate_pdf(file.filename); job=create_job()
+    validate_pdf_upload(file); job=create_job()
     try:
         src=job/"input.pdf"; out=job/"flattened.pdf"; await save_upload(file,src); doc=fitz.open(src)
         if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for flattening.")
@@ -1843,7 +1842,7 @@ async def flatten_pdf(file: UploadFile = File(...)):
 
 @app.post("/api/metadata")
 async def edit_pdf_metadata(file: UploadFile = File(...), title: str = Form(""), author: str = Form(""), subject: str = Form(""), keywords: str = Form("")):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if any(len(v)>500 for v in [title,author,subject,keywords]): raise HTTPException(status_code=400,detail="Metadata fields must be 500 characters or fewer.")
     job=create_job()
     try:
@@ -1855,7 +1854,7 @@ async def edit_pdf_metadata(file: UploadFile = File(...), title: str = Form(""),
 
 @app.post("/api/repair")
 async def repair_pdf(file: UploadFile = File(...)):
-    validate_pdf(file.filename); job=create_job()
+    validate_pdf_upload(file); job=create_job()
     try:
         src=job/"input.pdf"; out=job/"repaired.pdf"; await save_upload(file,src)
         try:
@@ -1878,7 +1877,7 @@ async def ocr_pdf(file: UploadFile = File(...)):
 
 @app.post("/api/pdf-to-html")
 async def pdf_to_html(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"converted.html"
@@ -1897,7 +1896,7 @@ async def pdf_to_html(file: UploadFile = File(...)):
 
 @app.post("/api/extract-images")
 async def extract_images(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"extracted-images.zip"
@@ -1926,7 +1925,7 @@ async def extract_images(file: UploadFile = File(...)):
 
 @app.post("/api/remove-blank-pages")
 async def remove_blank_pages(file: UploadFile = File(...), threshold: int = Form(2)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if not 0<=threshold<=20: raise HTTPException(status_code=400,detail="Threshold must be between 0 and 20.")
     job=create_job()
     try:
@@ -1956,7 +1955,7 @@ async def compare_pdfs(files: list[UploadFile] = File(...)):
     try:
         readers=[]
         for i,file in enumerate(files):
-            validate_pdf(file.filename)
+            validate_pdf_upload(file)
             path=job/f"compare-{i}.pdf"; await save_upload(file,path)
             doc=fitz.open(path)
             readers.append([page.get_text("text") for page in doc])
@@ -1981,7 +1980,7 @@ async def compare_pdfs(files: list[UploadFile] = File(...)):
 
 @app.post("/api/add-blank-pages")
 async def add_blank_pages(file: UploadFile = File(...), count: int = Form(1)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if not 1 <= count <= 50:
         raise HTTPException(status_code=400, detail="Choose between 1 and 50 blank pages.")
     job = create_job()
@@ -2007,7 +2006,7 @@ async def add_blank_pages(file: UploadFile = File(...), count: int = Form(1)):
 
 @app.post("/api/rotate-selected-pages")
 async def rotate_selected_pages(file: UploadFile = File(...), pages: str = Form("all"), degrees: int = Form(90)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if degrees not in {90, 180, 270}:
         raise HTTPException(status_code=400, detail="Rotation must be 90, 180 or 270 degrees.")
     job = create_job()
@@ -2042,7 +2041,7 @@ async def rotate_selected_pages(file: UploadFile = File(...), pages: str = Form(
 
 @app.post("/api/remove-annotations")
 async def remove_annotations(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2070,7 +2069,7 @@ async def remove_annotations(file: UploadFile = File(...)):
 
 @app.post("/api/remove-links")
 async def remove_pdf_links(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2095,7 +2094,7 @@ async def remove_pdf_links(file: UploadFile = File(...)):
 
 @app.post("/api/page-counter")
 async def pdf_page_counter(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     try:
         src, out = job / "input.pdf", job / "NIROJ-Page-Count.txt"
@@ -2120,7 +2119,7 @@ async def pdf_page_counter(file: UploadFile = File(...)):
 
 @app.post("/api/pdf-info")
 async def pdf_information(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2158,7 +2157,7 @@ async def pdf_information(file: UploadFile = File(...)):
 
 @app.post("/api/extract-bookmarks")
 async def extract_pdf_bookmarks(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2186,7 +2185,7 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
 
 @app.post("/api/remove-metadata")
 async def remove_pdf_metadata(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     try:
         src, out = job / "input.pdf", job / "metadata-removed.pdf"
@@ -2210,7 +2209,7 @@ async def remove_pdf_metadata(file: UploadFile = File(...)):
 @app.post("/api/pdf-to-json")
 async def pdf_to_json(file: UploadFile = File(...)):
     import json
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2244,7 +2243,7 @@ async def pdf_to_json(file: UploadFile = File(...)):
 @app.post("/api/pdf-to-csv")
 async def pdf_to_csv(file: UploadFile = File(...)):
     import csv
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     try:
         src, out = job / "input.pdf", job / "NIROJ-Tables.csv"
@@ -2274,7 +2273,7 @@ async def pdf_to_csv(file: UploadFile = File(...)):
 
 @app.post("/api/add-bookmarks")
 async def add_pdf_bookmarks(file: UploadFile = File(...), bookmarks: str = Form(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2313,7 +2312,7 @@ async def add_pdf_bookmarks(file: UploadFile = File(...), bookmarks: str = Form(
 
 @app.post("/api/bates-numbering")
 async def bates_numbering(file: UploadFile = File(...), prefix: str = Form(""), start: int = Form(1), digits: int = Form(6)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if start < 0 or start > 999999999 or digits < 1 or digits > 9:
         raise HTTPException(status_code=400, detail="Start must be 0–999999999 and digits must be 1–9.")
     job = create_job()
@@ -2340,7 +2339,7 @@ async def bates_numbering(file: UploadFile = File(...), prefix: str = Form(""), 
 
 @app.post("/api/pdf-to-tiff")
 async def pdf_to_tiff(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2370,7 +2369,7 @@ async def pdf_to_tiff(file: UploadFile = File(...)):
 
 @app.post("/api/pdf-to-bmp")
 async def pdf_to_bmp(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2400,7 +2399,7 @@ async def pdf_to_bmp(file: UploadFile = File(...)):
 
 @app.post("/api/split-by-bookmarks")
 async def split_pdf_by_bookmarks(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2437,7 +2436,7 @@ async def split_pdf_by_bookmarks(file: UploadFile = File(...)):
 
 @app.post("/api/pdf-to-markdown")
 async def pdf_to_markdown(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2463,7 +2462,7 @@ async def pdf_to_markdown(file: UploadFile = File(...)):
 
 @app.post("/api/remove-attachments")
 async def remove_pdf_attachments(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     try:
         src, out = job / "input.pdf", job / "NIROJ-Attachments-Removed.pdf"
@@ -2486,7 +2485,7 @@ async def remove_pdf_attachments(file: UploadFile = File(...)):
 
 @app.post("/api/add-background")
 async def add_pdf_background(file: UploadFile = File(...), text: str = Form("DRAFT"), color: str = Form("#E5E7EB")):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     if len(text) > 60 or not text.strip():
         raise HTTPException(status_code=400, detail="Enter background text up to 60 characters.")
     colors = {"#E5E7EB": (0.90, 0.91, 0.92), "#FDE68A": (0.99, 0.90, 0.54), "#DBEAFE": (0.86, 0.92, 0.99), "#FEE2E2": (1.0, 0.88, 0.88)}
@@ -2517,7 +2516,7 @@ async def add_pdf_background(file: UploadFile = File(...), text: str = Form("DRA
 
 @app.post("/api/extract-page-images")
 async def extract_pdf_page_images(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:
@@ -2549,7 +2548,7 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
 
 @app.post("/api/extract-fonts")
 async def extract_pdf_fonts(file: UploadFile = File(...)):
-    validate_pdf(file.filename)
+    validate_pdf_upload(file)
     job = create_job()
     doc = None
     try:

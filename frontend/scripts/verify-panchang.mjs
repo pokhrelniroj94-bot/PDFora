@@ -99,3 +99,20 @@ assert.ok(localClock(yogaEnd) >= "12:10" && localClock(yogaEnd) <= "12:35", "Yog
 assert.ok(localClock(karanaEnd) >= "13:15" && localClock(karanaEnd) <= "13:35", "Karana should end close to the published 13:25 time.");
 
 console.log(`Panchang astronomy smoke test passed for Kathmandu ${date}: sunrise ${sunrise.date.toISOString()}, sunset ${sunset.date.toISOString()}, tithi ${tithiIndex + 1}/30, nakshatra ${nakshatraIndex + 1}/27.`);
+
+const indiaObserver = new Astronomy.Observer(28.6139, 77.2090, 216);
+const indiaMidnight = new Date(`${date}T00:00:00+05:30`);
+const indiaSunrise = Astronomy.SearchRiseSet(Astronomy.Body.Sun, indiaObserver, +1, indiaMidnight, 1, 0);
+const indiaSunset = indiaSunrise && Astronomy.SearchRiseSet(Astronomy.Body.Sun, indiaObserver, -1, indiaSunrise, 1, 0);
+assert.ok(indiaSunrise && indiaSunset, "Sunrise and sunset should be calculable for Delhi.");
+const indiaLocalDate = (instant) => {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(instant);
+  const part = (type) => parts.find((item) => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
+};
+assert.equal(indiaLocalDate(indiaSunrise.date), date, "Delhi sunrise must fall on the selected India civil date.");
+assert.equal(indiaLocalDate(indiaSunset.date), date, "Delhi sunset must fall on the selected India civil date.");
+const indiaClock = (instant) => new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: false }).format(instant);
+assert.ok(indiaClock(indiaSunrise.date) >= "05:30" && indiaClock(indiaSunrise.date) <= "07:30", "Delhi sunrise should be displayed in India local time.");
+assert.ok(indiaClock(indiaSunset.date) >= "16:30" && indiaClock(indiaSunset.date) <= "19:00", "Delhi sunset should be displayed in India local time.");
+console.log(`India Panchang timezone smoke test passed for Delhi ${date}: sunrise ${indiaClock(indiaSunrise.date)}, sunset ${indiaClock(indiaSunset.date)} IST.`);

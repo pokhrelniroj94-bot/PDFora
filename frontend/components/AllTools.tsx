@@ -11,6 +11,13 @@ import AdsterraNative from "../app/components/AdsterraNative";
 
 const categories = ["All","Nepal","Finance","Text","Developer","Image","SEO","Math","Business","PDF"];
 const toolIcons: Record<string, string> = { Nepal: "🇳🇵", Finance: "💰", Text: "✍️", Developer: "⌨️", Image: "🖼️", SEO: "🔎", Math: "➗", Business: "📊", PDF: "📄" };
+function getToolIcon(slug: string, category: string): string {
+ const rules: [RegExp,string][] = [
+  [/merge|combine|join/,"🧩"],[/split|separate/,"✂️"],[/compress|optimi[sz]e/,"⚡"],[/convert|to-word|to-excel|to-jpg|to-png|to-webp|to-text|to-html|to-json|to-csv/,"🔄"],[/rotate|reorder|crop/,"🔃"],[/delete|remove|extract/,"🗑️"],[/protect|unlock|password|encrypt|decrypt/,"🔐"],[/watermark|sign/,"✒️"],[/page-number|bates/,"🔢"],[/ocr|scan/,"🔍"],[/calculator|interest|emi|tax|salary|dividend|profit|discount|percentage/,"🧮"],[/nepse|share|stock|market/,"📈"],[/forex|currency|exchange-rate/,"💱"],[/date|calendar|holiday/,"📅"],[/electricity|bill/,"💡"],[/qr-code/,"▦"],[/password/,"🔑"],[/json|code|developer|html|css|javascript/,"</>"],[/image|photo|background/,"🖼️"],[/text|word|typing|notes|markdown/,"📝"],[/seo|meta|keyword/,"🎯"],[/audio|video|mp3|mp4/,"🎬"]
+ ];
+ const match=rules.find(([pattern])=>pattern.test(slug));
+ return match?.[1] ?? toolIcons[category] ?? "🛠️";
+}
 const box = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-teal-600 focus:outline-none";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const panel = "rounded-[1.75rem] border border-slate-200/80 bg-white p-5 shadow-[0_18px_60px_rgba(15,23,42,.07)] sm:p-7";
@@ -30,7 +37,7 @@ export function ToolsDirectory() {
    <div className="flex gap-2 overflow-x-auto pb-1">{categories.map(c=><button key={c} onClick={()=>setCategory(c)} className={"shrink-0 rounded-full px-4 py-2 text-sm font-semibold "+(category===c?"bg-teal-700 text-white":"bg-slate-100 text-slate-700 hover:bg-teal-50")}>{c}</button>)}</div>
   </div>
   <p className="mb-4 text-sm text-slate-500">{list.length} tools</p>
-  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{list.map(t=><Link key={t.slug} href={"/tools/"+t.slug} className="group rounded-[1.5rem] border border-slate-200/80 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,.045)] transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,118,110,.12)]"><div className="mb-4 flex items-center justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-xl" aria-hidden="true">{toolIcons[t.category] ?? "🛠️"}</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{t.category}</span></div><h2 className="font-bold text-slate-900 group-hover:text-teal-800">{t.name}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{t.description}</p><span className="mt-4 inline-flex text-sm font-bold text-teal-700">Open tool <span className="ml-2 transition group-hover:translate-x-1">→</span></span></Link>)}</div>
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{list.map(t=><Link key={t.slug} href={"/tools/"+t.slug} className="group rounded-[1.5rem] border border-slate-200/80 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,.045)] transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,118,110,.12)]"><div className="mb-4 flex items-center justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-xl" aria-hidden="true">{getToolIcon(t.slug, t.category)}</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{t.category}</span></div><h2 className="font-bold text-slate-900 group-hover:text-teal-800">{t.name}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{t.description}</p><span className="mt-4 inline-flex text-sm font-bold text-teal-700">Open tool <span className="ml-2 transition group-hover:translate-x-1">→</span></span></Link>)}</div>
   {list.length===0&&<p className="rounded-xl bg-white p-8 text-center text-slate-600">No tools found. Try another search.</p>}
   <div className="mt-8"><AdsterraNative /></div>
  </main>;

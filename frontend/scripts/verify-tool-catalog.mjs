@@ -51,7 +51,7 @@ assert.ok(!kundaliEngine.includes("EclipticLongitude(body") && kundaliEngine.inc
 assert.ok(kundaliEngine.includes("Asia/Kathmandu") && kundaliEngine.includes("localWallTimeToUtc") && kundaliEngine.includes("toAd()") && kundaliEngine.includes('input.placeId === "custom"'), "Kundali must support Nepali BS dates and historical Nepal local time offsets");
 assert.ok(kundaliEngine.includes("Vimshottari") && kundaliEngine.includes("whole-sign houses"), "Kundali method and dasha calculations must be explicit");
 assert.ok(kundaliComponent.includes("जन्मकुण्डली") && kundaliComponent.includes("नवग्रहको स्थिति") && kundaliComponent.includes("विम्शोत्तरी महादशा") && kundaliComponent.includes("Latitude") && kundaliComponent.includes("Longitude"), "Kundali UI must present the report in Nepali");
-assert.ok(kundaliComponent.includes("window.print()") && kundaliComponent.includes("browser मै हुन्छ"), "Kundali must support print/PDF and disclose client-side birth-data processing");
+assert.ok(kundaliComponent.includes("window.print()") && kundaliComponent.includes("birth details are not sent to the server"), "Kundali must support print/PDF and disclose client-side birth-data processing in English");
 assert.ok(allTools.includes('slug==="nepali-janma-kundali"') && catalogSource.includes('slug:"nepali-janma-kundali"'), "Nepali Janma Kundali must have a dedicated catalog entry and route");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((match) => match[1]).filter((slug) => slug !== "pdf-tools");
 

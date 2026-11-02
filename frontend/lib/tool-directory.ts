@@ -148,7 +148,7 @@ const rawPdfTools: Array<Omit<Tool, "kind" | "slug" | "keywords">> = [
 
 export const pdfTools: Tool[] = rawPdfTools.map((tool) => ({
   ...tool,
-  kind: "pdf",
+  kind: "pdf" as const,
   slug: tool.href.startsWith("/") ? tool.href.slice(1) : tool.href,
   keywords: [tool.name, tool.description, tool.href.replaceAll("-", " ")].join(" "),
 }));
@@ -167,7 +167,7 @@ export const catalogTools: Tool[] = [
     icon: tool.category,
     category: tool.category,
     href: "/tools/" + tool.slug,
-    kind: "utility",
+    kind: "utility" as const,
     slug: tool.slug,
     keywords: [tool.keywords, catalogSearchAliases[tool.slug] ?? ""].join(" "),
   })),

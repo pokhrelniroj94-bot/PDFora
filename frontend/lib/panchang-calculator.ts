@@ -11,7 +11,18 @@ export const NEPAL_LOCATIONS = [
   { id: "birgunj", name: "Birgunj", latitude: 27.0104, longitude: 84.8774, elevation: 92 },
   { id: "dharan", name: "Dharan", latitude: 26.8125, longitude: 87.2833, elevation: 349 },
   { id: "butwal", name: "Butwal", latitude: 27.7006, longitude: 83.4484, elevation: 150 },
-  { id: "bharatpur", name: "Bharatpur", latitude: 27.6833, longitude: 84.4333, elevation: 208 },
+  { id: "bharatpur", name: "Bharatpur, Nepal", latitude: 27.6833, longitude: 84.4333, elevation: 208, timeZone: "Asia/Kathmandu" },
+  { id: "delhi", name: "Delhi, India", latitude: 28.6139, longitude: 77.2090, elevation: 216, timeZone: "Asia/Kolkata" },
+  { id: "mumbai", name: "Mumbai, India", latitude: 19.0760, longitude: 72.8777, elevation: 14, timeZone: "Asia/Kolkata" },
+  { id: "kolkata", name: "Kolkata, India", latitude: 22.5726, longitude: 88.3639, elevation: 9, timeZone: "Asia/Kolkata" },
+  { id: "chennai", name: "Chennai, India", latitude: 13.0827, longitude: 80.2707, elevation: 6, timeZone: "Asia/Kolkata" },
+  { id: "bengaluru", name: "Bengaluru, India", latitude: 12.9716, longitude: 77.5946, elevation: 920, timeZone: "Asia/Kolkata" },
+  { id: "hyderabad", name: "Hyderabad, India", latitude: 17.3850, longitude: 78.4867, elevation: 536, timeZone: "Asia/Kolkata" },
+  { id: "jaipur", name: "Jaipur, India", latitude: 26.9124, longitude: 75.7873, elevation: 431, timeZone: "Asia/Kolkata" },
+  { id: "varanasi", name: "Varanasi, India", latitude: 25.3176, longitude: 82.9739, elevation: 80, timeZone: "Asia/Kolkata" },
+  { id: "lucknow", name: "Lucknow, India", latitude: 26.8467, longitude: 80.9462, elevation: 123, timeZone: "Asia/Kolkata" },
+  { id: "ahmedabad", name: "Ahmedabad, India", latitude: 23.0225, longitude: 72.5714, elevation: 53, timeZone: "Asia/Kolkata" },
+  { id: "pune", name: "Pune, India", latitude: 18.5204, longitude: 73.8567, elevation: 560, timeZone: "Asia/Kolkata" },
 ] as const;
 
 const NAKSHATRAS = [
@@ -68,6 +79,7 @@ export interface PanchangInput {
   latitude: number;
   longitude: number;
   elevation?: number;
+  timeZone?: string;
 }
 
 export interface PanchangResult {
@@ -151,7 +163,7 @@ function findAngaEnds(sunrise: Date): Record<AngaKey, Date | null> {
   return ends;
 }
 
-function localTime(date: Date | null): string | null {
+function localTime(date: Date | null, timeZone = "Asia/Kathmandu"): string | null {
   if (!date) return null;
   return new Intl.DateTimeFormat("en-NP", {
     timeZone: "Asia/Kathmandu",
@@ -161,36 +173,36 @@ function localTime(date: Date | null): string | null {
   }).format(date);
 }
 
-function endTimeLabel(date: Date | null, baseDate: string): string | null {
+function endTimeLabel(date: Date | null, baseDate: string, timeZone: string): string | null {
   if (!date) return null;
   const time = localTime(date);
   const endingDate = localISODate(date);
   return endingDate === baseDate ? time : `${time} (${endingDate})`;
 }
 
-function daylightPeriod(sunrise: Date, sunset: Date, segment: number): string {
+function daylightPeriod(sunrise: Date, sunset: Date, segment: number, timeZone: string): string {
   const duration = sunset.getTime() - sunrise.getTime();
   const start = new Date(sunrise.getTime() + duration * (segment - 1) / 8);
   const end = new Date(sunrise.getTime() + duration * segment / 8);
-  return `${localTime(start)} – ${localTime(end)}`;
+  return `${localTime(start, timeZone)} – ${localTime(end, timeZone)}`;
 }
 
-function localISODate(date: Date): string {
+function localISODate(date: Date, timeZone = "Asia/Kathmandu"): string {
   const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+    timeZone, year: "numeric", month: "2-digit", day: "2-digit",
   }).formatToParts(date);
   const part = (type: string) => parts.find((item) => item.type === type)?.value ?? "";
   return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
-export function nepalLocalDateTimeToUtc(date: string, time: string): Date {
+export function nepalLocalDateTimeToUtc(date: string, time: string, timeZone = "Asia/Kathmandu"): Date {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) {
     throw new Error("Enter a valid Nepal local date and time.");
   }
   const naiveUtc = new Date(`${date}T${time}:00Z`);
   if (Number.isNaN(naiveUtc.getTime())) throw new Error("Invalid local date and time.");
   const zoneName = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Asia/Kathmandu", timeZoneName: "longOffset",
+    timeZone, timeZoneName: "longOffset",
   }).formatToParts(naiveUtc).find((part) => part.type === "timeZoneName")?.value ?? "GMT+05:45";
   const match = zoneName.match(/^GMT([+-])(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
   if (!match) throw new Error("Could not resolve the historical Nepal time-zone offset.");
@@ -199,24 +211,24 @@ export function nepalLocalDateTimeToUtc(date: string, time: string): Date {
   return new Date(naiveUtc.getTime() - offsetMinutes * 60000);
 }
 
-function dateIsValid(date: string): boolean {
+function dateIsValid(date: string, timeZone: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
-  const localMidnight = nepalLocalDateTimeToUtc(date, "00:00");
+  const localMidnight = nepalLocalDateTimeToUtc(date, "00:00", timeZone);
   if (Number.isNaN(localMidnight.getTime())) return false;
-  return localISODate(localMidnight) === date;
+  return localISODate(localMidnight, timeZone) === date;
 }
 
 export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
-  if (!dateIsValid(input.date)) throw new Error("Enter a valid Gregorian date in YYYY-MM-DD format.");
+  const timeZone = input.timeZone ?? "Asia/Kathmandu";\n  if (!dateIsValid(input.date, timeZone)) throw new Error("Enter a valid Gregorian date in YYYY-MM-DD format.");
   const dateYear = Number(input.date.slice(0, 4));
   if (dateYear < 1900 || dateYear > 2100) throw new Error("The astronomical calculator supports dates from 1900 through 2100.");
-  if (!Number.isFinite(input.latitude) || input.latitude < 26 || input.latitude > 31) throw new Error("Latitude must be within Nepal (26°N–31°N).");
-  if (!Number.isFinite(input.longitude) || input.longitude < 80 || input.longitude > 89) throw new Error("Longitude must be within Nepal (80°E–89°E).");
+  if (!Number.isFinite(input.latitude) || input.latitude < -90 || input.latitude > 90) throw new Error("Latitude must be between -90° and 90°.");
+  if (!Number.isFinite(input.longitude) || input.longitude < -180 || input.longitude > 180) throw new Error("Longitude must be between -180° and 180°.");
   const elevation = input.elevation ?? 0;
   if (!Number.isFinite(elevation) || elevation < -500 || elevation > 9000) throw new Error("Enter a valid elevation in metres.");
 
   // Nepal uses UTC+05:45 year-round. SearchRiseSet returns UTC instants.
-  const localMidnightUtc = nepalLocalDateTimeToUtc(input.date, "00:00");
+  const localMidnightUtc = nepalLocalDateTimeToUtc(input.date, "00:00", timeZone);
   const observer = new Astronomy.Observer(input.latitude, input.longitude, elevation);
   const sunriseEvent = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, +1, localMidnightUtc, 1, 0);
   if (!sunriseEvent) throw new Error("Sunrise could not be calculated for this location and date.");
@@ -225,8 +237,8 @@ export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
 
   const sunrise = sunriseEvent.date;
   const sunset = sunsetEvent.date;
-  const localSunriseDate = localISODate(sunrise);
-  const localSunsetDate = localISODate(sunset);
+  const localSunriseDate = localISODate(sunrise, timeZone);
+  const localSunsetDate = localISODate(sunset, timeZone);
   if (localSunriseDate !== input.date || localSunsetDate !== input.date || sunset <= sunrise) {
     throw new Error("Sunrise or sunset did not fall on the selected Nepal civil date. Please verify the location.");
   }
@@ -259,31 +271,31 @@ export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
     locationName: input.locationName,
     weekday,
     weekdayNp,
-    sunrise: localTime(sunrise) ?? "Unavailable",
-    sunset: localTime(sunset) ?? "Unavailable",
+    sunrise: localTime(sunrise, timeZone) ?? "Unavailable",
+    sunset: localTime(sunset, timeZone) ?? "Unavailable",
     tithi: {
       name: tithi[0], nameNp: tithi[1], paksha,
-      endsAt: endTimeLabel(ends.tithi, input.date),
+      endsAt: endTimeLabel(ends.tithi, input.date, timeZone),
     },
     nakshatra: {
       name: NAKSHATRAS[indices.nakshatra][0],
       nameNp: NAKSHATRAS[indices.nakshatra][1],
       pada: nakshatraPada,
-      endsAt: endTimeLabel(ends.nakshatra, input.date),
+      endsAt: endTimeLabel(ends.nakshatra, input.date, timeZone),
     },
     yoga: {
       name: YOGAS[indices.yoga][0],
       nameNp: YOGAS[indices.yoga][1],
-      endsAt: endTimeLabel(ends.yoga, input.date),
+      endsAt: endTimeLabel(ends.yoga, input.date, timeZone),
     },
     karana: {
       name: karana[0], nameNp: karana[1],
-      endsAt: endTimeLabel(ends.karana, input.date),
+      endsAt: endTimeLabel(ends.karana, input.date, timeZone),
     },
-    rahuKaal: daylightPeriod(sunrise, sunset, rahuSegments[weekdayIndex]),
-    yamaganda: daylightPeriod(sunrise, sunset, yamaSegments[weekdayIndex]),
-    gulika: daylightPeriod(sunrise, sunset, gulikaSegments[weekdayIndex]),
+    rahuKaal: daylightPeriod(sunrise, sunset, rahuSegments[weekdayIndex], timeZone),
+    yamaganda: daylightPeriod(sunrise, sunset, yamaSegments[weekdayIndex], timeZone),
+    gulika: daylightPeriod(sunrise, sunset, gulikaSegments[weekdayIndex], timeZone),
     ayanamsaDegrees,
-    calculation: "Astronomy Engine 2.1.19 · geocentric true ecliptic longitudes · Lahiri/Chitrapaksha ayanamsa · Panchang limbs anchored to local sunrise · Nepal civil time UTC+05:45.",
+    calculation: "Astronomy Engine 2.1.19 · geocentric true ecliptic longitudes · Lahiri/Chitrapaksha ayanamsa · Panchang limbs anchored to local sunrise · location-specific IANA civil time zone.",
   };
 }

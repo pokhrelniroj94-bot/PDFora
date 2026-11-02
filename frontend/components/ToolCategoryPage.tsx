@@ -11,16 +11,18 @@ const config: Record<CategoryKey, { title: string; description: string }> = {
 
 function belongsToCategory(tool: Tool, category: CategoryKey) {
   if (category === "pdf") return tool.kind === "pdf";
-  if (category === "calculators") return tool.category === "Calculators";
+  if (category === "calculators") {
+    return tool.category === "Calculators" || /calculator/i.test(tool.slug) || /calculator/i.test(tool.name);
+  }
   return (
     /^(nepal-|nepali-|nepse-|neb-|loksewa-|preeti-|gold-tola)/i.test(tool.slug) ||
-    ["Nepal Tools", "Date & Calendar", "Panchang & Tithi", "Kundali & Astrology", "NEPSE"].includes(tool.category)
+    ["Nepal Tools", "Panchang & Tithi", "Kundali & Astrology", "NEPSE"].includes(tool.category)
   );
 }
 
 function ToolCard({ tool }: { tool: Tool }) {
   return (
-    <Link key={tool.slug} href={tool.href} className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-lg">
+    <Link href={tool.href} className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-teal-300 hover:shadow-lg">
       <span className="text-xs font-bold uppercase tracking-wide text-teal-700">{tool.category}</span>
       <h2 className="mt-2 font-bold text-slate-900 group-hover:text-teal-800">{tool.name}</h2>
       <p className="mt-2 text-sm leading-6 text-slate-600">{tool.description}</p>

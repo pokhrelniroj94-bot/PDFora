@@ -12,12 +12,12 @@ const dayNames = [
 ];
 
 /**
- * Days from 1975-01-01 BS to the first day of each BS year; index 2100 is the
- * range length.
+ * Days from 1975-01-01 BS to the first day of each BS year; index 2084 is
+ * the end boundary for the currently supported calendar data.
  */
 const yearOffsets: number[] = [];
 yearOffsets[1975] = 0;
-for (let y = 1975; y <= 2099; y++) {
+for (let y = 1975; y <= 2083; y++) {
   yearOffsets[y + 1] = yearOffsets[y] + years[y][12];
 }
 
@@ -138,7 +138,7 @@ export default class DateConverter {
     month: number;
     date: number;
   } {
-    if (daysDiff < 0 || daysDiff >= yearOffsets[2100]) {
+    if (daysDiff < 0 || daysDiff >= yearOffsets[2084]) {
       throw new Error(this.errorMsg);
     }
 
@@ -157,12 +157,12 @@ export default class DateConverter {
    *
    * @returns Object with AD `year`, `month` (1-12), `date` (1-31), and `day`
    *   name.
-   * @throws When the BS date is invalid or outside 1975-2099 BS.
+   * @throws When the BS date is invalid or outside 1975-2083 BS.
    */
   public toAd() {
     if (
       this.year < 1975 ||
-      this.year > 2099 ||
+      this.year > 2083 ||
       this.day > years[this.year][this.month - 1]
     ) {
       throw new Error(this.errorMsg);
@@ -184,7 +184,7 @@ export default class DateConverter {
    * @returns Object with BS `year`, `month` (1-12), `date` (1-32), and `day`
    *   name.
    * @throws When the AD date is invalid or outside the supported range
-   *   (1918-04-13 AD to 2043-04-13 AD).
+   *   (1918-04-13 AD to 2027-04-13 AD).
    */
   public toBs() {
     const targetDate = new Date(Date.UTC(this.year, this.month - 1, this.day));

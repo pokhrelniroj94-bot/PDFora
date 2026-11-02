@@ -192,6 +192,8 @@ assert.ok(ashtakoota.includes("(!nadiDosha||nadiCancelled)") && ashtakoota.inclu
 
 assert.ok(ashtakoota.includes("scores.some(s=>s.score<0||s.score>s.max)"), "Ashtakoota must reject scores outside each koota's maximum");
 assert.ok(gunaComponent.includes('useState<Language>("ne")') && gunaComponent.includes('setLanguage("hi")') && gunaComponent.includes('setLanguage("en")'), "Guna Milan interface must support Nepali, Hindi and English");
+assert.ok(gunaComponent.includes('type={data.dateSystem==="BS"?"text":"date"}') && gunaComponent.includes('birthDate:""}'), "BS dates must be entered manually and cleared when switching date systems");
+
 assert.ok(gunaComponent.includes("{t.print}") && gunaComponent.includes("ASHTAKOOTA_SOURCE_URL") && gunaComponent.includes("ASHTAKOOTA_REFERENCE_TABLES") && gunaComponent.includes("showTables") && gunaComponent.includes("requiredError"), "Guna Milan report must provide print and source reference");
 assert.ok(catalogSource.includes('slug:"nepali-guna-milan"'), "36-guna tool must be registered in the canonical catalog");
 assert.ok(allTools.includes('slug==="nepali-guna-milan"') && allTools.includes("<GunaMilanTool />"), "36-guna tool must be routed to its dedicated calculator");

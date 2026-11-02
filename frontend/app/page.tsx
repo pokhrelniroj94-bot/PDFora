@@ -217,9 +217,9 @@ export default function Home() {
               </div>
             </div>
             {query.trim() && (
-              <div className="mt-3 max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[#102b2a] text-left shadow-2xl" role="region" aria-label="Live tool search results">
-                <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 text-xs"><span className="font-extrabold text-teal-100">Matching tools</span><span className="text-slate-400">{searchResults.length} results</span></div>
-                {searchResults.length ? <div className="divide-y divide-white/10">{searchResults.slice(0,6).map(tool=><Link key={tool.href} href={tool.href} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-white/[0.06]"><span className="min-w-0"><span className="block text-sm font-bold text-white">{tool.name}</span><span className="mt-0.5 block truncate text-xs text-slate-400">{tool.description}</span></span><span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold text-teal-100">{tool.category}</span></Link>)}</div> : <p className="px-4 py-5 text-sm text-slate-300">No matching tools. Try another search.</p>}
+              <div className="mt-3 max-h-[min(65vh,32rem)] max-w-2xl overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#102b2a] text-left shadow-2xl" role="region" aria-label="Live tool search results">
+                <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 text-xs"><span className="font-extrabold text-teal-100">All matching tools</span><span className="text-slate-400">{searchResults.length} results</span></div>
+                {searchResults.length ? <div className="divide-y divide-white/10">{searchResults.map(tool=><Link key={tool.href} href={tool.href} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-white/[0.06]"><span className="min-w-0"><span className="block text-sm font-bold text-white">{tool.name}</span><span className="mt-0.5 block truncate text-xs text-slate-400">{tool.description}</span></span><span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold text-teal-100">{tool.category}</span></Link>)}</div> : <p className="px-4 py-5 text-sm text-slate-300">No matching tools. Try another search.</p>}
               </div>
             )}
           </div>

@@ -191,15 +191,18 @@ PDF_HEADER_PATTERN = re.compile(rb"%PDF-(?:1\.[0-7]|2\.0)")
 
 
 def _client_ip(request: Request) -> str:
-    """Resolve client IP. On Render, use the right-most forwarded address
-    appended by the trusted platform proxy; otherwise use ASGI peer address.
+    """Resolve the client IP using Render/Cloudflare's visitor-IP header.
+
+    CF-Connecting-IP is set by Cloudflare at the edge and is preferred over
+    X-Forwarded-For, which can contain a chain of client-supplied/proxy values.
+    If the trusted edge header is absent, use the socket peer rather than
+    trusting an arbitrary forwarded value for security-sensitive rate limits.
     """
     if os.getenv("RENDER", "").lower() == "true":
-        forwarded = request.headers.get("x-forwarded-for", "")
-        candidates = [item.strip() for item in forwarded.split(",") if item.strip()]
-        if candidates:
+        edge_ip = request.headers.get("cf-connecting-ip", "").strip()
+        if edge_ip:
             try:
-                return str(ipaddress.ip_address(candidates[-1]))
+                return str(ipaddress.ip_address(edge_ip))
             except ValueError:
                 pass
 

@@ -71,3 +71,56 @@ export function addCalendarDays(start: string, days: number): string {
   date.setUTCDate(date.getUTCDate() + days);
   return date.toISOString().slice(0, 10);
 }
+
+export type NepalDomesticMeter = "5A" | "15A" | "30A" | "60A";
+export type NepalDomesticBill = {
+  energy: number;
+  minimum: number;
+  rebate: number;
+  vat: number;
+  total: number;
+};
+
+/** Nepal FY 2083/84 single-phase domestic estimate; confirm against current ERC/NEA notices. */
+export function calculateNepalDomesticElectricityBill(
+  units: number,
+  meter: NepalDomesticMeter,
+  earlyPaymentRebate = true,
+): NepalDomesticBill {
+  if (!Number.isFinite(units) || units < 0 || units > 100_000) {
+    throw new RangeError("Monthly units must be between 0 and 100,000.");
+  }
+  const meterIndex = (["5A", "15A", "30A", "60A"] as const).indexOf(meter);
+  if (meterIndex < 0) throw new RangeError("Choose a supported single-phase meter capacity.");
+  const minimumByBand = [
+    [30, 50, 50, 75, 100, 150],
+    [50, 75, 75, 100, 125, 175],
+    [75, 100, 100, 125, 150, 200],
+    [125, 125, 125, 150, 200, 250],
+  ];
+  const bands = [
+    { max: 20, rate: [0, 4, 5, 6][meterIndex] },
+    { max: 30, rate: 6.5 },
+    { max: 50, rate: 8 },
+    { max: 100, rate: 9.5 },
+    { max: 250, rate: 9.5 },
+    { max: Number.POSITIVE_INFINITY, rate: 11 },
+  ];
+  let prior = 0;
+  let energy = 0;
+  let above50Energy = 0;
+  for (const band of bands) {
+    const inBand = Math.max(0, Math.min(units, band.max) - prior);
+    energy += inBand * band.rate;
+    if (band.max > 50) above50Energy += inBand * band.rate;
+    prior = band.max;
+    if (units <= band.max) break;
+  }
+  if (meter === "5A" && units > 20) energy += 20 * 3;
+  const bandIndex = units <= 20 ? 0 : units <= 30 ? 1 : units <= 50 ? 2 : units <= 100 ? 3 : units <= 250 ? 4 : 5;
+  const minimum = minimumByBand[meterIndex][bandIndex];
+  const subtotal = energy + minimum;
+  const rebate = earlyPaymentRebate ? subtotal * 0.02 : 0;
+  const vat = above50Energy * 0.05;
+  return { energy, minimum, rebate, vat, total: subtotal - rebate + vat };
+}

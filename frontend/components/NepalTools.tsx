@@ -17,8 +17,8 @@ function formatNepaliCalendarDate(date: string) {
  }
 }
 
-function kathmanduISODate() {
- const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+function kathmanduISODate(timeZone = "Asia/Kathmandu") {
+ const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
  const part = (type: string) => parts.find((item) => item.type === type)?.value ?? "";
  return `${part("year")}-${part("month")}-${part("day")}`;
 }
@@ -180,8 +180,8 @@ Net profit / loss: NPR {netProfit.toFixed(2)}</Output>:<p role="alert" className
   };
   return <Panel>
    <div><h2 className="text-lg font-bold text-slate-900">Hindu Panchang Calculator · Nepal &amp; India</h2><p className="mt-1 text-sm leading-6 text-slate-600">Calculate tithi, nakshatra, yoga, karana, sunrise/sunset and traditional daytime periods for a selected Nepal or Indian city and Gregorian date. Panchang limbs are anchored to local sunrise.</p></div>
-   <div className="grid gap-3 sm:grid-cols-2"><Input title="Date (Gregorian / AD)" type="date" value={panchangDate} onChange={value=>{setPanchangDate(value);setPanchangResult(null);setPanchangError("");}}/><label><span className={label}>Location / City</span><select className={field} value={panchangCity} onChange={e=>{setPanchangCity(e.target.value);setPanchangResult(null);setPanchangError("");}}>{NEPAL_LOCATIONS.map(location=><option key={location.id} value={location.id}>{location.name}</option>)}</select></label></div>
-   <div className="flex flex-wrap gap-2"><button onClick={calculate} disabled={!panchangDate} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">Calculate Panchang</button><button type="button" onClick={()=>{setPanchangDate(kathmanduISODate());setPanchangResult(null);setPanchangError("");}} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Use today (local date)</button></div>
+   <div className="grid gap-3 sm:grid-cols-2"><Input title="Date (Gregorian / AD)" type="date" value={panchangDate} onChange={value=>{setPanchangDate(value);setPanchangResult(null);setPanchangError("");}}/><label><span className={label}>Location / City</span><select className={field} value={panchangCity} onChange={e=>{setPanchangCity(e.target.value);const selected=NEPAL_LOCATIONS.find(location=>location.id===e.target.value);setPanchangDate(kathmanduISODate(selected?.timeZone??"Asia/Kathmandu"));setPanchangResult(null);setPanchangError("");}}>{NEPAL_LOCATIONS.map(location=><option key={location.id} value={location.id}>{location.name}</option>)}</select></label></div>
+   <div className="flex flex-wrap gap-2"><button onClick={calculate} disabled={!panchangDate} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">Calculate Panchang</button><button type="button" onClick={()=>{setPanchangDate(kathmanduISODate(NEPAL_LOCATIONS.find(location=>location.id===panchangCity)?.timeZone??"Asia/Kathmandu"));setPanchangResult(null);setPanchangError("");}} className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold">Use today (local date)</button></div>
    {panchangError&&<Output>{panchangError}</Output>}
    {panchangResult&&<section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
     <div className="flex flex-wrap items-start justify-between gap-2"><div><h3 className="text-lg font-bold">{panchangResult.locationName} · {panchangResult.date}</h3><p className="text-sm text-slate-600">{panchangResult.weekday} · {panchangResult.weekdayNp} · {formatNepaliCalendarDate(panchangResult.date)}</p></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{NEPAL_LOCATIONS.find(location=>location.name===panchangResult.locationName)?.timeZone??"Local time"}</span></div>

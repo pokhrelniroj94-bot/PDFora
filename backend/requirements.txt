@@ -7,3 +7,4 @@ pymupdf
 python-docx
 openpyxl==3.1.5
 pdfplumber
+redis>=5,<7

@@ -119,6 +119,14 @@ assert.ok(marketApi.includes("summary: pick(summaryResult, [])"), "NEPSE summary
 assert.ok(marketApi.includes('s-maxage=60'), "NEPSE API response cache must allow frequent quote updates");
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
 assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
+const forexApi = read("../app/api/nepal-forex/route.ts");
+const forexComponent = read("../components/NepalLiveTools.tsx");
+assert.ok(forexApi.includes("fetchJsonHistory"), "NRB Forex historical rate API is missing");
+assert.ok(forexApi.includes("params.get(\\"history\\") === \\"1\\""), "NRB Forex API must expose a history mode");
+assert.ok(forexComponent.includes("Custom historical rate chart"), "Custom NRB Forex chart is missing");
+assert.ok(forexComponent.includes("TradingView embedded Forex chart"), "Embedded Forex market chart is missing");
+assert.ok(marketDashboard.includes("5*60*1000"), "NEPSE page should not poll faster than the upstream hourly feed needs");
+assert.ok(marketDashboard.includes("refreshed about hourly"), "NEPSE upstream update cadence must be disclosed");
 assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market dashboard route is missing");
 assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market Dashboard"), "Homepage must link to the dedicated NEPSE market dashboard");
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");

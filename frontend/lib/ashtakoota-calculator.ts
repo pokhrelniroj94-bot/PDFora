@@ -151,10 +151,10 @@ export function calculateAshtakoota(bride:KundaliResult,groom:KundaliResult):Gun
   {key:"nadi",ne:"नाडी",hi:"नाड़ी",en:"Nadi",score:nadiScore,max:8,brideValue:NADI[bi],groomValue:NADI[gi],note:nadiDosha?"Same Nadi; cancellation is reported separately.":"Different Nadis."},
  ];
  const exceptions:string[]=[];
- if(bhakootCancelled) exceptions.push("Bhakoot parihara: Moon-sign lords are the same or mutual friends. The raw score remains 0; the traditional exception is displayed separately.");
+ if(bhakootCancelled) exceptions.push("Bhakoot parihara: Moon-sign lords are the same or mutual friends, with no unmitigated Nadi dosha. The raw score remains 0; the traditional exception is displayed separately.");
  if(rashiNakshatraParihara) exceptions.push("Rashi/Nakshatra parihara: same Rashi with different Nakshatras, or same Nakshatra in different Rashis; the tradition cancels both Nadi and Gana dosha. Raw koota scores remain unchanged.");
- else else if(ganaCancelled) exceptions.push("Gana parihara: Rashi lords and Navamsa lords are mutual friends. The raw score remains unchanged; the traditional exception is displayed separately.");
- if(sameNakshatraRashiDifferentPada) exceptions.push("Same Rashi and Nakshatra but different padas: this is the auspicious v. 37 exception; Nadi and Gana dosha are cancelled, while raw scores remain unchanged.");
+ else if(sameNakshatraRashiDifferentPada) exceptions.push("Same Rashi and Nakshatra but different padas: this is the auspicious v. 37 exception; Nadi and Gana dosha are cancelled, while raw scores remain unchanged.");
+ else if(ganaCancelled) exceptions.push("Gana parihara: Rashi lords and Navamsa lords are mutual friends. The raw score remains unchanged; the traditional exception is displayed separately.");
  if(br===gr&&bi===gi&&bride.janmaPada===groom.janmaPada) exceptions.push("Same Rashi, Nakshatra and pada: the cited source does not describe this as the different-pada exception.");
  const total=Number(scores.reduce((sum,item)=>sum+item.score,0).toFixed(2));
  if(total>36||scores.some(s=>s.score<0||s.score>s.max)) throw new Error("Internal Ashtakoota score validation failed.");

@@ -311,6 +311,7 @@ export default function Home() {
             </span>
           </Link>
 
+          <Link href="/ne" className="mr-3 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-blue-700 hover:border-blue-400">नेपाली</Link>
           <Link
             href="/tools"
             className="rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800"

@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { toolCatalog } from "./toolCatalog";
 import { allTools } from "../lib/tool-directory";
+import { matchesToolSearch } from "../lib/tool-search";
 
 
 
@@ -38,15 +39,10 @@ function CopyButton({value}:{value:string}) { return <button className="rounded-
 
 export function ToolsDirectory() {
  const [category,setCategory]=useState("All"),[query,setQuery]=useState("");
- const list=useMemo(()=>{
-  const normalize=(value:string)=>value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu," ").trim();
-  const tokens=normalize(query).split(" ").filter(Boolean);
-  return allTools.filter(t=>{
-   const matchesCategory=category==="All"||(category==="PDF"?(t.kind==="pdf"||t.category==="PDF"):t.category===category);
-   const searchable=normalize([t.name,t.description,t.keywords,t.href].join(" "));
-   return matchesCategory&&(tokens.length===0||tokens.every(token=>searchable.includes(token)));
-  });
- },[category,query]);
+ const list=useMemo(()=>allTools.filter(t=>{
+  const matchesCategory=category==="All"||(category==="PDF"?(t.kind==="pdf"||t.category==="PDF"):t.category===category);
+  return matchesCategory&&matchesToolSearch(t,query);
+ }),[category,query]);
  return <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
   <div className="mb-9"><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">One place. Useful tools.</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Explore PDFora</h1><p className="mt-3 max-w-2xl text-slate-600">Browse every available PDF tool, calculator, text utility, developer tool, image converter, SEO helper and Nepal-focused utility from one searchable directory.</p><p className="mt-3 text-sm font-semibold text-teal-700">{allTools.length} available tools · OCR is listed separately only when its server support is enabled.</p></div>
   <div className="sticky top-[72px] z-20 -mx-4 mb-7 border-y border-slate-200/80 bg-white/95 px-4 py-3 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:rounded-2xl sm:border sm:p-4">

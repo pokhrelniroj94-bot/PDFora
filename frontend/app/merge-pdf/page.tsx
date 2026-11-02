@@ -17,15 +17,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://pd-fora.vercel.app/merge-pdf",
   },
-  openGraph: {
-    title: "Merge PDF Online Free | PDFora",
-    description:
-      "Combine multiple PDF files into one PDF document quickly and easily with PDFora.",
-    url: "https://pd-fora.vercel.app/merge-pdf",
-    siteName: "PDFora",
-    type: "website",
-  },
-};
+  };
 
 export default function Page() {
   return (

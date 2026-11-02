@@ -56,9 +56,9 @@ assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO con
 assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 
-const adviceBlock = seoContent.match(/const toolAdvice:[\\s\\S]*?=\\s*\\{([\\s\\S]*?)\\n\\s*\\};/);
+const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\\};/);
 assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
-const advisedSlugs = [...adviceBlock[1].matchAll(/^\\s{4}"([^"]+)":\\s*\\{/gm)].map((m) => m[1]);
+const advisedSlugs = [...adviceBlock[1].matchAll(/^\s{4}"([^"]+)":\s*\{/gm)].map((m) => m[1]);
 const missingToolAdvice = catalog.filter((slug) => !advisedSlugs.includes(slug));
 assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO guidance: " + missingToolAdvice.join(", "));
 

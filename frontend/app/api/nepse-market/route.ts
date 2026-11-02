@@ -58,6 +58,9 @@ export async function GET(request: Request) {
     );
   }
   const manifest = manifestResult.status === "fulfilled" ? manifestResult.value : { availableMonths: [], latestDate: undefined };
+  const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)
+    ? sectorsResult.value as Array<{ indexCode?: string; indexName?: string; description?: string }>
+    : [];
   const isIndex = INDEX_SYMBOLS.has(symbol) || sectorMeta.some((sector) => sector.indexCode === symbol);
   const historyKind = isIndex ? "indices" : "ltp";
   const historyManifest = historyKind === "indices"
@@ -88,9 +91,6 @@ export async function GET(request: Request) {
     }
   }
   points.sort((a, b) => a.date.localeCompare(b.date));
-  const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)
-    ? sectorsResult.value as Array<{ indexCode?: string; indexName?: string; description?: string }>
-    : [];
   const indexMonths = (Array.isArray(manifest.availableMonths) ? manifest.availableMonths : []).slice(-2);
   const indexHistoryResults = historyKind === "indices"
     ? historyResults

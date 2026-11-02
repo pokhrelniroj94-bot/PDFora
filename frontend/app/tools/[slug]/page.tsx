@@ -266,11 +266,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "How are bonus shares estimated?", a: "The calculator multiplies eligible shares by the declared bonus percentage. Fractional entitlements and book-closure rules are not determined by this estimate." },
       { q: "Is the result an official CDSC credit?", a: "No. Confirm eligibility, final tax and credited shares with the company, CDSC and Mero Share." }
     ],
-    "nepali-unicode-typing": [
-      { q: "Does Nepali typing translate English into Nepali?", a: "No. It converts Romanized Nepali sounds into Devanagari Unicode; it does not translate English meaning." },
-      { q: "Can I use the text in Word or online forms?", a: "Yes. The result is Unicode text that can be copied into applications supporting Devanagari." },
-      { q: "Can this convert old Preeti text?", a: "Use the separate Preeti to Unicode converter for legacy Preeti-encoded text." }
-    ]
+    
   };
   const questions = questionsBySlug[slug] ?? defaultQuestions;
   const canonicalUrl = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;

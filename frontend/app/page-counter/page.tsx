@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "PDF Page Counter Online Free | PDFora",
+  title: "PDF Page Counter Online Free",
   description: "Count PDF pages online and get a downloadable report with total pages and file size. Fast, simple and free with PDFora.",
   alternates: { canonical: "https://pd-fora.vercel.app/page-counter" },
 };

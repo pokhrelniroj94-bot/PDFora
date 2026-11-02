@@ -11,6 +11,55 @@ function clean(value: string) {
     .replace(/&#\d+;/g, " ").replace(/\s+/g, " ").trim();
 }
 
+const YONEPSE = "https://shubhamnpk.github.io/yonepse";
+async function readYonepse<T>(path: string): Promise<T> {
+  const response = await fetch(YONEPSE + path, {
+    headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(9000),
+    next: { revalidate: 900 },
+  });
+  if (!response.ok) throw new Error("YONEPSE feed unavailable");
+  return response.json() as Promise<T>;
+}
+async function readOfficialStories() {
+  const [disclosuresResult, messagesResult, ipoResult] = await Promise.allSettled([
+    readYonepse<Array<{ id?: number; symbol?: string; title?: string; publishedAt?: string; source?: string; documents?: Array<{ fileUrl?: string }> }>>("/data/notify/disclosures.json"),
+    readYonepse<Array<{ id?: number; symbol?: string; title?: string; publishedAt?: string; fileUrl?: string }>>("/data/notify/exchange_messages.json"),
+    readYonepse<Array<{ company?: string; url?: string; announcement_date?: string; scraped_at?: string; date_range?: string; full_text?: string }>>("/data/ipo/upcoming.json"),
+  ]);
+  const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  const market: Story[] = [];
+  if (disclosuresResult.status === "fulfilled") {
+    for (const item of disclosuresResult.value) {
+      const date = new Date(item.publishedAt || "");
+      const link = item.documents?.[0]?.fileUrl || "https://www.nepalstock.com.np/";
+      if (item.title && /^https:\/\//i.test(link) && !Number.isNaN(date.getTime()) && date.getTime() >= cutoff) {
+        market.push({ title: (item.symbol ? item.symbol + " — " : "") + item.title, link, publishedAt: date.toISOString(), source: "NEPSE disclosure" });
+      }
+    }
+  }
+  if (messagesResult.status === "fulfilled") {
+    for (const item of messagesResult.value) {
+      const date = new Date(item.publishedAt || "");
+      const link = item.fileUrl || "https://www.nepalstock.com.np/";
+      if (item.title && /^https:\/\//i.test(link) && !Number.isNaN(date.getTime()) && date.getTime() >= cutoff) {
+        market.push({ title: (item.symbol ? item.symbol + " — " : "") + item.title, link, publishedAt: date.toISOString(), source: "NEPSE exchange message" });
+      }
+    }
+  }
+  const ipo: Story[] = ipoResult.status === "fulfilled" ? ipoResult.value.map((item) => {
+    const date = new Date(item.scraped_at || item.announcement_date || "");
+    return item.company && item.url && /^https:\/\//i.test(item.url) && !Number.isNaN(date.getTime())
+      ? { title: item.company + (item.date_range ? " — " + item.date_range : "") + " (IPO notice)", link: item.url, publishedAt: date.toISOString(), source: "IPO notice" }
+      : null;
+  }).filter((item): item is Story => item !== null) : [];
+  return {
+    market: [...new Map(market.map((item) => [item.link + item.title, item])).values()].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10),
+    ipo: [...new Map(ipo.map((item) => [item.link, item])).values()].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10),
+    failed: [disclosuresResult,messagesResult,ipoResult].some((item)=>item.status==="rejected"),
+  };
+}
+
 async function readFeed(query: string): Promise<Story[]> {
   const url = new URL("https://news.google.com/rss/search");
   url.search = new URLSearchParams({ q: query, hl: "en-NP", gl: "NP", ceid: "NP:en" }).toString();
@@ -40,20 +89,28 @@ async function readFeed(query: string): Promise<Story[]> {
 
 export async function GET() {
   try {
-    const [marketResult, ipoResult] = await Promise.allSettled([
+    const [marketResult, ipoResult, officialResult] = await Promise.allSettled([
       readFeed("NEPSE Nepal stock market shares trading"),
       readFeed("Nepal IPO FPO share allotment public issue"),
+      readOfficialStories(),
     ]);
-    const market = marketResult.status === "fulfilled" ? marketResult.value : [];
-    const ipo = ipoResult.status === "fulfilled" ? ipoResult.value : [];
+    const official = officialResult.status === "fulfilled" ? officialResult.value : { market: [], ipo: [], failed: true };
+    const market = [
+      ...(marketResult.status === "fulfilled" ? marketResult.value : []),
+      ...official.market,
+    ].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
+    const ipo = [
+      ...(ipoResult.status === "fulfilled" ? ipoResult.value : []),
+      ...official.ipo,
+    ].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
     if (market.length === 0 && ipo.length === 0) {
-      throw new Error("Both Nepal news feeds are temporarily unavailable");
+      throw new Error("Google News and NEPSE public news feeds are temporarily unavailable");
     }
-    const warning = marketResult.status === "rejected" || ipoResult.status === "rejected"
-      ? "Some headlines could not be loaded. The available news category is still shown."
+    const warning = marketResult.status === "rejected" || ipoResult.status === "rejected" || official.failed
+      ? "Some providers are unavailable. Headlines from the working sources are still shown."
       : undefined;
     return Response.json(
-      { market, ipo, updatedAt: new Date().toISOString(), maxAgeDays: 7, warning },
+      { market, ipo, updatedAt: new Date().toISOString(), maxAgeDays: 30, warning },
       { headers: { "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800" } },
     );
   } catch {

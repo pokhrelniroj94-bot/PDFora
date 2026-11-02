@@ -4,7 +4,8 @@ export const metadata: Metadata = {
   title: "Terms of Service",
   description: "Terms of Service for PDFora.",
   alternates: { canonical: "https://pd-fora.vercel.app/terms" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms of Service for PDFora." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms of Service for PDFora.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora terms of service" }] },
+  twitter: { card: "summary_large_image", title: "PDFora Terms of Service", description: "Terms of Service for PDFora.", images: ["/opengraph-image"] },
 };
 
 export default function TermsPage() {

@@ -143,3 +143,10 @@ button:disabled {
   .pdfora-spinner, .pdfora-progress-track::after { animation: none !important; }
   button:active:not(:disabled), [role="button"]:active { transform: none; }
 }
+
+:where([aria-live="polite"], [role="status"]) { animation: pdfora-fade-up 220ms ease-out both; }
+.pdfora-spinner { display:inline-block; width:1.05rem; height:1.05rem; flex:0 0 auto; border:2px solid currentColor; border-right-color:transparent; border-radius:9999px; animation:pdfora-spin 700ms linear infinite; vertical-align:-.18em; }
+.pdfora-progress-track { height:5px; overflow:hidden; border-radius:9999px; background:#ccfbf1; }
+.pdfora-progress-track::after { content:""; display:block; width:34%; height:100%; border-radius:inherit; background:linear-gradient(90deg,#0f766e,#06b6d4,#0f766e); animation:pdfora-progress 1.2s ease-in-out infinite; }
+.pdfora-processing { display:flex; align-items:center; gap:.65rem; border:1px solid #99f6e4; border-radius:.9rem; background:#f0fdfa; padding:.85rem 1rem; color:#134e4a; font-size:.875rem; line-height:1.5; }
+@media (prefers-reduced-motion: reduce) { :where([aria-live="polite"], [role="status"]) { animation:none !important; } .pdfora-spinner,.pdfora-progress-track::after { animation:none !important; } }

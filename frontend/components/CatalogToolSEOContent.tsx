@@ -92,7 +92,7 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Supported date range and accuracy</h2>
         <p className="mt-4 leading-8 text-slate-700">Bikram Sambat month lengths vary by year, so a reliable conversion must use published calendar data rather than adding a fixed number of years or days. This tool uses a date-conversion library with a defined supported range. Dates outside that range are rejected instead of estimated.</p>
-        <p className="mt-3 leading-8 text-slate-700">For citizenship records, passports, court documents, tax filings, banking records or government applications, compare the converted date with the original document and the relevant authority's calendar. This online result is not an official certificate.</p>
+        <p className="mt-3 leading-8 text-slate-700">For citizenship records, passports, court documents, tax filings, banking records or government applications, compare the converted date with the original document and the relevant authority&apos;s calendar. This online result is not an official certificate.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>

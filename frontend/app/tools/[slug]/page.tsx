@@ -418,6 +418,14 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Which locations can I calculate?", a: "The current version provides city-centre coordinates for Kathmandu, Ilam, Biratnagar, Pokhara, Janakpur, Nepalgunj, Dhangadhi, Birgunj, Dharan, Butwal and Bharatpur." },
       { q: "Does it provide wedding muhurta or festival decisions?", a: "No. It does not infer personalized auspicious times or decide festival observance. Confirm important rituals with the official Nepal Panchanga and an approved local calendar." }
     ],
+    "nepali-janma-kundali": [
+      { q: "जन्मकुण्डली बनाउन के-के चाहिन्छ?", a: "जन्ममिति, जन्मसमय र जन्मस्थान आवश्यक हुन्छ। लग्न र भावको गणनामा केही मिनेटको समय फरकले पनि नतिजा बदल्न सक्छ।" },
+      { q: "के नेपाली विक्रम संवत् मिति राख्न मिल्छ?", a: "मिल्छ। हालको BS converter ले १९७५ देखि २०८३ सालसम्मको प्रकाशित मिति तालिका प्रयोग गर्छ। यो दायराबाहिरको जन्ममितिका लागि AD विकल्प प्रयोग गर्नुहोस्।" },
+      { q: "कुन ज्योतिषीय पद्धति प्रयोग हुन्छ?", a: "ग्रहका geocentric apparent ecliptic positions, Lahiri/Chitrapaksha sidereal conversion, whole-sign houses, mean Rahu/Ketu र Vimshottari Mahadasha प्रयोग हुन्छ। फरक अयनांश वा भाव पद्धति अपनाउने सफ्टवेयरसँग केही अन्तर आउन सक्छ।" },
+      { q: "के यो Hamro Patro सँग ठ्याक्कै मिल्छ?", a: "Hamro Patro को आन्तरिक ephemeris, ayanamsa र house-system configuration सार्वजनिक रूपमा पुष्टि नभएकाले ठ्याक्कै उस्तै हुने ग्यारेन्टी गर्न सकिँदैन। महत्त्वपूर्ण प्रयोगअघि अर्को विश्वसनीय पञ्चाङ्ग वा ज्योतिष सफ्टवेयरसँग विवरण मिलाउनुहोस्।" },
+      { q: "जन्मस्थान किन आवश्यक छ?", a: "जन्मस्थानको अक्षांश र देशान्तरले स्थानीय sidereal time र लग्न गणनामा असर गर्छ। अहिले उपलब्ध स्थानहरू सहर-केन्द्रका निर्देशाङ्क हुन्; गाउँ वा टाढाको स्थानमा केही फरक पर्न सक्छ।" },
+      { q: "मेरो जन्म विवरण कहाँ पठाइन्छ?", a: "कुण्डली गणना तपाईंको ब्राउजरमै हुन्छ। नाम, जन्ममिति, समय र स्थान कुनै गणना API मा पठाइँदैन वा स्वचालित रूपमा सुरक्षित गरिँदैन।" }
+    ],
     "nepal-panchang-today": [
       { q: "Which location does the daily Panchang show?", a: "The embedded daily Panchang is for Kathmandu, Nepal only. Do not apply its timings to another district." },
       { q: "Can I choose a past date or another city?", a: "No. This is a live Kathmandu daily reference. Use the separate Nepal Panchang Calculator for a selectable date and supported Nepal city." },

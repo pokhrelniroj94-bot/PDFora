@@ -23,13 +23,14 @@ export async function GET(request: Request) {
   if (!/^[A-Z0-9]{2,16}$/.test(symbol)) {
     return Response.json({ error: "Invalid stock symbol." }, { status: 400 });
   }
-  const [stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, manifestResult, ltpManifestResult] = await Promise.allSettled([
+  const [stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.allSettled([
     read<unknown[]>("/data/nepse_data.json"),
     read<unknown[]>("/data/market/indices.json"),
     read<Json>("/data/market/status.json"),
     read<unknown[]>("/data/market/summary.json"),
     read<Json>("/data/market/top_stocks.json"),
     read<unknown[]>("/data/market/sector_indices.json"),
+    read<Json>("/data/market/supply_demand.json"),
     read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json"),
     read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json"),
   ]);
@@ -112,9 +113,10 @@ export async function GET(request: Request) {
     summary: pick(summaryResult, []),
     topStocks: pick(topResult, {}),
     sectors,
+    supplyDemand: pick(supplyDemandResult, {}),
     stocks,
     points,
-    partial: [statusResult, summaryResult, topResult, sectorsResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
+    partial: [statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {
     headers: { "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800" },

@@ -137,6 +137,56 @@ function ForexTool() {
   </div>;
 }
 
+
+function NepalFinanceTools({ slug }: { slug: string }) {
+  const [principal, setPrincipal] = useState("500000");
+  const [annualRate, setAnnualRate] = useState("7");
+  const [months, setMonths] = useState("12");
+  const [frequency, setFrequency] = useState("4");
+  const [taxRate, setTaxRate] = useState("5");
+  const [sendAmount, setSendAmount] = useState("500");
+  const [exchangeRate, setExchangeRate] = useState("135");
+  const [transferFee, setTransferFee] = useState("0");
+  const [shares, setShares] = useState("10");
+  const [ipoPrice, setIpoPrice] = useState("100");
+  const [salePrice, setSalePrice] = useState("500");
+  const [brokerFee, setBrokerFee] = useState("0.36");
+  const [sebonFee, setSebonFee] = useState("0.015");
+  const [dpFee, setDpFee] = useState("25");
+  const [capitalTax, setCapitalTax] = useState("5");
+  const number = (value: string) => Number(value);
+  const valid = (values: string[]) => values.every((value) => value.trim() !== "" && Number.isFinite(number(value)) && number(value) >= 0);
+  if (slug === "nepal-fixed-deposit-calculator") {
+    const ok = valid([principal, annualRate, months, taxRate]) && number(principal) > 0 && number(months) > 0 && number(annualRate) <= 100 && number(taxRate) <= 100;
+    const n = Number(frequency), p = number(principal), r = number(annualRate) / 100, t = number(months) / 12;
+    const maturity = ok ? p * Math.pow(1 + r / n, n * t) : 0;
+    const interest = maturity - p, tax = interest * number(taxRate) / 100;
+    return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal Fixed Deposit (FD) Calculator</h3><p className="text-sm text-slate-600">Estimate maturity value with periodic compounding and an editable tax assumption.</p></div><div className="grid gap-3 sm:grid-cols-2"><Field title="Deposit amount (NPR)"><input className={field} type="number" min="1" value={principal} onChange={e=>setPrincipal(e.target.value)}/></Field><Field title="Annual interest rate (%)"><input className={field} type="number" min="0" max="100" step="0.01" value={annualRate} onChange={e=>setAnnualRate(e.target.value)}/></Field><Field title="Term (months)"><input className={field} type="number" min="1" value={months} onChange={e=>setMonths(e.target.value)}/></Field><Field title="Compounding frequency"><select className={field} value={frequency} onChange={e=>setFrequency(e.target.value)}><option value="1">Annually</option><option value="2">Half-yearly</option><option value="4">Quarterly</option><option value="12">Monthly</option></select></Field><Field title="Tax on interest (%)"><input className={field} type="number" min="0" max="100" step="0.01" value={taxRate} onChange={e=>setTaxRate(e.target.value)}/></Field></div>{ok?<Result>Principal: {npr(p)}
+Gross interest: {npr(interest)}
+Estimated tax on interest: {npr(tax)}
+After-tax maturity value: {npr(maturity-tax)}</Result>:<p role="alert" className="text-sm text-red-700">Enter valid positive deposit and term values, with rates between 0 and 100.</p>}<p className="text-xs text-slate-500">Estimate only. Actual Nepal bank FD products may use different day-count, payout, compounding, premature-withdrawal and tax rules. Confirm the bank's offer and current tax treatment.</p></div>;
+  }
+  if (slug === "nepal-remittance-calculator") {
+    const ok = valid([sendAmount, exchangeRate, transferFee]) && number(exchangeRate) > 0;
+    const gross = number(sendAmount) * number(exchangeRate), net = gross - number(transferFee);
+    return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal Remittance Calculator</h3><p className="text-sm text-slate-600">Estimate the NPR amount received after an editable transfer fee.</p></div><div className="grid gap-3 sm:grid-cols-2"><Field title="Amount sent (foreign currency)"><input className={field} type="number" min="0" value={sendAmount} onChange={e=>setSendAmount(e.target.value)}/></Field><Field title="Exchange rate (NPR per 1 unit)"><input className={field} type="number" min="0.0001" step="0.0001" value={exchangeRate} onChange={e=>setExchangeRate(e.target.value)}/></Field><Field title="Transfer fee (NPR)"><input className={field} type="number" min="0" value={transferFee} onChange={e=>setTransferFee(e.target.value)}/></Field></div>{ok?<Result>Gross NPR equivalent: {npr(gross)}
+Transfer fee: {npr(number(transferFee))}
+Estimated recipient amount: {npr(net)}</Result>:<p role="alert" className="text-sm text-red-700">Enter a valid amount, positive exchange rate and non-negative fee.</p>}<p className="text-xs text-slate-500">Enter the rate and fee quoted by your provider. Actual remittance payouts can include provider-specific spreads, promotions, correspondent-bank deductions and recipient fees.</p></div>;
+  }
+  const ok = valid([shares, ipoPrice, salePrice, brokerFee, sebonFee, dpFee, capitalTax]) && number(shares) > 0 && number(ipoPrice) > 0 && number(brokerFee) <= 100 && number(sebonFee) <= 100 && number(capitalTax) <= 100;
+  const quantity = number(shares), cost = quantity * number(ipoPrice), sale = quantity * number(salePrice);
+  const commission = sale * number(brokerFee) / 100, sebon = sale * number(sebonFee) / 100;
+  const grossGain = sale - cost, taxableGain = Math.max(0, grossGain - commission - sebon - number(dpFee));
+  const tax = taxableGain * number(capitalTax) / 100, net = sale - commission - sebon - number(dpFee) - tax - cost;
+  return <div className="space-y-4"><div><h3 className="text-lg font-bold">Nepal IPO Profit / Loss Calculator</h3><p className="text-sm text-slate-600">Estimate your IPO share outcome using editable transaction charges and tax assumptions.</p></div><div className="grid gap-3 sm:grid-cols-2"><Field title="IPO shares (kitta)"><input className={field} type="number" min="1" value={shares} onChange={e=>setShares(e.target.value)}/></Field><Field title="IPO allotment price (NPR/share)"><input className={field} type="number" min="0.01" value={ipoPrice} onChange={e=>setIpoPrice(e.target.value)}/></Field><Field title="Selling price (NPR/share)"><input className={field} type="number" min="0" value={salePrice} onChange={e=>setSalePrice(e.target.value)}/></Field><Field title="Broker commission (%)"><input className={field} type="number" min="0" max="100" step="0.001" value={brokerFee} onChange={e=>setBrokerFee(e.target.value)}/></Field><Field title="SEBON fee (%)"><input className={field} type="number" min="0" max="100" step="0.001" value={sebonFee} onChange={e=>setSebonFee(e.target.value)}/></Field><Field title="DP charge (NPR)"><input className={field} type="number" min="0" value={dpFee} onChange={e=>setDpFee(e.target.value)}/></Field><Field title="Capital-gains tax assumption (%)"><input className={field} type="number" min="0" max="100" step="0.1" value={capitalTax} onChange={e=>setCapitalTax(e.target.value)}/></Field></div>{ok?<Result>Purchase cost: {npr(cost)}
+Gross sale value: {npr(sale)}
+Gross gain / loss: {npr(grossGain)}
+Estimated sale charges: {npr(commission+sebon+number(dpFee))}
+Estimated capital-gains tax: {npr(tax)}
+Net profit / loss: {npr(net)}
+Return on purchase cost: {cost>0?(net/cost*100).toFixed(2):"0.00"}%</Result>:<p role="alert" className="text-sm text-red-700">Enter valid quantities, prices and percentage assumptions.</p>}<p className="text-xs text-slate-500">This is a simplified estimate. Actual broker commission tiers, SEBON/DP charges, holding-period CGT rates, minimum fees and settlement rules may differ. Verify current rates with your broker and IRD before trading.</p></div>;
+}
+
 function SalaryTaxTool() {
   const [income, setIncome] = useState("1200000");
   const [firstBandExempt, setFirstBandExempt] = useState(false);
@@ -255,6 +305,7 @@ function NepseDividendTool() {
 
 export default function NepalLiveTools({ slug }: { slug: string }) {
   if (slug === "nepal-forex-rates") return <ForexTool/>;
+  if (["nepal-fixed-deposit-calculator","nepal-remittance-calculator","nepal-ipo-profit-calculator"].includes(slug)) return <NepalFinanceTools slug={slug}/>;
   if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool/>;
   if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool/>;
   if (slug === "nepal-public-holidays-2083") return <HolidayTool/>;

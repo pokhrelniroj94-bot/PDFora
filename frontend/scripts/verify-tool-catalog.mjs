@@ -14,6 +14,7 @@ const panchangEngine = read("../lib/panchang-calculator.ts");
 const kundaliEngine = read("../lib/kundali-calculator.ts");
 const kundaliComponent = read("../components/KundaliTool.tsx");
 const blogIndex = read("../lib/blog-posts.ts");
+const astrologyGuides = read("../lib/astrology-blog-posts.ts");
 const packageJson = read("../package.json");
 const bsYears = {};
 for (const [, yearText, valueText] of bsYearsSource.matchAll(/^years\[(\d+)\] = (.+);$/gm)) {
@@ -194,5 +195,6 @@ assert.ok(catalogSource.includes('slug:"nepali-guna-milan"'), "36-guna tool must
 assert.ok(allTools.includes('slug==="nepali-guna-milan"') && allTools.includes("<GunaMilanTool />"), "36-guna tool must be routed to its dedicated calculator");
 assert.ok(toolPage.includes('"nepali-guna-milan": { title:'), "36-guna page must have dedicated SEO metadata");
 assert.ok(blogIndex.includes('import { astrologyBlogPosts } from "./astrology-blog-posts"') && blogIndex.includes("...astrologyBlogPosts"), "Astrology and Ashtakoota guides must be included in the public blog index and sitemap source");
+assert.ok(astrologyGuides.includes('slug: "36-guna-milan-ashtakoota-explained-nepali-hindi-english"') && astrologyGuides.includes('href: "/tools/nepali-guna-milan"'), "Ashtakoota SEO guide must link to the live matching tool");
 
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including shared multilingual search, EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

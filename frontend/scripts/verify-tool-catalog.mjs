@@ -11,6 +11,8 @@ const toolPage = read("../app/tools/[slug]/page.tsx");
 const bsYearsSource = read("../lib/nepali-date-converter/years.ts");
 const nepaliDateSource = read("../lib/nepali-date-converter/index.ts");
 const panchangEngine = read("../lib/panchang-calculator.ts");
+const kundaliEngine = read("../lib/kundali-calculator.ts");
+const kundaliComponent = read("../components/KundaliTool.tsx");
 const packageJson = read("../package.json");
 const bsYears = {};
 for (const [, yearText, valueText] of bsYearsSource.matchAll(/^years\[(\d+)\] = (.+);$/gm)) {
@@ -44,6 +46,13 @@ assert.ok(packageJson.includes('"astronomy-engine": "2.1.19"') && panchangEngine
 assert.ok(panchangEngine.includes("SearchRiseSet") && panchangEngine.includes("EclipticGeoMoon") && panchangEngine.includes("SunPosition"), "Panchang must use astronomical ephemeris and location-based sunrise/sunset");
 assert.ok(panchangEngine.includes("23.85709") && panchangEngine.includes("Asia/Kathmandu") && panchangEngine.includes("findAngaEnds"), "Panchang must document Lahiri, Nepal timezone and sunrise-anchored transition calculations");
 assert.ok(panchangEngine.includes("indices.karana === 0") && panchangEngine.includes("(indices.karana - 1) % 7"), "Karana mapping must include Kimstughna at the opening half-tithi and the seven movable sequence");
+assert.ok(kundaliEngine.includes('import * as Astronomy from "astronomy-engine"') && kundaliEngine.includes("EclipticLongitude") && kundaliEngine.includes("SiderealTime"), "Kundali must calculate planetary positions and local sidereal time from the astronomical engine");
+assert.ok(kundaliEngine.includes("lahiriAyanamsa") && kundaliEngine.includes("meanNode") && kundaliEngine.includes("risingLongitude"), "Kundali must use documented Lahiri, lunar node and ascendant calculations");
+assert.ok(kundaliEngine.includes("Asia/Kathmandu") && kundaliEngine.includes("localWallTimeToUtc") && kundaliEngine.includes("toAd()"), "Kundali must support Nepali BS dates and historical Nepal local time offsets");
+assert.ok(kundaliEngine.includes("Vimshottari") && kundaliEngine.includes("whole-sign houses"), "Kundali method and dasha calculations must be explicit");
+assert.ok(kundaliComponent.includes("जन्मकुण्डली") && kundaliComponent.includes("नवग्रहको स्थिति") && kundaliComponent.includes("विम्शोत्तरी महादशा"), "Kundali UI must present the report in Nepali");
+assert.ok(kundaliComponent.includes("window.print()") && kundaliComponent.includes("ब्राउजरमै हुन्छ"), "Kundali must support print/PDF and disclose client-side birth-data processing");
+assert.ok(allTools.includes('slug==="nepali-janma-kundali"') && catalogSource.includes('slug:"nepali-janma-kundali"'), "Nepali Janma Kundali must have a dedicated catalog entry and route");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((match) => match[1]).filter((slug) => slug !== "pdf-tools");
 
 const toolDirectory = read("../lib/tool-directory.ts");
@@ -59,8 +68,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 124, "Expected 124 catalog utilities");
-assert.equal(allHrefs.length, 173, "Expected 173 available tools (49 PDF tools + 124 catalog utilities)");
+assert.equal(catalog.length, 125, "Expected 125 catalog utilities");
+assert.equal(allHrefs.length, 174, "Expected 174 available tools (49 PDF tools + 125 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");

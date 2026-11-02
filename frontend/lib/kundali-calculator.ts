@@ -43,13 +43,17 @@ function localWallTimeToUtc(date: string, time: string, timeZone = "Asia/Kathman
   const [year, month, day] = date.split("-").map(Number);
   const [hour, minute] = time.split(":").map(Number);
   const naive = new Date(Date.UTC(year, month - 1, day, hour, minute));
-  const parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "longOffset" }).formatToParts(naive);
-  const offsetText = parts.find((part) => part.type === "timeZoneName")?.value ?? "";
-  const match = offsetText.match(/^GMT([+-])(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
-  if (!match) throw new Error("जन्मस्थानको समय क्षेत्र पत्ता लगाउन सकिएन।");
-  const sign = match[1] === "-" ? -1 : 1;
-  const offsetSeconds = sign * (Number(match[2]) * 3600 + Number(match[3]) * 60 + Number(match[4] ?? 0));
-  const utc = new Date(naive.getTime() - offsetSeconds * 1000);
+  const offsetAt = (instant: Date) => {
+    const parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "longOffset" }).formatToParts(instant);
+    const offsetText = parts.find((part) => part.type === "timeZoneName")?.value ?? "";
+    const match = offsetText.match(/^GMT([+-])(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+    if (!match) throw new Error("जन्मस्थानको समय क्षेत्र पत्ता लगाउन सकिएन।");
+    const sign = match[1] === "-" ? -1 : 1;
+    return sign * (Number(match[2]) * 3600 + Number(match[3]) * 60 + Number(match[4] ?? 0));
+  };
+  // Iterate so a historical offset transition near local midnight is resolved correctly.
+  let utc = naive;
+  for (let i = 0; i < 3; i++) utc = new Date(naive.getTime() - offsetAt(utc) * 1000);
   const check = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(utc);
   const get = (type: string) => check.find((part) => part.type === type)?.value;
   if (Number(get("year")) !== year || Number(get("month")) !== month || Number(get("day")) !== day || Number(get("hour")) !== hour || Number(get("minute")) !== minute) {
@@ -99,11 +103,13 @@ function nakshatraFor(longitude: number) {
 }
 
 function formatBS(date: Date): string {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date);
+  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
+  const y = Number(get("year")), m = get("month"), d = get("day");
   try {
-    const y = date.getUTCFullYear(), m = String(date.getUTCMonth()+1).padStart(2,"0"), d = String(date.getUTCDate()).padStart(2,"0");
     const bs = new DateConverter(`${y}-${m}-${d}`).toBs();
     return `${nepaliDigits(bs.year)}-${nepaliDigits(String(bs.month).padStart(2,"0"))}-${nepaliDigits(String(bs.date).padStart(2,"0"))}`;
-  } catch { return `${nepaliDigits(date.getUTCFullYear())}-${nepaliDigits(String(date.getUTCMonth()+1).padStart(2,"0"))}-${nepaliDigits(String(date.getUTCDate()).padStart(2,"0"))} AD`; }
+  } catch { return `${nepaliDigits(y)}-${nepaliDigits(m)}-${nepaliDigits(d)} AD`; }
 }
 
 export interface KundaliInput {

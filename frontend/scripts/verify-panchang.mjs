@@ -40,5 +40,18 @@ assert.ok(karanaIndex >= 0 && karanaIndex < 60, "Karana index must be in the 60-
 assert.ok(nakshatraIndex >= 0 && nakshatraIndex < 27, "Nakshatra index must be in the 27-nakshatra cycle.");
 assert.ok(yogaIndex >= 0 && yogaIndex < 27, "Yoga index must be in the 27-yoga cycle.");
 assert.ok(ayanamsa > 20 && ayanamsa < 30, "Lahiri ayanamsa must remain within a plausible range.");
+assert.equal(tithiIndex, 7, "Kathmandu 2026-11-02 sunrise reference is Krishna Ashtami.");
+assert.equal(yogaIndex, 22, "Kathmandu 2026-11-02 sunrise reference is Shubha yoga.");
+assert.equal(karanaIndex, 45, "Kathmandu 2026-11-02 sunrise reference is Kaulava karana.");
+const localClock = (instant) => new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Asia/Kathmandu", hour: "2-digit", minute: "2-digit", hour12: false,
+}).format(instant);
+assert.ok(localClock(sunrise.date) >= "06:00" && localClock(sunrise.date) <= "06:30", "Kathmandu sunrise should be close to the published 06:15 reference.");
+assert.ok(localClock(sunset.date) >= "17:00" && localClock(sunset.date) <= "17:30", "Kathmandu sunset should be close to the published 17:19 reference.");
+const daylight = sunset.date.getTime() - sunrise.date.getTime();
+const rahuStart = new Date(sunrise.date.getTime() + daylight / 8);
+const rahuEnd = new Date(sunrise.date.getTime() + daylight * 2 / 8);
+assert.ok(localClock(rahuStart) >= "07:30" && localClock(rahuStart) <= "07:45", "Monday Rahu Kaal should begin close to 07:38.");
+assert.ok(localClock(rahuEnd) >= "08:55" && localClock(rahuEnd) <= "09:10", "Monday Rahu Kaal should end close to 09:01.");
 
 console.log(`Panchang astronomy smoke test passed for Kathmandu ${date}: sunrise ${sunrise.date.toISOString()}, sunset ${sunset.date.toISOString()}, tithi ${tithiIndex + 1}/30, nakshatra ${nakshatraIndex + 1}/27.`);

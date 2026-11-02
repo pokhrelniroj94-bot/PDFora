@@ -52,6 +52,10 @@ assert.ok(kundaliEngine.includes("Asia/Kathmandu") && kundaliEngine.includes("lo
 assert.ok(kundaliEngine.includes("Vimshottari") && kundaliEngine.includes("whole-sign houses"), "Kundali method and dasha calculations must be explicit");
 assert.ok(kundaliComponent.includes("जन्मकुण्डली") && kundaliComponent.includes("नवग्रहको स्थिति") && kundaliComponent.includes("विम्शोत्तरी महादशा") && kundaliComponent.includes("Latitude") && kundaliComponent.includes("Longitude"), "Kundali UI must present the report in Nepali");
 assert.ok(kundaliComponent.includes("window.print()") && kundaliComponent.includes("birth details are not sent to the server"), "Kundali must support print/PDF and disclose client-side birth-data processing in English");
+assert.ok(kundaliComponent.includes("localizedCalculationError") && kundaliComponent.includes("This local birth time is invalid"), "Kundali calculation errors must be localized for the English, Nepali and Hindi interfaces");
+assert.ok(kundaliComponent.includes('changeDateSystem(zone==="Asia/Kolkata"?"AD":"BS")') && !kundaliComponent.includes('setBirthDate("2001-04-14")'), "Changing between Nepal and India cities must preserve the entered birth date by converting its calendar system");
+assert.ok(kundaliComponent.includes('const num=(value:number,digits=2)=>n(') && !kundaliComponent.includes('const num=(value:number,digits=2)=>num('), "Localized number formatting must call the base formatter and must not recurse");
+assert.ok(kundaliComponent.includes("HINDI_PLACES") && kundaliComponent.includes("placeText(place)"), "City names must be localized in Hindi, English and Nepali");
 assert.ok(allTools.includes('slug==="nepali-janma-kundali"') && catalogSource.includes('slug:"nepali-janma-kundali"'), "Nepali Janma Kundali must have a dedicated catalog entry and route");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((match) => match[1]).filter((slug) => slug !== "pdf-tools");
 

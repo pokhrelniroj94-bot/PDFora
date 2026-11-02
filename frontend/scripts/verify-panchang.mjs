@@ -57,5 +57,43 @@ const rahuStart = new Date(sunrise.date.getTime() + daylight / 8);
 const rahuEnd = new Date(sunrise.date.getTime() + daylight * 2 / 8);
 assert.ok(localClock(rahuStart) >= "07:30" && localClock(rahuStart) <= "07:45", "Monday Rahu Kaal should begin close to 07:38.");
 assert.ok(localClock(rahuEnd) >= "08:55" && localClock(rahuEnd) <= "09:10", "Monday Rahu Kaal should end close to 09:01.");
+const angaIndexAt = (instant, key) => {
+  const sun = Astronomy.SunPosition(instant).elon;
+  const moon = Astronomy.EclipticGeoMoon(instant).lon;
+  const elongationNow = normalize(moon - sun);
+  const jdNow = instant.getTime() / 86400000 + 2440587.5;
+  const tNow = (jdNow - 2451545) / 36525;
+  const aya = 23.85709 + 1.3969713 * tNow + 0.0003086 * tNow * tNow;
+  if (key === "tithi") return Math.floor(elongationNow / 12);
+  if (key === "karana") return Math.floor(elongationNow / 6);
+  if (key === "nakshatra") return Math.floor(normalize(moon - aya) / (360 / 27));
+  return Math.floor(normalize(sun + moon - 2 * aya) / (360 / 27));
+};
+const nextBoundary = (key) => {
+  const initial = angaIndexAt(sunrise.date, key);
+  let previous = sunrise.date.getTime();
+  for (let elapsed = 10 * 60 * 1000; elapsed <= 36 * 60 * 60 * 1000; elapsed += 10 * 60 * 1000) {
+    const current = sunrise.date.getTime() + elapsed;
+    if (angaIndexAt(new Date(current), key) !== initial) {
+      let low = previous, high = current;
+      for (let i = 0; i < 38; i++) {
+        const middle = Math.floor((low + high) / 2);
+        if (angaIndexAt(new Date(middle), key) === initial) low = middle;
+        else high = middle;
+      }
+      return new Date(high);
+    }
+    previous = current;
+  }
+  throw new Error(`Could not find ${key} transition within 36 hours.`);
+};
+const tithiEnd = nextBoundary("tithi");
+const nakshatraEnd = nextBoundary("nakshatra");
+const yogaEnd = nextBoundary("yoga");
+const karanaEnd = nextBoundary("karana");
+assert.ok(localClock(tithiEnd) >= "13:15" && localClock(tithiEnd) <= "13:35", "Tithi should end close to the published 13:25 time.");
+assert.ok(localDate(nakshatraEnd) === "2026-11-03" && localClock(nakshatraEnd) >= "03:50" && localClock(nakshatraEnd) <= "04:10", "Ashlesha should end close to 04:01 on the next day.");
+assert.ok(localClock(yogaEnd) >= "12:10" && localClock(yogaEnd) <= "12:35", "Yoga should end close to the published 12:22 time.");
+assert.ok(localClock(karanaEnd) >= "13:15" && localClock(karanaEnd) <= "13:35", "Karana should end close to the published 13:25 time.");
 
 console.log(`Panchang astronomy smoke test passed for Kathmandu ${date}: sunrise ${sunrise.date.toISOString()}, sunset ${sunset.date.toISOString()}, tithi ${tithiIndex + 1}/30, nakshatra ${nakshatraIndex + 1}/27.`);

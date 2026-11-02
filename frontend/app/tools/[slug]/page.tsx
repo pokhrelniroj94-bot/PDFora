@@ -190,12 +190,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does it include interest or investment returns?", a: "No. It assumes you save the same amount each month and excludes interest, investment returns, fees and inflation." },
       { q: "What if I have already reached my target?", a: "The remaining amount and monthly savings needed are shown as zero when current savings meet or exceed the target." }
     ],
-    "nepali-vat-calculator": [
-      { q: "What is the standard Nepal VAT rate used by default?", a: "The calculator starts with a 13% rate. Confirm whether the supply is standard-rated, exempt or zero-rated before applying it." },
-      { q: "How do I add VAT to a price?", a: "Choose Add VAT and enter the pre-VAT base amount. The calculator shows the VAT amount and total including VAT." },
-      { q: "How do I extract VAT from a VAT-inclusive total?", a: "Choose Extract VAT and enter the total that already includes VAT. At 13%, the VAT component is 13/113 of that inclusive total." },
-      { q: "Does this calculator determine whether my sale is taxable?", a: "No. It performs arithmetic only. Check the VAT Act, current IRD guidance and your transaction's tax treatment." }
-    ],
     "nepali-number-converter": [
       { q: "Does it use the lakh and crore number system?", a: "Yes. English number words use thousand, lakh and crore grouping for the supported whole-number range." },
       { q: "Can it convert Nepali digits?", a: "It displays the entered number in Devanagari digits as well as English words." },
@@ -262,16 +256,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Why may the rate date be earlier than today?", a: "NRB may not publish a new rate on weekends or public holidays, so the latest available working-day rate is displayed." },
       { q: "Are these the exact rates at every bank?", a: "No. Individual banks, money changers and remittance providers may offer different rates and fees." }
     ],
-    "nepal-salary-tax-calculator": [
-      { q: "Does the calculator apply progressive tax bands?", a: "Yes. It calculates each taxable portion in the FY 2083/84 individual rate bands instead of applying one rate to the whole income." },
-      { q: "Is the first 1% band charged for everyone?", a: "No. Statutory exceptions exist. Select the exemption only if it applies to your circumstances." },
-      { q: "Does the estimate include every deduction and rebate?", a: "No. It is a resident natural-person estimate and does not automatically include every deduction, credit or special tax category." }
-    ],
-    "nepal-electricity-bill-calculator": [
-      { q: "Which electricity connections does this estimator support?", a: "It estimates single-phase domestic 5A, 15A, 30A and 60A connections only." },
-      { q: "Can I use it for a commercial or three-phase bill?", a: "No. Use the official Electricity Regulatory Commission calculator for commercial, industrial, three-phase or other tariff categories." },
-      { q: "Is this the final NEA bill amount?", a: "No. The estimate may exclude arrears and account-specific adjustments. Your NEA bill is final." }
-    ],
     "nepse-market-news": [
       { q: "Where do the market and IPO headlines come from?", a: "The page fetches Google News RSS search results for Nepal stock-market and IPO topics. Each headline links to the publisher; it is not an official NEPSE notice feed." },
       { q: "Are headlines live NEPSE trading data?", a: "No. Headlines are automatically refreshed search results, not live prices, order-book data or confirmed corporate actions. Check NEPSE, SEBON, CDSC or the issuing company before acting." },
@@ -281,11 +265,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "How are cash dividends calculated?", a: "The estimate multiplies your eligible share quantity by the declared cash-dividend percentage and subtracts the editable withholding-tax assumption." },
       { q: "How are bonus shares estimated?", a: "The calculator multiplies eligible shares by the declared bonus percentage. Fractional entitlements and book-closure rules are not determined by this estimate." },
       { q: "Is the result an official CDSC credit?", a: "No. Confirm eligibility, final tax and credited shares with the company, CDSC and Mero Share." }
-    ],
-    "nepal-public-holidays-2083": [
-      { q: "Are all holidays nationwide?", a: "No. Some apply only to specified regions, communities, women employees or educational institutions. Read each entry's note." },
-      { q: "Why are some holiday dates shown as TBA?", a: "Some lunar or locally determined observances require a later official announcement." },
-      { q: "Where can I verify the official list?", a: "Check the Ministry of Home Affairs Government and Public Holidays 2083 notice linked on the tool page." }
     ],
     "nepali-unicode-typing": [
       { q: "Does Nepali typing translate English into Nepali?", a: "No. It converts Romanized Nepali sounds into Devanagari Unicode; it does not translate English meaning." },

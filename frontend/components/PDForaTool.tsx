@@ -1,3 +1,5 @@
+import { usePathname } from "next/navigation";
+import ToolSEOContent from "./ToolSEOContent";
 "use client";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
@@ -20,6 +22,8 @@ type Props = {
 };
 
 export default function PDForaTool({
+  const pathname = usePathname();
+  const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
   endpoint,
   title,
   description,
@@ -440,6 +444,7 @@ export default function PDForaTool({
         <div className="mt-8 border-t border-slate-200 pt-2">
         </div>
       </section>
+      <ToolSEOContent slug={currentSlug} />
     </main>
   );
 }

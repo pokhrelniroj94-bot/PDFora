@@ -115,7 +115,7 @@ function SalaryTaxTool() {
   const valid = income.trim() !== "" && Number.isFinite(amount) && amount >= 0 && amount <= 1_000_000_000;
   const calculation = valid ? calculateNepalSalaryTax(amount, firstBandExempt) : null;
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">Nepal Salary / Income Tax Calculator · FY 2083/84</h2><p className="mt-1 text-sm text-slate-600">Progressive estimate for a resident natural person using the Inland Revenue Department's published 2083/84 bands.</p></div>
+    <div><h2 className="text-lg font-bold">Nepal Salary / Income Tax Calculator · FY 2083/84</h2><p className="mt-1 text-sm text-slate-600">Progressive estimate for a resident natural person using the Inland Revenue Department&apos;s published 2083/84 bands.</p></div>
     <Field title="Annual taxable salary / income (NPR, after eligible deductions)" value={income} onChange={setIncome}/>
     <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" checked={firstBandExempt} onChange={(e) => setFirstBandExempt(e.target.checked)}/><span>I qualify for the first-band 1% Social Security Tax exemption (for example, as an SSF contributor, pension-income recipient or sole proprietor). Select only if this statutory exception applies.</span></label>
     {calculation ? <><Result>Estimated annual tax: {npr(calculation.tax)}

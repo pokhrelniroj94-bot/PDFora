@@ -97,6 +97,41 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "How is estimated net profit calculated?", a: "The tool subtracts estimated purchase and sale charges from the gross price difference, then subtracts the estimated CGT from positive profit." },
       { q: "Does this guarantee the exact amount credited by my broker?", a: "No. It is a planning estimate, not a broker contract note or tax statement. Use your broker's final settlement report for the actual figure." }
     ],
+    "loan-emi-calculator": [
+      { q: "How is monthly EMI calculated?", a: "The calculator uses the reducing-balance EMI formula with the annual interest rate converted to a monthly rate and the loan term entered in months." },
+      { q: "Does the EMI include bank fees and insurance?", a: "No. It estimates principal and interest only. Check the lender's repayment schedule for fees, insurance, floating rates and other charges." },
+      { q: "Why does a longer loan term increase total interest?", a: "A longer term spreads repayment over more months. The monthly EMI may fall, but interest can accumulate for longer." }
+    ],
+    "compound-interest-sip-calculator": [
+      { q: "Does the SIP calculator assume monthly deposits?", a: "Yes. It assumes monthly deposits at the end of each month and a constant monthly return based on the annual rate entered." },
+      { q: "Are the estimated investment returns guaranteed?", a: "No. The future value is a mathematical projection, not a guaranteed market return or investment recommendation." },
+      { q: "Does the result include fees and taxes?", a: "No. The estimate does not automatically deduct investment fees, taxes or inflation." }
+    ],
+    "average-calculator": [
+      { q: "What statistics does the average calculator show?", a: "It calculates count, mean, median, mode and range from the numbers entered." },
+      { q: "How should I separate the numbers?", a: "Use commas, semicolons or spaces between valid numbers. Avoid mixing text labels with the number list." },
+      { q: "What if there is no repeated number?", a: "The tool reports that there is no repeated value for the mode when every number occurs only once." }
+    ],
+    "profit-margin-calculator": [
+      { q: "How is gross profit margin calculated?", a: "Gross profit is selling price minus cost. Profit margin is gross profit divided by selling price, multiplied by 100." },
+      { q: "Is profit margin the same as markup?", a: "No. Margin divides profit by selling price, while markup divides profit by cost." },
+      { q: "Does the calculator include overhead and tax?", a: "No. It uses only the entered cost and selling price, so it is a gross margin estimate before other expenses." }
+    ],
+    "break-even-calculator": [
+      { q: "What is the break-even point?", a: "It is the sales volume where revenue covers fixed and variable costs, leaving no profit or loss under the entered assumptions." },
+      { q: "Why must selling price exceed variable cost?", a: "Each unit must contribute a positive amount toward fixed costs. If price does not exceed variable cost, selling more units cannot cover fixed costs." },
+      { q: "Does it round the required units?", a: "Yes. It rounds the calculated break-even quantity up to the next whole unit and also shows estimated break-even revenue." }
+    ],
+    "salary-breakdown-calculator": [
+      { q: "Is this Nepal's official salary tax calculator?", a: "No. It applies a simple editable deduction percentage and is not a statutory payroll or progressive income-tax calculation." },
+      { q: "Can I convert monthly salary into annual take-home?", a: "Yes. The tool estimates monthly gross, deduction, monthly take-home and annual take-home based on the same simple deduction assumption." },
+      { q: "Should I use this for a final payslip?", a: "No. Compare with your employer's payroll statement and use the dedicated Nepal salary-tax calculator for a separate FY-specific tax estimate." }
+    ],
+    "savings-goal-calculator": [
+      { q: "How is monthly savings needed calculated?", a: "The calculator subtracts current savings from the target and divides the remaining amount by the number of months available." },
+      { q: "Does it include interest or investment returns?", a: "No. It assumes you save the same amount each month and excludes interest, investment returns, fees and inflation." },
+      { q: "What if I have already reached my target?", a: "The remaining amount and monthly savings needed are shown as zero when current savings meet or exceed the target." }
+    ],
     "nepali-number-converter": [
       { q: "Does it use the lakh and crore number system?", a: "Yes. English number words use thousand, lakh and crore grouping for the supported whole-number range." },
       { q: "Can it convert Nepali digits?", a: "It displays the entered number in Devanagari digits as well as English words." },

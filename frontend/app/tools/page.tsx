@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/tools` },
   openGraph: {
     type: "website",
-    title: "Free Online Tools – PDF, Calculators, Text & Nepal Utilities | ${SITE_NAME}",
+    title: `Free Online Tools – PDF, Calculators, Text & Nepal Utilities | ${SITE_NAME}`,
     description: "Explore PDF processing, calculators, image conversion, text utilities, developer tools, SEO checkers and practical Nepal-focused tools.",
     url: `${SITE_URL}/tools`,
     siteName: SITE_NAME,
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     images: ["/opengraph-image"],
-    title: "Free Online PDF, Calculator, Text & Nepal Tools | ${SITE_NAME}",
+    title: `Free Online PDF, Calculator, Text & Nepal Tools | ${SITE_NAME}`,
     description: "Find PDF tools, calculators, text and developer utilities, SEO checkers, image tools and useful Nepal converters in one place.",
   },
 };

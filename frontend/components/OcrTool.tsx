@@ -52,7 +52,7 @@ export default function OcrTool() {
         try {
           const parsed = JSON.parse(raw);
           if (parsed?.detail) detail = parsed.detail;
-        } catch {}
+        } catch { /* The server may return a plain-text error instead of JSON. */ }
         throw new Error(detail);
       }
       const blob = await response.blob();

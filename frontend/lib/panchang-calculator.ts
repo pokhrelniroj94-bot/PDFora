@@ -232,7 +232,6 @@ export function calculateNepalPanchang(input: PanchangInput): PanchangResult {
   }
 
   const indices = indicesAt(sunrise);
-  const elongation = normalize(Astronomy.EclipticGeoMoon(sunrise).lon - Astronomy.SunPosition(sunrise).elon);
   const siderealMoon = normalize(Astronomy.EclipticGeoMoon(sunrise).lon - lahiriAyanamsa(sunrise));
   const nakshatraPada = Math.floor((siderealMoon % NAKSHATRA_SPAN) / (NAKSHATRA_SPAN / 4)) + 1;
   const ends = findAngaEnds(sunrise);

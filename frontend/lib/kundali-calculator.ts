@@ -102,7 +102,7 @@ function formatBS(date: Date): string {
     const y = date.getUTCFullYear(), m = String(date.getUTCMonth()+1).padStart(2,"0"), d = String(date.getUTCDate()).padStart(2,"0");
     const bs = new DateConverter(`${y}-${m}-${d}`).toBs();
     return `${nepaliNumber(bs.year,0)}-${nepaliNumber(bs.month,0).padStart(2,"0")}-${nepaliNumber(bs.date,0).padStart(2,"0")}`;
-  } catch { return "उपलब्ध छैन"; }
+  } catch { return `${nepaliNumber(date.getUTCFullYear(),0)}-${nepaliNumber(date.getUTCMonth()+1,0).padStart(2,"0")}-${nepaliNumber(date.getUTCDate(),0).padStart(2,"0")} AD`; }
 }
 
 export interface KundaliInput {
@@ -177,7 +177,7 @@ export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
     dasha.push({lord:lord.lord,start:formatBS(start),end:formatBS(end),years:Number(years.toFixed(2)),current:Date.now()>=start.getTime()&&Date.now()<end.getTime()});
     cursor=end.getTime();
   }
-  const currentDasha = dasha.find((period)=>period.current)?.lord ?? (Date.now()<dasha[0].end.length ? dasha[0].lord : "गणना उपलब्ध छैन");
+  const currentDasha = dasha.find((period)=>period.current)?.lord ?? "हालको महादशा यो १२०-वर्षे चक्रबाहिर छ";
   const houses = Array.from({length:12},(_,i)=>{
     const signIndex=(lagnaIndex+i)%12;
     return {house:i+1,sign:SIGNS[signIndex],planets:planetData.filter((planet)=>planet.house===i+1).map((planet)=>planet.short)};

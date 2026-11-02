@@ -183,15 +183,15 @@ export default function NirojToolsTool({
     message.toLowerCase().includes("completed");
 
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950">
+    <main className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(20,184,166,.10),_transparent_42%),linear-gradient(180deg,#f8fafc_0%,#f1f5f9_100%)] text-slate-950">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 shadow-[0_8px_30px_rgba(15,23,42,.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <a
             href="/"
             className="flex min-h-11 items-center gap-2"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 font-black text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-700 font-black text-white shadow-lg shadow-teal-900/20">
               P
             </div>
 
@@ -219,7 +219,7 @@ export default function NirojToolsTool({
       <section className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
         {/* Heading */}
         <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-widest text-violet-600">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">
             PDFora Tool
           </p>
 
@@ -233,7 +233,7 @@ export default function NirojToolsTool({
         </div>
 
         {/* Tool Card */}
-        <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:mt-10 sm:p-8">
+        <div className="mt-8 rounded-[2rem] border border-white/80 bg-white/90 p-4 shadow-[0_24px_80px_rgba(15,23,42,.09)] ring-1 ring-slate-900/[0.03] backdrop-blur sm:mt-10 sm:p-8">
           {/* Upload Area */}
           <button
             type="button"
@@ -242,9 +242,9 @@ export default function NirojToolsTool({
             onDragLeave={(event) => { event.preventDefault(); setDragActive(false); }}
             onDrop={handleDrop}
             aria-label="Choose or drop PDF files"
-            className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] sm:min-h-64 ${dragActive ? "border-violet-500 bg-violet-50" : "border-slate-300 bg-slate-50 hover:border-violet-400 hover:bg-violet-50"}`}
+            className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] sm:min-h-64 ${dragActive ? "border-teal-500 bg-teal-50" : "border-slate-300 bg-slate-50/80 hover:border-teal-400 hover:bg-teal-50"}`}
           >
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100 text-3xl">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-3xl ring-1 ring-teal-900/5">
               📄
             </div>
 
@@ -262,7 +262,7 @@ export default function NirojToolsTool({
               PDF files up to 50 MB each
             </p>
 
-            <span className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-slate-950 px-5 text-sm font-bold text-white">
+            <span className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-gradient-to-r from-teal-600 to-cyan-700 px-5 text-sm font-bold text-white shadow-md shadow-teal-900/15">
               Choose File
             </span>
           </button>
@@ -342,7 +342,7 @@ export default function NirojToolsTool({
                 placeholder={
                   formPlaceholder || "Enter value"
                 }
-                className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
+                className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-100"
               />
             </div>
           )}
@@ -351,9 +351,9 @@ export default function NirojToolsTool({
             <div key={field.name} className="mt-4">
               <label className="mb-2 block text-sm font-bold" htmlFor={field.name}>{field.label}</label>
               {field.multiline ? (
-                <textarea id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} rows={5} className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+                <textarea id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} rows={5} className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100" />
               ) : (
-                <input id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-100" />
+                <input id={field.name} value={extraValues[field.name] || ""} onChange={(event) => setExtraValues((current) => ({ ...current, [field.name]: event.target.value }))} placeholder={field.placeholder || field.label} className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-100" />
               )}
             </div>
           ))}
@@ -363,7 +363,7 @@ export default function NirojToolsTool({
             type="button"
             onClick={processPDF}
             disabled={loading || files.length === 0}
-            className="mt-5 flex min-h-14 w-full items-center justify-center rounded-2xl bg-violet-600 px-5 text-sm font-black text-white transition active:scale-[0.99] hover:bg-violet-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="mt-5 flex min-h-14 w-full items-center justify-center rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-700 px-5 text-sm font-black text-white shadow-lg shadow-teal-900/15 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-teal-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-slate-300"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -427,8 +427,8 @@ function InfoCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50 text-lg">
+    <div className="rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm sm:p-5">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-lg">
         {icon}
       </div>
 

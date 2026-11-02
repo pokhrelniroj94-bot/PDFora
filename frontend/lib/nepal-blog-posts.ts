@@ -319,4 +319,49 @@ export const nepalBlogPosts: BlogPost[] = [
     sources: [{ label: "Nepal Telecommunications Authority: National Numbering Allocation Plan", url: "https://nta.gov.np/uploads/contents/National%20Numbering%20Allocation%20Plan.pdf" }, { label: "Ncell announcement of the 971 number range", url: "https://www.ncell.com.np/en/about/media-room/press-release/ncell-begins-issuing-new-mobile-numbers-starting-with-971" }]
   }
 
+
+  ,{
+    slug: "nepse-market-news-and-ipo-updates",
+    title: "NEPSE News and Nepal IPO Updates: How to Verify Market Information",
+    description: "Follow Nepal stock-market headlines, IPO and FPO updates, allotment notices and official sources. Learn how to distinguish news search results from confirmed exchange disclosures.",
+    keyword: "NEPSE news Nepal IPO FPO updates",
+    updated: "2026-11-02",
+    readTime: "5 min read",
+    intro: "Investors in Nepal often need to follow market news, public issues, dividend announcements and allotment updates across several websites. PDFora's Nepal market news panel collects recent search-feed headlines in one place and links readers to the original publisher. It is a discovery tool, not an official exchange notice service or a live trading terminal.",
+    sections: [
+      { heading: "What the market news panel shows", paragraphs: ["The market section searches for Nepal stock-market and NEPSE coverage. A separate IPO section searches for public issues, FPOs and allotment-related reporting. Each result includes a headline, publisher label, publication time and a link to the source article.", "The feed is refreshed from a news search provider and cached briefly to reduce repeated requests. Search results can contain duplicate coverage, older stories or headlines that mention a keyword without reporting a confirmed event."] },
+      { heading: "Where to verify IPO and FPO information", paragraphs: ["Before applying for an issue, check the issuing company's official prospectus and notices, SEBON approvals and the CDSC Mero Share portal for application and allotment information. A news headline is not proof that an issue is open, that an application has been accepted or that shares have been allotted."] },
+      { heading: "How to use NEPSE news responsibly", bullets: ["Open the headline and read the full article, not only its title.", "Check the publication date and whether the article has been updated.", "Confirm price-sensitive disclosures with NEPSE and the listed company.", "Confirm IPO/FPO opening and closing dates with the official issue manager and prospectus.", "Do not make a trading decision from an automatically aggregated headline alone."] },
+      { heading: "Limitations of automatic news aggregation", paragraphs: ["News search feeds depend on the provider's indexing and ranking. They may omit a story, show multiple reports about the same event or display an item later than its original publication. The panel does not provide verified real-time prices, order books, broker recommendations or investment advice."] }
+    ],
+    faqs: [
+      { question: "Does PDFora show official live NEPSE prices?", answer: "No. This feature aggregates news headlines. It does not show official live market prices or order-book data." },
+      { question: "Are IPO dates and allotment results guaranteed to be current?", answer: "No. Verify every opening date, closing date and allotment result through the issuer, issue manager, SEBON or CDSC." },
+      { question: "Why can the same story appear more than once?", answer: "Different publishers may cover the same event, and news search feeds can return overlapping results." }
+    ],
+    toolLinks: [{ label: "NEPSE Market & IPO News", href: "/tools/nepse-market-news" }, { label: "NEPSE Share Buy/Sell Calculator", href: "/tools/nepal-share-calculator" }, { label: "Dividend & Bonus Share Calculator", href: "/tools/nepse-dividend-calculator" }],
+    sources: [{ label: "Nepal Stock Exchange", url: "https://www.nepalstock.com/" }, { label: "Securities Board of Nepal", url: "https://www.sebon.gov.np/" }, { label: "CDSC Mero Share", url: "https://meroshare.cdsc.com.np/" }]
+  },
+  {
+    slug: "nepse-cash-dividend-and-bonus-share-calculator-guide",
+    title: "NEPSE Cash Dividend and Bonus Share Calculator Guide",
+    description: "Learn how to estimate Nepal share cash dividends, withholding tax and bonus-share entitlement from your eligible holdings.",
+    keyword: "NEPSE cash dividend bonus share calculator Nepal",
+    updated: "2026-11-02",
+    readTime: "4 min read",
+    intro: "A company may announce a cash dividend, bonus shares or a combination of both. The amount credited to an investor depends on eligible holdings on the book-closure date, the declared percentage and the applicable tax and corporate-action rules. PDFora's calculator provides a quick estimate from the percentages you enter.",
+    sections: [
+      { heading: "How a cash dividend percentage works", paragraphs: ["A cash dividend declared at a percentage is generally calculated against the applicable paid-up value per share, not automatically against the market price. For example, a 10% cash dividend on 100 eligible shares with a face value of NPR 100 implies a gross estimate of NPR 1,000 before any applicable withholding tax. Check the company's notice for the exact basis."] },
+      { heading: "How bonus shares are estimated", paragraphs: ["A 5% bonus-share declaration applied to 100 eligible shares gives a simple estimate of 5 bonus shares. The final credited quantity depends on the official corporate action, book-closure eligibility and how fractional entitlements are handled."] },
+      { heading: "Using the PDFora calculator", bullets: ["Enter the number of shares eligible for the corporate action.", "Enter the announced cash-dividend percentage, if any.", "Enter the announced bonus-share percentage, if any.", "Set the withholding-tax assumption only after checking the current applicable rule.", "Compare the estimate with the company notice and final CDSC/Mero Share credit."] },
+      { heading: "Important limitations", paragraphs: ["The calculator does not check your Demat holdings, book-closure date, company paid-up value, fractional entitlements or tax category. It does not connect to CDSC or a broker account. Treat the output as a planning estimate and confirm the final corporate-action statement."] }
+    ],
+    faqs: [
+      { question: "Is a 10% cash dividend calculated on the current market price?", answer: "Not necessarily. The declared percentage is commonly based on paid-up or face value as specified in the company notice. Read the exact resolution before calculating." },
+      { question: "Will every investor receive the estimated bonus shares?", answer: "Only eligible shareholders under the book-closure and corporate-action rules receive the final allotment. The calculator cannot verify eligibility." },
+      { question: "Does the calculator confirm dividend tax?", answer: "No. Tax treatment can depend on current law and investor circumstances. Verify the applicable withholding rate with the company or tax authority." }
+    ],
+    toolLinks: [{ label: "NEPSE Dividend & Bonus Share Calculator", href: "/tools/nepse-dividend-calculator" }, { label: "NEPSE Share Buy/Sell Calculator", href: "/tools/nepal-share-calculator" }],
+    sources: [{ label: "Nepal Stock Exchange", url: "https://www.nepalstock.com/" }, { label: "CDSC", url: "https://cdsc.com.np/" }, { label: "Inland Revenue Department", url: "https://ird.gov.np/" }]
+  }
 ];

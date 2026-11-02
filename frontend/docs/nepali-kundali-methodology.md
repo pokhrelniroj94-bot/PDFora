@@ -8,9 +8,9 @@
 
 ## Calculation conventions
 - Ephemeris: MIT-licensed Astronomy Engine 2.1.19.
-- Planetary positions: geocentric apparent ecliptic longitudes.
+- Planetary positions: geocentric apparent ecliptic longitudes (SunPosition for Sun, EclipticGeoMoon for Moon, and GeoVector → Ecliptic for planets; never heliocentric EclipticLongitude).
 - Zodiac: sidereal, Lahiri/Chitrapaksha approximation.
-- Ascendant: local apparent sidereal time, mean obliquity and ecliptic/horizon intersection.
+- Ascendant: local apparent sidereal time, true obliquity of date and ecliptic/horizon intersection.
 - Houses: whole-sign houses counted from the ascendant sign.
 - Rahu/Ketu: mean lunar node and its exact opposite.
 - Nakshatra: 27 equal sectors of 13°20′; pada: four equal quarters.

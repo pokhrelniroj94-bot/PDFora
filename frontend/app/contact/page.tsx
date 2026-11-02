@@ -118,7 +118,9 @@ export default function ContactPage() {
               </p>
 
               <a
-                href="mailto:zenvora966@gmail.com"
+                href="https://github.com/pokhrelniroj94-bot/PDFora/issues"
+                target="_blank"
+                rel="noreferrer"
                 className="mt-4 inline-block text-sm font-bold text-violet-600 hover:underline"
               >
                 Contact PDFora support →

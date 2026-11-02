@@ -74,11 +74,61 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     Nepal: "Check the applicable fiscal year, BS or AD date, currency, units, region and eligibility. Verify important results against the latest responsible government or provider notice."
   };
   const categoryNote = categoryChecks[tool.category] ?? "Check the input format, units and assumptions, then compare an important result with a trusted reference.";
-  const defaultQuestions = [
+  const defaultQuestionsByCategory: Record<string, { q: string; a: string }[]> = {
+    PDF: [
+      { q: `What does the ${tool.name} do?`, a: tool.description },
+      { q: "Will the tool change my original PDF?", a: "Keep your original file. Review the exported PDF for page order, text, images, forms, bookmarks, annotations and signatures before replacing or sharing it." },
+      { q: "Can I use the result as an official or signed document?", a: "The tool does not certify a document or validate legal signatures. Check the requirements of the organisation receiving the file." },
+      { q: "What should I check after processing?", a: categoryNote }
+    ],
+    Finance: [
+      { q: `What does the ${tool.name} calculate?`, a: tool.description },
+      { q: "Are the financial results guaranteed?", a: "No. Results depend on the entered assumptions and may exclude provider fees, taxes, inflation, market changes or contract-specific terms." },
+      { q: "Which inputs should I double-check?", a: "Confirm the currency, rate, period, payment frequency and whether amounts are gross or net before relying on an estimate." },
+      { q: "Can I use the result as an official financial quote?", a: "No. Compare important decisions with the relevant bank, financial provider, contract or official statement." }
+    ],
+    Math: [
+      { q: `What does the ${tool.name} calculate?`, a: tool.description },
+      { q: "How can I check the result?", a: "Test a small example with a known answer, confirm the input units and inspect the rounding shown by the tool." },
+      { q: "What happens if I enter invalid values?", a: "The tool should show an input error for unsupported or impossible values. Correct the input rather than interpreting an error as a result." },
+      { q: "Are units and rounding important?", a: "Yes. Keep units consistent and check whether the output is rounded, approximate or an exact count." }
+    ],
+    Business: [
+      { q: `What does the ${tool.name} calculate?`, a: tool.description },
+      { q: "Does the estimate include every business expense?", a: "Not unless those expenses are specifically included in the inputs. Consider overhead, fees, returns, tax and other operating costs separately." },
+      { q: "Can I use this for a business quote or tax filing?", a: "Treat the result as a planning estimate. Confirm the figures with your accounting records and applicable tax or contract rules." },
+      { q: "What should I verify before using the result?", a: categoryNote }
+    ],
+    Text: [
+      { q: `What does the ${tool.name} do?`, a: tool.description },
+      { q: "Does it preserve punctuation and Unicode text?", a: "Behaviour depends on the specific operation. Test Nepali text, emojis, punctuation and line breaks with a short sample before processing a large block." },
+      { q: "Can I undo a text conversion?", a: "Keep a copy of the original text before replacing, sorting, cleaning or converting it. Some transformations cannot be reversed exactly." },
+      { q: "Is pasted text uploaded?", a: "Check the tool's privacy information and the page's stated processing method. Do not paste passwords, access tokens or confidential information into a general utility." }
+    ],
+    Developer: [
+      { q: `What does the ${tool.name} do?`, a: tool.description },
+      { q: "Does a valid result guarantee secure or correct code?", a: "No. Syntax validation or decoding does not prove that data is safe, secure or semantically correct. Test it in the target application." },
+      { q: "Is encoding the same as encryption?", a: "No. Base64, URL encoding and similar formats are reversible representations, not encryption or access control." },
+      { q: "What data should I avoid entering?", a: "Do not paste passwords, private keys, API tokens, session cookies or confidential production data into an online utility." }
+    ],
+    Image: [
+      { q: `What does the ${tool.name} do?`, a: tool.description },
+      { q: "Will the converted image look exactly like the original?", a: "Not always. Format conversion and compression can change quality, transparency, metadata or colour. Inspect the exported file before using it." },
+      { q: "How do I choose the right output?", a: "Check the destination's required format, dimensions, aspect ratio, transparency and file-size limit." },
+      { q: "Should I keep the original image?", a: "Yes. Keep an untouched copy so you can retry with different dimensions or quality settings." }
+    ],
+    SEO: [
+      { q: `What does the ${tool.name} check or generate?`, a: tool.description },
+      { q: "Does a good tool result guarantee Google rankings?", a: "No. Search visibility depends on page quality, relevance, indexing, competition, links and many other signals. Use the result as a diagnostic aid." },
+      { q: "Should I verify the result on the live page?", a: "Yes. Check the rendered page, source HTML, canonical URL, robots directives and search-platform reports where relevant." },
+      { q: "Can SEO recommendations become outdated?", a: "Yes. Search engine guidance and display behaviour can change. Recheck important recommendations against current official documentation." }
+    ]
+  };
+  const defaultQuestions = defaultQuestionsByCategory[tool.category] ?? [
     { q: `What does the ${tool.name} do?`, a: tool.description },
-    { q: `What should I check when using the ${tool.name}?`, a: categoryNote },
-    { q: `What should I prepare before using the ${tool.name}?`, a: `${tool.description} Prepare the source information requested by the fields shown in the tool, and check units or file formats before processing.` },
-    { q: `Can I rely on the ${tool.name} result as an official record?`, a: "No. This online utility is a practical aid. Confirm important financial, legal, government, medical or compliance results with the responsible authority or qualified professional." }
+    { q: "What should I check before using it?", a: categoryNote },
+    { q: "How can I verify the output?", a: "Test a small example and compare the result with a trusted reference before relying on it." },
+    { q: "Does the tool replace official advice or verification?", a: "No. Confirm important legal, financial, government or compliance matters with the responsible authority." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
     "neb-gpa-calculator": [

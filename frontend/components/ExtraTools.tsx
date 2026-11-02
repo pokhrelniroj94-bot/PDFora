@@ -24,7 +24,7 @@ const config:Record<string,F[]> = {
 "color-contrast-checker":[{key:"fg",label:"Text color",type:"color",value:"#111827"},{key:"bg",label:"Background color",type:"color",value:"#ffffff"}],
 "css-minifier":[{key:"text",label:"CSS code",value:"/* sample */\n.card { color: #333; padding: 16px; }"}],
 "json-to-csv":[{key:"text",label:"JSON array",value:'[{"name":"Asha","age":22},{"name":"Ravi","age":25}]'}],
-"meta-title-checker":[{key:"text",label:"Page title",value:"Free Online PDF Tools - NIROJ Tools"}],
+"meta-title-checker":[{key:"text",label:"Page title",value:"Free Online PDF Tools - PDFora"}],
 "meta-description-checker":[{key:"text",label:"Meta description",value:"Use free online tools to convert, calculate, format and manage files quickly in your browser."}],
 "keyword-density-checker":[{key:"text",label:"Content",value:"Paste your page content here with the main keyword."},{key:"keyword",label:"Target keyword",value:"main keyword"}],
 "robots-txt-generator":[{key:"site",label:"Sitemap URL (optional)",value:"https://example.com/sitemap.xml"},{key:"path",label:"Disallow path (optional)",value:"/admin/"}],

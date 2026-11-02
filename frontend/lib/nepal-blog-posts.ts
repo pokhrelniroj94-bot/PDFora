@@ -502,9 +502,7 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "क्या यह पंचांग कैलकुलेटर भारत में काम करता है?", answer: "हां, उपलब्ध भारतीय शहरों के लिए Asia/Kolkata स्थानीय समय इस्तेमाल होता है। इसे आधिकारिक क्षेत्रीय पंचांग का विकल्प न मानें।" }
     ],
     toolLinks: [{ label: "हिंदू पंचांग कैलकुलेटर", href: "/tools/nepal-panchang-calculator" }, { label: "जन्म कुंडली", href: "/tools/nepali-janma-kundali" }]
-  }
-
-  ,
+  },
   {
     slug: "nepali-janma-kundali-lagna-rashi-nakshatra-guide",
     title: "जन्मकुण्डली कसरी बनाउने? लग्न, राशि, नक्षत्र र नवांश बुझ्नुहोस्",

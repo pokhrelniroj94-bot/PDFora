@@ -58,13 +58,13 @@ export default function NepalMarketNews() {
 
   return <div className="space-y-4">
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <div><h2 className="text-xl font-black text-slate-950">Nepal Stock Market & IPO News</h2><p className="mt-1 text-sm text-slate-600">Recent Nepal market headlines from Google News search feeds. Updates automatically every 15 minutes; open each story at its publisher.</p></div>
+      <div><h2 className="text-xl font-black text-slate-950">Nepal Stock Market & IPO News</h2><p className="mt-1 text-sm text-slate-600">Recent Nepal market headlines combine Google News with NEPSE company disclosures, exchange messages and IPO notices. Updates automatically every 15 minutes; source and publication time are shown for each item.</p></div>
       <button type="button" onClick={refresh} disabled={loading} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-60">{loading ? "Refreshing…" : "Refresh news"}</button>
     </div>
     {loading && <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-600">Loading the latest headlines…</p>}
     {error && <p role="alert" className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">{error}</p>}
     {feed?.warning && <p role="status" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{feed.warning}</p>}
-    {feed && <><div className="grid gap-4 lg:grid-cols-2"><StoryList title="NEPSE & Market Updates" stories={feed.market}/><StoryList title="IPO, FPO & Allotment Updates" stories={feed.ipo}/></div><p className="text-xs text-slate-500">Feed checked: {new Date(feed.updatedAt).toLocaleString("en-NP")}. Headlines are limited to the latest 7 days and duplicates are removed. Google News may still return unrelated coverage; verify market-sensitive information with NEPSE, SEBON, CDSC or the issuing company.</p></>}
+    {feed && <><div className="grid gap-4 lg:grid-cols-2"><StoryList title="NEPSE & Market Updates" stories={feed.market}/><StoryList title="IPO, FPO & Allotment Updates" stories={feed.ipo}/></div><p className="text-xs text-slate-500">Feed checked: {new Date(feed.updatedAt).toLocaleString("en-NP")}. Headlines include available official disclosures and IPO notices from the last 30 days alongside recent Google News results. Duplicates are removed; verify market-sensitive information with NEPSE, SEBON, CDSC or the issuing company.</p></>}
     <div className="flex flex-wrap gap-4 text-sm font-semibold"><a className="text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noopener noreferrer">NEPSE official</a><a className="text-teal-700 underline" href="https://www.sebon.gov.np/" target="_blank" rel="noopener noreferrer">SEBON official</a><a className="text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noopener noreferrer">Mero Share</a></div>
   </div>;
 }

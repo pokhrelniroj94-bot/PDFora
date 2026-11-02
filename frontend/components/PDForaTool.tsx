@@ -1,6 +1,7 @@
+"use client";
+
 import { usePathname } from "next/navigation";
 import ToolSEOContent from "./ToolSEOContent";
-"use client";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
@@ -22,8 +23,6 @@ type Props = {
 };
 
 export default function PDForaTool({
-  const pathname = usePathname();
-  const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
   endpoint,
   title,
   description,
@@ -36,6 +35,8 @@ export default function PDForaTool({
   queryField,
   queryDefault = "",
 }: Props) {
+  const pathname = usePathname();
+  const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
   const [loading, setLoading] = useState(false);

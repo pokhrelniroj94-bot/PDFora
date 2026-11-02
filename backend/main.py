@@ -789,6 +789,7 @@ async def images_to_pdf(
 
     images = []
     total_upload_size = 0
+    total_image_pixels = 0
 
     try:
         for file in files:
@@ -802,8 +803,12 @@ async def images_to_pdf(
                 image = Image.open(io.BytesIO(data))
                 if image.format not in {"JPEG", "PNG", "WEBP"}:
                     raise ValueError("Unsupported image format")
-                if image.width * image.height > 25_000_000:
-                    raise HTTPException(status_code=413, detail="Images must not exceed 25 megapixels.")
+                image_pixels = image.width * image.height
+                if image_pixels > 25_000_000:
+                    raise HTTPException(status_code=413, detail="Images must not exceed 25 megapixels each.")
+                total_image_pixels += image_pixels
+                if total_image_pixels > 40_000_000:
+                    raise HTTPException(status_code=413, detail="The combined images must not exceed 40 megapixels.")
                 image.verify()
                 image = Image.open(io.BytesIO(data)).convert("RGB")
                 images.append(image)

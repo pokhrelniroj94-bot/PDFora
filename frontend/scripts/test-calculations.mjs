@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  addCalendarDays,
   calculateNepalSalaryTax,
   calculateSimpleInterest,
   countBusinessDays,
@@ -29,5 +30,8 @@ assert.equal(countBusinessDays("2026-11-01", "2026-11-07", [0, 6]), 5, "Saturday
 assert.equal(countBusinessDays("2026-11-07", "2026-11-07", [6]), 0, "single Saturday");
 assert.equal(countBusinessDays("2026-11-07", "2026-11-01", [6]), 6, "reverse date range");
 assert.throws(() => countBusinessDays("2026-02-31", "2026-03-01"), RangeError);
+assert.equal(addCalendarDays("2026-11-02", 30), "2026-12-02", "calendar day addition across months");
+assert.equal(addCalendarDays("2024-02-28", 1), "2024-02-29", "leap day addition");
+assert.throws(() => addCalendarDays("2026-02-31", 1), RangeError);
 
 console.log("Calculator regression tests passed.");

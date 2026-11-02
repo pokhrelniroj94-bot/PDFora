@@ -1,3 +1,12 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact PDFora",
+  description: "Contact PDFora with feedback, technical questions and tool support requests.",
+  alternates: { canonical: "https://pd-fora.vercel.app/contact" },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/contact", siteName: "PDFora", title: "Contact PDFora", description: "Contact PDFora with feedback, technical questions and tool support requests." },
+};
+
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -55,10 +64,12 @@ export default function ContactPage() {
               </p>
 
               <a
-                href="mailto:zenvora966@gmail.com"
+                href="https://github.com/pokhrelniroj94-bot/PDFora/issues"
+                target="_blank"
+                rel="noreferrer"
                 className="mt-5 inline-flex rounded-xl bg-violet-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-violet-700"
               >
-                zenvora966@gmail.com
+                Report an issue on GitHub
               </a>
             </div>
 
@@ -110,7 +121,7 @@ export default function ContactPage() {
                 href="mailto:zenvora966@gmail.com"
                 className="mt-4 inline-block text-sm font-bold text-violet-600 hover:underline"
               >
-                Contact PDFora →
+                Contact PDFora support →
               </a>
             </div>
           </div>

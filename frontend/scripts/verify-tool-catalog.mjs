@@ -83,7 +83,7 @@ assert.equal(allHrefs.length, 168, "Expected 168 available tools (49 PDF tools +
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
-assert.ok(homepage.includes('import { allTools, catalogTools, pdfTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");
+assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");
 assert.ok(homepage.includes('tool.kind === "pdf" || tool.category === "PDF"'), "Homepage PDF category hides catalog PDF tools");
 assert.ok(homepage.includes("tool.keywords"), "Homepage search does not include tool keywords");
 

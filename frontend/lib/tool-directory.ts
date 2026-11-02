@@ -175,5 +175,4 @@ export const catalogTools: Tool[] = [
 ];
 
 // One canonical directory for homepage search and the full /tools directory.
-// OCR is intentionally excluded until its backend language data is enabled.
 export const allTools: Tool[] = [...pdfTools, ...catalogTools];

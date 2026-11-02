@@ -138,19 +138,17 @@ async def security_headers_and_temp_cleanup(request: Request, call_next):
         _REQUEST_TEMP_JOBS.reset(token)
 
     if request_jobs:
-        if isinstance(response, FileResponse):
-            previous_background = response.background
+        # BaseHTTPMiddleware may wrap FileResponse in a streaming response,
+        # so attach cleanup to the response lifecycle instead of checking its type.
+        previous_background = getattr(response, "background", None)
 
-            async def finish_file_response():
-                if previous_background is not None:
-                    await previous_background()
-                for job in request_jobs:
-                    cleanup_job(job)
-
-            response.background = BackgroundTask(finish_file_response)
-        else:
+        async def finish_response():
+            if previous_background is not None:
+                await previous_background()
             for job in request_jobs:
                 cleanup_job(job)
+
+        response.background = BackgroundTask(finish_response)
 
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"

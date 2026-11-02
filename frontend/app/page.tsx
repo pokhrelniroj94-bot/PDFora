@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import NepalMarketNews from "../components/NepalMarketNews";
 
 type Tool = {
   name: string;
@@ -446,6 +447,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* NEPAL MARKET UPDATES */}
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <div className="mb-5">
+          <p className="text-xs font-black uppercase tracking-widest text-rose-600">Nepal market desk</p>
+          <h2 className="mt-1 text-2xl font-black">NEPSE, IPO &amp; Nepal market news</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Automatically refreshed market headlines, IPO updates and practical Nepal finance tools. Verify market-sensitive information with the official source.</p>
+        </div>
+        <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Link href="/tools/nepse-market-news" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 font-bold text-rose-900 hover:bg-rose-100">📰 NEPSE &amp; IPO News <span className="mt-1 block text-xs font-medium">Latest headlines</span></Link>
+          <Link href="/tools/nepal-share-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">📈 Share Profit Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Buy, sell &amp; charges</span></Link>
+          <Link href="/tools/nepse-dividend-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💸 Dividend Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Cash &amp; bonus estimate</span></Link>
+          <Link href="/tools/nepal-forex-rates" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💱 NRB Forex Rates <span className="mt-1 block text-xs font-medium text-slate-500">Official buying &amp; selling</span></Link>
+        </div>
+        <NepalMarketNews />
+      </section>
+
       {/* ALL TOOLS */}
       <section
         id="tools"
@@ -853,8 +870,8 @@ function ToolCard({
       aria-label={`Open ${tool.name}`}
     >
       <div className="flex items-start justify-between gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-sm font-black text-orange-600">
-          {tool.icon}
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 text-xl font-black text-teal-700" aria-hidden="true">
+          {tool.category === "Finance" ? "💰" : tool.category === "Convert" ? "🔄" : tool.category === "Edit" ? "✏️" : tool.category === "Security" ? "🔒" : tool.category === "Organize" ? "🗂️" : tool.category === "Optimize" ? "⚡" : "📄"}
         </div>
 
         {popular ? (

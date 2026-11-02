@@ -611,12 +611,13 @@ async def nepal_forex(date: str | None = Query(default=None)):
 @app.get("/api/nepal-forex/history")
 async def nepal_forex_history(currency: str = Query(default="USD", min_length=3, max_length=3)):
     """Return 90 days of official NRB buying/selling rates, normalized per currency unit."""
-    from datetime import date as Date, timedelta
+    from datetime import date as Date, timedelta, datetime, timezone
 
     code = currency.upper()
     if not code.isalpha():
         raise HTTPException(status_code=400, detail="Invalid currency code.")
-    end = Date.today()
+    nepal_tz = timezone(timedelta(hours=5, minutes=45))
+    end = datetime.now(nepal_tz).date()
     start = end - timedelta(days=90)
     key = "history:" + code
 

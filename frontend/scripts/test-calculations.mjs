@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   addCalendarDays,
+  calculateNepalDomesticElectricityBill,
   calculateNepalSalaryTax,
   calculateSimpleInterest,
   countBusinessDays,
@@ -33,5 +34,16 @@ assert.throws(() => countBusinessDays("2026-02-31", "2026-03-01"), RangeError);
 assert.equal(addCalendarDays("2026-11-02", 30), "2026-12-02", "calendar day addition across months");
 assert.equal(addCalendarDays("2024-02-28", 1), "2024-02-29", "leap day addition");
 assert.throws(() => addCalendarDays("2026-02-31", 1), RangeError);
+
+const domestic = calculateNepalDomesticElectricityBill(100, "5A", true);
+near(domestic.energy, 760, "NEA 5A 100-unit progressive energy charge");
+near(domestic.minimum, 75, "NEA 5A 100-unit minimum charge");
+near(domestic.rebate, 16.7, "NEA 2% early-payment rebate");
+near(domestic.vat, 23.75, "NEA household VAT above 50 units");
+near(domestic.total, 842.05, "NEA 5A 100-unit bill example");
+near(calculateNepalDomesticElectricityBill(20, "5A", false).total, 30, "NEA 5A lifeline at 20 units");
+near(calculateNepalDomesticElectricityBill(20, "15A", false).total, 130, "NEA 15A first slab");
+assert.throws(() => calculateNepalDomesticElectricityBill(-1, "5A"), RangeError);
+assert.throws(() => calculateNepalDomesticElectricityBill(10, "unknown"), RangeError);
 
 console.log("Calculator regression tests passed.");

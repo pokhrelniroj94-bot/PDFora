@@ -36,7 +36,7 @@ export async function GET(request: Request) {
   ]);
   const stocks = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
   const indices = indicesResult.status === "fulfilled" && Array.isArray(indicesResult.value) ? indicesResult.value : [];
-  if (!stocks.length || !indices.length) {
+  if (!stocks.length && !indices.length) {
     return Response.json(
       { error: "NEPSE market snapshot is temporarily unavailable. Please retry or visit the official NEPSE market page." },
       { status: 502, headers: { "Cache-Control": "no-store" } },
@@ -116,7 +116,7 @@ export async function GET(request: Request) {
     supplyDemand: pick(supplyDemandResult, {}),
     stocks,
     points,
-    partial: [statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
+    partial: [stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {
     headers: { "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800" },

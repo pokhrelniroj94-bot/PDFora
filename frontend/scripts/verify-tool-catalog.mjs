@@ -15,6 +15,8 @@ const toolPage = read("../app/tools/[slug]/page.tsx");
 const sitemapSource = read("../app/sitemap.ts");
 const bsYearsSource = read("../lib/nepali-date-converter/years.ts");
 const nepaliDateSource = read("../lib/nepali-date-converter/index.ts");
+const panchangEngine = read("../lib/panchang-calculator.ts");
+const packageJson = read("../package.json");
 const bsYears = {};
 for (const [, yearText, valueText] of bsYearsSource.matchAll(/^years\[(\d+)\] = (.+);$/gm)) {
   const year = Number(yearText);
@@ -41,7 +43,11 @@ assert.ok(nepalTools.includes("new DateConverter(") && nepalTools.includes(".toA
 assert.ok(nepalTools.includes("y>2083"), "Calendar UI must not expose unverified future BS years");
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
 assert.ok(nepalTools.includes('https://usemiti.com/embed/today?style=panchanga') && nepalTools.includes("Miti (Yarsa Himalaya)") && nepalTools.includes("CC BY 4.0"), "Panchang tool must use the disclosed source embed and attribution");
-assert.ok(allTools.includes('"nepal-panchang-today"'), "Panchang tool must be routed to the Nepal utility workspace");
+assert.ok(allTools.includes('"nepal-panchang-today"'), "Panchang reference tool must be routed to the Nepal utility workspace");
+assert.ok(allTools.includes('"nepal-panchang-calculator"') && nepalTools.includes('slug==="nepal-panchang-calculator"'), "Astronomical Panchang calculator route or handler is missing");
+assert.ok(packageJson.includes('"astronomy-engine": "2.1.19"') && panchangEngine.includes('import * as Astronomy from "astronomy-engine"'), "MIT astronomy engine dependency is missing");
+assert.ok(panchangEngine.includes("SearchRiseSet") && panchangEngine.includes("EclipticGeoMoon") && panchangEngine.includes("SunPosition"), "Panchang must use astronomical ephemeris and location-based sunrise/sunset");
+assert.ok(panchangEngine.includes("23.85709") && panchangEngine.includes("Asia/Kathmandu") && panchangEngine.includes("findAngaEnds"), "Panchang must document Lahiri, Nepal timezone and sunrise-anchored transition calculations");
 
 const toolDirectory = read("../lib/tool-directory.ts");
 const homepage = read("../app/page.tsx");
@@ -56,8 +62,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 123, "Expected 123 catalog utilities");
-assert.equal(allHrefs.length, 172, "Expected 172 available tools (49 PDF tools + 123 catalog utilities)");
+assert.equal(catalog.length, 124, "Expected 124 catalog utilities");
+assert.equal(allHrefs.length, 173, "Expected 173 available tools (49 PDF tools + 124 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");

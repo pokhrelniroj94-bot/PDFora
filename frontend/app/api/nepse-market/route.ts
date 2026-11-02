@@ -41,7 +41,7 @@ export async function GET(request: Request) {
       { status: 502, headers: { "Cache-Control": "no-store" } },
     );
   }
-  const manifest = manifestResult.status === "fulfilled" ? manifestResult.value : { availableMonths: [] };
+  const manifest = manifestResult.status === "fulfilled" ? manifestResult.value : { availableMonths: [], latestDate: undefined };
   const isIndex = INDEX_SYMBOLS.has(symbol);
   const historyKind = isIndex ? "indices" : "ltp";
   const historyManifest = historyKind === "indices"

@@ -16,8 +16,8 @@ const money = (v: unknown) => typeof v === "number" && Number.isFinite(v) ? "Rs.
 const pctClass = (v: number) => v > 0 ? "text-emerald-700" : v < 0 ? "text-rose-700" : "text-slate-600";
 const card = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5";
 const indexCodeByName: Record<string, string> = {
-  "NEPSE Index": "NEPSE", "Sensitive Index": "SENSIND", "Float Index": "FLOATIND",
-  "Sensitive Float Index": "SENSFLTIND", "Banking SubIndex": "BANKSUBIND",
+  "NEPSE": "NEPSE", "NEPSE Index": "NEPSE", "Sensitive": "SENSIND", "Sensitive Index": "SENSIND", "Float": "FLOATIND", "Float Index": "FLOATIND",
+  "Sensitive Float": "SENSFLTIND", "Sensitive Float Index": "SENSFLTIND", "Banking SubIndex": "BANKSUBIND",
   "Development Bank Index": "DEVBANKIND", "Finance Index": "FININD",
   "Hotels And Tourism Index": "HOTELIND", "HydroPower Index": "HYDPOWIND",
   "Investment Index": "INVIDX", "Life Insurance Index": "LIFINSIND", "Life Insurance": "LIFINSIND",

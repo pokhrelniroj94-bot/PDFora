@@ -209,3 +209,35 @@ def test_api_directory_includes_every_operational_tool():
     assert "pdf-to-excel" in tools
     assert "ocr" not in tools
     assert len(tools) == 49
+
+
+
+def test_security_headers_are_present_on_api_responses():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.headers.get("x-content-type-options") == "nosniff"
+    assert response.headers.get("x-frame-options") == "DENY"
+    assert response.headers.get("referrer-policy") == "strict-origin-when-cross-origin"
+    assert "frame-ancestors 'none'" in response.headers.get("content-security-policy", "")
+
+
+def test_cleanup_endpoint_is_not_public_without_admin_secret(monkeypatch):
+    monkeypatch.delenv("CLEANUP_ADMIN_TOKEN", raising=False)
+    response = client.post("/api/cleanup")
+    assert response.status_code == 404
+
+
+def test_non_pdf_mime_type_is_rejected_before_processing():
+    response = client.post(
+        "/api/pdf-info",
+        files={"file": ("not-a-pdf.pdf", b"%PDF-1.7\n", "text/html")},
+    )
+    assert response.status_code == 415
+
+
+def test_images_to_pdf_rejects_svg_upload():
+    response = client.post(
+        "/api/images-to-pdf",
+        files={"files": ("image.svg", b"<svg xmlns='http://www.w3.org/2000/svg'></svg>", "image/svg+xml")},
+    )
+    assert response.status_code == 415

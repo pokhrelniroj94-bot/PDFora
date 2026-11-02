@@ -5,8 +5,8 @@ export const metadata: Metadata = {
   title: "OCR PDF Online",
   description: "Recognize Nepali, English and Hindi text in scanned PDFs and images. Download searchable PDFs or extracted text.",
   alternates: { canonical: "https://pd-fora.vercel.app/ocr-pdf" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/ocr-pdf", siteName: "PDFora", title: "OCR PDF Online – Nepali, English and Hindi Text Recognition | PDFora", description: "PDF text recognition is not currently available on PDFora.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora OCR PDF text recognition" }] },
-  twitter: { card: "summary_large_image", title: "OCR PDF Online – Nepali, English and Hindi Text Recognition | PDFora", description: "PDF text recognition is not currently available on PDFora.", images: ["/opengraph-image"] },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/ocr-pdf", siteName: "PDFora", title: "OCR PDF Online – Nepali, English and Hindi Text Recognition | PDFora", description: "Recognize Nepali, English and Hindi text in scanned PDFs and images. Download searchable PDFs or extracted text.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora OCR PDF text recognition" }] },
+  twitter: { card: "summary_large_image", title: "OCR PDF Online – Nepali, English and Hindi Text Recognition | PDFora", description: "Recognize Nepali, English and Hindi text in scanned PDFs and images. Download searchable PDFs or extracted text.", images: ["/opengraph-image"] },
   robots: { index: true, follow: true },
 };
 

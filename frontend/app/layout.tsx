@@ -18,13 +18,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://pd-fora.vercel.app"),
   title: {
-    default: "Free Nepal Online Tools: PDF, Tax, Forex, Calendar & More | PDFora",
+    default: "Free Online PDF Tools & Nepal Utilities | PDFora",
     template: "%s | PDFora",
   },
   description:
-    "Free online tools for Nepal: NRB exchange rates, salary tax, electricity bills, Nepali dates, typing, public holidays, calculators and PDF document tools.",
-  openGraph: { type: "website", siteName: "PDFora", title: "PDFora – Free Nepal Online Utilities, PDF & Calculators", description: "Use free Nepal tools for NRB forex rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF tasks.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora free online tools" }] },
-  twitter: { card: "summary_large_image", title: "Free Nepal Online Tools | PDFora", description: "NRB rates, salary tax, electricity bills, Nepali calendar, Unicode typing, public holidays and PDF utilities.", images: ["/opengraph-image"] },
+    "Use free online PDF tools to merge, split, compress and convert documents, plus practical calculators and utilities for Nepal.",
+  openGraph: { type: "website", siteName: "PDFora", title: "Free Online PDF Tools & Nepal Utilities | PDFora", description: "Merge, split, compress and convert PDF files online. Explore practical calculators and useful Nepal utilities with PDFora.", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora free online tools" }] },
+  twitter: { card: "summary_large_image", title: "Free Online PDF Tools & Nepal Utilities | PDFora", description: "Merge, split, compress and convert PDF files online, plus practical Nepal calculators and utilities.", images: ["/opengraph-image"] },
   robots: {
     index: true,
     follow: true,

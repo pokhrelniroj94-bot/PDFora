@@ -61,7 +61,7 @@ export function getToolMetadata(slug: string): Metadata {
   if (slug === "ocr-pdf") {
     return {
       title: "OCR PDF – Coming Soon",
-      description: "PDFora OCR is not enabled on the current processing server yet.",
+      description: "PDF text recognition is coming soon to PDFora.",
       alternates: { canonical: `${baseUrl}/ocr-pdf` },
       robots: { index: false, follow: true },
     };
@@ -78,8 +78,8 @@ export function getToolMetadata(slug: string): Metadata {
     description,
     keywords: [intent, `${name} free`, `${name} online`, "free online PDF tools", "PDFora"],
     alternates: { canonical: url },
-    openGraph: { type: "website", url, siteName: "PDFora", title: `${title} | PDFora`, description },
-    twitter: { card: "summary", title: `${title} | PDFora`, description },
+    openGraph: { type: "website", url, siteName: "PDFora", title: `${title} | PDFora`, description, images: [{ url: `/${slug}/opengraph-image`, width: 1200, height: 630, alt: `${name} on PDFora` }] },
+    twitter: { card: "summary_large_image", title: `${title} | PDFora`, description, images: [`/${slug}/opengraph-image`] },
     robots: { index: true, follow: true },
   };
 }

@@ -31,12 +31,10 @@ const DASHA = [
   { lord: "चन्द्र", years: 10 }, { lord: "मङ्गल", years: 7 }, { lord: "राहु", years: 18 },
   { lord: "बृहस्पति", years: 16 }, { lord: "शनि", years: 19 }, { lord: "बुध", years: 17 },
 ] as const;
-const NAKSHATRA_LORDS = ["केतु","शुक्र","सूर्य","चन्द्र","मङ्गल","राहु","बृहस्पति","शनि","बुध"] as const;
 const DAY_MS = 86400000;
 const norm = (angle: number) => ((angle % 360) + 360) % 360;
 const rad = (deg: number) => deg * Math.PI / 180;
 const deg = (r: number) => r * 180 / Math.PI;
-const nepaliNumber = (value: number, digits = 2) => new Intl.NumberFormat("ne-NP", { maximumFractionDigits: digits }).format(value);
 const nepaliDigits = (value: string | number) => String(value).replace(/\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]);
 
 function localWallTimeToUtc(date: string, time: string, timeZone = "Asia/Kathmandu"): Date {
@@ -165,8 +163,7 @@ export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
     const longitude = siderealLongitude(graha.body,birth);
     const before = siderealLongitude(graha.body,new Date(birth.getTime()-DAY_MS/2));
     const after = siderealLongitude(graha.body,new Date(birth.getTime()+DAY_MS/2));
-    let delta = ((after-before+540)%360)-180;
-    const speed = delta;
+    const speed = ((after-before+540)%360)-180;
     const signIndex = Math.floor(longitude/30);
     const inSign = longitude-signIndex*30;
     const nak = nakshatraFor(longitude);

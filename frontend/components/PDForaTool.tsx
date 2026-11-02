@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
-import AdsterraNative from "../app/components/AdsterraNative";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "https://pdfora-493r.onrender.com";
@@ -394,7 +393,6 @@ export default function PDForaTool({
             description="Designed to work smoothly on phones and desktops."
           />
         </div>
-        <AdsterraNative />
       </section>
     </main>
   );

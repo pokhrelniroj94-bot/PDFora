@@ -1,6 +1,8 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-export const maxDuration = 20;
+// Render's free instance may need time to wake; keep the function budget above
+// the upstream request timeout so cold starts do not become premature 502s.
+export const maxDuration = 60;
 
 const BACKEND_URL = (process.env.PDFORA_BACKEND_URL || "https://pdfora-493r.onrender.com").replace(/\/$/, "");
 
@@ -13,16 +15,24 @@ export async function GET(request: Request) {
   );
 
   if (isHistory) {
-    target.searchParams.set("currency", (incoming.searchParams.get("currency") || "USD").toUpperCase());
+    const currency = (incoming.searchParams.get("currency") || "USD").toUpperCase();
+    if (!/^[A-Z]{3}$/.test(currency)) {
+      return Response.json({ error: "Invalid currency code." }, { status: 400 });
+    }
+    target.searchParams.set("currency", currency);
   } else if (incoming.searchParams.has("date")) {
-    target.searchParams.set("date", incoming.searchParams.get("date")!);
+    const date = incoming.searchParams.get("date");
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return Response.json({ error: "Date must be a valid YYYY-MM-DD value." }, { status: 400 });
+    }
+    target.searchParams.set("date", date);
   }
 
   try {
     const upstream = await fetch(target, {
       headers: { Accept: "application/json" },
       cache: "no-store",
-      signal: AbortSignal.timeout(17_000),
+      signal: AbortSignal.timeout(55_000),
     });
     const body = await upstream.text();
     let payload: unknown;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import NepalMarketNews from "./NepalMarketNews";
 
 type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
 type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; rates: ForexRate[]; error?: string };
@@ -202,10 +203,31 @@ function HolidayTool() {
   </div>;
 }
 
+function NepseDividendTool() {
+  const [shares, setShares] = useState("100");
+  const [cashRate, setCashRate] = useState("10");
+  const [bonusRate, setBonusRate] = useState("5");
+  const [taxRate, setTaxRate] = useState("5");
+  const quantity = Number(shares), cash = Number(cashRate), bonus = Number(bonusRate), tax = Number(taxRate);
+  const valid = [quantity, cash, bonus, tax].every(Number.isFinite) && quantity > 0 && Number.isInteger(quantity) && cash >= 0 && bonus >= 0 && tax >= 0 && tax <= 100;
+  const cashGross = quantity * cash / 100;
+  const cashTax = cashGross * tax / 100;
+  const bonusShares = quantity * bonus / 100;
+  return <div className="space-y-4">
+    <div><h2 className="text-lg font-bold">NEPSE Cash Dividend & Bonus Share Calculator</h2><p className="mt-1 text-sm text-slate-600">Estimate cash dividend after withholding tax and bonus shares from a declared percentage.</p></div>
+    <div className="grid gap-3 sm:grid-cols-2"><Field title="Shares held" value={shares} onChange={setShares}/><Field title="Cash dividend (%)" value={cashRate} onChange={setCashRate}/><Field title="Bonus shares (%)" value={bonusRate} onChange={setBonusRate}/><Field title="Cash dividend tax assumption (%)" value={taxRate} onChange={setTaxRate}/></div>
+    {valid ? <Result>Eligible shares: {quantity.toLocaleString("en-IN")}\nGross cash dividend: {npr(cashGross)}\nEstimated withholding tax: {npr(cashTax)}\nEstimated cash dividend after tax: {npr(cashGross - cashTax)}\nEstimated bonus shares: {bonusShares.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</Result> : <p role="alert" className="text-sm text-red-700">Enter a positive whole share quantity and valid non-negative percentages.</p>}
+    <p className="text-xs leading-5 text-slate-500">This is a percentage-based estimate, not an allotment confirmation. Fractional bonus entitlements, book closure eligibility, withholding rules and company-specific terms may change the final credited amount. Verify the declared corporate action and tax treatment with the company, CDSC and IRD.</p>
+    <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noreferrer">NEPSE official</a><a className="font-semibold text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noreferrer">Mero Share</a></div>
+  </div>;
+}
+
 export default function NepalLiveTools({ slug }: { slug: string }) {
   if (slug === "nepal-forex-rates") return <ForexTool/>;
   if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool/>;
   if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool/>;
   if (slug === "nepal-public-holidays-2083") return <HolidayTool/>;
+  if (slug === "nepse-dividend-calculator") return <NepseDividendTool/>;
+  if (slug === "nepse-market-news") return <NepalMarketNews/>;
   return <p className="text-sm text-slate-600">Nepal tool not found.</p>;
 }

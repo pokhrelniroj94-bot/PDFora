@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
+import { legacyToolSlugs } from "./lib/legacy-tool-slugs";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return legacyToolSlugs.map((slug) => ({
+      source: `/tools/${slug}`,
+      destination: `/${slug}`,
+      permanent: true,
+    }));
+  },
   async headers() {
     return [
       {

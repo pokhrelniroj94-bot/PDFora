@@ -124,7 +124,7 @@ export default function CatalogToolSEOContent({
         example: "1 Ropani + 8 Aana = 5,476 + (8 × 342.25) = 8,214 square feet. One Bigha equals 72,900 square feet under the common Terai conversion.",
         caution: "These are standard unit conversions, not a land survey or title verification. Plot boundaries, official recorded area and local cadastral details must be confirmed with the relevant Land Revenue Office or Survey Office before a purchase, sale or legal filing."
       },
-      "nepal-vat-calculator": {
+      "nepali-vat-calculator": {
         eyebrow: "Nepal VAT calculator",
         heading: "Add 13% VAT to a price or extract VAT from an inclusive total",
         intro: "Use the calculator to estimate VAT in Nepalese rupees. Choose whether the entered amount is before VAT or already includes VAT, and confirm the rate field before calculating.",

@@ -113,6 +113,12 @@ function nakshatraFor(longitude: number) {
   return { name: NAKSHATRAS[index], index, pada: Math.floor((position - index) * 4) + 1, progress: position - index };
 }
 
+function formatAD(date: Date, timeZone: string): string {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date);
+  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
 function formatBS(date: Date): string {
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date);
   const get = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
@@ -144,7 +150,7 @@ export interface KundaliResult {
   name: string; birthDateAD: string; birthDateBS: string; birthTime: string; place: string;
   lagna: string; lagnaDegree: number; moonSign: string; janmaNakshatra: string; janmaPada: number;
   ayanamsa: number; planets: KundaliPlanet[]; houses: { house: number; sign: string; planets: string[] }[];
-  dasha: { lord: string; start: string; end: string; years: number; current: boolean }[];
+  dasha: { lord: string; start: string; end: string; startAD: string; endAD: string; years: number; current: boolean }[];
   currentDasha: string; method: string;
 }
 
@@ -201,7 +207,7 @@ export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
     const years = i===0 ? remainingYears : lord.years;
     const start = new Date(cursor);
     const end = new Date(cursor + years*365.2425*DAY_MS);
-    dasha.push({lord:lord.lord,start:formatBS(start),end:formatBS(end),years:Number(years.toFixed(2)),current:Date.now()>=start.getTime()&&Date.now()<end.getTime()});
+    dasha.push({lord:lord.lord,start:formatBS(start),end:formatBS(end),startAD:formatAD(start,place.timeZone),endAD:formatAD(end,place.timeZone),years:Number(years.toFixed(2)),current:Date.now()>=start.getTime()&&Date.now()<end.getTime()});
     cursor=end.getTime();
   }
   const currentDasha = dasha.find((period)=>period.current)?.lord ?? "हालको महादशा यो १२०-वर्षे चक्रबाहिर छ";

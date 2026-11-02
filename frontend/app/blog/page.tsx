@@ -13,6 +13,13 @@ export const metadata: Metadata = {
     url: "https://pd-fora.vercel.app/blog",
     siteName: "PDFora",
     type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora practical guides and tutorials" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Practical PDF & Nepal Guides | PDFora",
+    description: "Step-by-step guides for PDF tasks, Nepal calculators, exchange rates, tax estimates and online tools.",
+    images: ["/opengraph-image"],
   },
 };
 

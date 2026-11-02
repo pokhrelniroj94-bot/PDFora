@@ -122,7 +122,7 @@ assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trad
 const forexApi = read("../app/api/nepal-forex/route.ts");
 const forexComponent = read("../components/NepalLiveTools.tsx");
 assert.ok(forexApi.includes("fetchJsonHistory"), "NRB Forex historical rate API is missing");
-assert.ok(forexApi.includes("params.get(\\"history\\") === \\"1\\""), "NRB Forex API must expose a history mode");
+assert.ok(forexApi.includes('params.get("history") === "1"'), "NRB Forex API must expose a history mode");
 assert.ok(forexComponent.includes("Custom historical rate chart"), "Custom NRB Forex chart is missing");
 assert.ok(forexComponent.includes("TradingView embedded Forex chart"), "Embedded Forex market chart is missing");
 assert.ok(marketDashboard.includes("5*60*1000"), "NEPSE page should not poll faster than the upstream hourly feed needs");

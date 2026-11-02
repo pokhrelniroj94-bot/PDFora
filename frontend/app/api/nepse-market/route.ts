@@ -3,6 +3,17 @@ export const revalidate = 0;
 
 const BASE = "https://raw.githubusercontent.com/Shubhamnpk/yonepse/main";
 const INDEX_SYMBOLS = new Set(["NEPSE", "SENSIND", "FLOATIND", "SENSFLTIND", "BANKSUBIND", "DEVBANKIND", "FININD", "HOTELIND", "HYDPOWIND", "INVIDX", "LIFINSIND", "MANPROCIND", "MICRFININD", "MUTUALIND", "NONLIFIND", "OTHERSIND", "TRDIND"]);
+const INDEX_CODE_BY_NAME: Record<string, string> = {
+  "NEPSE Index": "NEPSE", "Sensitive Index": "SENSIND", "Float Index": "FLOATIND",
+  "Sensitive Float Index": "SENSFLTIND", "Banking SubIndex": "BANKSUBIND",
+  "Development Bank Index": "DEVBANKIND", "Finance Index": "FININD",
+  "Hotels And Tourism Index": "HOTELIND", "HydroPower Index": "HYDPOWIND",
+  "Investment Index": "INVIDX", "Life Insurance Index": "LIFINSIND",
+  "Manufacturing And Processing": "MANPROCIND", "Microfinance Index": "MICRFININD",
+  "Mutual Fund Index": "MUTUALIND", "Mutual Fund": "MUTUALIND",
+  "Non Life Insurance Index": "NONLIFIND", "Non Life Insurance": "NONLIFIND",
+  "Others Index": "OTHERSIND", "Others": "OTHERSIND", "Trading Index": "TRDIND",
+};
 type Json = Record<string, unknown>;
 async function read<T>(path: string, revalidateSeconds = 300): Promise<T> {
   const response = await fetch(BASE + path, {
@@ -84,6 +95,14 @@ export async function GET(request: Request) {
   const indexHistoryResults = historyKind === "indices"
     ? historyResults
     : await Promise.allSettled(indexMonths.map((month) => read<Json>("/data/indices/monthly/" + month + ".json")));
+  // Sector cards must use the same current quote snapshot as the headline index cards.
+  // Historical archives can lag the live quote feed by a session or more; use them
+  // only as a clearly dated fallback when the live snapshot has no matching index.
+  const liveIndexByCode = new Map(
+    (indices as Array<{ index?: string; currentValue?: number; close?: number; change?: number; perChange?: number; generatedTime?: string }>)
+      .map((item) => [INDEX_CODE_BY_NAME[item.index ?? ""] ?? "", item] as const)
+      .filter(([code]) => Boolean(code)),
+  );
   const sectors = sectorMeta.map((sector) => {
     const history: Array<{ date: string; close: number }> = [];
     for (const result of indexHistoryResults) {
@@ -101,9 +120,18 @@ export async function GET(request: Request) {
     history.sort((a, b) => a.date.localeCompare(b.date));
     const latest = history[history.length - 1];
     const previous = history[history.length - 2];
-    const change = latest && previous ? latest.close - previous.close : null;
-    const perChange = latest && previous && previous.close !== 0 ? change! / previous.close * 100 : null;
-    return { ...sector, currentValue: latest?.close ?? null, change, perChange, latestDate: latest?.date ?? null };
+    const historicalChange = latest && previous ? latest.close - previous.close : null;
+    const historicalPerChange = latest && previous && previous.close !== 0 ? historicalChange! / previous.close * 100 : null;
+    const live = liveIndexByCode.get(sector.indexCode ?? "");
+    const liveValue = live?.currentValue ?? live?.close;
+    return {
+      ...sector,
+      currentValue: typeof liveValue === "number" && Number.isFinite(liveValue) ? liveValue : latest?.close ?? null,
+      change: typeof live?.change === "number" && Number.isFinite(live.change) ? live.change : historicalChange,
+      perChange: typeof live?.perChange === "number" && Number.isFinite(live.perChange) ? live.perChange : historicalPerChange,
+      latestDate: live?.generatedTime ?? latest?.date ?? null,
+      valueSource: live ? "current snapshot" : latest ? "historical archive" : "unavailable",
+    };
   });
   const pick = <T,>(result: PromiseSettledResult<T>, fallback: T): T => result.status === "fulfilled" ? result.value : fallback;
   const response = {

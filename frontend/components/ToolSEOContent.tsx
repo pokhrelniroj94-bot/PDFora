@@ -4,11 +4,11 @@ export default function ToolSEOContent({ slug }: { slug: string }) {
   const guide = getToolGuide(slug);
   if (!guide) return null;
   const faqs = [
-    { q: `How do I ${guide.name.toLowerCase()} online?`, a: `Open the PDFora ${guide.name} page, select the source PDF, follow the controls shown in the tool, process the document and inspect the downloaded result.` },
+    { q: `What does ${guide.name} do?`, a: guide.purpose },
+    { q: `How do I ${guide.name.toLowerCase()} online?`, a: guide.steps.join(" ") },
+    { q: `What should I check after using ${guide.name.toLowerCase()}?`, a: guide.caution },
+    { q: "Which PDF tasks may I need next?", a: `Depending on your document workflow, related tasks include ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}. Keep the original PDF and inspect each processed file before sharing it.` },
     { q: "Can I use this PDF tool on a phone?", a: "The tool is available in modern mobile browsers. File selection and download behaviour can vary by device, browser and available storage." },
-    { q: "Will the output preserve every part of my original PDF?", a: "Not necessarily. Results depend on the operation and on features in the source PDF, such as scanned pages, fonts, forms, annotations, links and signatures. Always inspect the output." },
-    { q: "What should I do if the tool fails?", a: "Keep the original file, check that it is a valid PDF, confirm that it is not password-protected unless supported, and try a smaller sample. Read any error message before retrying." },
-    { q: "Can I use the result for an official submission?", a: "Check the receiving organisation's file, page and signature requirements. A processed PDF is not an official certification, and editing a digitally signed file may invalidate its signature." },
     { q: "Should I keep a copy of the original PDF?", a: "Yes. Keep an untouched copy until you have opened and checked the final file and confirmed that it contains the pages and information you need." }
   ];
   const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };

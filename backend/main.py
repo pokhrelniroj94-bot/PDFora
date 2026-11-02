@@ -14,7 +14,16 @@ import uuid
 import io
 import zipfile
 import time
+import os
+import re
+import ipaddress
+import asyncio
 import pdfplumber
+
+try:
+    import redis.asyncio as redis_async
+except ImportError:  # Redis is optional; single-instance fallback remains available.
+    redis_async = None
 from openpyxl import Workbook
 
 
@@ -35,7 +44,8 @@ app = FastAPI(
 
 @app.middleware("http")
 async def enforce_request_limits(request: Request, call_next):
-    # Reject oversized declared bodies before multipart parsing allocates resources.
+    # Only rate-limit file-processing/write endpoints; health and preflight
+    # requests remain available. Limits are per endpoint plus a shared hourly cap.
     if request.method == "POST" and request.url.path.startswith("/api/"):
         content_length = request.headers.get("content-length")
         if content_length:
@@ -44,6 +54,37 @@ async def enforce_request_limits(request: Request, call_next):
                     return JSONResponse(status_code=413, content={"detail": "The total request must not exceed 52 MB."})
             except ValueError:
                 return JSONResponse(status_code=400, content={"detail": "Invalid Content-Length header."})
+
+        ip = _client_ip(request)
+        now_bucket_minute = int(time.time() // 60)
+        now_bucket_hour = int(time.time() // 3600)
+        route_key = f"pdfora:rate:route:{ip}:{request.url.path}:{now_bucket_minute}"
+        hour_key = f"pdfora:rate:hour:{ip}:{now_bucket_hour}"
+
+        try:
+            route_count = await _rate_limit_count(route_key, 60)
+            if route_count > RATE_LIMIT_PER_ROUTE_PER_MINUTE:
+                return JSONResponse(
+                    status_code=429,
+                    content={"detail": "Too many requests. Please wait a minute before trying again."},
+                    headers={"Retry-After": "60"},
+                )
+
+            hour_count = await _rate_limit_count(hour_key, 3600)
+            if hour_count > RATE_LIMIT_PER_IP_PER_HOUR:
+                return JSONResponse(
+                    status_code=429,
+                    content={"detail": "Hourly request limit reached. Please try again later."},
+                    headers={"Retry-After": "3600"},
+                )
+        except Exception:
+            # If even the local fallback fails, fail closed for upload endpoints.
+            return JSONResponse(
+                status_code=503,
+                content={"detail": "Upload protection is temporarily unavailable. Please retry shortly."},
+                headers={"Retry-After": "30"},
+            )
+
     response = await call_next(request)
     if request.url.path.startswith("/api/"):
         response.headers["Cache-Control"] = "no-store, max-age=0"
@@ -85,6 +126,92 @@ app.add_middleware(
 # ============================================================
 
 MAX_FILE_SIZE = 50 * 1024 * 1024
+
+# Upload protection defaults. Redis is recommended for multi-instance deployments.
+RATE_LIMIT_PER_ROUTE_PER_MINUTE = int(os.getenv("PDFORA_RATE_LIMIT_PER_ROUTE", "20"))
+RATE_LIMIT_PER_IP_PER_HOUR = int(os.getenv("PDFORA_RATE_LIMIT_PER_HOUR", "120"))
+RATE_LIMIT_REDIS_URL = os.getenv("RATE_LIMIT_REDIS_URL", "").strip()
+_RATE_LIMIT_REDIS = None
+_RATE_LIMIT_REDIS_LOCK = asyncio.Lock()
+_LOCAL_RATE_LIMITS: dict[str, tuple[int, float]] = {}
+_LOCAL_RATE_LIMIT_LOCK = asyncio.Lock()
+
+PDF_HEADER_PATTERN = re.compile(rb"%PDF-(?:1\\.[0-7]|2\\.0)")
+
+
+def _client_ip(request: Request) -> str:
+    """Resolve client IP. On Render, use the right-most forwarded address
+    appended by the trusted platform proxy; otherwise use ASGI peer address.
+    """
+    if os.getenv("RENDER", "").lower() == "true":
+        forwarded = request.headers.get("x-forwarded-for", "")
+        candidates = [item.strip() for item in forwarded.split(",") if item.strip()]
+        if candidates:
+            try:
+                return str(ipaddress.ip_address(candidates[-1]))
+            except ValueError:
+                pass
+
+    peer = request.client.host if request.client else "unknown"
+    try:
+        return str(ipaddress.ip_address(peer))
+    except ValueError:
+        return "unknown"
+
+
+async def _redis_rate_count(key: str, window_seconds: int) -> int | None:
+    global _RATE_LIMIT_REDIS
+    if not RATE_LIMIT_REDIS_URL or redis_async is None:
+        return None
+
+    async with _RATE_LIMIT_REDIS_LOCK:
+        if _RATE_LIMIT_REDIS is None:
+            _RATE_LIMIT_REDIS = redis_async.from_url(
+                RATE_LIMIT_REDIS_URL,
+                encoding="utf-8",
+                decode_responses=True,
+                socket_connect_timeout=2,
+                socket_timeout=2,
+            )
+
+    script = (
+        "local count = redis.call('INCR', KEYS[1]); "
+        "if count == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]); end; "
+        "return count"
+    )
+    return int(await _RATE_LIMIT_REDIS.eval(script, 1, key, window_seconds))
+
+
+async def _local_rate_count(key: str, window_seconds: int, now: float) -> int:
+    async with _LOCAL_RATE_LIMIT_LOCK:
+        count, expires_at = _LOCAL_RATE_LIMITS.get(key, (0, now + window_seconds))
+        if now >= expires_at:
+            count, expires_at = 0, now + window_seconds
+        count += 1
+        _LOCAL_RATE_LIMITS[key] = (count, expires_at)
+
+        # Bound memory use and discard expired buckets opportunistically.
+        if len(_LOCAL_RATE_LIMITS) > 10000:
+            for old_key, (_, old_expiry) in list(_LOCAL_RATE_LIMITS.items()):
+                if old_expiry <= now:
+                    _LOCAL_RATE_LIMITS.pop(old_key, None)
+        return count
+
+
+async def _rate_limit_count(key: str, window_seconds: int) -> int:
+    try:
+        redis_count = await _redis_rate_count(key, window_seconds)
+        if redis_count is not None:
+            return redis_count
+    except Exception:
+        # Do not fail open silently: local fallback limits this process, and
+        # logs make the degraded distributed protection visible to operators.
+        import logging
+        logging.getLogger("pdfora.security").exception(
+            "Redis rate-limit storage unavailable; using process-local fallback"
+        )
+    return await _local_rate_count(key, window_seconds, time.time())
+
 
 TEMP_DIR = Path(tempfile.gettempdir()) / "pdfora"
 
@@ -141,36 +268,56 @@ def validate_pdf(filename: str | None):
         )
 
 
+def has_pdf_signature(data: bytes) -> bool:
+    """Check for a PDF header in the first 1,024 bytes, as permitted by PDF spec."""
+    return PDF_HEADER_PATTERN.search(data[:1024]) is not None
+
+
 async def save_upload(
     file: UploadFile,
     path: Path
 ):
-
     size = 0
+    signature_checked = False
 
-    with open(path, "wb") as output:
+    try:
+        with open(path, "wb") as output:
+            while True:
+                chunk = await file.read(1024 * 1024)
+                if not chunk:
+                    break
 
-        while True:
+                if not signature_checked:
+                    if not has_pdf_signature(chunk[:1024]):
+                        raise HTTPException(
+                            status_code=400,
+                            detail="Invalid PDF file. The file signature is incorrect."
+                        )
+                    signature_checked = True
 
-            chunk = await file.read(
-                1024 * 1024
+                size += len(chunk)
+                if size > MAX_FILE_SIZE:
+                    raise HTTPException(
+                        status_code=413,
+                        detail="Maximum file size is 50 MB."
+                    )
+
+                output.write(chunk)
+
+        if not signature_checked:
+            raise HTTPException(
+                status_code=400,
+                detail="The uploaded file is empty or invalid."
             )
 
-            if not chunk:
-                break
+        return size
 
-            size += len(chunk)
-
-            if size > MAX_FILE_SIZE:
-
-                raise HTTPException(
-                    status_code=413,
-                    detail="Maximum file size is 50 MB."
-                )
-
-            output.write(chunk)
-
-    return size
+    except Exception:
+        try:
+            path.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise
 
 
 def read_pdf(path: Path):
@@ -179,8 +326,8 @@ def read_pdf(path: Path):
     try:
         with open(path, "rb") as uploaded:
             header = uploaded.read(1024)
-        if b"%PDF-" not in header:
-            raise HTTPException(status_code=400, detail="The uploaded file is not a valid PDF.")
+        if not has_pdf_signature(header):
+            raise HTTPException(status_code=400, detail="The uploaded file is not a valid PDF.");
     except OSError:
         raise HTTPException(status_code=400, detail="Unable to read the uploaded PDF.")
 

@@ -70,6 +70,34 @@ export async function GET(request: Request) {
     }
   }
   points.sort((a, b) => a.date.localeCompare(b.date));
+  const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)
+    ? sectorsResult.value as Array<{ indexCode?: string; indexName?: string; description?: string }>
+    : [];
+  const indexMonths = (Array.isArray(manifest.availableMonths) ? manifest.availableMonths : []).slice(-2);
+  const indexHistoryResults = historyKind === "indices"
+    ? historyResults
+    : await Promise.allSettled(indexMonths.map((month) => read<Json>("/data/indices/monthly/" + month + ".json")));
+  const sectors = sectorMeta.map((sector) => {
+    const history: Array<{ date: string; close: number }> = [];
+    for (const result of indexHistoryResults) {
+      if (result.status !== "fulfilled") continue;
+      const shard = result.value;
+      const dates = Array.isArray(shard.dates) ? shard.dates as string[] : [];
+      const series = shard.series && typeof shard.series === "object" ? shard.series as Record<string, unknown> : {};
+      const rows = sector.indexCode && Array.isArray(series[sector.indexCode]) ? series[sector.indexCode] as unknown[][] : [];
+      for (const row of rows) {
+        const date = dates[Number(row[0])];
+        const close = Number(row[1]);
+        if (date && Number.isFinite(close)) history.push({ date, close });
+      }
+    }
+    history.sort((a, b) => a.date.localeCompare(b.date));
+    const latest = history[history.length - 1];
+    const previous = history[history.length - 2];
+    const change = latest && previous ? latest.close - previous.close : null;
+    const perChange = latest && previous && previous.close !== 0 ? change! / previous.close * 100 : null;
+    return { ...sector, currentValue: latest?.close ?? null, change, perChange, latestDate: latest?.date ?? null };
+  });
   const pick = <T,>(result: PromiseSettledResult<T>, fallback: T): T => result.status === "fulfilled" ? result.value : fallback;
   const response = {
     symbol,
@@ -81,10 +109,10 @@ export async function GET(request: Request) {
     indices,
     summary: pick(summaryResult, []),
     topStocks: pick(topResult, {}),
-    sectors: pick(sectorsResult, []),
+    sectors,
     stocks,
     points,
-    partial: [statusResult, summaryResult, topResult, sectorsResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected"),
+    partial: [statusResult, summaryResult, topResult, sectorsResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {
     headers: { "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800" },

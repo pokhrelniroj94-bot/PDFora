@@ -53,6 +53,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: `Can I rely on the ${tool.name} result as an official record?`, a: "No. This online utility is a practical aid. Confirm important financial, legal, government, medical or compliance results with the responsible authority or qualified professional." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
+    "nepali-date-converter": [
+      { q: "Which dates does the Nepali date converter support?", a: "It supports Bikram Sambat dates from 1975-01-01 through 2099-12-30 and Gregorian dates from 1918-04-13 through 2043-04-13. Dates outside this range are rejected." },
+      { q: "Can I convert both AD to BS and BS to AD?", a: "Yes. Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD), then enter the date in year-month-day order." },
+      { q: "Does it accept Nepali digits?", a: "Yes. The converter accepts Devanagari numerals as well as English digits and supports common date separators." },
+      { q: "Is the converted date an official government record?", a: "No. It is an online conversion aid. Verify dates used for legal, financial or government records against the original document and relevant authority." }
+    ],
     "nepal-forex-rates": [
       { q: "Where do the exchange rates come from?", a: "The tool requests the latest available published rates from the Nepal Rastra Bank official foreign-exchange API." },
       { q: "Why may the rate date be earlier than today?", a: "NRB may not publish a new rate on weekends or public holidays, so the latest available working-day rate is displayed." },

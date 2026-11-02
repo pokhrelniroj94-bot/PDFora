@@ -49,7 +49,7 @@ export default function NepalTools({slug}:{slug:string}) {
    document.head.appendChild(script);
    return ()=>{script.onload=null;script.onerror=null;};
   }
-  if(slug==="nepal-panchang-calculator") setPanchangDate(kathmanduISODate());
+  if(slug==="nepal-panchang-calculator") Promise.resolve().then(()=>setPanchangDate(kathmanduISODate()));
   if(["nepali-date-converter","nepali-calendar"].includes(slug)){
    const today = kathmanduISODate();
    setTodayAD(today);

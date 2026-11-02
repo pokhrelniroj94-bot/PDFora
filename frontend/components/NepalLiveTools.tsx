@@ -85,7 +85,7 @@ function ForexTool() {
   const [amount, setAmount] = useState("100");
   const [direction, setDirection] = useState("foreign-to-npr");
   const [history, setHistory] = useState<ForexHistoryPoint[]>([]);
-  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(true);
   const [historyError, setHistoryError] = useState("");
   useEffect(() => {
     let active = true;
@@ -111,6 +111,8 @@ function ForexTool() {
   };
   useEffect(() => {
     let active = true;
+    setHistoryLoading(true);
+    setHistoryError("");
     fetch("/api/nepal-forex?history=1&currency=" + encodeURIComponent(currency), { cache: "no-store" })
       .then(async (response) => { const json = await response.json() as { history?: ForexHistoryPoint[]; error?: string }; if (!response.ok) throw new Error(json.error || "Historical rates unavailable."); return json; })
       .then((json) => { if (active) setHistory(json.history ?? []); })

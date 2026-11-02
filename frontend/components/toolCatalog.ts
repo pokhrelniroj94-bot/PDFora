@@ -120,4 +120,7 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"nepal-public-holidays-2083",name:"Nepal Public Holidays Calendar 2083",category:"Nepal",description:"Search Nepal government public holidays for 2083 BS with Gregorian dates and national, regional and community-specific notes.",keywords:"Nepal public holidays 2083 calendar 2026 2027 government holidays Dashain Tihar holiday list"},
 {slug:"nepali-unicode-typing",name:"Nepali Unicode Typing Tool",category:"Nepal",description:"Type Romanized Nepali using an English keyboard and convert it into Devanagari Unicode text in your browser.",keywords:"Nepali typing online Roman to Nepali Unicode Nepali keyboard type Nepali English keyboard"}
 
+
+{slug:"nepse-market-news",name:"NEPSE Market & IPO News",category:"Nepal",description:"Read automatically refreshed Nepal stock-market, IPO, FPO and allotment headlines with publisher links and publication times.",keywords:"NEPSE news today Nepal stock market news IPO FPO allotment news shares Nepal"},
+{slug:"nepse-dividend-calculator",name:"NEPSE Dividend & Bonus Share Calculator",category:"Nepal",description:"Estimate cash dividends after an editable withholding-tax assumption and calculate bonus-share entitlement from your holdings.",keywords:"Nepse dividend calculator Nepal cash dividend bonus share calculator dividend tax"},
 ];

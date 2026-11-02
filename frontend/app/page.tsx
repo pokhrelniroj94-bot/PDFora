@@ -298,7 +298,7 @@ export default function Home() {
   const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f5f7f6] text-slate-950">
+    <main className="min-h-screen bg-[#f5f7f6] text-slate-950">
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgba(15,23,42,0.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">

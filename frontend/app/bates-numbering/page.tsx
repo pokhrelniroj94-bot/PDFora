@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PDForaTool from "../../components/Niroj77Tool";
 
 export const metadata: Metadata = {
-  title: "Bates Numbering PDF Online | PDFora",
+  title: "Bates Numbering PDF Online",
   description: "Add sequential Bates numbers to PDF pages with a custom prefix and starting number. Free online Bates numbering tool.",
   alternates: { canonical: "https://pd-fora.vercel.app/bates-numbering" },
 };

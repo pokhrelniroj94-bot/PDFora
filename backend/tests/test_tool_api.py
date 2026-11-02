@@ -305,3 +305,10 @@ def test_render_client_ip_prefers_cloudflare_visitor_ip(monkeypatch):
     }
     request = Request(scope)
     assert _client_ip(request) == "203.0.113.7"
+
+
+
+def test_local_api_docs_remain_accessible():
+    response = TestClient(app).get("/docs")
+    assert response.status_code == 200
+    assert "content-security-policy" not in response.headers

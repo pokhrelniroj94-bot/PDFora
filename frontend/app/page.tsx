@@ -298,7 +298,7 @@ export default function Home() {
     const tokens = normalize(query).split(" ").filter(Boolean);
     return allTools.filter((tool) => {
       if (tool.href === "/ocr-pdf") return false;
-      const matchesCategory = category === "All" || tool.category === category;
+      const matchesCategory = category === "All" || (category === "PDF" ? !tool.href.startsWith("/tools/") : tool.category === category);
       const searchable = normalize([tool.name, tool.description, tool.category, tool.href.replaceAll("-", " "), searchTerms[tool.href] || ""].join(" "));
       return matchesCategory && (tokens.length === 0 || tokens.every((token) => searchable.includes(token)));
     });
@@ -441,6 +441,7 @@ export default function Home() {
           <Link href="/tools/nepal-share-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">📈 Share Profit Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Buy, sell &amp; charges</span></Link>
           <Link href="/tools/nepse-dividend-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💸 Dividend Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Cash &amp; bonus estimate</span></Link>
           <Link href="/tools/nepal-forex-rates" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💱 NRB Forex Rates <span className="mt-1 block text-xs font-medium text-slate-500">Official buying &amp; selling</span></Link>
+          <Link href="/market" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 font-bold text-teal-950 hover:border-teal-400">📊 NEPSE Market Dashboard <span className="mt-1 block text-xs font-medium text-teal-800">Index charts, stock prices &amp; market movers</span></Link>
         </div>
         <NepalMarketNews />
       </section>

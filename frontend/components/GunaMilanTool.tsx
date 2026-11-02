@@ -69,7 +69,7 @@ export default function GunaMilanTool(){
   const match=errors.find(item=>item[0]===message);
   return match?(language==="ne"?match[0]:language==="en"?match[1]:match[2]):message;
  };
- const update=(who:"bride"|"groom",key:keyof PersonForm,value:string)=>{
+ const update=<K extends keyof PersonForm>(who:"bride"|"groom",key:K,value:PersonForm[K])=>{
   const setter=who==="bride"?setBride:setGroom;
   setter(old=>({...old,[key]:value}));
  };
@@ -78,7 +78,7 @@ export default function GunaMilanTool(){
   <h3 className="mb-4 text-lg font-bold text-slate-900">{who==="bride"?t.bride:t.groom}</h3>
   <div className="grid gap-3 sm:grid-cols-2">
    <label className="text-sm font-semibold text-slate-700 sm:col-span-2">{t.name}<input className={fieldClass} value={data.name} onChange={e=>update(who,"name",e.target.value)} placeholder=""/></label>
-   <label className="text-sm font-semibold text-slate-700">{t.system}<select className={fieldClass} value={data.dateSystem} onChange={e=>update(who,"dateSystem",e.target.value)}><option value="AD">{t.ad}</option><option value="BS">{t.bs}</option></select></label>
+   <label className="text-sm font-semibold text-slate-700">{t.system}<select className={fieldClass} value={data.dateSystem} onChange={e=>update(who,"dateSystem",e.target.value as PersonForm["dateSystem"])}><option value="AD">{t.ad}</option><option value="BS">{t.bs}</option></select></label>
    <label className="text-sm font-semibold text-slate-700">{t.date}<input type="date" inputMode="numeric" className={fieldClass} value={data.birthDate} onChange={e=>update(who,"birthDate",e.target.value)}/><span className="mt-1 block text-xs font-normal text-slate-500">{data.dateSystem==="BS"?t.bsHint:t.adHint}</span></label>
    <label className="text-sm font-semibold text-slate-700">{t.time}<input type="time" className={fieldClass} value={data.birthTime} onChange={e=>update(who,"birthTime",e.target.value)}/></label>
    <label className="text-sm font-semibold text-slate-700">{t.place}<select className={fieldClass} value={data.placeId} onChange={e=>update(who,"placeId",e.target.value)}>{KUNDALI_PLACES.map(p=><option key={p.id} value={p.id}>{p.name} — {p.en}</option>)}</select></label>

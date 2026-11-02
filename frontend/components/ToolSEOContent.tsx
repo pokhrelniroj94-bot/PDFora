@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import AdsterraNative from "../app/components/AdsterraNative";
 import { getToolGuide } from "../lib/tool-guides";
 export default function ToolSEOContent({ slug }: { slug: string }) {
   const guide = getToolGuide(slug);
@@ -23,6 +24,7 @@ export default function ToolSEOContent({ slug }: { slug: string }) {
         <p className="mt-4 text-sm leading-8 text-slate-700">People search for phrases such as “{guide.keyword}” when they need to prepare a document for study, work, record keeping or an online submission. This guide explains the purpose of the operation, how to prepare a source file, what to check after processing and which limitations may affect the result. The exact controls are the ones displayed in the tool workspace above.</p>
         <p className="mt-4 text-sm leading-8 text-slate-700">Before you begin, open the original PDF and check that it contains the correct pages. If the document is important, save an untouched backup. Check whether the receiving website has a maximum file size, page count, page dimension or other PDF requirement. Preparing the right source file is often more useful than repeating the operation after a preventable input mistake.</p>
       </section>
+      <AdsterraNative />
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <h2 className="text-xl font-black text-slate-950">How to {guide.name.toLowerCase()} step by step</h2>
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-8 text-slate-700">

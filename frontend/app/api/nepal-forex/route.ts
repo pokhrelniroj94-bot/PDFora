@@ -111,14 +111,14 @@ async function fetchFromOfficialPage(requestedDate: string) {
   if (html.length > 2_000_000) throw new Error("NRB published page response was unexpectedly large.");
 
   const strip = (value: string) => value
-    .replace(/<script[\\s\\S]*?<\\/script>/gi, " ")
-    .replace(/<style[\\s\\S]*?<\\/style>/gi, " ")
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;|&#160;/gi, " ")
     .replace(/&amp;/gi, "&")
     .replace(/&#39;|&apos;/gi, "'")
     .replace(/&quot;/gi, '"')
-    .replace(/\\s+/g, " ").trim();
+    .replace(/\s+/g, " ").trim();
   const pageText = strip(html);
   const dateMatch = pageText.match(/Showing Exchange Rate for\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})/i);
   const parsedDate = dateMatch ? new Date(dateMatch[1]) : null;

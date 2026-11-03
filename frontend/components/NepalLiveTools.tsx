@@ -4,14 +4,6 @@ import { useMemo, useState } from "react";
 import NepalMarketNews from "./NepalMarketNews";
 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
-const fallbackCurrencies: Array<{ code: string; name: string }> = [
-  { code: "USD", name: "US Dollar" }, { code: "EUR", name: "Euro" }, { code: "GBP", name: "Pound Sterling" }, { code: "INR", name: "Indian Rupee" },
-  { code: "AUD", name: "Australian Dollar" }, { code: "CAD", name: "Canadian Dollar" }, { code: "CHF", name: "Swiss Franc" }, { code: "JPY", name: "Japanese Yen" },
-  { code: "CNY", name: "Chinese Yuan" }, { code: "SGD", name: "Singapore Dollar" }, { code: "SAR", name: "Saudi Riyal" }, { code: "QAR", name: "Qatari Riyal" },
-  { code: "AED", name: "UAE Dirham" }, { code: "MYR", name: "Malaysian Ringgit" }, { code: "KRW", name: "South Korean Won" }, { code: "THB", name: "Thai Baht" },
-  { code: "KWD", name: "Kuwaiti Dinar" }, { code: "BHD", name: "Bahraini Dinar" }, { code: "OMR", name: "Omani Rial" }, { code: "HKD", name: "Hong Kong Dollar" },
-  { code: "SEK", name: "Swedish Krona" }, { code: "DKK", name: "Danish Krone" },
-];
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const npr = (value: number) => "NPR " + value.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 function Field({ title, value, onChange, type = "number", min = "0" }: { title: string; value: string; onChange: (value: string) => void; type?: string; min?: string }) {

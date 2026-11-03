@@ -47,7 +47,7 @@ function normalizeNrbPayload(payload: unknown, requestedDate: string) {
   const data = asRecord(root.data);
   const records = data.payload;
   if (!Array.isArray(records)) throw new Error("NRB returned no published snapshots for this date range.");
-  const valid = (records as NrbRecord[]).filter((item) => typeof item?.date === "string" && /^\\d{4}-\\d{2}-\\d{2}$/.test(item.date) && Array.isArray(item.rates));
+  const valid = (records as NrbRecord[]).filter((item) => typeof item?.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(item.date) && Array.isArray(item.rates));
   const latest = [...valid].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
   if (!latest) throw new Error("No published NRB rate was found in the requested date range.");
   const rates = toRateList(latest.rates || []);

@@ -13,7 +13,6 @@ const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
 const toolPage = read("../app/tools/[slug]/page.tsx");
 const backendSource = read("../../backend/main.py");
-const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
@@ -43,7 +42,6 @@ assert.deepEqual(missing, [], `Tools without handlers: ${missing.join(", ")}`);
 for (const slug of ["nepal-salary-tax-calculator", "nepal-electricity-bill-calculator", "nepal-public-holidays-2083"]) {
   assert.ok(liveCases.includes(slug), `Missing Nepal live tool handler: ${slug}`);
   assert.ok(routedNepalSlugs.includes(slug), `Missing Nepal live route: ${slug}`);
-}
 assert.ok(typingRouted, "Nepali Unicode typing route or engine is missing");
 assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('import NepalLiveTools from "./NepalLiveTools"'), "Nepal live tools component is not imported");
 
@@ -61,21 +59,14 @@ assert.ok(!catalogSource.includes("nepal-forex-rates"), "Retired NRB forex tool 
 assert.ok(!nepalLiveTools.includes("ForexTool") && !nepalLiveTools.includes("/api/nepal-forex"), "Retired NRB forex UI and API client must be removed");
 assert.ok(!backendSource.includes("/api/nepal-forex"), "Retired NRB forex backend endpoints must be removed");
 assert.equal(fs.existsSync(new URL("../app/api/nepal-forex/route.ts", import.meta.url)), false, "Retired NRB forex proxy route must be deleted");
-assert.ok(!catalogSource.includes("nepal-forex-rates"), "Retired NRB forex tool must not remain in the catalog");
-assert.ok(!nepalLiveTools.includes("ForexTool") && !nepalLiveTools.includes("/api/nepal-forex"), "Retired NRB forex UI and API client must be removed");
-assert.ok(!backendSource.includes("/api/nepal-forex"), "Retired NRB forex backend endpoints must be removed");
-assert.equal(fs.existsSync(new URL("../app/api/nepal-forex/route.ts", import.meta.url)), false, "Retired NRB forex proxy route must be deleted");
-
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
 assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
 const advisedSlugs = [...adviceBlock[1].matchAll(/^\s{4}"([^"]+)":\s*\{/gm)].map((m) => m[1]);
 const missingToolAdvice = catalog.filter((slug) => !advisedSlugs.includes(slug));
 assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO guidance: " + missingToolAdvice.join(", "));
-
 assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weighted grade points");
 assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
-
 const englishHomepageMetadata = read("../app/page.tsx");
 const nepaliHomepageMetadata = read("../app/ne/page.tsx");
 const localeHomepage = read("../app/[locale]/page.tsx");
@@ -85,12 +76,9 @@ assert.ok(nepaliHomepageMetadata.includes("languages: homeLanguageAlternates"), 
 assert.ok(localeHomepage.includes("languages: homeLanguageAlternates"), "Localized homepage metadata must declare reciprocal hreflang alternates");
 for (const locale of ["en", "ne", "hi", "es", "fr", "de", "pt", "ar", "bn", "id"]) {
   assert.ok(localeDictionary.includes(`code: "${locale}"`) || locale === "en" || locale === "ne", `Missing supported homepage locale: ${locale}`);
-}
 assert.ok(localeHomepage.includes("generateStaticParams"), "Localized homepage routes must be statically generated");
 assert.ok(localeHomepage.includes('dir={content.dir ?? "ltr"}'), "Localized homepages must support RTL direction");
 assert.ok(localeHomepage.includes("content.note"), "Localized landing pages must disclose untranslated tool-interface scope");
-assert.ok(localeHomepage.includes("alternateLocale"), "Localized homepage Open Graph metadata must declare alternate locales");
-assert.ok(toolPage.includes('locale: "en_US"'), "Tool pages must declare the English Open Graph locale");
 assert.ok(localeHomepage.includes("alternateLocale"), "Localized homepage Open Graph metadata must declare alternate locales");
 assert.ok(toolPage.includes('locale: "en_US"'), "Tool pages must declare the English Open Graph locale");
 const sitemapSource = read("../app/sitemap.ts");
@@ -111,10 +99,8 @@ for (const slug of catalog) {
     legacySlugValues.includes(slug) || canonicalCatalogSlugs.includes(slug),
     `Catalog tool ${slug} is missing a canonical sitemap route`,
   );
-}
 assert.ok(sitemapSource.includes("url: `${baseUrl}/${slug}`"), "Legacy tool sitemap entries must use their root-level canonical URLs");
 assert.ok(sitemapSource.includes("url: `${baseUrl}/tools/${tool.slug}`"), "Non-legacy catalog sitemap entries must use their /tools canonical URLs");
-
 const toolDirectory = read("../lib/tool-directory.ts");
 const homepage = read("../app/page.tsx");
 const directoryComponent = read("../components/AllTools.tsx");
@@ -135,11 +121,9 @@ assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF
 assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");
 assert.ok(homepage.includes('tool.kind === "pdf" || tool.category === "PDF"'), "Homepage PDF category hides catalog PDF tools");
 assert.ok(homepage.includes("tool.keywords"), "Homepage search does not include tool keywords");
-
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must display every matching tool, not just a small fixed number");
 assert.ok(homepage.includes("max-h-[min(65vh,32rem)]") && homepage.includes("overflow-y-auto"), "Homepage search results must remain scrollable when many tools match");
 assert.ok(homepage.includes("tokens.every((token) => searchable.includes(token))"), "Homepage search must match all query words across tool names, descriptions, routes and keywords");
-
 assert.ok(directoryComponent.includes("allTools.filter"), "The /tools directory is not using the unified tool directory");
 assert.ok(directoryComponent.includes("href={t.href}"), "The /tools directory does not preserve each tool's actual route");
 const normalizeSearch = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -151,7 +135,6 @@ const notesToolLine = catalogSource.split("\n").find((line) => line.includes('sl
 assert.ok(notesToolLine, "Notes to PDF is missing from the catalog");
 assert.ok(notesToolLine.includes('category:"PDF"'), "Notes to PDF must be grouped under the PDF category");
 assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesToPDF />'), "Notes to PDF handler is missing");
-
 const marketApi = read("../app/api/nepse-market/route.ts");
 const marketDashboard = read("../components/NepseMarketDashboard.tsx");
 const marketPage = read("../app/market/page.tsx");

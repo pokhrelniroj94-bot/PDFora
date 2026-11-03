@@ -52,17 +52,21 @@ function normalizeNrbPayload(payload: unknown, requestedDate: string) {
     const item = value as NrbRecord;
     return typeof item.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(item.date) && Array.isArray(item.rates);
   });
-  const latest = [...valid].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
+  const ordered = [...valid].sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  const latest = ordered[0];
   if (!latest) throw new Error("No published NRB rate was found in the requested date range.");
   const latestDate = latest.date;
   const rates = toRateList(latest.rates || []);
   if (!rates.length) throw new Error("NRB returned a snapshot but no valid currency rates.");
+  const previous = ordered.slice(1).map((snapshot) => ({ snapshot, rates: toRateList(snapshot.rates || []) })).find((item) => item.rates.length > 0);
   return {
     source: "Nepal Rastra Bank",
     requestedDate,
     rateDate: latestDate,
     publishedOn: latest.published_on || null,
     rates,
+    previousRateDate: previous?.snapshot.date || null,
+    previousRates: previous?.rates || [],
     isStale: latestDate < requestedDate,
     notice: latestDate < requestedDate ? `NRB has not published a rate for ${requestedDate}; showing the latest available official rate dated ${latestDate}.` : undefined,
     updatedAt: new Date().toISOString(),
@@ -80,6 +84,8 @@ function normalizeBackendPayload(payload: unknown, requestedDate: string) {
     rateDate: typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate,
     publishedOn: typeof root.publishedOn === "string" ? root.publishedOn : typeof root.published_on === "string" ? root.published_on : null,
     rates,
+    previousRateDate: typeof root.previousRateDate === "string" ? root.previousRateDate : null,
+    previousRates: toRateList(Array.isArray(root.previousRates) ? root.previousRates : []),
     isStale: (typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate) < requestedDate,
     notice: (typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate) < requestedDate ? `Showing the latest available NRB reference rate dated ${typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate}; requested date was ${requestedDate}.` : undefined,
     updatedAt: new Date().toISOString(),
@@ -90,7 +96,9 @@ async function fetchDirectFromNrb(requestedDate: string) {
   // Use UTC date arithmetic so the Vercel runtime timezone cannot shift the range.
   const [year, month, day] = requestedDate.split("-").map(Number);
   const start = new Date(Date.UTC(year, month - 1, day));
-  start.setUTCDate(start.getUTCDate() - 21);
+  // Fetch enough official records to compare the latest rate with the prior
+  // published business day, including long weekends and public holidays.
+  start.setUTCDate(start.getUTCDate() - 30);
   const from = [
     start.getUTCFullYear(),
     String(start.getUTCMonth() + 1).padStart(2, "0"),
@@ -240,3 +248,4 @@ export async function GET(request: Request) {
     );
   }
 }
+

@@ -19,7 +19,8 @@ function reviewNews(payload: { market?: NewsStory[]; ipo?: NewsStory[] }, symbol
   const sentiment=score>=.8?"Positive":score<=-.8?"Negative":"Mixed / neutral";
   return {stories:relevant,sentiment,impact:Math.max(-2,Math.min(2,score)),note:relevant.length?relevant.length+" recent headlines reviewed. Headlines are only a screening signal; verify the linked announcement and full context.":"No sufficiently relevant recent headlines found. News sentiment is unavailable, not neutral."};
 }
-\ntype Point = { date: string; open?: number; high?: number; low?: number; close: number; volume?: number };
+
+type Point = { date: string; open?: number; high?: number; low?: number; close: number; volume?: number };
 type Analysis = {
   count: number; latestDate: string; close: number; ema20: number; ema50: number; rsi: number;
   macd: number; macdSignal: number; score: number; signal: "Potential BUY setup" | "HOLD / WATCH" | "Potential SELL / EXIT setup" | "Potential SELL / SHORT setup" | "Wait / neutral";

@@ -15,6 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
+    "loan-emi-calculator": { title: "Loan EMI Calculator – Estimate Monthly Loan Payments", description: "Estimate monthly EMI, total interest and repayment time from your loan amount, annual interest rate and term. Includes optional extra payments and clear assumptions." },
+    "image-resizer-compressor": { title: "Free Image Resizer & Compressor – JPG, PNG, WebP", description: "Resize images to custom pixel dimensions and export JPEG, PNG or WebP with adjustable quality. Processing happens locally in your browser." },
+    "business-break-even-calculator": { title: "Business Break-even Calculator – Units & Revenue", description: "Calculate break-even units, revenue and contribution margin using fixed costs, selling price and variable cost per unit." },
     "ats-resume-checker": { title: "Resume Keyword Checker – Compare CV with a Job Description", description: "Compare pasted resume text with a job description, review keyword coverage and check common CV sections. A transparent browser-based guide, not an ATS pass score." },
     "invoice-quotation-generator": { title: "Free Invoice & Quotation Generator – Print to PDF", description: "Create a printable invoice or quotation with item quantity, unit price, tax estimate and live total. Save as PDF and verify local tax requirements before issuing." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },

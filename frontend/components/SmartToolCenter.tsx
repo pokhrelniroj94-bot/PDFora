@@ -121,14 +121,14 @@ export function SmartToolCenter() {
             <div><p className="text-xs font-black uppercase tracking-widest text-teal-700">Start with a task</p><h2 id="task-heading" className="mt-1 text-xl font-black">What do you need help with?</h2></div>
             <span className="text-xs text-slate-500">Tap a shortcut to explore</span>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="pdfora-stagger grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {taskShortcuts.map((task) => <button key={task.label} onClick={() => chooseTask(task.query)} className="group flex min-h-24 flex-col items-start justify-center rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md"><span className="text-2xl" aria-hidden="true">{task.icon}</span><span className="mt-2 text-sm font-bold text-slate-800 group-hover:text-teal-800">{task.label}</span></button>)}
           </div>
         </section>
 
         {!query && category === "All" && <section className="mt-10" aria-labelledby="popular-heading">
           <div className="mb-4 flex items-end justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-widest text-orange-600">Quick access</p><h2 id="popular-heading" className="mt-1 text-xl font-black">Popular tools</h2></div><span className="text-xs text-slate-500">Frequently used starting points</span></div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="pdfora-stagger grid grid-cols-2 gap-3 sm:grid-cols-4">
             {popular.map((tool) => tool && <Link key={tool.href} href={tool.href} className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-teal-400 hover:shadow-md"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-xl" aria-hidden="true">{tool.icon || categoryIcons[tool.category] || "🛠️"}</span><span className="min-w-0"><span className="block text-sm font-bold text-slate-900 group-hover:text-teal-800">{tool.name}</span><span className="mt-1 block text-xs text-slate-500">{tool.category}</span></span><span className="ml-auto text-slate-400 transition group-hover:translate-x-1 group-hover:text-teal-700" aria-hidden="true">→</span></Link>)}
           </div>
         </section>}

@@ -432,6 +432,15 @@ def csv_safe_text(value) -> str:
     return text
 
 
+def open_pdf_limited(path):
+    """Open a PDF with a consistent page-count ceiling across every tool endpoint."""
+    document = fitz.open(path)
+    if len(document) > 1000:
+        document.close()
+        raise HTTPException(status_code=413, detail="PDFs with more than 1,000 pages are not supported.")
+    return document
+
+
 def display_point_to_page(page, x: float, y: float) -> fitz.Point:
     """Convert a point in the visible (rotated) page coordinate space to PDF page space."""
     return fitz.Point(x, y) * page.derotation_matrix
@@ -1081,9 +1090,7 @@ async def pdf_to_jpg(
             input_file
         )
 
-        document = fitz.open(
-            str(input_file)
-        )
+        document = open_pdf_limited(input_file)
 
         with zipfile.ZipFile(
             zip_file,
@@ -1437,9 +1444,7 @@ async def watermark_pdf(
         )
 
         # Open source PDF using PyMuPDF
-        document = fitz.open(
-            str(input_file)
-        )
+        document = open_pdf_limited(input_file)
 
         if document.page_count == 0:
 
@@ -1832,7 +1837,7 @@ async def add_page_numbers(file: UploadFile = File(...), position: str = Form("b
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"numbered.pdf"
-        await save_upload(file,src); doc=fitz.open(src)
+        await save_upload(file,src); doc=open_pdf_limited(src)
         for i,page in enumerate(doc):
             if skip_first and i==0: continue
             r=page.rect; x={"left":36,"center":r.width/2,"right":r.width-36}[position.split("-")[1]]
@@ -1849,7 +1854,7 @@ async def crop_pdf(file: UploadFile = File(...), margin: float = Form(36), pages
     if margin < 0 or margin > 300: raise HTTPException(status_code=400,detail="Margin must be between 0 and 300 points.")
     job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"cropped.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"cropped.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         selected=set(range(len(doc)))
         if pages.strip().lower()!="all":
             try: selected={int(x.strip())-1 for x in pages.split(",")}
@@ -1872,7 +1877,7 @@ async def header_footer(file: UploadFile = File(...), header: str = Form(""), fo
     if len(header)>300 or len(footer)>300 or not 6<=font_size<=24 or (not header and not footer): raise HTTPException(status_code=400,detail="Enter header or footer text (up to 300 characters) and font size 6–24.")
     job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"header-footer.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"header-footer.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         for p in doc:
             r=p.rect
             if header: p.insert_text(display_point_to_page(p,36,24),header[:300],fontsize=font_size)
@@ -1922,7 +1927,7 @@ async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)
     if not signature_text.strip() or len(signature_text)>100: raise HTTPException(status_code=400,detail="Enter a signature name (maximum 100 characters).")
     job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"signed.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"signed.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         p=doc[-1]; r=p.rect
         box=fitz.Rect(36,r.height-90,min(r.width-36,300),r.height-36)
         p.draw_rect(box,color=(0.35,0.2,0.6),width=1)
@@ -1936,7 +1941,7 @@ async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
     validate_pdf_upload(file)
     job=create_job(); doc=None
     try:
-        src=job/"input.pdf"; archive=job/f"images-{fmt}.zip"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; archive=job/f"images-{fmt}.zip"; await save_upload(file,src); doc=open_pdf_limited(src)
         if len(doc)>200: raise HTTPException(status_code=413,detail="Maximum 200 pages per image conversion.")
         with zipfile.ZipFile(archive,"w",zipfile.ZIP_DEFLATED) as z:
             for i,p in enumerate(doc):
@@ -1964,7 +1969,7 @@ async def pdf_to_webp(file: UploadFile = File(...), quality: int = Form(85)):
 async def pdf_to_text(file: UploadFile = File(...)):
     validate_pdf_upload(file); job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"extracted.txt"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"extracted.txt"; await save_upload(file,src); doc=open_pdf_limited(src)
         with open(out,"w",encoding="utf-8") as f:
             for i,p in enumerate(doc):
                 f.write(f"--- Page {i+1} ---\n{p.get_text('text')}\n\n")
@@ -1976,7 +1981,7 @@ async def pdf_to_text(file: UploadFile = File(...)):
 async def grayscale_pdf(file: UploadFile = File(...)):
     validate_pdf_upload(file); job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"grayscale.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"grayscale.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for grayscale conversion.")
         flattened=fitz.open()
         for p in doc:
@@ -1993,7 +1998,7 @@ async def grayscale_pdf(file: UploadFile = File(...)):
 async def flatten_pdf(file: UploadFile = File(...)):
     validate_pdf_upload(file); job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"flattened.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"flattened.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for flattening.")
         # Render each page into a fresh PDF page. This removes interactive annotations/widgets.
         flattened=fitz.open()
@@ -2026,7 +2031,7 @@ async def repair_pdf(file: UploadFile = File(...)):
     try:
         src=job/"input.pdf"; out=job/"repaired.pdf"; await save_upload(file,src)
         try:
-            doc=fitz.open(src)
+            doc=open_pdf_limited(src)
             if doc.is_repaired is False and len(doc)==0: raise ValueError("Empty PDF")
             doc.save(out,garbage=4,deflate=True,clean=True); doc.close()
         except Exception:
@@ -2050,7 +2055,7 @@ async def pdf_to_html(file: UploadFile = File(...)):
     try:
         src=job/"input.pdf"; out=job/"converted.html"
         await save_upload(file,src)
-        doc=fitz.open(src)
+        doc=open_pdf_limited(src)
         parts=["<!doctype html><html><head><meta charset='utf-8'><title>PDF to HTML</title><style>body{font-family:Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;color:#222}.pdf-page{white-space:pre-wrap;border-bottom:1px solid #ddd;padding:24px 0;line-height:1.6}</style></head><body>"]
         for i,page in enumerate(doc):
             text=page.get_text("text")
@@ -2069,7 +2074,7 @@ async def extract_images(file: UploadFile = File(...)):
     try:
         src=job/"input.pdf"; out=job/"extracted-images.zip"
         await save_upload(file,src)
-        doc=fitz.open(src); count=0; seen=set()
+        doc=open_pdf_limited(src); count=0; seen=set()
         with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as archive:
             for page_no,page in enumerate(doc,start=1):
                 for image_no,item in enumerate(page.get_images(full=True),start=1):
@@ -2098,7 +2103,7 @@ async def remove_blank_pages(file: UploadFile = File(...), threshold: int = Form
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"without-blank-pages.pdf"
-        await save_upload(file,src); doc=fitz.open(src); kept=[]; removed=[]
+        await save_upload(file,src); doc=open_pdf_limited(src); kept=[]; removed=[]
         for i,page in enumerate(doc):
             text="".join(page.get_text("text").split())
             has_images=bool(page.get_images(full=True))
@@ -2183,7 +2188,7 @@ async def rotate_selected_pages(file: UploadFile = File(...), pages: str = Form(
         src = job / "input.pdf"
         out = job / "rotated-selected-pages.pdf"
         await save_upload(file, src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         if pages.strip().lower() == "all":
             selected = list(range(len(doc)))
         else:
@@ -2216,7 +2221,7 @@ async def remove_annotations(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "without-annotations.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for page in doc:
             annot = page.first_annot
             while annot:
@@ -2244,7 +2249,7 @@ async def remove_pdf_links(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "without-links.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for page in doc:
             for link in page.get_links():
                 page.delete_link(link)
@@ -2295,7 +2300,7 @@ async def pdf_information(file: UploadFile = File(...)):
         size = await save_upload(file, src)
         reader = read_pdf(src)
         metadata = reader.metadata or {}
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         first = doc[0].rect
         lines = [
             "PDFora - PDF Information Report",
@@ -2332,7 +2337,7 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Bookmarks.txt"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         toc = doc.get_toc()
         if not toc:
             raise HTTPException(status_code=404, detail="This PDF does not contain bookmarks.")
@@ -2359,7 +2364,7 @@ async def remove_pdf_metadata(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "metadata-removed.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         doc.set_metadata({})
         doc.del_xml_metadata()
         doc.save(out, garbage=4, deflate=True)
@@ -2384,7 +2389,7 @@ async def pdf_to_json(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Text.json"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         pages = []
         for index, page in enumerate(doc):
             blocks = []
@@ -2448,7 +2453,7 @@ async def add_pdf_bookmarks(file: UploadFile = File(...), bookmarks: str = Form(
         src, out = job / "input.pdf", job / "bookmarked.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         toc = []
         for line in bookmarks.splitlines():
             if not line.strip():
@@ -2489,7 +2494,7 @@ async def bates_numbering(file: UploadFile = File(...), prefix: str = Form(""), 
         src, out = job / "input.pdf", job / "bates-numbered.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for index, page in enumerate(doc):
             label = f"{prefix[:20]}{start + index:0{digits}d}"
             point = display_point_to_page(page, page.rect.width - 150, page.rect.height - 24)
@@ -2515,7 +2520,7 @@ async def pdf_to_tiff(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-TIFF-Pages.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         if len(doc) > 200:
             raise HTTPException(status_code=413, detail="TIFF conversion is limited to 200 pages per file.")
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
@@ -2545,7 +2550,7 @@ async def pdf_to_bmp(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-BMP-Pages.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         if len(doc) > 200:
             raise HTTPException(status_code=413, detail="BMP conversion is limited to 200 pages per file.")
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
@@ -2575,7 +2580,7 @@ async def split_pdf_by_bookmarks(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Bookmark-Sections.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         toc = doc.get_toc()
         if not toc:
             raise HTTPException(status_code=422, detail="This PDF has no bookmarks to split by.")
@@ -2615,7 +2620,7 @@ async def pdf_to_markdown(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Text.md"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         parts = [f"# Extracted content: {Path(file.filename).stem}\n"]
         for index, page in enumerate(doc, start=1):
             parts.append(f"\n## Page {index}\n")
@@ -2640,7 +2645,7 @@ async def remove_pdf_attachments(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Attachments-Removed.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for attachment_name in list(doc.embfile_names()):
             doc.embfile_del(attachment_name)
         doc.save(out, garbage=4, deflate=True)
@@ -2669,7 +2674,7 @@ async def add_pdf_background(file: UploadFile = File(...), text: str = Form("DRA
         src, out = job / "input.pdf", job / "background.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for page in doc:
             rect = page.rect
             page.draw_rect(rect, color=None, fill=colors[color], overlay=False)
@@ -2695,9 +2700,10 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Page-Images.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             count = 0
+            total_extracted_bytes = 0
             seen_images = set()
             for page_index, page in enumerate(doc):
                 for image_index, item in enumerate(page.get_images(full=True), start=1):
@@ -2709,7 +2715,11 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
                     if not extracted or not extracted.get("image"):
                         continue
                     ext = extracted.get("ext", "bin")
-                    archive.writestr(f"page-{page_index + 1:04d}-image-{image_index:03d}.{ext}", extracted["image"])
+                    image_bytes = extracted["image"]
+                    total_extracted_bytes += len(image_bytes)
+                    if total_extracted_bytes > 100 * 1024 * 1024:
+                        raise HTTPException(status_code=413, detail="Extracted page images exceed the 100 MB archive limit.")
+                    archive.writestr(f"page-{page_index + 1:04d}-image-{image_index:03d}.{ext}", image_bytes)
                     count += 1
         if count == 0:
             raise HTTPException(status_code=422, detail="No embedded images were found in this PDF.")
@@ -2733,7 +2743,7 @@ async def extract_pdf_fonts(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Fonts.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         found = set()
         written = 0
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:

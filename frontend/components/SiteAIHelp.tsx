@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 type Message = { role: "user" | "assistant"; text: string };
@@ -21,6 +21,33 @@ export default function SiteAIHelp() {
   ]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [pageContext, setPageContext] = useState("");
+
+  useEffect(() => {
+    const controller = new AbortController();
+    async function loadPageContext() {
+      setPageContext("");
+      try {
+        if (pathname === "/market" || pathname === "/tools/market-ai") {
+          const response = await fetch("/api/nepse-market?symbol=NEPSE&period=1Y", { cache: "no-store", signal: controller.signal });
+          if (!response.ok) return;
+          const data = await response.json();
+          setPageContext(JSON.stringify({ pageType: "NEPSE market", source: data.source, sourceUpdatedAt: data.sourceUpdatedAt, latestHistoryDate: data.latestHistoryDate, quoteStale: data.quoteStale, status: data.status, indices: data.indices, recentDailyHistory: Array.isArray(data.points) ? data.points.slice(-45) : [] }).slice(0, 3200));
+        } else if (pathname === "/tools/nepal-forex-rates" || pathname === "/tools/currency-converter") {
+          const response = await fetch("/api/nepal-forex", { cache: "no-store", signal: controller.signal });
+          if (!response.ok) return;
+          const data = await response.json();
+          const preferred = Array.isArray(data.rates) ? data.rates.filter((rate: { code?: string }) => ["USD","EUR","GBP","INR","JPY","CNY","AUD","CAD","AED","SAR","QAR","MYR"].includes(rate.code || "")) : [];
+          setPageContext(JSON.stringify({ pageType: "Nepal Rastra Bank daily forex", source: data.source, rateDate: data.rateDate, requestedDate: data.requestedDate, isStale: data.isStale, notice: data.notice, selectedReferenceRates: preferred }).slice(0, 3200));
+        }
+      } catch {
+        if (!controller.signal.aborted) setPageContext("Live page data could not be loaded. Do not invent current values; explain this limitation and guide the user to refresh the data panel.");
+      }
+    }
+    void loadPageContext();
+    return () => controller.abort();
+  }, [pathname]);
+
 
   async function send(text: string) {
     const clean = text.trim();
@@ -39,6 +66,7 @@ export default function SiteAIHelp() {
           page: pathname || "/",
           question: clean,
           history: next.slice(-7).map((item) => item.role.toUpperCase() + ": " + item.text).join("\n").slice(0, 2600),
+          pageData: pageContext,
         }),
       });
       const payload = await response.json();

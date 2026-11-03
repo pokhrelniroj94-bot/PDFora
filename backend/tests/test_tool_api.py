@@ -405,6 +405,20 @@ def test_multi_page_raster_budget_rejects_document_before_rendering(monkeypatch)
     doc.close()
 
 
+def test_embedded_image_pixel_budget_rejects_large_images_before_extraction(monkeypatch):
+    from fastapi import HTTPException
+    from main import reserve_extracted_image_pixels
+
+    monkeypatch.setattr("main.MAX_DOCUMENT_EXTRACTED_IMAGE_PIXELS", 30_000_000)
+    assert reserve_extracted_image_pixels(2_000, 2_000, 0) == 4_000_000
+    with pytest.raises(HTTPException) as single_image_error:
+        reserve_extracted_image_pixels(5_000, 5_000, 0)
+    assert single_image_error.value.status_code == 413
+    with pytest.raises(HTTPException) as cumulative_error:
+        reserve_extracted_image_pixels(3_000, 3_000, 25_000_000)
+    assert cumulative_error.value.status_code == 413
+
+
 def test_bookmark_split_preserves_pages_before_first_bookmark():
     pdf = fitz.open()
     for number in range(1, 5):
@@ -619,4 +633,30 @@ def test_nrb_history_rejects_non_ascii_currency_code():
     response = TestClient(app).get("/api/nepal-forex/history?currency=%C3%A5aa")
     assert response.status_code == 400
     assert "Invalid currency code" in response.json()["detail"]
+
+
+def test_nrb_history_normalization_is_unit_aware_and_rejects_invalid_codes():
+    from fastapi import HTTPException
+    from main import normalize_nrb_history, validate_nrb_currency_code
+
+    records = [
+        {"date": "2025-01-06", "rates": [
+            {"currency": {"ISO3": "JPY", "unit": 100}, "buy": "92", "sell": "92.5"},
+            {"currency": {"ISO3": "BAD", "unit": 0}, "buy": "1", "sell": "2"},
+        ]},
+        {"date": "2025-01-03", "rates": [
+            {"currency": {"ISO3": "JPY", "unit": 100}, "buy": "91", "sell": "91.5"},
+        ]},
+        {"date": "2025-01-07", "rates": [
+            {"currency": {"ISO3": "JPY", "unit": 100}, "buy": "NaN", "sell": "93"},
+        ]},
+    ]
+    assert validate_nrb_currency_code("jpy") == "JPY"
+    assert normalize_nrb_history(records, "JPY") == [
+        {"date": "2025-01-03", "buy": 0.91, "sell": 0.915},
+        {"date": "2025-01-06", "buy": 0.92, "sell": 0.925},
+    ]
+    with pytest.raises(HTTPException) as error:
+        validate_nrb_currency_code("åaa")
+    assert error.value.status_code == 400
 

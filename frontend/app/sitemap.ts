@@ -24,8 +24,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
 
   return [
-    { url: baseUrl, changeFrequency: "weekly", priority: 1 },
-    { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8 },
+    { url: baseUrl, changeFrequency: "weekly", priority: 1, alternates: { languages: { en: baseUrl, ne: `${baseUrl}/ne` } } },
+    { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8, alternates: { languages: { en: baseUrl, ne: `${baseUrl}/ne` } } },
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/market`, changeFrequency: "daily", priority: 0.85 },
     ...legacyPdfEntries,

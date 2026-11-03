@@ -10,7 +10,7 @@ In the Vercel project for PDFora, add these Environment Variables for Preview fi
 - `ANTHROPIC_API_KEY=<your Anthropic Console API key>`
 - `ANTHROPIC_MODEL=claude-haiku-5-5` (fast, cost-conscious default; change to a model enabled for your Anthropic account if needed)
 - `PDFORA_AI_ENABLED=true` only after the AI usage limits and abuse controls are configured.
-- `PDFORA_AI_RATE_LIMIT_READY=true` only after a shared, cross-instance rate limiter has been implemented and verified.
+- `UPSTASH_REDIS_REST_URL=<your Upstash Redis REST URL>`\n- `UPSTASH_REDIS_REST_TOKEN=<your Upstash Redis REST token>`\n- `PDFORA_AI_RATE_LIMIT_READY=true` only after the Upstash database is provisioned and a Preview request confirms atomic rate limiting.
 
 Do not add the API key to the repository, browser code, client environment variables, screenshots, or chat messages. Store it only in Vercel Environment Variables. Set it for Preview first, then test a Preview deployment before considering Production.
 
@@ -21,7 +21,7 @@ Do not add the API key to the repository, browser code, client environment varia
 - If the provider variable is omitted, the route selects Anthropic when `ANTHROPIC_API_KEY` exists; otherwise it selects Cloudflare.
 - The route does not silently switch to a paid provider when the selected provider fails.
 - The Claude model defaults to `claude-haiku-5-5`; `ANTHROPIC_MODEL` can override it.
-- The existing in-memory request throttle is best-effort per server instance. It is not a shared rate limiter. Keep AI disabled until a shared limiter (for example, a properly configured Redis/Upstash or equivalent edge limit) is deployed and tested.
+- The route uses an atomic Redis Lua counter through Upstash REST (8 requests per IP per 60 seconds). IP addresses are SHA-256 hashed before being used as Redis keys. If Upstash is missing or unavailable, the API fails closed and does not call the model.
 
 ## Test checklist
 
@@ -29,7 +29,7 @@ Do not add the API key to the repository, browser code, client environment varia
 2. Deploy a Preview build and verify the API returns a normal response for a harmless test prompt.
 3. Verify invalid JSON, oversized bodies, missing API key, provider errors, and 429 responses fail safely.
 4. Verify prompts and credentials are not written to logs.
-5. Verify the shared rate limiter across separate server instances before setting `PDFORA_AI_RATE_LIMIT_READY=true`.
+5. Verify the shared Upstash rate limiter from separate Preview instances and confirm requests above the limit return HTTP 429.
 6. Only after browser QA and spend limits are confirmed should the owner enable Production.
 
 Claude API reference: https://platform.claude.com/docs/en/api/messages/create

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About PDFora – Free Online PDF and Productivity Tools",
+  title: "About",
   alternates: { canonical: "https://pd-fora.vercel.app/about" },
   openGraph: { type: "website", locale: "en_US", url: "https://pd-fora.vercel.app/about", siteName: "PDFora", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools." },
   description:

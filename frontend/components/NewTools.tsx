@@ -50,11 +50,11 @@ function ResumeKeywordChecker() {
 function InvoiceMaker() {
   const [type,setType]=useState("Invoice");
   const [number,setNumber]=useState("INV-001");
-  const [date,setDate]=useState(new Date().toISOString().slice(0,10));
+  const [date,setDate]=useState(()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");});
   const [business,setBusiness]=useState("");
   const [customer,setCustomer]=useState("");
   const [currency,setCurrency]=useState("NPR");
-  const [tax,setTax]=useState("13");
+  const [tax,setTax]=useState("0");
   const [description,setDescription]=useState("Professional services");
   const [quantity,setQuantity]=useState("1");
   const [price,setPrice]=useState("1000");

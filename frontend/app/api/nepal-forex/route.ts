@@ -103,7 +103,7 @@ async function fetchFromBackend(requestedDate: string) {
 export async function GET(request: Request) {
   const incoming = new URL(request.url);
   const dateParam = incoming.searchParams.get("date");
-  if (dateParam && !/^\\d{4}-\\d{2}-\\d{2}$/.test(dateParam)) {
+  if (dateParam && !/^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
     return Response.json({ error: "Date must use YYYY-MM-DD format." }, { status: 400, headers: { "Cache-Control": "no-store" } });
   }
   if (dateParam) {
@@ -120,14 +120,6 @@ export async function GET(request: Request) {
   const requestedDate = incoming.searchParams.get("date") || new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(requestedDate)) {
-    return Response.json({ error: "Date must use YYYY-MM-DD format." }, { status: 400, headers: { "Cache-Control": "no-store" } });
-  }
-  const parsedDate = new Date(requestedDate + "T00:00:00Z");
-  if (!Number.isFinite(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== requestedDate) {
-    return Response.json({ error: "Date is not a valid calendar date." }, { status: 400, headers: { "Cache-Control": "no-store" } });
-  }
-
   // Prefer the official NRB feed. Only use the Render mirror if NRB is unreachable.
   try {
     const payload = await fetchDirectFromNrb(requestedDate);

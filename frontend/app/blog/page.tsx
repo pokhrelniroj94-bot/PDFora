@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     url: "https://pd-fora.vercel.app/blog",
     siteName: "PDFora",
     type: "website",
+    locale: "en_US",
   },
 };
 

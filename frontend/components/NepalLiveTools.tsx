@@ -137,11 +137,12 @@ function ForexTool() {
   const visibleRates = (data?.rates ?? []).filter((item) => (item.code + " " + item.name).toLowerCase().includes(currencyQuery.trim().toLowerCase()));
   const value = Number(amount);
   const valid = amount.trim() !== "" && Number.isFinite(value) && value >= 0 && !!selected;
-  const converted = selected && valid
+  const rawConverted = selected && valid
     ? direction === "foreign-to-npr" ? value * selected.buy / selected.unit
       : direction === "npr-to-foreign" ? value * selected.unit / selected.sell
         : target ? value * selected.buy / selected.unit * target.unit / target.sell : null
     : null;
+  const converted = typeof rawConverted === "number" && Number.isFinite(rawConverted) ? rawConverted : null;
 
   return <div className="space-y-5 pdfora-enter">
     <header className="rounded-2xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-cyan-50 p-4 sm:p-5">
@@ -191,7 +192,7 @@ function ForexTool() {
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div><p className="text-xs font-bold uppercase tracking-[.12em] text-teal-700">Quick conversion</p><h3 className="mt-1 text-lg font-bold text-slate-950">NRB currency converter</h3><p className="mt-1 text-sm text-slate-600">Uses the published unit, buying and selling rate for the selected currency.</p></div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <label><span className={label}>Currency</span><select className={field} value={currency} onChange={(e) => setCurrency(e.target.value)}>{Array.from(new Map([...fallbackCurrencies, ...(data?.rates ?? []).map(({ code, name }) => ({ code, name }))].map(item => [item.code, item])).values()).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>
+        <label><span className={label}>Currency</span><select className={field} value={currency} onChange={(e) => { const next = e.target.value; setCurrency(next); if (next === targetCurrency) setTargetCurrency(data?.rates.find((item) => item.code !== next)?.code || ""); }}>{Array.from(new Map([...fallbackCurrencies, ...(data?.rates ?? []).map(({ code, name }) => ({ code, name }))].map(item => [item.code, item])).values()).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>
         <label><span className={label}>Conversion direction</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option><option value="foreign-to-foreign">Foreign currency → foreign currency</option></select></label>
       </div>
       {direction === "foreign-to-foreign" && <label className="mt-3 block sm:max-w-sm"><span className={label}>Convert into</span><select className={field} value={targetCurrency} onChange={(e) => setTargetCurrency(e.target.value)}>{(data?.rates ?? []).filter((item) => item.code !== currency).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>}

@@ -513,8 +513,100 @@ _NRB_CACHE: dict[str, tuple[float, dict]] = {}
 _NRB_CACHE_LOCK = threading.Lock()
 
 
+def _nrb_fetch_official_html_record() -> list[dict]:
+    """Fallback to NRB's own published HTML table when its JSON API is unavailable."""
+    import re
+    from datetime import datetime
+    from html.parser import HTMLParser
+
+    class RateTableParser(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.rows: list[list[str]] = []
+            self.page_text: list[str] = []
+            self._row: list[str] | None = None
+            self._cell: list[str] | None = None
+
+        def handle_starttag(self, tag, attrs):
+            tag = tag.lower()
+            if tag == "tr":
+                self._row = []
+            elif tag in ("td", "th") and self._row is not None:
+                self._cell = []
+
+        def handle_data(self, data):
+            value = data.strip()
+            if value:
+                self.page_text.append(value)
+                if self._cell is not None:
+                    self._cell.append(value)
+
+        def handle_endtag(self, tag):
+            tag = tag.lower()
+            if tag in ("td", "th") and self._cell is not None and self._row is not None:
+                self._row.append(" ".join(self._cell).strip())
+                self._cell = None
+            elif tag == "tr" and self._row is not None:
+                if self._row:
+                    self.rows.append(self._row)
+                self._row = None
+
+    request = urllib.request.Request(
+        "https://www.nrb.org.np/forex/",
+        headers={
+            "Accept": "text/html,application/xhtml+xml",
+            "User-Agent": "Mozilla/5.0 PDForaForex/1.2 (+https://pd-fora.vercel.app)",
+        },
+    )
+    tls_context = ssl.create_default_context(cafile=certifi.where())
+    with urllib.request.urlopen(request, timeout=18, context=tls_context) as response:
+        if response.status != 200:
+            raise RuntimeError(f"NRB official page returned HTTP {response.status}")
+        html = response.read(5 * 1024 * 1024).decode("utf-8", errors="replace")
+
+    parser = RateTableParser()
+    parser.feed(html)
+    text_content = " ".join(parser.page_text)
+    date_match = re.search(r"Showing Exchange Rate for\\s+([A-Za-z]+\\s+\\d{1,2},\\s+\\d{4})", text_content, re.I)
+    if not date_match:
+        raise RuntimeError("Could not identify the publication date on NRB's official page")
+    rate_date = datetime.strptime(date_match.group(1), "%B %d, %Y").date().isoformat()
+
+    rates = []
+    for row in parser.rows:
+        if len(row) < 4:
+            continue
+        match = re.match(r"^\\s*([A-Za-z]{3})\\s*(?:\\((.*?)\\))?\\s*$", row[0])
+        if not match:
+            continue
+        code = match.group(1).upper()
+        name = (match.group(2) or "").strip()
+        numeric = []
+        for cell in row[1:]:
+            cleaned = cell.replace(",", "").strip()
+            if re.fullmatch(r"\\d+(?:\\.\\d+)?", cleaned):
+                numeric.append(float(cleaned))
+        if not name:
+            name = next((cell for cell in row[1:] if cell and not re.fullmatch(r"\\d+(?:\\.\\d+)?", cell.replace(",", "").strip())), code)
+        if len(numeric) < 3:
+            continue
+        unit, buy, sell = numeric[0], numeric[1], numeric[2]
+        if unit > 0 and buy > 0 and sell > 0:
+            rates.append({
+                "currency": {"iso3": code, "name": name, "unit": unit},
+                "buy": str(buy),
+                "sell": str(sell),
+            })
+
+    if not rates:
+        raise RuntimeError("Could not parse currency rows from NRB's official HTML page")
+    return [{"date": rate_date, "published_on": None, "rates": rates}]
+
+
 def _nrb_fetch_records(from_date: str, to_date: str) -> list[dict]:
-    """Fetch official NRB forex records with Python's verified system CA store."""
+    """Prefer NRB JSON API; fall back to NRB's own HTML table, keeping TLS verification on."""
+    import logging
+    logger = logging.getLogger("pdfora.forex")
     query = urllib.parse.urlencode({
         "from": from_date,
         "to": to_date,
@@ -526,20 +618,29 @@ def _nrb_fetch_records(from_date: str, to_date: str) -> list[dict]:
         url,
         headers={
             "Accept": "application/json",
-            "User-Agent": "PDForaForex/1.0 (+https://pd-fora.vercel.app)",
+            "User-Agent": "PDForaForex/1.2 (+https://pd-fora.vercel.app)",
             "Referer": "https://www.nrb.org.np/forex/",
         },
     )
-    # urlopen validates TLS certificates using the runtime's trusted CA bundle.
     tls_context = ssl.create_default_context(cafile=certifi.where())
-    with urllib.request.urlopen(request, timeout=15, context=tls_context) as response:
-        if response.status != 200:
-            raise RuntimeError(f"NRB API returned HTTP {response.status}")
-        payload = json.loads(response.read(5 * 1024 * 1024).decode("utf-8"))
-    records = (payload.get("data") or {}).get("payload") or []
-    if not isinstance(records, list):
-        raise RuntimeError("NRB API returned an unexpected response schema")
-    return records
+    try:
+        with urllib.request.urlopen(request, timeout=12, context=tls_context) as response:
+            if response.status != 200:
+                raise RuntimeError(f"NRB API returned HTTP {response.status}")
+            payload = json.loads(response.read(5 * 1024 * 1024).decode("utf-8"))
+        records = (payload.get("data") or {}).get("payload") or []
+        if isinstance(records, list) and records:
+            return records
+        logger.warning("NRB JSON API returned an empty payload; trying official HTML fallback")
+    except Exception:
+        logger.exception("NRB JSON API request failed; trying official HTML fallback")
+
+    html_records = _nrb_fetch_official_html_record()
+    # The HTML page exposes the latest published snapshot. Do not pretend it
+    # satisfies a historical date request if its publication date is later.
+    if html_records[0]["date"] > to_date:
+        raise RuntimeError("NRB HTML fallback returned a snapshot newer than the requested date")
+    return html_records
 
 
 def _nrb_cached(key: str, ttl: int, loader):
@@ -574,7 +675,7 @@ async def nepal_forex(date: str | None = Query(default=None)):
     except ValueError:
         raise HTTPException(status_code=400, detail="Date must be a valid YYYY-MM-DD value.")
 
-    start = (selected - timedelta(days=10)).isoformat()
+    start = (selected - timedelta(days=45)).isoformat()
     # Keep a stable cache key for the live/latest view so a new day can still
     # fall back to the last successful published rate if NRB is temporarily down.
     key = "rates:latest" if date is None else "rates:" + requested

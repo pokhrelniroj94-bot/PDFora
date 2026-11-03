@@ -82,7 +82,7 @@ async function fetchDirectFromNrb(requestedDate: string) {
       Referer: "https://www.nrb.org.np/forex/",
     },
     cache: "no-store",
-    signal: AbortSignal.timeout(8_000),
+    signal: AbortSignal.timeout(5_000),
   });
   if (!response.ok) throw new Error(`NRB API returned HTTP ${response.status}`);
   return normalizeNrbPayload(await response.json(), requestedDate);

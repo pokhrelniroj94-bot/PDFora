@@ -11,6 +11,7 @@ const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 te
 const label = "mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500";
 const panel = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5";
 const encoder = new TextEncoder();
+function createTradeMeta() { return { id: crypto.randomUUID(), createdAt: Date.now() }; }
 
 function encodeBase64(bytes: Uint8Array) {
   let raw = "";
@@ -22,8 +23,9 @@ function decodeBase64(value: string) {
 }
 async function deriveKey(passphrase: string, salt: Uint8Array) {
   const material = await crypto.subtle.importKey("raw", encoder.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+  const saltBytes = new Uint8Array(salt);
   return crypto.subtle.deriveKey(
-    { name: "PBKDF2", salt, iterations: 310_000, hash: "SHA-256" },
+    { name: "PBKDF2", salt: saltBytes, iterations: 310_000, hash: "SHA-256" },
     material,
     { name: "AES-GCM", length: 256 },
     false,
@@ -48,14 +50,17 @@ export default function NepsePortfolio({ quotes, stale }: { quotes: Quote[]; sta
   const saltRef = useRef<Uint8Array | null>(null);
 
   useEffect(() => {
-    try {
-      setHasSaved(Boolean(window.localStorage.getItem(STORAGE_KEY)));
-      const now = new Date();
-      setDate([now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-"));
-    } catch {
-      setHasSaved(false);
-      setError("This browser does not allow local portfolio storage.");
-    }
+    const timer = window.setTimeout(() => {
+      try {
+        setHasSaved(Boolean(window.localStorage.getItem(STORAGE_KEY)));
+        const now = new Date();
+        setDate([now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-"));
+      } catch {
+        setHasSaved(false);
+        setError("This browser does not allow local portfolio storage.");
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const portfolio = useMemo(() => calculatePortfolio(trades), [trades]);
@@ -115,9 +120,9 @@ export default function NepsePortfolio({ quotes, stale }: { quotes: Quote[]; sta
     } finally { setBusy(false); }
   }
 
-  async function addTrade(event: React.FormEvent<HTMLFormElement>) {
+  async function addTrade(event: React.FormEvent<HTMLFormElement>, meta: ReturnType<typeof createTradeMeta>) {
     event.preventDefault(); setError(""); setNotice("");
-    const next: Trade = { id: crypto.randomUUID(), createdAt: Date.now(), date, symbol: symbol.trim().toUpperCase(), side, quantity: Number(quantity), price: Number(price), fee: Number(fee) };
+    const next: Trade = { ...meta, date, symbol: symbol.trim().toUpperCase(), side, quantity: Number(quantity), price: Number(price), fee: Number(fee) };
     if (!isTrade(next)) { setError("Enter a listed symbol, valid date, positive quantity and price, and a non-negative fee."); return; }
     const nextTrades = [...trades, next];
     try { calculatePortfolio(nextTrades); } catch (cause) { setError(cause instanceof Error ? cause.message : "That sale would exceed recorded holdings."); return; }
@@ -154,7 +159,7 @@ export default function NepsePortfolio({ quotes, stale }: { quotes: Quote[]; sta
     <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-wide text-teal-700">Private, encrypted on this device</p><h2 id="portfolio-heading" className="mt-1 text-xl font-black">NEPSE portfolio tracker</h2><p className="mt-1 max-w-3xl text-sm leading-6 text-slate-600">Transactions are encrypted with your passphrase using AES-GCM before they are saved to this browser. No portfolio data is sent to PDFora. This does not sync across devices; clearing browser storage or losing the passphrase permanently loses the portfolio. P/L uses weighted-average cost and includes the fees you enter; taxes and dividends are not included.</p></div>{unlocked && <button type="button" disabled={busy} onClick={locked} className="rounded-lg border px-3 py-2 text-xs font-bold disabled:opacity-50">Lock</button>}</div>
 
     {!unlocked ? <div className="mt-4 max-w-xl space-y-3"><label className="block"><span className={label}>{hasSaved ? "Portfolio passphrase" : "Create a portfolio passphrase"}</span><input className={field} type="password" autoComplete={hasSaved ? "current-password" : "new-password"} minLength={12} value={passphrase} onChange={(event) => setPassphrase(event.target.value)} /></label><button type="button" onClick={() => void unlockOrCreate()} disabled={busy || hasSaved === null} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{busy ? "Unlocking…" : hasSaved ? "Unlock encrypted portfolio" : "Create encrypted portfolio"}</button>{hasSaved && <button type="button" disabled={busy} onClick={clearSavedPortfolio} className="ml-2 rounded-xl border px-4 py-2.5 text-sm font-bold text-rose-700 disabled:opacity-50">Delete saved data</button>}</div> : <>
-      <form onSubmit={(event) => void addTrade(event)} className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
+      <form onSubmit={(event) => void addTrade(event, createTradeMeta())} className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
         <label><span className={label}>Date</span><input className={field} type="date" required value={date} onChange={(event) => setDate(event.target.value)} /></label>
         <label><span className={label}>Symbol</span><input className={field} required maxLength={16} value={symbol} onChange={(event) => setSymbol(event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))} placeholder="NABIL" /></label>
         <label><span className={label}>Side</span><select className={field} value={side} onChange={(event) => setSide(event.target.value as Trade["side"])}><option value="buy">Buy</option><option value="sell">Sell</option></select></label>

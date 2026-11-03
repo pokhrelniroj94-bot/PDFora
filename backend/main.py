@@ -965,7 +965,15 @@ async def images_to_pdf(
                 if total_image_pixels > 40_000_000:
                     raise HTTPException(status_code=413, detail="The combined images must not exceed 40 megapixels.")
                 image.verify()
-                image = Image.open(io.BytesIO(data)).convert("RGB")
+                image = Image.open(io.BytesIO(data)).convert("RGBA")
+                # Flatten transparent pixels onto white before PDF conversion.
+                if "A" in image.getbands():
+                    background = Image.new("RGB", image.size, "white")
+                    background.paste(image, mask=image.getchannel("A"))
+                    image.close()
+                    image = background
+                else:
+                    image = image.convert("RGB")
                 images.append(image)
             except HTTPException:
                 raise
@@ -2261,11 +2269,11 @@ async def pdf_page_counter(file: UploadFile = File(...)):
         size = await save_upload(file, src)
         reader = read_pdf(src)
         report = (
-            "PDFora - PDF Page Count Report\\n"
-            "================================\\n"
-            f"File name: {Path(file.filename).name}\\n"
-            f"Total pages: {len(reader.pages)}\\n"
-            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\\n"
+            "PDFora - PDF Page Count Report\n"
+            "================================\n"
+            f"File name: {Path(file.filename).name}\n"
+            f"Total pages: {len(reader.pages)}\n"
+            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\n"
         )
         out.write_text(report, encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Page-Count.txt", background=BackgroundTask(cleanup_job, job))
@@ -2303,7 +2311,7 @@ async def pdf_information(file: UploadFile = File(...)):
             f"Creator: {metadata.get('/Creator') or 'Not set'}",
             f"Encrypted: {'Yes' if reader.is_encrypted else 'No'}",
         ]
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Information.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
@@ -2331,7 +2339,7 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
         lines = ["PDFora - PDF Bookmarks", "=======================", ""]
         for level, title, page in toc:
             lines.append(f"{'  ' * max(0, level - 1)}Page {page}: {title}")
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Bookmarks.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
@@ -2573,6 +2581,9 @@ async def split_pdf_by_bookmarks(file: UploadFile = File(...)):
         starts = sorted(set(max(1, min(len(doc), int(item[2]))) for item in toc if len(item) >= 3 and int(item[2]) > 0))
         if not starts:
             raise HTTPException(status_code=422, detail="No valid bookmark destinations were found.")
+        # Keep pages before the first bookmark instead of silently dropping them.
+        if starts[0] > 1:
+            starts.insert(0, 1)
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, start_page in enumerate(starts):
                 end_page = starts[index + 1] - 1 if index + 1 < len(starts) else len(doc)
@@ -2686,10 +2697,16 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
         doc = fitz.open(src)
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             count = 0
+            seen_images = set()
             for page_index, page in enumerate(doc):
                 for image_index, item in enumerate(page.get_images(full=True), start=1):
                     xref = item[0]
+                    if not xref or xref in seen_images:
+                        continue
+                    seen_images.add(xref)
                     extracted = doc.extract_image(xref)
+                    if not extracted or not extracted.get("image"):
+                        continue
                     ext = extracted.get("ext", "bin")
                     archive.writestr(f"page-{page_index + 1:04d}-image-{image_index:03d}.{ext}", extracted["image"])
                     count += 1
@@ -2717,19 +2734,23 @@ async def extract_pdf_fonts(file: UploadFile = File(...)):
         read_pdf(src)
         doc = fitz.open(src)
         found = set()
+        written = 0
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for page_index, page in enumerate(doc):
                 for font in page.get_fonts(full=True):
                     xref = font[0]
                     if not xref or xref in found:
                         continue
-                    found.add(xref)
                     extracted = doc.extract_font(xref)
                     if extracted and extracted[3]:
                         name, ext, _, data = extracted
+                        if not data:
+                            continue
                         safe_name = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in name)[:80]
                         archive.writestr(f"{safe_name or 'font'}-{xref}.{ext}", data)
-        if not found:
+                        found.add(xref)
+                        written += 1
+        if written == 0:
             raise HTTPException(status_code=422, detail="No extractable embedded fonts were found.")
         return FileResponse(str(out), media_type="application/zip", filename="NIROJ-Fonts.zip", background=BackgroundTask(cleanup_job, job))
     finally:

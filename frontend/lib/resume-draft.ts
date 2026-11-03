@@ -22,7 +22,7 @@ export type ResumeDraft = {
 
 const templates = new Set([
   "harvard", "modern", "executive", "minimal", "creative", "europass", "corporate", "elegant", "compact", "tech",
-  "finance", "graduate", "academic", "bold", "clean-two-column", "navy", "emerald", "monochrome", "warm", "international",
+  "finance", "graduate", "academic", "bold", "clean-two-column", "navy", "emerald", "monochrome", "warm", "international", "student", "ngo", "experienced",
 ]);
 const fonts = new Set(["Arial", "Georgia", "Helvetica", "Times New Roman"]);
 const isText = (value: unknown, maxLength = 10_000): value is string =>

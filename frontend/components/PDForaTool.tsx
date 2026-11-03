@@ -7,6 +7,8 @@ import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "https://pdfora-493r.onrender.com";
+const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
+const MAX_UPLOAD_FILES = 50;
 
 type Props = {
   endpoint: string;
@@ -47,10 +49,23 @@ export default function PDForaTool({
 
   function applyFiles(selectedFiles: File[]) {
     const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
-    const oversized = selected.find((file) => file.size > 50 * 1024 * 1024);
+    if (selected.length > MAX_UPLOAD_FILES) {
+      setFiles([]);
+      setMessage(`Choose no more than ${MAX_UPLOAD_FILES} files at a time.`);
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+    const oversized = selected.find((file) => file.size > MAX_UPLOAD_BYTES);
     if (oversized) {
       setFiles([]);
       setMessage(`${oversized.name} exceeds the 50 MB per-file limit.`);
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+    const totalBytes = selected.reduce((total, file) => total + file.size, 0);
+    if (multiple && totalBytes > MAX_UPLOAD_BYTES) {
+      setFiles([]);
+      setMessage("The combined upload must be 50 MB or less. Remove files or choose smaller files.");
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
@@ -150,6 +165,12 @@ export default function PDForaTool({
       }
 
       const blob = await response.blob();
+      if (blob.size === 0) {
+        throw new Error("The processing service returned an empty file. Please try again.");
+      }
+      if (response.headers.get("content-type")?.toLowerCase().includes("application/json")) {
+        throw new Error("The processing service returned an invalid file response. Please try again.");
+      }
 
       const downloadURL = window.URL.createObjectURL(blob);
 
@@ -475,3 +496,4 @@ function InfoCard({
     </div>
   );
 }
+

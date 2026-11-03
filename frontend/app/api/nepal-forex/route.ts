@@ -53,7 +53,7 @@ function normalizeNrbPayload(payload: unknown, requestedDate: string) {
     return typeof item.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(item.date) && Array.isArray(item.rates);
   });
   const latest = [...valid].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
-  if (!latest || typeof latestDate !== "string") throw new Error("No published NRB rate was found in the requested date range.");
+  if (!latest) throw new Error("No published NRB rate was found in the requested date range.");
   const latestDate = latest.date;
   const rates = toRateList(latest.rates || []);
   if (!rates.length) throw new Error("NRB returned a snapshot but no valid currency rates.");

@@ -8,9 +8,35 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// This legacy Express service is separate from the production FastAPI service.
+// Keep browser origins explicit; configure FRONTEND_ORIGINS as a comma-separated
+// exact-origin allowlist when deploying it.
+const DEFAULT_ORIGINS = [
+  "https://pd-fora.vercel.app",
+  "https://niroj.com.np",
+  "https://www.niroj.com.np",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+];
+const allowedOrigins = new Set(
+  (process.env.FRONTEND_ORIGINS || DEFAULT_ORIGINS.join(","))
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
+app.use(cors({
+  origin(origin, callback) {
+    // Requests without an Origin header are non-browser clients (e.g. health checks).
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(null, false);
+  },
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+  credentials: false,
+  optionsSuccessStatus: 204,
+}));
+app.use(express.json({ limit: "1mb", strict: true }));
+app.use(express.urlencoded({ extended: false, limit: "1mb", parameterLimit: 100 }));
 
 const uploadDir = path.join(__dirname, "uploads");
 
@@ -22,6 +48,19 @@ const upload = multer({
   dest: uploadDir,
   limits: {
     fileSize: 50 * 1024 * 1024,
+    files: 50,
+    fields: 20,
+    fieldSize: 64 * 1024,
+    parts: 70,
+  },
+  fileFilter(req, file, callback) {
+    const allowedTypes = new Set(["application/pdf", "image/jpeg", "image/png"]);
+    if (!allowedTypes.has(file.mimetype)) {
+      const error = new Error("Unsupported upload type. Use PDF, JPG or PNG files.");
+      error.status = 415;
+      return callback(error);
+    }
+    callback(null, true);
   },
 });
 
@@ -690,21 +729,35 @@ app.post(
 
 app.use(
   (error, req, res, next) => {
-    console.error(error);
+    // Multer can fail after creating one or more temporary files.
+    cleanup(req.file);
+    cleanupFiles(req.files);
 
-    if (
-      error &&
-      error.code === "LIMIT_FILE_SIZE"
-    ) {
+    if (error && error.code === "LIMIT_FILE_SIZE") {
       return res.status(413).json({
-        detail:
-          "Maximum file size is 50 MB.",
+        detail: "Maximum file size is 50 MB per file.",
       });
     }
+    if (error && error.code === "LIMIT_FILE_COUNT") {
+      return res.status(413).json({
+        detail: "Too many files were uploaded.",
+      });
+    }
+    if (error && error.code === "LIMIT_FIELD_VALUE") {
+      return res.status(413).json({
+        detail: "A form field is too large.",
+      });
+    }
+    if (error && error.status === 415) {
+      return res.status(415).json({ detail: error.message });
+    }
+    if (error && error.type === "entity.too.large") {
+      return res.status(413).json({ detail: "Request body is too large." });
+    }
 
-    res.status(500).json({
-      detail: "Server error.",
-    });
+    // Avoid returning parser, filesystem, or upstream error details to clients.
+    console.error("Express request failed:", error && error.message ? error.message : "Unknown error");
+    return res.status(500).json({ detail: "Server error." });
   }
 );
 

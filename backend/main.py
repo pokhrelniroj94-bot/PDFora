@@ -559,7 +559,7 @@ def _nrb_fetch_official_html_record() -> list[dict]:
         },
     )
     tls_context = ssl.create_default_context(cafile=certifi.where())
-    with urllib.request.urlopen(request, timeout=18, context=tls_context) as response:
+    with urllib.request.urlopen(request, timeout=14, context=tls_context) as response:
         if response.status != 200:
             raise RuntimeError(f"NRB official page returned HTTP {response.status}")
         html = response.read(5 * 1024 * 1024).decode("utf-8", errors="replace")
@@ -624,7 +624,7 @@ def _nrb_fetch_records(from_date: str, to_date: str) -> list[dict]:
     )
     tls_context = ssl.create_default_context(cafile=certifi.where())
     try:
-        with urllib.request.urlopen(request, timeout=12, context=tls_context) as response:
+        with urllib.request.urlopen(request, timeout=7, context=tls_context) as response:
             if response.status != 200:
                 raise RuntimeError(f"NRB API returned HTTP {response.status}")
             payload = json.loads(response.read(5 * 1024 * 1024).decode("utf-8"))
@@ -638,8 +638,8 @@ def _nrb_fetch_records(from_date: str, to_date: str) -> list[dict]:
     html_records = _nrb_fetch_official_html_record()
     # The HTML page exposes the latest published snapshot. Do not pretend it
     # satisfies a historical date request if its publication date is later.
-    if html_records[0]["date"] > to_date:
-        raise RuntimeError("NRB HTML fallback returned a snapshot newer than the requested date")
+    if not from_date <= html_records[0]["date"] <= to_date:
+        raise RuntimeError("NRB HTML fallback snapshot is outside the requested date range")
     return html_records
 
 

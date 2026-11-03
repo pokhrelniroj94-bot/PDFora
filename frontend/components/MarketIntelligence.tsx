@@ -22,12 +22,18 @@ function ema(values: number[], period: number) {
 function rsi(values: number[], period = 14) {
   if (values.length <= period) return 50;
   let gains = 0, losses = 0;
-  for (let i = values.length - period; i < values.length; i++) {
+  for (let i = 1; i <= period; i++) {
     const delta = values[i] - values[i - 1];
     if (delta > 0) gains += delta; else losses -= delta;
   }
-  if (losses === 0) return 100;
-  const rs = (gains / period) / (losses / period || 1e-9);
+  let averageGain = gains / period, averageLoss = losses / period;
+  for (let i = period + 1; i < values.length; i++) {
+    const delta = values[i] - values[i - 1];
+    averageGain = (averageGain * (period - 1) + Math.max(delta, 0)) / period;
+    averageLoss = (averageLoss * (period - 1) + Math.max(-delta, 0)) / period;
+  }
+  if (averageLoss === 0) return 100;
+  const rs = averageGain / averageLoss;
   return 100 - 100 / (1 + rs);
 }
 function analyse(points: Point[], asset: string): Analysis | null {
@@ -83,6 +89,8 @@ function analyse(points: Point[], asset: string): Analysis | null {
     target = last.close - 2 * (stop - last.close);
   }
   const risks: string[] = [];
+  const ageDays = Math.max(0, (Date.now() - Date.parse(last.date)) / 86400000);
+  if (Number.isFinite(ageDays) && ageDays > (asset === "crypto" ? 2 : 5)) risks.push("The latest observation is stale for this market. Refresh the file before relying on this analysis.");
   if (risk === "High" || risk === "Very high") risks.push("Recent annualized volatility is elevated for this asset class.");
   if (rsiValue >= 72) risks.push("RSI is overbought; a pullback can occur even while the broader trend is positive.");
   if (rsiValue <= 28) risks.push("RSI is deeply oversold; this is not proof that a bottom has formed.");
@@ -134,6 +142,7 @@ const pct = (v: number) => v.toFixed(2) + "%";
 export default function MarketIntelligence() {
   const [asset, setAsset] = useState("nepse");
   const [symbol, setSymbol] = useState("NEPSE");
+  const [marketSymbol, setMarketSymbol] = useState("EUR/USD");
   const [points, setPoints] = useState<Point[]>([]);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [source, setSource] = useState("");
@@ -177,7 +186,7 @@ export default function MarketIntelligence() {
     try {
       const response = await fetch("/api/ai-writing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
         kind: "market-explain",
-        analysis: JSON.stringify({ asset, symbol, ...analysis, reasons: analysis.reasons, risks: analysis.risks }),
+        analysis: JSON.stringify({ asset, symbol: asset === "nepse" ? symbol : marketSymbol, ...analysis, reasons: analysis.reasons, risks: analysis.risks }),
       }) });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "Free AI explanation is unavailable.");
@@ -202,6 +211,7 @@ export default function MarketIntelligence() {
         <label className="flex-1"><span className="mb-1.5 block text-sm font-semibold text-slate-700">NEPSE symbol / index</span><input className={cls} value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} placeholder="NEPSE, NABIL, NICA…" /></label>
         <button type="button" onClick={() => void loadNepse()} disabled={busy || !symbol.trim()} className="self-end rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white disabled:opacity-50">{busy ? "Analysing…" : "Analyse NEPSE"}</button>
       </div> : <div className="space-y-3">
+        <label className="block max-w-sm"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{asset === "forex" ? "Forex pair" : "Crypto pair"}</span><input className={cls} value={marketSymbol} onChange={(e) => setMarketSymbol(e.target.value)} placeholder={asset === "forex" ? "EUR/USD" : "BTC/USD"} /></label>
         <p className="text-sm text-slate-700">Upload a CSV exported from your broker or exchange. Required columns: <code>Date, Close</code>. Recommended: <code>Date, Open, High, Low, Close, Volume</code>. At least 50 daily rows are needed.</p>
         <input className={cls} type="file" accept=".csv,text/csv" onChange={(e) => void loadCsv(e.target.files?.[0])} />
         <p className="text-xs leading-5 text-slate-500">PDFora does not scrape third-party Forex/Crypto feeds without display and analysis rights. CSV analysis runs on the uploaded historical data. Do not upload account credentials or private keys.</p>
@@ -212,7 +222,7 @@ export default function MarketIntelligence() {
     {analysis && <div className="space-y-5">
       <section className={card}>
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div><p className="text-xs font-bold uppercase tracking-widest text-slate-500">Computed technical setup</p><h2 className={"mt-2 text-2xl font-black " + scoreTone}>{analysis.signal}</h2><p className="mt-1 text-sm text-slate-500">{asset.toUpperCase()} · {symbol} · {analysis.latestDate}</p></div>
+          <div><p className="text-xs font-bold uppercase tracking-widest text-slate-500">Computed technical setup</p><h2 className={"mt-2 text-2xl font-black " + scoreTone}>{analysis.signal}</h2><p className="mt-1 text-sm text-slate-500">{asset.toUpperCase()} · {asset === "nepse" ? symbol : marketSymbol} · {analysis.latestDate}</p></div>
           <div className="rounded-xl bg-slate-100 px-4 py-3 text-center"><p className="text-xs text-slate-500">Confluence score</p><p className="text-2xl font-black tabular-nums">{analysis.score > 0 ? "+" : ""}{analysis.score}</p><p className="text-[10px] text-slate-500">Not a win probability</p></div>
         </div>
         <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{analysis.entry}</p>

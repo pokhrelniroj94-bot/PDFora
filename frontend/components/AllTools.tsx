@@ -6,7 +6,6 @@ import { toolCatalog } from "./toolCatalog";
 import ResumeBuilder from "./ResumeBuilder";
 import AIWritingTools from "./AIWritingTools";
 import MarketIntelligence from "./MarketIntelligence";
-import NewTools from "./NewTools";
 import { allTools } from "../lib/tool-directory";
 
 

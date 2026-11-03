@@ -1437,59 +1437,26 @@ async def watermark_pdf(
         # ----------------------------------------------------
 
         for page in document:
-
             rect = page.rect
+            center = fitz.Point(rect.width / 2, rect.height / 2)
+            font = fitz.Font("helv")
+            font_size = min(32, max(12, rect.width / max(font.text_length(text, fontsize=1) * 1.25, 1)))
+            text_width = font.text_length(text, fontsize=font_size)
+            origin = fitz.Point(max(12, center.x - text_width / 2), center.y)
 
-            # Center point
-            center_x = rect.width / 2
-            center_y = rect.height / 2
-
-            # Create temporary watermark PDF
-            wm = fitz.open()
-
-            wm_page = wm.new_page(
-                width=rect.width,
-                height=rect.height
-            )
-
-            # Use normal rotation here.
-            # PyMuPDF accepts 90.
-            wm_page.insert_text(
-                (
-                    center_x - 120,
-                    center_y
-                ),
+            # Apply a true 45-degree transform around the page center. The
+            # prior 90-degree placement used a fixed 120pt offset and clipped
+            # long labels on common page sizes.
+            page.insert_text(
+                origin,
                 text,
-                fontsize=32,
+                fontsize=font_size,
                 fontname="helv",
                 color=(0.5, 0.5, 0.5),
                 fill_opacity=0.25,
-                rotate=90
+                morph=(center, fitz.Matrix(45)),
+                overlay=True,
             )
-
-            # Save temporary watermark
-            wm_bytes = wm.tobytes(
-                garbage=4,
-                deflate=True
-            )
-
-            wm.close()
-
-            # Open watermark PDF from memory
-            wm_doc = fitz.open(
-                stream=wm_bytes,
-                filetype="pdf"
-            )
-
-            # Overlay watermark
-            page.show_pdf_page(
-                rect,
-                wm_doc,
-                0,
-                overlay=True
-            )
-
-            wm_doc.close()
 
         # Save final PDF
         document.save(

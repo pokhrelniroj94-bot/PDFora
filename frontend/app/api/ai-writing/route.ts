@@ -198,17 +198,22 @@ export async function POST(request: Request) {
     ? Boolean(anthropicKey)
     : configuredProvider === "cloudflare" && Boolean(accountId && cloudflareToken && confirmedFreePlan);
 
-  const sharedLimiterConfigured = Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);\n  if (!explicitlyEnabled || !sharedRateLimitReady || !sharedLimiterConfigured || !providerReady) {
+  const sharedLimiterConfigured = Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+  if (!explicitlyEnabled || !sharedRateLimitReady || !sharedLimiterConfigured || !providerReady) {
     return Response.json({
       error: "PDFora AI is not enabled or its provider/rate limiter is not configured. Add the selected provider's server-side credentials and verify shared rate limiting. No AI provider was contacted.",
       code: "AI_NOT_CONFIGURED",
     }, { status: 503, headers: NO_STORE });
   }
 
-  if (isRateLimited(request)) {
-    return Response.json({ error: "Please wait a minute before sending more AI requests.", code: "RATE_LIMITED" }, {
-      status: 429, headers: { ...NO_STORE, "Retry-After": "60" },
-    });
+  try {
+    if (await isRateLimited(request)) {
+      return Response.json({ error: "Please wait a minute before sending more AI requests.", code: "RATE_LIMITED" }, {
+        status: 429, headers: { ...NO_STORE, "Retry-After": "60" },
+      });
+    }
+  } catch {
+    return Response.json({ error: "AI is temporarily unavailable because the shared abuse-protection service could not be verified.", code: "RATE_LIMIT_UNAVAILABLE" }, { status: 503, headers: NO_STORE });
   }
 
   const maxTokens = kind === "site-help" || kind === "forex-explain" ? 900 : kind === "ai-humanizer" ? 900 : 1100;

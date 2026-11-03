@@ -118,23 +118,61 @@ function splitCsvLine(line: string) {
   return cells;
 }
 function parseCsv(text: string): Point[] {
+  if (new TextEncoder().encode(text).byteLength > 5 * 1024 * 1024) {
+    throw new Error("CSV file is too large. Maximum supported size is 5 MB.");
+  }
   const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).filter((line) => line.trim());
   if (lines.length < 51) throw new Error("Upload at least 50 daily rows of historical data.");
+  if (lines.length > 20_001) throw new Error("CSV contains too many rows. Maximum supported history is 20,000 rows.");
   const headers = splitCsvLine(lines[0]).map((h) => h.toLowerCase().replace(/[^a-z0-9]/g, ""));
   const find = (...names: string[]) => headers.findIndex((h) => names.includes(h));
   const dateIndex = find("date", "time", "datetime", "timestamp");
   const closeIndex = find("close", "adjclose", "last");
   const openIndex = find("open"), highIndex = find("high"), lowIndex = find("low"), volumeIndex = find("volume", "vol");
   if (dateIndex < 0 || closeIndex < 0) throw new Error("CSV needs Date/Time and Close columns. OHLCV columns are recommended.");
-  const rows = lines.slice(1).map((line) => {
-    const c = splitCsvLine(line);
-    const num = (index: number) => index < 0 ? undefined : Number(c[index]?.replace(/,/g, ""));
-    const dateRaw = c[dateIndex] || "";
-    const date = Number.isFinite(Number(dateRaw)) && dateRaw.length > 9 ? new Date(Number(dateRaw)).toISOString().slice(0, 10) : dateRaw.slice(0, 10);
-    return { date, open: num(openIndex), high: num(highIndex), low: num(lowIndex), close: num(closeIndex) ?? NaN, volume: num(volumeIndex) };
-  }).filter((p) => p.date && Number.isFinite(p.close) && p.close > 0);
+
+  const rows: Point[] = [];
+  for (const line of lines.slice(1)) {
+    const cells = splitCsvLine(line);
+    if (cells.length !== headers.length) throw new Error("CSV has rows with a different number of columns. Check commas and quotation marks.");
+    const rawDate = cells[dateIndex] || "";
+    let date = "";
+    if (/^\d{10}$|^\d{13}$/.test(rawDate)) {
+      const numeric = Number(rawDate);
+      const milliseconds = rawDate.length === 10 ? numeric * 1000 : numeric;
+      const parsed = new Date(milliseconds);
+      if (!Number.isFinite(parsed.getTime())) throw new Error("CSV contains an invalid timestamp.");
+      date = parsed.toISOString().slice(0, 10);
+    } else if (/^\d{4}-\d{2}-\d{2}(?:$|[T ])/.test(rawDate)) {
+      const parsed = new Date(rawDate.length === 10 ? rawDate + "T00:00:00Z" : rawDate);
+      if (!Number.isFinite(parsed.getTime())) throw new Error("CSV contains an invalid date.");
+      date = parsed.toISOString().slice(0, 10);
+      if (date !== rawDate.slice(0, 10)) throw new Error("CSV contains an invalid calendar date.");
+    } else {
+      throw new Error("Use ISO dates (YYYY-MM-DD) or Unix timestamps in the Date column.");
+    }
+    const num = (index: number) => {
+      if (index < 0 || !cells[index]) return undefined;
+      const value = Number(cells[index].replace(/,/g, ""));
+      return Number.isFinite(value) ? value : NaN;
+    };
+    const open = num(openIndex), high = num(highIndex), low = num(lowIndex);
+    const close = num(closeIndex), volume = num(volumeIndex);
+    if (close === undefined || !Number.isFinite(close) || close <= 0) throw new Error("CSV contains a missing or invalid closing price.");
+    if ([open, high, low, volume].some((v) => v !== undefined && !Number.isFinite(v))) throw new Error("CSV contains a non-numeric OHLCV value.");
+    if (open !== undefined && open <= 0) throw new Error("Opening prices must be greater than zero.");
+    if (high !== undefined && (high <= 0 || high < Math.max(close, open ?? close))) throw new Error("A candle's High must be at least as large as its Open and Close.");
+    if (low !== undefined && (low <= 0 || low > Math.min(close, open ?? close))) throw new Error("A candle's Low must not exceed its Open or Close.");
+    if (high !== undefined && low !== undefined && high < low) throw new Error("A candle's High cannot be lower than its Low.");
+    if (volume !== undefined && volume < 0) throw new Error("Volume cannot be negative.");
+    rows.push({ date, open, high, low, close, volume });
+  }
+  rows.sort((a, b) => a.date.localeCompare(b.date));
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i].date === rows[i - 1].date) throw new Error("CSV contains duplicate dates. Keep one daily candle per date.");
+  }
   if (rows.length < 50) throw new Error("Fewer than 50 valid price rows were found in the CSV.");
-  return rows.sort((a, b) => a.date.localeCompare(b.date));
+  return rows;
 }
 const fmt = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: 4 });
 const pct = (v: number) => v.toFixed(2) + "%";

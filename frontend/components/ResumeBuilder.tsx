@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { isResumeDraft, type ResumeDraft } from "../lib/resume-draft";
 
 type Entry = { id: string; school: string; degree: string; place: string; dates: string };
 type Job = { id: string; role: string; company: string; dates: string; details: string };
@@ -28,6 +29,7 @@ const templates = [
   { id: "international", name: "International Profile", note: "Global · structured", color: "#3730a3" },
 ];
 const uid = () => Math.random().toString(36).slice(2, 9);
+const DRAFT_KEY = "pdfora.resume-builder.draft.v1";
 const initialEntry = (): Entry => ({ id: uid(), school: "", degree: "", place: "", dates: "" });
 const initialJob = (): Job => ({ id: uid(), role: "", company: "", dates: "", details: "" });
 
@@ -54,7 +56,32 @@ export default function ResumeBuilder() {
   const [aiBusy, setAiBusy] = useState(false);
   const [aiError, setAiError] = useState("");
   const [aiSuggestions, setAiSuggestions] = useState<{ summary: string; skills: string; experience: string } | null>(null);
+  const [draftReady, setDraftReady] = useState(false);
+  const [draftEnabled, setDraftEnabled] = useState(false);
+  const [draftStatus, setDraftStatus] = useState("");
   useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(DRAFT_KEY);
+      if (saved && saved.length <= 3_200_000) {
+        const parsed: unknown = JSON.parse(saved);
+        if (isResumeDraft(parsed)) {
+          setTemplate(parsed.template); setAccent(parsed.accent); setFont(parsed.font);
+          setName(parsed.name); setRole(parsed.role); setEmail(parsed.email); setPhone(parsed.phone);
+          setLocation(parsed.location); setWebsite(parsed.website); setSummary(parsed.summary); setSkills(parsed.skills);
+          setLanguages(parsed.languages); setEducation(parsed.education); setJobs(parsed.jobs);
+          setProjects(parsed.projects); setCertifications(parsed.certifications); setReferences(parsed.references); setPhoto(parsed.photo);
+          setDraftEnabled(true); setDraftStatus("Saved draft restored from this browser.");
+        } else {
+          setDraftStatus("A saved draft could not be read. Delete it and create a fresh draft.");
+        }
+      } else if (saved) {
+        setDraftStatus("Saved draft is too large to restore. Delete it and create a fresh draft.");
+      }
+    } catch {
+      setDraftStatus("This browser could not read the saved CV draft.");
+    } finally {
+      setDraftReady(true);
+    }
     const timer = window.setTimeout(() => {
       try {
         const saved = sessionStorage.getItem("pdfora-ai-resume-draft");
@@ -90,6 +117,32 @@ export default function ResumeBuilder() {
     reader.readAsDataURL(file);
   };
   const skillList = useMemo(() => skills.split(/[,\n]/).map(s => s.trim()).filter(Boolean), [skills]);
+  const draft = useMemo<ResumeDraft>(() => ({
+    version: 1, template, accent, font, name, role, email, phone, location, website, summary, skills, languages,
+    education, jobs, projects, certifications, references, photo,
+  }), [template, accent, font, name, role, email, phone, location, website, summary, skills, languages, education, jobs, projects, certifications, references, photo]);
+  useEffect(() => {
+    if (!draftReady || !draftEnabled) return;
+    const timer = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        setDraftStatus("Draft saved on this device.");
+      } catch {
+        setDraftStatus("Could not save this draft. Browser storage may be full or disabled.");
+      }
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [draftReady, draftEnabled, draft]);
+  const deleteDraft = () => {
+    if (!window.confirm("Delete the saved CV draft from this browser? Your current editor contents will remain until you leave this page.")) return;
+    try {
+      window.localStorage.removeItem(DRAFT_KEY);
+      setDraftEnabled(false);
+      setDraftStatus("Saved CV draft deleted from this browser.");
+    } catch {
+      setDraftStatus("Could not delete the saved draft. Clear this site's browser storage manually.");
+    }
+  };
   const updateEducation = (id: string, key: keyof Entry, value: string) => setEducation(rows => rows.map(row => row.id === id ? { ...row, [key]: value } : row));
   const updateJob = (id: string, key: keyof Job, value: string) => setJobs(rows => rows.map(row => row.id === id ? { ...row, [key]: value } : row));
   const input = "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100";
@@ -144,6 +197,14 @@ export default function ResumeBuilder() {
       <div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Career Studio</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Professional Resume Builder</h1><p className="mt-2 max-w-2xl text-slate-600">Build a polished, job-ready CV with 20 professional templates, live preview and print-ready A4 PDF export.</p></div>
       <div className="no-print flex flex-wrap gap-2"><a href="/tools/ai-resume-writer" className="rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-extrabold text-teal-800 transition hover:bg-teal-100">AI write CV content ↗</a><a href="/tools/ai-cover-letter-generator" className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50">Cover letter ↗</a><button onClick={print} className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800">Download CV as PDF ↗</button></div>
     </div>
+    <section className="no-print mb-6 rounded-2xl border border-slate-200 bg-white p-4" aria-label="Local CV draft storage">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <label className="flex items-start gap-2 text-sm font-semibold text-slate-800"><input type="checkbox" checked={draftEnabled} disabled={!draftReady} onChange={(event) => setDraftEnabled(event.target.checked)} className="mt-1 h-4 w-4 accent-teal-700" /><span>Save and restore my CV draft on this device</span></label>
+        <button type="button" onClick={deleteDraft} disabled={!draftReady} className="rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700 disabled:opacity-50">Delete saved draft</button>
+      </div>
+      <p className="mt-2 text-xs leading-5 text-slate-600">When enabled, resume details and the optional photo are stored in this browser's local storage and are not uploaded by draft saving. This storage is not encrypted; avoid enabling it on a shared device and delete the draft when finished.</p>
+      <p className="mt-1 text-xs text-slate-500" role="status" aria-live="polite">{draftStatus || (draftEnabled ? "Saving changes on this device." : "Draft saving is off.")}</p>
+    </section>
     <div className="no-print mb-6 rounded-2xl border border-teal-200 bg-teal-50/60 p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-wide text-teal-800">AI CV Assistant</p><h2 className="mt-1 text-lg font-extrabold text-slate-950">Improve your CV with AI</h2><p className="mt-1 max-w-2xl text-sm text-slate-600">Uses your target role, skills, education and experience to draft a stronger summary and ATS-friendly bullet points. Your contact details and photo are not sent.</p></div><button type="button" onClick={() => void generateCvWithAi()} disabled={aiBusy || !aiConsent || !role.trim()} className="rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50">{aiBusy ? "Improving CV…" : "Improve CV with AI"}</button></div>
       <label className="mt-3 flex items-start gap-2 text-xs leading-5 text-slate-600"><input type="checkbox" checked={aiConsent} onChange={(event) => setAiConsent(event.target.checked)} className="mt-1 h-4 w-4 accent-teal-700" /><span>I agree to send my target role, skills, education and experience text to the configured AI provider for processing. I will not include confidential information.</span></label>
@@ -205,3 +266,4 @@ export default function ResumeBuilder() {
     `}</style>
   </main>;
 }
+

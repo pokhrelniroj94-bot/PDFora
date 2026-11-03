@@ -10,7 +10,7 @@ function reviewNews(payload: { market?: NewsStory[]; ipo?: NewsStory[] }, symbol
   const relevant = all.filter(story => {
     const age = now - Date.parse(story.publishedAt), title = story.title.toLowerCase();
     const general = /nepse|stock market|share market|sebon|nrb|monetary policy|interest rate|liquidity|banking sector|capital market|ipo|fpo|dividend|bonus share|right share|merger|acquisition|agm|broker/.test(title);
-    return Number.isFinite(age) && age >= -300000 && age <= 30*86400000 && (!ticker || ticker === "nepse" || title.includes(ticker) || general);
+    return Number.isFinite(age) && age >= -300000 && age <= 30*86400000 && (ticker === "nepse" ? general : Boolean(ticker) && title.includes(ticker));
   }).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,12);
   const pos=/profit|earnings growth|dividend|bonus share|right share|buyback|upgrade|approval|record high|strong demand|liquidity injection|rate cut|interest rate cut|capital increase|positive outlook|growth/;
   const neg=/fraud|scam|penalty|fine|investigation|default|loss|decline|crash|selloff|selling pressure|rate hike|interest rate hike|liquidity crunch|suspension|regulatory action|downgrade|lawsuit|weak outlook|non.?performing loan/;

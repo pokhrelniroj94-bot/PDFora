@@ -235,7 +235,7 @@ export async function POST(request: Request) {
         error?: { type?: string; message?: string };
       };
       resultText = Array.isArray(payload.content)
-        ? payload.content.filter((block) => block.type === "text" && typeof block.text === "string").map((block) => block.text).join("\\n")
+        ? payload.content.filter((block) => block.type === "text" && typeof block.text === "string").map((block) => block.text).join("\n")
         : "";
     } else {
       const endpoint = "https://api.cloudflare.com/client/v4/accounts/" + encodeURIComponent(accountId as string) + "/ai/run/" + MODEL;

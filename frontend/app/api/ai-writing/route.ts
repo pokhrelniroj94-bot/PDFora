@@ -6,28 +6,33 @@ const MAX_BODY_BYTES = 16 * 1024;
 const MAX_INPUT = 7000;
 const NO_STORE = { "Cache-Control": "no-store, max-age=0" } as const;
 
-// Best-effort per-instance throttle. Use a shared edge limiter before enabling
-// this publicly at high traffic; the provider's free allocation is the hard ceiling.
-const requestWindows = new Map<string, { startedAt: number; count: number }>();
-function isRateLimited(request: Request) {
-  // Trust only Vercel's platform-injected client IP header. Do not accept
-  // client-controlled X-Forwarded-For / CF headers as an identity signal.
+// Shared atomic rate limit using Upstash Redis REST + a Lua script.
+// Fail closed when the shared limiter is unavailable; the in-memory map is not
+// sufficient across serverless instances.
+async function isRateLimited(request: Request): Promise<boolean> {
+  const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!redisUrl || !redisToken) throw new Error("SHARED_RATE_LIMIT_NOT_CONFIGURED");
+
   const platformIp = request.headers.get("x-vercel-forwarded-for") || "";
-  const ip = platformIp.split(",")[0].trim().slice(0, 80) || "unresolved";
-  const now = Date.now();
-  const current = requestWindows.get(ip);
-  if (!current || now - current.startedAt >= 60_000) {
-    requestWindows.set(ip, { startedAt: now, count: 1 });
-  } else {
-    current.count += 1;
-    if (current.count > 8) return true;
-  }
-  if (requestWindows.size > 1000) {
-    for (const [key, value] of requestWindows) {
-      if (now - value.startedAt >= 60_000) requestWindows.delete(key);
-    }
-  }
-  return false;
+  const ip = platformIp.split(",")[0].trim().slice(0, 80);
+  if (!ip) throw new Error("CLIENT_IP_UNAVAILABLE");
+
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
+  const hash = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  const key = "pdfora:ai:minute:" + hash;
+  const script = "local count = redis.call('INCR', KEYS[1]); if count == 1 then redis.call('EXPIRE', KEYS[1], tonumber(ARGV[2])); end; return count";
+  const response = await fetch(redisUrl.replace(/\\/$/, ""), {
+    method: "POST",
+    headers: { Authorization: "Bearer " + redisToken, "Content-Type": "application/json" },
+    body: JSON.stringify(["EVAL", script, "1", key, "8", "60"]),
+    cache: "no-store",
+    signal: AbortSignal.timeout(4000),
+  });
+  if (!response.ok) throw new Error("SHARED_RATE_LIMIT_UNAVAILABLE");
+  const payload = await response.json() as { result?: number | string; error?: string };
+  if (payload.error || !Number.isFinite(Number(payload.result))) throw new Error("SHARED_RATE_LIMIT_INVALID_RESPONSE");
+  return Number(payload.result) > 8;
 }
 
 type WritingKind = "ai-resume-writer" | "ai-cover-letter-generator" | "ai-humanizer" | "market-explain" | "site-help" | "forex-explain";
@@ -193,7 +198,7 @@ export async function POST(request: Request) {
     ? Boolean(anthropicKey)
     : configuredProvider === "cloudflare" && Boolean(accountId && cloudflareToken && confirmedFreePlan);
 
-  if (!explicitlyEnabled || !sharedRateLimitReady || !providerReady) {
+  const sharedLimiterConfigured = Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);\n  if (!explicitlyEnabled || !sharedRateLimitReady || !sharedLimiterConfigured || !providerReady) {
     return Response.json({
       error: "PDFora AI is not enabled or its provider/rate limiter is not configured. Add the selected provider's server-side credentials and verify shared rate limiting. No AI provider was contacted.",
       code: "AI_NOT_CONFIGURED",

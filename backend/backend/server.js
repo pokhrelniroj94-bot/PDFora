@@ -265,8 +265,9 @@ app.post(
 
       cleanup(req.file);
 
-      res.status(500).json({
-        detail: "Could not delete PDF pages.",
+      const clientError = error && (error.status === 400 || error.status === 413);
+      res.status(clientError ? error.status : 500).json({
+        detail: clientError ? error.message : "Could not delete PDF pages.",
       });
     }
   }
@@ -339,9 +340,9 @@ app.post(
 
       cleanup(req.file);
 
-      res.status(500).json({
-        detail:
-          "Could not extract PDF pages.",
+      const clientError = error && (error.status === 400 || error.status === 413);
+      res.status(clientError ? error.status : 500).json({
+        detail: clientError ? error.message : "Could not extract PDF pages.",
       });
     }
   }
@@ -792,8 +793,13 @@ app.use(
    START SERVER
 ========================= */
 
-app.listen(PORT, () => {
-  console.log(
-    `PDFora Backend running on http://127.0.0.1:${PORT}`
-  );
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(
+      `PDFora Backend running on http://127.0.0.1:${PORT}`
+    );
+  });
+}
+
+module.exports = { app, parsePages };
+

@@ -49,7 +49,7 @@ assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('
 
 assert.ok(allTools.includes('import("./NepaliTypingTool")') || allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");
 assert.ok(allTools.includes('import("./NewTools")') || allTools.includes('import NewToolsChunk from "./NewTools"'), "New practical tools component is not imported");
-assert.ok(newToolCases.includes("ats-resume-checker") && newToolCases.includes("invoice-quotation-generator"), "New practical tool handlers are missing");
+assert.ok(newToolCases.includes("ats-resume-checker") && newToolCases.includes("invoice-quotation-generator") && newToolCases.includes("loan-emi-calculator") && newToolCases.includes("image-resizer-compressor") && newToolCases.includes("business-break-even-calculator"), "New practical tool handlers are missing");
 const nepalSlugs = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);
 assert.ok(nepalSlugs.length > 0, "Nepal tool catalog entries were not detected by the guide coverage check");
 const missingNepalGuides = nepalSlugs.filter((slug) => !nepalBlogPosts.includes('href: "/tools/' + slug + '"'));
@@ -83,8 +83,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 126, "Expected 126 catalog utilities");
-assert.equal(allHrefs.length, 175, "Expected 175 available tools (49 PDF tools + 126 catalog utilities)");
+assert.equal(catalog.length, 129, "Expected 126 catalog utilities");
+assert.equal(allHrefs.length, 178, "Expected 175 available tools (49 PDF tools + 126 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");

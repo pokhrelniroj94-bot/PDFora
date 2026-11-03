@@ -1475,37 +1475,18 @@ async def watermark_pdf(
                 detail="PDF contains no pages."
             )
 
-        # ----------------------------------------------------
-        # IMPORTANT:
-        # PyMuPDF insert_text() only accepts rotation:
-        # 0, 90, 180, 270.
-        #
-        # We use 45-degree text by creating the text
-        # as a separate PDF image and rotating that image.
-        # This avoids the "bad rotate value" error.
-        # ----------------------------------------------------
-
         for page in document:
             rect = page.rect
-            center = fitz.Point(rect.width / 2, rect.height / 2)
-            font = fitz.Font("helv")
-            font_size = min(32, max(12, rect.width / max(font.text_length(text, fontsize=1) * 1.25, 1)))
-            text_width = font.text_length(text, fontsize=font_size)
-            display_origin = fitz.Point(max(12, center.x - text_width / 2), center.y)
-            page_center = display_point_to_page(page, center.x, center.y)
-            origin = display_point_to_page(page, display_origin.x, display_origin.y)
-
-            # Apply a true 45-degree transform around the page center. The
-            # prior 90-degree placement used a fixed 120pt offset and clipped
-            # long labels on common page sizes.
-            page.insert_text(
-                origin,
+            display_box = fitz.Rect(24, rect.height * 0.4, rect.width - 24, rect.height * 0.6)
+            page.insert_textbox(
+                display_rect_to_page(page, display_box),
                 text,
-                fontsize=font_size,
+                fontsize=min(32, max(12, rect.width / max(fitz.Font("helv").text_length(text, fontsize=1) * 1.25, 1))),
                 fontname="helv",
                 color=(0.5, 0.5, 0.5),
                 fill_opacity=0.25,
-                morph=(page_center, fitz.Matrix((45 - page.rotation) % 360)),
+                align=1,
+                rotate=display_text_rotation(page),
                 overlay=True,
             )
 
@@ -1902,8 +1883,12 @@ async def header_footer(file: UploadFile = File(...), header: str = Form(""), fo
         src=job/"input.pdf"; out=job/"header-footer.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         for p in doc:
             r=p.rect
-            if header: p.insert_text(display_point_to_page(p,36,24),header[:300],fontsize=font_size,rotate=display_text_rotation(p))
-            if footer: p.insert_text(display_point_to_page(p,36,r.height-24),footer[:300],fontsize=font_size,rotate=display_text_rotation(p))
+            if header:
+                box = fitz.Rect(36, 12, r.width - 36, 12 + font_size * 1.8)
+                p.insert_textbox(display_rect_to_page(p, box), header[:300], fontsize=font_size, rotate=display_text_rotation(p))
+            if footer:
+                box = fitz.Rect(36, r.height - 12 - font_size * 1.8, r.width - 36, r.height - 12)
+                p.insert_textbox(display_rect_to_page(p, box), footer[:300], fontsize=font_size, rotate=display_text_rotation(p))
         doc.save(out,garbage=4,deflate=True); doc.close()
         return _tool_file_response(out,"NIROJ-Header-Footer.pdf")
     finally: await file.close()
@@ -1954,8 +1939,10 @@ async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)
         display_box=fitz.Rect(36,r.height-90,min(r.width-36,300),r.height-36)
         box=display_rect_to_page(p,display_box)
         p.draw_rect(box,color=(0.35,0.2,0.6),width=1)
-        p.insert_text(display_point_to_page(p,display_box.x0+8,display_box.y0+28),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35),rotate=display_text_rotation(p))
-        p.insert_text(display_point_to_page(p,display_box.x0+8,display_box.y0+44),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4),rotate=display_text_rotation(p))
+        name_box = fitz.Rect(display_box.x0 + 8, display_box.y0 + 6, display_box.x1 - 8, display_box.y0 + 30)
+        detail_box = fitz.Rect(display_box.x0 + 8, display_box.y0 + 30, display_box.x1 - 8, display_box.y1 - 6)
+        p.insert_textbox(display_rect_to_page(p,name_box),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35),rotate=display_text_rotation(p))
+        p.insert_textbox(display_rect_to_page(p,detail_box),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4),rotate=display_text_rotation(p))
         doc.save(out,garbage=4,deflate=True); doc.close()
         return _tool_file_response(out,"NIROJ-Signed.pdf")
     finally: await file.close()

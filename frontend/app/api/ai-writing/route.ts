@@ -10,11 +10,10 @@ const NO_STORE = { "Cache-Control": "no-store, max-age=0" } as const;
 // this publicly at high traffic; the provider's free allocation is the hard ceiling.
 const requestWindows = new Map<string, { startedAt: number; count: number }>();
 function isRateLimited(request: Request) {
-  const forwarded = request.headers.get("x-vercel-forwarded-for")
-    || request.headers.get("cf-connecting-ip")
-    || request.headers.get("x-forwarded-for")
-    || "";
-  const ip = forwarded.split(",")[0].trim().slice(0, 80) || "unknown";
+  // Trust only Vercel's platform-injected client IP header. Do not accept
+  // client-controlled X-Forwarded-For / CF headers as an identity signal.
+  const platformIp = request.headers.get("x-vercel-forwarded-for") || "";
+  const ip = platformIp.split(",")[0].trim().slice(0, 80) || "unresolved";
   const now = Date.now();
   const current = requestWindows.get(ip);
   if (!current || now - current.startedAt >= 60_000) {

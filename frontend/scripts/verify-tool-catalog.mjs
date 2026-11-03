@@ -57,7 +57,9 @@ assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf
 const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
-assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
+assert.ok(toolPage.includes('"@type": "SoftwareApplication"') && toolPage.includes('"@type": "BreadcrumbList"'), "Catalog tool pages must include software and breadcrumb structured data");
+assert.ok(seoContent.includes("Frequently asked questions about {title}") && seoContent.includes("uniqueFaqItems.map"), "Catalog tool FAQs must remain visible on the page");
+assert.ok(!toolPage.includes('"@type": "FAQPage"'), "General tool pages should not rely on FAQ rich-result markup");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 assert.ok(toolPage.includes("googleBot") && toolPage.includes("max-image-preview"), "Catalog tool metadata must include Googlebot preview directives");
 assert.ok(toolPage.includes("summary_large_image") && toolPage.includes("opengraph-image"), "Catalog tool pages must provide social preview images");

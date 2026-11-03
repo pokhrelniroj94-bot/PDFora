@@ -22,5 +22,6 @@ assert.equal(closed.realized, 145);
 assert.equal(isTrade(trade("5", "2026-02-28", "buy", 1, 10)), true);
 assert.equal(isTrade(trade("6", "2026-02-31", "buy", 1, 10)), false);
 assert.equal(isTrade(trade("7", "2026-02-28", "buy", 0, 10)), false);
+assert.throws(() => calculatePortfolio([trade("8", "2026-02-28", "buy", Number.MAX_VALUE, Number.MAX_VALUE)]), /supported calculation range/);
 console.log("Verified NEPSE portfolio cost basis, fees, realized P/L, oversell protection, and transaction validation.");
 

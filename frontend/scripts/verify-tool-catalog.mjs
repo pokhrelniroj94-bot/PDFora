@@ -62,8 +62,8 @@ assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides a
 assert.ok(toolPage.includes("googleBot") && toolPage.includes("max-image-preview"), "Catalog tool metadata must include Googlebot preview directives");
 assert.ok(toolPage.includes("summary_large_image") && toolPage.includes("opengraph-image"), "Catalog tool pages must provide social preview images");
 assert.ok(pdfToolSEO.includes("canonical: url") && pdfToolSEO.includes("googleBot") && pdfToolSEO.includes("summary_large_image"), "PDF tool metadata must include canonical, Googlebot and social preview metadata");
-assert.ok(pdfSEOContent.includes("\\\"@type\\\": \\\"BreadcrumbList\\\"") && pdfSEOContent.includes("WebApplication"), "PDF tool guides must render breadcrumb and WebApplication structured data");
-assert.ok(!pdfSEOContent.startsWith("\\\"use client\\\""), "PDF SEO guide should server-render its content and structured data");
+assert.ok(pdfSEOContent.includes('"@type": "BreadcrumbList"') && pdfSEOContent.includes("WebApplication"), "PDF tool guides must render breadcrumb and WebApplication structured data");
+assert.ok(!pdfSEOContent.startsWith('"use client"'), "PDF SEO guide should server-render its content and structured data");
 assert.ok(nextConfig.includes("/tools/nepal-forex-rates") && nextConfig.includes("/tools/currency-converter"), "Retired Forex URL must permanently redirect to the supported converter");
 assert.ok(!catalogSource.includes("nepal-forex-rates"), "Retired NRB forex tool must not remain in the catalog");
 assert.ok(!allTools.includes("nepal-forex-rates"), "Retired NRB forex route must not remain in the tool dispatcher");

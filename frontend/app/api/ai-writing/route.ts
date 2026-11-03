@@ -4,6 +4,21 @@ export const maxDuration = 30;
 const MODEL = "@cf/meta/llama-3.2-3b-instruct";
 const MAX_INPUT = 7000;
 
+// Best-effort per-instance throttling. The Workers Free allocation remains the
+// provider-enforced hard stop; this lightweight guard reduces accidental bursts.
+const requestWindows = new Map<string, { startedAt: number; count: number }>();
+function isRateLimited(request: Request) {
+  const ip = (request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown").split(",")[0].trim();
+  const now = Date.now();
+  const current = requestWindows.get(ip);
+  if (!current || now - current.startedAt >= 60_000) {
+    requestWindows.set(ip, { startedAt: now, count: 1 });
+    return false;
+  }
+  current.count += 1;
+  return current.count > 8;
+}
+
 type WritingKind = "ai-resume-writer" | "ai-cover-letter-generator" | "ai-humanizer" | "market-explain";
 
 function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
@@ -91,6 +106,8 @@ export async function POST(request: Request) {
       code: "FREE_AI_NOT_CONFIGURED",
     }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
+
+  if (isRateLimited(request)) return Response.json({ error: "Please wait a minute before sending more AI requests.", code: "RATE_LIMITED" }, { status: 429, headers: { "Retry-After": "60", "Cache-Control": "no-store" } });
 
   const prompt = buildPrompt(kind, body);
   const endpoint = `https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(accountId)}/ai/run/${MODEL}`;

@@ -2823,45 +2823,86 @@ async def push_send(request: Request, authorization: str | None = Header(default
     _, private_key, subject = _push_config()
     if not private_key:
         raise HTTPException(status_code=503, detail="Push delivery is not configured.")
-    payload = await request.json()
+    try:
+        payload = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid JSON payload.")
+    if not isinstance(payload, dict):
+        raise HTTPException(status_code=400, detail="A JSON object is required.")
+
     title = str(payload.get("title", "PDFora Nepal Market News"))[:120]
     body = str(payload.get("body", "A new market update is available."))[:240]
     url = str(payload.get("url", "/nepal-market-news"))
-    if not url.startswith("/") or url.startswith("//"): url = "/nepal-market-news"
+    if not url.startswith("/") or url.startswith("//"):
+        url = "/nepal-market-news"
     data = json.dumps({"title": title, "body": body, "url": url, "tag": str(payload.get("tag", "pdfora-news"))[:80]})
-    story_id = str(payload.get("id", "")).strip()
-    if story_id:
-        dedupe_key = "pdfora:push:sent:" + str(uuid.uuid5(uuid.NAMESPACE_URL, story_id))
-        if RATE_LIMIT_REDIS_URL and redis_async is not None:
-            client = await _get_push_redis()
-            fresh = await client.set(dedupe_key, "1", ex=60 * 60 * 24 * 14, nx=True)
-            if not fresh:
-                return {"sent": 0, "duplicate": True}
-        else:
-            if story_id in _PUSH_SENT_IDS_LOCAL:
-                return {"sent": 0, "duplicate": True}
-            _PUSH_SENT_IDS_LOCAL.add(story_id)
+
     try:
         from pywebpush import webpush, WebPushException
     except ImportError:
         raise HTTPException(status_code=503, detail="Web Push package is unavailable.")
-    subscriptions = await _push_all_subscriptions()
-    sent = expired = failed = 0
-    for key, subscription in subscriptions:
-        try:
-            await asyncio.to_thread(webpush, subscription_info=subscription, data=data, vapid_private_key=private_key, vapid_claims={"sub": subject}, ttl=3600)
-            sent += 1
-        except WebPushException as exc:
-            status = getattr(getattr(exc, "response", None), "status_code", None)
-            if status in (404, 410):
-                expired += 1
-                if RATE_LIMIT_REDIS_URL and redis_async is not None:
-                    client = await _get_push_redis()
-                    if client: await client.delete(key)
-                _PUSH_SUBSCRIPTIONS_LOCAL.pop(key, None)
-            else:
-                failed += 1
-        except Exception:
-            failed += 1
-    return {"sent": sent, "expired": expired, "failed": failed, "subscribers": len(subscriptions)}
 
+    subscriptions = await _push_all_subscriptions()
+    if not subscriptions:
+        return {"sent": 0, "expired": 0, "failed": 0, "subscribers": 0, "reason": "No subscribers"}
+
+    story_id = str(payload.get("id", "")).strip()[:2048]
+    dedupe_key = None
+    reserved = False
+    if story_id:
+        dedupe_key = "pdfora:push:sent:" + str(uuid.uuid5(uuid.NAMESPACE_URL, story_id))
+        if RATE_LIMIT_REDIS_URL and redis_async is not None:
+            client = await _get_push_redis()
+            reserved = bool(await client.set(dedupe_key, "processing", ex=60 * 10, nx=True))
+        else:
+            if story_id not in _PUSH_SENT_IDS_LOCAL:
+                _PUSH_SENT_IDS_LOCAL.add(story_id)
+                reserved = True
+        if not reserved:
+            return {"sent": 0, "duplicate": True}
+
+    sent = expired = failed = 0
+    try:
+        for key, subscription in subscriptions:
+            try:
+                await asyncio.to_thread(
+                    webpush,
+                    subscription_info=subscription,
+                    data=data,
+                    vapid_private_key=private_key,
+                    vapid_claims={"sub": subject},
+                    ttl=3600,
+                )
+                sent += 1
+            except WebPushException as exc:
+                status = getattr(getattr(exc, "response", None), "status_code", None)
+                if status in (404, 410):
+                    expired += 1
+                    if RATE_LIMIT_REDIS_URL and redis_async is not None:
+                        client = await _get_push_redis()
+                        if client:
+                            await client.delete(key)
+                    _PUSH_SUBSCRIPTIONS_LOCAL.pop(key, None)
+                else:
+                    failed += 1
+            except Exception:
+                failed += 1
+
+        if story_id:
+            if RATE_LIMIT_REDIS_URL and redis_async is not None:
+                client = await _get_push_redis()
+                if sent:
+                    await client.set(dedupe_key, "sent", ex=60 * 60 * 24 * 14)
+                else:
+                    await client.delete(dedupe_key)
+            elif not sent:
+                _PUSH_SENT_IDS_LOCAL.discard(story_id)
+        return {"sent": sent, "expired": expired, "failed": failed, "subscribers": len(subscriptions)}
+    except Exception:
+        if story_id:
+            if RATE_LIMIT_REDIS_URL and redis_async is not None:
+                client = await _get_push_redis()
+                await client.delete(dedupe_key)
+            else:
+                _PUSH_SENT_IDS_LOCAL.discard(story_id)
+        raise

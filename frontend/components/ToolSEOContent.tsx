@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import AdsterraNative from "../app/components/AdsterraNative";
 import { getToolGuide } from "../lib/tool-guides";

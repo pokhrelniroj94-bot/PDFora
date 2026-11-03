@@ -16,7 +16,9 @@ Required environment variables:
 
 **Important:** Do not upgrade the Cloudflare account to Workers Paid for this zero-cost configuration. Workers AI includes a limited daily free allocation; on the Workers Free plan, requests stop after the allocation is exhausted. They should not switch to a paid provider or paid fallback. Check the current Cloudflare pricing and model catalogue before changing the model.
 
-The current model configured in the route is `@cf/meta/llama-3.2-3b-instruct`. If Cloudflare retires or changes access to this model, update it only after confirming the replacement is available under the Free plan.
+The current model configured in the route is `@cf/meta/llama-3.2-3b-instruct`. If Cloudflare retires or changes access to this model, update it only after confirming the replacement is available under the Free plan. The `PDFORA_CF_WORKERS_FREE_PLAN` setting is an operator confirmation only; it does not query Cloudflare to verify the account plan. Keep it `false` until you have checked the Cloudflare dashboard. The daily free allocation is shared with other Workers AI usage in the account.
+
+Official reference: https://developers.cloudflare.com/workers-ai/platform/pricing/
 
 ## Features
 
@@ -29,7 +31,7 @@ The current model configured in the route is `@cf/meta/llama-3.2-3b-instruct`. I
 ## Market data limitations
 
 - NEPSE analysis uses the existing PDFora market endpoint and its currently configured YONEPSE public dataset. The feed is not an official NEPSE public API and may be delayed or unavailable.
-- Forex and Crypto analysis currently accepts broker/exchange CSV exports. The app intentionally does not scrape public vendor feeds whose free plans or terms do not grant public commercial display and analysis rights.
+- Forex and Crypto analysis currently accepts broker/exchange CSV exports. The app intentionally does not scrape public vendor feeds whose free plans or terms do not grant public commercial display and analysis rights. For example, CoinGecko states that its Demo plan does not include commercial rights (https://support.coingecko.com/articles/1043089972-what-are-the-differences-between-commercial-and-custom-licenses); Twelve Data describes individual/free use as personal or internal and non-production (https://support.twelvedata.com/en/articles/5332349-commercial-and-personal-usage); and TradingView restricts use of its market data for automated algorithmic decision-making (https://www.tradingview.com/policies/). Review current terms before adding a live provider.
 - The market engine uses transparent indicator rules (EMA, RSI, MACD, volatility, support/resistance). It does not claim a probability of profit or guarantee a buy/sell outcome.
 - Do not use TradingView display widgets as an input to automated calculations; TradingView's terms restrict non-display use of its market data.
 

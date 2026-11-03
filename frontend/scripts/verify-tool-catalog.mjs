@@ -154,6 +154,7 @@ assert.ok(resumeBuilder.includes("Save and restore my CV draft on this device") 
 assert.ok(resumeBuilder.includes("This storage is not encrypted") && resumeDraft.includes("export function isResumeDraft"), "Resume draft storage must disclose its privacy boundary and validate restored data");
 assert.ok(resumeBuilder.includes("templates.length") && resumeBuilder.includes('id: "student"') && resumeBuilder.includes('id: "ngo"') && resumeBuilder.includes('id: "experienced"'), "Resume builder must advertise accurate templates for students, NGO/INGO, and experienced professionals");
 assert.ok(resumeBuilder.includes("resume-layout-student .resume-education") && resumeBuilder.includes("resume-layout-academic .resume-content-flow") && resumeBuilder.includes("resume-executive-flow"), "Resume templates must implement distinct education-first, academic, and executive layouts");
+assert.ok(resumeBuilder.includes("position: static !important") && resumeBuilder.includes("overflow: visible !important") && resumeBuilder.includes("resume-editor-preview-grid > .resume-preview-container") && resumeBuilder.includes("break-inside: avoid"), "Resume PDF print rules must preserve document flow and allow multi-page output");
 
 const forexApi = read("../app/api/nepal-forex/route.ts");
 const forexBackend = read("../../backend/main.py");

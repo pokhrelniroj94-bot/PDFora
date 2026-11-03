@@ -5,7 +5,7 @@ import { useState } from "react";
 type Point = { date: string; open?: number; high?: number; low?: number; close: number; volume?: number };
 type Analysis = {
   count: number; latestDate: string; close: number; ema20: number; ema50: number; rsi: number;
-  macd: number; macdSignal: number; score: number; signal: "Potential BUY setup" | "Potential SELL / EXIT setup" | "Potential SELL / SHORT setup" | "Wait / neutral";
+  macd: number; macdSignal: number; score: number; signal: "Potential BUY setup" | "HOLD / WATCH" | "Potential SELL / EXIT setup" | "Potential SELL / SHORT setup" | "Wait / neutral";
   volatility: number; risk: "Lower" | "Moderate" | "High" | "Very high";
   support: number; resistance: number; stop: number | null; target: number | null;
   entry: string; risks: string[]; reasons: string[]; annualizer: number;
@@ -71,7 +71,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
   else if (change5 < -2) { score -= 1; reasons.push("Five-session momentum is negative."); }
   if (volumeConfirm && last.close > rows[rows.length - 2].close) { score += 1; reasons.push("Latest volume is above its recent average while price is rising."); }
   if (volumeConfirm && last.close < rows[rows.length - 2].close) { score -= 1; reasons.push("Latest volume is above its recent average while price is falling."); }
-  const signal = score >= 3 ? "Potential BUY setup" : score <= -3 ? (asset === "nepse" ? "Potential SELL / EXIT setup" : "Potential SELL / SHORT setup") : "Wait / neutral";
+  const signal = score >= 3 ? "Potential BUY setup" : score <= -3 ? (asset === "nepse" ? "Potential SELL / EXIT setup" : "Potential SELL / SHORT setup") : score >= 1 && trendUp ? "HOLD / WATCH" : "Wait / neutral";
   const recent = rows.slice(-20);
   const lows = recent.map((p) => p.low).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
   const highs = recent.map((p) => p.high).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
@@ -90,19 +90,25 @@ function analyse(points: Point[], asset: string): Analysis | null {
   }
   const risks: string[] = [];
   const ageDays = Math.max(0, (Date.now() - Date.parse(last.date)) / 86400000);
-  if (Number.isFinite(ageDays) && ageDays > (asset === "crypto" ? 2 : 5)) risks.push("The latest observation is stale for this market. Refresh the file before relying on this analysis.");
+  const stale = !Number.isFinite(ageDays) || ageDays > (asset === "crypto" ? 2 : 5);
+  const finalSignal = stale ? "Wait / neutral" : signal;
+  if (stale) risks.push("The latest observation is stale for this market. New BUY/SELL signals are suppressed until fresh data is available.");
   if (risk === "High" || risk === "Very high") risks.push("Recent annualized volatility is elevated for this asset class.");
   if (rsiValue >= 72) risks.push("RSI is overbought; a pullback can occur even while the broader trend is positive.");
   if (rsiValue <= 28) risks.push("RSI is deeply oversold; this is not proof that a bottom has formed.");
   if (rows.length < 100) risks.push("The history is limited; longer-term trend context may be incomplete.");
   if (!volumeConfirm) risks.push("No strong volume confirmation was detected, or volume data is unavailable.");
   if (!lows.length || !highs.length) risks.push("The file/source has no full OHLC range; support, resistance and risk levels are close-based estimates.");
-  const entry = signal === "Potential BUY setup"
+  const entry = stale
+    ? `No BUY/SELL signal: the latest daily observation is ${last.date}. Refresh or wait for a new completed trading session.`
+    : finalSignal === "Potential BUY setup"
     ? `Potential long setup only after a completed candle holds above EMA20 (${e20[i].toFixed(4)}) and the next session confirms. Avoid chasing a sharp gap.`
-    : signal.includes("SELL")
+    : finalSignal.includes("SELL")
       ? (asset === "nepse" ? `Downside/exit pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). NEPSE short-selling availability is limited; treat this as an exit/risk-review condition, not an instruction to short.` : `Downside pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). A short position requires a separate risk plan and may not be suitable for every trader.`)
+      : finalSignal === "HOLD / WATCH"
+      ? `Existing holders may watch the uptrend while price remains above EMA20 (${e20[i].toFixed(4)}). This is not a fresh-entry confirmation; review position risk and invalidation levels.`
       : `Wait for a confirmed close above EMA20 (${e20[i].toFixed(4)}) with improving momentum, or a confirmed breakdown below support. Current indicators are mixed.`;
-  return { count: rows.length, latestDate: last.date, close: last.close, ema20: e20[i], ema50: e50[i], rsi: rsiValue, macd: macdLine[i], macdSignal: macdSignal[i], score, signal, volatility, risk, support, resistance, stop, target, entry, risks, reasons, annualizer };
+  return { count: rows.length, latestDate: last.date, close: last.close, ema20: e20[i], ema50: e50[i], rsi: rsiValue, macd: macdLine[i], macdSignal: macdSignal[i], score, signal: finalSignal, volatility, risk, support, resistance, stop, target, entry, risks, reasons, annualizer };
 }
 function splitCsvLine(line: string) {
   const cells: string[] = [];

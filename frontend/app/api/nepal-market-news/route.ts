@@ -89,25 +89,32 @@ async function readFeed(query: string): Promise<Story[]> {
 
 export async function GET() {
   try {
-    const [marketResult, ipoResult, officialResult] = await Promise.allSettled([
-      readFeed("NEPSE Nepal stock market shares trading"),
-      readFeed("Nepal IPO FPO share allotment public issue"),
+    const [marketToday, marketWeek, ipoToday, ipoWeek, officialResult] = await Promise.allSettled([
+      readFeed("NEPSE Nepal stock market shares trading when:1d"),
+      readFeed("NEPSE Nepal stock market shares trading when:7d"),
+      readFeed("Nepal IPO FPO share allotment public issue when:1d"),
+      readFeed("Nepal IPO FPO share allotment public issue when:7d"),
       readOfficialStories(),
     ]);
     const official = officialResult.status === "fulfilled" ? officialResult.value : { market: [], ipo: [], failed: true };
-    const market = [
-      ...(marketResult.status === "fulfilled" ? marketResult.value : []),
-      ...official.market,
-    ].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
-    const ipo = [
-      ...(ipoResult.status === "fulfilled" ? ipoResult.value : []),
-      ...official.ipo,
-    ].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
+    const mergeRecent = (...groups: (Story[] | undefined)[]) => [...new Map(groups.flat().map((story) => [story.link, story])).values()]
+      .sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
+    const market = mergeRecent(
+      marketToday.status === "fulfilled" ? marketToday.value : [],
+      marketWeek.status === "fulfilled" ? marketWeek.value : [],
+      official.market,
+    );
+    const ipo = mergeRecent(
+      ipoToday.status === "fulfilled" ? ipoToday.value : [],
+      ipoWeek.status === "fulfilled" ? ipoWeek.value : [],
+      official.ipo,
+    );
     if (market.length === 0 && ipo.length === 0) {
       throw new Error("Google News and NEPSE public news feeds are temporarily unavailable");
     }
-    const warning = marketResult.status === "rejected" || ipoResult.status === "rejected" || official.failed
-      ? "Some providers are unavailable. Headlines from the working sources are still shown."
+    const failed = [marketToday, marketWeek, ipoToday, ipoWeek].some((item) => item.status === "rejected") || official.failed;
+    const warning = failed
+      ? "Some news providers are unavailable. Available headlines are shown; try refresh later for newer updates."
       : undefined;
     return Response.json(
       { market, ipo, updatedAt: new Date().toISOString(), maxAgeDays: 30, warning },

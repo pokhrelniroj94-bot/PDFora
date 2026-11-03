@@ -124,6 +124,80 @@ function normalizeBackendPayload(payload: any, requestedDate: string) {
   };
 }
 
+
+function decodeHtml(value: string) {
+  return value.replace(/&nbsp;|&#160;/gi, " ").replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"').replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">")
+    .replace(/&#(\\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([\\da-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)));
+}
+
+function extractNnswDate(html: string): string | null {
+  const inputDates = [...html.matchAll(/<input\\b[^>]*?(?:name|id)=["'][^"']*(?:date|validity)[^"']*["'][^>]*>/gi)]
+    .map((match) => match[0]);
+  for (const input of inputDates) {
+    const value = input.match(/value=["'](\\d{4}-\\d{2}-\\d{2})["']/i)?.[1];
+    if (value) return value;
+  }
+  const candidates = [...html.matchAll(/\\b(20\\d{2})[-/](\\d{1,2})[-/](\\d{1,2})\\b/g)];
+  for (const match of candidates) {
+    const [, y, m, d] = match;
+    const date = new Date(Date.UTC(Number(y), Number(m) - 1, Number(d)));
+    if (date.getUTCFullYear() === Number(y) && date.getUTCMonth() + 1 === Number(m) && date.getUTCDate() === Number(d)) {
+      return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+    }
+  }
+  return null;
+}
+
+function parseNnswHtml(html: string, requestedDate: string) {
+  if (!/Rastra Bank Exchange Rate/i.test(html)) throw new Error("NNSW page did not contain the Rastra Bank rate table.");
+  const rateDate = extractNnswDate(html);
+  if (!rateDate) throw new Error("NNSW did not expose a verifiable rate-validity date.");
+  if (rateDate > requestedDate) throw new Error("NNSW returned a rate newer than the requested date.");
+  const rows = [...html.matchAll(/<tr\\b[^>]*>([\\s\\S]*?)<\\/tr>/gi)].map((match) =>
+    [...match[1].matchAll(/<t[dh]\\b[^>]*>([\\s\\S]*?)<\\/t[dh]>/gi)]
+      .map((cell) => decodeHtml(cell[1].replace(/<[^>]*>/g, " ").replace(/\\s+/g, " ").trim()))
+  );
+  const rates: NormalizedRate[] = [];
+  for (const cells of rows) {
+    if (cells.length < 6 || !/^[A-Z]{3}$/.test(cells[1].toUpperCase())) continue;
+    const [code, name, buyRaw, sellRaw, unitRaw] = [cells[1].toUpperCase(), cells[2], cells[3], cells[4], cells[5]];
+    const buy = Number(buyRaw.replace(/,/g, ""));
+    const sell = Number(sellRaw.replace(/,/g, ""));
+    const unit = Number(unitRaw.replace(/,/g, ""));
+    if (!name || !Number.isFinite(buy) || buy <= 0 || !Number.isFinite(sell) || sell <= 0 ||
+        !Number.isFinite(unit) || unit <= 0) continue;
+    rates.push({ code, name, buy, sell, unit });
+  }
+  if (rates.length < 5 || new Set(rates.map((rate) => rate.code)).size !== rates.length) {
+    throw new Error("NNSW rate table was incomplete or malformed.");
+  }
+  return {
+    source: "Nepal National Single Window (NRB exchange-rate table)",
+    requestedDate,
+    rateDate,
+    publishedOn: null,
+    updatedAt: new Date().toISOString(),
+    rates,
+  };
+}
+
+async function fetchNnswRates(requestedDate: string) {
+  const url = new URL("https://nnsw.gov.np/trade/customs/rates/search");
+  url.searchParams.set("lang", "en");
+  const response = await fetch(url, {
+    headers: { Accept: "text/html", "User-Agent": "PDFora/1.0 (+https://pd-fora.vercel.app)" },
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!response.ok) throw new Error(`NNSW returned HTTP ${response.status}.`);
+  const html = await response.text();
+  if (html.length > 3 * 1024 * 1024) throw new Error("NNSW page exceeded 3 MB.");
+  return parseNnswHtml(html, requestedDate);
+}
+
 function nepalDate() {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
@@ -152,7 +226,16 @@ export async function GET(request: Request) {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600", "X-Forex-Source": "NRB" },
     });
   } catch (nrbError) {
-    console.warn("[nepal-forex] Direct NRB request failed; trying backend mirror:", nrbError);
+    console.warn("[nepal-forex] Direct NRB API failed; trying NNSW's published NRB rate table:", nrbError);
+  }
+
+  try {
+    const data = await fetchNnswRates(requestedDate);
+    return NextResponse.json(data, {
+      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600", "X-Forex-Source": "NNSW" },
+    });
+  } catch (nnswError) {
+    console.warn("[nepal-forex] NNSW fallback failed; trying Render cache:", nnswError);
   }
 
   try {
@@ -169,7 +252,7 @@ export async function GET(request: Request) {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600", "X-Forex-Source": "Render mirror" },
     });
   } catch (backendError) {
-    console.error("[nepal-forex] Both official NRB and backend mirror failed:", backendError);
+    console.error("[nepal-forex] NRB API, NNSW fallback and backend cache all failed:", backendError);
     return NextResponse.json(
       { error: "Official NRB exchange rates are temporarily unavailable. Please retry shortly." },
       { status: 503, headers: { "Cache-Control": "no-store" } },

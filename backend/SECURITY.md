@@ -13,6 +13,10 @@ Recommended Render environment variables:
 
 CORS currently uses a fixed allowlist in `backend/main.py`. If the frontend domain changes, update that list and test browser uploads before deploying.
 
+## Legacy Express service
+
+The older Express service in `backend/backend/server.js` is not the primary FastAPI upload API. If it is deployed or retained for any route, it now uses an exact-origin browser allowlist (override with comma-separated `FRONTEND_ORIGINS`), bounded JSON/form bodies, upload field/part limits, and a PDF/JPEG/PNG MIME allowlist. MIME checks are only an early filter; the PDF parser must still validate actual PDF content. Keep this service's deployment origins synchronized with the frontend and do not assume CORS is authentication.
+
 ## Vercel frontend
 
 The frontend sends security headers including `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, and HSTS. Keep the third-party ad integrations in mind before introducing an enforcing Content Security Policy.

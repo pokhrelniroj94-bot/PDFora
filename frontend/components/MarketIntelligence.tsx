@@ -114,6 +114,7 @@ function splitCsvLine(line: string) {
     else if (char === "," && !quoted) { cells.push(cell.trim()); cell = ""; }
     else cell += char;
   }
+  if (quoted) throw new Error("CSV contains an unclosed quoted field.");
   cells.push(cell.trim());
   return cells;
 }
@@ -210,6 +211,7 @@ export default function MarketIntelligence() {
     if (!file) return;
     setBusy(true); setError(""); setAnalysis(null); setAiText("");
     try {
+      if (file.size > 5 * 1024 * 1024) throw new Error("CSV file is too large. Maximum supported size is 5 MB.");
       const rows = parseCsv(await file.text());
       const result = analyse(rows, asset);
       if (!result) throw new Error("At least 50 valid historical daily prices are required.");

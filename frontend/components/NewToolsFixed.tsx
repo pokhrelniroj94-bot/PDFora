@@ -145,7 +145,7 @@ function UTMBuilder() {
 
 
 function loadToolScript(src:string,id:string):Promise<void>{return new Promise((resolve,reject)=>{if(document.getElementById(id)){resolve();return;}const el=document.createElement("script");el.id=id;el.src=src;el.async=true;el.onload=()=>resolve();el.onerror=()=>reject(new Error("Could not load tool library. Check your connection and retry."));document.head.appendChild(el);});}
-function escapeWifiField(value:string){return value.replace(/([\\;,:"])/g,(_,character:string)=>"\\\\ "+character).replace(/\\\\ /g,"\\\\");}
+function escapeWifiField(value:string){return value.replace(/([\\;,:"])/g, "\\$1");}
 function QRCodeGenerator(){
  const [value,setValue]=useState("https://pd-fora.vercel.app"),[type,setType]=useState("url"),[wifi,setWifi]=useState(""),[pass,setPass]=useState(""),[security,setSecurity]=useState("WPA"),[size,setSize]=useState("320"),[color,setColor]=useState("#111827"),[bg,setBg]=useState("#ffffff"),[data,setData]=useState(""),[error,setError]=useState("");
  const payload=type==="wifi"?"WIFI:T:"+security+";S:"+escapeWifiField(wifi)+";P:"+escapeWifiField(pass)+";;":type==="email"?"mailto:"+value.trim():type==="phone"?"tel:"+value.trim():value.trim();

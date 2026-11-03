@@ -27,7 +27,7 @@ function runBacktest(rows:Bar[], mode:string, costPct:number):Result {
     let buy=false, sell=false;
     if(mode==="sma"){buy=!!(s20&&s50&&p20&&p50&&s20>s50&&p20<=p50);sell=!!(s20&&s50&&p20&&p50&&s20<s50&&p20>=p50);}
     else if(mode==="rsi"){buy=!!(r!==null&&priorR!==null&&priorR<30&&r>=30);sell=!!(r!==null&&r>=70);}
-    else {const high=Math.max(...closes.slice(signalIndex-20,signalIndex));const low=Math.min(...closes.slice(signalIndex-20,signalIndex));buy=signalPrice>high&&signalPrice>closes[signalIndex-1];sell=signalPrice<sma(closes,20,signalIndex)!;}
+    else {const high=Math.max(...closes.slice(signalIndex-20,signalIndex));buy=signalPrice>high&&signalPrice>closes[signalIndex-1];sell=signalPrice<sma(closes,20,signalIndex)!;}
     if(units===0&&buy){entry=p*(1+costPct/100);units=cash/entry;cash=0;entryDate=rows[i].date;entryIndex=i;}
     else if(units>0&&(sell||i===rows.length-1)){
       const exit=p*(1-costPct/100), value=units*exit, ret=(exit/entry-1)*100;

@@ -401,3 +401,41 @@ def test_bookmark_split_preserves_pages_before_first_bookmark():
         assert "Page 1" in leading[0].get_text()
         assert "Page 2" in leading[1].get_text()
         leading.close()
+
+
+def test_rotated_page_display_coordinates_round_trip():
+    from main import display_point_to_page
+
+    doc = fitz.open()
+    for rotation in (0, 90, 180, 270):
+        page = doc.new_page(width=612, height=792)
+        page.set_rotation(rotation)
+        display_point = fitz.Point(36, 24)
+        page_point = display_point_to_page(page, display_point.x, display_point.y)
+        round_trip = page_point * page.rotation_matrix
+        assert abs(round_trip.x - display_point.x) < 0.01
+        assert abs(round_trip.y - display_point.y) < 0.01
+    doc.close()
+
+
+def test_open_pdf_limited_rejects_over_1000_pages():
+    from main import open_pdf_limited
+    from fastapi import HTTPException
+
+    doc = fitz.open()
+    for _ in range(1001):
+        doc.new_page()
+    data = doc.tobytes()
+    doc.close()
+    path = Path("page-limit-regression.pdf")
+    path.write_bytes(data)
+    try:
+        try:
+            open_pdf_limited(path)
+        except HTTPException as exc:
+            assert exc.status_code == 413
+            assert "1,000 pages" in exc.detail
+        else:
+            raise AssertionError("PDF over the page limit should be rejected")
+    finally:
+        path.unlink(missing_ok=True)

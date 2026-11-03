@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import CookieConsent, { CookieSettingsLink } from "../components/CookieConsent";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
+import { supportedHomeLanguages } from "../lib/home-locales";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -72,7 +73,7 @@ export default function RootLayout({
                   "@id": "https://pd-fora.vercel.app/#website",
                   name: "PDFora",
                   url: "https://pd-fora.vercel.app/",
-                  inLanguage: ["en", "ne"],
+                  inLanguage: supportedHomeLanguages.map((language) => language.code),
                 },
                 {
                   "@type": "Organization",

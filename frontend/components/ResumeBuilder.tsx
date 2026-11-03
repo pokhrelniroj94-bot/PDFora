@@ -112,9 +112,9 @@ export default function ResumeBuilder() {
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "AI could not improve this CV right now.");
-      const draft = typeof payload.text === "string" ? payload.text.trim() : "";
+      const draft: string = typeof payload.text === "string" ? payload.text.trim() : "";
       if (!draft) throw new Error("AI returned an empty CV draft.");
-      const lines = draft.split("\n");
+      const lines: string[] = draft.split("\n");
       const headings = ["Professional Summary", "Core Skills", "Experience Bullets", "Optional ATS Keywords"];
       const normalize = (line: string) => line.trim().replaceAll("#", "").replaceAll("*", "").replace(/:$/, "").trim().toLowerCase();
       const extract = (heading: string) => {

@@ -252,6 +252,7 @@ export default function MarketIntelligence() {
       setNewsReview(reviewed);
       const combined: Analysis = { ...result, signal: freshness.signal };
       if (freshness.stale && freshness.reason) {
+        combined.entry = `No directional entry setup is shown because the history is stale. ${freshness.reason}`;
         combined.risks = [...combined.risks, freshness.reason];
         combined.reasons = [...combined.reasons, freshness.reason];
       }

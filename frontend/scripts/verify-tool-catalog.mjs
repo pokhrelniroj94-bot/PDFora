@@ -66,6 +66,10 @@ assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weight
 assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
 
+const englishHomepageMetadata = read("../app/page.tsx");
+const nepaliHomepageMetadata = read("../app/ne/page.tsx");
+assert.ok(englishHomepageMetadata.includes('"x-default": site'), "English homepage must declare x-default hreflang");
+assert.ok(nepaliHomepageMetadata.includes('"x-default": site'), "Nepali homepage must declare reciprocal x-default hreflang");
 const sitemapSource = read("../app/sitemap.ts");
 const legacyRoutesSource = read("../lib/legacy-tool-slugs.ts");
 assert.ok(legacyRoutesSource.includes('"resume-builder"'), "Resume Builder /tools alias must redirect to its existing canonical root route");

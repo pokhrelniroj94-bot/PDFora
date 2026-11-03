@@ -126,7 +126,7 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
       "User question: " + safe("question", 1000),
       "",
       "Answer in the user's language (Nepali, Romanized Nepali, or English). Be concise and practical."
-    ].join("\\n");
+    ].join("\n");
   }
   if (kind === "site-help") {
     return [

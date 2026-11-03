@@ -14,7 +14,8 @@ Required environment variables:
 - `CLOUDFLARE_API_TOKEN`
 - `PDFORA_CF_WORKERS_FREE_PLAN=true`
 - `PDFORA_AI_ENABLED=true` (keep `false` until ready for public launch)
-- `PDFORA_AI_RATE_LIMIT_READY=true` (only after configuring and testing a shared Vercel Firewall/WAF rate limit for `POST /api/ai-writing`)
+- `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (Upstash Redis Free REST credentials used by the API's atomic shared limiter)
+- `PDFORA_AI_RATE_LIMIT_READY=true` (only after the Upstash Free database is provisioned and the shared Redis limiter has been tested)
 
 **Important:** Do not upgrade the Cloudflare account to Workers Paid for this zero-cost configuration. Workers AI includes a limited daily free allocation; on the Workers Free plan, requests stop after the allocation is exhausted. They should not switch to a paid provider or paid fallback. Check the current Cloudflare pricing and model catalogue before changing the model.
 
@@ -39,4 +40,4 @@ Official reference: https://developers.cloudflare.com/workers-ai/platform/pricin
 
 ## Privacy
 
-AI writing inputs are sent to Cloudflare Workers AI when configured. Do not submit passwords, identity numbers, private keys, or confidential documents. The AI route does not persist prompts or generated text. The endpoint rejects request bodies larger than 16 KB, applies field-level length limits, disables response caching, avoids logging prompts or credentials, and uses a best-effort in-memory per-instance throttle. That throttle is not a distributed rate limiter and may reset when serverless instances restart. The route fails closed until the owner explicitly enables AI and confirms a shared Vercel Firewall/WAF rate limit for `POST /api/ai-writing`. Do not set `PDFORA_AI_RATE_LIMIT_READY=true` until the edge rule is live and tested. Set a Cloudflare account spending/billing safeguard as well; the environment flag alone cannot enforce a free account plan.
+AI writing inputs are sent to Cloudflare Workers AI when configured. Do not submit passwords, identity numbers, private keys, or confidential documents. The AI route does not persist prompts or generated text. The endpoint rejects request bodies larger than 16 KB, applies field-level length limits, disables response caching, avoids logging prompts or credentials, and uses an atomic shared Upstash Redis counter (8 requests per IP hash per 60 seconds). If Redis is missing or unavailable, the route fails closed instead of sending a request to the model. The route fails closed until the owner explicitly enables AI and confirms that the Upstash Redis shared rate limiter is configured and tested. Do not set `PDFORA_AI_RATE_LIMIT_READY=true` until the edge rule is live and tested. Set a Cloudflare account spending/billing safeguard as well; the environment flag alone cannot enforce a free account plan.

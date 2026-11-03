@@ -2,7 +2,24 @@
 
 import { useState } from "react";
 
-type Point = { date: string; open?: number; high?: number; low?: number; close: number; volume?: number };
+
+type NewsStory = { title: string; link: string; publishedAt: string; source: string };
+type NewsReview = { stories: NewsStory[]; sentiment: "Positive" | "Negative" | "Mixed / neutral"; impact: number; note: string };
+function reviewNews(payload: { market?: NewsStory[]; ipo?: NewsStory[] }, symbol: string): NewsReview {
+  const all = [...(payload.market || []), ...(payload.ipo || [])], now = Date.now(), ticker = symbol.trim().toLowerCase();
+  const relevant = all.filter(story => {
+    const age = now - Date.parse(story.publishedAt), title = story.title.toLowerCase();
+    const general = /nepse|stock market|share market|sebon|nrb|monetary policy|interest rate|liquidity|banking sector|capital market|ipo|fpo|dividend|bonus share|right share|merger|acquisition|agm|broker/.test(title);
+    return Number.isFinite(age) && age >= -300000 && age <= 30*86400000 && (!ticker || ticker === "nepse" || title.includes(ticker) || general);
+  }).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,12);
+  const pos=/profit|earnings growth|dividend|bonus share|right share|buyback|upgrade|approval|record high|strong demand|liquidity injection|rate cut|interest rate cut|capital increase|positive outlook|growth/;
+  const neg=/fraud|scam|penalty|fine|investigation|default|loss|decline|crash|selloff|selling pressure|rate hike|interest rate hike|liquidity crunch|suspension|regulatory action|downgrade|lawsuit|weak outlook|non.?performing loan/;
+  let score=0;
+  for(const story of relevant){const h=(now-Date.parse(story.publishedAt))/3600000, fresh=h<=24?1:h<=72?.7:h<=168?.4:.2, official=/nepse|sebon|nepal rastra bank|nrb/i.test(story.source+" "+story.title)?1.35:1; if(pos.test(story.title.toLowerCase()))score+=fresh*official;if(neg.test(story.title.toLowerCase()))score-=fresh*official;}
+  const sentiment=score>=.8?"Positive":score<=-.8?"Negative":"Mixed / neutral";
+  return {stories:relevant,sentiment,impact:Math.max(-2,Math.min(2,score)),note:relevant.length?relevant.length+" recent headlines reviewed. Headlines are only a screening signal; verify the linked announcement and full context.":"No sufficiently relevant recent headlines found. News sentiment is unavailable, not neutral."};
+}
+\ntype Point = { date: string; open?: number; high?: number; low?: number; close: number; volume?: number };
 type Analysis = {
   count: number; latestDate: string; close: number; ema20: number; ema50: number; rsi: number;
   macd: number; macdSignal: number; score: number; signal: "Potential BUY setup" | "HOLD / WATCH" | "Potential SELL / EXIT setup" | "Potential SELL / SHORT setup" | "Wait / neutral";
@@ -210,7 +227,7 @@ export default function MarketIntelligence() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [aiText, setAiText] = useState("");
-  const [aiBusy, setAiBusy] = useState(false);
+  const [aiBusy, setAiBusy] = useState(false);\n  const [newsReview, setNewsReview] = useState<NewsReview | null>(null);
 
   async function loadNepse() {
     setBusy(true); setError(""); setAnalysis(null); setAiText("");
@@ -224,7 +241,17 @@ export default function MarketIntelligence() {
       })).filter((p: Point) => p.date && Number.isFinite(p.close) && p.close > 0);
       const result = analyse(rows, "nepse");
       if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
-      setAnalysis(result); setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
+      const newsResponse = await fetch("/api/nepal-market-news", { cache: "no-store" });
+      if (!newsResponse.ok) throw new Error("News service unavailable; a news-verified signal cannot be issued.");
+      const newsPayload = await newsResponse.json();
+      const reviewed = reviewNews(newsPayload, symbol);
+      setNewsReview(reviewed);
+      const combined: Analysis = { ...result };
+      if (reviewed.sentiment === "Negative" && combined.signal === "Potential BUY setup") { combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "Negative recent headlines block a fresh BUY until original announcements are reviewed."]; }
+      else if (reviewed.sentiment === "Positive" && combined.signal.includes("SELL")) { combined.signal = "Wait / neutral"; combined.risks = [...combined.risks, "Positive headlines conflict with technical downside; wait for confirmation."]; }
+      else if (reviewed.sentiment === "Mixed / neutral") combined.risks = [...combined.risks, "News is mixed or insufficient; technical-only confidence is lower."];
+      combined.reasons = [...combined.reasons, `News review: ${reviewed.sentiment}. ${reviewed.note}`];
+      setAnalysis(combined); setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
     } catch (err) { setError(err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
     finally { setBusy(false); }
   }
@@ -298,6 +325,7 @@ export default function MarketIntelligence() {
         <div className={card}><h3 className="font-extrabold text-slate-900">Why the engine reached this view</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-slate-700">{analysis.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul></div>
       </section>
       <section className={card}><h3 className="font-extrabold text-slate-900">Risk warnings</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-amber-900">{analysis.risks.map((risk) => <li key={risk}>{risk}</li>)}</ul></section>
+      <section className={card}><h3 className="font-extrabold text-slate-900">Market news cross-check</h3><p className="mt-2 text-sm text-slate-600">News sentiment: <strong>{newsReview?.sentiment || "Not checked"}</strong> · {newsReview?.stories.length || 0} relevant headlines</p><p className="mt-2 text-sm text-slate-600">{newsReview?.note || "News checked alongside technical indicators."}</p>{newsReview?.stories.length ? <ul className="mt-3 space-y-3">{newsReview.stories.map(story=><li key={story.link} className="border-t border-slate-100 pt-3"><a href={story.link} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal-800 underline">{story.title}</a><p className="mt-1 text-xs text-slate-500">{story.source} · {new Date(story.publishedAt).toLocaleString()}</p></li>)}</ul> : <p className="mt-3 text-xs text-amber-700">No relevant recent news found; confidence is reduced.</p>}</section>
       <section className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">AI explanation (optional)</h3><p className="mt-1 text-xs text-slate-500">The model explains the calculations; it does not create or override the signal.</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Explaining…" : "Explain with free AI"}</button></div>
         {aiText && <p className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{aiText}</p>}

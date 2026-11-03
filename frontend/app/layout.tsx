@@ -72,7 +72,7 @@ export default function RootLayout({
                   "@id": "https://pd-fora.vercel.app/#website",
                   name: "PDFora",
                   url: "https://pd-fora.vercel.app/",
-                  inLanguage: ["en", "ne"],
+                  inLanguage: "en",
                 },
                 {
                   "@type": "Organization",

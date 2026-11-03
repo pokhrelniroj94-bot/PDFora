@@ -119,6 +119,8 @@ assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesTo
 
 const marketApi = read("../app/api/nepse-market/route.ts");
 const marketDashboard = read("../components/NepseMarketDashboard.tsx");
+const portfolioUi = read("../components/NepsePortfolio.tsx");
+const portfolioMath = read("../lib/nepse-portfolio-math.ts");
 const marketPage = read("../app/market/page.tsx");
 const newsApi = read("../app/api/nepal-market-news/route.ts");
 const newsComponent = read("../components/NepalMarketNews.tsx");
@@ -135,6 +137,10 @@ assert.ok(marketApi.includes("summary: pick(summaryResult, [])"), "NEPSE summary
 assert.ok(marketApi.includes('s-maxage=60'), "NEPSE API response cache must allow frequent quote updates");
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
 assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
+assert.ok(marketDashboard.includes(\x27dynamic(() => import("./NepsePortfolio")\x27), "NEPSE portfolio must be lazy-loaded on the market dashboard");
+assert.ok(portfolioUi.includes(\x27name: "AES-GCM"\x27) && portfolioUi.includes(\x27name: "PBKDF2"\x27), "NEPSE portfolio must encrypt saved data with a derived key");
+assert.ok(portfolioUi.includes("localStorage.setItem(STORAGE_KEY") && !portfolioUi.includes("fetch("), "NEPSE portfolio data must stay in encrypted browser storage");
+assert.ok(portfolioMath.includes("averageCost * trade.quantity") && portfolioMath.includes("trade.quantity > account.quantity"), "NEPSE portfolio calculations must track weighted cost and reject overselling");
 assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market dashboard route is missing");
 assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market Dashboard"), "Homepage must link to the dedicated NEPSE market dashboard");
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");

@@ -76,6 +76,19 @@ assert.ok(legacyRoutesSource.includes('"resume-builder"'), "Resume Builder /tool
 assert.ok(sitemapSource.includes("legacyToolSlugs.map") && sitemapSource.includes("legacyRouteEntries"), "Canonical root-level tool routes must be emitted in the sitemap");
 assert.ok(sitemapSource.includes('"x-default": baseUrl'), "English/Nepali homepage sitemap alternates must include x-default");
 assert.ok(sitemapSource.includes('!legacyToolSlugSet.has(tool.slug)'), "Sitemap must exclude catalog aliases that redirect to canonical root routes");
+const legacySlugValues = [...legacyRoutesSource.matchAll(/^\\s*"([^"]+)",?$/gm)].map((match) => match[1]);
+const canonicalCatalogSlugs = catalog.filter((slug) => slug !== "ocr-pdf" && slug !== "pdf-tools" && !legacySlugValues.includes(slug));
+const canonicalToolSlugs = [...legacySlugValues, ...canonicalCatalogSlugs];
+assert.equal(new Set(canonicalToolSlugs).size, canonicalToolSlugs.length, "Canonical tool sitemap routes must be unique");
+for (const slug of catalog) {
+  if (slug === "ocr-pdf" || slug === "pdf-tools") continue;
+  assert.ok(
+    legacySlugValues.includes(slug) || canonicalCatalogSlugs.includes(slug),
+    `Catalog tool ${slug} is missing a canonical sitemap route`,
+  );
+}
+assert.ok(sitemapSource.includes("url: `${baseUrl}/${slug}`"), "Legacy tool sitemap entries must use their root-level canonical URLs");
+assert.ok(sitemapSource.includes("url: `${baseUrl}/tools/${tool.slug}`"), "Non-legacy catalog sitemap entries must use their /tools canonical URLs");
 
 const toolDirectory = read("../lib/tool-directory.ts");
 const homepage = read("../app/page.tsx");

@@ -83,6 +83,28 @@ export default function ToolSEOContent({ slug }: { slug: string }) {
           {guide.related.map((slug) => { const related = getToolGuide(slug); return related ? <Link key={slug} href={`/${slug}`} className="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-bold text-violet-800 hover:bg-violet-100">{related.name}</Link> : null; })}
         </div>
       </section>
-    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /></article>
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://pd-fora.vercel.app/" },
+        { "@type": "ListItem", position: 2, name: "PDF Tools", item: "https://pd-fora.vercel.app/tools" },
+        { "@type": "ListItem", position: 3, name: guide.name, item: `https://pd-fora.vercel.app/${slug}` },
+      ],
+    },
+    {
+      "@type": "WebApplication",
+      name: guide.name,
+      url: `https://pd-fora.vercel.app/${slug}`,
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Any",
+      description: guide.purpose,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      publisher: { "@type": "Organization", name: "PDFora", url: "https://pd-fora.vercel.app/" },
+    },
+  ],
+}) }} /></article>
   );
 }

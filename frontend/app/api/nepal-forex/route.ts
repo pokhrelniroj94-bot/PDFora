@@ -67,7 +67,7 @@ async function fetchDirectFromNrb(requestedDate: string) {
   // Use UTC date arithmetic so the Vercel runtime timezone cannot shift the range.
   const [year, month, day] = requestedDate.split("-").map(Number);
   const start = new Date(Date.UTC(year, month - 1, day));
-  start.setUTCDate(start.getUTCDate() - 21);
+  start.setUTCDate(start.getUTCDate() - 45);
   const from = [
     start.getUTCFullYear(),
     String(start.getUTCMonth() + 1).padStart(2, "0"),
@@ -82,7 +82,7 @@ async function fetchDirectFromNrb(requestedDate: string) {
       Referer: "https://www.nrb.org.np/forex/",
     },
     cache: "no-store",
-    signal: AbortSignal.timeout(12_000),
+    signal: AbortSignal.timeout(8_000),
   });
   if (!response.ok) throw new Error(`NRB API returned HTTP ${response.status}`);
   return normalizeNrbPayload(await response.json(), requestedDate);
@@ -94,7 +94,7 @@ async function fetchFromBackend(requestedDate: string) {
   const response = await fetch(target, {
     headers: { Accept: "application/json" },
     cache: "no-store",
-    signal: AbortSignal.timeout(10_000),
+    signal: AbortSignal.timeout(22_000),
   });
   if (!response.ok) throw new Error(`Forex backend returned HTTP ${response.status}`);
   return normalizeBackendPayload(await response.json(), requestedDate);

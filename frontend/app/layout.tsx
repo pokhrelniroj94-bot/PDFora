@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://pd-fora.vercel.app"),
+  manifest: "/manifest.webmanifest",
+  themeColor: "#0f766e",
+  appleWebApp: { capable: true, title: "PDFora", statusBarStyle: "default" },
   title: {
     default: "Free Online PDF Tools & Nepal Utilities | PDFora",
     template: "%s | PDFora",

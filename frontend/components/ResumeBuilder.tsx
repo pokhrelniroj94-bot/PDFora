@@ -50,6 +50,9 @@ export default function ResumeBuilder() {
   const [certifications, setCertifications] = useState("");
   const [references, setReferences] = useState("");
   const [aiDraftNotice, setAiDraftNotice] = useState("");
+  const [aiConsent, setAiConsent] = useState(false);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiError, setAiError] = useState("");
   useEffect(() => {
     const timer = window.setTimeout(() => {
       try {
@@ -92,6 +95,46 @@ export default function ResumeBuilder() {
   const label = "mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500";
   const field = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{title}</span><input className={input} value={value} onChange={e => setter(e.target.value)} placeholder={placeholder} /></label>;
   const area = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{title}</span><textarea className={input + " min-h-24 resize-y"} value={value} onChange={e => setter(e.target.value)} placeholder={placeholder} /></label>;
+  const generateCvWithAi = async () => {
+    if (!role.trim() || aiBusy || !aiConsent) return;
+    setAiBusy(true);
+    setAiError("");
+    setAiDraftNotice("");
+    try {
+      const experience = jobs.map((job) => [job.role, job.company, job.dates, job.details].filter(Boolean).join(" · ")).filter(Boolean).join("\\n");
+      const educationText = education.map((item) => [item.degree, item.school, item.place, item.dates].filter(Boolean).join(" · ")).filter(Boolean).join("\\n");
+      const response = await fetch("/api/ai-writing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: "ai-resume-writer", role, skills, experience, education: educationText, style: "Professional and ATS-friendly" }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "AI could not improve this CV right now.");
+      const draft = typeof payload.text === "string" ? payload.text.trim() : "";
+      if (!draft) throw new Error("AI returned an empty CV draft.");
+      const lines = draft.split(/\\r?\\n/);
+      const headings = ["Professional Summary", "Core Skills", "Experience Bullets", "Optional ATS Keywords"];
+      const normalize = (line: string) => line.trim().replace(/^#+\\s*/, "").replace(/\\*\\*/g, "").replace(/:$/, "").trim().toLowerCase();
+      const extract = (heading: string) => {
+        const start = lines.findIndex((line) => normalize(line) === heading.toLowerCase());
+        if (start < 0) return "";
+        const end = lines.findIndex((line, index) => index > start && headings.some((item) => normalize(line) === item.toLowerCase()));
+        return lines.slice(start + 1, end < 0 ? lines.length : end).join("\\n").trim();
+      };
+      const nextSummary = extract("Professional Summary");
+      const nextSkills = extract("Core Skills");
+      const nextExperience = extract("Experience Bullets");
+      if (!nextSummary && !nextSkills && !nextExperience) throw new Error("AI returned an unexpected format. Please use the separate AI Resume Writer and review its output.");
+      if (nextSummary) setSummary(nextSummary);
+      if (nextSkills) setSkills(nextSkills);
+      if (nextExperience) setJobs((rows) => rows.length ? rows.map((row, index) => index === 0 ? { ...row, details: nextExperience } : row) : [{ ...initialJob(), details: nextExperience }]);
+      setAiDraftNotice("AI suggestions added to your CV. Review every sentence and verify all facts before downloading.");
+    } catch (error) {
+      setAiError(error instanceof Error ? error.message : "AI CV assistance is temporarily unavailable.");
+    } finally {
+      setAiBusy(false);
+    }
+  };
   const print = () => window.print();
   const heading = (title: string) => <h3 className="mb-3 mt-6 border-b pb-2 text-sm font-extrabold uppercase tracking-widest" style={{ color: accent, borderColor: accent + "55" }}>{title}</h3>;
 
@@ -100,6 +143,11 @@ export default function ResumeBuilder() {
     <div className="mb-7 flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Career Studio</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Professional Resume Builder</h1><p className="mt-2 max-w-2xl text-slate-600">Build a polished, job-ready CV with 20 professional templates, live preview and print-ready A4 PDF export.</p></div>
       <div className="no-print flex flex-wrap gap-2"><a href="/tools/ai-resume-writer" className="rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-extrabold text-teal-800 transition hover:bg-teal-100">AI write CV content ↗</a><a href="/tools/ai-cover-letter-generator" className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50">Cover letter ↗</a><button onClick={print} className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800">Download CV as PDF ↗</button></div>
+    </div>
+    <div className="no-print mb-6 rounded-2xl border border-teal-200 bg-teal-50/60 p-4 sm:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-wide text-teal-800">AI CV Assistant</p><h2 className="mt-1 text-lg font-extrabold text-slate-950">Improve your CV with AI</h2><p className="mt-1 max-w-2xl text-sm text-slate-600">Uses your target role, skills, education and experience to draft a stronger summary and ATS-friendly bullet points. Your contact details and photo are not sent.</p></div><button type="button" onClick={() => void generateCvWithAi()} disabled={aiBusy || !aiConsent || !role.trim()} className="rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50">{aiBusy ? "Improving CV…" : "Improve CV with AI"}</button></div>
+      <label className="mt-3 flex items-start gap-2 text-xs leading-5 text-slate-600"><input type="checkbox" checked={aiConsent} onChange={(event) => setAiConsent(event.target.checked)} className="mt-1 h-4 w-4 accent-teal-700" /><span>I agree to send my target role, skills, education and experience text to the configured AI provider for processing. I will not include confidential information.</span></label>
+      {aiError && <p role="alert" className="mt-3 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{aiError}</p>}
     </div>
     <div className="no-print mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {templates.map(t => <button key={t.id} onClick={() => setTemplate(t.id)} className={"rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md " + (template === t.id ? "border-teal-600 bg-teal-50 ring-2 ring-teal-100" : "border-slate-200 bg-white")}>

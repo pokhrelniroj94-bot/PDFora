@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = { slug: string };
 type Values = Record<string, string>;
@@ -10,6 +11,7 @@ const labelClass = "mb-1.5 block text-sm font-semibold text-slate-700";
 const panelClass = "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7";
 
 export default function AIWritingTools({ slug }: Props) {
+  const router = useRouter();
   const [values, setValues] = useState<Values>({});
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
@@ -82,7 +84,7 @@ export default function AIWritingTools({ slug }: Props) {
       setError("Your browser could not temporarily transfer this draft. Copy the text and paste it into Resume Builder instead.");
       return;
     }
-    window.location.href = "/resume-builder";
+    router.push("/resume-builder");
   }
 
   function downloadResult() {

@@ -1,8 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import NewsPushSubscribe from "./NewsPushSubscribe";
-
 type Story = { title: string; link: string; publishedAt: string; source: string };
 type Feed = { market: Story[]; ipo: Story[]; updatedAt: string; warning?: string };
 

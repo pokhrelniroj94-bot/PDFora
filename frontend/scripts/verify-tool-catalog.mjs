@@ -12,6 +12,9 @@ const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
 const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
 const toolPage = read("../app/tools/[slug]/page.tsx");
+const pdfToolSEO = read("../lib/tool-seo.ts");
+const pdfSEOContent = read("../components/ToolSEOContent.tsx");
+const nextConfig = read("../next.config.ts");
 const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
@@ -56,6 +59,12 @@ const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
 assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
+assert.ok(toolPage.includes("googleBot") && toolPage.includes("max-image-preview"), "Catalog tool metadata must include Googlebot preview directives");
+assert.ok(toolPage.includes("summary_large_image") && toolPage.includes("opengraph-image"), "Catalog tool pages must provide social preview images");
+assert.ok(pdfToolSEO.includes("canonical: url") && pdfToolSEO.includes("googleBot") && pdfToolSEO.includes("summary_large_image"), "PDF tool metadata must include canonical, Googlebot and social preview metadata");
+assert.ok(pdfSEOContent.includes("\\\"@type\\\": \\\"BreadcrumbList\\\"") && pdfSEOContent.includes("WebApplication"), "PDF tool guides must render breadcrumb and WebApplication structured data");
+assert.ok(!pdfSEOContent.startsWith("\\\"use client\\\""), "PDF SEO guide should server-render its content and structured data");
+assert.ok(nextConfig.includes("/tools/nepal-forex-rates") && nextConfig.includes("/tools/currency-converter"), "Retired Forex URL must permanently redirect to the supported converter");
 assert.ok(!catalogSource.includes("nepal-forex-rates"), "Retired NRB forex tool must not remain in the catalog");
 assert.ok(!allTools.includes("nepal-forex-rates"), "Retired NRB forex route must not remain in the tool dispatcher");
 assert.ok(!nepalLiveTools.includes("ForexTool") && !nepalLiveTools.includes("/api/nepal-forex") && !nepalLiveTools.includes("fallbackCurrencies"), "Retired NRB forex UI, API client and currency fallback must be removed");
@@ -117,6 +126,14 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
+for (const href of availablePdfHrefs) {
+  const slug = href.slice(1);
+  const layoutPath = new URL(`../app/${slug}/layout.tsx`, import.meta.url);
+  assert.ok(fs.existsSync(layoutPath), `PDF tool ${slug} is missing its SEO layout`);
+  const layoutSource = fs.readFileSync(layoutPath, "utf8");
+  assert.ok(layoutSource.includes(`getToolMetadata("${slug}")`), `PDF tool ${slug} is missing generated metadata`);
+  assert.ok(layoutSource.includes(`ToolSEOContent slug="${slug}"`), `PDF tool ${slug} is missing its on-page SEO guide`);
+}
 assert.equal(catalog.length, 119, "Expected 119 catalog utilities after retiring the NRB forex tool");
 assert.equal(allHrefs.length, 168, "Expected 168 available tools (49 PDF tools + 119 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");

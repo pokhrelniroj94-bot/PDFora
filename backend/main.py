@@ -1,5 +1,5 @@
-Warning: truncated output (original token count: 24322)
-Total output lines: 2783
+Warning: truncated output (original token count: 24650)
+Total output lines: 2811
 
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -195,6 +195,7 @@ async def security_headers_and_temp_cleanup(request: Request, call_next):
 # ============================================================
 
 MAX_FILE_SIZE = 50 * 1024 * 1024
+MAX_DOCUMENT_RENDER_PIXELS = 100_000_000
 _REQUEST_TEMP_JOBS: ContextVar[list[Path] | None] = ContextVar("pdfora_request_temp_jobs", default=None)
 
 # Upload protection defaults. Redis is recommended for multi-instance deployments.
@@ -470,6 +471,20 @@ def safe_render_matrix(page, requested_scale: float = 2.0, max_pixels: int = 20_
     if scale < 0.25:
         raise HTTPException(status_code=413, detail="This PDF page is too large to render safely.")
     return fitz.Matrix(scale, scale)
+
+
+def reserve_render_pixels(page, already_reserved: int, requested_scale: float = 2.0) -> int:
+    """Bound total raster work/output for a multi-page conversion, not only each page."""
+    matrix = safe_render_matrix(page, requested_scale)
+    rect = page.rect
+    page_pixels = int(float(rect.width) * matrix.a + 0.999) * int(float(rect.height) * matrix.d + 0.999)
+    total = already_reserved + page_pixels
+    if total > MAX_DOCUMENT_RENDER_PIXELS:
+        raise HTTPException(
+            status_code=413,
+            detail="This PDF would exceed the 100-million-pixel document conversion limit.",
+        )
+    return total
 
 
 def read_pdf(path: Path):
@@ -1115,6 +1130,7 @@ async def pdf_to_jpg(
 
         document = open_pdf_limited(input_file)
 
+        rendered_pixels = 0
         with zipfile.ZipFile(
             zip_file,
             "w",
@@ -1124,6 +1140,8 @@ async def pdf_to_jpg(
             for index, page in enumerate(
                 document
             ):
+
+                rendered_pixels = reserve_render_pixels(page, rendered_pixels, 1.5)
 
                 pixmap = page.get_pixmap(
                     matrix=safe_render_matrix(page, 1.5),
@@ -1301,57 +1319,7 @@ async def delete_pages(
 
         for index, page in enumerate(
             reader.pages,
-            start=1
-        ):
-
-            if index not in delete_set:
-
-                writer.add_page(page)
-
-        if len(writer.pages) == 0:
-
-            raise HTTPException(
-                status_code=400,
-                detail="You cannot delete every page."
-            )
-
-        with open(output, "wb") as output_file:
-
-            writer.write(
-                output_file
-            )
-
-        return pdf_response(
-            output,
-            "NIROJ-Deleted-Pages.pdf"
-        )
-
-    finally:
-
-        try:
-            await file.close()
-        except Exception:
-            pass
-
-
-# ============================================================
-# EXTRACT PAGES
-# ============================================================
-
-@app.post("/api/extract-pages")
-async …4322 tokens truncated…r.add_metadata(safe_metadata)
-        writer.encrypt(user_password=password, owner_password=password)
-        with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"NIROJ-Protected.pdf")
-    finally: await file.close()
-
-@app.post("/api/unlock")
-async def unlock_pdf(file: UploadFile = File(...), password: str = Form(...)):
-    validate_pdf_upload(file)
-    job=create_job()
-    try:
-        src=job/"input.pdf"; out=job/"unlocked.pdf"; await save_upload(file,src); reader=PdfReader(str(src))
-        if reader.is_encrypted:
+…4650 tokens truncated…if reader.is_encrypted:
             try: ok=reader.decrypt(password)
             except Exception: ok=0
             if not ok: raise HTTPException(status_code=400,detail="Incorrect password or unsupported encryption.")
@@ -1386,8 +1354,10 @@ async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
     try:
         src=job/"input.pdf"; archive=job/f"images-{fmt}.zip"; await save_upload(file,src); doc=open_pdf_limited(src)
         if len(doc)>200: raise HTTPException(status_code=413,detail="Maximum 200 pages per image conversion.")
+        rendered_pixels=0
         with zipfile.ZipFile(archive,"w",zipfile.ZIP_DEFLATED) as z:
             for i,p in enumerate(doc):
+                rendered_pixels=reserve_render_pixels(p,rendered_pixels,2.0)
                 pix=p.get_pixmap(matrix=safe_render_matrix(p, 2.0),alpha=False)
                 im=Image.frombytes("RGB",[pix.width,pix.height],pix.samples)
                 dest=io.BytesIO()
@@ -1427,8 +1397,10 @@ async def grayscale_pdf(file: UploadFile = File(...)):
         src=job/"input.pdf"; out=job/"grayscale.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for grayscale conversion.")
         flattened=fitz.open()
+        rendered_pixels=0
         for p in doc:
             rect=p.rect
+            rendered_pixels=reserve_render_pixels(p,rendered_pixels,1.5)
             pix=p.get_pixmap(matrix=safe_render_matrix(p, 1.5),colorspace=fitz.csGRAY,alpha=False,annots=True)
             page=flattened.new_page(width=rect.width,height=rect.height)
             page.insert_image(page.rect,stream=pix.tobytes("png"))
@@ -1445,8 +1417,10 @@ async def flatten_pdf(file: UploadFile = File(...)):
         if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for flattening.")
         # Render each page into a fresh PDF page. This removes interactive annotations/widgets.
         flattened=fitz.open()
+        rendered_pixels=0
         for page in doc:
             rect=page.rect
+            rendered_pixels=reserve_render_pixels(page,rendered_pixels,1.5)
             pix=page.get_pixmap(matrix=safe_render_matrix(page, 1.5),alpha=False,annots=True)
             target=flattened.new_page(width=rect.width,height=rect.height)
             target.insert_image(target.rect,stream=pix.tobytes("png"))
@@ -1967,8 +1941,10 @@ async def pdf_to_tiff(file: UploadFile = File(...)):
         doc = open_pdf_limited(src)
         if len(doc) > 200:
             raise HTTPException(status_code=413, detail="TIFF conversion is limited to 200 pages per file.")
+        rendered_pixels = 0
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, page in enumerate(doc):
+                rendered_pixels = reserve_render_pixels(page, rendered_pixels, 1.5)
                 pix = page.get_pixmap(matrix=safe_render_matrix(page, 1.5), alpha=False)
                 image = Image.open(io.BytesIO(pix.tobytes("png")))
                 buffer = io.BytesIO()
@@ -1997,8 +1973,10 @@ async def pdf_to_bmp(file: UploadFile = File(...)):
         doc = open_pdf_limited(src)
         if len(doc) > 200:
             raise HTTPException(status_code=413, detail="BMP conversion is limited to 200 pages per file.")
+        rendered_pixels = 0
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, page in enumerate(doc):
+                rendered_pixels = reserve_render_pixels(page, rendered_pixels, 1.5)
                 pix = page.get_pixmap(matrix=safe_render_matrix(page, 1.5), alpha=False)
                 image = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
                 buffer = io.BytesIO()

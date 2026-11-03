@@ -65,17 +65,28 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
   };
   const seo = seoOverrides[slug];
-  const title = seo?.title ?? `Free ${tool.name} Online`;
+  const title = seo?.title ?? `${tool.name} Online – Free Tool`;
   const socialTitle = `${tool.name} Online | PDFora`;
-  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")}. Use PDFora online to complete this task and check the result before saving or sharing.`.slice(0, 160);
-  const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
+  const rawDescription = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")}. Use PDFora in your browser to complete the task and check the result before saving or sharing.`;
+  const description = rawDescription.length <= 160
+    ? rawDescription
+    : `${rawDescription.slice(0, 157).replace(/\s+\S*$/, "")}...`;
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
+  const image = `/tools/${tool.slug}/opengraph-image`;
   return {
-    title, description, keywords,
+    title,
+    description,
     alternates: { canonical },
-    robots: { index: slug !== "ocr-pdf", follow: true },
-    openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", locale: "en_US", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
-    twitter: { card: "summary_large_image", title: socialTitle, description, images: [`/tools/${tool.slug}/opengraph-image`] },
+    robots: {
+      index: slug !== "ocr-pdf",
+      follow: true,
+      googleBot: { index: slug !== "ocr-pdf", follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+    },
+    openGraph: {
+      type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", locale: "en_US",
+      images: [{ url: image, width: 1200, height: 630, alt: `${tool.name} on PDFora` }],
+    },
+    twitter: { card: "summary_large_image", title: socialTitle, description, images: [image] },
   };
 }
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {

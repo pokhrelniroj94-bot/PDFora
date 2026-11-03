@@ -29,7 +29,8 @@ Applicant: ${safe("name", 120)}
 Target role: ${safe("role", 180)}
 Company: ${safe("company", 180)}
 Relevant experience: ${safe("experience", 1800)}
-Skills and education: ${safe("skills", 1200)}
+Skills: ${safe("skills", 900)}
+Education: ${safe("education", 700)}
 Job description: ${safe("jobDescription", 2200)}
 Tone: ${safe("style", 80) || "Professional"}
 

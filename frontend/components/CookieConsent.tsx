@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 type Preferences = { necessary: true; analytics: boolean; advertising: boolean; savedAt: string };
 const STORAGE_KEY = "pdfora-cookie-preferences-v1";

@@ -106,11 +106,17 @@ export async function GET(request: Request) {
     return { ...sector, currentValue: latest?.close ?? null, change, perChange, latestDate: latest?.date ?? null };
   });
   const pick = <T,>(result: PromiseSettledResult<T>, fallback: T): T => result.status === "fulfilled" ? result.value : fallback;
+  const sourceUpdatedAt = (stocks as Array<{ last_updated?: string }>).reduce((latest, stock) => stock.last_updated && stock.last_updated > latest ? stock.last_updated : latest, "");
+  const quoteTimestamp = Date.parse(sourceUpdatedAt);
+  const quoteAgeHours = Number.isFinite(quoteTimestamp) ? (Date.now() - quoteTimestamp) / 3_600_000 : Number.POSITIVE_INFINITY;
+  // Weekends/holidays can legitimately pause NEPSE updates; four days is a conservative stale-data warning.
+  const quoteStale = !usingLiveQuotes || !Number.isFinite(quoteTimestamp) || quoteAgeHours > 96;
   const response = {
     symbol,
     period,
     source: usingLiveQuotes ? "YONEPSE live quote snapshot" : "YONEPSE fallback quote snapshot",
-    sourceUpdatedAt: (stocks as Array<{ last_updated?: string }>).reduce((latest, stock) => stock.last_updated && stock.last_updated > latest ? stock.last_updated : latest, ""),
+    sourceUpdatedAt,
+    quoteStale,
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
     status: pick(statusResult, {}),
     indices,

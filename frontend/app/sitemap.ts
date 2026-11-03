@@ -13,8 +13,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: prioritySlugs.has(slug) ? 0.9 : 0.7,
   }));
 
-  // Every catalog tool gets exactly one sitemap URL. Existing PDF routes retain
-  // their established root URLs; all other tools use /tools/<slug>.
+  // Every catalog tool gets exactly one canonical sitemap URL. Root-level
+  // legacy routes (including the resume builder) are listed only at their canonical path.
   const catalogEntries: MetadataRoute.Sitemap = toolCatalog
     .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf" && !legacyToolSlugSet.has(tool.slug))
     .map((tool) => ({
@@ -24,9 +24,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
 
   return [
-    { url: baseUrl, changeFrequency: "weekly", priority: 1, alternates: { languages: { en: baseUrl, ne: `${baseUrl}/ne` } } },
+    { url: baseUrl, changeFrequency: "weekly", priority: 1, alternates: { languages: { en: baseUrl, ne: `${baseUrl}/ne`, "x-default": baseUrl } } },
     { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8, alternates: { languages: { en: baseUrl, ne: `${baseUrl}/ne` } } },
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/resume-builder`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/market`, changeFrequency: "daily", priority: 0.85 },
     ...legacyPdfEntries,
     ...catalogEntries,

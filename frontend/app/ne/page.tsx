@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { homeLanguageAlternates, supportedHomeLanguages } from "../../lib/home-locales";
 
 const site = "https://pd-fora.vercel.app";
 
@@ -8,11 +9,7 @@ export const metadata: Metadata = {
   description: "PDF मर्ज, स्प्लिट, कम्प्रेस र रूपान्तरण गर्नुहोस्। नेपाली मिति, Unicode typing, विदेशी विनिमय दर र अन्य उपयोगी नेपाल टुलहरू प्रयोग गर्नुहोस्।",
   alternates: {
     canonical: `${site}/ne`,
-    languages: {
-      en: site,
-      ne: `${site}/ne`,
-      "x-default": site,
-    },
+    languages: homeLanguageAlternates,
   },
   openGraph: {
     type: "website",
@@ -86,7 +83,12 @@ export default function NepaliHomePage() {
             <span className="text-xl font-black">PDFora</span>
           </Link>
           <nav className="flex items-center gap-3 text-sm font-semibold">
-            <Link href="/" className="text-slate-600 hover:text-blue-700">English</Link>
+            <details className="relative">
+              <summary className="cursor-pointer list-none rounded-lg border border-slate-200 px-3 py-2 text-slate-700 hover:border-blue-400">भाषा ▾</summary>
+              <div className="absolute right-0 z-20 mt-2 grid min-w-40 gap-1 rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
+                {supportedHomeLanguages.map((language) => <Link key={language.code} href={language.href} hrefLang={language.code} className="rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100">{language.nativeName}</Link>)}
+              </div>
+            </details>
             <Link href="/tools" className="rounded-xl bg-blue-600 px-4 py-2.5 text-white hover:bg-blue-700">सबै टुलहरू</Link>
           </nav>
         </div>

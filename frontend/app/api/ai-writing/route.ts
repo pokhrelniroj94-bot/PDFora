@@ -22,7 +22,7 @@ async function isRateLimited(request: Request): Promise<boolean> {
   const hash = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
   const key = "pdfora:ai:minute:" + hash;
   const script = "local count = redis.call('INCR', KEYS[1]); if count == 1 then redis.call('EXPIRE', KEYS[1], tonumber(ARGV[2])); end; return count";
-  const response = await fetch(redisUrl.replace(/\\/$/, ""), {
+  const response = await fetch(redisUrl.replace(/\/$/, ""), {
     method: "POST",
     headers: { Authorization: "Bearer " + redisToken, "Content-Type": "application/json" },
     body: JSON.stringify(["EVAL", script, "1", key, "8", "60"]),

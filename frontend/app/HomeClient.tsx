@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import AdsterraNative from "./components/AdsterraNative";
 import { allTools, type Tool } from "../lib/tool-directory";
+import { supportedHomeLanguages } from "../lib/home-locales";
 
 const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
   loading: () => <div className="grid min-h-40 place-items-center rounded-3xl border border-white/10 bg-slate-900/5 text-sm text-slate-500">Loading Nepal market updates…</div>,
@@ -166,7 +167,12 @@ export default function Home() {
             </span>
           </Link>
 
-          <Link href="/ne" className="mr-2 hidden rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-blue-700 hover:border-blue-400 sm:inline-flex">नेपाली</Link>
+          <details className="relative mr-2 hidden sm:block">
+            <summary className="cursor-pointer list-none rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-blue-700 hover:border-blue-400">Language ▾</summary>
+            <div className="absolute right-0 z-50 mt-2 grid max-h-80 min-w-44 gap-1 overflow-y-auto rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
+              {supportedHomeLanguages.map((language) => <Link key={language.code} href={language.href} hrefLang={language.code} className="rounded-lg px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100">{language.nativeName}</Link>)}
+            </div>
+          </details>
           <Link href="/market" className="mr-2 inline-flex rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-2 text-[11px] font-bold text-teal-800 hover:border-teal-400 sm:mr-3 sm:px-3 sm:text-xs">📈 Market</Link>
           <Link
             href="/tools"

@@ -55,7 +55,7 @@ export function ToolsDirectory() {
  },[category,query]);
  return <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
   <nav aria-label="Popular categories" className="mb-6 flex flex-wrap gap-2">{[["🇳🇵 Nepal tools","/tools/nepal"],["🧮 Calculators","/tools/calculators"],["📄 PDF tools","/tools/pdf"]].map(([name,href])=><Link key={href} href={href} className="rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">{name}</Link>)}</nav>
-  <div className="mb-9"><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">One place. Useful tools.</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Explore PDFora</h1><p className="mt-3 max-w-2xl text-slate-600">Browse every available PDF tool, calculator, text utility, developer tool, image converter, SEO helper and Nepal-focused utility from one searchable directory.</p><p className="mt-3 text-sm font-semibold text-teal-700">{allTools.length} available tools · OCR is listed separately only when its server support is enabled.</p></div>
+  <div className="mb-9"><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">One place. Useful tools.</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Explore PDFora</h1><p className="mt-3 max-w-2xl text-slate-600">Browse every available PDF tool, calculator, text utility, developer tool, image converter, SEO helper and Nepal-specific utility from one searchable directory.</p><p className="mt-3 text-sm font-semibold text-teal-700">{allTools.length} available tools · OCR is listed separately only when its server support is enabled.</p></div>
   <div className="relative z-10 -mx-4 mb-7 border-y border-slate-200/80 bg-white px-4 py-3 shadow-sm sm:mx-0 sm:rounded-2xl sm:border sm:p-4">
    <input className={box+" mb-3"} placeholder="Search tools..." value={query} onChange={e=>setQuery(e.target.value)} aria-label="Search tools"/>
    <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">{categories.map(c=><button key={c} onClick={()=>setCategory(c)} className={"shrink-0 rounded-full px-4 py-2 text-sm font-semibold "+(category===c?"bg-teal-700 text-white":"bg-slate-100 text-slate-700 hover:bg-teal-50")}>{c}</button>)}</div>
@@ -69,9 +69,9 @@ export function ToolsDirectory() {
 
 export function CategoryToolsPage({category}:{category:"Nepal"|"Calculators"|"PDF"}) {
  const isPdf=category==="PDF";
- const items=allTools.filter(t=>isPdf?t.kind==="pdf":category==="Nepal"?t.category==="Nepal":["Math","Business"].includes(t.category));
+ const items=allTools.filter(t=>isPdf?t.kind==="pdf":category==="Nepal"?t.category==="Nepal":["Math","Business","Finance"].includes(t.category));
  const title=category==="Nepal"?"Nepal Tools":category==="Calculators"?"Calculators & Converters":"PDF Tools";
- const description=category==="Nepal"?"Nepali calendar, date converter, public holidays, Nepali typing, NEPSE and useful Nepal-focused utilities.":category==="Calculators"?"Practical calculators for finance, business, dates, maths and everyday conversions.":"PDF merge, split, compress, convert, edit and document tools.";
+ const description=category==="Nepal"?"Nepali calendar, date converter, public holidays, Nepali typing, NEPSE and utilities specific to Nepal.":category==="Calculators"?"Practical calculators for finance, business, dates, maths and everyday conversions.":"PDF merge, split, compress, convert, edit and document tools.";
  const priority=["nepali-calendar","nepali-date-converter","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepal-forex-rates","nepal-share-calculator"];
  const sorted=[...items].sort((x,y)=>{const ix=priority.indexOf(x.slug),iy=priority.indexOf(y.slug);return (ix<0?999:ix)-(iy<0?999:iy);});
  return <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">

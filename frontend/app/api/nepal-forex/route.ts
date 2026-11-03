@@ -53,17 +53,18 @@ function normalizeNrbPayload(payload: unknown, requestedDate: string) {
     return typeof item.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(item.date) && Array.isArray(item.rates);
   });
   const latest = [...valid].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
-  if (!latest) throw new Error("No published NRB rate was found in the requested date range.");
+  if (!latest || typeof latestDate !== "string") throw new Error("No published NRB rate was found in the requested date range.");
+  const latestDate = latest.date;
   const rates = toRateList(latest.rates || []);
   if (!rates.length) throw new Error("NRB returned a snapshot but no valid currency rates.");
   return {
     source: "Nepal Rastra Bank",
     requestedDate,
-    rateDate: latest.date,
+    rateDate: latestDate,
     publishedOn: latest.published_on || null,
     rates,
-    isStale: latest.date < requestedDate,
-    notice: latest.date < requestedDate ? `NRB has not published a rate for ${requestedDate}; showing the latest available official rate dated ${latest.date}.` : undefined,
+    isStale: latestDate < requestedDate,
+    notice: latestDate < requestedDate ? `NRB has not published a rate for ${requestedDate}; showing the latest available official rate dated ${latestDate}.` : undefined,
     updatedAt: new Date().toISOString(),
   };
 }

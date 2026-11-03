@@ -14,21 +14,26 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
   const [advertising, setAdvertising] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as Preferences;
-        setPreferences({ necessary: true, analytics: !!parsed.analytics, advertising: !!parsed.advertising, savedAt: parsed.savedAt || new Date().toISOString() });
-        setAnalytics(!!parsed.analytics);
-        setAdvertising(!!parsed.advertising);
-      }
-    } catch {
-      localStorage.removeItem(STORAGE_KEY);
-    }
-    setReady(true);
     const openSettings = () => setOpen(true);
     window.addEventListener("pdfora:open-cookie-settings", openSettings);
-    return () => window.removeEventListener("pdfora:open-cookie-settings", openSettings);
+    const timer = window.setTimeout(() => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved) as Preferences;
+          setPreferences({ necessary: true, analytics: !!parsed.analytics, advertising: !!parsed.advertising, savedAt: parsed.savedAt || new Date().toISOString() });
+          setAnalytics(!!parsed.analytics);
+          setAdvertising(!!parsed.advertising);
+        }
+      } catch {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+      setReady(true);
+    }, 0);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("pdfora:open-cookie-settings", openSettings);
+    };
   }, []);
 
   const save = (nextAnalytics: boolean, nextAdvertising: boolean) => {

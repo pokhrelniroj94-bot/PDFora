@@ -75,7 +75,7 @@ export function getToolMetadata(slug: string): Metadata {
     description,
     keywords: [intent, `${name} free`, `${name} online`, "free online PDF tools", "PDFora"],
     alternates: { canonical: url },
-    openGraph: { type: "website", url, siteName: "PDFora", title: `${title} | PDFora`, description },
+    openGraph: { type: "website", url, siteName: "PDFora", locale: "en_US", title: `${title} | PDFora`, description },
     twitter: { card: "summary", title: `${title} | PDFora`, description },
     robots: { index: true, follow: true },
   };

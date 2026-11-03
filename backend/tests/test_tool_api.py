@@ -12,6 +12,7 @@ from PIL import Image
 from pypdf import PdfReader, PdfWriter
 from fastapi.testclient import TestClient
 import requests
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from main import app  # noqa: E402
@@ -385,6 +386,22 @@ def test_render_matrix_rejects_huge_page_and_bounds_scale():
         assert exc.status_code == 413
     else:
         raise AssertionError("Oversized page should be rejected")
+    doc.close()
+
+
+def test_multi_page_raster_budget_rejects_document_before_rendering(monkeypatch):
+    from fastapi import HTTPException
+    from main import reserve_render_pixels
+
+    monkeypatch.setattr("main.MAX_DOCUMENT_RENDER_PIXELS", 900_000)
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+    pixels = reserve_render_pixels(page, 0, requested_scale=1.0)
+    assert pixels == 612 * 792
+    with pytest.raises(HTTPException) as error:
+        reserve_render_pixels(page, pixels, requested_scale=1.0)
+    assert error.value.status_code == 413
+    assert "100-million-pixel" in error.value.detail
     doc.close()
 
 

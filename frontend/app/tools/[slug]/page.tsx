@@ -15,6 +15,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
+    "qr-code-generator": { title: "Free QR Code Generator – Wi-Fi, URL & Text QR Codes", description: "Create custom QR codes for websites, text, Wi-Fi, email and phone details. Choose image size and colours, then download a PNG." },
+    "qr-code-scanner": { title: "QR Code Scanner – Scan QR from Image or Camera", description: "Scan QR codes from an uploaded image or device camera and copy the decoded content. Check links carefully before opening them." },
+    "barcode-generator": { title: "Free Barcode Generator – Code 128, EAN, UPC & More", description: "Generate Code 128, Code 39, EAN and UPC barcode artwork, preview it and download an SVG for labels and inventory workflows." },
+    "time-zone-converter": { title: "Time Zone Converter – Compare World Time Zones", description: "Convert a date and time between international time zones with daylight-saving adjustments using your browser's time-zone database." },
+    "text-to-speech": { title: "Free Text to Speech Reader – Listen to Text Online", description: "Read text aloud with browser voices. Choose an available voice, language, speed and pitch, then pause or resume playback." },
+    "speech-to-text": { title: "Speech to Text – Free Online Voice Typing Tool", description: "Dictate speech into editable text with supported browser speech recognition. Requires microphone permission; language support varies by browser." },
+    "utm-link-builder": { title: "Free UTM Link Builder – Create Campaign Tracking URLs", description: "Build campaign URLs with UTM source, medium, campaign, term and content parameters while preserving existing query strings." },
+    "loan-emi-calculator": { title: "Loan EMI Calculator – Estimate Monthly Loan Payments", description: "Estimate monthly EMI, total interest and repayment time from your loan amount, annual interest rate and term. Includes optional extra payments and clear assumptions." },
+    "image-resizer-compressor": { title: "Free Image Resizer & Compressor – JPG, PNG, WebP", description: "Resize images to custom pixel dimensions and export JPEG, PNG or WebP with adjustable quality. Processing happens locally in your browser." },
+    "business-break-even-calculator": { title: "Business Break-even Calculator – Units & Revenue", description: "Calculate break-even units, revenue and contribution margin using fixed costs, selling price and variable cost per unit." },
+    "ats-resume-checker": { title: "Resume Keyword Checker – Compare CV with a Job Description", description: "Compare pasted resume text with a job description, review keyword coverage and check common CV sections. A transparent browser-based guide, not an ATS pass score." },
+    "invoice-quotation-generator": { title: "Free Invoice & Quotation Generator – Print to PDF", description: "Create a printable invoice or quotation with item quantity, unit price, tax estimate and live total. Save as PDF and verify local tax requirements before issuing." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
@@ -166,6 +178,24 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: "Does the tool replace official advice or verification?", a: "No. Confirm important legal, financial, government or compliance matters with the responsible authority." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
+    "qr-code-generator": [
+      { q: "Can I create a QR code for a Wi-Fi network?", a: "Yes. Select Wi-Fi, enter the network name and password, and choose WPA, WEP or an open network. Check the details carefully and test the code on a second device before sharing it." },
+      { q: "Can I change the QR code colour and download it?", a: "Yes. Choose the foreground and background colours and an output size, generate the code and download the PNG. Keep strong contrast and leave a clear margin around the code so phones can detect it." },
+      { q: "Does PDFora store the text or Wi-Fi details I encode?", a: "The QR payload is generated in your browser after the QR library loads. Avoid encoding confidential credentials; anyone who scans a Wi-Fi QR code may be able to read or use the network details." },
+      { q: "Will every QR code open a website automatically?", a: "No. A QR code can contain plain text, a phone number, email or Wi-Fi settings as well as a URL. A scanner may ask what action to take, and you should check unfamiliar links before opening them." }
+    ],
+    "qr-code-scanner": [
+      { q: "Can I scan a QR code from a photo?", a: "Yes. Upload a supported image containing a clear QR code. The scanner decodes the image in your browser and displays the result for you to inspect and copy." },
+      { q: "Can I scan a QR code with my laptop or phone camera?", a: "Yes, when the browser supports camera access and the page is served over HTTPS. Grant permission, keep the code steady and well lit, and stop the camera when finished." },
+      { q: "Does scanning a QR code mean its link is safe?", a: "No. Scanning only reveals the encoded content; it does not check whether a website is trustworthy. Inspect the full domain and be cautious with unexpected payment, login or download links." },
+      { q: "Why is my QR code not detected?", a: "Try a sharper, brighter image with the whole code visible, including its white border. Avoid glare, extreme perspective, tiny codes or images that have been heavily compressed." }
+    ],
+    "barcode-generator": [
+      { q: "Which barcode formats can I create?", a: "The generator supports formats including Code 128, Code 39, EAN-13, EAN-8, UPC, ITF-14, MSI and Pharmacode. Choose the symbology required by your scanner or inventory system." },
+      { q: "Can I use a generated EAN or UPC barcode for a retail product?", a: "The tool creates barcode artwork but does not assign or register product identifiers. Retail EAN/UPC numbers should be obtained through the appropriate GS1 process and verified before commercial use." },
+      { q: "Can I download the barcode for printing?", a: "Yes. Generate the barcode preview and download it as an SVG file. Print a test at the intended physical size and scan it with the equipment that will be used in your workflow." },
+      { q: "Why does the barcode generator reject my number?", a: "Some formats require a specific number of digits and a valid check digit; other formats accept different character sets. Confirm the required format and identifier length before generating." }
+    ],
     "market-ai": [
       { q: "Which markets can I analyse?", a: "You can analyse available historical daily NEPSE data or upload your own Forex and Crypto CSV. Forex and Crypto results depend on the accuracy and freshness of your file; they are not live market feeds." },
       { q: "Which CSV columns are required?", a: "Date and Close are required. Open, High, Low and Volume are recommended. Use one daily candle per date, ISO dates (YYYY-MM-DD), at least 50 valid rows and a file no larger than 5 MB." },

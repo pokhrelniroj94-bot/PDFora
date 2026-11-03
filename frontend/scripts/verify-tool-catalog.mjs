@@ -5,6 +5,7 @@ const catalogSource = read("../components/toolCatalog.ts");
 const allTools = read("../components/AllTools.tsx");
 const quickTools = read("../components/QuickUtilityTools.tsx");
 const extraTools = read("../components/ExtraTools.tsx");
+const newTools = read("../components/NewToolsFixed.tsx");
 const nepalTools = read("../components/NepalTools.tsx");
 const nepalLiveTools = read("../components/NepalLiveTools.tsx");
 const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
@@ -30,7 +31,8 @@ const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
 const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
-const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
+const newToolCases = [...newTools.matchAll(/if\(slug==="([a-z0-9-]+)"\)/g)].map((m) => m[1]);
+const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs, ...newToolCases]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
 if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {
   implemented.add("image-compressor");
@@ -46,15 +48,25 @@ assert.ok(typingRouted, "Nepali Unicode typing route or engine is missing");
 assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('import NepalLiveTools from "./NepalLiveTools"'), "Nepal live tools component is not imported");
 
 assert.ok(allTools.includes('import("./NepaliTypingTool")') || allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");
+assert.ok(allTools.includes('import("./NewTools")') || allTools.includes('import NewToolsChunk from "./NewTools"'), "New practical tools component is not imported");
+assert.ok(newToolCases.includes("ats-resume-checker") && newToolCases.includes("invoice-quotation-generator") && newToolCases.includes("loan-emi-calculator") && newToolCases.includes("image-resizer-compressor") && newToolCases.includes("business-break-even-calculator"), "New practical tool handlers are missing");
 const nepalSlugs = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);
 assert.ok(nepalSlugs.length > 0, "Nepal tool catalog entries were not detected by the guide coverage check");
 const missingNepalGuides = nepalSlugs.filter((slug) => !nepalBlogPosts.includes('href: "/tools/' + slug + '"'));
 assert.deepEqual(missingNepalGuides, [], "Nepal tools without dedicated guides: " + missingNepalGuides.join(", "));
 assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf("...catalogGuides"), "Dedicated Nepal guides must take precedence over generated generic guides");
-const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
+const nepalSeoSlugs = ["ats-resume-checker","invoice-quotation-generator","nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
 assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
+for (const slug of ["qr-code-generator","qr-code-scanner","barcode-generator"]) {
+  assert.ok(toolPage.includes('"'+slug+'": ['), `Missing dedicated FAQ content for ${slug}`);
+  assert.ok(toolPage.includes('"'+slug+'": { title:'), `Missing unique metadata for ${slug}`);
+  assert.ok(seoContent.includes('"'+slug+'": {'), `Missing dedicated SEO guide for ${slug}`);
+}
+assert.ok(newTools.includes("function escapeWifiField") && newTools.includes("escapeWifiField(wifi)") && newTools.includes("escapeWifiField(pass)"), "Wi-Fi QR payload escaping is missing");
+assert.ok(newTools.includes("3000/Math.max(img.naturalWidth,img.naturalHeight)"), "QR scanner image decode size guard is missing");
+assert.ok(newTools.includes('if(!value.trim())throw Error("Enter a value to encode.")'), "Barcode generator empty-input validation is missing");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
@@ -79,8 +91,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 124, "Expected 124 catalog utilities");
-assert.equal(allHrefs.length, 173, "Expected 173 available tools (49 PDF tools + 124 catalog utilities)");
+assert.equal(catalog.length, 136, "Expected 136 unique catalog utilities after deduplication and new tool additions");
+assert.equal(allHrefs.length, 185, "Expected 185 available tools (49 PDF tools + 136 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
@@ -128,4 +140,4 @@ assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-re
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
-console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);
+console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including new browser utilities, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

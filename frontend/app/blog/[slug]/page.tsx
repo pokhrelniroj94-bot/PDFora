@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: post.description,
     alternates: { canonical: url },
     keywords: [post.keyword, "free online tools", "tool tutorial", "how-to guide", "PDFora"],
-    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated },
+    openGraph: { type: "article", url, siteName: "PDFora", locale: "en_US", title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated },
     twitter: { card: "summary", title: post.title, description: post.description },
   };
 }

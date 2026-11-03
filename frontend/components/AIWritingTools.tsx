@@ -14,6 +14,7 @@ export default function AIWritingTools({ slug }: Props) {
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [privacyConsent, setPrivacyConsent] = useState(false);
   const set = (key: string, value: string) => setValues((old) => ({ ...old, [key]: value }));
   const value = (key: string) => values[key] ?? "";
   const humanizer = slug === "ai-humanizer";
@@ -29,8 +30,8 @@ export default function AIWritingTools({ slug }: Props) {
     <label className="block">
       <span className={labelClass}>{label}</span>
       {multiline
-        ? <textarea className={inputClass + " min-h-28 resize-y"} value={value(key)} onChange={(event) => set(key, event.target.value)} placeholder={placeholder} />
-        : <input className={inputClass} value={value(key)} onChange={(event) => set(key, event.target.value)} placeholder={placeholder} />}
+        ? <textarea maxLength={humanizer ? 5000 : key === "jobDescription" ? 2200 : 1800} className={inputClass + " min-h-28 resize-y"} value={value(key)} onChange={(event) => set(key, event.target.value)} placeholder={placeholder} />
+        : <input maxLength={180} className={inputClass} value={value(key)} onChange={(event) => set(key, event.target.value)} placeholder={placeholder} />}
     </label>
   );
 
@@ -75,7 +76,12 @@ export default function AIWritingTools({ slug }: Props) {
       experience: (sections["Experience Bullets"] || "").trim(),
       raw: result,
     };
-    localStorage.setItem("pdfora-ai-resume-draft", JSON.stringify(draft));
+    try {
+      sessionStorage.setItem("pdfora-ai-resume-draft", JSON.stringify({ summary: draft.summary, skills: draft.skills, experience: draft.experience }));
+    } catch {
+      setError("Your browser could not temporarily transfer this draft. Copy the text and paste it into Resume Builder instead.");
+      return;
+    }
     window.location.href = "/resume-builder";
   }
 
@@ -115,8 +121,9 @@ export default function AIWritingTools({ slug }: Props) {
             <label className="block"><span className={labelClass}>Writing style</span><select className={inputClass} value={value("style") || "Professional"} onChange={(event) => set("style", event.target.value)}><option>Professional</option><option>Concise and confident</option><option>Formal</option><option>Entry-level / fresh graduate</option></select></label>
           </div>
         )}
-        <div className="mt-5 flex flex-wrap items-center gap-3">
-          <button type="button" onClick={() => void generate()} disabled={busy || (humanizer ? !value("text").trim() : !value("role").trim())} className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50">
+        <label className="mt-5 flex items-start gap-2 text-sm leading-5 text-slate-600"><input type="checkbox" checked={privacyConsent} onChange={(event) => setPrivacyConsent(event.target.checked)} className="mt-1 h-4 w-4 accent-teal-700" /><span>I understand that the text I submit will be sent to Cloudflare Workers AI for processing. I will not submit passwords, government ID numbers, financial account details or confidential information.</span></label>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <button type="button" onClick={() => void generate()} disabled={busy || !privacyConsent || (humanizer ? !value("text").trim() : !value("role").trim())} className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-50">
             {busy ? "Generating…" : humanizer ? "Humanize text" : cover ? "Generate cover letter" : "Generate resume content"}
           </button>
           <span className="text-xs text-slate-500">No paid AI fallback. If the free quota is unavailable, this tool pauses.</span>
@@ -132,7 +139,7 @@ export default function AIWritingTools({ slug }: Props) {
       </section>}
 
       <aside className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">
-        <strong className="text-slate-800">Privacy:</strong> Text submitted here is sent to the configured Cloudflare AI provider for processing. Do not paste passwords, identity numbers or confidential documents. The service is unavailable until the owner configures a Cloudflare Workers Free account and restricted AI token.
+        <strong className="text-slate-800">Privacy:</strong> Text submitted here is sent to the configured Cloudflare AI provider for processing. Do not paste passwords, identity numbers or confidential documents. The feature remains disabled until the owner verifies a Cloudflare Workers Free account and configures an AI-only token. PDFora does not intentionally save prompts or generated text.
       </aside>
     </div>
   );

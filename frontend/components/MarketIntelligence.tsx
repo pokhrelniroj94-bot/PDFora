@@ -80,18 +80,18 @@ function analyse(points: Point[], asset: string): Analysis | null {
   const risk = volatility > (asset === "crypto" ? 85 : asset === "forex" ? 22 : 48) ? "Very high"
     : volatility > (asset === "crypto" ? 55 : asset === "forex" ? 14 : 32) ? "High"
     : volatility > (asset === "crypto" ? 30 : asset === "forex" ? 8 : 18) ? "Moderate" : "Lower";
-  let stop: number | null = null, target: number | null = null;
-  if (signal === "Potential BUY setup") {
-    stop = lows.length ? support * 0.995 : last.close * (1 - Math.max(0.015, dailyVol * 2));
-    target = last.close + 2 * (last.close - stop);
-  } else if (signal === "Potential SELL / EXIT setup" || signal === "Potential SELL / SHORT setup") {
-    stop = highs.length ? resistance * 1.005 : last.close * (1 + Math.max(0.015, dailyVol * 2));
-    target = last.close - 2 * (stop - last.close);
-  }
   const risks: string[] = [];
   const ageDays = Math.max(0, (Date.now() - Date.parse(last.date)) / 86400000);
   const stale = !Number.isFinite(ageDays) || ageDays > (asset === "crypto" ? 2 : 5);
   const finalSignal = stale ? "Wait / neutral" : signal;
+  let stop: number | null = null, target: number | null = null;
+  if (finalSignal === "Potential BUY setup") {
+    stop = lows.length ? support * 0.995 : last.close * (1 - Math.max(0.015, dailyVol * 2));
+    target = last.close + 2 * (last.close - stop);
+  } else if (finalSignal === "Potential SELL / EXIT setup" || finalSignal === "Potential SELL / SHORT setup") {
+    stop = highs.length ? resistance * 1.005 : last.close * (1 + Math.max(0.015, dailyVol * 2));
+    target = last.close - 2 * (stop - last.close);
+  }
   if (stale) risks.push("The latest observation is stale for this market. New BUY/SELL signals are suppressed until fresh data is available.");
   if (risk === "High" || risk === "Very high") risks.push("Recent annualized volatility is elevated for this asset class.");
   if (rsiValue >= 72) risks.push("RSI is overbought; a pullback can occur even while the broader trend is positive.");

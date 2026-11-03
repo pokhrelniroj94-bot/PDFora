@@ -101,8 +101,8 @@ export default function ResumeBuilder() {
     setAiError("");
     setAiDraftNotice("");
     try {
-      const experience = jobs.map((job) => [job.role, job.company, job.dates, job.details].filter(Boolean).join(" · ")).filter(Boolean).join("\\n");
-      const educationText = education.map((item) => [item.degree, item.school, item.place, item.dates].filter(Boolean).join(" · ")).filter(Boolean).join("\\n");
+      const experience = jobs.map((job) => [job.role, job.company, job.dates, job.details].filter(Boolean).join(" · ")).filter(Boolean).join("\n");
+      const educationText = education.map((item) => [item.degree, item.school, item.place, item.dates].filter(Boolean).join(" · ")).filter(Boolean).join("\n");
       const response = await fetch("/api/ai-writing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -112,14 +112,14 @@ export default function ResumeBuilder() {
       if (!response.ok) throw new Error(payload.error || "AI could not improve this CV right now.");
       const draft = typeof payload.text === "string" ? payload.text.trim() : "";
       if (!draft) throw new Error("AI returned an empty CV draft.");
-      const lines = draft.split(/\\r?\\n/);
+      const lines = draft.split("\n");
       const headings = ["Professional Summary", "Core Skills", "Experience Bullets", "Optional ATS Keywords"];
-      const normalize = (line: string) => line.trim().replace(/^#+\\s*/, "").replace(/\\*\\*/g, "").replace(/:$/, "").trim().toLowerCase();
+      const normalize = (line: string) => line.trim().replaceAll("#", "").replaceAll("*", "").replace(/:$/, "").trim().toLowerCase();
       const extract = (heading: string) => {
         const start = lines.findIndex((line) => normalize(line) === heading.toLowerCase());
         if (start < 0) return "";
         const end = lines.findIndex((line, index) => index > start && headings.some((item) => normalize(line) === item.toLowerCase()));
-        return lines.slice(start + 1, end < 0 ? lines.length : end).join("\\n").trim();
+        return lines.slice(start + 1, end < 0 ? lines.length : end).join("\n").trim();
       };
       const nextSummary = extract("Professional Summary");
       const nextSkills = extract("Core Skills");

@@ -57,6 +57,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
   const change5 = closes.length > 5 ? (last.close / closes[closes.length - 6] - 1) * 100 : 0;
   const volumes = rows.slice(-21).map((p) => p.volume).filter((v): v is number => typeof v === "number" && Number.isFinite(v));
   const volumeConfirm = volumes.length >= 10 && typeof last.volume === "number" && last.volume > avg(volumes.slice(0, -1)) * 1.15;
+  const distributionRisk = volumeConfirm && last.close < rows[rows.length - 2].close;
   let score = 0;
   const reasons: string[] = [];
   if (trendUp) { score += 2; reasons.push("Price is above EMA20 and EMA20 is above EMA50 (uptrend alignment)."); }
@@ -71,7 +72,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
   else if (change5 < -2) { score -= 1; reasons.push("Five-session momentum is negative."); }
   if (volumeConfirm && last.close > rows[rows.length - 2].close) { score += 1; reasons.push("Latest volume is above its recent average while price is rising."); }
   if (volumeConfirm && last.close < rows[rows.length - 2].close) { score -= 1; reasons.push("Latest volume is above its recent average while price is falling."); }
-  const signal = score >= 3 ? "Potential BUY setup" : score <= -3 ? (asset === "nepse" ? "Potential SELL / EXIT setup" : "Potential SELL / SHORT setup") : score >= 1 && trendUp ? "HOLD / WATCH" : "Wait / neutral";
+  const signal = distributionRisk && score >= 3 ? (trendUp ? "HOLD / WATCH" : "Wait / neutral") : score >= 3 ? "Potential BUY setup" : score <= -3 ? (asset === "nepse" ? "Potential SELL / EXIT setup" : "Potential SELL / SHORT setup") : score >= 1 && trendUp ? "HOLD / WATCH" : "Wait / neutral";
   const recent = rows.slice(-20);
   const lows = recent.map((p) => p.low).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
   const highs = recent.map((p) => p.high).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
@@ -81,8 +82,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
     : volatility > (asset === "crypto" ? 55 : asset === "forex" ? 14 : 32) ? "High"
     : volatility > (asset === "crypto" ? 30 : asset === "forex" ? 8 : 18) ? "Moderate" : "Lower";
   const risks: string[] = [];
-  const ageDays = Math.max(0, (Date.now() - Date.parse(last.date)) / 86400000);
-  const stale = !Number.isFinite(ageDays) || ageDays > (asset === "crypto" ? 2 : 5);
+  const stale = hasStaleMarketData(last.date, asset);
   const finalSignal = stale ? "Wait / neutral" : signal;
   let stop: number | null = null, target: number | null = null;
   if (finalSignal === "Potential BUY setup") {
@@ -94,7 +94,9 @@ function analyse(points: Point[], asset: string): Analysis | null {
   }
   if (stale) risks.push("The latest observation is stale for this market. New BUY/SELL signals are suppressed until fresh data is available.");
   if (risk === "High" || risk === "Very high") risks.push("Recent annualized volatility is elevated for this asset class.");
+  if (rsiValue >= 68 && rsiValue < 72) risks.push("RSI is approaching the overbought zone; momentum is strong but a fresh entry may have limited room before a pullback.");
   if (rsiValue >= 72) risks.push("RSI is overbought; a pullback can occur even while the broader trend is positive.");
+  if (distributionRisk) risks.push("Distribution warning: volume is unusually high while the latest close is lower. This weakens a bullish setup, so the engine blocks a BUY signal until price/volume behaviour improves.");
   if (rsiValue <= 28) risks.push("RSI is deeply oversold; this is not proof that a bottom has formed.");
   if (rows.length < 100) risks.push("The history is limited; longer-term trend context may be incomplete.");
   if (!volumeConfirm) risks.push("No strong volume confirmation was detected, or volume data is unavailable.");
@@ -183,6 +185,21 @@ function parseCsv(text: string): Point[] {
 }
 const fmt = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: 4 });
 const pct = (v: number) => v.toFixed(2) + "%";
+function hasStaleMarketData(latestDate: string, asset: string) {
+  const latest = new Date(`${latestDate}T00:00:00Z`);
+  const today = new Date();
+  const end = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+  if (!Number.isFinite(latest.getTime()) || latest > end) return false;
+  let expectedSessions = 0;
+  const cursor = new Date(latest.getTime());
+  while (cursor < end) {
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+    const day = cursor.getUTCDay();
+    const isSession = asset === "crypto" || (asset === "forex" ? day !== 0 && day !== 6 : day !== 5 && day !== 6);
+    if (isSession) expectedSessions++;
+  }
+  return expectedSessions >= 2;
+}
 
 export default function MarketIntelligence() {
   const [asset, setAsset] = useState("nepse");

@@ -20,14 +20,14 @@ function rsi(v:number[], i:number, n=14) {
 function runBacktest(rows:Bar[], mode:string, costPct:number):Result {
   const trades:Trade[]=[]; let cash=1, units=0, entry=0, entryDate="", entryIndex=0;
   const equity:number[]=[];
-  for(let i=50;i<rows.length;i++){
-    const closes=rows.map(x=>x.close), p=closes[i], prev=closes[i-1];
-    const s20=sma(closes,20,i), s50=sma(closes,50,i), p20=sma(closes,20,i-1), p50=sma(closes,50,i-1);
-    const r=rsi(closes,i), priorR=rsi(closes,i-1);
+  for(let i=51;i<rows.length;i++){
+    const closes=rows.map(x=>x.close), p=closes[i], signalIndex=i-1, signalPrice=closes[signalIndex];
+    const s20=sma(closes,20,signalIndex), s50=sma(closes,50,signalIndex), p20=sma(closes,20,signalIndex-1), p50=sma(closes,50,signalIndex-1);
+    const r=rsi(closes,signalIndex), priorR=rsi(closes,signalIndex-1);
     let buy=false, sell=false;
     if(mode==="sma"){buy=!!(s20&&s50&&p20&&p50&&s20>s50&&p20<=p50);sell=!!(s20&&s50&&p20&&p50&&s20<s50&&p20>=p50);}
     else if(mode==="rsi"){buy=!!(r!==null&&priorR!==null&&priorR<30&&r>=30);sell=!!(r!==null&&r>=70);}
-    else {const high=Math.max(...closes.slice(i-20,i));const low=Math.min(...closes.slice(i-20,i));buy=p>high&&p>prev;sell=p<sma(closes,20,i)!;}
+    else {const high=Math.max(...closes.slice(signalIndex-20,signalIndex));const low=Math.min(...closes.slice(signalIndex-20,signalIndex));buy=signalPrice>high&&signalPrice>closes[signalIndex-1];sell=signalPrice<sma(closes,20,signalIndex)!;}
     if(units===0&&buy){entry=p*(1+costPct/100);units=cash/entry;cash=0;entryDate=rows[i].date;entryIndex=i;}
     else if(units>0&&(sell||i===rows.length-1)){
       const exit=p*(1-costPct/100), value=units*exit, ret=(exit/entry-1)*100;
@@ -71,6 +71,6 @@ export default function NepseAlphaLab(){
    </section>
    <section className={panel}><h3 className="font-extrabold text-slate-900">Trade history</h3>{metrics.trades.length?<div className="mt-3 overflow-x-auto"><table className="w-full min-w-[650px] text-left text-sm"><thead className="text-xs text-slate-500"><tr>{["Entry date","Exit date","Entry price","Exit price","Net return","Sessions"].map(x=><th key={x} className="border-b p-2">{x}</th>)}</tr></thead><tbody>{metrics.trades.slice().reverse().map((t,i)=><tr key={t.buyDate+"-"+t.sellDate+i}><td className="border-b p-2">{t.buyDate}</td><td className="border-b p-2">{t.sellDate}</td><td className="border-b p-2">{fmt(t.buy)}</td><td className="border-b p-2">{fmt(t.sell)}</td><td className={"border-b p-2 font-bold "+(t.returnPct>=0?"text-emerald-700":"text-rose-700")}>{fmt(t.returnPct)}%</td><td className="border-b p-2">{t.days}</td></tr>)}</tbody></table></div>:<p className="mt-3 text-sm text-slate-600">No trades triggered in this historical period. Try another strategy or symbol.</p>}</section>
   </div>}
-  <aside className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><b>Research-only disclaimer:</b> This is a simplified educational backtest on available daily close data. It does not model intraday fills, circuit limits, partial fills, liquidity, corporate-action adjustments, taxes in every case or survivorship bias. Signals execute at the same daily close in this first version, so results can be optimistic. Historical returns do not predict future results. Verify source data before using it.</aside>
+  <aside className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><b>Research-only disclaimer:</b> This is a simplified educational backtest on available daily close data. Signals are evaluated after a completed daily close and filled at the next available daily close to reduce look-ahead bias. It does not model intraday fills, circuit limits, partial fills, liquidity, corporate-action adjustments, taxes in every case or survivorship bias. Historical returns do not predict future results. Verify source data before using it.</aside>
  </main>;
 }

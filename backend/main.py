@@ -417,6 +417,21 @@ async def save_upload(
         raise
 
 
+def set_literal_cell(worksheet, row: int, column: int, value):
+    """Write untrusted extracted document text as a literal spreadsheet string."""
+    cell = worksheet.cell(row=row, column=column, value="" if value is None else str(value))
+    cell.data_type = "s"
+    return cell
+
+
+def csv_safe_text(value) -> str:
+    """Neutralize spreadsheet formula prefixes in CSV exports."""
+    text = "" if value is None else str(value).strip()
+    if text.lstrip().startswith(("=", "+", "-", "@")):
+        return "'" + text
+    return text
+
+
 def safe_render_matrix(page, requested_scale: float = 2.0, max_pixels: int = 20_000_000):
     """Return a bounded render matrix so unusually large pages cannot exhaust memory."""
     rect = page.rect
@@ -1551,14 +1566,9 @@ async def pdf_to_excel(
                                 start=1
                             ):
                                 if value is not None:
-                                    cell = worksheet.cell(
-                                        row=row_number,
-                                        column=column_number,
-                                        value=str(value).strip()
-                                    )
                                     # Force extracted PDF text to remain literal text,
                                     # never an executable spreadsheet formula.
-                                    cell.data_type = "s"
+                                    set_literal_cell(worksheet, row_number, column_number, str(value).strip())
 
                         for column_cells in worksheet.columns:
 
@@ -1594,12 +1604,7 @@ async def pdf_to_excel(
                             text.splitlines(),
                             start=1
                         ):
-                            cell = worksheet.cell(
-                                row=row_number,
-                                column=1,
-                                value=line.strip()
-                            )
-                            cell.data_type = "s"
+                            set_literal_cell(worksheet, row_number, 1, line.strip())
 
                         worksheet.column_dimensions["A"].width = 100
 
@@ -2408,10 +2413,7 @@ async def pdf_to_csv(file: UploadFile = File(...)):
                     for row_number, row in enumerate(table, start=1):
                         for column_number, value in enumerate(row or [], start=1):
                             if value is not None and str(value).strip():
-                                safe_value = str(value).strip()
-                                if safe_value.lstrip().startswith(("=", "+", "-", "@")):
-                                    safe_value = "'" + safe_value
-                                writer.writerow([page_number, table_number, row_number, column_number, safe_value])
+                                writer.writerow([page_number, table_number, row_number, column_number, csv_safe_text(value)])
                                 rows_written += 1
         if rows_written == 0:
             raise HTTPException(status_code=422, detail="No extractable tables were found in this PDF.")

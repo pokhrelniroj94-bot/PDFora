@@ -26,6 +26,11 @@ export function isTrade(value: unknown): value is Trade {
 export function calculatePortfolio(trades: Trade[]) {
   const accounts = new Map<string, { quantity: number; cost: number; realized: number }>();
   const ordered = [...trades].sort((a, b) => a.date.localeCompare(b.date) || a.createdAt - b.createdAt);
+  const assertFinite = (account: { quantity: number; cost: number; realized: number }) => {
+    if (!Number.isFinite(account.quantity) || !Number.isFinite(account.cost) || !Number.isFinite(account.realized)) {
+      throw new Error("Transaction amounts exceed the supported calculation range.");
+    }
+  };
   for (const trade of ordered) {
     const account = accounts.get(trade.symbol) ?? { quantity: 0, cost: 0, realized: 0 };
     if (trade.side === "buy") {
@@ -38,6 +43,7 @@ export function calculatePortfolio(trades: Trade[]) {
       account.quantity = Math.max(0, account.quantity - trade.quantity);
       account.cost = account.quantity ? averageCost * account.quantity : 0;
     }
+    assertFinite(account);
     accounts.set(trade.symbol, account);
   }
   const holdings = [...accounts.entries()].map(([symbol, account]): Holding => ({
@@ -46,6 +52,8 @@ export function calculatePortfolio(trades: Trade[]) {
     averageCost: account.quantity ? account.cost / account.quantity : 0,
     invested: account.cost,
   })).filter((holding) => holding.quantity > 1e-8);
-  return { holdings, realized: [...accounts.values()].reduce((sum, account) => sum + account.realized, 0) };
+  const realized = [...accounts.values()].reduce((sum, account) => sum + account.realized, 0);
+  if (!Number.isFinite(realized)) throw new Error("Transaction amounts exceed the supported calculation range.");
+  return { holdings, realized };
 }
 

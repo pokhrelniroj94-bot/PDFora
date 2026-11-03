@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     url: `${site}/ne`,
     siteName: "PDFora",
     locale: "ne_NP",
-    alternateLocale: ["en_US"],
+    alternateLocale: ["en_US", "hi_IN", "es_ES", "fr_FR", "de_DE", "pt_BR", "ar_SA", "bn_BD", "id_ID"],
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora नेपाली अनलाइन टुलहरू" }],
   },
   twitter: {

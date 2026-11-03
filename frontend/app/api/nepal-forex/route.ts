@@ -209,7 +209,7 @@ export async function GET(request: Request) {
   const todayInNepal = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());
-  const officialAttempts: Array<Promise<ReturnType<typeof normalizeNrbPayload> | ReturnType<typeof fetchFromOfficialPage>>> = [
+  const officialAttempts: Promise<unknown>[] = [
     fetchDirectFromNrb(requestedDate),
   ];
   if (requestedDate === todayInNepal) officialAttempts.push(fetchFromOfficialPage(requestedDate));

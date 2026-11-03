@@ -14,13 +14,17 @@ function toBytes(value: string) {
 export default function NewsPushSubscribe() {
   const [supported, setSupported] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>("default");
+  const [subscribed, setSubscribed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     const ok = typeof window !== "undefined" && "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
     setSupported(ok);
-    if (ok) setPermission(Notification.permission);
+    if (ok) {
+      setPermission(Notification.permission);
+      navigator.serviceWorker.getRegistration("/").then((registration) => registration?.pushManager.getSubscription()).then((value) => setSubscribed(Boolean(value))).catch(() => setSubscribed(false));
+    }
   }, []);
 
   async function subscribe() {
@@ -39,6 +43,7 @@ export default function NewsPushSubscribe() {
       if (!subscription) subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: toBytes(publicKey) });
       const response = await fetch(`${API}/api/push/subscribe`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(subscription.toJSON()) });
       if (!response.ok) throw new Error((await response.json()).detail || "Could not save your subscription.");
+      setSubscribed(true);
       setMessage("Notifications enabled. You will receive new Nepal market updates.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Could not enable notifications.");
@@ -53,6 +58,7 @@ export default function NewsPushSubscribe() {
       if (subscription) {
         await fetch(`${API}/api/push/subscribe`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify(subscription.toJSON()) });
         await subscription.unsubscribe();
+        setSubscribed(false);
       }
       setMessage("Market notifications have been turned off.");
     } catch { setMessage("Could not turn notifications off. Please try again."); }
@@ -63,7 +69,7 @@ export default function NewsPushSubscribe() {
   return <div className="flex flex-col gap-2 rounded-2xl border border-teal-100 bg-teal-50/70 p-4 sm:flex-row sm:items-center sm:justify-between">
     <div><p className="font-bold text-slate-900">Get Nepal market alerts on your phone</p><p className="text-sm text-slate-600">Optional alerts for new NEPSE, IPO and allotment updates.</p>{message && <p role="status" className="mt-1 text-xs text-slate-700">{message}</p>}</div>
     <div className="flex shrink-0 gap-2">
-      {permission === "granted" ? <button type="button" onClick={unsubscribe} disabled={busy} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold disabled:opacity-50">{busy ? "Please wait…" : "Turn off alerts"}</button> : <button type="button" onClick={subscribe} disabled={busy} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-50">{busy ? "Enabling…" : "Enable notifications"}</button>}
+      {subscribed ? <button type="button" onClick={unsubscribe} disabled={busy} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold disabled:opacity-50">{busy ? "Please wait…" : "Turn off alerts"}</button> : <button type="button" onClick={subscribe} disabled={busy} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-50">{busy ? "Enabling…" : "Enable notifications"}</button>}
     </div>
   </div>;
 }

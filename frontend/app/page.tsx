@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HomeClient from "./HomeClient";
+import { homeLanguageAlternates } from "../lib/home-locales";
 
 const site = "https://pd-fora.vercel.app";
 
@@ -8,11 +9,7 @@ export const metadata: Metadata = {
   description: "Use free online PDF tools to merge, split, compress and convert documents, plus practical calculators and utilities for Nepal.",
   alternates: {
     canonical: site,
-    languages: {
-      en: site,
-      ne: `${site}/ne`,
-      "x-default": site,
-    },
+    languages: homeLanguageAlternates,
   },
   openGraph: {
     type: "website",

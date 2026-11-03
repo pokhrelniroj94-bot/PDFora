@@ -59,6 +59,25 @@ export default function AIWritingTools({ slug }: Props) {
     void navigator.clipboard?.writeText(result);
   }
 
+  function useInResumeBuilder() {
+    const headings = ["Professional Summary", "Core Skills", "Experience Bullets", "Optional ATS Keywords"];
+    const sections: Record<string, string> = {};
+    let current = "";
+    for (const line of result.split(/\\r?\\n/)) {
+      const heading = headings.find((item) => new RegExp("^\\\\s*(?:#{1,3}\\\\s*)?" + item + "\\\\s*:?[\\\\s]*$", "i").test(line.trim()));
+      if (heading) { current = heading; sections[current] = ""; continue; }
+      if (current) sections[current] += (sections[current] ? "\\n" : "") + line;
+    }
+    const draft = {
+      summary: (sections["Professional Summary"] || "").trim(),
+      skills: (sections["Core Skills"] || "").trim(),
+      experience: (sections["Experience Bullets"] || "").trim(),
+      raw: result,
+    };
+    localStorage.setItem("pdfora-ai-resume-draft", JSON.stringify(draft));
+    window.location.href = "/resume-builder";
+  }
+
   function downloadResult() {
     const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -108,7 +127,7 @@ export default function AIWritingTools({ slug }: Props) {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-extrabold text-slate-900">Your result</h2><div className="flex gap-2"><button type="button" onClick={copyResult} className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-slate-50">Copy</button><button type="button" onClick={downloadResult} className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800">Download TXT</button></div></div>
         <textarea aria-label="Generated result" className={inputClass + " min-h-80 leading-7"} value={result} onChange={(event) => setResult(event.target.value)} />
         <p className="mt-3 text-xs text-slate-500">Review all details before using. AI may make mistakes. Never include achievements or qualifications you cannot verify.</p>
-        {!humanizer && !cover && <a href="/resume-builder" className="mt-4 inline-flex rounded-xl border border-teal-200 px-4 py-2.5 text-sm font-bold text-teal-800 hover:bg-teal-50">Open PDFora Resume Builder →</a>}
+        {!humanizer && !cover && <button type="button" onClick={useInResumeBuilder} className="mt-4 inline-flex rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800">Use this draft in Resume Builder →</button>}
       </section>}
 
       <aside className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">

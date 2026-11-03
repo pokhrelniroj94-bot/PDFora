@@ -630,7 +630,9 @@ async def nepal_forex(date: str | None = Query(default=None)):
     except ValueError:
         raise HTTPException(status_code=400, detail="Date must be a valid YYYY-MM-DD value.")
 
-    start = (selected - timedelta(days=10)).isoformat()
+    # Include several weeks so the response can compare against the previous
+    # published business-day snapshot across weekends and extended holidays.
+    start = (selected - timedelta(days=30)).isoformat()
     # Keep a stable cache key for the live/latest view so a new day can still
     # fall back to the last successful published rate if NRB is temporarily down.
     key = "rates:latest" if date is None else "rates:" + requested
@@ -638,28 +640,36 @@ async def nepal_forex(date: str | None = Query(default=None)):
     def load():
         records = _nrb_fetch_records(start, requested)
         valid = [item for item in records if item.get("date") and isinstance(item.get("rates"), list)]
-        latest = max(valid, key=lambda item: str(item.get("date", "")), default=None)
+        ordered = sorted(valid, key=lambda item: str(item.get("date", "")), reverse=True)
+        latest = ordered[0] if ordered else None
         if not latest:
             raise RuntimeError("NRB has not published a rate for this date range")
-        rates = []
-        for item in latest.get("rates", []):
-            currency = item.get("currency") or {}
-            code = str(currency.get("ISO3") or currency.get("iso3") or "").upper()
-            name = str(currency.get("name") or "")
-            try:
-                unit, buy, sell = float(currency.get("unit") or 1), float(item.get("buy")), float(item.get("sell"))
-            except (TypeError, ValueError):
-                continue
-            if len(code) == 3 and code.isalpha() and name and unit > 0 and all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
-                rates.append({"code": code, "name": name, "unit": unit, "buy": buy, "sell": sell})
+        def normalize_rates(record):
+            rates = []
+            for item in record.get("rates", []):
+                currency = item.get("currency") or {}
+                code = str(currency.get("ISO3") or currency.get("iso3") or "").upper()
+                name = str(currency.get("name") or "")
+                try:
+                    unit, buy, sell = float(currency.get("unit") or 1), float(item.get("buy")), float(item.get("sell"))
+                except (TypeError, ValueError):
+                    continue
+                if len(code) == 3 and code.isalpha() and name and unit > 0 and all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
+                    rates.append({"code": code, "name": name, "unit": unit, "buy": buy, "sell": sell})
+            return rates
+
+        rates = normalize_rates(latest)
         if not rates:
             raise RuntimeError("NRB returned no valid currency rates")
+        previous = next((record for record in ordered[1:] if normalize_rates(record)), None)
         return {
             "source": "Nepal Rastra Bank",
             "requestedDate": requested,
             "rateDate": latest["date"],
             "publishedOn": latest.get("published_on"),
             "rates": rates,
+            "previousRateDate": previous.get("date") if previous else None,
+            "previousRates": normalize_rates(previous) if previous else [],
         }
 
     try:

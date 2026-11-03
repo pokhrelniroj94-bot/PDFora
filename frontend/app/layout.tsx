@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
-import CookieConsent from "../components/CookieConsent";
+import CookieConsent, { CookieSettingsLink } from "../components/CookieConsent";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
 
@@ -57,7 +57,7 @@ export default function RootLayout({
           <span className="mx-2">·</span>
           <a href="/contact" className="hover:underline">Contact</a>
           <span className="mx-2">·</span>
-          <button type="button" onClick={() => window.dispatchEvent(new Event("pdfora:open-cookie-settings"))} className="hover:underline">Cookie settings</button>
+          <CookieSettingsLink />
         </footer>
         <ToolDirectory />
         <Script

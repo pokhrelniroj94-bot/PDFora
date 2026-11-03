@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import NewsPushSubscribe from "./NewsPushSubscribe";
 
 type Story = { title: string; link: string; publishedAt: string; source: string };
 type Feed = { market: Story[]; ipo: Story[]; updatedAt: string; warning?: string };
@@ -56,7 +57,7 @@ export default function NepalMarketNews() {
     }
   }
 
-  return <div className="space-y-4">
+  return <div className="space-y-4">\n    <NewsPushSubscribe />
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div><h2 className="text-xl font-black text-slate-950">Nepal Stock Market & IPO News</h2><p className="mt-1 text-sm text-slate-600">Recent Nepal market headlines combine Google News with NEPSE company disclosures, exchange messages and IPO notices. Updates automatically every 15 minutes; source and publication time are shown for each item.</p></div>
       <button type="button" onClick={refresh} disabled={loading} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-60">{loading ? "Refreshing…" : "Refresh news"}</button>

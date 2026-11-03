@@ -213,6 +213,17 @@ export async function GET(request: Request) {
     supplyDemand: pick(supplyDemandResult, {}),
     stocks,
     points,
+    // The unofficial provider currently supplies stock quote rows only. The other panels
+    // remain sourced from YONEPSE archives until their schemas and timestamps are verified.
+    dataCoverage: {
+      stockQuotes: usingUnofficialLive ? "Unofficial NEPSE session feed (timestamp-checked)" : usingLiveQuotes ? "YONEPSE public snapshot" : "YONEPSE historical fallback",
+      indexCards: "YONEPSE public snapshot",
+      marketSummary: "YONEPSE public snapshot",
+      topMovers: "YONEPSE public snapshot",
+      sectorIndices: "YONEPSE archived daily data",
+      supplyDemand: "YONEPSE public snapshot",
+      historicalCharts: "YONEPSE archived daily data",
+    },
     partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {

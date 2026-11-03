@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import NepalMarketNews from "./NepalMarketNews";
 
-type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
-type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; updatedAt?: string; isStale?: boolean; notice?: string; rates: ForexRate[]; error?: string };
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const fallbackCurrencies: Array<{ code: string; name: string }> = [
   { code: "USD", name: "US Dollar" }, { code: "EUR", name: "Euro" }, { code: "GBP", name: "Pound Sterling" }, { code: "INR", name: "Indian Rupee" },
@@ -61,93 +59,6 @@ const holidays = [
   { name: "Muhammad Jayanti", bs: "Date to be announced", ad: "", note: "Muslim community", type: "To be announced" },
   { name: "Guru Nanak Jayanti", bs: "Date to be announced", ad: "", note: "Sikh community", type: "To be announced" },
 ];
-
-async function fetchLatestForex(): Promise<ForexResponse> {
-  const response = await fetch("/api/nepal-forex", { cache: "no-store" });
-  const json = await response.json() as ForexResponse;
-  if (!response.ok) throw new Error(json.error || "Could not load NRB rates.");
-  return json;
-}
-
-function ForexTool() {
-  const [data, setData] = useState<ForexResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [currency, setCurrency] = useState("USD");
-  const [amount, setAmount] = useState("100");
-  const [direction, setDirection] = useState("foreign-to-npr");
-
-  const loadRates = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const next = await fetchLatestForex();
-      if (!Array.isArray(next.rates) || next.rates.length === 0) throw new Error("The rate provider returned an empty currency list.");
-      setData(next);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not load NRB rates.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { void loadRates(); }, []);
-
-  const selected = data?.rates.find((item) => item.code === currency);
-  const value = Number(amount);
-  const valid = amount.trim() !== "" && Number.isFinite(value) && value >= 0 && !!selected;
-  const converted = selected && valid
-    ? direction === "foreign-to-npr" ? value * selected.buy / selected.unit : value * selected.unit / selected.sell
-    : null;
-
-  return <div className="space-y-5 pdfora-enter">
-    <header className="rounded-2xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-cyan-50 p-4 sm:p-5">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[.14em] text-teal-700">Nepal · Official reference rates</p>
-          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">Nepal Rastra Bank Exchange Rates</h2>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Daily buying and selling rates published by NRB. On weekends and public holidays, the latest available working-day rate may be shown.</p>
-        </div>
-        <button type="button" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-teal-200 bg-white px-4 py-2 text-sm font-semibold text-teal-800 shadow-sm hover:border-teal-400 hover:bg-teal-50 disabled:cursor-not-allowed disabled:opacity-60" disabled={loading} onClick={() => void loadRates()}>
-          {loading && <span className="pdfora-spinner" aria-hidden="true" />}
-          {loading ? "Updating…" : "Refresh rates"}
-        </button>
-      </div>
-      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-600">
-        <span><strong className="text-slate-800">Rate date:</strong> {data?.rateDate || "Waiting for rates"}</span>
-        {data?.source && <span><strong className="text-slate-800">Source:</strong> {data.source}</span>}
-        {data?.updatedAt && <span><strong className="text-slate-800">Fetched:</strong> {new Date(data.updatedAt).toLocaleString("en-NP", { timeZone: "Asia/Kathmandu" })}</span>}
-      </div>
-    </header>
-
-    {data?.isStale && <p role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-950">{data.notice || "Showing the latest cached official rates. The live source is temporarily unavailable."}</p>}
-    {error && <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm leading-6 text-rose-900"><strong>Rates could not be refreshed.</strong><p className="mt-1">{error}</p><button type="button" className="mt-2 font-semibold underline underline-offset-2" onClick={() => void loadRates()}>Try again</button></div>}
-
-    {loading && !data && <div className="grid gap-2" aria-label="Loading exchange rates"><div className="pdfora-skeleton h-11 rounded-xl" /><div className="pdfora-skeleton h-11 rounded-xl" /><div className="pdfora-skeleton h-11 rounded-xl" /></div>}
-    {data && <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3"><h3 className="font-bold text-slate-900">Published currency rates</h3><span className="text-xs text-slate-500">{data.rates.length} currencies</span></div>
-      <div className="max-h-[520px] overflow-auto">
-        <table className="w-full min-w-[540px] text-left text-sm">
-          <thead className="sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th scope="col" className="px-4 py-3">Currency</th><th scope="col" className="px-4 py-3 text-right">Unit</th><th scope="col" className="px-4 py-3 text-right">Buying · NPR</th><th scope="col" className="px-4 py-3 text-right">Selling · NPR</th></tr></thead>
-          <tbody>{data.rates.map((item) => <tr key={item.code} className="border-t border-slate-100 transition-colors hover:bg-teal-50/50"><th scope="row" className="px-4 py-3 font-semibold text-slate-900"><span>{item.code}</span><span className="ml-2 font-normal text-slate-500">{item.name}</span></th><td className="px-4 py-3 text-right tabular-nums">{item.unit}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.buy.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.sell.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td></tr>)}</tbody>
-        </table>
-      </div>
-    </section>}
-
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-      <div><p className="text-xs font-bold uppercase tracking-[.12em] text-teal-700">Quick conversion</p><h3 className="mt-1 text-lg font-bold text-slate-950">NRB currency converter</h3><p className="mt-1 text-sm text-slate-600">Uses the published unit, buying and selling rate for the selected currency.</p></div>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <label><span className={label}>Currency</span><select className={field} value={currency} onChange={(e) => setCurrency(e.target.value)}>{Array.from(new Map([...fallbackCurrencies, ...(data?.rates ?? []).map(({ code, name }) => ({ code, name }))].map(item => [item.code, item])).values()).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>
-        <label><span className={label}>Conversion direction</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option></select></label>
-      </div>
-      <div className="mt-3 max-w-sm"><Field title="Amount" value={amount} onChange={setAmount}/></div>
-      {converted !== null && selected ? <div className="pdfora-pop-in mt-4 rounded-xl border border-teal-100 bg-teal-50 p-4" aria-live="polite"><p className="text-xs font-semibold uppercase tracking-wide text-teal-800">Estimated conversion</p><p className="mt-1 break-words text-2xl font-bold tracking-tight text-teal-950">{direction === "foreign-to-npr" ? npr(converted) : converted.toLocaleString("en-IN", { maximumFractionDigits: 4 }) + " " + selected.code}</p><p className="mt-2 text-sm text-teal-900">{direction === "foreign-to-npr" ? value.toLocaleString() + " " + selected.code : npr(value)} · {direction === "foreign-to-npr" ? selected.buy : selected.sell} NPR per {selected.unit} {selected.code}</p><p className="mt-1 text-xs text-teal-800">Rate date: {data?.rateDate}</p></div> : <p role="status" className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">{error ? "The converter will calculate once official rates are available." : `No published rate is available for ${currency} yet.`}</p>}
-    </section>
-
-    <p className="text-xs leading-5 text-slate-500">NRB reference rates are not necessarily the exact rates offered by individual banks, money changers or remittance providers. Always confirm the transaction rate with your provider before making a payment.</p>
-    <a className="inline-flex text-sm font-semibold text-teal-700 underline" href="https://www.nrb.org.np/forex" target="_blank" rel="noreferrer">View NRB official exchange-rate page ↗</a>
-  </div>;
-}
 
 function SalaryTaxTool() {
   const [income, setIncome] = useState("1200000");
@@ -266,7 +177,6 @@ function NepseDividendTool() {
 }
 
 export default function NepalLiveTools({ slug }: { slug: string }) {
-  if (slug === "nepal-forex-rates") return <ForexTool/>;
   if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool/>;
   if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool/>;
   if (slug === "nepal-public-holidays-2083") return <HolidayTool/>;

@@ -151,7 +151,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#f5f7f6] text-slate-950">
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgba(15,23,42,0.04)] backdrop-blur-xl">
-        <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6 lg:px-8">
           <Link
             href="/"
             className="flex items-center gap-2"
@@ -166,14 +166,11 @@ export default function Home() {
             </span>
           </Link>
 
-          <Link href="/ne" className="mr-2 hidden rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-blue-700 hover:border-blue-400 sm:inline-flex">नेपाली</Link>
-          <Link href="/market" className="mr-2 inline-flex rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-2 text-[11px] font-bold text-teal-800 hover:border-teal-400 sm:mr-3 sm:px-3 sm:text-xs">📈 Market</Link>
-          <Link
-            href="/tools"
-            className="rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-slate-800"
-          >
-            Explore Tools
-          </Link>
+          <nav aria-label="Main navigation" className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+            <Link href="/ne" lang="ne" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2 py-2 text-[11px] font-extrabold text-blue-800 hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">नेपाली</Link>
+            <Link href="/market" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2 py-2 text-[10px] font-bold text-teal-800 hover:border-teal-400 sm:px-3 sm:text-xs">📈 <span className="ml-1">Market</span></Link>
+            <Link href="/tools" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 px-2.5 py-2 text-[10px] font-bold text-white transition hover:bg-slate-800 sm:px-4 sm:text-xs">Tools</Link>
+          </nav>
         </div>
       </header>
 

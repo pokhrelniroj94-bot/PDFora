@@ -3,11 +3,14 @@ import { legacyToolSlugs } from "./lib/legacy-tool-slugs";
 
 const nextConfig: NextConfig = {
   async redirects() {
-    return legacyToolSlugs.map((slug) => ({
-      source: `/tools/${slug}`,
-      destination: `/${slug}`,
-      permanent: true,
-    }));
+    return [
+      { source: "/tools/nepal-forex-rates", destination: "/tools/currency-converter", permanent: true },
+      ...legacyToolSlugs.map((slug) => ({
+        source: `/tools/${slug}`,
+        destination: `/${slug}`,
+        permanent: true,
+      })),
+    ];
   },
   async headers() {
     return [

@@ -15,6 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
+    "qr-code-generator": { title: "Free QR Code Generator – Wi-Fi, URL & Text QR Codes", description: "Create custom QR codes for websites, text, Wi-Fi, email and phone details. Choose image size and colours, then download a PNG." },
+    "qr-code-scanner": { title: "QR Code Scanner – Scan QR from Image or Camera", description: "Scan QR codes from an uploaded image or device camera and copy the decoded content. Check links carefully before opening them." },
+    "barcode-generator": { title: "Free Barcode Generator – Code 128, EAN, UPC & More", description: "Generate Code 128, Code 39, EAN and UPC barcode artwork, preview it and download an SVG for labels and inventory workflows." },
     "time-zone-converter": { title: "Time Zone Converter – Compare World Time Zones", description: "Convert a date and time between international time zones with daylight-saving adjustments using your browser's time-zone database." },
     "text-to-speech": { title: "Free Text to Speech Reader – Listen to Text Online", description: "Read text aloud with browser voices. Choose an available voice, language, speed and pitch, then pause or resume playback." },
     "speech-to-text": { title: "Speech to Text – Free Online Voice Typing Tool", description: "Dictate speech into editable text with supported browser speech recognition. Requires microphone permission; language support varies by browser." },

@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: pdfora-preview
+    runtime: node
+    plan: free
+    region: singapore
+    branch: preview/render-staging
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    autoDeployTrigger: off
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"

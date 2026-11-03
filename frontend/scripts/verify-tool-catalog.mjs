@@ -83,8 +83,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 129, "Expected 126 catalog utilities");
-assert.equal(allHrefs.length, 178, "Expected 175 available tools (49 PDF tools + 126 catalog utilities)");
+assert.equal(catalog.length, 133, "Expected 133 unique catalog utilities after deduplication and new tool additions");
+assert.equal(allHrefs.length, 182, "Expected 182 available tools (49 PDF tools + 133 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
@@ -132,4 +132,4 @@ assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-re
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
-console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);
+console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including new browser utilities, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

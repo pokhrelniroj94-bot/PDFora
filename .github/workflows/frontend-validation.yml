@@ -2,14 +2,13 @@ name: PDFora frontend validation
 
 on:
   pull_request:
-    branches:
-      - niroj-tools-development
     paths:
       - "frontend/**"
       - ".github/workflows/frontend-validation.yml"
   push:
     branches:
-      - seo-tool-pages-800-1200
+      - master
+      - niroj-tools-development
     paths:
       - "frontend/**"
       - ".github/workflows/frontend-validation.yml"

@@ -182,7 +182,6 @@ export default function MarketIntelligence() {
   const [asset, setAsset] = useState("nepse");
   const [symbol, setSymbol] = useState("NEPSE");
   const [marketSymbol, setMarketSymbol] = useState("EUR/USD");
-  const [points, setPoints] = useState<Point[]>([]);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [source, setSource] = useState("");
   const [busy, setBusy] = useState(false);
@@ -202,7 +201,7 @@ export default function MarketIntelligence() {
       })).filter((p: Point) => p.date && Number.isFinite(p.close) && p.close > 0);
       const result = analyse(rows, "nepse");
       if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
-      setPoints(rows); setAnalysis(result); setSource(`${data.source || "YONEPSE dataset"} · latest history ${data.latestHistoryDate || result.latestDate}`);
+      setAnalysis(result); setSource(`${data.source || "YONEPSE dataset"} · latest history ${data.latestHistoryDate || result.latestDate}`);
     } catch (err) { setError(err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
     finally { setBusy(false); }
   }
@@ -215,7 +214,7 @@ export default function MarketIntelligence() {
       const rows = parseCsv(await file.text());
       const result = analyse(rows, asset);
       if (!result) throw new Error("At least 50 valid historical daily prices are required.");
-      setPoints(rows); setAnalysis(result); setSource(`Uploaded file: ${file.name} · ${rows.length} rows`);
+      setAnalysis(result); setSource(`Uploaded file: ${file.name} · ${rows.length} rows`);
     } catch (err) { setError(err instanceof Error ? err.message : "Could not read this CSV."); }
     finally { setBusy(false); }
   }

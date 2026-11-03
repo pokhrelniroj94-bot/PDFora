@@ -156,7 +156,7 @@ export function SmartToolCenter() {
             {categories.map((item) => <button key={item.name} onClick={() => setCategory(item.name)} aria-pressed={category === item.name} className={"shrink-0 rounded-full px-4 py-2.5 text-sm font-bold transition " + (category === item.name ? "bg-teal-800 text-white shadow-sm" : "border border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:text-teal-800")}>{item.name}<span className={"ml-2 text-xs " + (category === item.name ? "text-teal-100" : "text-slate-400")}>{item.count}</span></button>)}
           </div>
 
-          {filtered.length ? <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filtered.length ? <div className="pdfora-stagger mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((tool) => <Link key={tool.href} href={tool.href} className="tool-directory-card group flex min-h-44 flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-teal-400">
               <div className="flex items-center justify-between gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-xl" aria-hidden="true">{tool.icon || categoryIcons[tool.category] || "🛠️"}</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600">{tool.category}</span></div>
               <h3 className="mt-4 text-sm font-extrabold text-slate-900 group-hover:text-teal-800">{tool.name}</h3>

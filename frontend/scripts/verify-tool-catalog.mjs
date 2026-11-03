@@ -15,6 +15,7 @@ const toolPage = read("../app/tools/[slug]/page.tsx");
 const pdfToolSEO = read("../lib/tool-seo.ts");
 const pdfSEOContent = read("../components/ToolSEOContent.tsx");
 const nextConfig = read("../next.config.ts");
+const resumeBuilderPage = read("../app/resume-builder/page.tsx");
 const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
@@ -67,6 +68,7 @@ assert.ok(pdfToolSEO.includes("canonical: url") && pdfToolSEO.includes("googleBo
 assert.ok(pdfSEOContent.includes('"@type": "BreadcrumbList"') && pdfSEOContent.includes("WebApplication"), "PDF tool guides must render breadcrumb and WebApplication structured data");
 assert.ok(!pdfSEOContent.startsWith('"use client"'), "PDF SEO guide should server-render its content and structured data");
 assert.ok(nextConfig.includes("/tools/nepal-forex-rates") && nextConfig.includes("/tools/currency-converter"), "Retired Forex URL must permanently redirect to the supported converter");
+assert.ok(resumeBuilderPage.includes("canonical: \"https://pd-fora.vercel.app/resume-builder\"") && resumeBuilderPage.includes("Free Resume Builder – CV Templates"), "Resume Builder must retain its canonical URL and concise page title");
 assert.ok(!catalogSource.includes("nepal-forex-rates"), "Retired NRB forex tool must not remain in the catalog");
 assert.ok(!allTools.includes("nepal-forex-rates"), "Retired NRB forex route must not remain in the tool dispatcher");
 assert.ok(!nepalLiveTools.includes("ForexTool") && !nepalLiveTools.includes("/api/nepal-forex") && !nepalLiveTools.includes("fallbackCurrencies"), "Retired NRB forex UI, API client and currency fallback must be removed");

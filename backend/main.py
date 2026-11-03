@@ -417,6 +417,19 @@ async def save_upload(
         raise
 
 
+def safe_render_matrix(page, requested_scale: float = 2.0, max_pixels: int = 20_000_000):
+    """Return a bounded render matrix so unusually large pages cannot exhaust memory."""
+    rect = page.rect
+    width = max(1.0, float(rect.width))
+    height = max(1.0, float(rect.height))
+    if width * height > max_pixels:
+        raise HTTPException(status_code=413, detail="This PDF page is too large to render safely.")
+    scale = min(requested_scale, (max_pixels / (width * height)) ** 0.5)
+    if scale < 0.25:
+        raise HTTPException(status_code=413, detail="This PDF page is too large to render safely.")
+    return fitz.Matrix(scale, scale)
+
+
 def read_pdf(path: Path):
 
     # Validate the actual file signature; never trust the filename or browser MIME type.
@@ -1059,10 +1072,7 @@ async def pdf_to_jpg(
             ):
 
                 pixmap = page.get_pixmap(
-                    matrix=fitz.Matrix(
-                        1.5,
-                        1.5
-                    ),
+                    matrix=safe_render_matrix(page, 1.5),
                     alpha=False
                 )
 
@@ -1574,11 +1584,14 @@ async def pdf_to_excel(
                                 start=1
                             ):
                                 if value is not None:
-                                    worksheet.cell(
+                                    cell = worksheet.cell(
                                         row=row_number,
                                         column=column_number,
                                         value=str(value).strip()
                                     )
+                                    # Force extracted PDF text to remain literal text,
+                                    # never an executable spreadsheet formula.
+                                    cell.data_type = "s"
 
                         for column_cells in worksheet.columns:
 
@@ -1614,11 +1627,12 @@ async def pdf_to_excel(
                             text.splitlines(),
                             start=1
                         ):
-                            worksheet.cell(
+                            cell = worksheet.cell(
                                 row=row_number,
                                 column=1,
                                 value=line.strip()
                             )
+                            cell.data_type = "s"
 
                         worksheet.column_dimensions["A"].width = 100
 
@@ -1941,7 +1955,7 @@ async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
         if len(doc)>200: raise HTTPException(status_code=413,detail="Maximum 200 pages per image conversion.")
         with zipfile.ZipFile(archive,"w",zipfile.ZIP_DEFLATED) as z:
             for i,p in enumerate(doc):
-                pix=p.get_pixmap(matrix=fitz.Matrix(2,2),alpha=False)
+                pix=p.get_pixmap(matrix=safe_render_matrix(p, 2.0),alpha=False)
                 im=Image.frombytes("RGB",[pix.width,pix.height],pix.samples)
                 dest=io.BytesIO()
                 opts={"quality":quality,"method":6} if fmt=="webp" else {}
@@ -1982,7 +1996,7 @@ async def grayscale_pdf(file: UploadFile = File(...)):
         flattened=fitz.open()
         for p in doc:
             rect=p.rect
-            pix=p.get_pixmap(matrix=fitz.Matrix(1.5,1.5),colorspace=fitz.csGRAY,alpha=False,annots=True)
+            pix=p.get_pixmap(matrix=safe_render_matrix(p, 1.5),colorspace=fitz.csGRAY,alpha=False,annots=True)
             page=flattened.new_page(width=rect.width,height=rect.height)
             page.insert_image(page.rect,stream=pix.tobytes("png"))
         doc.close()
@@ -2000,7 +2014,7 @@ async def flatten_pdf(file: UploadFile = File(...)):
         flattened=fitz.open()
         for page in doc:
             rect=page.rect
-            pix=page.get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False,annots=True)
+            pix=page.get_pixmap(matrix=safe_render_matrix(page, 1.5),alpha=False,annots=True)
             target=flattened.new_page(width=rect.width,height=rect.height)
             target.insert_image(target.rect,stream=pix.tobytes("png"))
         doc.close()
@@ -2015,7 +2029,8 @@ async def edit_pdf_metadata(file: UploadFile = File(...), title: str = Form(""),
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"metadata.pdf"; await save_upload(file,src); reader=PdfReader(str(src)); writer=PdfWriter(); writer.clone_document_from_reader(reader)
-        writer.add_metadata({"/Title":title,"/Author":author,"/Subject":subject,"/Keywords":keywords})
+        # Explicit empty strings clear old values instead of silently retaining them.
+        writer.add_metadata({"/Title":title.strip(),"/Author":author.strip(),"/Subject":subject.strip(),"/Keywords":keywords.strip()})
         with open(out,"wb") as f: writer.write(f)
         return _tool_file_response(out,"NIROJ-Updated-Metadata.pdf")
     finally: await file.close()
@@ -2426,7 +2441,10 @@ async def pdf_to_csv(file: UploadFile = File(...)):
                     for row_number, row in enumerate(table, start=1):
                         for column_number, value in enumerate(row or [], start=1):
                             if value is not None and str(value).strip():
-                                writer.writerow([page_number, table_number, row_number, column_number, str(value).strip()])
+                                safe_value = str(value).strip()
+                                if safe_value.lstrip().startswith(("=", "+", "-", "@")):
+                                    safe_value = "'" + safe_value
+                                writer.writerow([page_number, table_number, row_number, column_number, safe_value])
                                 rows_written += 1
         if rows_written == 0:
             raise HTTPException(status_code=422, detail="No extractable tables were found in this PDF.")
@@ -2519,7 +2537,7 @@ async def pdf_to_tiff(file: UploadFile = File(...)):
             raise HTTPException(status_code=413, detail="TIFF conversion is limited to 200 pages per file.")
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, page in enumerate(doc):
-                pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                pix = page.get_pixmap(matrix=safe_render_matrix(page, 1.5), alpha=False)
                 image = Image.open(io.BytesIO(pix.tobytes("png")))
                 buffer = io.BytesIO()
                 image.save(buffer, format="TIFF", compression="tiff_deflate")
@@ -2549,7 +2567,7 @@ async def pdf_to_bmp(file: UploadFile = File(...)):
             raise HTTPException(status_code=413, detail="BMP conversion is limited to 200 pages per file.")
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, page in enumerate(doc):
-                pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                pix = page.get_pixmap(matrix=safe_render_matrix(page, 1.5), alpha=False)
                 image = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
                 buffer = io.BytesIO()
                 image.save(buffer, format="BMP")

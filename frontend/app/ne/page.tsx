@@ -6,7 +6,7 @@ const site = "https://pd-fora.vercel.app";
 export const metadata: Metadata = {
   title: "नि:शुल्क PDF उपकरण र नेपालका अनलाइन टुलहरू",
   description: "PDF मर्ज, स्प्लिट, कम्प्रेस र रूपान्तरण गर्नुहोस्। नेपाली मिति, Unicode typing, विदेशी विनिमय दर र अन्य उपयोगी नेपाल टुलहरू प्रयोग गर्नुहोस्।",
-  alternates: { canonical: `${site}/ne` },
+  alternates: { canonical: `${site}/ne`, languages: { en: site, ne: `${site}/ne`, "x-default": site } },
   openGraph: {
     type: "website",
     title: "PDFora नेपाली — PDF Tools र नेपालका उपयोगी टुलहरू",

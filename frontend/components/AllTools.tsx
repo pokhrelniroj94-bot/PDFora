@@ -42,13 +42,19 @@ export function ToolsDirectory() {
  const list=useMemo(()=>{
   const normalize=(value:string)=>value.toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
   const tokens=normalize(query).split(" ").filter(Boolean);
+  const priority = ["nepali-calendar","nepali-date-converter","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepal-forex-rates","nepal-share-calculator","loan-emi-calculator"];
   return allTools.filter(t=>{
    const matchesCategory=category==="All"||(category==="PDF"?(t.kind==="pdf"||t.category==="PDF"):t.category===category);
    const searchable=normalize([t.name,t.description,t.keywords,t.href].join(" "));
    return matchesCategory&&(tokens.length===0||tokens.every(token=>searchable.includes(token)));
+  }).sort((x,y)=>{
+   if(query.trim()) return 0;
+   const ix=priority.indexOf(x.slug), iy=priority.indexOf(y.slug);
+   return (ix<0?999:ix)-(iy<0?999:iy);
   });
  },[category,query]);
  return <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+  <nav aria-label="Popular categories" className="mb-6 flex flex-wrap gap-2">{[["🇳🇵 Nepal tools","/tools/nepal"],["🧮 Calculators","/tools/calculators"],["📄 PDF tools","/tools/pdf"]].map(([name,href])=><Link key={href} href={href} className="rounded-full border border-teal-200 bg-teal-50 px-4 py-2 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">{name}</Link>)}</nav>
   <div className="mb-9"><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">One place. Useful tools.</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Explore PDFora</h1><p className="mt-3 max-w-2xl text-slate-600">Browse every available PDF tool, calculator, text utility, developer tool, image converter, SEO helper and Nepal-focused utility from one searchable directory.</p><p className="mt-3 text-sm font-semibold text-teal-700">{allTools.length} available tools · OCR is listed separately only when its server support is enabled.</p></div>
   <div className="relative z-10 -mx-4 mb-7 border-y border-slate-200/80 bg-white px-4 py-3 shadow-sm sm:mx-0 sm:rounded-2xl sm:border sm:p-4">
    <input className={box+" mb-3"} placeholder="Search tools..." value={query} onChange={e=>setQuery(e.target.value)} aria-label="Search tools"/>
@@ -58,6 +64,21 @@ export function ToolsDirectory() {
   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{list.map(t=><Link key={t.slug} href={t.href} className="group rounded-[1.5rem] border border-slate-200/80 bg-white p-5 shadow-[0_8px_30px_rgba(15,23,42,.045)] transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-[0_20px_50px_rgba(15,118,110,.12)]"><div className="mb-4 flex items-center justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-xl" aria-hidden="true">{getToolIcon(t.slug, t.category)}</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{t.category}</span></div><h2 className="font-bold text-slate-900 group-hover:text-teal-800">{t.name}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{t.description}</p><span className="mt-4 inline-flex text-sm font-bold text-teal-700">Open tool <span className="ml-2 transition group-hover:translate-x-1">→</span></span></Link>)}</div>
   {list.length===0&&<p className="rounded-xl bg-white p-8 text-center text-slate-600">No tools found. Try another search.</p>}
   <div className="mt-8"><AdsterraNative /></div>
+ </main>;
+}
+
+export function CategoryToolsPage({category}:{category:"Nepal"|"Calculators"|"PDF"}) {
+ const isPdf=category==="PDF";
+ const items=allTools.filter(t=>isPdf?t.kind==="pdf":category==="Nepal"?t.category==="Nepal":["Math","Business"].includes(t.category));
+ const title=category==="Nepal"?"Nepal Tools":category==="Calculators"?"Calculators & Converters":"PDF Tools";
+ const description=category==="Nepal"?"Nepali calendar, date converter, public holidays, Nepali typing, NEPSE and useful Nepal-focused utilities.":category==="Calculators"?"Practical calculators for finance, business, dates, maths and everyday conversions.":"PDF merge, split, compress, convert, edit and document tools.";
+ const priority=["nepali-calendar","nepali-date-converter","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepal-forex-rates","nepal-share-calculator"];
+ const sorted=[...items].sort((x,y)=>{const ix=priority.indexOf(x.slug),iy=priority.indexOf(y.slug);return (ix<0?999:ix)-(iy<0?999:iy);});
+ return <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+  <Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link>
+  <header className="mb-7 mt-5"><p className="text-xs font-black uppercase tracking-[.18em] text-teal-700">PDFora categories</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{title}</h1><p className="mt-3 max-w-3xl text-slate-600">{description}</p><p className="mt-2 text-sm font-semibold text-teal-700">{items.length} tools in this category</p></header>
+  <nav aria-label="Tool categories" className="mb-6 flex flex-wrap gap-2">{[["Nepal","/tools/nepal"],["Calculators","/tools/calculators"],["PDF","/tools/pdf"],["All tools","/tools"]].map(([name,href])=><Link key={href} href={href} className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-teal-400 hover:bg-teal-50">{name}</Link>)}</nav>
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{sorted.map(t=><Link key={t.href} href={t.href} className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-teal-300 hover:shadow-lg"><div className="mb-3 flex items-center justify-between"><span className="text-xl">{getToolIcon(t.slug,t.category)}</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{t.category}</span></div><h2 className="font-bold text-slate-900 group-hover:text-teal-800">{t.name}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{t.description}</p><span className="mt-4 inline-flex text-sm font-bold text-teal-700">Open tool →</span></Link>)}</div>
  </main>;
 }
 

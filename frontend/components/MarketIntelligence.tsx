@@ -242,7 +242,7 @@ export default function MarketIntelligence() {
       })).filter((p: Point) => p.date && Number.isFinite(p.close) && p.close > 0);
       const result = analyse(rows, "nepse");
       if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
-      const newsResponse = await fetch("/api/nepal-market-news", { cache: "no-store" });
+      const newsResponse = await fetch(`/api/nepal-market-news?symbol=${encodeURIComponent(symbol)}`, { cache: "no-store" });
       if (!newsResponse.ok) throw new Error("News service unavailable; a news-verified signal cannot be issued.");
       const newsPayload = await newsResponse.json();
       const reviewed = reviewNews(newsPayload, symbol);

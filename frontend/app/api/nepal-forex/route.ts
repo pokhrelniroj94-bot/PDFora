@@ -47,7 +47,7 @@ function normalizeNrbPayload(payload: unknown, requestedDate: string) {
   const data = asRecord(root.data);
   const records = data.payload;
   if (!Array.isArray(records)) throw new Error("NRB returned no published snapshots for this date range.");
-  const valid = (records as NrbRecord[]).filter((item) => item?.date && Array.isArray(item.rates));
+  const valid = (records as NrbRecord[]).filter((item) => typeof item?.date === "string" && /^\\d{4}-\\d{2}-\\d{2}$/.test(item.date) && Array.isArray(item.rates));
   const latest = [...valid].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
   if (!latest) throw new Error("No published NRB rate was found in the requested date range.");
   const rates = toRateList(latest.rates || []);
@@ -58,6 +58,9 @@ function normalizeNrbPayload(payload: unknown, requestedDate: string) {
     rateDate: latest.date,
     publishedOn: latest.published_on || null,
     rates,
+    isStale: latest.date < requestedDate,
+    notice: latest.date < requestedDate ? `NRB has not published a rate for ${requestedDate}; showing the latest available official rate dated ${latest.date}.` : undefined,
+    updatedAt: new Date().toISOString(),
   };
 }
 
@@ -72,6 +75,9 @@ function normalizeBackendPayload(payload: unknown, requestedDate: string) {
     rateDate: typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate,
     publishedOn: typeof root.publishedOn === "string" ? root.publishedOn : typeof root.published_on === "string" ? root.published_on : null,
     rates,
+    isStale: (typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate) < requestedDate,
+    notice: (typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate) < requestedDate ? `Showing the latest available NRB reference rate dated ${typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate}; requested date was ${requestedDate}.` : undefined,
+    updatedAt: new Date().toISOString(),
   };
 }
 
@@ -159,7 +165,9 @@ async function fetchFromOfficialPage(requestedDate: string) {
     publishedOn: rateDate,
     rates: unique,
     fallback: true,
-    stale: rateDate < requestedDate,
+    isStale: rateDate < requestedDate,
+    notice: rateDate < requestedDate ? `NRB has not published a new rate for ${requestedDate}; the latest official published rate is dated ${rateDate}.` : undefined,
+    updatedAt: new Date().toISOString(),
   };
 }
 
@@ -186,10 +194,11 @@ export async function GET(request: Request) {
     if (!Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== dateParam) {
       return Response.json({ error: "Invalid calendar date." }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
-    const today = new Date();
-    const maxDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 1));
-    if (parsed.getTime() > maxDate.getTime()) {
-      return Response.json({ error: "Future exchange-rate dates are not supported." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    const todayInNepal = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+    }).format(new Date());
+    if (dateParam > todayInNepal) {
+      return Response.json({ error: "Future exchange-rate dates are not supported in Nepal time." }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
   }
   const requestedDate = incoming.searchParams.get("date") || new Intl.DateTimeFormat("en-CA", {

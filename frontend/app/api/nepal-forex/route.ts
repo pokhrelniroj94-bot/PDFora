@@ -111,36 +111,36 @@ async function fetchFromOfficialPage(requestedDate: string) {
   if (html.length > 2_000_000) throw new Error("NRB published page response was unexpectedly large.");
 
   const strip = (value: string) => value
-    .replace(/<script[\\s\\S]*?<\\/script>/gi, " ")
-    .replace(/<style[\\s\\S]*?<\\/style>/gi, " ")
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ")
     .replace(/&nbsp;|&#160;/gi, " ")
     .replace(/&amp;/gi, "&")
     .replace(/&#39;|&apos;/gi, "'")
     .replace(/&quot;/gi, '"')
-    .replace(/\\s+/g, " ").trim();
+    .replace(/\s+/g, " ").trim();
   const pageText = strip(html);
-  const dateMatch = pageText.match(/Showing Exchange Rate for\\s+([A-Za-z]+\\s+\\d{1,2},\\s+\\d{4})/i);
+  const dateMatch = pageText.match(/Showing Exchange Rate for\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})/i);
   const parsedDate = dateMatch ? new Date(dateMatch[1]) : null;
   const rateDate = parsedDate && Number.isFinite(parsedDate.getTime())
     ? parsedDate.toISOString().slice(0, 10)
     : "";
   if (!rateDate) throw new Error("Could not determine the publication date on NRB's official forex page.");
 
-  const rows = [...html.matchAll(/<tr\\b[^>]*>([\\s\\S]*?)<\\/tr>/gi)];
+  const rows = [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)];
   const rates: NormalizedRate[] = [];
   for (const row of rows) {
-    const cells = [...row[1].matchAll(/<t[dh]\\b[^>]*>([\\s\\S]*?)<\\/t[dh]>/gi)]
+    const cells = [...row[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)]
       .map((cell) => strip(cell[1]));
     if (cells.length < 4) continue;
-    const codeMatch = cells[0].match(/^([A-Za-z]{3})\\b/);
+    const codeMatch = cells[0].match(/^([A-Za-z]{3})\b/);
     const code = codeMatch?.[1]?.toUpperCase() || "";
     const unit = Number(cells[1].replace(/,/g, ""));
     const buy = Number(cells[2].replace(/,/g, ""));
     const sell = Number(cells[3].replace(/,/g, ""));
     if (!/^[A-Z]{3}$/.test(code) || !Number.isFinite(unit) || unit <= 0 ||
         !Number.isFinite(buy) || !Number.isFinite(sell) || buy <= 0 || sell <= 0) continue;
-    rates.push({ code, name: cells[0].replace(/^[A-Za-z]{3}\\s*[-(]?\\s*/, "").replace(/\\)?$/, "").trim() || code, unit, buy, sell });
+    rates.push({ code, name: cells[0].replace(/^[A-Za-z]{3}\s*[-(]?\s*/, "").replace(/\)?$/, "").trim() || code, unit, buy, sell });
   }
   const unique = [...new Map(rates.map((rate) => [rate.code, rate])).values()];
   if (unique.length < 10) throw new Error("NRB official page did not contain enough valid currency rows.");

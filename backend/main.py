@@ -567,7 +567,7 @@ def _nrb_fetch_official_html_record() -> list[dict]:
     parser = RateTableParser()
     parser.feed(html)
     text_content = " ".join(parser.page_text)
-    date_match = re.search(r"Showing Exchange Rate for\\s+([A-Za-z]+\\s+\\d{1,2},\\s+\\d{4})", text_content, re.I)
+    date_match = re.search(r"Showing Exchange Rate for\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})", text_content, re.I)
     if not date_match:
         raise RuntimeError("Could not identify the publication date on NRB's official page")
     rate_date = datetime.strptime(date_match.group(1), "%B %d, %Y").date().isoformat()
@@ -576,7 +576,7 @@ def _nrb_fetch_official_html_record() -> list[dict]:
     for row in parser.rows:
         if len(row) < 4:
             continue
-        match = re.match(r"^\\s*([A-Za-z]{3})\\s*(?:\\((.*?)\\))?\\s*$", row[0])
+        match = re.match(r"^\s*([A-Za-z]{3})\s*(?:\((.*?)\))?\s*$", row[0])
         if not match:
             continue
         code = match.group(1).upper()
@@ -584,10 +584,10 @@ def _nrb_fetch_official_html_record() -> list[dict]:
         numeric = []
         for cell in row[1:]:
             cleaned = cell.replace(",", "").strip()
-            if re.fullmatch(r"\\d+(?:\\.\\d+)?", cleaned):
+            if re.fullmatch(r"\d+(?:\.\d+)?", cleaned):
                 numeric.append(float(cleaned))
         if not name:
-            name = next((cell for cell in row[1:] if cell and not re.fullmatch(r"\\d+(?:\\.\\d+)?", cell.replace(",", "").strip())), code)
+            name = next((cell for cell in row[1:] if cell and not re.fullmatch(r"\d+(?:\.\d+)?", cell.replace(",", "").strip())), code)
         if len(numeric) < 3:
             continue
         unit, buy, sell = numeric[0], numeric[1], numeric[2]
@@ -2362,11 +2362,11 @@ async def pdf_page_counter(file: UploadFile = File(...)):
         size = await save_upload(file, src)
         reader = read_pdf(src)
         report = (
-            "PDFora - PDF Page Count Report\\n"
-            "================================\\n"
-            f"File name: {Path(file.filename).name}\\n"
-            f"Total pages: {len(reader.pages)}\\n"
-            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\\n"
+            "PDFora - PDF Page Count Report\n"
+            "================================\n"
+            f"File name: {Path(file.filename).name}\n"
+            f"Total pages: {len(reader.pages)}\n"
+            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\n"
         )
         out.write_text(report, encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Page-Count.txt", background=BackgroundTask(cleanup_job, job))
@@ -2404,7 +2404,7 @@ async def pdf_information(file: UploadFile = File(...)):
             f"Creator: {metadata.get('/Creator') or 'Not set'}",
             f"Encrypted: {'Yes' if reader.is_encrypted else 'No'}",
         ]
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Information.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
@@ -2432,7 +2432,7 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
         lines = ["PDFora - PDF Bookmarks", "=======================", ""]
         for level, title, page in toc:
             lines.append(f"{'  ' * max(0, level - 1)}Page {page}: {title}")
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Bookmarks.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:

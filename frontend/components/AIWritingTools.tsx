@@ -63,10 +63,11 @@ export default function AIWritingTools({ slug }: Props) {
     const headings = ["Professional Summary", "Core Skills", "Experience Bullets", "Optional ATS Keywords"];
     const sections: Record<string, string> = {};
     let current = "";
-    for (const line of result.split(/\\r?\\n/)) {
-      const heading = headings.find((item) => new RegExp("^\\\\s*(?:#{1,3}\\\\s*)?" + item + "\\\\s*:?[\\\\s]*$", "i").test(line.trim()));
+    for (const line of result.split(/\r?\n/)) {
+      const normalized = line.trim().replace(/^#{1,3}\s*/, "").replace(/:$/, "").trim();
+      const heading = headings.find((item) => item.toLowerCase() === normalized.toLowerCase());
       if (heading) { current = heading; sections[current] = ""; continue; }
-      if (current) sections[current] += (sections[current] ? "\\n" : "") + line;
+      if (current) sections[current] += (sections[current] ? "\n" : "") + line;
     }
     const draft = {
       summary: (sections["Professional Summary"] || "").trim(),

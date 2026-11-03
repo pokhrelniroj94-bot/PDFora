@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import NepalMarketNews from "./NepalMarketNews";
 
 type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
-type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; updatedAt?: string; isStale?: boolean; notice?: string; rates: ForexRate[]; error?: string };
+type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; updatedAt?: string; isStale?: boolean; notice?: string; rates: ForexRate[]; previousRateDate?: string | null; previousRates?: ForexRate[]; error?: string };
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const fallbackCurrencies: Array<{ code: string; name: string }> = [
   { code: "USD", name: "US Dollar" }, { code: "EUR", name: "Euro" }, { code: "GBP", name: "Pound Sterling" }, { code: "INR", name: "Indian Rupee" },
@@ -74,6 +74,8 @@ function ForexTool() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currency, setCurrency] = useState("USD");
+  const [targetCurrency, setTargetCurrency] = useState("EUR");
+  const [currencyQuery, setCurrencyQuery] = useState("");
   const [amount, setAmount] = useState("100");
   const [direction, setDirection] = useState("foreign-to-npr");
   const [aiText, setAiText] = useState("");
@@ -130,10 +132,15 @@ function ForexTool() {
   }, []);
 
   const selected = data?.rates.find((item) => item.code === currency);
+  const target = data?.rates.find((item) => item.code === targetCurrency);
+  const previous = data?.previousRates?.find((item) => item.code === currency);
+  const visibleRates = (data?.rates ?? []).filter((item) => (item.code + " " + item.name).toLowerCase().includes(currencyQuery.trim().toLowerCase()));
   const value = Number(amount);
   const valid = amount.trim() !== "" && Number.isFinite(value) && value >= 0 && !!selected;
   const converted = selected && valid
-    ? direction === "foreign-to-npr" ? value * selected.buy / selected.unit : value * selected.unit / selected.sell
+    ? direction === "foreign-to-npr" ? value * selected.buy / selected.unit
+      : direction === "npr-to-foreign" ? value * selected.unit / selected.sell
+        : target ? value * selected.buy / selected.unit * target.unit / target.sell : null
     : null;
 
   return <div className="space-y-5 pdfora-enter">
@@ -162,11 +169,13 @@ function ForexTool() {
     {loading && !data && <div className="grid gap-2" aria-label="Loading exchange rates"><div className="pdfora-skeleton h-11 rounded-xl" /><div className="pdfora-skeleton h-11 rounded-xl" /><div className="pdfora-skeleton h-11 rounded-xl" /></div>}
     {data && <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3"><h3 className="font-bold text-slate-900">Published currency rates</h3><span className="text-xs text-slate-500">{data.rates.length} currencies</span></div>
+      <div className="border-b border-slate-100 p-3"><label className="block"><span className="sr-only">Search currencies</span><input className={field} type="search" value={currencyQuery} onChange={(event) => setCurrencyQuery(event.target.value)} placeholder="Search by currency name or code" /></label></div>
       <div className="max-h-[520px] overflow-auto">
         <table className="w-full min-w-[540px] text-left text-sm">
           <thead className="sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th scope="col" className="px-4 py-3">Currency</th><th scope="col" className="px-4 py-3 text-right">Unit</th><th scope="col" className="px-4 py-3 text-right">Buying · NPR</th><th scope="col" className="px-4 py-3 text-right">Selling · NPR</th></tr></thead>
-          <tbody>{data.rates.map((item) => <tr key={item.code} className="border-t border-slate-100 transition-colors hover:bg-teal-50/50"><th scope="row" className="px-4 py-3 font-semibold text-slate-900"><span>{item.code}</span><span className="ml-2 font-normal text-slate-500">{item.name}</span></th><td className="px-4 py-3 text-right tabular-nums">{item.unit}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.buy.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.sell.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td></tr>)}</tbody>
+          <tbody>{visibleRates.map((item) => <tr key={item.code} className="border-t border-slate-100 transition-colors hover:bg-teal-50/50"><th scope="row" className="px-4 py-3 font-semibold text-slate-900"><span>{item.code}</span><span className="ml-2 font-normal text-slate-500">{item.name}</span></th><td className="px-4 py-3 text-right tabular-nums">{item.unit}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.buy.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.sell.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td></tr>)}</tbody>
         </table>
+        {visibleRates.length === 0 && <p className="p-5 text-center text-sm text-slate-500">No currencies match that search.</p>}
       </div>
     </section>}
 
@@ -183,10 +192,11 @@ function ForexTool() {
       <div><p className="text-xs font-bold uppercase tracking-[.12em] text-teal-700">Quick conversion</p><h3 className="mt-1 text-lg font-bold text-slate-950">NRB currency converter</h3><p className="mt-1 text-sm text-slate-600">Uses the published unit, buying and selling rate for the selected currency.</p></div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <label><span className={label}>Currency</span><select className={field} value={currency} onChange={(e) => setCurrency(e.target.value)}>{Array.from(new Map([...fallbackCurrencies, ...(data?.rates ?? []).map(({ code, name }) => ({ code, name }))].map(item => [item.code, item])).values()).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>
-        <label><span className={label}>Conversion direction</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option></select></label>
+        <label><span className={label}>Conversion direction</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option><option value="foreign-to-foreign">Foreign currency → foreign currency</option></select></label>
       </div>
+      {direction === "foreign-to-foreign" && <label className="mt-3 block sm:max-w-sm"><span className={label}>Convert into</span><select className={field} value={targetCurrency} onChange={(e) => setTargetCurrency(e.target.value)}>{(data?.rates ?? []).filter((item) => item.code !== currency).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>}
       <div className="mt-3 max-w-sm"><Field title="Amount" value={amount} onChange={setAmount}/></div>
-      {converted !== null && selected ? <div className="pdfora-pop-in mt-4 rounded-xl border border-teal-100 bg-teal-50 p-4" aria-live="polite"><p className="text-xs font-semibold uppercase tracking-wide text-teal-800">Estimated conversion</p><p className="mt-1 break-words text-2xl font-bold tracking-tight text-teal-950">{direction === "foreign-to-npr" ? npr(converted) : converted.toLocaleString("en-IN", { maximumFractionDigits: 4 }) + " " + selected.code}</p><p className="mt-2 text-sm text-teal-900">{direction === "foreign-to-npr" ? value.toLocaleString() + " " + selected.code : npr(value)} · {direction === "foreign-to-npr" ? selected.buy : selected.sell} NPR per {selected.unit} {selected.code}</p><p className="mt-1 text-xs text-teal-800">Rate date: {data?.rateDate}</p></div> : <p role="status" className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">{error ? "The converter will calculate once official rates are available." : `No published rate is available for ${currency} yet.`}</p>}
+      {converted !== null && selected ? <div className="pdfora-pop-in mt-4 rounded-xl border border-teal-100 bg-teal-50 p-4" aria-live="polite"><p className="text-xs font-semibold uppercase tracking-wide text-teal-800">Estimated conversion</p><p className="mt-1 break-words text-2xl font-bold tracking-tight text-teal-950">{direction === "foreign-to-npr" ? npr(converted) : converted.toLocaleString("en-IN", { maximumFractionDigits: 4 }) + " " + (direction === "foreign-to-foreign" ? target?.code : selected.code)}</p><p className="mt-2 text-sm text-teal-900">{direction === "foreign-to-npr" ? value.toLocaleString() + " " + selected.code : direction === "npr-to-foreign" ? npr(value) : value.toLocaleString() + " " + selected.code} · NRB buying/selling reference rates</p><p className="mt-1 text-xs text-teal-800">Rate date: {data?.rateDate}</p>{previous && <p className="mt-1 text-xs text-teal-800">Compared with {data?.previousRateDate}: buying {((selected.buy / selected.unit) - (previous.buy / previous.unit) >= 0 ? "+" : "")}{((selected.buy / selected.unit) - (previous.buy / previous.unit)).toFixed(4)} NPR per unit ({previous.buy ? (((selected.buy / selected.unit) / (previous.buy / previous.unit) - 1) * 100).toFixed(2) : "—"}%), selling {((selected.sell / selected.unit) - (previous.sell / previous.unit) >= 0 ? "+" : "")}{((selected.sell / selected.unit) - (previous.sell / previous.unit)).toFixed(4)} NPR per unit ({previous.sell ? (((selected.sell / selected.unit) / (previous.sell / previous.unit) - 1) * 100).toFixed(2) : "—"}%).</p>}<button type="button" className="mt-3 rounded-lg border border-teal-300 bg-white px-3 py-2 text-xs font-semibold text-teal-900" onClick={() => void navigator.clipboard?.writeText(`${value} ${direction === "npr-to-foreign" ? "NPR" : selected.code} = ${converted.toFixed(4)} ${direction === "foreign-to-npr" ? "NPR" : direction === "foreign-to-foreign" ? target?.code : selected.code} (NRB rate dated ${data?.rateDate})`)}>Copy conversion</button></div> : <p role="status" className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">{error ? "The converter will calculate once official rates are available." : `No published rate is available for ${currency} yet.`}</p>}
     </section>
 
     <p className="text-xs leading-5 text-slate-500">NRB reference rates are not necessarily the exact rates offered by individual banks, money changers or remittance providers. Always confirm the transaction rate with your provider before making a payment.</p>
@@ -319,3 +329,4 @@ export default function NepalLiveTools({ slug }: { slug: string }) {
   if (slug === "nepse-market-news") return <NepalMarketNews/>;
   return <p className="text-sm text-slate-600">Nepal tool not found.</p>;
 }
+

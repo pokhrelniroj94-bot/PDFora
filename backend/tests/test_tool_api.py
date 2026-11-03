@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import json
 import os
 import sys
 import zipfile
@@ -404,7 +405,7 @@ def test_bookmark_split_preserves_pages_before_first_bookmark():
 
 
 def test_rotated_page_display_coordinates_round_trip():
-    from main import display_point_to_page
+    from main import display_point_to_page, display_rect_to_page
 
     doc = fitz.open()
     for rotation in (0, 90, 180, 270):
@@ -415,7 +416,95 @@ def test_rotated_page_display_coordinates_round_trip():
         round_trip = page_point * page.rotation_matrix
         assert abs(round_trip.x - display_point.x) < 0.01
         assert abs(round_trip.y - display_point.y) < 0.01
+        display_rect = fitz.Rect(30, 40, 180, 90)
+        page_rect = display_rect_to_page(page, display_rect)
+        round_trip_rect = page_rect * page.rotation_matrix
+        assert abs(round_trip_rect.x0 - display_rect.x0) < 0.01
+        assert abs(round_trip_rect.y0 - display_rect.y0) < 0.01
+        assert abs(round_trip_rect.x1 - display_rect.x1) < 0.01
+        assert abs(round_trip_rect.y1 - display_rect.y1) < 0.01
     doc.close()
+
+
+def make_rotated_pdf() -> bytes:
+    doc = fitz.open()
+    for rotation in (0, 90, 180, 270):
+        page = doc.new_page(width=612, height=792)
+        page.insert_text((50, 730), f"EDGE {rotation}")
+        page.set_rotation(rotation)
+    result = doc.tobytes()
+    doc.close()
+    return result
+
+
+def find_display_text_box(page, text: str) -> fitz.Rect:
+    for block in page.get_text("dict")["blocks"]:
+        for line in block.get("lines", []):
+            for span in line.get("spans", []):
+                if text in span["text"]:
+                    return fitz.Rect(span["bbox"]) * page.rotation_matrix
+    raise AssertionError(f"Expected text {text!r} in PDF output")
+
+
+def test_rotated_pdf_stamps_and_headers_stay_upright_and_in_visible_positions():
+    source = make_rotated_pdf()
+    cases = [
+        ("/api/page-numbers", {"position": "bottom-center", "start_number": "101"}, "104", "bottom"),
+        ("/api/header-footer", {"header": "ROTATED HEADER", "footer": "ROTATED FOOTER"}, "ROTATED FOOTER", "bottom"),
+        ("/api/sign", {"signature_text": "PDFora Tester"}, "Electronic visual signature", "bottom"),
+        ("/api/bates-numbering", {"prefix": "PDFora", "start": "1", "digits": "6"}, "PDFora000004", "bottom"),
+    ]
+    for endpoint, data, marker, position in cases:
+        response = post_pdf(endpoint, source, data=data)
+        assert response.status_code == 200, f"{endpoint}: {response.status_code} {response.text[:200]}"
+        result = fitz.open(stream=response.content, filetype="pdf")
+        page = result[-1]
+        box = find_display_text_box(page, marker)
+        assert box.width > box.height, f"{endpoint} text is rotated in the visible page"
+        assert box.y0 > page.rect.height * 0.65, f"{endpoint} text is not in the visible bottom area"
+        assert box.x0 >= 0 and box.y0 >= 0 and box.x1 <= page.rect.width and box.y1 <= page.rect.height
+        result.close()
+
+
+def test_rotated_watermark_and_background_use_visible_page_geometry():
+    source = make_rotated_pdf()
+    watermark = post_pdf("/api/watermark", source, data={"text": "PDFORA WATERMARK"})
+    assert watermark.status_code == 200
+    watermarked = fitz.open(stream=watermark.content, filetype="pdf")
+    for page in watermarked:
+        box = find_display_text_box(page, "PDFORA WATERMARK")
+        center = fitz.Point((box.x0 + box.x1) / 2, (box.y0 + box.y1) / 2)
+        assert abs(center.x - page.rect.width / 2) < page.rect.width * 0.2
+        assert abs(center.y - page.rect.height / 2) < page.rect.height * 0.2
+    watermarked.close()
+
+    background = post_pdf("/api/add-background", source, data={"text": "DRAFT BACKGROUND"})
+    assert background.status_code == 200
+    background_doc = fitz.open(stream=background.content, filetype="pdf")
+    for page in background_doc:
+        box = find_display_text_box(page, "DRAFT BACKGROUND")
+        assert box.width > box.height, "Background label should remain horizontal on a rotated page"
+        assert abs((box.x0 + box.x1) / 2 - page.rect.width / 2) < page.rect.width * 0.2
+        assert abs((box.y0 + box.y1) / 2 - page.rect.height / 2) < page.rect.height * 0.2
+    background_doc.close()
+
+
+def test_pdf_to_json_text_coordinates_match_rotated_display_dimensions():
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+    page.insert_text((50, 730), "Bottom edge text")
+    page.set_rotation(90)
+    source = doc.tobytes()
+    doc.close()
+    response = post_pdf("/api/pdf-to-json", source)
+    assert response.status_code == 200
+    report = json.loads(response.content)
+    page_data = report["pages"][0]
+    assert page_data["width"] == 792
+    assert page_data["height"] == 612
+    block = next(item for item in page_data["blocks"] if "Bottom edge text" in item["text"])
+    assert 0 <= block["x0"] <= block["x1"] <= page_data["width"]
+    assert 0 <= block["y0"] <= block["y1"] <= page_data["height"]
 
 
 def test_open_pdf_limited_rejects_over_1000_pages():
@@ -439,3 +528,4 @@ def test_open_pdf_limited_rejects_over_1000_pages():
             raise AssertionError("PDF over the page limit should be rejected")
     finally:
         path.unlink(missing_ok=True)
+

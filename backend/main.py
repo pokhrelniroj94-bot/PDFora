@@ -446,6 +446,16 @@ def display_point_to_page(page, x: float, y: float) -> fitz.Point:
     return fitz.Point(x, y) * page.derotation_matrix
 
 
+def display_rect_to_page(page, rect: fitz.Rect) -> fitz.Rect:
+    """Convert a rectangle in visible (rotated) page coordinates to PDF page space."""
+    return fitz.Rect(rect) * page.derotation_matrix
+
+
+def display_text_rotation(page) -> int:
+    """Counter-rotate inserted text so it stays upright in the visible page."""
+    return (-page.rotation) % 360
+
+
 def safe_render_matrix(page, requested_scale: float = 2.0, max_pixels: int = 20_000_000):
     """Return a bounded render matrix so unusually large pages cannot exhaust memory."""
     rect = page.rect
@@ -1471,7 +1481,9 @@ async def watermark_pdf(
             font = fitz.Font("helv")
             font_size = min(32, max(12, rect.width / max(font.text_length(text, fontsize=1) * 1.25, 1)))
             text_width = font.text_length(text, fontsize=font_size)
-            origin = fitz.Point(max(12, center.x - text_width / 2), center.y)
+            display_origin = fitz.Point(max(12, center.x - text_width / 2), center.y)
+            page_center = display_point_to_page(page, center.x, center.y)
+            origin = display_point_to_page(page, display_origin.x, display_origin.y)
 
             # Apply a true 45-degree transform around the page center. The
             # prior 90-degree placement used a fixed 120pt offset and clipped
@@ -1483,7 +1495,7 @@ async def watermark_pdf(
                 fontname="helv",
                 color=(0.5, 0.5, 0.5),
                 fill_opacity=0.25,
-                morph=(center, fitz.Matrix(45)),
+                morph=(page_center, fitz.Matrix((45 - page.rotation) % 360)),
                 overlay=True,
             )
 
@@ -1843,7 +1855,7 @@ async def add_page_numbers(file: UploadFile = File(...), position: str = Form("b
             r=page.rect; x={"left":36,"center":r.width/2,"right":r.width-36}[position.split("-")[1]]
             y=24 if position.startswith("top") else r.height-24
             point = display_point_to_page(page, x, y)
-            page.insert_text(point,str(start_number+i-(1 if skip_first and i>0 else 0)),fontsize=font_size, color=(0.25,0.25,0.3))
+            page.insert_text(point,str(start_number+i-(1 if skip_first and i>0 else 0)),fontsize=font_size, color=(0.25,0.25,0.3), rotate=display_text_rotation(page))
         doc.save(out,garbage=4,deflate=True); doc.close()
         return _tool_file_response(out,"NIROJ-Page-Numbers.pdf")
     finally: await file.close()
@@ -1880,8 +1892,8 @@ async def header_footer(file: UploadFile = File(...), header: str = Form(""), fo
         src=job/"input.pdf"; out=job/"header-footer.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         for p in doc:
             r=p.rect
-            if header: p.insert_text(display_point_to_page(p,36,24),header[:300],fontsize=font_size)
-            if footer: p.insert_text(display_point_to_page(p,36,r.height-24),footer[:300],fontsize=font_size)
+            if header: p.insert_text(display_point_to_page(p,36,24),header[:300],fontsize=font_size,rotate=display_text_rotation(p))
+            if footer: p.insert_text(display_point_to_page(p,36,r.height-24),footer[:300],fontsize=font_size,rotate=display_text_rotation(p))
         doc.save(out,garbage=4,deflate=True); doc.close()
         return _tool_file_response(out,"NIROJ-Header-Footer.pdf")
     finally: await file.close()
@@ -1929,10 +1941,11 @@ async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)
     try:
         src=job/"input.pdf"; out=job/"signed.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         p=doc[-1]; r=p.rect
-        box=fitz.Rect(36,r.height-90,min(r.width-36,300),r.height-36)
+        display_box=fitz.Rect(36,r.height-90,min(r.width-36,300),r.height-36)
+        box=display_rect_to_page(p,display_box)
         p.draw_rect(box,color=(0.35,0.2,0.6),width=1)
-        p.insert_text((box.x0+8,box.y0+28),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35))
-        p.insert_text((box.x0+8,box.y0+44),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4))
+        p.insert_text(display_point_to_page(p,display_box.x0+8,display_box.y0+28),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35),rotate=display_text_rotation(p))
+        p.insert_text(display_point_to_page(p,display_box.x0+8,display_box.y0+44),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4),rotate=display_text_rotation(p))
         doc.save(out,garbage=4,deflate=True); doc.close()
         return _tool_file_response(out,"NIROJ-Signed.pdf")
     finally: await file.close()
@@ -2395,9 +2408,10 @@ async def pdf_to_json(file: UploadFile = File(...)):
             blocks = []
             for block in page.get_text("blocks"):
                 if len(block) >= 5 and str(block[4]).strip():
+                    display_block = fitz.Rect(block[:4]) * page.rotation_matrix
                     blocks.append({
-                        "x0": round(block[0], 2), "y0": round(block[1], 2),
-                        "x1": round(block[2], 2), "y1": round(block[3], 2),
+                        "x0": round(display_block.x0, 2), "y0": round(display_block.y0, 2),
+                        "x1": round(display_block.x1, 2), "y1": round(display_block.y1, 2),
                         "text": str(block[4]).strip(),
                     })
             pages.append({"page": index + 1, "width": round(page.rect.width, 2), "height": round(page.rect.height, 2), "blocks": blocks})
@@ -2498,7 +2512,7 @@ async def bates_numbering(file: UploadFile = File(...), prefix: str = Form(""), 
         for index, page in enumerate(doc):
             label = f"{prefix[:20]}{start + index:0{digits}d}"
             point = display_point_to_page(page, page.rect.width - 150, page.rect.height - 24)
-            page.insert_text(point, label, fontsize=9, color=(0, 0, 0))
+            page.insert_text(point, label, fontsize=9, color=(0, 0, 0), rotate=display_text_rotation(page))
         doc.save(out, garbage=4, deflate=True)
         return pdf_response(out, "NIROJ-Bates-Numbered.pdf")
     finally:
@@ -2677,8 +2691,9 @@ async def add_pdf_background(file: UploadFile = File(...), text: str = Form("DRA
         doc = open_pdf_limited(src)
         for page in doc:
             rect = page.rect
-            page.draw_rect(rect, color=None, fill=colors[color], overlay=False)
-            page.insert_textbox(fitz.Rect(30, rect.height / 2 - 40, rect.width - 30, rect.height / 2 + 40), text.strip(), fontsize=34, color=(0.55, 0.55, 0.55), align=1, rotate=0, overlay=True)
+            page.draw_rect(display_rect_to_page(page, rect), color=None, fill=colors[color], overlay=False)
+            display_text_box = fitz.Rect(30, rect.height / 2 - 40, rect.width - 30, rect.height / 2 + 40)
+            page.insert_textbox(display_rect_to_page(page, display_text_box), text.strip(), fontsize=34, color=(0.55, 0.55, 0.55), align=1, rotate=display_text_rotation(page), overlay=True)
         doc.save(out, garbage=4, deflate=True)
         return pdf_response(out, "NIROJ-Background.pdf")
     finally:
@@ -2768,3 +2783,4 @@ async def extract_pdf_fonts(file: UploadFile = File(...)):
         if doc is not None:
             doc.close()
         await file.close()
+

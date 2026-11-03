@@ -48,8 +48,9 @@ async function readOfficialStories() {
     }
   }
   const ipo: Story[] = ipoResult.status === "fulfilled" ? ipoResult.value.map((item) => {
-    const date = new Date(item.scraped_at || item.announcement_date || "");
-    return item.company && item.url && /^https:\/\//i.test(item.url) && !Number.isNaN(date.getTime())
+    // scraped_at is ingestion time, not publication time. Do not present it as a fresh announcement.
+    const date = new Date(item.announcement_date || "");
+    return item.company && item.url && /^https:\/\//i.test(item.url) && !Number.isNaN(date.getTime()) && date.getTime() <= Date.now() && date.getTime() >= cutoff
       ? { title: item.company + (item.date_range ? " — " + item.date_range : "") + " (IPO notice)", link: item.url, publishedAt: date.toISOString(), source: "IPO notice" }
       : null;
   }).filter((item): item is Story => item !== null) : [];

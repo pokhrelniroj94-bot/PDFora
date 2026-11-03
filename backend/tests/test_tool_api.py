@@ -565,3 +565,41 @@ def test_nrb_rates_include_previous_published_snapshot(monkeypatch):
     assert payload["previousRates"][0]["sell"] == 135.1
     assert calls and calls[0][0] == "2024-12-07"
 
+
+def test_nrb_history_normalizes_currency_units_and_rejects_invalid_rows(monkeypatch):
+    import main
+
+    main._NRB_CACHE.clear()
+    calls = []
+
+    def fake_fetch(from_date: str, to_date: str):
+        calls.append((from_date, to_date))
+        return [
+            {"date": "2025-01-06", "rates": [
+                {"currency": {"ISO3": "USD", "name": "US Dollar", "unit": 1}, "buy": "135.00", "sell": "135.60"},
+                {"currency": {"ISO3": "JPY", "name": "Japanese Yen", "unit": 100}, "buy": "92.00", "sell": "92.50"},
+            ]},
+            {"date": "2025-01-03", "rates": [
+                {"currency": {"ISO3": "JPY", "name": "Japanese Yen", "unit": 100}, "buy": "91.00", "sell": "91.50"},
+                {"currency": {"ISO3": "BAD", "name": "Invalid unit", "unit": 0}, "buy": "10", "sell": "11"},
+            ]},
+        ]
+
+    monkeypatch.setattr(main, "_nrb_fetch_records", fake_fetch)
+    response = TestClient(app).get("/api/nepal-forex/history?currency=jpy")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["source"] == "Nepal Rastra Bank"
+    assert payload["currency"] == "JPY"
+    assert payload["history"] == [
+        {"date": "2025-01-03", "buy": 0.91, "sell": 0.915},
+        {"date": "2025-01-06", "buy": 0.92, "sell": 0.925},
+    ]
+    assert calls and calls[0][1] >= calls[0][0]
+
+
+def test_nrb_history_rejects_non_ascii_currency_code():
+    response = TestClient(app).get("/api/nepal-forex/history?currency=%C3%A5aa")
+    assert response.status_code == 400
+    assert "Invalid currency code" in response.json()["detail"]
+

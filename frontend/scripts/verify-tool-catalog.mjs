@@ -80,6 +80,7 @@ const legacySlugValues = [...legacyRoutesSource.matchAll(/^\\s*"([^"]+)",?$/gm)]
 const canonicalCatalogSlugs = catalog.filter((slug) => slug !== "ocr-pdf" && slug !== "pdf-tools" && !legacySlugValues.includes(slug));
 const canonicalToolSlugs = [...legacySlugValues, ...canonicalCatalogSlugs];
 assert.equal(new Set(canonicalToolSlugs).size, canonicalToolSlugs.length, "Canonical tool sitemap routes must be unique");
+assert.equal(canonicalToolSlugs.length, 169, `Expected 169 canonical tool URLs in the sitemap, found ${canonicalToolSlugs.length}`);
 for (const slug of catalog) {
   if (slug === "ocr-pdf" || slug === "pdf-tools") continue;
   assert.ok(

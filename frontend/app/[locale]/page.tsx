@@ -21,7 +21,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       type: "website", siteName: "PDFora", title: content.title,
       description: content.description, url: `${site}/${locale}`,
-      locale: ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar", bn: "bn_BD", id: "id_ID" } as Record<string, string>)[locale],
+      locale: ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID" } as Record<string, string>)[locale],
+      alternateLocale: ["en_US", "ne_NP", "hi_IN", "es_ES", "fr_FR", "de_DE", "pt_BR", "ar_SA", "bn_BD", "id_ID"].filter((item) => item !== ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID" } as Record<string, string>)[locale]),
     },
     twitter: { card: "summary_large_image", title: content.title, description: content.description },
   };

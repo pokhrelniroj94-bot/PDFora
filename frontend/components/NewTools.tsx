@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 const input = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-teal-600 focus:outline-none";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const panel = "rounded-2xl border border-slate-200 bg-white p-4 sm:p-6";
-const esc = (value: string) => value.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] ?? c);
+const esc = (value: string) => value.replace(/[&<>"]/g, (c) => c === "&" ? "&amp;" : c === "<" ? "&lt;" : c === ">" ? "&gt;" : "&quot;");
 
 function ResumeKeywordChecker() {
   const [resume, setResume] = useState("");

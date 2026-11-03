@@ -2,7 +2,7 @@
 
 ## Zero-spend policy
 
-The AI writing endpoints use Cloudflare Workers AI only. They do not have a paid provider fallback. The API route remains disabled unless all six settings below are present, including explicit operator enablement and a shared edge rate-limit confirmation.
+The AI writing endpoints use Cloudflare Workers AI only. They do not have a paid provider fallback. The API route remains disabled unless all required settings below are present, including explicit operator enablement and a shared edge rate-limit confirmation.
 
 1. Create or use a Cloudflare account on the **Workers Free** plan.
 2. Create an API token restricted to the minimum Workers AI permissions needed to run models. Do not use an account-wide token.

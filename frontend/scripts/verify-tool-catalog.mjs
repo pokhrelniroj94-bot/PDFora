@@ -125,6 +125,7 @@ const newsComponent = read("../components/NepalMarketNews.tsx");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
 assert.ok(marketApi.includes('source: usingUnofficialLive ? "NEPSE unofficial live API (nepseman-api)"') && marketApi.includes('"YONEPSE public market snapshot"') && marketApi.includes('"YONEPSE historical snapshot fallback"'), "NEPSE API must identify each quote source accurately");
 assert.ok(marketApi.includes("quoteStale,") && marketApi.includes("providerRefreshCadence:") && marketApi.includes("quoteAgeMinutes:"), "NEPSE API must disclose quote age and upstream refresh cadence");
+assert.ok(marketApi.includes('["previous_close", "previousClose", "previousClosingPrice"]'), "NEPSE quote normalization must not treat an ambiguous current close as a previous close");
 assert.ok(marketApi.includes('read<Json>("/data/market/status.json")'), "NEPSE status source must be mapped correctly");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/summary.json")'), "NEPSE summary source must be an array");
 assert.ok(marketApi.includes('read<Json>("/data/market/top_stocks.json")'), "NEPSE top movers source must be an object");

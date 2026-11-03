@@ -249,7 +249,7 @@ export default function MarketIntelligence() {
       const combined: Analysis = { ...result };
       if (reviewed.sentiment === "Negative" && combined.signal === "Potential BUY setup") { combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "Negative recent headlines block a fresh BUY until original announcements are reviewed."]; }
       else if (reviewed.sentiment === "Positive" && combined.signal.includes("SELL")) { combined.signal = "Wait / neutral"; combined.risks = [...combined.risks, "Positive headlines conflict with technical downside; wait for confirmation."]; }
-      else if (reviewed.sentiment === "Mixed / neutral") combined.risks = [...combined.risks, "News is mixed or insufficient; technical-only confidence is lower."];
+      else if (reviewed.sentiment === "Mixed / neutral") { if (combined.signal === "Potential BUY setup") combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "News is mixed or insufficient; a fresh BUY is blocked until there is clearer news context and technical confirmation."]; }
       combined.reasons = [...combined.reasons, `News review: ${reviewed.sentiment}. ${reviewed.note}`];
       setAnalysis(combined); setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
     } catch (err) { setError(err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
@@ -275,7 +275,7 @@ export default function MarketIntelligence() {
     try {
       const response = await fetch("/api/ai-writing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
         kind: "market-explain",
-        analysis: JSON.stringify({ asset, symbol: asset === "nepse" ? symbol : marketSymbol, ...analysis, reasons: analysis.reasons, risks: analysis.risks }),
+        analysis: JSON.stringify({ asset, symbol: asset === "nepse" ? symbol : marketSymbol, ...analysis, reasons: analysis.reasons, risks: analysis.risks, newsReview: asset === "nepse" ? newsReview : null }),
       }) });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "Free AI explanation is unavailable.");

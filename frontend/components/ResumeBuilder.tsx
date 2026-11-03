@@ -55,7 +55,7 @@ export default function ResumeBuilder() {
       if (!saved) return;
       const draft = JSON.parse(saved) as { summary?: string; skills?: string; experience?: string };
       if (draft.summary) setSummary(draft.summary);
-      if (draft.skills) setSkills(draft.skills.replace(/\\n/g, ", "));
+      if (draft.skills) setSkills(draft.skills.replace(/\r?\n/g, ", "));
       if (draft.experience) setJobs((rows) => rows.map((row, index) => index === 0 ? { ...row, details: draft.experience || "" } : row));
       setAiDraftNotice("AI draft imported. Review and edit every section before exporting your CV.");
       localStorage.removeItem("pdfora-ai-resume-draft");
@@ -78,7 +78,7 @@ export default function ResumeBuilder() {
   return <main className="mx-auto min-h-screen max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8">
     {aiDraftNotice && <div role="status" className="no-print mb-5 rounded-xl border border-teal-200 bg-teal-50 p-3 text-sm font-medium text-teal-900">{aiDraftNotice}</div>}
     <div className="mb-7 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-      <div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Career Studio</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Professional Resume Builder</h1><p className="mt-2 max-w-2xl text-slate-600">Build a polished, job-ready CV with live preview, six layouts and print-ready A4 PDF export.</p></div>
+      <div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Career Studio</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Professional Resume Builder</h1><p className="mt-2 max-w-2xl text-slate-600">Build a polished, job-ready CV with 20 professional templates, live preview and print-ready A4 PDF export.</p></div>
       <div className="no-print flex flex-wrap gap-2"><a href="/tools/ai-resume-writer" className="rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-extrabold text-teal-800 transition hover:bg-teal-100">AI write CV content ↗</a><a href="/tools/ai-cover-letter-generator" className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50">Cover letter ↗</a><button onClick={print} className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800">Download CV as PDF ↗</button></div>
     </div>
     <div className="no-print mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
-  const seoOverrides: Record<string, { title: string; description: string }> = {
+  const seoOverrides: Record<string, { title: string; description: string }> = {\n    "ats-resume-checker": { title: "Resume Keyword Checker – Compare CV with a Job Description", description: "Compare pasted resume text with a job description, review keyword coverage and check common CV sections. A transparent browser-based guide, not an ATS pass score." },\n    "invoice-quotation-generator": { title: "Free Invoice & Quotation Generator – Print to PDF", description: "Create a printable invoice or quotation with item quantity, unit price, tax estimate and live total. Save as PDF and verify local tax requirements before issuing." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },

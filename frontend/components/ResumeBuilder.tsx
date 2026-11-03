@@ -200,7 +200,7 @@ export default function ResumeBuilder() {
   const educationSection = education.some(e => e.degree || e.school) && <section className="resume-education">{heading(template === "academic" ? "Education & Research Training" : "Education")}{education.filter(e=>e.degree||e.school).map(e=><div className="mb-3" key={e.id}><div className="flex justify-between gap-3"><b className="text-sm">{e.degree}</b><span className="text-xs text-slate-500">{e.dates}</span></div><p className="text-sm">{e.school}{e.place && " · "+e.place}</p></div>)}</section>;
   const orderedCareerSections = <>{educationFirst && educationSection}{experienceSection}{!educationFirst && educationSection}</>;
 
-  return <main className="mx-auto min-h-screen max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8">
+  return <main className="resume-builder-page mx-auto min-h-screen max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8">
     {aiDraftNotice && <div role="status" className="no-print mb-5 rounded-xl border border-teal-200 bg-teal-50 p-3 text-sm font-medium text-teal-900">{aiDraftNotice}</div>}
     <div className="mb-7 flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Career Studio</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Professional Resume Builder</h1><p className="mt-2 max-w-2xl text-slate-600">Build a polished, job-ready CV with {templates.length} professional templates, live preview and print-ready A4 PDF export.</p></div>
@@ -233,7 +233,7 @@ export default function ResumeBuilder() {
         </div><span className="block text-sm font-extrabold text-slate-900">{t.name}</span><span className="text-xs text-slate-500">{t.note}</span>{template === t.id && <span className="ml-2 text-xs font-bold text-teal-700">Selected ✓</span>}
       </button>)}
     </div>
-    <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(560px,1.08fr)]">
+    <div className="resume-editor-preview-grid grid items-start gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(560px,1.08fr)]">
       <section className="no-print space-y-5">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-5 flex items-center justify-between"><h2 className="text-lg font-extrabold text-slate-900">1. Personal details</h2><span className="text-xs text-slate-400">Contact & identity</span></div>
@@ -245,7 +245,7 @@ export default function ResumeBuilder() {
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-extrabold text-slate-900">4. Education</h2><button onClick={()=>setEducation(rows=>[...rows,initialEntry()])} className="rounded-lg border border-teal-200 px-3 py-2 text-xs font-bold text-teal-800 hover:bg-teal-50">+ Add education</button></div>{education.map((e,i)=><div key={e.id} className="mb-3 rounded-xl bg-slate-50 p-4"><div className="mb-3 flex items-center justify-between"><b className="text-sm">Education {i+1}</b><button onClick={()=>setEducation(rows=>rows.filter(x=>x.id!==e.id))} className="text-xs font-bold text-rose-600">Remove</button></div><div className="grid gap-3 sm:grid-cols-2">{field("Degree / qualification",e.degree,v=>updateEducation(e.id,"degree",v),"BBA, Bachelor of Business Administration")}{field("Institution",e.school,v=>updateEducation(e.id,"school",v),"University / College")}{field("Location",e.place,v=>updateEducation(e.id,"place",v),"Ilam, Nepal")}{field("Dates",e.dates,v=>updateEducation(e.id,"dates",v),"2023 – 2027")}</div></div>)}</div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><h2 className="mb-4 text-lg font-extrabold text-slate-900">5. Skills & additional information</h2><div className="grid gap-4 sm:grid-cols-2">{area("Skills (comma separated)",skills,setSkills,"Financial analysis, Excel, Communication")}{area("Languages",languages,setLanguages,"Nepali (Native), English (Professional)")}{area("Projects",projects,setProjects,"Project name — what you built and the result")}{area("Certifications",certifications,setCertifications,"Course / certificate — issuer, year")}{area("References (optional)",references,setReferences,"Available upon request")}</div></div>
       </section>
-      <section className="min-w-0 xl:sticky xl:top-4">
+      <section className="resume-preview-container min-w-0 xl:sticky xl:top-4">
         <div className="no-print mb-3 flex items-center justify-between"><div><h2 className="font-extrabold text-slate-900">Live CV preview</h2><p className="text-xs text-slate-500">Updates as you type · A4 print layout</p></div><button onClick={print} className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold text-white">Export PDF</button></div>
         <article id="resume-paper" className={"resume-paper resume-layout-" + template + " mx-auto min-h-[800px] w-full max-w-[794px] overflow-hidden bg-white text-slate-800 shadow-[0_20px_70px_rgba(15,23,42,.14)] " + (hasSidebar ? "resume-sidebar" : "")} style={{ fontFamily: template === "academic" || template === "elegant" ? "Georgia, serif" : font }}>
           {hasSidebar ? <div className="grid min-h-[1123px] grid-cols-[31%_69%]">
@@ -279,9 +279,19 @@ export default function ResumeBuilder() {
       @media print {
         @page { size: A4; margin: 0; }
         html, body { background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        html, body { height: auto !important; min-height: 0 !important; overflow: visible !important; }
+        body > *:not(.resume-builder-page) { display: none !important; }
+        .resume-builder-page { display: block !important; width: 210mm !important; max-width: none !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; }
+        .resume-builder-page > * { display: none !important; }
+        .resume-builder-page > .resume-editor-preview-grid { display: block !important; }
+        .resume-editor-preview-grid > .no-print { display: none !important; }
+        .resume-editor-preview-grid > .resume-preview-container { display: block !important; position: static !important; width: 210mm !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; }
         body * { visibility: hidden !important; }
         #resume-paper, #resume-paper * { visibility: visible !important; }
-        #resume-paper { position: absolute !important; left: 0 !important; top: 0 !important; width: 210mm !important; min-height: 297mm !important; max-width: none !important; margin: 0 !important; box-shadow: none !important; }
+        #resume-paper { position: static !important; left: auto !important; top: auto !important; display: block !important; width: 210mm !important; height: auto !important; min-height: 297mm !important; max-width: none !important; margin: 0 !important; overflow: visible !important; box-shadow: none !important; }
+        #resume-paper .grid { display: block !important; min-height: 0 !important; }
+        #resume-paper .resume-experience > div, #resume-paper .resume-education > div, #resume-paper .mb-3, #resume-paper .mb-4 { break-inside: avoid; page-break-inside: avoid; }
+        #resume-paper aside { break-inside: avoid; page-break-inside: avoid; }
         .no-print { display: none !important; }
       }
     `}</style>

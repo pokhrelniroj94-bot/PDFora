@@ -139,8 +139,19 @@ assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
 assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-refresh headlines");
+
+const forexApi = read("../app/api/nepal-forex/route.ts");
+const forexBackend = read("../../backend/main.py");
+const forexUi = read("../components/NepalLiveTools.tsx");
+assert.ok(forexApi.includes('const NRB_URL = "https://www.nrb.org.np/api/forex/v1/rates"'), "NRB Forex must use the official NRB API as its primary source");
+assert.ok(forexApi.includes("previousRateDate:") && forexApi.includes("previousRates:"), "NRB Forex must return the previous published snapshot when available");
+assert.ok(forexBackend.includes('"previousRateDate"') && forexBackend.includes('"previousRates"'), "NRB backend fallback must preserve prior published rates");
+assert.ok(forexUi.includes('type="search"') && forexUi.includes("currencyQuery"), "NRB Forex table must support currency search");
+assert.ok(forexUi.includes('value="foreign-to-foreign"') && forexUi.includes("target.unit / target.sell"), "NRB Forex converter must support foreign-currency cross conversion using official buying/selling rates");
+assert.ok(forexUi.includes("previousRateDate") && forexUi.includes("Copy conversion"), "NRB Forex UI must show previous-rate context and allow copying a conversion");
+
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
-console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including new browser utilities, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);
+console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, plus NRB source, prior-rate, search and cross-conversion coverage.`);
 

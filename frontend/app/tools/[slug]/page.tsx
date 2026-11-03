@@ -44,7 +44,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepse-dividend-calculator": { title: "NEPSE Dividend Calculator – Cash Dividend & Bonus", description: "Estimate NEPSE cash dividend after editable withholding tax and calculate bonus shares from your eligible share quantity." },
     "nepal-public-holidays-2083": { title: "Nepal Public Holidays 2083 – BS and AD Calendar", description: "Browse Nepal public holidays for 2083 BS with Gregorian dates and notes for national, regional and community-specific holidays." },
     "nepal-forex-rates": { title: "Nepal Rastra Bank Forex Rates – NPR Exchange Rates", description: "View Nepal Rastra Bank currency buying and selling rates and estimate NPR conversions using the published currency units." },
-    "loan-emi-calculator": { title: "Loan EMI Calculator – Monthly Payment & Interest", description: "Calculate monthly loan EMI, total repayment and total interest from principal, annual interest rate and loan term in months." },
     "compound-interest-sip-calculator": { title: "SIP & Compound Interest Calculator – Future Value", description: "Estimate SIP future value, total monthly investments and projected gain using an expected annual return and investment period." },
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
@@ -461,3 +460,4 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     <CatalogToolSEOContent tool={tool} questions={questions} related={related} guideSlug={guide?.slug} />
   </>;
 }
+

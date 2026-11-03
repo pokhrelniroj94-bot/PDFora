@@ -118,9 +118,9 @@ export default function ResumeBuilder() {
       const headings = ["Professional Summary", "Core Skills", "Experience Bullets", "Optional ATS Keywords"];
       const normalize = (line: string) => line.trim().replaceAll("#", "").replaceAll("*", "").replace(/:$/, "").trim().toLowerCase();
       const extract = (heading: string) => {
-        const start = lines.findIndex((line) => normalize(line) === heading.toLowerCase());
+        const start = lines.findIndex((line: string) => normalize(line) === heading.toLowerCase());
         if (start < 0) return "";
-        const end = lines.findIndex((line, index) => index > start && headings.some((item) => normalize(line) === item.toLowerCase()));
+        const end = lines.findIndex((line: string, index: number) => index > start && headings.some((item) => normalize(line) === item.toLowerCase()));
         return lines.slice(start + 1, end < 0 ? lines.length : end).join("\n").trim();
       };
       const nextSummary = extract("Professional Summary");

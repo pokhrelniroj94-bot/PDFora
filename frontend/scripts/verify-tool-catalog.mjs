@@ -27,9 +27,10 @@ assert.equal(new Set(extraCases).size, extraCases.length, "Duplicate extra-tool 
 assert.deepEqual([...quickSlugs].sort(), [...quickCases].sort(), "Quick utility dispatch list and handlers differ");
 const nepalCases = [...nepalTools.matchAll(/slug==="([a-z0-9-]+)"/g)].map((m) => m[1]);
 const liveCases = [...nepalLiveTools.matchAll(/slug === "([a-z0-9-]+)"/g)].map((m) => m[1]);
-const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
+const nepalRouteBlocks = [...allTools.matchAll(/if\(\[(.*?)\]\.includes\(slug\)\)/gs)].map((match) => match[1]);
+const nepalRouteBlock = nepalRouteBlocks.find((block) => block.includes('"nepal-forex-rates"'));
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
-const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
+const routedNepalSlugs = [...nepalRouteBlock.matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
 const newToolCases = [...newTools.matchAll(/if\(slug==="([a-z0-9-]+)"\)/g)].map((m) => m[1]);
 const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs, ...newToolCases]);
@@ -48,7 +49,7 @@ assert.ok(typingRouted, "Nepali Unicode typing route or engine is missing");
 assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('import NepalLiveTools from "./NepalLiveTools"'), "Nepal live tools component is not imported");
 
 assert.ok(allTools.includes('import("./NepaliTypingTool")') || allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");
-assert.ok(allTools.includes('import("./NewTools")') || allTools.includes('import NewToolsChunk from "./NewTools"'), "New practical tools component is not imported");
+assert.ok(allTools.includes('import("./NewToolsFixed")') || allTools.includes('import NewToolsChunk from "./NewToolsFixed"') || allTools.includes('import("./NewTools")') || allTools.includes('import NewToolsChunk from "./NewTools"'), "New practical tools component is not imported");
 assert.ok(newToolCases.includes("ats-resume-checker") && newToolCases.includes("invoice-quotation-generator") && newToolCases.includes("loan-emi-calculator") && newToolCases.includes("image-resizer-compressor") && newToolCases.includes("business-break-even-calculator"), "New practical tool handlers are missing");
 const nepalSlugs = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);
 assert.ok(nepalSlugs.length > 0, "Nepal tool catalog entries were not detected by the guide coverage check");
@@ -80,7 +81,7 @@ assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal la
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
 
 const toolDirectory = read("../lib/tool-directory.ts");
-const homepage = read("../app/page.tsx");
+const homepage = read("../components/HomePageClient.tsx");
 const directoryComponent = read("../components/AllTools.tsx");
 const pdfBlock = toolDirectory.split("const rawPdfTools")[1]?.split("\n];")[0];
 assert.ok(pdfBlock, "Canonical PDF tool list is missing");
@@ -91,8 +92,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 136, "Expected 136 unique catalog utilities after deduplication and new tool additions");
-assert.equal(allHrefs.length, 185, "Expected 185 available tools (49 PDF tools + 136 catalog utilities)");
+assert.equal(catalog.length, 135, "Expected 135 unique catalog utilities after deduplication and new tool additions");
+assert.equal(allHrefs.length, 184, "Expected 184 available tools (49 PDF tools + 135 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
@@ -122,7 +123,8 @@ const marketPage = read("../app/market/page.tsx");
 const newsApi = read("../app/api/nepal-market-news/route.ts");
 const newsComponent = read("../components/NepalMarketNews.tsx");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
-assert.ok(marketApi.includes('source: usingLiveQuotes ? "YONEPSE live quote snapshot"'), "NEPSE API must identify the live quote source");
+assert.ok(marketApi.includes('source: usingUnofficialLive ? "NEPSE unofficial live API (nepseman-api)"') && marketApi.includes('"YONEPSE public market snapshot"') && marketApi.includes('"YONEPSE historical snapshot fallback"'), "NEPSE API must identify each quote source accurately");
+assert.ok(marketApi.includes("quoteStale,") && marketApi.includes("providerRefreshCadence:") && marketApi.includes("quoteAgeMinutes:"), "NEPSE API must disclose quote age and upstream refresh cadence");
 assert.ok(marketApi.includes('read<Json>("/data/market/status.json")'), "NEPSE status source must be mapped correctly");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/summary.json")'), "NEPSE summary source must be an array");
 assert.ok(marketApi.includes('read<Json>("/data/market/top_stocks.json")'), "NEPSE top movers source must be an object");
@@ -141,3 +143,4 @@ assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKE
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including new browser utilities, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);
+

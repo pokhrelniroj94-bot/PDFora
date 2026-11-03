@@ -87,7 +87,7 @@ function nrbRequest(url: URL): Promise<unknown> {
 }
 
 function normalizeNrbPayload(payload: any, requestedDate: string) {
-  if (payload?.status?.code && Number(payload.status.code) !== 200) {
+  if (payload?.status?.code != null && Number(payload.status.code) !== 200) {
     throw new Error(`NRB API body status ${payload.status.code}.`);
   }
   const records = payload?.data?.payload;
@@ -129,18 +129,18 @@ function decodeHtml(value: string) {
   return value.replace(/&nbsp;|&#160;/gi, " ").replace(/&amp;/gi, "&")
     .replace(/&quot;/gi, '"').replace(/&#39;|&apos;/gi, "'")
     .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">")
-    .replace(/&#(\\d+);/g, (_, n) => String.fromCharCode(Number(n)))
-    .replace(/&#x([\\da-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)));
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([\da-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)));
 }
 
 function extractNnswDate(html: string): string | null {
-  const inputDates = [...html.matchAll(/<input\\b[^>]*?(?:name|id)=["'][^"']*(?:date|validity)[^"']*["'][^>]*>/gi)]
+  const inputDates = [...html.matchAll(/<input\b[^>]*?(?:name|id)=["'][^"']*(?:date|validity)[^"']*["'][^>]*>/gi)]
     .map((match) => match[0]);
   for (const input of inputDates) {
-    const value = input.match(/value=["'](\\d{4}-\\d{2}-\\d{2})["']/i)?.[1];
+    const value = input.match(/value=["'](\d{4}-\d{2}-\d{2})["']/i)?.[1];
     if (value) return value;
   }
-  const candidates = [...html.matchAll(/\\b(20\\d{2})[-/](\\d{1,2})[-/](\\d{1,2})\\b/g)];
+  const candidates = [...html.matchAll(/\b(20\d{2})[-/](\d{1,2})[-/](\d{1,2})\b/g)];
   for (const match of candidates) {
     const [, y, m, d] = match;
     const date = new Date(Date.UTC(Number(y), Number(m) - 1, Number(d)));
@@ -156,9 +156,9 @@ function parseNnswHtml(html: string, requestedDate: string) {
   const rateDate = extractNnswDate(html);
   if (!rateDate) throw new Error("NNSW did not expose a verifiable rate-validity date.");
   if (rateDate > requestedDate) throw new Error("NNSW returned a rate newer than the requested date.");
-  const rows = [...html.matchAll(/<tr\\b[^>]*>([\\s\\S]*?)<\\/tr>/gi)].map((match) =>
-    [...match[1].matchAll(/<t[dh]\\b[^>]*>([\\s\\S]*?)<\\/t[dh]>/gi)]
-      .map((cell) => decodeHtml(cell[1].replace(/<[^>]*>/g, " ").replace(/\\s+/g, " ").trim()))
+  const rows = [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((match) =>
+    [...match[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)]
+      .map((cell) => decodeHtml(cell[1].replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()))
   );
   const rates: NormalizedRate[] = [];
   for (const cells of rows) {
@@ -207,8 +207,9 @@ function nepalDate() {
 export async function GET(request: Request) {
   const incoming = new URL(request.url);
   const requestedDate = incoming.searchParams.get("date") || nepalDate();
+  const parsedDate = new Date(`${requestedDate}T00:00:00Z`);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(requestedDate) ||
-      Number.isNaN(Date.parse(`${requestedDate}T00:00:00Z`))) {
+      Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== requestedDate) {
     return NextResponse.json({ error: "Invalid date. Use YYYY-MM-DD." }, { status: 400 });
   }
 

@@ -272,62 +272,6 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related Nepal tools and guides</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white">Read the detailed guide</Link>}</div></section>
     </div></article>;
   }
-  if (tool.slug === "nepal-forex-rates") {
-    return (
-      <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">
-        <div className="space-y-6">
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-            <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Nepal finance utility</p>
-            <h2 className="mt-2 text-2xl font-black text-slate-950">Nepal Rastra Bank exchange rates today</h2>
-            <p className="mt-4 leading-8 text-slate-700">Use this page to check Nepal Rastra Bank (NRB) foreign-currency buying and selling rates against the Nepalese rupee (NPR). The rate table is retrieved from NRB&apos;s published foreign-exchange data. It displays the publication date, currency code, quoted unit, buying rate and selling rate so you can compare currencies using the correct unit.</p>
-            <p className="mt-3 leading-8 text-slate-700">The converter supports both foreign currency to NPR and NPR to foreign currency calculations. It uses the NRB buying rate when converting foreign currency into NPR and the NRB selling rate when estimating how much foreign currency NPR can buy.</p>
-          </section>
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-            <h2 className="text-xl font-black text-slate-950">How to convert foreign currency to Nepalese rupees</h2>
-            <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
-              <li>Wait for the latest available NRB rate date and currency table to load.</li>
-              <li>Select the currency, such as USD, EUR, GBP, INR or JPY.</li>
-              <li>Choose foreign currency to NPR (buying) or NPR to foreign currency (selling).</li>
-              <li>Enter the amount and read the calculated estimate. Check the quoted unit shown for the currency.</li>
-              <li>For a bank transaction, confirm the actual rate and fees with your bank or remittance provider.</li>
-            </ol>
-          </section>
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-            <h2 className="text-xl font-black text-slate-950">How NRB buying and selling rates work</h2>
-            <p className="mt-4 leading-8 text-slate-700">The buying rate is the NPR amount represented by the quoted foreign-currency unit when a bank buys that currency. The selling rate is the NPR amount charged for the same quoted unit when a bank sells it. The selling rate is normally higher than the buying rate.</p>
-            <p className="mt-3 leading-8 text-slate-700">NRB may quote some currencies per 10 or 100 units instead of one unit. For example, if a currency is quoted per 100 units, the rate shown in the table applies to 100 units. PDFora uses the published unit in its calculations rather than assuming every rate is per one unit.</p>
-            <div className="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-7 text-slate-700">
-              <p className="font-bold text-slate-900">Calculation formulas</p>
-              <p>Foreign currency to NPR = amount × buying rate ÷ quoted unit</p>
-              <p>NPR to foreign currency = NPR amount × quoted unit ÷ selling rate</p>
-              <p className="mt-2 text-xs text-slate-500">These are reference-rate estimates before any bank spread, service fee or remittance charge.</p>
-            </div>
-          </section>
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-            <h2 className="text-xl font-black text-slate-950">Why the displayed rate date may not be today</h2>
-            <p className="mt-4 leading-8 text-slate-700">NRB publishes foreign-exchange rates on working days. If the page is opened on a weekend or public holiday, the latest available published working-day rate may be shown. A rate date earlier than today&apos;s date does not by itself mean the data is incorrect; check the publication date and compare it with NRB&apos;s official foreign-exchange page.</p>
-          </section>
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-            <h2 className="text-xl font-black text-slate-950">Accuracy, source and limitations</h2>
-            <p className="mt-4 leading-8 text-slate-700">The source is Nepal Rastra Bank&apos;s official foreign-exchange API and, if that endpoint is unavailable, its official published foreign-exchange page. The data is presented as an NRB reference rate, not as a guaranteed cash, card, bank-counter or remittance quote. Individual banks and money changers may publish different customer rates and fees.</p>
-            <p className="mt-3 leading-8 text-slate-700">If rates cannot be retrieved, the tool shows an error and lets you retry; it does not silently present an old value as today&apos;s rate. For a payment, exchange or accounting decision, verify the rate directly with NRB or the financial provider handling the transaction.</p>
-            <a className="mt-3 inline-block text-sm font-semibold text-teal-700 underline" href="https://www.nrb.org.np/forex/" target="_blank" rel="noreferrer">Check Nepal Rastra Bank&apos;s official exchange rates</a>
-          </section>
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-            <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
-            <div className="mt-5 space-y-5">
-              {uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}
-            </div>
-          </section>
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-            <h2 className="text-xl font-black text-slate-950">Related Nepal tools</h2>
-            <p className="mt-3 leading-7 text-slate-700">Continue with another Nepal-focused calculator or converter:</p>
-            <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read the NRB exchange-rate guide</Link>}</div>
-          </section>
-        </div>
-      </article>
-    );
-  }
 
   const toolAdvice: Record<string, { example: string; accuracy: string; workflow: string; mistakes: string }> = {
     "resume-builder": { example: "Choose a CV layout, add your contact details, professional summary, experience, education, skills and optional projects or certifications. The live preview updates while you type; select Download CV as PDF and choose Save as PDF in the print dialog.", accuracy: "The builder formats the information you provide. It does not independently verify employment, qualifications, dates, contact details or ATS compatibility. Review every field and the final printed pages before applying.", workflow: "Start with a clean ATS-friendly layout such as Harvard Classic or Compact ATS for online applications. Tailor the summary and achievement bullets to the vacancy, use measurable results where truthful, then check the A4 PDF on desktop and mobile.", mistakes: "Avoid invented achievements, generic objective statements, spelling errors, excessive graphics and unprofessional email addresses. Keep dates consistent and do not include sensitive personal information unless the employer specifically requires it." },
@@ -432,7 +376,6 @@ export default function CatalogToolSEOContent({
     "color-converter": { example: "Enter a colour in a supported format such as HEX, RGB or HSL and compare its equivalent representations.", accuracy: "Conversions may round channel values and may not preserve wide-gamut or alpha-channel information in every format.", workflow: "Copy the converted code and test it in the target browser or design application.", mistakes: "Do not assume visually similar colours have identical contrast or accessibility." },
     "css-gradient-generator": { example: "Choose gradient colours, direction and stops, then preview the CSS before copying it into a stylesheet.", accuracy: "Browser rendering and colour interpolation can differ; complex gradients may need vendor or fallback handling in older environments.", workflow: "Test the generated CSS on the actual component and at different viewport sizes.", mistakes: "Do not rely on a gradient as the only way to communicate important information." },
     "roman-numeral-converter": { example: "Enter a supported integer or Roman numeral and convert it to the corresponding representation.", accuracy: "Traditional Roman numerals have a conventional range and notation rules; non-standard subtractive forms may be rejected.", workflow: "Test a known value such as 2026 and review the output before using it in a heading or label.", mistakes: "Do not use Roman numerals for arithmetic or assume every historical notation follows modern conventions." },
-    "nepal-forex-rates": { example: "Check the published currency, buying and selling rate, unit multiplier and update date before converting an amount to NPR.", accuracy: "Published central-bank reference rates can differ from cash exchange, remittance, card and commercial-bank rates; a displayed rate may not be real-time.", workflow: "Use the published timestamp, choose the correct currency unit and compare the estimate with your bank or licensed provider before exchanging money.", mistakes: "Do not treat an indicative published rate as a guaranteed transaction quote or ignore the currency's quoted unit." },
     "nepse-market-news": { example: "Review the headline, publication time and original publisher link for recent Nepal market and IPO coverage.", accuracy: "News feeds can include delayed, duplicate or unrelated stories and are not a substitute for official NEPSE, SEBON, CDSC or company notices.", workflow: "Open the publisher's original report and cross-check market-sensitive facts with the responsible official source.", mistakes: "Do not make a buy or sell decision from a headline or an unverified social-media summary." },
     "nepse-dividend-calculator": { example: "Enter the eligible share quantity and announced cash or bonus dividend rate to estimate the gross entitlement and applicable deduction assumptions.", accuracy: "Dividend eligibility, book-close dates, withholding tax and bonus-share crediting depend on the company's official announcement and current tax rules.", workflow: "Compare the estimate with the book-close notice, shareholder record and company announcement before relying on it.", mistakes: "Do not treat the estimate as a confirmed CDSC credit or guaranteed dividend payment." },
 

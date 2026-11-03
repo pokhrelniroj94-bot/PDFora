@@ -29,7 +29,7 @@ if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
     throw "Python 3.12 is required. Install Python 3.12 and reopen PowerShell."
 }
 
-$nodeMajor = [int]((node -p "process.versions.node.Split('.')[0]"))
+$nodeMajor = [int]((node -p "process.versions.node.split('.')[0]"))
 if ($nodeMajor -lt 20) {
     throw "Node.js 20.9+ is required; Node.js 22 is recommended to match CI."
 }

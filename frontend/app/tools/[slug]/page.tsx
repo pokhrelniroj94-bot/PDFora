@@ -409,11 +409,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { "@type": "ListItem", position: 3, name: tool.name, item: canonicalUrl },
     ],
   };
-  const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
   return <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
     <ToolWorkspace slug={slug} />
     <CatalogToolSEOContent tool={tool} questions={questions} related={related} guideSlug={guide?.slug} />
   </>;

@@ -68,13 +68,23 @@ assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalToo
 
 const englishHomepageMetadata = read("../app/page.tsx");
 const nepaliHomepageMetadata = read("../app/ne/page.tsx");
-assert.ok(englishHomepageMetadata.includes('"x-default": site'), "English homepage must declare x-default hreflang");
-assert.ok(nepaliHomepageMetadata.includes('"x-default": site'), "Nepali homepage must declare reciprocal x-default hreflang");
+const localeHomepage = read("../app/[locale]/page.tsx");
+const localeDictionary = read("../lib/home-locales.ts");
+assert.ok(englishHomepageMetadata.includes("languages: homeLanguageAlternates"), "English homepage must use the complete hreflang map");
+assert.ok(nepaliHomepageMetadata.includes("languages: homeLanguageAlternates"), "Nepali homepage must use the complete reciprocal hreflang map");
+assert.ok(localeHomepage.includes("languages: homeLanguageAlternates"), "Localized homepage metadata must declare reciprocal hreflang alternates");
+for (const locale of ["en", "ne", "hi", "es", "fr", "de", "pt", "ar", "bn", "id"]) {
+  assert.ok(localeDictionary.includes(`code: "${locale}"`) || locale === "en" || locale === "ne", `Missing supported homepage locale: ${locale}`);
+}
+assert.ok(localeHomepage.includes("generateStaticParams"), "Localized homepage routes must be statically generated");
+assert.ok(localeHomepage.includes('dir={content.dir ?? "ltr"}'), "Localized homepages must support RTL direction");
+assert.ok(localeHomepage.includes("content.note"), "Localized landing pages must disclose untranslated tool-interface scope");
 const sitemapSource = read("../app/sitemap.ts");
 const legacyRoutesSource = read("../lib/legacy-tool-slugs.ts");
 assert.ok(legacyRoutesSource.includes('"resume-builder"'), "Resume Builder /tools alias must redirect to its existing canonical root route");
 assert.ok(sitemapSource.includes("legacyToolSlugs.map") && sitemapSource.includes("legacyRouteEntries"), "Canonical root-level tool routes must be emitted in the sitemap");
-assert.ok(sitemapSource.includes('"x-default": baseUrl'), "English/Nepali homepage sitemap alternates must include x-default");
+assert.ok(sitemapSource.includes("homeLanguageAlternates"), "Homepage sitemap entries must include the complete hreflang map");
+assert.ok(sitemapSource.includes("Object.keys(homeLocales)"), "Every localized homepage must be included in the sitemap");
 assert.ok(sitemapSource.includes('!legacyToolSlugSet.has(tool.slug)'), "Sitemap must exclude catalog aliases that redirect to canonical root routes");
 const legacySlugValues = [...legacyRoutesSource.matchAll(/^\\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const canonicalCatalogSlugs = catalog.filter((slug) => slug !== "ocr-pdf" && slug !== "pdf-tools" && !legacySlugValues.includes(slug));

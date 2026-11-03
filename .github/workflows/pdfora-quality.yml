@@ -1,7 +1,7 @@
 name: PDFora quality and security checks
 on:
   pull_request:
-    branches: [main, master]
+    branches: [main, master, feat/free-market-data-fallbacks]
   push:
     branches: [master, niroj77-seo-ux-security]
   workflow_dispatch:

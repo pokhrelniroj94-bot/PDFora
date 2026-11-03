@@ -57,7 +57,8 @@ async function fetchNepsemanSnapshot() {
     const updated = firstValue(row, ["last_updated", "updated_at", "timestamp", "lastTradedTime", "businessDate"]) ?? globalTimestamp;
     // `closePrice` is also accepted above as a current-price alias. Never use
     // that ambiguous field as the previous close or report a fabricated 0% move.
-    const previous = Number(firstValue(row, ["previous_close", "previousClose", "previousClosingPrice"]));
+    const rawPrevious = firstValue(row, ["previous_close", "previousClose", "previousClosingPrice"]);
+    const previous = rawPrevious == null || rawPrevious === "" ? Number.NaN : Number(rawPrevious);
     const change = Number(firstValue(row, ["change", "pointChange", "difference"]));
     const percent = Number(firstValue(row, ["percent_change", "percentageChange", "percentage_change"]));
     return [{
@@ -65,7 +66,7 @@ async function fetchNepsemanSnapshot() {
       symbol,
       name: String(firstValue(row, ["name", "securityName", "companyName"]) || symbol),
       ltp,
-      previous_close: Number.isFinite(previous) ? previous : null,
+      previous_close: Number.isFinite(previous) && previous > 0 ? previous : null,
       change: Number.isFinite(change) ? change : null,
       percent_change: Number.isFinite(percent) ? percent : null,
       high: Number(firstValue(row, ["high", "highPrice", "maxPrice"]) || 0),

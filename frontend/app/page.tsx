@@ -144,7 +144,8 @@ export default function Home() {
       return matchesCategory && (tokens.length === 0 || tokens.every((token) => searchable.includes(token)));
     });
   }, [query, category]);
-  const popularTools = Array.from(new Map([...allTools.filter((tool) => tool.popular), ...allTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))].map((tool) => [tool.href, tool])).values()).slice(0, 9);
+  const featuredSlugs = ["nepali-calendar","nepali-date-converter","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepal-forex-rates","loan-emi-calculator","nepal-share-calculator","nepal-salary-tax-calculator"];
+  const popularTools = featuredSlugs.map((slug) => allTools.find((tool) => tool.slug === slug)).filter((tool): tool is Tool => Boolean(tool));
   const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
 
   return (
@@ -167,6 +168,8 @@ export default function Home() {
           </Link>
 
           <Link href="/ne" className="mr-2 hidden rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-blue-700 hover:border-blue-400 sm:inline-flex">नेपाली</Link>
+          <Link href="/tools/nepal" className="mr-2 hidden rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-teal-800 hover:border-teal-400 sm:inline-flex">Nepal Tools</Link>
+          <Link href="/tools/calculators" className="mr-2 hidden rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-teal-800 hover:border-teal-400 sm:inline-flex">Calculators</Link>
           <Link href="/market" className="mr-2 inline-flex rounded-lg border border-teal-200 bg-teal-50 px-2.5 py-2 text-[11px] font-bold text-teal-800 hover:border-teal-400 sm:mr-3 sm:px-3 sm:text-xs">📈 Market</Link>
           <Link
             href="/tools"

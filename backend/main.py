@@ -2748,6 +2748,7 @@ class PushSubscriptionBody(BaseModel):
     keys: dict[str, str]
 
 _PUSH_SUBSCRIPTIONS_LOCAL: dict[str, dict] = {}
+_PUSH_SENT_IDS_LOCAL: set[str] = set()
 
 def _push_config():
     public_key = os.getenv("PDFORA_VAPID_PUBLIC_KEY", "").strip()
@@ -2828,6 +2829,18 @@ async def push_send(request: Request, authorization: str | None = Header(default
     url = str(payload.get("url", "/nepal-market-news"))
     if not url.startswith("/") or url.startswith("//"): url = "/nepal-market-news"
     data = json.dumps({"title": title, "body": body, "url": url, "tag": str(payload.get("tag", "pdfora-news"))[:80]})
+    story_id = str(payload.get("id", "")).strip()
+    if story_id:
+        dedupe_key = "pdfora:push:sent:" + str(uuid.uuid5(uuid.NAMESPACE_URL, story_id))
+        if RATE_LIMIT_REDIS_URL and redis_async is not None:
+            client = await _get_push_redis()
+            fresh = await client.set(dedupe_key, "1", ex=60 * 60 * 24 * 14, nx=True)
+            if not fresh:
+                return {"sent": 0, "duplicate": True}
+        else:
+            if story_id in _PUSH_SENT_IDS_LOCAL:
+                return {"sent": 0, "duplicate": True}
+            _PUSH_SENT_IDS_LOCAL.add(story_id)
     try:
         from pywebpush import webpush, WebPushException
     except ImportError:

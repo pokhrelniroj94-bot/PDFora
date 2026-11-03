@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Learn how PDFora handles uploaded files, technical information, cookies and third-party services.",
   alternates: { canonical: "https://pd-fora.vercel.app/privacy" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "Learn how PDFora handles uploaded files, technical information, cookies and third-party services." },
+  openGraph: { type: "website", locale: "en_US", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "Learn how PDFora handles uploaded files, technical information, cookies and third-party services." },
 };
 
 export default function PrivacyPage() {

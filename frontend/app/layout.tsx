@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import CookieConsent from "../components/CookieConsent";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
 
@@ -56,6 +56,8 @@ export default function RootLayout({
           <a href="/about" className="hover:underline">About PDFora</a>
           <span className="mx-2">·</span>
           <a href="/contact" className="hover:underline">Contact</a>
+          <span className="mx-2">·</span>
+          <button type="button" onClick={() => window.dispatchEvent(new Event("pdfora:open-cookie-settings"))} className="hover:underline">Cookie settings</button>
         </footer>
         <ToolDirectory />
         <Script
@@ -97,7 +99,7 @@ export default function RootLayout({
             }),
           }}
         />
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+        <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} />
       </body>
     </html>
   );

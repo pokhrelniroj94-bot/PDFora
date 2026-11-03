@@ -11,6 +11,20 @@ const templates = [
   { id: "minimal", name: "Minimal", note: "Clean · elegant", color: "#334155" },
   { id: "creative", name: "Creative Accent", note: "Bold · visual", color: "#6d28d9" },
   { id: "europass", name: "Europass Inspired", note: "Structured · detailed", color: "#1d4ed8" },
+  { id: "corporate", name: "Corporate Gray", note: "Business · understated", color: "#475569" },
+  { id: "elegant", name: "Elegant Serif", note: "Editorial · refined", color: "#713f12" },
+  { id: "compact", name: "Compact ATS", note: "Space-saving · ATS-friendly", color: "#1e293b" },
+  { id: "tech", name: "Technology", note: "Digital · skills-forward", color: "#0369a1" },
+  { id: "finance", name: "Finance Analyst", note: "Formal · analytical", color: "#14532d" },
+  { id: "graduate", name: "Graduate Starter", note: "Entry-level · education-first", color: "#4338ca" },
+  { id: "academic", name: "Academic CV", note: "Research · publications", color: "#7f1d1d" },
+  { id: "bold", name: "Bold Header", note: "Strong · confident", color: "#be123c" },
+  { id: "clean-two-column", name: "Clean Two Column", note: "Balanced · scannable", color: "#0e7490" },
+  { id: "navy", name: "Navy Professional", note: "Classic · dependable", color: "#1e3a8a" },
+  { id: "emerald", name: "Emerald Profile", note: "Fresh · modern", color: "#047857" },
+  { id: "monochrome", name: "Monochrome", note: "Black & white · timeless", color: "#18181b" },
+  { id: "warm", name: "Warm Minimal", note: "Soft · approachable", color: "#9a3412" },
+  { id: "international", name: "International Profile", note: "Global · structured", color: "#3730a3" },
 ];
 const uid = () => Math.random().toString(36).slice(2, 9);
 const initialEntry = (): Entry => ({ id: uid(), school: "", degree: "", place: "", dates: "" });
@@ -70,8 +84,8 @@ export default function ResumeBuilder() {
       </section>
       <section className="min-w-0 xl:sticky xl:top-4">
         <div className="no-print mb-3 flex items-center justify-between"><div><h2 className="font-extrabold text-slate-900">Live CV preview</h2><p className="text-xs text-slate-500">Updates as you type · A4 print layout</p></div><button onClick={print} className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold text-white">Export PDF</button></div>
-        <article id="resume-paper" className={"resume-paper mx-auto min-h-[800px] w-full max-w-[794px] overflow-hidden bg-white text-slate-800 shadow-[0_20px_70px_rgba(15,23,42,.14)] " + (template === "modern" || template === "creative" ? "resume-sidebar" : "")} style={{ fontFamily: font }}>
-          {(template === "modern" || template === "creative") ? <div className="grid min-h-[1123px] grid-cols-[31%_69%]">
+        <article id="resume-paper" className={"resume-paper mx-auto min-h-[800px] w-full max-w-[794px] overflow-hidden bg-white text-slate-800 shadow-[0_20px_70px_rgba(15,23,42,.14)] " + (["modern","creative","tech","finance","clean-two-column","navy","emerald"].includes(template) ? "resume-sidebar" : "")} style={{ fontFamily: font }}>
+          {(["modern","creative","tech","finance","clean-two-column","navy","emerald"].includes(template)) ? <div className="grid min-h-[1123px] grid-cols-[31%_69%]">
             <aside className="p-6 text-white" style={{background:accent}}>{photo && <img src={photo} alt="Profile" className="mb-5 h-24 w-24 rounded-full object-cover" />}<h1 className="break-words text-2xl font-black leading-tight">{name || "Your Name"}</h1><p className="mt-2 text-sm opacity-90">{role || "Professional Title"}</p><div className="mt-7 space-y-2 break-words text-xs">{[email,phone,location,website].filter(Boolean).map(x=><p key={x}>{x}</p>)}</div><h3 className="mt-8 border-b border-white/40 pb-2 text-xs font-extrabold uppercase tracking-widest">Skills</h3><ul className="mt-3 space-y-2 text-xs">{skillList.map(s=><li key={s}>• {s}</li>)}</ul>{languages && <><h3 className="mt-8 border-b border-white/40 pb-2 text-xs font-extrabold uppercase tracking-widest">Languages</h3><p className="mt-3 whitespace-pre-line text-xs">{languages}</p></>}</aside>
             <div className="p-7">{summary && <>{heading("Profile")}<p className="whitespace-pre-line text-sm leading-6">{summary}</p></>}{jobs.some(j=>j.role||j.company) && <>{heading("Experience")}{jobs.filter(j=>j.role||j.company).map(j=><div className="mb-4" key={j.id}><div className="flex justify-between gap-2"><b>{j.role}</b><span className="text-xs text-slate-500">{j.dates}</span></div><p className="text-sm">{j.company}</p><p className="mt-1 whitespace-pre-line text-xs leading-5">{j.details}</p></div>)}</>}{education.some(e=>e.degree||e.school) && <>{heading("Education")}{education.filter(e=>e.degree||e.school).map(e=><div className="mb-3" key={e.id}><b className="text-sm">{e.degree}</b><p className="text-sm">{e.school} {e.place && "· "+e.place}</p><p className="text-xs text-slate-500">{e.dates}</p></div>)}</>}{projects && <>{heading("Projects")}<p className="whitespace-pre-line text-sm">{projects}</p></>}{certifications && <>{heading("Certifications")}<p className="whitespace-pre-line text-sm">{certifications}</p></>}{references && <>{heading("References")}<p className="whitespace-pre-line text-sm">{references}</p></>}</div>
           </div> : <div className="p-10">

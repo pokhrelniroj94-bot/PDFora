@@ -16,7 +16,7 @@ import AdsterraNative from "../app/components/AdsterraNative";
 
 const ToolChunkLoading = () => <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm font-medium text-slate-500" role="status">Loading tool workspace…</div>;
 const ExtraTools = dynamic(() => import("./ExtraTools"), { loading: ToolChunkLoading });
-const NewToolsChunk = dynamic(() => import("./NewTools"), { loading: ToolChunkLoading });
+const NewToolsChunk = dynamic(() => import("./NewToolsFixed"), { loading: ToolChunkLoading });
 const QuickUtilityTools = dynamic(() => import("./QuickUtilityTools"), { loading: ToolChunkLoading });
 const NepalTools = dynamic(() => import("./NepalTools"), { loading: ToolChunkLoading });
 const NepalLiveTools = dynamic(() => import("./NepalLiveTools"), { loading: ToolChunkLoading });

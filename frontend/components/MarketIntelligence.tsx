@@ -5,7 +5,7 @@ import { useState } from "react";
 type Point = { date: string; open?: number; high?: number; low?: number; close: number; volume?: number };
 type Analysis = {
   count: number; latestDate: string; close: number; ema20: number; ema50: number; rsi: number;
-  macd: number; macdSignal: number; score: number; signal: "Bullish setup" | "Bearish setup" | "Wait / neutral";
+  macd: number; macdSignal: number; score: number; signal: "Potential BUY setup" | "Potential SELL / EXIT setup" | "Potential SELL / SHORT setup" | "Wait / neutral";
   volatility: number; risk: "Lower" | "Moderate" | "High" | "Very high";
   support: number; resistance: number; stop: number | null; target: number | null;
   entry: string; risks: string[]; reasons: string[]; annualizer: number;
@@ -71,7 +71,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
   else if (change5 < -2) { score -= 1; reasons.push("Five-session momentum is negative."); }
   if (volumeConfirm && last.close > rows[rows.length - 2].close) { score += 1; reasons.push("Latest volume is above its recent average while price is rising."); }
   if (volumeConfirm && last.close < rows[rows.length - 2].close) { score -= 1; reasons.push("Latest volume is above its recent average while price is falling."); }
-  const signal = score >= 3 ? "Bullish setup" : score <= -3 ? "Bearish setup" : "Wait / neutral";
+  const signal = score >= 3 ? "Potential BUY setup" : score <= -3 ? (asset === "nepse" ? "Potential SELL / EXIT setup" : "Potential SELL / SHORT setup") : "Wait / neutral";
   const recent = rows.slice(-20);
   const lows = recent.map((p) => p.low).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
   const highs = recent.map((p) => p.high).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
@@ -81,10 +81,10 @@ function analyse(points: Point[], asset: string): Analysis | null {
     : volatility > (asset === "crypto" ? 55 : asset === "forex" ? 14 : 32) ? "High"
     : volatility > (asset === "crypto" ? 30 : asset === "forex" ? 8 : 18) ? "Moderate" : "Lower";
   let stop: number | null = null, target: number | null = null;
-  if (signal === "Bullish setup") {
+  if (signal === "Potential BUY setup") {
     stop = lows.length ? support * 0.995 : last.close * (1 - Math.max(0.015, dailyVol * 2));
     target = last.close + 2 * (last.close - stop);
-  } else if (signal === "Bearish setup") {
+  } else if (signal === "Potential SELL / EXIT setup" || signal === "Potential SELL / SHORT setup") {
     stop = highs.length ? resistance * 1.005 : last.close * (1 + Math.max(0.015, dailyVol * 2));
     target = last.close - 2 * (stop - last.close);
   }
@@ -97,7 +97,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
   if (rows.length < 100) risks.push("The history is limited; longer-term trend context may be incomplete.");
   if (!volumeConfirm) risks.push("No strong volume confirmation was detected, or volume data is unavailable.");
   if (!lows.length || !highs.length) risks.push("The file/source has no full OHLC range; support, resistance and risk levels are close-based estimates.");
-  const entry = signal === "Bullish setup"
+  const entry = signal === "Potential BUY setup"
     ? `Potential long setup only after a completed candle holds above EMA20 (${e20[i].toFixed(4)}) and the next session confirms. Avoid chasing a sharp gap.`
     : signal === "Bearish setup"
       ? `Downside/exit pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). A short setup requires a separate risk plan and may not be suitable for every market.`
@@ -195,7 +195,7 @@ export default function MarketIntelligence() {
     finally { setAiBusy(false); }
   }
 
-  const scoreTone = analysis?.signal === "Bullish setup" ? "text-emerald-700" : analysis?.signal === "Bearish setup" ? "text-rose-700" : "text-amber-700";
+  const scoreTone = analysis?.signal.includes("BUY") ? "text-emerald-700" : analysis?.signal.includes("SELL") ? "text-rose-700" : "text-amber-700";
   return <div className="space-y-6">
     <header>
       <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Smart Market AI</p>

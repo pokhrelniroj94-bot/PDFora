@@ -15,6 +15,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
+    "time-zone-converter": { title: "Time Zone Converter – Compare World Time Zones", description: "Convert a date and time between international time zones with daylight-saving adjustments using your browser's time-zone database." },
+    "text-to-speech": { title: "Free Text to Speech Reader – Listen to Text Online", description: "Read text aloud with browser voices. Choose an available voice, language, speed and pitch, then pause or resume playback." },
+    "speech-to-text": { title: "Speech to Text – Free Online Voice Typing Tool", description: "Dictate speech into editable text with supported browser speech recognition. Requires microphone permission; language support varies by browser." },
+    "utm-link-builder": { title: "Free UTM Link Builder – Create Campaign Tracking URLs", description: "Build campaign URLs with UTM source, medium, campaign, term and content parameters while preserving existing query strings." },
     "loan-emi-calculator": { title: "Loan EMI Calculator – Estimate Monthly Loan Payments", description: "Estimate monthly EMI, total interest and repayment time from your loan amount, annual interest rate and term. Includes optional extra payments and clear assumptions." },
     "image-resizer-compressor": { title: "Free Image Resizer & Compressor – JPG, PNG, WebP", description: "Resize images to custom pixel dimensions and export JPEG, PNG or WebP with adjustable quality. Processing happens locally in your browser." },
     "business-break-even-calculator": { title: "Business Break-even Calculator – Units & Revenue", description: "Calculate break-even units, revenue and contribution margin using fixed costs, selling price and variable cost per unit." },

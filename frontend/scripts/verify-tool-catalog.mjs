@@ -56,6 +56,7 @@ assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO con
 assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 assert.ok(!catalogSource.includes("nepal-forex-rates"), "Retired NRB forex tool must not remain in the catalog");
+assert.ok(!allTools.includes("nepal-forex-rates"), "Retired NRB forex route must not remain in the tool dispatcher");
 assert.ok(!nepalLiveTools.includes("ForexTool") && !nepalLiveTools.includes("/api/nepal-forex") && !nepalLiveTools.includes("fallbackCurrencies"), "Retired NRB forex UI, API client and currency fallback must be removed");
 assert.ok(!backendSource.includes("/api/nepal-forex"), "Retired NRB forex backend endpoints must be removed");
 assert.equal(fs.existsSync(new URL("../app/api/nepal-forex/route.ts", import.meta.url)), false, "Retired NRB forex proxy route must be deleted");

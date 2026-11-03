@@ -26,8 +26,11 @@ function collectMatching(value: unknown, symbol: string, output: Json[], depth =
   if (ownSymbol === symbol) output.push(row);
   for (const [key, child] of Object.entries(row)) {
     if (key.toUpperCase() === symbol && child && typeof child === "object") {
-      if (Array.isArray(child)) for (const item of child) if (item && typeof item === "object") output.push(item as Json);
-      else output.push(child as Json);
+      if (Array.isArray(child)) {
+        for (const item of child) if (item && typeof item === "object") output.push(item as Json);
+      } else {
+        output.push(child as Json);
+      }
     } else if (child && typeof child === "object") collectMatching(child, symbol, output, depth + 1);
     if (output.length >= 80) break;
   }
@@ -84,7 +87,7 @@ export async function GET(request: Request) {
     const rows: Json[] = [];
     collectMatching(result.value, symbol, rows);
     const unique = Array.from(new Map(rows.map((row) => [JSON.stringify(row), row])).values()).slice(0, 20);
-    sections[label] = compact(unique, 9000);
+    sections[label] = compact(unique, 1600);
     matchedRecords += unique.length;
     sourceStatus.push({ source: label, available: true });
   });

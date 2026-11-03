@@ -6,7 +6,7 @@ const site = "https://pd-fora.vercel.app";
 
 export const metadata: Metadata = {
   title: "नि:शुल्क PDF उपकरण र नेपालका अनलाइन टुलहरू",
-  description: "PDF मर्ज, स्प्लिट, कम्प्रेस र रूपान्तरण गर्नुहोस्। नेपाली मिति, Unicode typing, विदेशी विनिमय दर र अन्य उपयोगी नेपाल टुलहरू प्रयोग गर्नुहोस्।",
+  description: "PDF मर्ज, स्प्लिट, कम्प्रेस र रूपान्तरण गर्नुहोस्। नेपाली मिति, Unicode typing र अन्य उपयोगी नेपाल टुलहरू प्रयोग गर्नुहोस्।",
   alternates: {
     canonical: `${site}/ne`,
     languages: homeLanguageAlternates,
@@ -41,7 +41,6 @@ const tools = [
 const nepalTools = [
   { href: "/tools/nepali-date-converter", title: "नेपाली मिति रूपान्तरण", description: "विक्रम संवत् र इस्वी संवत् मिति रूपान्तरण गर्नुहोस्।" },
   { href: "/tools/nepali-unicode-typing", title: "नेपाली Unicode Typing", description: "Romanized Nepali लेखेर देवनागरी Unicode text बनाउनुहोस्।" },
-  { href: "/tools/nepal-forex-rates", title: "नेपाल राष्ट्र बैंक विनिमय दर", description: "उपलब्ध पछिल्लो प्रकाशित विदेशी मुद्रा दर हेर्नुहोस्।" },
   { href: "/tools/nepal-salary-tax-calculator", title: "नेपाल तलब कर क्याल्कुलेटर", description: "आयकरको अनुमानित हिसाब गर्नुहोस्; नतिजा आधिकारिक कर निर्धारण होइन।" },
   { href: "/tools/nepal-electricity-bill-calculator", title: "NEA बिजुली बिल अनुमान", description: "समर्थित घरेलु single-phase जडानका लागि बिल अनुमान गर्नुहोस्।" },
   { href: "/tools/nepal-public-holidays-2083", title: "नेपालका सार्वजनिक बिदा २०८३", description: "राष्ट्रिय र क्षेत्रगत सार्वजनिक बिदा हेर्नुहोस्।" },

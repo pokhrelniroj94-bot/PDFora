@@ -59,6 +59,14 @@ const nepalSeoSlugs = ["ats-resume-checker","invoice-quotation-generator","nepal
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
 assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
+for (const slug of ["qr-code-generator","qr-code-scanner","barcode-generator"]) {
+  assert.ok(toolPage.includes('"'+slug+'": ['), `Missing dedicated FAQ content for ${slug}`);
+  assert.ok(toolPage.includes('"'+slug+'": { title:'), `Missing unique metadata for ${slug}`);
+  assert.ok(seoContent.includes('"'+slug+'": {'), `Missing dedicated SEO guide for ${slug}`);
+}
+assert.ok(newTools.includes("function escapeWifiField") && newTools.includes('"\\$1"'), "Wi-Fi QR payload escaping is missing");
+assert.ok(newTools.includes("3000/Math.max(img.naturalWidth,img.naturalHeight)"), "QR scanner image decode size guard is missing");
+assert.ok(newTools.includes('if(!value.trim())throw Error("Enter a value to encode.")'), "Barcode generator empty-input validation is missing");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);

@@ -349,3 +349,55 @@ def test_cleanup_endpoint_is_not_public_without_admin_secret(monkeypatch):
     response = TestClient(app).post("/api/cleanup")
     assert response.status_code == 404
 
+
+
+def test_spreadsheet_exports_treat_pdf_text_as_literal_not_formula():
+    from openpyxl import Workbook
+    from main import csv_safe_text, set_literal_cell
+
+    workbook = Workbook()
+    cell = set_literal_cell(workbook.active, 1, 1, "=HYPERLINK(\"https://example.com\",\"click\")")
+    assert cell.data_type == "s"
+    assert cell.value.startswith("=")
+    assert csv_safe_text("=1+1") == "'=1+1"
+    assert csv_safe_text("  @SUM(A1:A2)") == "'@SUM(A1:A2)"
+    assert csv_safe_text("ordinary text") == "ordinary text"
+
+
+def test_render_matrix_rejects_huge_page_and_bounds_scale():
+    from main import safe_render_matrix
+    from fastapi import HTTPException
+
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+    matrix = safe_render_matrix(page, 3.0, max_pixels=1_000_000)
+    assert matrix.a <= 3.0
+    assert matrix.a * matrix.d * page.rect.width * page.rect.height <= 1_000_001
+    huge = doc.new_page(width=10000, height=10000)
+    try:
+        safe_render_matrix(huge, 2.0, max_pixels=20_000_000)
+    except HTTPException as exc:
+        assert exc.status_code == 413
+    else:
+        raise AssertionError("Oversized page should be rejected")
+    doc.close()
+
+
+def test_bookmark_split_preserves_pages_before_first_bookmark():
+    pdf = fitz.open()
+    for number in range(1, 5):
+        page = pdf.new_page()
+        page.insert_text((50, 50), f"Page {number}")
+    pdf.set_toc([[1, "Chapter", 3]])
+    source = pdf.tobytes()
+    pdf.close()
+    response = post_pdf("/api/split-by-bookmarks", source)
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = archive.namelist()
+        assert len(names) == 2
+        leading = fitz.open(stream=archive.read(names[0]), filetype="pdf")
+        assert len(leading) == 2
+        assert "Page 1" in leading[0].get_text()
+        assert "Page 2" in leading[1].get_text()
+        leading.close()

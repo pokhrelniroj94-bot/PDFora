@@ -6,13 +6,21 @@ const site = "https://pd-fora.vercel.app";
 export const metadata: Metadata = {
   title: "नि:शुल्क PDF उपकरण र नेपालका अनलाइन टुलहरू",
   description: "PDF मर्ज, स्प्लिट, कम्प्रेस र रूपान्तरण गर्नुहोस्। नेपाली मिति, Unicode typing, विदेशी विनिमय दर र अन्य उपयोगी नेपाल टुलहरू प्रयोग गर्नुहोस्।",
-  alternates: { canonical: `${site}/ne` },
+  alternates: {
+    canonical: `${site}/ne`,
+    languages: {
+      en: site,
+      ne: `${site}/ne`,
+    },
+  },
   openGraph: {
     type: "website",
     title: "PDFora नेपाली — PDF Tools र नेपालका उपयोगी टुलहरू",
     description: "PDF सम्बन्धी काम र नेपालका दैनिक उपयोगी अनलाइन टुलहरू एउटै ठाउँमा।",
     url: `${site}/ne`,
     siteName: "PDFora",
+    locale: "ne_NP",
+    alternateLocale: ["en_US"],
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora नेपाली अनलाइन टुलहरू" }],
   },
   twitter: {
@@ -52,7 +60,7 @@ export default function NepaliHomePage() {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site },
+      { "@type": "ListItem", position: 1, name: "गृहपृष्ठ", item: site },
       { "@type": "ListItem", position: 2, name: "नेपाली", item: `${site}/ne` },
     ],
   };

@@ -37,4 +37,4 @@ Official reference: https://developers.cloudflare.com/workers-ai/platform/pricin
 
 ## Privacy
 
-AI writing inputs are sent to Cloudflare Workers AI when configured. Do not submit passwords, identity numbers, private keys, or confidential documents. The AI route does not persist prompts or generated text.
+AI writing inputs are sent to Cloudflare Workers AI when configured. Do not submit passwords, identity numbers, private keys, or confidential documents. The AI route does not persist prompts or generated text. The endpoint rejects request bodies larger than 16 KB, applies field-level length limits, disables response caching, and uses a best-effort in-memory per-instance request throttle. That throttle is not a distributed rate limiter and may reset when serverless instances restart; configure an edge/WAF rate limit before high-volume public launch.

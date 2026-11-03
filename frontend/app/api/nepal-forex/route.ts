@@ -102,6 +102,21 @@ async function fetchFromBackend(requestedDate: string) {
 
 export async function GET(request: Request) {
   const incoming = new URL(request.url);
+  const dateParam = incoming.searchParams.get("date");
+  if (dateParam && !/^\\d{4}-\\d{2}-\\d{2}$/.test(dateParam)) {
+    return Response.json({ error: "Date must use YYYY-MM-DD format." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+  }
+  if (dateParam) {
+    const parsed = new Date(dateParam + "T00:00:00Z");
+    if (!Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== dateParam) {
+      return Response.json({ error: "Invalid calendar date." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    }
+    const today = new Date();
+    const maxDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 1));
+    if (parsed.getTime() > maxDate.getTime()) {
+      return Response.json({ error: "Future exchange-rate dates are not supported." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    }
+  }
   const requestedDate = incoming.searchParams.get("date") || new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());

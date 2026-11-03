@@ -91,7 +91,10 @@ function ForexTool() {
     }
   };
 
-  useEffect(() => { void loadRates(); }, []);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void loadRates(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const selected = data?.rates.find((item) => item.code === currency);
   const value = Number(amount);

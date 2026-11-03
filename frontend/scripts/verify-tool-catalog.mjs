@@ -13,6 +13,7 @@ const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
 const toolPage = read("../app/tools/[slug]/page.tsx");
 const backendSource = read("../../backend/main.py");
+const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
@@ -60,6 +61,10 @@ assert.ok(!catalogSource.includes("nepal-forex-rates"), "Retired NRB forex tool 
 assert.ok(!nepalLiveTools.includes("ForexTool") && !nepalLiveTools.includes("/api/nepal-forex"), "Retired NRB forex UI and API client must be removed");
 assert.ok(!backendSource.includes("/api/nepal-forex"), "Retired NRB forex backend endpoints must be removed");
 assert.equal(fs.existsSync(new URL("../app/api/nepal-forex/route.ts", import.meta.url)), false, "Retired NRB forex proxy route must be deleted");
+assert.ok(!catalogSource.includes("nepal-forex-rates"), "Retired NRB forex tool must not remain in the catalog");
+assert.ok(!nepalLiveTools.includes("ForexTool") && !nepalLiveTools.includes("/api/nepal-forex"), "Retired NRB forex UI and API client must be removed");
+assert.ok(!backendSource.includes("/api/nepal-forex"), "Retired NRB forex backend endpoints must be removed");
+assert.equal(fs.existsSync(new URL("../app/api/nepal-forex/route.ts", import.meta.url)), false, "Retired NRB forex proxy route must be deleted");
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
 assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
@@ -84,6 +89,8 @@ for (const locale of ["en", "ne", "hi", "es", "fr", "de", "pt", "ar", "bn", "id"
 assert.ok(localeHomepage.includes("generateStaticParams"), "Localized homepage routes must be statically generated");
 assert.ok(localeHomepage.includes('dir={content.dir ?? "ltr"}'), "Localized homepages must support RTL direction");
 assert.ok(localeHomepage.includes("content.note"), "Localized landing pages must disclose untranslated tool-interface scope");
+assert.ok(localeHomepage.includes("alternateLocale"), "Localized homepage Open Graph metadata must declare alternate locales");
+assert.ok(toolPage.includes('locale: "en_US"'), "Tool pages must declare the English Open Graph locale");
 assert.ok(localeHomepage.includes("alternateLocale"), "Localized homepage Open Graph metadata must declare alternate locales");
 assert.ok(toolPage.includes('locale: "en_US"'), "Tool pages must declare the English Open Graph locale");
 const sitemapSource = read("../app/sitemap.ts");

@@ -1,5 +1,5 @@
-Warning: truncated output (original token count: 24650)
-Total output lines: 2811
+Warning: truncated output (original token count: 24968)
+Total output lines: 2839
 
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -196,6 +196,7 @@ async def security_headers_and_temp_cleanup(request: Request, call_next):
 
 MAX_FILE_SIZE = 50 * 1024 * 1024
 MAX_DOCUMENT_RENDER_PIXELS = 100_000_000
+MAX_DOCUMENT_EXTRACTED_IMAGE_PIXELS = 100_000_000
 _REQUEST_TEMP_JOBS: ContextVar[list[Path] | None] = ContextVar("pdfora_request_temp_jobs", default=None)
 
 # Upload protection defaults. Redis is recommended for multi-instance deployments.
@@ -487,6 +488,19 @@ def reserve_render_pixels(page, already_reserved: int, requested_scale: float = 
     return total
 
 
+def reserve_extracted_image_pixels(width: int, height: int, already_reserved: int) -> int:
+    """Reject pathological embedded images before asking MuPDF to extract/decode them."""
+    if width <= 0 or height <= 0:
+        raise HTTPException(status_code=422, detail="The PDF contains an image with invalid dimensions.")
+    image_pixels = width * height
+    if image_pixels > 20_000_000:
+        raise HTTPException(status_code=413, detail="An embedded image exceeds the 20-million-pixel extraction limit.")
+    total = already_reserved + image_pixels
+    if total > MAX_DOCUMENT_EXTRACTED_IMAGE_PIXELS:
+        raise HTTPException(status_code=413, detail="Embedded images exceed the 100-million-pixel document extraction limit.")
+    return total
+
+
 def read_pdf(path: Path):
 
     # Validate the actual file signature; never trust the filename or browser MIME type.
@@ -696,14 +710,40 @@ async def nepal_forex(date: str | None = Query(default=None)):
         raise HTTPException(status_code=502, detail="Could not retrieve published rates from Nepal Rastra Bank. Please retry later.")
 
 
-@app.get("/api/nepal-forex/history")
-async def nepal_forex_history(currency: str = Query(default="USD", min_length=3, max_length=3)):
-    """Return 90 days of official NRB buying/selling rates, normalized per currency unit."""
-    from datetime import date as Date, timedelta, datetime, timezone
-
+def validate_nrb_currency_code(currency: str) -> str:
     code = currency.upper()
     if not re.fullmatch(r"[A-Z]{3}", code):
         raise HTTPException(status_code=400, detail="Invalid currency code.")
+
+    return code
+
+
+def normalize_nrb_history(records: list[dict], code: str) -> list[dict]:
+    history = []
+    for record in records:
+        item = next((rate for rate in (record.get("rates") or [])
+                     if str((rate.get("currency") or {}).get("ISO3") or (rate.get("currency") or {}).get("iso3") or "").upper() == code), None)
+        if not item or not record.get("date"):
+            continue
+        currency_data = item.get("currency") or {}
+        try:
+            unit = float(currency_data.get("unit") or 1)
+            buy, sell = float(item.get("buy")), float(item.get("sell"))
+        except (TypeError, ValueError):
+            continue
+        if unit <= 0 or not all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
+            continue
+        history.append({"date": record["date"], "buy": buy / unit, "sell": sell / unit})
+    history.sort(key=lambda item: item["date"])
+    return history
+
+
+@app.get("/api/nepal-forex/history")
+async def nepal_forex_history(currency: str = Query(default="USD", min_length=3, max_length=3)):
+    """Return 90 days of official NRB buying/selling rates, normalized per currency unit."""
+    from datetime import timedelta, datetime, timezone
+
+    code = validate_nrb_currency_code(currency)
     nepal_tz = timezone(timedelta(hours=5, minutes=45))
     end = datetime.now(nepal_tz).date()
     start = end - timedelta(days=90)
@@ -711,22 +751,7 @@ async def nepal_forex_history(currency: str = Query(default="USD", min_length=3,
 
     def load():
         records = _nrb_fetch_records(start.isoformat(), end.isoformat())
-        history = []
-        for record in records:
-            item = next((rate for rate in (record.get("rates") or [])
-                         if str((rate.get("currency") or {}).get("ISO3") or (rate.get("currency") or {}).get("iso3") or "").upper() == code), None)
-            if not item or not record.get("date"):
-                continue
-            currency_data = item.get("currency") or {}
-            try:
-                unit = float(currency_data.get("unit") or 1)
-                buy, sell = float(item.get("buy")), float(item.get("sell"))
-            except (TypeError, ValueError):
-                continue
-            if unit <= 0 or not all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
-                continue
-            history.append({"date": record["date"], "buy": buy / unit, "sell": sell / unit})
-        history.sort(key=lambda item: item["date"])
+        history = normalize_nrb_history(records, code)
         if not history:
             raise RuntimeError(f"No NRB historical rates found for {code}")
         return {"source": "Nepal Rastra Bank", "currency": code, "history": history}
@@ -1271,60 +1296,7 @@ async def delete_pages(
 
         await save_upload(
             file,
-            input_file
-        )
-
-        reader = read_pdf(
-            input_file
-        )
-
-        try:
-
-            delete_set = {
-                int(value.strip())
-                for value in pages.split(",")
-                if value.strip()
-            }
-
-        except Exception:
-
-            raise HTTPException(
-                status_code=400,
-                detail="Pages must look like: 2,4,7"
-            )
-
-        if not delete_set:
-
-            raise HTTPException(
-                status_code=400,
-                detail="Enter at least one page number."
-            )
-
-        total = len(reader.pages)
-
-        invalid = [
-            number
-            for number in delete_set
-            if number < 1 or number > total
-        ]
-
-        if invalid:
-
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid page number: {invalid[0]}"
-            )
-
-        writer = PdfWriter()
-
-        for index, page in enumerate(
-            reader.pages,
-…4650 tokens truncated…if reader.is_encrypted:
-            try: ok=reader.decrypt(password)
-            except Exception: ok=0
-            if not ok: raise HTTPException(status_code=400,detail="Incorrect password or unsupported encryption.")
-        writer=PdfWriter()
-        for p in reader.pages: writer.add_page(p)
+            input_fil…4968 tokens truncated…er.add_page(p)
         with open(out,"wb") as f: writer.write(f)
         return _tool_file_response(out,"NIROJ-Unlocked.pdf")
     finally: await file.close()
@@ -1491,13 +1463,14 @@ async def extract_images(file: UploadFile = File(...)):
     try:
         src=job/"input.pdf"; out=job/"extracted-images.zip"
         await save_upload(file,src)
-        doc=open_pdf_limited(src); count=0; seen=set()
+        doc=open_pdf_limited(src); count=0; seen=set(); extracted_pixels=0
         with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as archive:
             for page_no,page in enumerate(doc,start=1):
                 for image_no,item in enumerate(page.get_images(full=True),start=1):
                     xref=item[0]
                     if xref in seen: continue
                     seen.add(xref)
+                    extracted_pixels=reserve_extracted_image_pixels(int(item[2]),int(item[3]),extracted_pixels)
                     try:
                         data=doc.extract_image(xref)
                         raw=data.get("image")
@@ -2127,6 +2100,7 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             count = 0
             total_extracted_bytes = 0
+            extracted_pixels = 0
             seen_images = set()
             for page_index, page in enumerate(doc):
                 for image_index, item in enumerate(page.get_images(full=True), start=1):
@@ -2134,6 +2108,7 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
                     if not xref or xref in seen_images:
                         continue
                     seen_images.add(xref)
+                    extracted_pixels = reserve_extracted_image_pixels(int(item[2]), int(item[3]), extracted_pixels)
                     extracted = doc.extract_image(xref)
                     if not extracted or not extracted.get("image"):
                         continue

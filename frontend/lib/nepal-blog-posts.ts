@@ -205,8 +205,8 @@ export const nepalBlogPosts: BlogPost[] = [
     ],
     faqs: [
       { question: "Are NRB rates the same as remittance rates?", answer: "Not necessarily. Remittance providers and individual banks may offer their own rates and fees." },
-      { question: "Why does INR show a unit of 100?", answer: "The NRB publishes some currencies against a quoted unit such as 100 or 10. The converter uses the unit supplied by the API." },
-      { question: "Does the tool use live rates?", answer: "It requests the latest available published NRB rate when you refresh; it does not guarantee intraday bank rates." }
+      { question: "Why does INR show a unit of 100?", answer: "The NRB publishes some currencies against a quoted unit such as 100 or 10. Read the quoted unit on NRB’s official page before interpreting the rate." },
+      { question: "Are NRB rates guaranteed transaction quotes?", answer: "No. NRB reference rates can differ from the rates and fees offered by banks, money changers and remittance providers." }
     ],
     toolLinks: [{ label: "General Currency Converter", href: "/tools/currency-converter" }],
     sources: [{ label: "Nepal Rastra Bank exchange rates", url: "https://www.nrb.org.np/forex" }, { label: "NRB Forex API documentation", url: "https://www.nrb.org.np/api-docs-v1/" }],

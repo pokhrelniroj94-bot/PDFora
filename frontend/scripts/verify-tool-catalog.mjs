@@ -64,7 +64,7 @@ for (const slug of ["qr-code-generator","qr-code-scanner","barcode-generator"]) 
   assert.ok(toolPage.includes('"'+slug+'": { title:'), `Missing unique metadata for ${slug}`);
   assert.ok(seoContent.includes('"'+slug+'": {'), `Missing dedicated SEO guide for ${slug}`);
 }
-assert.ok(newTools.includes("function escapeWifiField") && newTools.includes('"\\$1"'), "Wi-Fi QR payload escaping is missing");
+assert.ok(newTools.includes("function escapeWifiField") && newTools.includes("escapeWifiField(wifi)") && newTools.includes("escapeWifiField(pass)"), "Wi-Fi QR payload escaping is missing");
 assert.ok(newTools.includes("3000/Math.max(img.naturalWidth,img.naturalHeight)"), "QR scanner image decode size guard is missing");
 assert.ok(newTools.includes('if(!value.trim())throw Error("Enter a value to encode.")'), "Barcode generator empty-input validation is missing");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");

@@ -44,7 +44,6 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
 
   return <>
     {gaId && preferences?.analytics && <GoogleAnalytics gaId={gaId} />}
-    <button type="button" onClick={() => { setAnalytics(!!preferences?.analytics); setAdvertising(!!preferences?.advertising); setOpen(true); }} className="fixed bottom-3 left-3 z-[70] rounded-full border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-lg hover:bg-slate-50" aria-label="Open cookie settings">Cookie settings</button>
 
     {!preferences && !open && <section role="dialog" aria-label="Cookie consent" className="fixed inset-x-3 bottom-16 z-[70] mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl sm:inset-x-auto sm:right-4 sm:bottom-16">
       <h2 className="font-bold text-slate-900">Your privacy choices</h2>
@@ -70,4 +69,8 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
       </section>
     </div>}
   </>;
+}
+
+export function CookieSettingsLink() {
+  return <button type="button" onClick={() => window.dispatchEvent(new Event("pdfora:open-cookie-settings"))} className="hover:underline">Cookie settings</button>;
 }

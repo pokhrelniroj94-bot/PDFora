@@ -1,37 +1,37 @@
-# PDFora AI provider setup
+# PDFora AI setup (free-only)
 
-PDFora AI can use Anthropic Claude or Cloudflare Workers AI. Provider credentials are read only by the server-side API route at `/api/ai-writing`; never expose them through a `NEXT_PUBLIC_*` variable or commit them to Git.
+PDFora's site AI uses Cloudflare Workers AI on its Workers Free allocation. The route does not call Anthropic, OpenAI, or any paid fallback. If the free daily quota is exhausted, requests should fail until the quota resets; do not upgrade to a paid plan just to keep AI running.
 
-## Recommended Claude configuration
+## Required Vercel Preview environment variables
 
-In the Vercel project for PDFora, add these Environment Variables for Preview first:
+Add these variables to the PDFora Vercel project for Preview first:
 
-- `PDFORA_AI_PROVIDER=anthropic`
-- `ANTHROPIC_API_KEY=<your Anthropic Console API key>`
-- `ANTHROPIC_MODEL=claude-haiku-5-5` (fast, cost-conscious default; change to a model enabled for your Anthropic account if needed)
-- `PDFORA_AI_ENABLED=true` only after the AI usage limits and abuse controls are configured.
+- `PDFORA_AI_PROVIDER=cloudflare`
+- `CLOUDFLARE_ACCOUNT_ID=<your Cloudflare account ID>`
+- `CLOUDFLARE_API_TOKEN=<token with the required Workers AI permission>`
+- `PDFORA_CF_WORKERS_FREE_PLAN=true` only when the Cloudflare account is on the Workers Free plan.
+- `PDFORA_AI_ENABLED=true` only after the abuse controls below are configured.
 - `UPSTASH_REDIS_REST_URL=<your Upstash Redis REST URL>`
 - `UPSTASH_REDIS_REST_TOKEN=<your Upstash Redis REST token>`
-- `PDFORA_AI_RATE_LIMIT_READY=true` only after the Upstash database is provisioned and a Preview request confirms atomic rate limiting.
+- `PDFORA_AI_RATE_LIMIT_READY=true` only after the Upstash Free database is provisioned and Preview rate-limit tests pass.
 
-Do not add the API key to the repository, browser code, client environment variables, screenshots, or chat messages. Store it only in Vercel Environment Variables. Set it for Preview first, then test a Preview deployment before considering Production.
+Keep all credentials server-side in Vercel Environment Variables. Never use `NEXT_PUBLIC_*` names, commit credentials, or paste keys into chat.
 
-## Provider behavior
+## Free-tier limits and billing safety
 
-- `PDFORA_AI_PROVIDER=anthropic` selects Claude.
-- `PDFORA_AI_PROVIDER=cloudflare` selects Cloudflare Workers AI and requires `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, and `PDFORA_CF_WORKERS_FREE_PLAN=true`.
-- If the provider variable is omitted, the route selects Anthropic when `ANTHROPIC_API_KEY` exists; otherwise it selects Cloudflare.
-- The route does not silently switch to a paid provider when the selected provider fails.
-- The Claude model defaults to `claude-haiku-5-5`; `ANTHROPIC_MODEL` can override it.
+- Cloudflare Workers AI documents 10,000 Neurons per day at no charge on Workers Free. Requests stop working after the free allocation is exhausted; do not switch the account to Workers Paid.
+- Upstash Redis offers a $0 Free tier with 500,000 commands/month, 256 MB data and 10 GB monthly bandwidth. Keep the database on Free; do not enable Pay as You Go or a paid Fixed plan.
+- Provider selection is Cloudflare-only. There is no automatic paid-provider fallback.
+- The current model is `@cf/meta/llama-3.2-3b-instruct`.
 - The route uses an atomic Redis Lua counter through Upstash REST (8 requests per IP per 60 seconds). IP addresses are SHA-256 hashed before being used as Redis keys. If Upstash is missing or unavailable, the API fails closed and does not call the model.
 
-## Test checklist
+## Preview test checklist
 
-1. Configure Preview variables only.
-2. Deploy a Preview build and verify the API returns a normal response for a harmless test prompt.
-3. Verify invalid JSON, oversized bodies, missing API key, provider errors, and 429 responses fail safely.
-4. Verify prompts and credentials are not written to logs.
-5. Verify the shared Upstash rate limiter from separate Preview instances and confirm requests above the limit return HTTP 429.
-6. Only after browser QA and spend limits are confirmed should the owner enable Production.
+1. Configure only free-tier Preview credentials.
+2. Verify Cloudflare account billing remains on Workers Free and Upstash remains on Free.
+3. Deploy a Preview build and test a harmless prompt.
+4. Verify invalid JSON, oversized bodies, missing credentials, provider errors, and 429 responses fail safely.
+5. Verify requests stop when the Cloudflare free allocation is exhausted; never enable a paid upgrade to resolve quota errors.
+6. Keep Production disabled until build and browser QA pass.
 
-Claude API reference: https://platform.claude.com/docs/en/api/messages/create
+Official limits: https://developers.cloudflare.com/workers-ai/platform/pricing/ and https://upstash.com/pricing/redis

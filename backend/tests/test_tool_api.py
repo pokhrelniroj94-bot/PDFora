@@ -529,3 +529,35 @@ def test_open_pdf_limited_rejects_over_1000_pages():
     finally:
         path.unlink(missing_ok=True)
 
+
+def test_nrb_rates_include_previous_published_snapshot(monkeypatch):
+    import main
+
+    main._NRB_CACHE.clear()
+    calls = []
+
+    def fake_fetch(from_date: str, to_date: str):
+        calls.append((from_date, to_date))
+        return [
+            {
+                "date": "2025-01-06",
+                "published_on": "2025-01-06T00:00:00Z",
+                "rates": [{"currency": {"ISO3": "USD", "name": "US Dollar", "unit": 1}, "buy": "135.00", "sell": "135.60"}],
+            },
+            {
+                "date": "2025-01-03",
+                "published_on": "2025-01-03T00:00:00Z",
+                "rates": [{"currency": {"ISO3": "USD", "name": "US Dollar", "unit": 1}, "buy": "134.50", "sell": "135.10"}],
+            },
+        ]
+
+    monkeypatch.setattr(main, "_nrb_fetch_records", fake_fetch)
+    response = TestClient(app).get("/api/nepal-forex?date=2025-01-06")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["rateDate"] == "2025-01-06"
+    assert payload["rates"][0]["buy"] == 135.0
+    assert payload["previousRateDate"] == "2025-01-03"
+    assert payload["previousRates"][0]["sell"] == 135.1
+    assert calls and calls[0][0] == "2024-12-07"
+

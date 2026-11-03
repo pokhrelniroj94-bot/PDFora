@@ -148,7 +148,7 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
     ].join("\n");
   }
   return [
-    "Explain this technical market-analysis snapshot in plain language. Do not change the computed signal, invent news, predict certainty, or claim a guaranteed return. Clearly distinguish observed indicators from interpretation. Mention missing or stale data and explain risk. This is educational market information, not a personalized trade instruction.",
+    "Explain this technical market-analysis snapshot in plain language. Do not change the computed signal, invent news, predict certainty, or claim a guaranteed return. Clearly distinguish observed indicators from interpretation. Mention missing or stale data and explain risk. This is educational market information, not a personalized trade instruction. If newsReview contains headlines only, do not pretend to have read full articles or original filings; explain that headlines are preliminary and cite only the supplied headline/source details. If a headline is not clearly about the selected company, do not attribute it to that company.",
     "",
     "ANALYSIS DATA:",
     "<market_snapshot>",

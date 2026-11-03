@@ -101,6 +101,7 @@ export async function GET(request: Request) {
     const official = officialResult.status === "fulfilled" ? officialResult.value : { market: [], ipo: [], failed: true };
     const market = [
       ...(marketResult.status === "fulfilled" ? marketResult.value : []),
+      ...(companyResult.status === "fulfilled" ? companyResult.value : []),
       ...official.market,
     ].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
     const ipo = [

@@ -67,3 +67,36 @@ body {
   content-visibility: auto;
   contain-intrinsic-size: auto 280px;
 }
+
+
+/* Motion system: subtle, fast feedback that respects reduced-motion preferences. */
+@keyframes pdfora-fade-up { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes pdfora-soft-pop { 0% { opacity: 0; transform: scale(.985); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes pdfora-shimmer { 100% { background-position: -200% 0; } }
+@keyframes pdfora-spin { to { transform: rotate(360deg); } }
+
+.pdfora-enter { animation: pdfora-fade-up .42s cubic-bezier(.2,.7,.2,1) both; }
+.pdfora-pop-in { animation: pdfora-soft-pop .28s ease-out both; }
+.pdfora-stagger > * { animation: pdfora-fade-up .38s cubic-bezier(.2,.7,.2,1) both; }
+.pdfora-stagger > *:nth-child(2) { animation-delay: 45ms; }
+.pdfora-stagger > *:nth-child(3) { animation-delay: 90ms; }
+.pdfora-stagger > *:nth-child(4) { animation-delay: 135ms; }
+.pdfora-stagger > *:nth-child(5) { animation-delay: 180ms; }
+.pdfora-stagger > *:nth-child(6) { animation-delay: 225ms; }
+.pdfora-skeleton { color: transparent !important; border-color: transparent !important; background: linear-gradient(100deg, #eef2f2 25%, #f8fafc 38%, #eef2f2 60%); background-size: 200% 100%; animation: pdfora-shimmer 1.35s ease-in-out infinite; }
+.pdfora-spinner { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 999px; animation: pdfora-spin .7s linear infinite; vertical-align: -0.12em; }
+
+.tool-card, .tool-directory-card { transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .tool-card:hover, .tool-directory-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgb(15 23 42 / 8%); }
+}
+button:not(:disabled) { transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease, border-color .16s ease; }
+button:not(:disabled):active { transform: translateY(1px) scale(.985); }
+a { text-underline-offset: 3px; transition: color .16s ease, opacity .16s ease; }
+input, select, textarea { transition: border-color .16s ease, box-shadow .16s ease; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: none; border-color: #0f766e; box-shadow: 0 0 0 3px rgb(13 148 136 / 14%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pdfora-enter, .pdfora-pop-in, .pdfora-stagger > *, .pdfora-skeleton, .pdfora-spinner { animation: none !important; }
+  .tool-card, .tool-directory-card, button:not(:disabled), a, input, select, textarea { transition: none !important; }
+}

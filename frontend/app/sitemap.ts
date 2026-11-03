@@ -7,7 +7,7 @@ const baseUrl = "https://pd-fora.vercel.app";
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const legacyPdfEntries: MetadataRoute.Sitemap = legacyToolSlugs.map((slug) => ({
+  const legacyRouteEntries: MetadataRoute.Sitemap = legacyToolSlugs.map((slug) => ({
     url: `${baseUrl}/${slug}`,
     changeFrequency: "monthly",
     priority: prioritySlugs.has(slug) ? 0.9 : 0.7,
@@ -25,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: baseUrl, changeFrequency: "weekly", priority: 1, alternates: { languages: { en: baseUrl, ne: `${baseUrl}/ne`, "x-default": baseUrl } } },
-    { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8, alternates: { languages: { en: baseUrl, ne: `${baseUrl}/ne` } } },
+    { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8, alternates: { languages: { en: baseUrl, ne: `${baseUrl}/ne`, "x-default": baseUrl } } },
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/resume-builder`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/market`, changeFrequency: "daily", priority: 0.85 },

@@ -6,6 +6,7 @@ import { toolCatalog } from "./toolCatalog";
 import ResumeBuilder from "./ResumeBuilder";
 import AIWritingTools from "./AIWritingTools";
 import MarketIntelligence from "./MarketIntelligence";
+import NewTools from "./NewTools";
 import { allTools } from "../lib/tool-directory";
 
 
@@ -16,6 +17,7 @@ import AdsterraNative from "../app/components/AdsterraNative";
 
 const ToolChunkLoading = () => <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-sm font-medium text-slate-500" role="status">Loading tool workspace…</div>;
 const ExtraTools = dynamic(() => import("./ExtraTools"), { loading: ToolChunkLoading });
+const NewToolsChunk = dynamic(() => import("./NewTools"), { loading: ToolChunkLoading });
 const QuickUtilityTools = dynamic(() => import("./QuickUtilityTools"), { loading: ToolChunkLoading });
 const NepalTools = dynamic(() => import("./NepalTools"), { loading: ToolChunkLoading });
 const NepalLiveTools = dynamic(() => import("./NepalLiveTools"), { loading: ToolChunkLoading });
@@ -66,6 +68,7 @@ export function ToolsDirectory() {
 export default function ToolWorkspace({slug}:{slug:string}) {
  const tool=toolCatalog.find(t=>t.slug===slug);
  if(slug==="resume-builder") return <ResumeBuilder />;
+ if(["ats-resume-checker","invoice-quotation-generator"].includes(slug)) return <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-12 sm:px-6"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><header className="mb-7 mt-5"><p className="text-xs font-black uppercase tracking-widest text-teal-700">PDFora practical tools</p><h1 className="mt-2 text-3xl font-black text-slate-950">{tool?.name}</h1><p className="mt-2 max-w-3xl text-slate-600">{tool?.description}</p></header><section className={panel}><NewToolsChunk slug={slug}/></section></main>;
 
  if(slug==="ai-resume-writer") return <main className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><section className="mt-5 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-7"><AIWritingTools slug={slug}/></section></main>;
  if(slug==="ai-cover-letter-generator") return <main className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><section className="mt-5 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-7"><AIWritingTools slug={slug}/></section></main>;

@@ -97,6 +97,19 @@ export function SmartToolCenter() {
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
+      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-xl">
+        <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
+          <Link href="/" className="flex min-w-0 items-center gap-2.5 rounded-lg" aria-label="PDFora home">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-cyan-700 text-base font-black text-white shadow-sm">P</span>
+            <span className="truncate text-lg font-black tracking-tight text-slate-950">PDFora</span>
+          </Link>
+          <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <Link href="/ne" lang="ne" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2.5 text-[11px] font-extrabold text-blue-800 transition hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">नेपाली</Link>
+            <Link href="/market" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2.5 text-[11px] font-bold text-teal-800 transition hover:border-teal-400 hover:bg-teal-100 sm:px-3 sm:text-xs"><span aria-hidden="true">📈</span><span className="ml-1">Market</span></Link>
+            <Link href="/tools" aria-current="page" className="inline-flex min-h-9 items-center justify-center rounded-lg bg-slate-950 px-3 text-[11px] font-bold text-white shadow-sm transition hover:bg-slate-800 sm:px-4 sm:text-xs">Tools</Link>
+          </nav>
+        </div>
+      </header>
       <section className="relative overflow-hidden bg-[#082321] px-4 py-12 text-white sm:px-6 sm:py-16">
         <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full bg-teal-400/20 blur-3xl" />
         <div className="relative mx-auto max-w-7xl">

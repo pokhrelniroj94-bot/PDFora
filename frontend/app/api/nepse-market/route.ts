@@ -75,10 +75,11 @@ async function fetchNepsemanSnapshot() {
     }];
   });
   const timestamp = stocks.reduce((latest, stock) => stock.last_updated > latest ? stock.last_updated : latest, "");
-  const ageMinutes = timestamp && Number.isFinite(Date.parse(timestamp))
-    ? Math.max(0, (Date.now() - Date.parse(timestamp)) / 60_000)
-    : Number.POSITIVE_INFINITY;
-  const validFreshSnapshot = stocks.length > 20 && Number.isFinite(ageMinutes) && ageMinutes <= 20;
+  const timestampMs = timestamp ? Date.parse(timestamp) : Number.NaN;
+  const ageMs = Number.isFinite(timestampMs) ? Date.now() - timestampMs : Number.NaN;
+  const ageMinutes = Number.isFinite(ageMs) ? Math.max(0, ageMs / 60_000) : Number.POSITIVE_INFINITY;
+  // Reject timestamps materially in the future as well as stale/missing timestamps.
+  const validFreshSnapshot = stocks.length > 20 && Number.isFinite(ageMs) && ageMs >= -120_000 && ageMs <= 20 * 60_000;
   const status = statusResult.status === "fulfilled" ? statusResult.value : null;
   const index = indexResult.status === "fulfilled" ? indexResult.value : null;
   return validFreshSnapshot ? { stocks, timestamp, ageMinutes, status, index } : null;

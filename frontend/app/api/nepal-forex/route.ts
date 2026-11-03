@@ -100,7 +100,7 @@ async function fetchDirectFromNrb(requestedDate: string) {
       Referer: "https://www.nrb.org.np/forex/",
     },
     cache: "no-store",
-    signal: AbortSignal.timeout(12_000),
+    signal: AbortSignal.timeout(10_000),
   });
   if (!response.ok) throw new Error(`NRB API returned HTTP ${response.status}`);
   return normalizeNrbPayload(await response.json(), requestedDate);
@@ -177,7 +177,7 @@ async function fetchFromBackend(requestedDate: string) {
   const response = await fetch(target, {
     headers: { Accept: "application/json" },
     cache: "no-store",
-    signal: AbortSignal.timeout(10_000),
+    signal: AbortSignal.timeout(18_000),
   });
   if (!response.ok) throw new Error(`Forex backend returned HTTP ${response.status}`);
   return normalizeBackendPayload(await response.json(), requestedDate);
@@ -204,23 +204,22 @@ export async function GET(request: Request) {
   const requestedDate = incoming.searchParams.get("date") || new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());
-  // Prefer the official NRB feed. Only use the Render mirror if NRB is unreachable.
+  // Try the official API and (for today's request only) the official published
+  // page concurrently. This avoids serial 10s + 10s waits when one NRB path fails.
+  const todayInNepal = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
+  const officialAttempts: Array<Promise<ReturnType<typeof normalizeNrbPayload> | ReturnType<typeof fetchFromOfficialPage>>> = [
+    fetchDirectFromNrb(requestedDate),
+  ];
+  if (requestedDate === todayInNepal) officialAttempts.push(fetchFromOfficialPage(requestedDate));
   try {
-    const payload = await fetchDirectFromNrb(requestedDate);
-    return Response.json(payload, {
-      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
-    });
-  } catch {
-    console.warn("[nepal-forex] Direct NRB request failed; trying Render mirror.");
-  }
-
-  try {
-    const payload = await fetchFromOfficialPage(requestedDate);
+    const payload = await Promise.any(officialAttempts);
     return Response.json(payload, {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900" },
     });
-  } catch (pageError) {
-    console.warn("[nepal-forex] Official NRB page fallback failed:", pageError instanceof Error ? pageError.message : "unknown error");
+  } catch {
+    console.warn("[nepal-forex] Official NRB API/page sources unavailable; trying the Render mirror.");
   }
 
   try {
@@ -228,8 +227,8 @@ export async function GET(request: Request) {
     return Response.json({ ...payload, fallback: true }, {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900" },
     });
-  } catch {
-    console.error("[nepal-forex] NRB API, official page and Render mirror all failed.");
+  } catch (backendError) {
+    console.error("[nepal-forex] NRB and Render forex sources failed:", backendError instanceof Error ? backendError.message : "unknown error");
     return Response.json(
       { error: "Official NRB rates could not be reached right now. Please refresh in a moment." },
       { status: 502, headers: { "Cache-Control": "no-store" } },

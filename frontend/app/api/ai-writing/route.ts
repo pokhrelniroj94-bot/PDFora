@@ -154,7 +154,9 @@ export async function POST(request: Request) {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
   const apiToken = process.env.CLOUDFLARE_API_TOKEN;
   const confirmedFreePlan = process.env.PDFORA_CF_WORKERS_FREE_PLAN === "true";
-  if (!accountId || !apiToken || !confirmedFreePlan) {
+  const explicitlyEnabled = process.env.PDFORA_AI_ENABLED === "true";
+  const sharedRateLimitReady = process.env.PDFORA_AI_RATE_LIMIT_READY === "true";
+  if (!accountId || !apiToken || !confirmedFreePlan || !explicitlyEnabled || !sharedRateLimitReady) {
     return Response.json({
       error: "Free AI is not configured yet. The owner must verify the Cloudflare Workers Free plan and add an AI-only API token. No AI provider was contacted.",
       code: "FREE_AI_NOT_CONFIGURED",

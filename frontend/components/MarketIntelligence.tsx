@@ -99,8 +99,8 @@ function analyse(points: Point[], asset: string): Analysis | null {
   if (!lows.length || !highs.length) risks.push("The file/source has no full OHLC range; support, resistance and risk levels are close-based estimates.");
   const entry = signal === "Potential BUY setup"
     ? `Potential long setup only after a completed candle holds above EMA20 (${e20[i].toFixed(4)}) and the next session confirms. Avoid chasing a sharp gap.`
-    : signal === "Bearish setup"
-      ? `Downside/exit pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). A short setup requires a separate risk plan and may not be suitable for every market.`
+    : signal.includes("SELL")
+      ? (asset === "nepse" ? `Downside/exit pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). NEPSE short-selling availability is limited; treat this as an exit/risk-review condition, not an instruction to short.` : `Downside pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). A short position requires a separate risk plan and may not be suitable for every trader.`)
       : `Wait for a confirmed close above EMA20 (${e20[i].toFixed(4)}) with improving momentum, or a confirmed breakdown below support. Current indicators are mixed.`;
   return { count: rows.length, latestDate: last.date, close: last.close, ema20: e20[i], ema50: e50[i], rsi: rsiValue, macd: macdLine[i], macdSignal: macdSignal[i], score, signal, volatility, risk, support, resistance, stop, target, entry, risks, reasons, annualizer };
 }

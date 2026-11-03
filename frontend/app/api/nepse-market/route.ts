@@ -114,8 +114,12 @@ export async function GET(request: Request) {
   const response = {
     symbol,
     period,
-    source: usingLiveQuotes ? "YONEPSE live quote snapshot" : "YONEPSE fallback quote snapshot",
-    sourceUpdatedAt,
+    // YONEPSE documents an approximately hourly update cadence; do not label this as exchange-tick live data.
+    source: usingLiveQuotes ? "YONEPSE public market snapshot" : "YONEPSE historical snapshot fallback",
+    sourceUpdatedAt: sourceUpdatedAt || null,
+    fetchedAt: new Date().toISOString(),
+    quoteAgeMinutes: Number.isFinite(quoteTimestamp) ? Math.max(0, Math.round((Date.now() - quoteTimestamp) / 60_000)) : null,
+    providerRefreshCadence: "Approximately hourly on weekdays during market hours (provider documentation)",
     quoteStale,
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
     status: pick(statusResult, {}),

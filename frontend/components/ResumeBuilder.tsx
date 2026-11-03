@@ -65,7 +65,7 @@ export default function ResumeBuilder() {
       }
     }, 0);
     return () => window.clearTimeout(timer);
-  }, []););
+  }, []);
   const [photo, setPhoto] = useState("");
   const [photoError, setPhotoError] = useState("");
   const loadPhoto = (file?: File) => {

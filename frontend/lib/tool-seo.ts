@@ -67,7 +67,7 @@ export function getToolMetadata(slug: string): Metadata {
   const intent = tool?.intent ?? `${name} online free`;
   const detail = tool?.detail ?? `Use PDFora to ${intent}. Follow the on-page instructions and download your processed document.`;
   // Search snippets are generated from the actual operation, not a keyword-stuffed template.
-  const title = `${name} Online – Free PDF Tool | PDFora`;
+  const title = `${name} Online – Free PDF Tool`;
   const rawDescription = `${detail} Use PDFora in your browser with no software installation.`;
   const description = rawDescription.length <= 160
     ? rawDescription

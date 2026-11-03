@@ -110,7 +110,7 @@ export function SmartToolCenter() {
           </nav>
         </div>
       </header>
-      <section className="relative overflow-hidden bg-[#082321] px-4 py-12 text-white sm:px-6 sm:py-16">
+      <section className="pdfora-enter relative overflow-hidden bg-[#082321] px-4 py-12 text-white sm:px-6 sm:py-16">
         <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full bg-teal-400/20 blur-3xl" />
         <div className="relative mx-auto max-w-7xl">
           <p className="text-xs font-black uppercase tracking-[.2em] text-teal-200">PDFora · Smart Tool Center</p>

@@ -9,6 +9,8 @@ const valid = {
   projects: "", certifications: "", references: "", photo: "",
 };
 assert.equal(isResumeDraft(valid), true);
+assert.equal(isResumeDraft({ ...valid, template: "student" }), true);
+assert.equal(isResumeDraft({ ...valid, template: "ngo" }), true);
 assert.equal(isResumeDraft({ ...valid, version: 2 }), false);
 assert.equal(isResumeDraft({ ...valid, template: "unknown-template" }), false);
 assert.equal(isResumeDraft({ ...valid, accent: "red; background:url(https://example.test)" }), false);

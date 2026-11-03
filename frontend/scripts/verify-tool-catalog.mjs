@@ -5,6 +5,7 @@ const catalogSource = read("../components/toolCatalog.ts");
 const allTools = read("../components/AllTools.tsx");
 const quickTools = read("../components/QuickUtilityTools.tsx");
 const extraTools = read("../components/ExtraTools.tsx");
+const newTools = read("../components/NewTools.tsx");
 const nepalTools = read("../components/NepalTools.tsx");
 const nepalLiveTools = read("../components/NepalLiveTools.tsx");
 const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
@@ -30,7 +31,8 @@ const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
 const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
-const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
+const newToolCases = [...newTools.matchAll(/if\(slug==="([a-z0-9-]+)"\)/g)].map((m) => m[1]);
+const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs, ...newToolCases]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
 if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {
   implemented.add("image-compressor");
@@ -46,6 +48,8 @@ assert.ok(typingRouted, "Nepali Unicode typing route or engine is missing");
 assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('import NepalLiveTools from "./NepalLiveTools"'), "Nepal live tools component is not imported");
 
 assert.ok(allTools.includes('import("./NepaliTypingTool")') || allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");
+assert.ok(allTools.includes('import("./NewTools")') || allTools.includes('import NewToolsChunk from "./NewTools"'), "New practical tools component is not imported");
+assert.ok(newToolCases.includes("ats-resume-checker") && newToolCases.includes("invoice-quotation-generator"), "New practical tool handlers are missing");
 const nepalSlugs = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);
 assert.ok(nepalSlugs.length > 0, "Nepal tool catalog entries were not detected by the guide coverage check");
 const missingNepalGuides = nepalSlugs.filter((slug) => !nepalBlogPosts.includes('href: "/tools/' + slug + '"'));

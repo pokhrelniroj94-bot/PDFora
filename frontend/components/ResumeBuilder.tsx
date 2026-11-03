@@ -50,19 +50,22 @@ export default function ResumeBuilder() {
   const [references, setReferences] = useState("");
   const [aiDraftNotice, setAiDraftNotice] = useState("");
   useEffect(() => {
-    try {
-      const saved = sessionStorage.getItem("pdfora-ai-resume-draft");
-      if (!saved) return;
-      const draft = JSON.parse(saved) as { summary?: string; skills?: string; experience?: string };
-      if (draft.summary) setSummary(draft.summary);
-      if (draft.skills) setSkills(draft.skills.replace(/\r?\n/g, ", "));
-      if (draft.experience) setJobs((rows) => rows.map((row, index) => index === 0 ? { ...row, details: draft.experience || "" } : row));
-      setAiDraftNotice("AI draft imported. Review and edit every section before exporting your CV.");
-      sessionStorage.removeItem("pdfora-ai-resume-draft");
-    } catch {
-      sessionStorage.removeItem("pdfora-ai-resume-draft");
-    }
-  }, []);
+    const timer = window.setTimeout(() => {
+      try {
+        const saved = sessionStorage.getItem("pdfora-ai-resume-draft");
+        if (!saved) return;
+        const draft = JSON.parse(saved) as { summary?: string; skills?: string; experience?: string };
+        if (draft.summary) setSummary(draft.summary);
+        if (draft.skills) setSkills(draft.skills.replace(/\r?\n/g, ", "));
+        if (draft.experience) setJobs((rows) => rows.map((row, index) => index === 0 ? { ...row, details: draft.experience || "" } : row));
+        setAiDraftNotice("AI draft imported. Review and edit every section before exporting your CV.");
+        sessionStorage.removeItem("pdfora-ai-resume-draft");
+      } catch {
+        sessionStorage.removeItem("pdfora-ai-resume-draft");
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []););
   const [photo, setPhoto] = useState("");
   const [photoError, setPhotoError] = useState("");
   const loadPhoto = (file?: File) => {
@@ -81,7 +84,6 @@ export default function ResumeBuilder() {
     reader.onerror = () => setPhotoError("The selected photo could not be read.");
     reader.readAsDataURL(file);
   };
-  const selected = templates.find(t => t.id === template)!;
   const skillList = useMemo(() => skills.split(/[,\n]/).map(s => s.trim()).filter(Boolean), [skills]);
   const updateEducation = (id: string, key: keyof Entry, value: string) => setEducation(rows => rows.map(row => row.id === id ? { ...row, [key]: value } : row));
   const updateJob = (id: string, key: keyof Job, value: string) => setJobs(rows => rows.map(row => row.id === id ? { ...row, [key]: value } : row));

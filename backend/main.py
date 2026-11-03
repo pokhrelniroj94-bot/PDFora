@@ -432,6 +432,11 @@ def csv_safe_text(value) -> str:
     return text
 
 
+def display_point_to_page(page, x: float, y: float) -> fitz.Point:
+    """Convert a point in the visible (rotated) page coordinate space to PDF page space."""
+    return fitz.Point(x, y) * page.derotation_matrix
+
+
 def safe_render_matrix(page, requested_scale: float = 2.0, max_pixels: int = 20_000_000):
     """Return a bounded render matrix so unusually large pages cannot exhaust memory."""
     rect = page.rect
@@ -579,6 +584,10 @@ def _nrb_cached(key: str, ttl: int, loader):
     try:
         result = loader()
         with _NRB_CACHE_LOCK:
+            # Keep cache memory bounded when callers request many historical dates.
+            if len(_NRB_CACHE) >= 128 and key not in _NRB_CACHE:
+                oldest_key = min(_NRB_CACHE, key=lambda item: _NRB_CACHE[item][0])
+                _NRB_CACHE.pop(oldest_key, None)
             _NRB_CACHE[key] = (time.monotonic(), result)
         return {**result, "cached": False, "stale": False}
     except Exception:
@@ -1828,7 +1837,8 @@ async def add_page_numbers(file: UploadFile = File(...), position: str = Form("b
             if skip_first and i==0: continue
             r=page.rect; x={"left":36,"center":r.width/2,"right":r.width-36}[position.split("-")[1]]
             y=24 if position.startswith("top") else r.height-24
-            page.insert_text((x,y),str(start_number+i-(1 if skip_first and i>0 else 0)),fontsize=font_size, color=(0.25,0.25,0.3))
+            point = display_point_to_page(page, x, y)
+            page.insert_text(point,str(start_number+i-(1 if skip_first and i>0 else 0)),fontsize=font_size, color=(0.25,0.25,0.3))
         doc.save(out,garbage=4,deflate=True); doc.close()
         return _tool_file_response(out,"NIROJ-Page-Numbers.pdf")
     finally: await file.close()
@@ -1846,7 +1856,10 @@ async def crop_pdf(file: UploadFile = File(...), margin: float = Form(36), pages
             except Exception: raise HTTPException(status_code=400,detail="Pages must look like 1,3,5 or all.")
             if not selected or min(selected)<0 or max(selected)>=len(doc): raise HTTPException(status_code=400,detail="Selected page number is out of range.")
         for i in selected:
-            p=doc[i]; r=p.rect
+            p=doc[i]
+            # cropbox is expressed in unrotated PDF coordinates; page.rect is
+            # the rotated display rectangle and swaps dimensions on 90/270 pages.
+            r=p.cropbox
             if r.width<=2*margin or r.height<=2*margin: raise HTTPException(status_code=400,detail="Margin is too large for one or more pages.")
             p.set_cropbox(fitz.Rect(r.x0+margin,r.y0+margin,r.x1-margin,r.y1-margin))
         doc.save(out,garbage=4,deflate=True); doc.close()
@@ -1862,8 +1875,8 @@ async def header_footer(file: UploadFile = File(...), header: str = Form(""), fo
         src=job/"input.pdf"; out=job/"header-footer.pdf"; await save_upload(file,src); doc=fitz.open(src)
         for p in doc:
             r=p.rect
-            if header: p.insert_text((36,24),header[:300],fontsize=font_size)
-            if footer: p.insert_text((36,r.height-24),footer[:300],fontsize=font_size)
+            if header: p.insert_text(display_point_to_page(p,36,24),header[:300],fontsize=font_size)
+            if footer: p.insert_text(display_point_to_page(p,36,r.height-24),footer[:300],fontsize=font_size)
         doc.save(out,garbage=4,deflate=True); doc.close()
         return _tool_file_response(out,"NIROJ-Header-Footer.pdf")
     finally: await file.close()
@@ -2479,7 +2492,8 @@ async def bates_numbering(file: UploadFile = File(...), prefix: str = Form(""), 
         doc = fitz.open(src)
         for index, page in enumerate(doc):
             label = f"{prefix[:20]}{start + index:0{digits}d}"
-            page.insert_text((page.rect.width - 150, page.rect.height - 24), label, fontsize=9, color=(0, 0, 0))
+            point = display_point_to_page(page, page.rect.width - 150, page.rect.height - 24)
+            page.insert_text(point, label, fontsize=9, color=(0, 0, 0))
         doc.save(out, garbage=4, deflate=True)
         return pdf_response(out, "NIROJ-Bates-Numbered.pdf")
     finally:

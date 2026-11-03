@@ -105,6 +105,13 @@ export async function GET(request: Request) {
   const requestedDate = incoming.searchParams.get("date") || new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());
+  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(requestedDate)) {
+    return Response.json({ error: "Date must use YYYY-MM-DD format." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+  }
+  const parsedDate = new Date(requestedDate + "T00:00:00Z");
+  if (!Number.isFinite(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== requestedDate) {
+    return Response.json({ error: "Date is not a valid calendar date." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+  }
 
   // Prefer the official NRB feed. Only use the Render mirror if NRB is unreachable.
   try {
@@ -113,7 +120,7 @@ export async function GET(request: Request) {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
     });
   } catch (nrbError) {
-    console.warn("[nepal-forex] Direct NRB request failed; trying Render mirror", nrbError);
+    console.warn("[nepal-forex] Direct NRB request failed; trying Render mirror.");
   }
 
   try {
@@ -122,7 +129,7 @@ export async function GET(request: Request) {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
     });
   } catch (backendError) {
-    console.error("[nepal-forex] Both NRB and Render forex sources failed", backendError);
+    console.error("[nepal-forex] Both NRB and Render forex sources failed.");
     return Response.json(
       { error: "Official NRB rates could not be reached right now. Please refresh in a moment." },
       { status: 502, headers: { "Cache-Control": "no-store" } },

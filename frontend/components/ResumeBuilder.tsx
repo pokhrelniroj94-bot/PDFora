@@ -54,6 +54,8 @@ export default function ResumeBuilder() {
   const [projects, setProjects] = useState("");
   const [certifications, setCertifications] = useState("");
   const [references, setReferences] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [photoError, setPhotoError] = useState("");
   const [aiDraftNotice, setAiDraftNotice] = useState("");
   const [aiConsent, setAiConsent] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
@@ -63,29 +65,31 @@ export default function ResumeBuilder() {
   const [draftEnabled, setDraftEnabled] = useState(false);
   const [draftStatus, setDraftStatus] = useState("");
   useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(DRAFT_KEY);
-      if (saved && saved.length <= 3_200_000) {
-        const parsed: unknown = JSON.parse(saved);
-        if (isResumeDraft(parsed)) {
-          setTemplate(parsed.template); setAccent(parsed.accent); setFont(parsed.font);
-          setName(parsed.name); setRole(parsed.role); setEmail(parsed.email); setPhone(parsed.phone);
-          setLocation(parsed.location); setWebsite(parsed.website); setSummary(parsed.summary); setSkills(parsed.skills);
-          setLanguages(parsed.languages); setEducation(parsed.education); setJobs(parsed.jobs);
-          setProjects(parsed.projects); setCertifications(parsed.certifications); setReferences(parsed.references); setPhoto(parsed.photo);
-          setDraftEnabled(true); setDraftStatus("Saved draft restored from this browser.");
-        } else {
-          setDraftStatus("A saved draft could not be read. Delete it and create a fresh draft.");
+    const draftTimer = window.setTimeout(() => {
+      try {
+        const saved = window.localStorage.getItem(DRAFT_KEY);
+        if (saved && saved.length <= 3_200_000) {
+          const parsed: unknown = JSON.parse(saved);
+          if (isResumeDraft(parsed)) {
+            setTemplate(parsed.template); setAccent(parsed.accent); setFont(parsed.font);
+            setName(parsed.name); setRole(parsed.role); setEmail(parsed.email); setPhone(parsed.phone);
+            setLocation(parsed.location); setWebsite(parsed.website); setSummary(parsed.summary); setSkills(parsed.skills);
+            setLanguages(parsed.languages); setEducation(parsed.education); setJobs(parsed.jobs);
+            setProjects(parsed.projects); setCertifications(parsed.certifications); setReferences(parsed.references); setPhoto(parsed.photo);
+            setDraftEnabled(true); setDraftStatus("Saved draft restored from this browser.");
+          } else {
+            setDraftStatus("A saved draft could not be read. Delete it and create a fresh draft.");
+          }
+        } else if (saved) {
+          setDraftStatus("Saved draft is too large to restore. Delete it and create a fresh draft.");
         }
-      } else if (saved) {
-        setDraftStatus("Saved draft is too large to restore. Delete it and create a fresh draft.");
+      } catch {
+        setDraftStatus("This browser could not read the saved CV draft.");
+      } finally {
+        setDraftReady(true);
       }
-    } catch {
-      setDraftStatus("This browser could not read the saved CV draft.");
-    } finally {
-      setDraftReady(true);
-    }
-    const timer = window.setTimeout(() => {
+    }, 0);
+    const aiDraftTimer = window.setTimeout(() => {
       try {
         const saved = sessionStorage.getItem("pdfora-ai-resume-draft");
         if (!saved) return;
@@ -99,10 +103,8 @@ export default function ResumeBuilder() {
         sessionStorage.removeItem("pdfora-ai-resume-draft");
       }
     }, 0);
-    return () => window.clearTimeout(timer);
+    return () => { window.clearTimeout(draftTimer); window.clearTimeout(aiDraftTimer); };
   }, []);
-  const [photo, setPhoto] = useState("");
-  const [photoError, setPhotoError] = useState("");
   const loadPhoto = (file?: File) => {
     setPhotoError("");
     if (!file) return;
@@ -211,7 +213,7 @@ export default function ResumeBuilder() {
         <label className="flex items-start gap-2 text-sm font-semibold text-slate-800"><input type="checkbox" checked={draftEnabled} disabled={!draftReady} onChange={(event) => setDraftEnabled(event.target.checked)} className="mt-1 h-4 w-4 accent-teal-700" /><span>Save and restore my CV draft on this device</span></label>
         <button type="button" onClick={deleteDraft} disabled={!draftReady} className="rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700 disabled:opacity-50">Delete saved draft</button>
       </div>
-      <p className="mt-2 text-xs leading-5 text-slate-600">When enabled, resume details and the optional photo are stored in this browser's local storage and are not uploaded by draft saving. This storage is not encrypted; avoid enabling it on a shared device and delete the draft when finished.</p>
+      <p className="mt-2 text-xs leading-5 text-slate-600">When enabled, resume details and the optional photo are stored in this browser&apos;s local storage and are not uploaded by draft saving. This storage is not encrypted; avoid enabling it on a shared device and delete the draft when finished.</p>
       <p className="mt-1 text-xs text-slate-500" role="status" aria-live="polite">{draftStatus || (draftEnabled ? "Saving changes on this device." : "Draft saving is off.")}</p>
     </section>
     <div className="no-print mb-6 rounded-2xl border border-teal-200 bg-teal-50/60 p-4 sm:p-5">

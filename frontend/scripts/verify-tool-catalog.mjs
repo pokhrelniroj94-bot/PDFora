@@ -69,7 +69,7 @@ assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalToo
 const sitemapSource = read("../app/sitemap.ts");
 const legacyRoutesSource = read("../lib/legacy-tool-slugs.ts");
 assert.ok(legacyRoutesSource.includes('"resume-builder"'), "Resume Builder /tools alias must redirect to its existing canonical root route");
-assert.ok(sitemapSource.includes('`${baseUrl}/resume-builder`'), "Resume Builder canonical URL must be present in the sitemap");
+assert.ok(sitemapSource.includes("legacyToolSlugs.map") && sitemapSource.includes("legacyRouteEntries"), "Canonical root-level tool routes must be emitted in the sitemap");
 assert.ok(sitemapSource.includes('"x-default": baseUrl'), "English/Nepali homepage sitemap alternates must include x-default");
 assert.ok(sitemapSource.includes('!legacyToolSlugSet.has(tool.slug)'), "Sitemap must exclude catalog aliases that redirect to canonical root routes");
 

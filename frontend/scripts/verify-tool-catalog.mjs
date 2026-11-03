@@ -125,6 +125,8 @@ const portfolioMath = read("../lib/nepse-portfolio-math.ts");
 const marketPage = read("../app/market/page.tsx");
 const newsApi = read("../app/api/nepal-market-news/route.ts");
 const newsComponent = read("../components/NepalMarketNews.tsx");
+const resumeBuilder = read("../components/ResumeBuilder.tsx");
+const resumeDraft = read("../lib/resume-draft.ts");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
 assert.ok(marketApi.includes('source: usingUnofficialLive ? "NEPSE unofficial live API (nepseman-api)"') && marketApi.includes('"YONEPSE public market snapshot"') && marketApi.includes('"YONEPSE historical snapshot fallback"'), "NEPSE API must identify each quote source accurately");
 assert.ok(marketApi.includes("quoteStale,") && marketApi.includes("providerRefreshCadence:") && marketApi.includes("quoteAgeMinutes:"), "NEPSE API must disclose quote age and upstream refresh cadence");
@@ -148,6 +150,8 @@ assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
 assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-refresh headlines");
+assert.ok(resumeBuilder.includes("Save and restore my CV draft on this device") && resumeBuilder.includes("Delete saved draft"), "Resume builder must provide explicit local draft saving and deletion controls");
+assert.ok(resumeBuilder.includes("This storage is not encrypted") && resumeDraft.includes("export function isResumeDraft"), "Resume draft storage must disclose its privacy boundary and validate restored data");
 
 const forexApi = read("../app/api/nepal-forex/route.ts");
 const forexBackend = read("../../backend/main.py");

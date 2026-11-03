@@ -32,11 +32,15 @@ client = ApiClient(os.environ["PDFORA_API"]) if os.environ.get("PDFORA_API") els
 
 def make_sample_pdf() -> bytes:
     doc = fitz.open()
-    font_path = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+    font_candidates = (
+        Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        Path("C:/Windows/Fonts/arial.ttf"),
+    )
+    font_path = next((candidate for candidate in font_candidates if candidate.is_file()), None)
     for number in range(1, 4):
         page = doc.new_page(width=612, height=792)
         text = f"PDFora regression test page {number}\nRevenue 2026\nNorth 100\nSouth 200"
-        if font_path.exists():
+        if font_path:
             page.insert_text((50, 70), text, fontfile=str(font_path), fontname="DejaVu")
         else:
             page.insert_text((50, 70), text)

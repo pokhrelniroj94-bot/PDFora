@@ -51,19 +51,36 @@ export default function ResumeBuilder() {
   const [aiDraftNotice, setAiDraftNotice] = useState("");
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("pdfora-ai-resume-draft");
+      const saved = sessionStorage.getItem("pdfora-ai-resume-draft");
       if (!saved) return;
       const draft = JSON.parse(saved) as { summary?: string; skills?: string; experience?: string };
       if (draft.summary) setSummary(draft.summary);
       if (draft.skills) setSkills(draft.skills.replace(/\r?\n/g, ", "));
       if (draft.experience) setJobs((rows) => rows.map((row, index) => index === 0 ? { ...row, details: draft.experience || "" } : row));
       setAiDraftNotice("AI draft imported. Review and edit every section before exporting your CV.");
-      localStorage.removeItem("pdfora-ai-resume-draft");
+      sessionStorage.removeItem("pdfora-ai-resume-draft");
     } catch {
-      localStorage.removeItem("pdfora-ai-resume-draft");
+      sessionStorage.removeItem("pdfora-ai-resume-draft");
     }
   }, []);
   const [photo, setPhoto] = useState("");
+  const [photoError, setPhotoError] = useState("");
+  const loadPhoto = (file?: File) => {
+    setPhotoError("");
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setPhotoError("Use a JPG, PNG or WebP image only.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setPhotoError("Profile photo must be 2 MB or smaller.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setPhoto(typeof reader.result === "string" ? reader.result : "");
+    reader.onerror = () => setPhotoError("The selected photo could not be read.");
+    reader.readAsDataURL(file);
+  };
   const selected = templates.find(t => t.id === template)!;
   const skillList = useMemo(() => skills.split(/[,\n]/).map(s => s.trim()).filter(Boolean), [skills]);
   const updateEducation = (id: string, key: keyof Entry, value: string) => setEducation(rows => rows.map(row => row.id === id ? { ...row, [key]: value } : row));
@@ -91,7 +108,7 @@ export default function ResumeBuilder() {
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-5 flex items-center justify-between"><h2 className="text-lg font-extrabold text-slate-900">1. Personal details</h2><span className="text-xs text-slate-400">Contact & identity</span></div>
           <div className="grid gap-4 sm:grid-cols-2">{field("Full name", name, setName, "e.g. Alex Morgan")}{field("Professional title", role, setRole, "e.g. Finance Graduate")}{field("Email", email, setEmail, "alex@email.com")}{field("Phone", phone, setPhone, "+977 98XXXXXXXX")}{field("City / Country", location, setLocation, "Kathmandu, Nepal")}{field("Website / LinkedIn", website, setWebsite, "linkedin.com/in/yourname")}</div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2"><label className="block"><span className={label}>Profile photo (optional)</span><input className={input} type="file" accept="image/*" onChange={e => { const f=e.target.files?.[0]; if(f){const reader=new FileReader();reader.onload=()=>setPhoto(String(reader.result));reader.readAsDataURL(f);} }} /></label><label className="block"><span className={label}>Accent colour</span><div className="flex gap-2"><input type="color" value={accent} onChange={e=>setAccent(e.target.value)} className="h-10 w-14 rounded-lg border border-slate-200" /><select className={input} value={font} onChange={e=>setFont(e.target.value)}><option>Arial</option><option>Georgia</option><option>Helvetica</option><option>Times New Roman</option></select></div></label></div>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2"><label className="block"><span className={label}>Profile photo (optional)</span><input className={input} type="file" accept="image/jpeg,image/png,image/webp" onChange={e => loadPhoto(e.target.files?.[0])} />{photoError && <p role="alert" className="mt-1 text-xs text-rose-700">{photoError}</p>}</label><label className="block"><span className={label}>Accent colour</span><div className="flex gap-2"><input type="color" value={accent} onChange={e=>setAccent(e.target.value)} className="h-10 w-14 rounded-lg border border-slate-200" /><select className={input} value={font} onChange={e=>setFont(e.target.value)}><option>Arial</option><option>Georgia</option><option>Helvetica</option><option>Times New Roman</option></select></div></label></div>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><h2 className="mb-4 text-lg font-extrabold text-slate-900">2. Professional summary</h2>{area("About you", summary, setSummary, "Write 2–4 concise sentences about your experience, strengths and target role.")}</div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-extrabold text-slate-900">3. Work experience</h2><button onClick={()=>setJobs(rows=>[...rows,initialJob()])} className="rounded-lg border border-teal-200 px-3 py-2 text-xs font-bold text-teal-800 hover:bg-teal-50">+ Add experience</button></div>{jobs.map((j,i)=><div key={j.id} className="mb-4 rounded-xl bg-slate-50 p-4"><div className="mb-3 flex items-center justify-between"><b className="text-sm">Position {i+1}</b><button onClick={()=>setJobs(rows=>rows.filter(x=>x.id!==j.id))} className="text-xs font-bold text-rose-600">Remove</button></div><div className="grid gap-3 sm:grid-cols-2">{field("Job title",j.role,v=>updateJob(j.id,"role",v),"e.g. Accounts Assistant")}{field("Company",j.company,v=>updateJob(j.id,"company",v),"Company name")}{field("Dates",j.dates,v=>updateJob(j.id,"dates",v),"Jan 2024 – Present")}</div><div className="mt-3">{area("Achievements & responsibilities (one per line)",j.details,v=>updateJob(j.id,"details",v),"• Prepared monthly reports\n• Improved...")}</div></div>)}</div>

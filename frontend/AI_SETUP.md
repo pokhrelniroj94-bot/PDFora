@@ -10,7 +10,9 @@ In the Vercel project for PDFora, add these Environment Variables for Preview fi
 - `ANTHROPIC_API_KEY=<your Anthropic Console API key>`
 - `ANTHROPIC_MODEL=claude-haiku-5-5` (fast, cost-conscious default; change to a model enabled for your Anthropic account if needed)
 - `PDFORA_AI_ENABLED=true` only after the AI usage limits and abuse controls are configured.
-- `UPSTASH_REDIS_REST_URL=<your Upstash Redis REST URL>`\n- `UPSTASH_REDIS_REST_TOKEN=<your Upstash Redis REST token>`\n- `PDFORA_AI_RATE_LIMIT_READY=true` only after the Upstash database is provisioned and a Preview request confirms atomic rate limiting.
+- `UPSTASH_REDIS_REST_URL=<your Upstash Redis REST URL>`
+- `UPSTASH_REDIS_REST_TOKEN=<your Upstash Redis REST token>`
+- `PDFORA_AI_RATE_LIMIT_READY=true` only after the Upstash database is provisioned and a Preview request confirms atomic rate limiting.
 
 Do not add the API key to the repository, browser code, client environment variables, screenshots, or chat messages. Store it only in Vercel Environment Variables. Set it for Preview first, then test a Preview deployment before considering Production.
 

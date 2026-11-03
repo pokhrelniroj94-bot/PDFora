@@ -144,6 +144,11 @@ async function fetchFromOfficialPage(requestedDate: string) {
   }
   const unique = [...new Map(rates.map((rate) => [rate.code, rate])).values()];
   if (unique.length < 10) throw new Error("NRB official page did not contain enough valid currency rows.");
+  // This page exposes only its currently published table, not an arbitrary historical date.
+  // Never return today's published table as if it belonged to a historical date request.
+  if (requestedDate !== rateDate) {
+    throw new Error("NRB's published-page fallback only supports its currently displayed rate date.");
+  }
   return {
     source: "Nepal Rastra Bank official published page",
     requestedDate,

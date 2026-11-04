@@ -41,13 +41,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 
-    "bmi-calculator": { title: "BMI Calculator – Body Mass Index from Height & Weight", description: "Calculate body mass index from height and weight. Check the BMI formula and understand why the result is a screening estimate, not a diagnosis." },
-    "bmr-calculator": { title: "BMR Calculator – Basal Metabolic Rate Estimate", description: "Estimate basal metabolic rate from age, height and weight. Understand the difference between BMR and daily maintenance calories." },
+    "bmi-calculator": { title: "Adult BMI Calculator – BMI by Height, Weight & Age", description: "Calculate adult BMI using weight in kilograms, height in centimetres and age 20+. View the screening category and understand its limitations." },
+    "bmr-calculator": { title: "BMR Calculator – Mifflin–St Jeor Estimate", description: "Estimate basal metabolic rate using age, height, weight and the selected Mifflin–St Jeor equation constant. Understand BMR versus maintenance calories." },
     "unit-converter": { title: "Unit Converter – Length, Weight, Temperature & Volume", description: "Convert common units for length, mass, temperature and volume. Select compatible units and check the converted value instantly." },
     "ratio-simplifier": { title: "Ratio Simplifier – Reduce Ratios to Lowest Terms", description: "Simplify a ratio to its lowest whole-number terms using the greatest common divisor. Check equivalent ratios with clear steps." },
     "gcd-lcm-calculator": { title: "GCD and LCM Calculator – Greatest Common Divisor", description: "Find the greatest common divisor and least common multiple of integers. Use the results to simplify fractions and solve number problems." },
     "prime-number-checker": { title: "Prime Number Checker – Test Integers and Find Factors", description: "Check whether an integer is prime or composite and inspect its factors. Includes clear handling for values below 2." },
-    "business-days-calculator": { title: "Business Days Calculator – Count Weekdays Between Dates", description: "Count weekdays between two dates while excluding Saturdays and Sundays. Check date boundaries and account separately for public holidays." },
+    "business-days-calculator": { title: "Business Days Calculator – Select Weekend Days", description: "Count inclusive business days between two valid dates. Choose Saturday-only Nepal weekends, Saturday–Sunday, Friday–Saturday or no weekend days; public holidays are separate." },
     "unix-timestamp-converter": { title: "Unix Timestamp Converter – Seconds & Milliseconds to Date", description: "Convert Unix timestamps in seconds or milliseconds into readable UTC dates and times, then compare with your local timezone." },
     "date-add-subtract-calculator": { title: "Date Calculator – Add or Subtract Days from a Date", description: "Add or subtract a chosen number of days from a starting date. Check the resulting date across month, year and leap-year boundaries." },
     "aspect-ratio-calculator": { title: "Aspect Ratio Calculator – Find Image Width & Height", description: "Calculate image and video aspect ratios or derive a proportional width or height without stretching the original dimensions." },
@@ -189,6 +189,16 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Are the estimated investment returns guaranteed?", a: "No. The future value is a mathematical projection, not a guaranteed market return or investment recommendation." },
       { q: "Does the result include fees and taxes?", a: "No. The estimate does not automatically deduct investment fees, taxes or inflation." }
     ],
+    "simple-interest-calculator": [
+      { q: "What formula does the calculator use?", a: "Simple interest = principal × annual interest rate × time in years ÷ 100. The maturity amount is principal plus simple interest." },
+      { q: "Should I enter a monthly or annual rate?", a: "Enter an annual percentage rate. If your rate is monthly, convert it to an annual rate before using this calculator." },
+      { q: "Does simple interest compound?", a: "No. Interest is calculated on the original principal only. Use a compound-interest calculator for interest-on-interest calculations." }
+    ],
+    "hourly-to-salary-calculator": [
+      { q: "How is annual pay estimated?", a: "The calculator multiplies hourly wage by paid hours per week and 52 weeks. The monthly figure is the annual estimate divided by 12." },
+      { q: "Does it calculate take-home salary?", a: "No. It shows gross estimates in the same currency unit entered for the hourly wage, before tax and deductions." },
+      { q: "Does it include unpaid leave or overtime?", a: "No. The estimate assumes 52 paid weeks and does not model unpaid leave, overtime premiums, tax or benefits." }
+    ],
     "average-calculator": [
       { q: "What statistics does the average calculator show?", a: "It calculates count, mean, median, mode and range from the numbers entered." },
       { q: "How should I separate the numbers?", a: "Use commas, semicolons or spaces between valid numbers. Avoid mixing text labels with the number list." },
@@ -300,9 +310,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does the checker show factors for composite numbers?", a: "The tool can list factors for composite inputs where supported; review the output to see which integers divide the number exactly." }
     ],
     "business-days-calculator": [
-      { q: "Which days are excluded?", a: "The calculator excludes Saturdays and Sundays. It does not automatically remove every Nepal public holiday unless that feature is explicitly provided." },
-      { q: "Does it include the start and end dates?", a: "Check the date-count convention stated in the result. Inclusive business-day counts can differ from elapsed weekday counts." },
-      { q: "Are Nepal public holidays removed automatically?", a: "No. Treat this as a weekday count and check applicable government, regional or employer holidays separately." }
+      { q: "Which weekend pattern does it use by default?", a: "It defaults to Saturday-only weekends, commonly used for Nepal date planning. You can choose Saturday–Sunday, Friday–Saturday or no weekend days." },
+      { q: "Are Nepal public holidays excluded?", a: "No. The result excludes only the selected weekend days. Subtract applicable national, regional and organisation-specific holidays separately." },
+      { q: "Are the start and end dates included?", a: "Yes. The date range is inclusive, so a working start date and working end date are both counted." }
     ],
     "unix-timestamp-converter": [
       { q: "What is a Unix timestamp?", a: "It is a count of seconds or milliseconds since 1970-01-01 00:00:00 UTC, depending on the format used by the source." },

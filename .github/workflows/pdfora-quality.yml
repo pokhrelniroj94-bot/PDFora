@@ -38,6 +38,8 @@ jobs:
       - run: npm ci
       - name: Verify every catalog tool has one implementation
         run: npm run verify:tools
+      - name: Run calculator formula and edge-case regression tests
+        run: npm run test:calculations
       - run: npm run lint
       - run: npm run build
       - name: Audit npm dependencies

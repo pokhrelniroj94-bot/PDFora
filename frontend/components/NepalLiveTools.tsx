@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import NepalMarketNews from "./NepalMarketNews";
+import { calculateNepalDomesticElectricityBill, calculateNepalSalaryTax } from "../lib/calculations";
 
 type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
 type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; updatedAt?: string; isStale?: boolean; notice?: string; rates: ForexRate[]; error?: string };
@@ -154,75 +155,37 @@ function SalaryTaxTool() {
   const [firstBandExempt, setFirstBandExempt] = useState(false);
   const amount = Number(income);
   const valid = income.trim() !== "" && Number.isFinite(amount) && amount >= 0 && amount <= 1_000_000_000;
-  const bands = [
-    { limit: 1_000_000, rate: firstBandExempt ? 0 : 0.01 },
-    { limit: 500_000, rate: 0.10 },
-    { limit: 1_000_000, rate: 0.20 },
-    { limit: 1_500_000, rate: 0.27 },
-    { limit: Infinity, rate: 0.29 },
-  ];
-  let remaining = valid ? amount : 0;
-  let tax = 0;
-  const breakdown = bands.map((band) => {
-    const taxable = Math.min(remaining, band.limit);
-    remaining -= taxable;
-    const charge = taxable * band.rate;
-    tax += charge;
-    return { taxable, rate: band.rate, charge };
-  }).filter((item) => item.taxable > 0);
+  const calculation = valid ? calculateNepalSalaryTax(amount, firstBandExempt) : null;
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">Nepal Salary / Income Tax Calculator · FY 2083/84</h2><p className="mt-1 text-sm text-slate-600">Progressive estimate for a resident natural person using the published 2083/84 bands.</p></div>
+    <div><h2 className="text-lg font-bold">Nepal Salary / Income Tax Calculator · FY 2083/84</h2><p className="mt-1 text-sm text-slate-600">Progressive estimate for a resident natural person using the Inland Revenue Department&apos;s published 2083/84 bands.</p></div>
     <Field title="Annual taxable salary / income (NPR, after eligible deductions)" value={income} onChange={setIncome}/>
-    <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" checked={firstBandExempt} onChange={(e) => setFirstBandExempt(e.target.checked)}/><span>First NPR 1,000,000 band is exempt from the 1% charge under an applicable statutory exception.</span></label>
-    {valid ? <><Result>Estimated annual income tax: {npr(tax)}\nEstimated monthly tax: {npr(tax / 12)}\nEstimated monthly take-home from taxable income: {npr((amount - tax) / 12)}\nEffective tax rate: ${amount > 0 ? (tax / amount * 100).toFixed(2) : "0.00"}%</Result><div className="overflow-x-auto rounded-xl border"><table className="w-full text-sm"><thead className="bg-slate-100"><tr><th className="p-3 text-left">Taxable band portion</th><th className="p-3 text-right">Rate</th><th className="p-3 text-right">Tax</th></tr></thead><tbody>{breakdown.map((item, i) => <tr key={i} className="border-t"><td className="p-3">{npr(item.taxable)}</td><td className="p-3 text-right">{(item.rate * 100).toFixed(0)}%</td><td className="p-3 text-right">{npr(item.charge)}</td></tr>)}</tbody></table></div></> : <p role="alert" className="text-sm text-red-700">Enter a valid non-negative annual taxable income.</p>}
-    <p className="text-xs leading-5 text-slate-500">This is an estimate for resident natural persons only. It does not calculate every rebate, allowance, retirement contribution, insurance deduction, non-resident case or special income category. The 1% first-band charge has statutory exceptions. Verify your situation against the current IRD notice or a tax professional.</p>
-    <a className="text-sm font-semibold text-teal-700 underline" href="https://ird.gov.np/category/taxrateincentives/" target="_blank" rel="noreferrer">IRD official tax rates and incentives</a>
+    <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" checked={firstBandExempt} onChange={(e) => setFirstBandExempt(e.target.checked)}/><span>I qualify for the first-band 1% Social Security Tax exemption (for example, as an SSF contributor, pension-income recipient or sole proprietor). Select only if this statutory exception applies.</span></label>
+    {calculation ? <><Result>Estimated annual tax: {npr(calculation.tax)}
+Estimated monthly tax: {npr(calculation.tax / 12)}
+Monthly taxable income after estimated tax: {npr((amount - calculation.tax) / 12)}
+Effective tax rate: {calculation.effectiveRate.toFixed(2)}%</Result><div className="overflow-x-auto rounded-xl border"><table className="w-full text-sm"><thead className="bg-slate-100"><tr><th className="p-3 text-left">Taxable band portion</th><th className="p-3 text-right">Rate</th><th className="p-3 text-right">Tax</th></tr></thead><tbody>{calculation.breakdown.map((item, i) => <tr key={i} className="border-t"><td className="p-3">{npr(item.taxable)}</td><td className="p-3 text-right">{(item.rate * 100).toFixed(0)}%</td><td className="p-3 text-right">{npr(item.tax)}</td></tr>)}</tbody></table></div></> : <p role="alert" className="text-sm text-red-700">Enter a valid non-negative annual taxable income.</p>}
+    <p className="text-xs leading-5 text-slate-500">Estimate only for resident natural persons. Taxable income must already reflect eligible deductions; this calculator does not calculate PF, CIT, SSF contributions, insurance deductions, rebates, non-resident tax or every special income category. The 1% first-band exception is not a general tax-free allowance. Verify your circumstances against the current IRD notice or a tax professional.</p>
+    <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://ird.gov.np/category/taxrateincentives/" target="_blank" rel="noreferrer">IRD official tax rates and incentives</a><a className="font-semibold text-teal-700 underline" href="https://ird.gov.np/" target="_blank" rel="noreferrer">Inland Revenue Department</a></div>
   </div>;
 }
 
 function ElectricityTool() {
   const [units, setUnits] = useState("100");
-  const [meter, setMeter] = useState("5A");
+  const [meter, setMeter] = useState<"5A" | "15A" | "30A" | "60A">("5A");
   const [rebate, setRebate] = useState(true);
   const u = Number(units);
   const valid = units.trim() !== "" && Number.isFinite(u) && u >= 0 && u <= 100000;
-  const meterIndex = ["5A", "15A", "30A", "60A"].indexOf(meter);
-  const minimumByBand = [
-    [30, 50, 50, 75, 100, 150],
-    [50, 75, 75, 100, 125, 175],
-    [75, 100, 100, 125, 150, 200],
-    [125, 125, 125, 150, 200, 250],
-  ];
-  const bands = [
-    { max: 20, rate: [0, 4, 5, 6][meterIndex] },
-    { max: 30, rate: 6.5 },
-    { max: 50, rate: 8 },
-    { max: 100, rate: 9.5 },
-    { max: 250, rate: 9.5 },
-    { max: Infinity, rate: 11 },
-  ];
-  let prior = 0, energy = 0, above50Energy = 0;
-  for (const band of bands) {
-    const inBand = Math.max(0, Math.min(u, band.max) - prior);
-    energy += inBand * band.rate;
-    if (band.max > 50) above50Energy += inBand * band.rate;
-    prior = band.max;
-    if (u <= band.max) break;
-  }
-  // For a 5A meter, the first 20 units are charged at NPR 3/unit only when total use exceeds 20.
-  if (meter === "5A" && u > 20) energy += 20 * 3;
-  const bandIndex = u <= 20 ? 0 : u <= 30 ? 1 : u <= 50 ? 2 : u <= 100 ? 3 : u <= 250 ? 4 : 5;
-  const minimum = minimumByBand[Math.max(0, meterIndex)][bandIndex];
-  const subtotal = energy + minimum;
-  const rebateAmount = rebate ? subtotal * 0.02 : 0;
-  const vat = above50Energy * 0.05;
-  const total = subtotal - rebateAmount + vat;
+  const calculation = valid ? calculateNepalDomesticElectricityBill(u, meter, rebate) : null;
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">NEA Domestic Electricity Bill Estimator</h2><p className="mt-1 text-sm text-slate-600">Estimate a single-phase domestic bill from monthly units and meter capacity.</p></div>
-    <div className="grid gap-3 sm:grid-cols-2"><Field title="Monthly consumption (units / kWh)" value={units} onChange={setUnits}/><label><span className={label}>Meter capacity</span><select className={field} value={meter} onChange={(e) => setMeter(e.target.value)}>{["5A","15A","30A","60A"].map((m) => <option key={m}>{m}</option>)}</select></label></div>
+    <div><h2 className="text-lg font-bold">NEA Domestic Electricity Bill Estimator · FY 2083/84</h2><p className="mt-1 text-sm text-slate-600">Estimate a single-phase domestic bill from monthly units and meter capacity using the published block tariff assumptions.</p></div>
+    <div className="grid gap-3 sm:grid-cols-2"><Field title="Monthly consumption (units / kWh)" value={units} onChange={setUnits}/><label><span className={label}>Meter capacity</span><select className={field} value={meter} onChange={(e) => setMeter(e.target.value as typeof meter)}>{["5A","15A","30A","60A"].map((m) => <option key={m}>{m}</option>)}</select></label></div>
     <label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={rebate} onChange={(e) => setRebate(e.target.checked)}/> Assume 2% early-payment rebate (within 7 days)</label>
-    {valid ? <><Result>Energy charge: {npr(energy)}\nMonthly minimum charge: {npr(minimum)}\nEarly-payment rebate: −{npr(rebateAmount)}\nVAT estimate (5% on energy above 50 units): {npr(vat)}\nEstimated bill: {npr(total)}</Result><p className="text-xs text-slate-500">Energy is calculated progressively by consumption block. Minimum charge depends on the total-use band and meter capacity.</p></> : <p role="alert" className="text-sm text-red-700">Enter monthly units from 0 to 100,000.</p>}
-    <p className="text-xs leading-5 text-slate-500">Domestic single-phase estimate only. Excludes arrears, meter rent or other account-specific adjustments. Tariffs, VAT treatment and rebates may change; your NEA bill is final. For commercial, three-phase or official bill calculations, use the ERC calculator.</p>
+    {calculation ? <><Result>Energy charge: {npr(calculation.energy)}
+Monthly minimum charge: {npr(calculation.minimum)}
+Early-payment rebate: −{npr(calculation.rebate)}
+VAT estimate (5% on energy above 50 units): {npr(calculation.vat)}
+Estimated bill: {npr(calculation.total)}</Result><p className="text-xs text-slate-500">Energy is calculated progressively by consumption block. Minimum charge depends on the total-use band and meter capacity.</p></> : <p role="alert" className="text-sm text-red-700">Enter monthly units from 0 to 100,000.</p>}
+    <p className="text-xs leading-5 text-slate-500">FY 2083/84 domestic single-phase estimate only. Excludes arrears, meter rent or other account-specific adjustments. VAT and rebate assumptions may change; your NEA bill is final. For commercial, three-phase or official bill calculations, use the ERC calculator.</p>
     <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/electricity-calculator" target="_blank" rel="noreferrer">Official ERC electricity calculator</a><a className="font-semibold text-teal-700 underline" href="https://www.nea.org.np/en/pages/consumer-tariff-rates" target="_blank" rel="noreferrer">NEA consumer tariff rates</a></div>
   </div>;
 }

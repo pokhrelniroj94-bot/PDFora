@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   if (!content) return {};
   const languages = Object.fromEntries(Object.entries(homeLanguageAlternates).map(([key, url]) => [key, url]));
   return {
-    title: content.title,
+    title: content.title.replace(/\s*\|\s*PDFora$/i, ""),
     description: content.description,
     alternates: { canonical: `${site}/${locale}`, languages },
     openGraph: {

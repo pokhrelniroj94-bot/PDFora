@@ -47,7 +47,7 @@ Write-Host "PDFora local validation (no GitHub Actions billing required)" -Foreg
 Invoke-Check "Legacy Express syntax" "node" @("--check", (Join-Path $backend "backend\server.js"))
 
 if (-not (Test-Path $venvPython)) {
-    Invoke-Check "Create isolated project virtual environment" "python" @("-m", "venv", (Join-Path $backend ".venv"))
+    Invoke-Check "Create isolated project virtual environment" "python" @("-m", "venv", (Join-Path $root ".venv-pdfora"))
 }
 
 Invoke-Check "Install backend dependencies" $venvPython @("-m", "pip", "install", "--upgrade", "pip")

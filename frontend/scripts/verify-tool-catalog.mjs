@@ -129,7 +129,7 @@ for (const slug of catalog) {
 assert.ok(sitemapSource.includes("url: `${baseUrl}/${slug}`"), "Legacy tool sitemap entries must use their root-level canonical URLs");
 assert.ok(sitemapSource.includes("url: `${baseUrl}/tools/${tool.slug}`"), "Non-legacy catalog sitemap entries must use their /tools canonical URLs");
 const toolDirectory = read("../lib/tool-directory.ts");
-const homepage = read("../app/page.tsx");
+const homepage = read("../app/HomeClient.tsx");
 const directoryComponent = read("../components/AllTools.tsx");
 const pdfBlock = toolDirectory.split("const rawPdfTools")[1]?.split("\n];")[0];
 assert.ok(pdfBlock, "Canonical PDF tool list is missing");

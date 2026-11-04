@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://pd-fora.vercel.app/market" },
   openGraph: {
     type: "website",
+    locale: "en_US",
     title: "NEPSE Market Dashboard & Stock Charts | PDFora",
     description: "NEPSE index, listed company prices, market movers, sector indices and historical charts.",
     url: "https://pd-fora.vercel.app/market",

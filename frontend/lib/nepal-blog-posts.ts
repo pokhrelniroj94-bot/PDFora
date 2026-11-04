@@ -200,15 +200,15 @@ export const nepalBlogPosts: BlogPost[] = [
     intro: "People sending remittances, travelling abroad, paying for imports or comparing foreign-currency values often need the Nepal Rastra Bank reference exchange rate. NRB publishes buying and selling prices, and some currencies are quoted in units of 10 or 100 rather than one.",
     sections: [
       { heading: "What are NRB buying and selling rates?", paragraphs: ["The buying rate is the reference amount in NPR at which a bank buys a foreign currency. The selling rate is the reference amount at which a bank sells that currency. Individual banks and money changers may quote different rates.", "Always check the unit shown beside the currency. For example, if the rate is quoted per 100 Indian rupees, divide or multiply using that 100-unit basis rather than treating the rate as one INR."] },
-      { heading: "How to use the NRB rate tool", paragraphs: [], bullets: ["Open the NRB Daily Exchange Rates tool.", "Refresh to load the latest rate published by NRB.", "Find the currency code and check its unit, buying rate and selling rate.", "For foreign currency to NPR, use the buying-rate calculation.", "For NPR to foreign currency, use the selling-rate calculation."] },
-      { heading: "Why the latest date may be earlier than today", paragraphs: ["NRB publishes rates on working days. Weekends and public holidays may have no new rate. The tool checks a short recent date range and displays the latest rate record returned by NRB."] }
+      { heading: "How to check the NRB reference rate", paragraphs: [], bullets: ["Open the Nepal Rastra Bank official foreign-exchange page.", "Check the publication date and selected currency.", "Read the quoted unit, buying rate and selling rate together.", "Use the buying rate as a reference when a bank buys foreign currency.", "Use the selling rate as a reference when a bank sells foreign currency."] },
+      { heading: "Why the latest date may be earlier than today", paragraphs: ["NRB publishes rates on working days. Weekends and public holidays may have no new rate. Check the latest publication date shown on NRB’s official page before making a transaction."] }
     ],
     faqs: [
       { question: "Are NRB rates the same as remittance rates?", answer: "Not necessarily. Remittance providers and individual banks may offer their own rates and fees." },
-      { question: "Why does INR show a unit of 100?", answer: "The NRB publishes some currencies against a quoted unit such as 100 or 10. The converter uses the unit supplied by the API." },
-      { question: "Does the tool use live rates?", answer: "It requests the latest available published NRB rate when you refresh; it does not guarantee intraday bank rates." }
+      { question: "Why does INR show a unit of 100?", answer: "The NRB publishes some currencies against a quoted unit such as 100 or 10. Read the quoted unit on NRB’s official page before interpreting the rate." },
+      { question: "Are NRB rates guaranteed transaction quotes?", answer: "No. NRB reference rates can differ from the rates and fees offered by banks, money changers and remittance providers." }
     ],
-    toolLinks: [{ label: "NRB Exchange Rates", href: "/tools/nepal-forex-rates" }, { label: "General Currency Converter", href: "/tools/currency-converter" }],
+    toolLinks: [{ label: "General Currency Converter", href: "/tools/currency-converter" }],
     sources: [{ label: "Nepal Rastra Bank exchange rates", url: "https://www.nrb.org.np/forex" }, { label: "NRB Forex API documentation", url: "https://www.nrb.org.np/api-docs-v1/" }],
   },
   {

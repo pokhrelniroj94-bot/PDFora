@@ -12,6 +12,11 @@ const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
 const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
 const toolPage = read("../app/tools/[slug]/page.tsx");
+const pdfToolSEO = read("../lib/tool-seo.ts");
+const pdfSEOContent = read("../components/ToolSEOContent.tsx");
+const nextConfig = read("../next.config.ts");
+const resumeBuilderPage = read("../app/resume-builder/page.tsx");
+const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
@@ -38,7 +43,7 @@ if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-
 }
 const missing = catalog.filter((slug) => !implemented.has(slug));
 assert.deepEqual(missing, [], `Tools without handlers: ${missing.join(", ")}`);
-for (const slug of ["nepal-forex-rates", "nepal-salary-tax-calculator", "nepal-electricity-bill-calculator", "nepal-public-holidays-2083"]) {
+for (const slug of ["nepal-salary-tax-calculator", "nepal-electricity-bill-calculator", "nepal-public-holidays-2083"]) {
   assert.ok(liveCases.includes(slug), `Missing Nepal live tool handler: ${slug}`);
   assert.ok(routedNepalSlugs.includes(slug), `Missing Nepal live route: ${slug}`);
 }
@@ -46,26 +51,73 @@ assert.ok(typingRouted, "Nepali Unicode typing route or engine is missing");
 assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('import NepalLiveTools from "./NepalLiveTools"'), "Nepal live tools component is not imported");
 
 assert.ok(allTools.includes('import("./NepaliTypingTool")') || allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");
-const nepalSlugs = [...catalogSource.matchAll(/\\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);
+const nepalSlugs = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);
 const missingNepalGuides = nepalSlugs.filter((slug) => !nepalBlogPosts.includes('href: "/tools/' + slug + '"'));
 assert.deepEqual(missingNepalGuides, [], "Nepal tools without dedicated guides: " + missingNepalGuides.join(", "));
 assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf("...catalogGuides"), "Dedicated Nepal guides must take precedence over generated generic guides");
-const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
+const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
-assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
+assert.ok(toolPage.includes('"@type": "SoftwareApplication"') && toolPage.includes('"@type": "BreadcrumbList"'), "Catalog tool pages must include software and breadcrumb structured data");
+assert.ok(seoContent.includes("Frequently asked questions about {title}") && seoContent.includes("uniqueFaqItems.map"), "Catalog tool FAQs must remain visible on the page");
+assert.ok(!toolPage.includes('"@type": "FAQPage"'), "General tool pages should not rely on FAQ rich-result markup");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
-
+assert.ok(toolPage.includes("googleBot") && toolPage.includes("max-image-preview"), "Catalog tool metadata must include Googlebot preview directives");
+assert.ok(toolPage.includes("summary_large_image") && toolPage.includes("opengraph-image"), "Catalog tool pages must provide social preview images");
+assert.ok(pdfToolSEO.includes("canonical: url") && pdfToolSEO.includes("googleBot") && pdfToolSEO.includes("summary_large_image"), "PDF tool metadata must include canonical, Googlebot and social preview metadata");
+assert.ok(pdfSEOContent.includes('"@type": "BreadcrumbList"') && pdfSEOContent.includes("WebApplication"), "PDF tool guides must render breadcrumb and WebApplication structured data");
+assert.ok(!pdfSEOContent.startsWith('"use client"'), "PDF SEO guide should server-render its content and structured data");
+assert.ok(nextConfig.includes("/tools/nepal-forex-rates") && nextConfig.includes("/tools/currency-converter"), "Retired Forex URL must permanently redirect to the supported converter");
+assert.ok(resumeBuilderPage.includes("canonical: \"https://pd-fora.vercel.app/resume-builder\"") && resumeBuilderPage.includes("Free Resume Builder – CV Templates"), "Resume Builder must retain its canonical URL and concise page title");
+assert.ok(!catalogSource.includes("nepal-forex-rates"), "Retired NRB forex tool must not remain in the catalog");
+assert.ok(!allTools.includes("nepal-forex-rates"), "Retired NRB forex route must not remain in the tool dispatcher");
+assert.ok(!nepalLiveTools.includes("ForexTool") && !nepalLiveTools.includes("/api/nepal-forex") && !nepalLiveTools.includes("fallbackCurrencies"), "Retired NRB forex UI, API client and currency fallback must be removed");
+assert.ok(!backendSource.includes("/api/nepal-forex"), "Retired NRB forex backend endpoints must be removed");
+assert.equal(fs.existsSync(new URL("../app/api/nepal-forex/route.ts", import.meta.url)), false, "Retired NRB forex proxy route must be deleted");
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
 assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
 const advisedSlugs = [...adviceBlock[1].matchAll(/^\s{4}"([^"]+)":\s*\{/gm)].map((m) => m[1]);
 const missingToolAdvice = catalog.filter((slug) => !advisedSlugs.includes(slug));
 assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO guidance: " + missingToolAdvice.join(", "));
-
 assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weighted grade points");
 assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
-
+const englishHomepageMetadata = read("../app/page.tsx");
+const nepaliHomepageMetadata = read("../app/ne/page.tsx");
+const localeHomepage = read("../app/[locale]/page.tsx");
+const localeDictionary = read("../lib/home-locales.ts");
+assert.ok(englishHomepageMetadata.includes("languages: homeLanguageAlternates"), "English homepage must use the complete hreflang map");
+assert.ok(nepaliHomepageMetadata.includes("languages: homeLanguageAlternates"), "Nepali homepage must use the complete reciprocal hreflang map");
+assert.ok(localeHomepage.includes("languages: homeLanguageAlternates"), "Localized homepage metadata must declare reciprocal hreflang alternates");
+for (const locale of ["en", "ne", "hi", "es", "fr", "de", "pt", "ar", "bn", "id"]) {
+  assert.ok(localeDictionary.includes(`code: "${locale}"`) || locale === "en" || locale === "ne", `Missing supported homepage locale: ${locale}`);
+}
+assert.ok(localeHomepage.includes("generateStaticParams"), "Localized homepage routes must be statically generated");
+assert.ok(localeHomepage.includes('dir={content.dir ?? "ltr"}'), "Localized homepages must support RTL direction");
+assert.ok(localeHomepage.includes("content.note"), "Localized landing pages must disclose untranslated tool-interface scope");
+assert.ok(localeHomepage.includes("alternateLocale"), "Localized homepage Open Graph metadata must declare alternate locales");
+assert.ok(toolPage.includes('locale: "en_US"'), "Tool pages must declare the English Open Graph locale");
+const sitemapSource = read("../app/sitemap.ts");
+const legacyRoutesSource = read("../lib/legacy-tool-slugs.ts");
+assert.ok(legacyRoutesSource.includes('"resume-builder"'), "Resume Builder /tools alias must redirect to its existing canonical root route");
+assert.ok(sitemapSource.includes("legacyToolSlugs.map") && sitemapSource.includes("legacyRouteEntries"), "Canonical root-level tool routes must be emitted in the sitemap");
+assert.ok(sitemapSource.includes("homeLanguageAlternates"), "Homepage sitemap entries must include the complete hreflang map");
+assert.ok(sitemapSource.includes("Object.keys(homeLocales)"), "Every localized homepage must be included in the sitemap");
+assert.ok(sitemapSource.includes('!legacyToolSlugSet.has(tool.slug)'), "Sitemap must exclude catalog aliases that redirect to canonical root routes");
+const legacySlugValues = [...legacyRoutesSource.matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
+const canonicalCatalogSlugs = catalog.filter((slug) => slug !== "ocr-pdf" && slug !== "pdf-tools" && !legacySlugValues.includes(slug));
+const canonicalToolSlugs = [...legacySlugValues, ...canonicalCatalogSlugs];
+assert.equal(new Set(canonicalToolSlugs).size, canonicalToolSlugs.length, "Canonical tool sitemap routes must be unique");
+assert.equal(canonicalToolSlugs.length, 168, `Expected 168 canonical tool URLs in the sitemap, found ${canonicalToolSlugs.length}`);
+for (const slug of catalog) {
+  if (slug === "ocr-pdf" || slug === "pdf-tools") continue;
+  assert.ok(
+    legacySlugValues.includes(slug) || canonicalCatalogSlugs.includes(slug),
+    `Catalog tool ${slug} is missing a canonical sitemap route`,
+  );
+}
+assert.ok(sitemapSource.includes("url: `${baseUrl}/${slug}`"), "Legacy tool sitemap entries must use their root-level canonical URLs");
+assert.ok(sitemapSource.includes("url: `${baseUrl}/tools/${tool.slug}`"), "Non-legacy catalog sitemap entries must use their /tools canonical URLs");
 const toolDirectory = read("../lib/tool-directory.ts");
 const homepage = read("../app/page.tsx");
 const directoryComponent = read("../components/AllTools.tsx");
@@ -78,19 +130,25 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 120, "Expected 120 catalog utilities");
-assert.equal(allHrefs.length, 169, "Expected 169 available tools (49 PDF tools + 120 catalog utilities)");
+for (const href of availablePdfHrefs) {
+  const slug = href.slice(1);
+  const layoutPath = new URL(`../app/${slug}/layout.tsx`, import.meta.url);
+  assert.ok(fs.existsSync(layoutPath), `PDF tool ${slug} is missing its SEO layout`);
+  const layoutSource = fs.readFileSync(layoutPath, "utf8");
+  assert.ok(layoutSource.includes(`getToolMetadata("${slug}")`), `PDF tool ${slug} is missing generated metadata`);
+  assert.ok(layoutSource.includes(`ToolSEOContent slug="${slug}"`), `PDF tool ${slug} is missing its on-page SEO guide`);
+}
+assert.equal(catalog.length, 119, "Expected 119 catalog utilities after retiring the NRB forex tool");
+assert.equal(allHrefs.length, 168, "Expected 168 available tools (49 PDF tools + 119 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
 assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");
 assert.ok(homepage.includes('tool.kind === "pdf" || tool.category === "PDF"'), "Homepage PDF category hides catalog PDF tools");
 assert.ok(homepage.includes("tool.keywords"), "Homepage search does not include tool keywords");
-
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must display every matching tool, not just a small fixed number");
 assert.ok(homepage.includes("max-h-[min(65vh,32rem)]") && homepage.includes("overflow-y-auto"), "Homepage search results must remain scrollable when many tools match");
 assert.ok(homepage.includes("tokens.every((token) => searchable.includes(token))"), "Homepage search must match all query words across tool names, descriptions, routes and keywords");
-
 assert.ok(directoryComponent.includes("allTools.filter"), "The /tools directory is not using the unified tool directory");
 assert.ok(directoryComponent.includes("href={t.href}"), "The /tools directory does not preserve each tool's actual route");
 const normalizeSearch = (value) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -102,7 +160,6 @@ const notesToolLine = catalogSource.split("\n").find((line) => line.includes('sl
 assert.ok(notesToolLine, "Notes to PDF is missing from the catalog");
 assert.ok(notesToolLine.includes('category:"PDF"'), "Notes to PDF must be grouped under the PDF category");
 assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesToPDF />'), "Notes to PDF handler is missing");
-
 const marketApi = read("../app/api/nepse-market/route.ts");
 const marketDashboard = read("../components/NepseMarketDashboard.tsx");
 const marketPage = read("../app/market/page.tsx");
@@ -127,4 +184,4 @@ assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-re
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
-console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);
+console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including Forex retirement, multilingual SEO, EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

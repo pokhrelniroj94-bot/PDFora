@@ -31,7 +31,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepal-electricity-bill-calculator": { title: "NEA Electricity Bill Calculator – Nepal Domestic", description: "Estimate a Nepal single-phase domestic electricity bill from monthly units and meter capacity, including energy blocks and VAT assumptions." },
     "nepse-dividend-calculator": { title: "NEPSE Dividend Calculator – Cash Dividend & Bonus", description: "Estimate NEPSE cash dividend after editable withholding tax and calculate bonus shares from your eligible share quantity." },
     "nepal-public-holidays-2083": { title: "Nepal Public Holidays 2083 – BS and AD Calendar", description: "Browse Nepal public holidays for 2083 BS with Gregorian dates and notes for national, regional and community-specific holidays." },
-    "nepal-forex-rates": { title: "Nepal Rastra Bank Forex Rates – NPR Exchange Rates", description: "View Nepal Rastra Bank currency buying and selling rates and estimate NPR conversions using the published currency units." },
     "loan-emi-calculator": { title: "Loan EMI Calculator – Monthly Payment & Interest", description: "Calculate monthly loan EMI, total repayment and total interest from principal, annual interest rate and loan term in months." },
     "compound-interest-sip-calculator": { title: "SIP & Compound Interest Calculator – Future Value", description: "Estimate SIP future value, total monthly investments and projected gain using an expected annual return and investment period." },
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
@@ -66,17 +65,28 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
   };
   const seo = seoOverrides[slug];
-  const title = seo?.title ?? `Free ${tool.name} Online`;
+  const title = seo?.title ?? `${tool.name} Online – Free Tool`;
   const socialTitle = `${tool.name} Online | PDFora`;
-  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")}. Use PDFora online to complete this task and check the result before saving or sharing.`.slice(0, 160);
-  const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
+  const rawDescription = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")}. Use PDFora in your browser to complete the task and check the result before saving or sharing.`;
+  const description = rawDescription.length <= 160
+    ? rawDescription
+    : `${rawDescription.slice(0, 157).replace(/\s+\S*$/, "")}...`;
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
+  const image = `/tools/${tool.slug}/opengraph-image`;
   return {
-    title, description, keywords,
+    title,
+    description,
     alternates: { canonical },
-    robots: { index: slug !== "ocr-pdf", follow: true },
-    openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
-    twitter: { card: "summary_large_image", title: socialTitle, description, images: [`/tools/${tool.slug}/opengraph-image`] },
+    robots: {
+      index: slug !== "ocr-pdf",
+      follow: true,
+      googleBot: { index: slug !== "ocr-pdf", follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+    },
+    openGraph: {
+      type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", locale: "en_US",
+      images: [{ url: image, width: 1200, height: 630, alt: `${tool.name} on PDFora` }],
+    },
+    twitter: { card: "summary_large_image", title: socialTitle, description, images: [image] },
   };
 }
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -375,11 +385,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does it accept Nepali digits?", a: "Yes. The converter accepts Devanagari numerals as well as English digits and supports common date separators." },
       { q: "Is the converted date an official government record?", a: "No. It is an online conversion aid. Verify dates used for legal, financial or government records against the original document and relevant authority." }
     ],
-    "nepal-forex-rates": [
-      { q: "Where do the exchange rates come from?", a: "The tool requests the latest available published rates from the Nepal Rastra Bank official foreign-exchange API." },
-      { q: "Why may the rate date be earlier than today?", a: "NRB may not publish a new rate on weekends or public holidays, so the latest available working-day rate is displayed." },
-      { q: "Are these the exact rates at every bank?", a: "No. Individual banks, money changers and remittance providers may offer different rates and fees." }
-    ],
     "nepse-market-news": [
       { q: "Where do the market and IPO headlines come from?", a: "The page fetches Google News RSS search results for Nepal stock-market and IPO topics. Each headline links to the publisher; it is not an official NEPSE notice feed." },
       { q: "Are headlines live NEPSE trading data?", a: "No. Headlines are automatically refreshed search results, not live prices, order-book data or confirmed corporate actions. Check NEPSE, SEBON, CDSC or the issuing company before acting." },
@@ -404,11 +409,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { "@type": "ListItem", position: 3, name: tool.name, item: canonicalUrl },
     ],
   };
-  const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
   return <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
     <ToolWorkspace slug={slug} />
     <CatalogToolSEOContent tool={tool} questions={questions} related={related} guideSlug={guide?.slug} />
   </>;

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of Service for PDFora.",
+  description: "Read the terms that apply when using PDFora online PDF converters, calculators and productivity tools, including user responsibilities and service limitations.",
   alternates: { canonical: "https://pd-fora.vercel.app/terms" },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms of Service for PDFora." },
+  openGraph: { type: "website", locale: "en_US", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms of Service for PDFora." },
 };
 
 export default function TermsPage() {

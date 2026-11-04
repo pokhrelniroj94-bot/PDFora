@@ -66,17 +66,26 @@ export function getToolMetadata(slug: string): Metadata {
   const name = tool?.name ?? slug.split("-").map((part) => part[0]?.toUpperCase() + part.slice(1)).join(" ");
   const intent = tool?.intent ?? `${name} online free`;
   const detail = tool?.detail ?? `Use PDFora to ${intent}. Follow the on-page instructions and download your processed document.`;
-  // Keep titles concise and descriptions useful in search snippets.
-  const title = `${name} Online Free`;
-  const description = `${detail} Use PDFora free in your browser; no installation required.`;
+  // Search snippets are generated from the actual operation, not a keyword-stuffed template.
+  const title = `${name} Online – Free PDF Tool`;
+  const rawDescription = `${detail} Use PDFora in your browser with no software installation.`;
+  const description = rawDescription.length <= 160
+    ? rawDescription
+    : `${rawDescription.slice(0, 157).replace(/\s+\S*$/, "")}...`;
   const url = `${baseUrl}/${slug}`;
+  const image = `${baseUrl}/opengraph-image`;
   return {
     title,
     description,
-    keywords: [intent, `${name} free`, `${name} online`, "free online PDF tools", "PDFora"],
     alternates: { canonical: url },
-    openGraph: { type: "website", url, siteName: "PDFora", title: `${title} | PDFora`, description },
-    twitter: { card: "summary", title: `${title} | PDFora`, description },
-    robots: { index: true, follow: true },
+    openGraph: {
+      type: "website", url, siteName: "PDFora", locale: "en_US", title, description,
+      images: [{ url: image, width: 1200, height: 630, alt: `${name} – PDFora online tool` }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [image] },
+    robots: {
+      index: true, follow: true,
+      googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+    },
   };
 }

@@ -1,4 +1,4 @@
-/** Existing PDF routes kept as the canonical URLs to preserve their search history. */
+/** Existing root-level tool routes kept canonical; /tools/<slug> aliases redirect here. */
 export const legacyToolSlugs = [
   "add-background",
   "add-blank-pages",
@@ -42,6 +42,7 @@ export const legacyToolSlugs = [
   "remove-pdf-metadata",
   "reorder-pdf",
   "repair-pdf",
+  "resume-builder",
   "rotate-pdf",
   "rotate-selected-pages",
   "sign-pdf",

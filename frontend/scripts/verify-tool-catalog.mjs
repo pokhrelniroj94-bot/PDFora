@@ -22,6 +22,7 @@ const marketIntelligence = read("../components/MarketIntelligence.tsx");
 const siteAIHelp = read("../components/SiteAIHelp.tsx");
 const rootLayout = read("../app/layout.tsx");
 const newTools = read("../components/NewTools.tsx");
+const resumeBuilder = read("../components/ResumeBuilder.tsx");
 const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
@@ -157,13 +158,17 @@ for (const slug of ["ats-resume-checker", "invoice-quotation-generator", "image-
 }
 
 assert.ok(allTools.includes('import AIWritingTools from "./AIWritingTools"') && allTools.includes('import MarketIntelligence from "./MarketIntelligence"'), "AI tool workspaces are not imported");
-assert.ok(allTools.includes('includes(slug)) return <main') && allTools.includes("<AIWritingTools slug={slug}/>") && allTools.includes("<MarketIntelligence/>"), "AI tool dispatch handlers are missing");
+assert.ok(allTools.includes('includes(slug)) return <main') && allTools.includes("<AIWritingTools slug={slug} locale={locale}/>") && allTools.includes("<MarketIntelligence locale={locale}/>"), "AI tool dispatch handlers are missing");
 assert.ok(aiRoute.includes('"site-help"') && aiRoute.includes('"ai-resume-writer"') && aiRoute.includes('"ai-cover-letter-generator"') && aiRoute.includes('"ai-humanizer"'), "AI API task allowlist is incomplete");
 assert.ok(aiRoute.includes("UPSTASH_REDIS_REST_URL") && aiRoute.includes("UPSTASH_REDIS_REST_TOKEN") && aiRoute.includes("EVAL"), "AI API must use the shared atomic Upstash rate limiter");
 assert.ok(aiRoute.includes("api.cloudflare.com/client/v4/accounts/") && !aiRoute.includes("api.openai.com") && !aiRoute.includes("api.anthropic.com"), "AI provider must remain Cloudflare-only with no paid fallback");
 assert.ok(aiWritingTools.includes("/api/ai-writing") && marketIntelligence.includes("/api/ai-writing"), "AI frontends are not connected to the AI API");
 assert.ok(siteAIHelp.includes('kind: "site-help"') && siteAIHelp.includes("/api/ai-writing"), "Site-wide AI Help request is not wired to the supported API task");
 assert.ok(rootLayout.includes('import SiteAIHelp from "../components/SiteAIHelp"') && rootLayout.includes("<SiteAIHelp />"), "Site-wide AI Help is not mounted in the root layout");
+assert.ok(resumeBuilder.includes("pdfora-ai-resume-draft") && resumeBuilder.includes("AI draft imported"), "AI resume drafts are not imported into the Resume Builder");
+assert.equal((resumeBuilder.match(/id: "/g) || []).length, 20, "Resume Builder must expose 20 templates");
+assert.ok(aiRoute.includes("Preferred output language") && aiWritingTools.includes("locale") && marketIntelligence.includes("locale"), "AI tools must receive the selected language");
+
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
 assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");

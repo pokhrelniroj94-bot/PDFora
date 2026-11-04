@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import DateConverter from "../lib/nepali-date-converter";
+import { toolUi } from "../lib/tool-ui-i18n";
 
 declare global { interface Window { PreetiConverter?: new () => { convert(text:string):string; reverseConvert(text:string):string } } }
 const months = ["बैशाख","जेठ","असार","साउन","भदौ","असोज","कात्तिक","मंसिर","पुस","माघ","फागुन","चैत"];
@@ -11,7 +12,8 @@ const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 function Input({title,value,onChange,type="text",placeholder=""}:{title:string;value:string;onChange:(v:string)=>void;type?:string;placeholder?:string}) { return <label className="block"><span className={label}>{title}</span><input className={field} type={type} value={value} placeholder={placeholder} onChange={e=>onChange(e.target.value)}/></label>; }
 function Output({children}:{children:React.ReactNode}) { return <div aria-live="polite" className="mt-4 whitespace-pre-wrap break-words rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5">{children}</div>; }
 function Panel({children}:{children:React.ReactNode}) { return <div className="space-y-4">{children}</div>; }
-export default function NepalTools({slug}:{slug:string}) {
+export default function NepalTools({slug,locale="en"}:{slug:string;locale?:string}) {
+ const tr=(source:string)=>toolUi(locale,source);
  const [mode,setMode]=useState("ad-bs"),[date,setDate]=useState(""),[result,setResult]=useState(""),[ready,setReady]=useState(false);
  const [amount,setAmount]=useState("1000"),[rate,setRate]=useState("13"),[taxMode,setTaxMode]=useState("add");
  const [ropani,setRopani]=useState("0"),[aana,setAana]=useState("0"),[paisa,setPaisa]=useState("0"),[daam,setDaam]=useState("0"),[area,setArea]=useState("5476");

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: "Merge, split, compress and convert PDF files online. Explore practical calculators and useful Nepal utilities with PDFora.",
     url: site,
     locale: "en_US",
-    alternateLocale: ["ne_NP", "hi_IN", "es_ES", "fr_FR", "de_DE", "pt_BR", "ar_SA", "bn_BD", "id_ID"],
+    alternateLocale: ["ne_NP", "hi_IN", "es_ES", "fr_FR", "de_DE", "pt_BR", "ar_SA", "bn_BD", "id_ID", "zh_CN", "ja_JP"],
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora free online tools" }],
   },
   twitter: {

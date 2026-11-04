@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { allTools } from "../../../lib/tool-directory";
 
 const ui: Record<string, {title:string; description:string; search:string; all:string; empty:string; back:string; note:string; categories:Record<string,string>}> = {
@@ -20,7 +20,8 @@ ja:{title:"利用可能なすべてのツール",description:"PDF、金融、テ
 
 export default function LocalizedToolsPage() {
  const {locale}=useParams<{locale:string}>();
- const t=ui[locale] ?? ui.ne;
+ if (!ui[locale]) notFound();
+ const t=ui[locale];
  const [query,setQuery]=useState("");
  const [category,setCategory]=useState("All");
  const categories=useMemo(()=>["All",...Array.from(new Set(allTools.map(x=>x.category))).sort()],[]);

@@ -16,6 +16,10 @@ const pdfToolSEO = read("../lib/tool-seo.ts");
 const pdfSEOContent = read("../components/ToolSEOContent.tsx");
 const nextConfig = read("../next.config.ts");
 const resumeBuilderPage = read("../app/resume-builder/page.tsx");
+const aiRoute = read("../app/api/ai-writing/route.ts");
+const aiWritingTools = read("../components/AIWritingTools.tsx");
+const marketIntelligence = read("../components/MarketIntelligence.tsx");
+const siteAIHelp = read("../components/SiteAIHelp.tsx");
 const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
@@ -108,7 +112,7 @@ const legacySlugValues = [...legacyRoutesSource.matchAll(/^\s*"([^"]+)",?$/gm)].
 const canonicalCatalogSlugs = catalog.filter((slug) => slug !== "ocr-pdf" && slug !== "pdf-tools" && !legacySlugValues.includes(slug));
 const canonicalToolSlugs = [...legacySlugValues, ...canonicalCatalogSlugs];
 assert.equal(new Set(canonicalToolSlugs).size, canonicalToolSlugs.length, "Canonical tool sitemap routes must be unique");
-assert.equal(canonicalToolSlugs.length, 168, `Expected 168 canonical tool URLs in the sitemap, found ${canonicalToolSlugs.length}`);
+assert.equal(canonicalToolSlugs.length, 172, `Expected 172 canonical tool URLs in the sitemap, found ${canonicalToolSlugs.length}`);
 for (const slug of catalog) {
   if (slug === "ocr-pdf" || slug === "pdf-tools") continue;
   assert.ok(
@@ -138,9 +142,18 @@ for (const href of availablePdfHrefs) {
   assert.ok(layoutSource.includes(`getToolMetadata("${slug}")`), `PDF tool ${slug} is missing generated metadata`);
   assert.ok(layoutSource.includes(`ToolSEOContent slug="${slug}"`), `PDF tool ${slug} is missing its on-page SEO guide`);
 }
-assert.equal(catalog.length, 119, "Expected 119 catalog utilities after retiring the NRB forex tool");
-assert.equal(allHrefs.length, 168, "Expected 168 available tools (49 PDF tools + 119 catalog utilities)");
+assert.equal(catalog.length, 123, "Expected 123 catalog utilities including four free AI tools after retiring the NRB forex tool");
+assert.equal(allHrefs.length, 172, "Expected 172 available tools (49 PDF tools + 123 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
+assert.ok(catalog.includes("ai-resume-writer") && catalog.includes("ai-cover-letter-generator") && catalog.includes("ai-humanizer") && catalog.includes("market-ai"), "AI tools are missing from the canonical catalog");
+assert.ok(allTools.includes('import AIWritingTools from "./AIWritingTools"') && allTools.includes('import MarketIntelligence from "./MarketIntelligence"'), "AI tool workspaces are not imported");
+assert.ok(allTools.includes('includes(slug)) return <main') && allTools.includes("<AIWritingTools slug={slug}/>") && allTools.includes("<MarketIntelligence/>"), "AI tool dispatch handlers are missing");
+assert.ok(aiRoute.includes('"site-help"') && aiRoute.includes('"ai-resume-writer"') && aiRoute.includes('"ai-cover-letter-generator"') && aiRoute.includes('"ai-humanizer"'), "AI API task allowlist is incomplete");
+assert.ok(aiRoute.includes("UPSTASH_REDIS_REST_URL") && aiRoute.includes("UPSTASH_REDIS_REST_TOKEN") && aiRoute.includes("EVAL"), "AI API must use the shared atomic Upstash rate limiter");
+assert.ok(aiRoute.includes("api.cloudflare.com/client/v4/accounts/") && !aiRoute.includes("api.openai.com") && !aiRoute.includes("api.anthropic.com"), "AI provider must remain Cloudflare-only with no paid fallback");
+assert.ok(aiWritingTools.includes("/api/ai-writing") && marketIntelligence.includes("/api/ai-writing"), "AI frontends are not connected to the AI API");
+assert.ok(siteAIHelp.includes('kind: "site-help"') && siteAIHelp.includes("/api/ai-writing"), "Site-wide AI Help request is not wired to the supported API task");
+assert.ok(layout.includes('import SiteAIHelp from "../components/SiteAIHelp"') && layout.includes("<SiteAIHelp />"), "Site-wide AI Help is not mounted in the root layout");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
 assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");

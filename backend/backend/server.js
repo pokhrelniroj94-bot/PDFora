@@ -93,13 +93,40 @@ function sendPDF(res, bytes, filename) {
 }
 
 function parsePages(value) {
-  return String(value || "")
-    .split(",")
+  const raw = String(value || "").split(",");
+  if (raw.length > 500) {
+    const error = new Error("Select no more than 500 page numbers.");
+    error.status = 413;
+    throw error;
+  }
+  return [...new Set(raw
     .map((item) => Number(item.trim()))
-    .filter(
-      (item) => Number.isInteger(item) && item > 0
-    );
+    .filter((item) => Number.isInteger(item) && item > 0))];
 }
+
+// Process-local fallback protection for this legacy service. For multiple
+// instances, put a shared rate limiter at the hosting proxy/API gateway.
+const requestBuckets = new Map();
+app.use((req, res, next) => {
+  if (req.method !== "POST" || !req.path.startsWith("/api/")) return next();
+  const ip = req.socket && req.socket.remoteAddress ? req.socket.remoteAddress : "unknown";
+  const now = Date.now();
+  const key = `${ip}:${Math.floor(now / 60000)}`;
+  const count = (requestBuckets.get(key) || 0) + 1;
+  requestBuckets.set(key, count);
+  if (requestBuckets.size > 10000) {
+    for (const [bucket] of requestBuckets) {
+      if (Number(bucket.slice(bucket.lastIndexOf(":") + 1)) < Math.floor(now / 60000) - 2) {
+        requestBuckets.delete(bucket);
+      }
+    }
+  }
+  if (count > 20) {
+    res.setHeader("Retry-After", "60");
+    return res.status(429).json({ detail: "Too many requests. Please wait a minute before trying again." });
+  }
+  return next();
+});
 
 /* =========================
    HEALTH
@@ -238,8 +265,9 @@ app.post(
 
       cleanup(req.file);
 
-      res.status(500).json({
-        detail: "Could not delete PDF pages.",
+      const clientError = error && (error.status === 400 || error.status === 413);
+      res.status(clientError ? error.status : 500).json({
+        detail: clientError ? error.message : "Could not delete PDF pages.",
       });
     }
   }
@@ -312,9 +340,9 @@ app.post(
 
       cleanup(req.file);
 
-      res.status(500).json({
-        detail:
-          "Could not extract PDF pages.",
+      const clientError = error && (error.status === 400 || error.status === 413);
+      res.status(clientError ? error.status : 500).json({
+        detail: clientError ? error.message : "Could not extract PDF pages.",
       });
     }
   }
@@ -765,8 +793,13 @@ app.use(
    START SERVER
 ========================= */
 
-app.listen(PORT, () => {
-  console.log(
-    `PDFora Backend running on http://127.0.0.1:${PORT}`
-  );
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(
+      `PDFora Backend running on http://127.0.0.1:${PORT}`
+    );
+  });
+}
+
+module.exports = { app, parsePages };
+

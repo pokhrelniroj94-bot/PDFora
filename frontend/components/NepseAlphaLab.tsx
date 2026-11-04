@@ -45,9 +45,8 @@ function runBacktest(rows:Bar[], mode:string, costPct:number):Result {
 
 export default function NepseAlphaLab(){
  const [symbol,setSymbol]=useState("NABIL"),[loadedSymbol,setLoadedSymbol]=useState(""),[mode,setMode]=useState("sma"),[cost,setCost]=useState("0.45"),[rows,setRows]=useState<Bar[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(""),[source,setSource]=useState("");
- const [result,setResult]=useState<Result|null>(null);
  async function load(){
-  setBusy(true);setError("");setResult(null);
+  setBusy(true);setError("");
   try{const res=await fetch("/api/nepse-market?symbol="+encodeURIComponent(symbol.trim().toUpperCase())+"&period=1Y",{cache:"no-store"});const data=await res.json();if(!res.ok)throw new Error(data.error||"Historical prices unavailable.");
    const clean=(data.points||[]).map((p:Record<string,unknown>)=>({date:String(p.date||""),close:Number(p.close),volume:Number(p.volume)||undefined})).filter((p:Bar)=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a:Bar,b:Bar)=>a.date.localeCompare(b.date));
    if(clean.length<80)throw new Error("At least 80 daily price observations are required. This symbol has "+clean.length+".");
@@ -75,3 +74,4 @@ export default function NepseAlphaLab(){
   <aside className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><b>Research-only disclaimer:</b> This is a simplified educational backtest on available daily close data. Signals are evaluated after a completed daily close and filled at the next available daily close to reduce look-ahead bias. It does not model intraday fills, circuit limits, partial fills, liquidity, corporate-action adjustments, taxes in every case or survivorship bias. Historical returns do not predict future results. Verify source data before using it.</aside>
  </main>;
 }
+

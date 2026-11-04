@@ -5,6 +5,7 @@ import CookieConsent, { CookieSettingsLink } from "../components/CookieConsent";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
 import SiteAIHelp from "../components/SiteAIHelp";
+import { supportedHomeLanguages } from "../lib/home-locales";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,13 @@ export default function RootLayout({
           <a href="/contact" className="hover:underline">Contact</a>
           <span className="mx-2">·</span>
           <CookieSettingsLink />
+          <nav aria-label="Language selection" className="mt-4 flex flex-wrap justify-center gap-x-3 gap-y-2 border-t border-slate-100 pt-4 text-xs">
+            <span className="font-bold text-slate-500">Language:</span>
+            {supportedHomeLanguages.map((language) => (
+              <a key={language.code} href={language.href} hrefLang={language.code} lang={language.code}
+                className="font-semibold text-blue-700 hover:underline">{language.nativeName}</a>
+            ))}
+          </nav>
         </footer>
         <ToolDirectory />
         <SiteAIHelp />

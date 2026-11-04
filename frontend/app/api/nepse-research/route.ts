@@ -1,13 +1,10 @@
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 const BASE = "https://raw.githubusercontent.com/Shubhamnpk/yonepse/main";
 type Json = Record<string, unknown>;
 
 async function readJson(path: string): Promise<unknown> {
   const response = await fetch(BASE + path, {
     headers: { Accept: "application/json" },
-    cache: "no-store",
+    next: { revalidate: 900 },
     signal: AbortSignal.timeout(9000),
   });
   if (!response.ok) throw new Error("UPSTREAM_" + response.status);
@@ -102,5 +99,6 @@ export async function GET(request: Request) {
     notice: matchedRecords
       ? "Only records explicitly matched to this symbol are included. Missing records mean unavailable from this dataset, not zero or negative."
       : "No company-specific records were matched. Do not infer company fundamentals or disclosures from missing data.",
-  }, { headers: { "Cache-Control": "no-store, max-age=0" } });
+  }, { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900" } });
 }
+

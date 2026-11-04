@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import AdsterraNative from "../app/components/AdsterraNative";
 import { allTools, type Tool } from "../lib/tool-directory";
+import { supportedHomeLanguages } from "../lib/home-locales";
 
 const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
   loading: () => <div className="grid min-h-40 place-items-center rounded-3xl border border-white/10 bg-slate-900/5 text-sm text-slate-500">Loading Nepal market updates…</div>,
@@ -167,7 +168,17 @@ export default function HomePageClient() {
           </Link>
 
           <nav aria-label="Main navigation" className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-            <Link href="/ne" lang="ne" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2 py-2 text-[11px] font-extrabold text-blue-800 hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">नेपाली</Link>
+            <details className="relative">
+              <summary className="inline-flex min-h-9 cursor-pointer list-none items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2 py-2 text-[11px] font-extrabold text-blue-800 hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">🌐 Language</summary>
+              <div className="absolute right-0 z-[70] mt-2 grid max-h-80 min-w-44 grid-cols-1 gap-1 overflow-y-auto rounded-xl border border-slate-200 bg-white p-2 text-slate-800 shadow-xl">
+                {supportedHomeLanguages.map((language) => (
+                  <Link key={language.code} href={language.href} hrefLang={language.code} lang={language.code}
+                    className="rounded-lg px-3 py-2 text-sm font-semibold hover:bg-teal-50 hover:text-teal-800">
+                    {language.nativeName}
+                  </Link>
+                ))}
+              </div>
+            </details>
             <Link href="/market" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2 py-2 text-[10px] font-bold text-teal-800 hover:border-teal-400 sm:px-3 sm:text-xs">📈 <span className="ml-1">Market</span></Link>
             <Link href="/tools" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 px-2.5 py-2 text-[10px] font-bold text-white transition hover:bg-slate-800 sm:px-4 sm:text-xs">Tools</Link>
           </nav>
@@ -361,7 +372,7 @@ export default function HomePageClient() {
           <Link href="/tools/nepse-market-news" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 font-bold text-rose-900 hover:bg-rose-100">📰 NEPSE &amp; IPO News <span className="mt-1 block text-xs font-medium">Latest headlines</span></Link>
           <Link href="/tools/nepal-share-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">📈 Share Profit Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Buy, sell &amp; charges</span></Link>
           <Link href="/tools/nepse-dividend-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💸 Dividend Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Cash &amp; bonus estimate</span></Link>
-          <Link href="/tools/nepal-forex-rates" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💱 NRB Forex Rates <span className="mt-1 block text-xs font-medium text-slate-500">Official buying &amp; selling</span></Link>
+          <Link href="/tools/currency-converter" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💱 Currency Converter <span className="mt-1 block text-xs font-medium text-slate-500">Convert between supported currencies</span></Link>
           <Link href="/market" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 font-bold text-teal-950 hover:border-teal-400">📊 NEPSE Market Dashboard <span className="mt-1 block text-xs font-medium text-teal-800">Index charts, stock prices &amp; market movers</span></Link>
         </div>
         <NepalMarketNews />
@@ -451,7 +462,7 @@ export default function HomePageClient() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { href: "/tools/nepal-forex-rates", title: "NRB Exchange Rates", desc: "Daily official currency buying and selling rates." },
+            { href: "/tools/currency-converter", title: "NRB Exchange Rates", desc: "Daily official currency buying and selling rates." },
             { href: "/tools/nepal-salary-tax-calculator", title: "Nepal Salary Tax Calculator", desc: "Estimate FY 2083/84 annual and monthly income tax." },
             { href: "/tools/nepal-electricity-bill-calculator", title: "NEA Electricity Bill", desc: "Estimate a single-phase domestic electricity bill." },
             { href: "/tools/nepali-date-converter", title: "BS to AD Date Converter", desc: "Convert Bikram Sambat and Gregorian dates." },

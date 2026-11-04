@@ -27,9 +27,10 @@ assert.equal(new Set(extraCases).size, extraCases.length, "Duplicate extra-tool 
 assert.deepEqual([...quickSlugs].sort(), [...quickCases].sort(), "Quick utility dispatch list and handlers differ");
 const nepalCases = [...nepalTools.matchAll(/slug==="([a-z0-9-]+)"/g)].map((m) => m[1]);
 const liveCases = [...nepalLiveTools.matchAll(/slug === "([a-z0-9-]+)"/g)].map((m) => m[1]);
-const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
+const nepalRouteBlocks = [...allTools.matchAll(/if\(\[(.*?)\]\.includes\(slug\)\)/gs)].map((match) => match[1]);
+const nepalRouteBlock = nepalRouteBlocks.find((block) => block.includes('"nepal-forex-rates"'));
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
-const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
+const routedNepalSlugs = [...nepalRouteBlock.matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
 const newToolCases = [...newTools.matchAll(/if\(slug==="([a-z0-9-]+)"\)/g)].map((m) => m[1]);
 const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs, ...newToolCases]);
@@ -48,7 +49,7 @@ assert.ok(typingRouted, "Nepali Unicode typing route or engine is missing");
 assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('import NepalLiveTools from "./NepalLiveTools"'), "Nepal live tools component is not imported");
 
 assert.ok(allTools.includes('import("./NepaliTypingTool")') || allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");
-assert.ok(allTools.includes('import("./NewTools")') || allTools.includes('import NewToolsChunk from "./NewTools"'), "New practical tools component is not imported");
+assert.ok(allTools.includes('import("./NewToolsFixed")') || allTools.includes('import NewToolsChunk from "./NewToolsFixed"') || allTools.includes('import("./NewTools")') || allTools.includes('import NewToolsChunk from "./NewTools"'), "New practical tools component is not imported");
 assert.ok(newToolCases.includes("ats-resume-checker") && newToolCases.includes("invoice-quotation-generator") && newToolCases.includes("loan-emi-calculator") && newToolCases.includes("image-resizer-compressor") && newToolCases.includes("business-break-even-calculator"), "New practical tool handlers are missing");
 const nepalSlugs = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);
 assert.ok(nepalSlugs.length > 0, "Nepal tool catalog entries were not detected by the guide coverage check");
@@ -80,7 +81,7 @@ assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal la
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
 
 const toolDirectory = read("../lib/tool-directory.ts");
-const homepage = read("../app/page.tsx");
+const homepage = read("../components/HomePageClient.tsx");
 const directoryComponent = read("../components/AllTools.tsx");
 const pdfBlock = toolDirectory.split("const rawPdfTools")[1]?.split("\n];")[0];
 assert.ok(pdfBlock, "Canonical PDF tool list is missing");
@@ -91,8 +92,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 136, "Expected 136 unique catalog utilities after deduplication and new tool additions");
-assert.equal(allHrefs.length, 185, "Expected 185 available tools (49 PDF tools + 136 catalog utilities)");
+assert.equal(catalog.length, 135, "Expected 135 unique catalog utilities after deduplication and new tool additions");
+assert.equal(allHrefs.length, 184, "Expected 184 available tools (49 PDF tools + 135 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
@@ -117,12 +118,19 @@ assert.ok(notesToolLine.includes('category:"PDF"'), "Notes to PDF must be groupe
 assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesToPDF />'), "Notes to PDF handler is missing");
 
 const marketApi = read("../app/api/nepse-market/route.ts");
+const researchApi = read("../app/api/nepse-research/route.ts");
 const marketDashboard = read("../components/NepseMarketDashboard.tsx");
+const portfolioUi = read("../components/NepsePortfolio.tsx");
+const portfolioMath = read("../lib/nepse-portfolio-math.ts");
 const marketPage = read("../app/market/page.tsx");
 const newsApi = read("../app/api/nepal-market-news/route.ts");
 const newsComponent = read("../components/NepalMarketNews.tsx");
+const resumeBuilder = read("../components/ResumeBuilder.tsx");
+const resumeDraft = read("../lib/resume-draft.ts");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
-assert.ok(marketApi.includes('source: usingLiveQuotes ? "YONEPSE live quote snapshot"'), "NEPSE API must identify the live quote source");
+assert.ok(marketApi.includes('source: usingUnofficialLive ? "NEPSE unofficial live API (nepseman-api)"') && marketApi.includes('"YONEPSE public market snapshot"') && marketApi.includes('"YONEPSE historical snapshot fallback"'), "NEPSE API must identify each quote source accurately");
+assert.ok(marketApi.includes("quoteStale,") && marketApi.includes("providerRefreshCadence:") && marketApi.includes("quoteAgeMinutes:"), "NEPSE API must disclose quote age and upstream refresh cadence");
+assert.ok(marketApi.includes('["previous_close", "previousClose", "previousClosingPrice"]') && marketApi.includes('rawPrevious == null || rawPrevious === ""') && marketApi.includes("previous > 0 ? previous : null"), "NEPSE quote normalization must keep ambiguous or missing previous-close data unavailable");
 assert.ok(marketApi.includes('read<Json>("/data/market/status.json")'), "NEPSE status source must be mapped correctly");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/summary.json")'), "NEPSE summary source must be an array");
 assert.ok(marketApi.includes('read<Json>("/data/market/top_stocks.json")'), "NEPSE top movers source must be an object");
@@ -130,14 +138,36 @@ assert.ok(marketApi.includes('read<unknown[]>("/data/market/sector_indices.json"
 assert.ok(marketApi.includes('read<Json>("/data/market/supply_demand.json")'), "NEPSE supply/demand source must be an object");
 assert.ok(marketApi.includes("summary: pick(summaryResult, [])"), "NEPSE summary fallback must remain an array for dashboard rendering");
 assert.ok(marketApi.includes('s-maxage=60'), "NEPSE API response cache must allow frequent quote updates");
+assert.ok(researchApi.includes("next: { revalidate: 900 }") && researchApi.includes("s-maxage=300, stale-while-revalidate=900"), "NEPSE company research must cache static provider data and responses to limit repeat upstream requests");
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
 assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
+assert.ok(marketDashboard.includes('dynamic(() => import("./NepsePortfolio")'), "NEPSE portfolio must be lazy-loaded on the market dashboard");
+assert.ok(portfolioUi.includes('name: "AES-GCM"') && portfolioUi.includes('name: "PBKDF2"'), "NEPSE portfolio must encrypt saved data with a derived key");
+assert.ok(portfolioUi.includes("localStorage.setItem(STORAGE_KEY") && !portfolioUi.includes("fetch("), "NEPSE portfolio data must stay in encrypted browser storage");
+assert.ok(portfolioMath.includes("averageCost * trade.quantity") && portfolioMath.includes("trade.quantity > account.quantity"), "NEPSE portfolio calculations must track weighted cost and reject overselling");
 assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market dashboard route is missing");
 assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market Dashboard"), "Homepage must link to the dedicated NEPSE market dashboard");
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
 assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-refresh headlines");
+assert.ok(resumeBuilder.includes("Save and restore my CV draft on this device") && resumeBuilder.includes("Delete saved draft"), "Resume builder must provide explicit local draft saving and deletion controls");
+assert.ok(resumeBuilder.includes("This storage is not encrypted") && resumeDraft.includes("export function isResumeDraft"), "Resume draft storage must disclose its privacy boundary and validate restored data");
+assert.ok(resumeBuilder.includes("templates.length") && resumeBuilder.includes('id: "student"') && resumeBuilder.includes('id: "ngo"') && resumeBuilder.includes('id: "experienced"'), "Resume builder must advertise accurate templates for students, NGO/INGO, and experienced professionals");
+assert.ok(resumeBuilder.includes("resume-layout-student .resume-education") && resumeBuilder.includes("resume-layout-academic .resume-content-flow") && resumeBuilder.includes("resume-executive-flow"), "Resume templates must implement distinct education-first, academic, and executive layouts");
+assert.ok(resumeBuilder.includes("position: static !important") && resumeBuilder.includes("overflow: visible !important") && resumeBuilder.includes("resume-editor-preview-grid > .resume-preview-container") && resumeBuilder.includes("break-inside: avoid"), "Resume PDF print rules must preserve document flow and allow multi-page output");
+
+const forexApi = read("../app/api/nepal-forex/route.ts");
+const forexBackend = read("../../backend/main.py");
+const forexUi = read("../components/NepalLiveTools.tsx");
+assert.ok(forexApi.includes('const NRB_URL = "https://www.nrb.org.np/api/forex/v1/rates"'), "NRB Forex must use the official NRB API as its primary source");
+assert.ok(forexApi.includes("previousRateDate:") && forexApi.includes("previousRates:"), "NRB Forex must return the previous published snapshot when available");
+assert.ok(forexBackend.includes('"previousRateDate"') && forexBackend.includes('"previousRates"'), "NRB backend fallback must preserve prior published rates");
+assert.ok(forexUi.includes('type="search"') && forexUi.includes("currencyQuery"), "NRB Forex table must support currency search");
+assert.ok(forexUi.includes('value="foreign-to-foreign"') && forexUi.includes("target.unit / target.sell"), "NRB Forex converter must support foreign-currency cross conversion using official buying/selling rates");
+assert.ok(forexUi.includes("previousRateDate") && forexUi.includes("Copy conversion"), "NRB Forex UI must show previous-rate context and allow copying a conversion");
+
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
-console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including new browser utilities, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);
+console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, plus NRB source, prior-rate, search and cross-conversion coverage.`);
+

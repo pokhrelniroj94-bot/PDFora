@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { isResumeDraft, type ResumeDraft } from "../lib/resume-draft";
 
 type Entry = { id: string; school: string; degree: string; place: string; dates: string };
 type Job = { id: string; role: string; company: string; dates: string; details: string };
 const templates = [
   { id: "harvard", name: "Harvard Classic", note: "ATS-friendly · traditional", color: "#172554" },
   { id: "modern", name: "Modern Sidebar", note: "Two-column · contemporary", color: "#0f766e" },
-  { id: "executive", name: "Executive", note: "Premium · leadership", color: "#7c2d12" },
+  { id: "executive", name: "Executive", note: "Leadership profile · banner header", color: "#7c2d12" },
   { id: "minimal", name: "Minimal", note: "Clean · elegant", color: "#334155" },
   { id: "creative", name: "Creative Accent", note: "Bold · visual", color: "#6d28d9" },
   { id: "europass", name: "Europass Inspired", note: "Structured · detailed", color: "#1d4ed8" },
@@ -26,8 +27,12 @@ const templates = [
   { id: "monochrome", name: "Monochrome", note: "Black & white · timeless", color: "#18181b" },
   { id: "warm", name: "Warm Minimal", note: "Soft · approachable", color: "#9a3412" },
   { id: "international", name: "International Profile", note: "Global · structured", color: "#3730a3" },
+  { id: "student", name: "Student CV", note: "Education-first · projects and skills", color: "#2563eb" },
+  { id: "ngo", name: "NGO / INGO", note: "Two-column · programs and experience", color: "#047857" },
+  { id: "experienced", name: "Experienced Professional", note: "Leadership banner · career history", color: "#9f1239" },
 ];
 const uid = () => Math.random().toString(36).slice(2, 9);
+const DRAFT_KEY = "pdfora.resume-builder.draft.v1";
 const initialEntry = (): Entry => ({ id: uid(), school: "", degree: "", place: "", dates: "" });
 const initialJob = (): Job => ({ id: uid(), role: "", company: "", dates: "", details: "" });
 
@@ -49,13 +54,42 @@ export default function ResumeBuilder() {
   const [projects, setProjects] = useState("");
   const [certifications, setCertifications] = useState("");
   const [references, setReferences] = useState("");
+  const [photo, setPhoto] = useState("");
+  const [photoError, setPhotoError] = useState("");
   const [aiDraftNotice, setAiDraftNotice] = useState("");
   const [aiConsent, setAiConsent] = useState(false);
   const [aiBusy, setAiBusy] = useState(false);
   const [aiError, setAiError] = useState("");
   const [aiSuggestions, setAiSuggestions] = useState<{ summary: string; skills: string; experience: string } | null>(null);
+  const [draftReady, setDraftReady] = useState(false);
+  const [draftEnabled, setDraftEnabled] = useState(false);
+  const [draftStatus, setDraftStatus] = useState("");
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    const draftTimer = window.setTimeout(() => {
+      try {
+        const saved = window.localStorage.getItem(DRAFT_KEY);
+        if (saved && saved.length <= 3_200_000) {
+          const parsed: unknown = JSON.parse(saved);
+          if (isResumeDraft(parsed)) {
+            setTemplate(parsed.template); setAccent(parsed.accent); setFont(parsed.font);
+            setName(parsed.name); setRole(parsed.role); setEmail(parsed.email); setPhone(parsed.phone);
+            setLocation(parsed.location); setWebsite(parsed.website); setSummary(parsed.summary); setSkills(parsed.skills);
+            setLanguages(parsed.languages); setEducation(parsed.education); setJobs(parsed.jobs);
+            setProjects(parsed.projects); setCertifications(parsed.certifications); setReferences(parsed.references); setPhoto(parsed.photo);
+            setDraftEnabled(true); setDraftStatus("Saved draft restored from this browser.");
+          } else {
+            setDraftStatus("A saved draft could not be read. Delete it and create a fresh draft.");
+          }
+        } else if (saved) {
+          setDraftStatus("Saved draft is too large to restore. Delete it and create a fresh draft.");
+        }
+      } catch {
+        setDraftStatus("This browser could not read the saved CV draft.");
+      } finally {
+        setDraftReady(true);
+      }
+    }, 0);
+    const aiDraftTimer = window.setTimeout(() => {
       try {
         const saved = sessionStorage.getItem("pdfora-ai-resume-draft");
         if (!saved) return;
@@ -69,10 +103,8 @@ export default function ResumeBuilder() {
         sessionStorage.removeItem("pdfora-ai-resume-draft");
       }
     }, 0);
-    return () => window.clearTimeout(timer);
+    return () => { window.clearTimeout(draftTimer); window.clearTimeout(aiDraftTimer); };
   }, []);
-  const [photo, setPhoto] = useState("");
-  const [photoError, setPhotoError] = useState("");
   const loadPhoto = (file?: File) => {
     setPhotoError("");
     if (!file) return;
@@ -90,6 +122,32 @@ export default function ResumeBuilder() {
     reader.readAsDataURL(file);
   };
   const skillList = useMemo(() => skills.split(/[,\n]/).map(s => s.trim()).filter(Boolean), [skills]);
+  const draft = useMemo<ResumeDraft>(() => ({
+    version: 1, template, accent, font, name, role, email, phone, location, website, summary, skills, languages,
+    education, jobs, projects, certifications, references, photo,
+  }), [template, accent, font, name, role, email, phone, location, website, summary, skills, languages, education, jobs, projects, certifications, references, photo]);
+  useEffect(() => {
+    if (!draftReady || !draftEnabled) return;
+    const timer = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        setDraftStatus("Draft saved on this device.");
+      } catch {
+        setDraftStatus("Could not save this draft. Browser storage may be full or disabled.");
+      }
+    }, 500);
+    return () => window.clearTimeout(timer);
+  }, [draftReady, draftEnabled, draft]);
+  const deleteDraft = () => {
+    if (!window.confirm("Delete the saved CV draft from this browser? Your current editor contents will remain until you leave this page.")) return;
+    try {
+      window.localStorage.removeItem(DRAFT_KEY);
+      setDraftEnabled(false);
+      setDraftStatus("Saved CV draft deleted from this browser.");
+    } catch {
+      setDraftStatus("Could not delete the saved draft. Clear this site's browser storage manually.");
+    }
+  };
   const updateEducation = (id: string, key: keyof Entry, value: string) => setEducation(rows => rows.map(row => row.id === id ? { ...row, [key]: value } : row));
   const updateJob = (id: string, key: keyof Job, value: string) => setJobs(rows => rows.map(row => row.id === id ? { ...row, [key]: value } : row));
   const input = "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100";
@@ -137,13 +195,27 @@ export default function ResumeBuilder() {
   };
   const print = () => window.print();
   const heading = (title: string) => <h3 className="mb-3 mt-6 border-b pb-2 text-sm font-extrabold uppercase tracking-widest" style={{ color: accent, borderColor: accent + "55" }}>{title}</h3>;
+  const sidebarTemplates = ["modern", "creative", "tech", "finance", "clean-two-column", "navy", "emerald", "corporate", "international", "ngo"];
+  const hasSidebar = sidebarTemplates.includes(template);
+  const educationFirst = ["graduate", "student", "academic"].includes(template);
+  const experienceSection = jobs.some(j => j.role || j.company) && <section className="resume-experience">{heading("Professional Experience")}{jobs.filter(j=>j.role||j.company).map(j=><div className="mb-4" key={j.id}><div className="flex justify-between gap-3"><b className="text-sm">{j.role}</b><span className="text-xs text-slate-500">{j.dates}</span></div><p className="text-sm italic">{j.company}</p><p className="mt-1 whitespace-pre-line text-sm leading-5">{j.details}</p></div>)}</section>;
+  const educationSection = education.some(e => e.degree || e.school) && <section className="resume-education">{heading(template === "academic" ? "Education & Research Training" : "Education")}{education.filter(e=>e.degree||e.school).map(e=><div className="mb-3" key={e.id}><div className="flex justify-between gap-3"><b className="text-sm">{e.degree}</b><span className="text-xs text-slate-500">{e.dates}</span></div><p className="text-sm">{e.school}{e.place && " · "+e.place}</p></div>)}</section>;
+  const orderedCareerSections = <>{educationFirst && educationSection}{experienceSection}{!educationFirst && educationSection}</>;
 
-  return <main className="mx-auto min-h-screen max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8">
+  return <main className="resume-builder-page mx-auto min-h-screen max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8">
     {aiDraftNotice && <div role="status" className="no-print mb-5 rounded-xl border border-teal-200 bg-teal-50 p-3 text-sm font-medium text-teal-900">{aiDraftNotice}</div>}
     <div className="mb-7 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-      <div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Career Studio</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Professional Resume Builder</h1><p className="mt-2 max-w-2xl text-slate-600">Build a polished, job-ready CV with 20 professional templates, live preview and print-ready A4 PDF export.</p></div>
+      <div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Career Studio</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Professional Resume Builder</h1><p className="mt-2 max-w-2xl text-slate-600">Build a polished, job-ready CV with {templates.length} professional templates, live preview and print-ready A4 PDF export.</p></div>
       <div className="no-print flex flex-wrap gap-2"><a href="/tools/ai-resume-writer" className="rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-extrabold text-teal-800 transition hover:bg-teal-100">AI write CV content ↗</a><a href="/tools/ai-cover-letter-generator" className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50">Cover letter ↗</a><button onClick={print} className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800">Download CV as PDF ↗</button></div>
     </div>
+    <section className="no-print mb-6 rounded-2xl border border-slate-200 bg-white p-4" aria-label="Local CV draft storage">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <label className="flex items-start gap-2 text-sm font-semibold text-slate-800"><input type="checkbox" checked={draftEnabled} disabled={!draftReady} onChange={(event) => setDraftEnabled(event.target.checked)} className="mt-1 h-4 w-4 accent-teal-700" /><span>Save and restore my CV draft on this device</span></label>
+        <button type="button" onClick={deleteDraft} disabled={!draftReady} className="rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700 disabled:opacity-50">Delete saved draft</button>
+      </div>
+      <p className="mt-2 text-xs leading-5 text-slate-600">When enabled, resume details and the optional photo are stored in this browser&apos;s local storage and are not uploaded by draft saving. This storage is not encrypted; avoid enabling it on a shared device and delete the draft when finished.</p>
+      <p className="mt-1 text-xs text-slate-500" role="status" aria-live="polite">{draftStatus || (draftEnabled ? "Saving changes on this device." : "Draft saving is off.")}</p>
+    </section>
     <div className="no-print mb-6 rounded-2xl border border-teal-200 bg-teal-50/60 p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-wide text-teal-800">AI CV Assistant</p><h2 className="mt-1 text-lg font-extrabold text-slate-950">Improve your CV with AI</h2><p className="mt-1 max-w-2xl text-sm text-slate-600">Uses your target role, skills, education and experience to draft a stronger summary and ATS-friendly bullet points. Your contact details and photo are not sent.</p></div><button type="button" onClick={() => void generateCvWithAi()} disabled={aiBusy || !aiConsent || !role.trim()} className="rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50">{aiBusy ? "Improving CV…" : "Improve CV with AI"}</button></div>
       <label className="mt-3 flex items-start gap-2 text-xs leading-5 text-slate-600"><input type="checkbox" checked={aiConsent} onChange={(event) => setAiConsent(event.target.checked)} className="mt-1 h-4 w-4 accent-teal-700" /><span>I agree to send my target role, skills, education and experience text to the configured AI provider for processing. I will not include confidential information.</span></label>
@@ -156,11 +228,14 @@ export default function ResumeBuilder() {
       </div>}
     </div>
     <div className="no-print mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {templates.map(t => <button key={t.id} onClick={() => setTemplate(t.id)} className={"rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md " + (template === t.id ? "border-teal-600 bg-teal-50 ring-2 ring-teal-100" : "border-slate-200 bg-white")}>
-        <div className="mb-2 flex h-20 overflow-hidden rounded-lg border border-slate-200 bg-white"><div className="w-[28%]" style={{ background: t.id === "modern" || t.id === "creative" ? t.color : "#f1f5f9" }} /><div className="flex-1 p-2"><div className="mb-2 h-2 w-2/3 rounded" style={{ background: t.color }} /><div className="mb-1 h-1 w-full rounded bg-slate-200" /><div className="mb-1 h-1 w-4/5 rounded bg-slate-200" /><div className="mt-3 h-1 w-1/2 rounded bg-slate-300" /></div></div><span className="block text-sm font-extrabold text-slate-900">{t.name}</span><span className="text-xs text-slate-500">{t.note}</span>{template === t.id && <span className="ml-2 text-xs font-bold text-teal-700">Selected ✓</span>}
+      {templates.map(t => <button key={t.id} onClick={() => { setTemplate(t.id); setAccent(t.color); }} className={"rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md " + (template === t.id ? "border-teal-600 bg-teal-50 ring-2 ring-teal-100" : "border-slate-200 bg-white")}>
+        <div className="mb-2 flex h-20 overflow-hidden rounded-lg border border-slate-200 bg-white">
+          {sidebarTemplates.includes(t.id) && <div className="w-[28%]" style={{ background: t.color }} />}
+          <div className="flex flex-1 flex-col p-2"><div className={"mb-2 h-2 rounded " + (t.id === "executive" || t.id === "experienced" ? "h-5 w-full" : t.id === "minimal" ? "w-1/3" : "w-2/3")} style={{ background: t.color }} />{t.id === "student" || t.id === "graduate" || t.id === "academic" ? <><div className="mb-1 h-1 w-1/2 rounded bg-slate-300" /><div className="mb-1 h-1 w-full rounded bg-slate-200" /><div className="mb-1 h-1 w-4/5 rounded bg-slate-200" /></> : <><div className="mb-1 h-1 w-full rounded bg-slate-200" /><div className="mb-1 h-1 w-4/5 rounded bg-slate-200" /><div className="mt-3 h-1 w-1/2 rounded bg-slate-300" /></>}</div>
+        </div><span className="block text-sm font-extrabold text-slate-900">{t.name}</span><span className="text-xs text-slate-500">{t.note}</span>{template === t.id && <span className="ml-2 text-xs font-bold text-teal-700">Selected ✓</span>}
       </button>)}
     </div>
-    <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(560px,1.08fr)]">
+    <div className="resume-editor-preview-grid grid items-start gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(560px,1.08fr)]">
       <section className="no-print space-y-5">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="mb-5 flex items-center justify-between"><h2 className="text-lg font-extrabold text-slate-900">1. Personal details</h2><span className="text-xs text-slate-400">Contact & identity</span></div>
@@ -172,17 +247,16 @@ export default function ResumeBuilder() {
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-extrabold text-slate-900">4. Education</h2><button onClick={()=>setEducation(rows=>[...rows,initialEntry()])} className="rounded-lg border border-teal-200 px-3 py-2 text-xs font-bold text-teal-800 hover:bg-teal-50">+ Add education</button></div>{education.map((e,i)=><div key={e.id} className="mb-3 rounded-xl bg-slate-50 p-4"><div className="mb-3 flex items-center justify-between"><b className="text-sm">Education {i+1}</b><button onClick={()=>setEducation(rows=>rows.filter(x=>x.id!==e.id))} className="text-xs font-bold text-rose-600">Remove</button></div><div className="grid gap-3 sm:grid-cols-2">{field("Degree / qualification",e.degree,v=>updateEducation(e.id,"degree",v),"BBA, Bachelor of Business Administration")}{field("Institution",e.school,v=>updateEducation(e.id,"school",v),"University / College")}{field("Location",e.place,v=>updateEducation(e.id,"place",v),"Ilam, Nepal")}{field("Dates",e.dates,v=>updateEducation(e.id,"dates",v),"2023 – 2027")}</div></div>)}</div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><h2 className="mb-4 text-lg font-extrabold text-slate-900">5. Skills & additional information</h2><div className="grid gap-4 sm:grid-cols-2">{area("Skills (comma separated)",skills,setSkills,"Financial analysis, Excel, Communication")}{area("Languages",languages,setLanguages,"Nepali (Native), English (Professional)")}{area("Projects",projects,setProjects,"Project name — what you built and the result")}{area("Certifications",certifications,setCertifications,"Course / certificate — issuer, year")}{area("References (optional)",references,setReferences,"Available upon request")}</div></div>
       </section>
-      <section className="min-w-0 xl:sticky xl:top-4">
+      <section className="resume-preview-container min-w-0 xl:sticky xl:top-4">
         <div className="no-print mb-3 flex items-center justify-between"><div><h2 className="font-extrabold text-slate-900">Live CV preview</h2><p className="text-xs text-slate-500">Updates as you type · A4 print layout</p></div><button onClick={print} className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold text-white">Export PDF</button></div>
-        <article id="resume-paper" className={"resume-paper mx-auto min-h-[800px] w-full max-w-[794px] overflow-hidden bg-white text-slate-800 shadow-[0_20px_70px_rgba(15,23,42,.14)] " + (["modern","creative","tech","finance","clean-two-column","navy","emerald"].includes(template) ? "resume-sidebar" : "")} style={{ fontFamily: font }}>
-          {(["modern","creative","tech","finance","clean-two-column","navy","emerald"].includes(template)) ? <div className="grid min-h-[1123px] grid-cols-[31%_69%]">
+        <article id="resume-paper" className={"resume-paper resume-layout-" + template + " mx-auto min-h-[800px] w-full max-w-[794px] overflow-hidden bg-white text-slate-800 shadow-[0_20px_70px_rgba(15,23,42,.14)] " + (hasSidebar ? "resume-sidebar" : "")} style={{ fontFamily: template === "academic" || template === "elegant" ? "Georgia, serif" : font }}>
+          {hasSidebar ? <div className="grid min-h-[1123px] grid-cols-[31%_69%]">
             <aside className="p-6 text-white" style={{background:accent}}>{photo && <Image src={photo} alt="Profile" width={96} height={96} unoptimized className="mb-5 h-24 w-24 rounded-full object-cover" />}<h1 className="break-words text-2xl font-black leading-tight">{name || "Your Name"}</h1><p className="mt-2 text-sm opacity-90">{role || "Professional Title"}</p><div className="mt-7 space-y-2 break-words text-xs">{[email,phone,location,website].filter(Boolean).map(x=><p key={x}>{x}</p>)}</div><h3 className="mt-8 border-b border-white/40 pb-2 text-xs font-extrabold uppercase tracking-widest">Skills</h3><ul className="mt-3 space-y-2 text-xs">{skillList.map(s=><li key={s}>• {s}</li>)}</ul>{languages && <><h3 className="mt-8 border-b border-white/40 pb-2 text-xs font-extrabold uppercase tracking-widest">Languages</h3><p className="mt-3 whitespace-pre-line text-xs">{languages}</p></>}</aside>
-            <div className="p-7">{summary && <>{heading("Profile")}<p className="whitespace-pre-line text-sm leading-6">{summary}</p></>}{jobs.some(j=>j.role||j.company) && <>{heading("Experience")}{jobs.filter(j=>j.role||j.company).map(j=><div className="mb-4" key={j.id}><div className="flex justify-between gap-2"><b>{j.role}</b><span className="text-xs text-slate-500">{j.dates}</span></div><p className="text-sm">{j.company}</p><p className="mt-1 whitespace-pre-line text-xs leading-5">{j.details}</p></div>)}</>}{education.some(e=>e.degree||e.school) && <>{heading("Education")}{education.filter(e=>e.degree||e.school).map(e=><div className="mb-3" key={e.id}><b className="text-sm">{e.degree}</b><p className="text-sm">{e.school} {e.place && "· "+e.place}</p><p className="text-xs text-slate-500">{e.dates}</p></div>)}</>}{projects && <>{heading("Projects")}<p className="whitespace-pre-line text-sm">{projects}</p></>}{certifications && <>{heading("Certifications")}<p className="whitespace-pre-line text-sm">{certifications}</p></>}{references && <>{heading("References")}<p className="whitespace-pre-line text-sm">{references}</p></>}</div>
-          </div> : <div className="p-10">
-            <header className="border-b-2 pb-5 text-center" style={{borderColor:accent}}>{photo && <Image src={photo} alt="Profile" width={80} height={80} unoptimized className="mx-auto mb-3 h-20 w-20 rounded-full object-cover" />}<h1 className="text-3xl font-black tracking-tight" style={{color:accent}}>{name || "Your Name"}</h1><p className="mt-1 text-base font-semibold">{role || "Professional Title"}</p><p className="mt-3 flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs text-slate-600">{[email,phone,location,website].filter(Boolean).map(x=><span key={x}>{x}</span>)}</p></header>
-            {summary && <>{heading("Professional Summary")}<p className="whitespace-pre-line text-sm leading-6">{summary}</p></>}
-            {jobs.some(j=>j.role||j.company) && <>{heading("Professional Experience")}{jobs.filter(j=>j.role||j.company).map(j=><div className="mb-4" key={j.id}><div className="flex justify-between gap-3"><b className="text-sm">{j.role}</b><span className="text-xs text-slate-500">{j.dates}</span></div><p className="text-sm italic">{j.company}</p><p className="mt-1 whitespace-pre-line text-sm leading-5">{j.details}</p></div>)}</>}
-            {education.some(e=>e.degree||e.school) && <>{heading("Education")}{education.filter(e=>e.degree||e.school).map(e=><div className="mb-3" key={e.id}><div className="flex justify-between gap-3"><b className="text-sm">{e.degree}</b><span className="text-xs text-slate-500">{e.dates}</span></div><p className="text-sm">{e.school}{e.place && " · "+e.place}</p></div>)}</>}
+            <div className="resume-content-flow p-7">{summary && <section>{heading("Profile")}<p className="whitespace-pre-line text-sm leading-6">{summary}</p></section>}{orderedCareerSections}{projects && <section>{heading(template === "academic" ? "Research & Publications" : "Projects")}<p className="whitespace-pre-line text-sm">{projects}</p></section>}{certifications && <section>{heading("Certifications")}<p className="whitespace-pre-line text-sm">{certifications}</p></section>}{references && <section>{heading("References")}<p className="whitespace-pre-line text-sm">{references}</p></section>}</div>
+          </div> : <div className={"resume-content-flow p-10 " + (["executive", "experienced"].includes(template) ? "resume-executive-flow" : "")}>
+            {(["executive", "experienced"].includes(template)) ? <header className="-mx-10 -mt-10 mb-7 border-l-[12px] px-9 py-8 text-white" style={{ backgroundColor: "#172554", borderColor: accent }}><div className="flex items-center gap-5">{photo && <Image src={photo} alt="Profile" width={88} height={88} unoptimized className="h-22 w-22 rounded-full border-2 border-white/60 object-cover" />}<div><h1 className="text-3xl font-black tracking-tight">{name || "Your Name"}</h1><p className="mt-1 text-base font-semibold text-white/90">{role || "Professional Title"}</p></div></div><p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/80">{[email,phone,location,website].filter(Boolean).map(x=><span key={x}>{x}</span>)}</p></header> : <header className={"border-b-2 pb-5 " + (template === "minimal" ? "text-left" : "text-center")} style={{borderColor:accent}}>{photo && <Image src={photo} alt="Profile" width={80} height={80} unoptimized className={(template === "minimal" ? "mb-3" : "mx-auto mb-3") + " h-20 w-20 rounded-full object-cover"}/>}<h1 className="text-3xl font-black tracking-tight" style={{color:accent}}>{name || "Your Name"}</h1><p className="mt-1 text-base font-semibold">{role || "Professional Title"}</p><p className={"mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-600 " + (template === "minimal" ? "justify-start" : "justify-center")}>{[email,phone,location,website].filter(Boolean).map(x=><span key={x}>{x}</span>)}</p></header>}
+            {summary && <section>{heading(template === "executive" || template === "experienced" ? "Leadership Profile" : "Professional Summary")}<p className="whitespace-pre-line text-sm leading-6">{summary}</p></section>}
+            {orderedCareerSections}
             {skillList.length>0 && <>{heading("Core Skills")}<p className="text-sm leading-6">{skillList.join("  •  ")}</p></>}
             {languages && <>{heading("Languages")}<p className="whitespace-pre-line text-sm">{languages}</p></>}
             {projects && <>{heading("Projects")}<p className="whitespace-pre-line text-sm leading-6">{projects}</p></>}
@@ -194,14 +268,35 @@ export default function ResumeBuilder() {
       </section>
     </div>
     <style jsx global>{`
+      .resume-content-flow { display: flex; flex-direction: column; }
+      .resume-layout-student .resume-education, .resume-layout-graduate .resume-education, .resume-layout-academic .resume-education { order: 1; }
+      .resume-layout-student .resume-experience, .resume-layout-graduate .resume-experience, .resume-layout-academic .resume-experience { order: 2; }
+      .resume-layout-academic .resume-content-flow { padding-left: 16mm; border-left: 2px solid #7f1d1d; }
+      .resume-layout-compact .resume-content-flow { padding: 7mm; font-size: 9pt; }
+      .resume-layout-compact .resume-content-flow h3 { margin-top: 3mm; margin-bottom: 2mm; }
+      .resume-layout-europass header { text-align: left; }
+      .resume-layout-europass header p { justify-content: flex-start; }
+      .resume-layout-europass .resume-content-flow { border-top: 6px solid #1d4ed8; padding-top: 5mm; }
+      .resume-executive-flow > section { border-left: 2px solid #e2e8f0; padding-left: 5mm; }
       @media print {
         @page { size: A4; margin: 0; }
         html, body { background: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        html, body { height: auto !important; min-height: 0 !important; overflow: visible !important; }
+        body > *:not(.resume-builder-page) { display: none !important; }
+        .resume-builder-page { display: block !important; width: 210mm !important; max-width: none !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; }
+        .resume-builder-page > * { display: none !important; }
+        .resume-builder-page > .resume-editor-preview-grid { display: block !important; }
+        .resume-editor-preview-grid > .no-print { display: none !important; }
+        .resume-editor-preview-grid > .resume-preview-container { display: block !important; position: static !important; width: 210mm !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; }
         body * { visibility: hidden !important; }
         #resume-paper, #resume-paper * { visibility: visible !important; }
-        #resume-paper { position: absolute !important; left: 0 !important; top: 0 !important; width: 210mm !important; min-height: 297mm !important; max-width: none !important; margin: 0 !important; box-shadow: none !important; }
+        #resume-paper { position: static !important; left: auto !important; top: auto !important; display: block !important; width: 210mm !important; height: auto !important; min-height: 297mm !important; max-width: none !important; margin: 0 !important; overflow: visible !important; box-shadow: none !important; }
+        #resume-paper .grid { display: block !important; min-height: 0 !important; }
+        #resume-paper .resume-experience > div, #resume-paper .resume-education > div, #resume-paper .mb-3, #resume-paper .mb-4 { break-inside: avoid; page-break-inside: avoid; }
+        #resume-paper aside { break-inside: avoid; page-break-inside: avoid; }
         .no-print { display: none !important; }
       }
     `}</style>
   </main>;
 }
+

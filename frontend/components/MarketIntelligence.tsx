@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { guardNepseSignalFreshness } from "../lib/nepse-signal-freshness.mjs";
 
 
 type NewsStory = { title: string; link: string; publishedAt: string; source: string };
@@ -243,17 +244,23 @@ export default function MarketIntelligence() {
       })).filter((p: Point) => p.date && Number.isFinite(p.close) && p.close > 0);
       const result = analyse(rows, "nepse");
       if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
+      const freshness = guardNepseSignalFreshness(result.signal, data.latestHistoryDate || result.latestDate);
       const newsResponse = await fetch(`/api/nepal-market-news?symbol=${encodeURIComponent(symbol)}`, { cache: "no-store" });
       if (!newsResponse.ok) throw new Error("News service unavailable; a news-verified signal cannot be issued.");
       const newsPayload = await newsResponse.json();
       const reviewed = reviewNews(newsPayload, symbol);
       setNewsReview(reviewed);
-      const combined: Analysis = { ...result };
+      const combined: Analysis = { ...result, signal: freshness.signal };
+      if (freshness.stale && freshness.reason) {
+        combined.entry = `No directional entry setup is shown because the history is stale. ${freshness.reason}`;
+        combined.risks = [...combined.risks, freshness.reason];
+        combined.reasons = [...combined.reasons, freshness.reason];
+      }
       if (reviewed.sentiment === "Negative" && combined.signal === "Potential BUY setup") { combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "Negative recent headlines block a fresh BUY until original announcements are reviewed."]; }
       else if (reviewed.sentiment === "Positive" && combined.signal.includes("SELL")) { combined.signal = "Wait / neutral"; combined.risks = [...combined.risks, "Positive headlines conflict with technical downside; wait for confirmation."]; }
       else if (reviewed.sentiment === "Mixed / neutral") { if (combined.signal === "Potential BUY setup") combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "News is mixed or insufficient; a fresh BUY is blocked until there is clearer news context and technical confirmation."]; }
       combined.reasons = [...combined.reasons, `News review: ${reviewed.sentiment}. ${reviewed.note}`];
-      setAnalysis(combined); setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
+      setAnalysis(combined); setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · signal data ${freshness.stale ? "stale; directional setups withheld" : "within freshness window"} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
     } catch (err) { setError(err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
     finally { setBusy(false); }
   }
@@ -348,3 +355,4 @@ export default function MarketIntelligence() {
     </aside>
   </div>;
 }
+

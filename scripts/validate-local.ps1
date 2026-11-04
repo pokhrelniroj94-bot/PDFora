@@ -17,7 +17,7 @@ function Invoke-Check {
 $root = Split-Path -Parent $PSScriptRoot
 $frontend = Join-Path $root "frontend"
 $backend = Join-Path $root "backend"
-$venvPython = Join-Path $backend ".venv\Scripts\python.exe"
+$venvPython = Join-Path $root ".venv-pdfora\Scripts\python.exe"
 
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     throw "Node.js 22 is required. Install Node.js 22 and reopen PowerShell."
@@ -26,7 +26,7 @@ if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
     throw "npm was not found. Reinstall Node.js 22 with npm."
 }
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-    throw "Python 3.12 is required. Install Python 3.12 and reopen PowerShell."
+    throw "Python 3.12 or 3.13 is required. Install a supported Python version and reopen PowerShell."
 }
 
 $nodeVersion = node -p "process.versions.node"
@@ -38,8 +38,8 @@ if ($nodeMajor -lt 20 -or ($nodeMajor -eq 20 -and $nodeMinor -lt 9)) {
 }
 
 $pythonVersion = python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"
-if ($pythonVersion -ne "3.12") {
-    throw "Python 3.12 is required to match CI. Detected: $pythonVersion"
+if ($pythonVersion -notin @("3.12", "3.13")) {
+    throw "Python 3.12 or 3.13 is supported for local validation. Detected: $pythonVersion"
 }
 
 Write-Host "PDFora local validation (no GitHub Actions billing required)" -ForegroundColor Green
@@ -47,7 +47,7 @@ Write-Host "PDFora local validation (no GitHub Actions billing required)" -Foreg
 Invoke-Check "Legacy Express syntax" "node" @("--check", (Join-Path $backend "backend\server.js"))
 
 if (-not (Test-Path $venvPython)) {
-    Invoke-Check "Create backend virtual environment" "python" @("-m", "venv", (Join-Path $backend ".venv"))
+    Invoke-Check "Create isolated project virtual environment" "python" @("-m", "venv", (Join-Path $root ".venv-pdfora"))
 }
 
 Invoke-Check "Install backend dependencies" $venvPython @("-m", "pip", "install", "--upgrade", "pip")
@@ -61,6 +61,7 @@ Push-Location $frontend
 try {
     Invoke-Check "Install frontend dependencies" "npm" @("ci")
     Invoke-Check "Verify tool catalog" "npm" @("run", "verify:tools")
+    Invoke-Check "Verify NEPSE market-intelligence freshness guard" "npm" @("run", "verify:market-intelligence")
     Invoke-Check "Run frontend lint" "npm" @("run", "lint")
     Invoke-Check "Build frontend for production" "npm" @("run", "build")
     Invoke-Check "Audit production npm dependencies" "npm" @("audit", "--omit=dev", "--audit-level=high")

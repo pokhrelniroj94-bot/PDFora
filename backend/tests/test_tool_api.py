@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import json
 import os
 import sys
 import zipfile
@@ -11,6 +12,7 @@ from PIL import Image
 from pypdf import PdfReader, PdfWriter
 from fastapi.testclient import TestClient
 import requests
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from main import app  # noqa: E402
@@ -31,11 +33,15 @@ client = ApiClient(os.environ["PDFORA_API"]) if os.environ.get("PDFORA_API") els
 
 def make_sample_pdf() -> bytes:
     doc = fitz.open()
-    font_path = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+    font_candidates = (
+        Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        Path("C:/Windows/Fonts/arial.ttf"),
+    )
+    font_path = next((candidate for candidate in font_candidates if candidate.is_file()), None)
     for number in range(1, 4):
         page = doc.new_page(width=612, height=792)
         text = f"PDFora regression test page {number}\nRevenue 2026\nNorth 100\nSouth 200"
-        if font_path.exists():
+        if font_path:
             page.insert_text((50, 70), text, fontfile=str(font_path), fontname="DejaVu")
         else:
             page.insert_text((50, 70), text)
@@ -348,4 +354,309 @@ def test_cleanup_endpoint_is_not_public_without_admin_secret(monkeypatch):
     monkeypatch.delenv("CLEANUP_ADMIN_TOKEN", raising=False)
     response = TestClient(app).post("/api/cleanup")
     assert response.status_code == 404
+
+
+
+def test_spreadsheet_exports_treat_pdf_text_as_literal_not_formula():
+    from openpyxl import Workbook
+    from main import csv_safe_text, set_literal_cell
+
+    workbook = Workbook()
+    cell = set_literal_cell(workbook.active, 1, 1, "=HYPERLINK(\"https://example.com\",\"click\")")
+    assert cell.data_type == "s"
+    assert cell.value.startswith("=")
+    assert csv_safe_text("=1+1") == "'=1+1"
+    assert csv_safe_text("  @SUM(A1:A2)") == "'@SUM(A1:A2)"
+    assert csv_safe_text("ordinary text") == "ordinary text"
+
+
+def test_render_matrix_rejects_huge_page_and_bounds_scale():
+    from main import safe_render_matrix
+    from fastapi import HTTPException
+
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+    matrix = safe_render_matrix(page, 3.0, max_pixels=1_000_000)
+    assert matrix.a <= 3.0
+    assert matrix.a * matrix.d * page.rect.width * page.rect.height <= 1_000_001
+    huge = doc.new_page(width=10000, height=10000)
+    try:
+        safe_render_matrix(huge, 2.0, max_pixels=20_000_000)
+    except HTTPException as exc:
+        assert exc.status_code == 413
+    else:
+        raise AssertionError("Oversized page should be rejected")
+    doc.close()
+
+
+def test_multi_page_raster_budget_rejects_document_before_rendering(monkeypatch):
+    from fastapi import HTTPException
+    from main import reserve_render_pixels
+
+    monkeypatch.setattr("main.MAX_DOCUMENT_RENDER_PIXELS", 900_000)
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+    pixels = reserve_render_pixels(page, 0, requested_scale=1.0)
+    assert pixels == 612 * 792
+    with pytest.raises(HTTPException) as error:
+        reserve_render_pixels(page, pixels, requested_scale=1.0)
+    assert error.value.status_code == 413
+    assert "100-million-pixel" in error.value.detail
+    doc.close()
+
+
+def test_embedded_image_pixel_budget_rejects_large_images_before_extraction(monkeypatch):
+    from fastapi import HTTPException
+    from main import reserve_extracted_image_pixels
+
+    monkeypatch.setattr("main.MAX_DOCUMENT_EXTRACTED_IMAGE_PIXELS", 30_000_000)
+    assert reserve_extracted_image_pixels(2_000, 2_000, 0) == 4_000_000
+    with pytest.raises(HTTPException) as single_image_error:
+        reserve_extracted_image_pixels(5_000, 5_000, 0)
+    assert single_image_error.value.status_code == 413
+    with pytest.raises(HTTPException) as cumulative_error:
+        reserve_extracted_image_pixels(3_000, 3_000, 25_000_000)
+    assert cumulative_error.value.status_code == 413
+
+
+def test_bookmark_split_preserves_pages_before_first_bookmark():
+    pdf = fitz.open()
+    for number in range(1, 5):
+        page = pdf.new_page()
+        page.insert_text((50, 50), f"Page {number}")
+    pdf.set_toc([[1, "Chapter", 3]])
+    source = pdf.tobytes()
+    pdf.close()
+    response = post_pdf("/api/split-by-bookmarks", source)
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = archive.namelist()
+        assert len(names) == 2
+        leading = fitz.open(stream=archive.read(names[0]), filetype="pdf")
+        assert len(leading) == 2
+        assert "Page 1" in leading[0].get_text()
+        assert "Page 2" in leading[1].get_text()
+        leading.close()
+
+
+def test_rotated_page_display_coordinates_round_trip():
+    from main import display_point_to_page, display_rect_to_page
+
+    doc = fitz.open()
+    for rotation in (0, 90, 180, 270):
+        page = doc.new_page(width=612, height=792)
+        page.set_rotation(rotation)
+        display_point = fitz.Point(36, 24)
+        page_point = display_point_to_page(page, display_point.x, display_point.y)
+        round_trip = page_point * page.rotation_matrix
+        assert abs(round_trip.x - display_point.x) < 0.01
+        assert abs(round_trip.y - display_point.y) < 0.01
+        display_rect = fitz.Rect(30, 40, 180, 90)
+        page_rect = display_rect_to_page(page, display_rect)
+        round_trip_rect = page_rect * page.rotation_matrix
+        assert abs(round_trip_rect.x0 - display_rect.x0) < 0.01
+        assert abs(round_trip_rect.y0 - display_rect.y0) < 0.01
+        assert abs(round_trip_rect.x1 - display_rect.x1) < 0.01
+        assert abs(round_trip_rect.y1 - display_rect.y1) < 0.01
+    doc.close()
+
+
+def make_rotated_pdf() -> bytes:
+    doc = fitz.open()
+    for rotation in (0, 90, 180, 270):
+        page = doc.new_page(width=612, height=792)
+        page.insert_text((50, 730), f"EDGE {rotation}")
+        page.set_rotation(rotation)
+    result = doc.tobytes()
+    doc.close()
+    return result
+
+
+def find_display_text_box(page, text: str) -> fitz.Rect:
+    for block in page.get_text("dict")["blocks"]:
+        for line in block.get("lines", []):
+            for span in line.get("spans", []):
+                if text in span["text"]:
+                    return fitz.Rect(span["bbox"]) * page.rotation_matrix
+    raise AssertionError(f"Expected text {text!r} in PDF output")
+
+
+def test_rotated_pdf_stamps_and_headers_stay_upright_and_in_visible_positions():
+    source = make_rotated_pdf()
+    cases = [
+        ("/api/page-numbers", {"position": "bottom-center", "start_number": "101"}, "104", "bottom"),
+        ("/api/header-footer", {"header": "ROTATED HEADER", "footer": "ROTATED FOOTER"}, "ROTATED FOOTER", "bottom"),
+        ("/api/sign", {"signature_text": "PDFora Tester"}, "Electronic visual signature", "bottom"),
+        ("/api/bates-numbering", {"prefix": "PDFora", "start": "1", "digits": "6"}, "PDFora000004", "bottom"),
+    ]
+    for endpoint, data, marker, position in cases:
+        response = post_pdf(endpoint, source, data=data)
+        assert response.status_code == 200, f"{endpoint}: {response.status_code} {response.text[:200]}"
+        result = fitz.open(stream=response.content, filetype="pdf")
+        page = result[-1]
+        box = find_display_text_box(page, marker)
+        assert box.width > box.height, f"{endpoint} text is rotated in the visible page"
+        assert box.y0 > page.rect.height * 0.65, f"{endpoint} text is not in the visible bottom area"
+        assert box.x0 >= 0 and box.y0 >= 0 and box.x1 <= page.rect.width and box.y1 <= page.rect.height
+        result.close()
+
+
+def test_rotated_watermark_and_background_use_visible_page_geometry():
+    source = make_rotated_pdf()
+    watermark = post_pdf("/api/watermark", source, data={"text": "PDFORA WATERMARK"})
+    assert watermark.status_code == 200
+    watermarked = fitz.open(stream=watermark.content, filetype="pdf")
+    for page in watermarked:
+        box = find_display_text_box(page, "PDFORA WATERMARK")
+        center = fitz.Point((box.x0 + box.x1) / 2, (box.y0 + box.y1) / 2)
+        assert abs(center.x - page.rect.width / 2) < page.rect.width * 0.2
+        assert abs(center.y - page.rect.height / 2) < page.rect.height * 0.2
+    watermarked.close()
+
+    background = post_pdf("/api/add-background", source, data={"text": "DRAFT BACKGROUND"})
+    assert background.status_code == 200
+    background_doc = fitz.open(stream=background.content, filetype="pdf")
+    for page in background_doc:
+        box = find_display_text_box(page, "DRAFT BACKGROUND")
+        assert box.width > box.height, "Background label should remain horizontal on a rotated page"
+        assert abs((box.x0 + box.x1) / 2 - page.rect.width / 2) < page.rect.width * 0.2
+        assert abs((box.y0 + box.y1) / 2 - page.rect.height / 2) < page.rect.height * 0.2
+    background_doc.close()
+
+
+def test_pdf_to_json_text_coordinates_match_rotated_display_dimensions():
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+    page.insert_text((50, 730), "Bottom edge text")
+    page.set_rotation(90)
+    source = doc.tobytes()
+    doc.close()
+    response = post_pdf("/api/pdf-to-json", source)
+    assert response.status_code == 200
+    report = json.loads(response.content)
+    page_data = report["pages"][0]
+    assert page_data["width"] == 792
+    assert page_data["height"] == 612
+    block = next(item for item in page_data["blocks"] if "Bottom edge text" in item["text"])
+    assert 0 <= block["x0"] <= block["x1"] <= page_data["width"]
+    assert 0 <= block["y0"] <= block["y1"] <= page_data["height"]
+
+
+def test_open_pdf_limited_rejects_over_1000_pages():
+    from main import open_pdf_limited
+    from fastapi import HTTPException
+
+    doc = fitz.open()
+    for _ in range(1001):
+        doc.new_page()
+    data = doc.tobytes()
+    doc.close()
+    path = Path("page-limit-regression.pdf")
+    path.write_bytes(data)
+    try:
+        try:
+            open_pdf_limited(path)
+        except HTTPException as exc:
+            assert exc.status_code == 413
+            assert "1,000 pages" in exc.detail
+        else:
+            raise AssertionError("PDF over the page limit should be rejected")
+    finally:
+        path.unlink(missing_ok=True)
+
+
+def test_nrb_rates_include_previous_published_snapshot(monkeypatch):
+    import main
+
+    main._NRB_CACHE.clear()
+    calls = []
+
+    def fake_fetch(from_date: str, to_date: str):
+        calls.append((from_date, to_date))
+        return [
+            {
+                "date": "2025-01-06",
+                "published_on": "2025-01-06T00:00:00Z",
+                "rates": [{"currency": {"ISO3": "USD", "name": "US Dollar", "unit": 1}, "buy": "135.00", "sell": "135.60"}],
+            },
+            {
+                "date": "2025-01-03",
+                "published_on": "2025-01-03T00:00:00Z",
+                "rates": [{"currency": {"ISO3": "USD", "name": "US Dollar", "unit": 1}, "buy": "134.50", "sell": "135.10"}],
+            },
+        ]
+
+    monkeypatch.setattr(main, "_nrb_fetch_records", fake_fetch)
+    response = TestClient(app).get("/api/nepal-forex?date=2025-01-06")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["rateDate"] == "2025-01-06"
+    assert payload["rates"][0]["buy"] == 135.0
+    assert payload["previousRateDate"] == "2025-01-03"
+    assert payload["previousRates"][0]["sell"] == 135.1
+    assert calls and calls[0][0] == "2024-12-07"
+
+
+def test_nrb_history_normalizes_currency_units_and_rejects_invalid_rows(monkeypatch):
+    import main
+
+    main._NRB_CACHE.clear()
+    calls = []
+
+    def fake_fetch(from_date: str, to_date: str):
+        calls.append((from_date, to_date))
+        return [
+            {"date": "2025-01-06", "rates": [
+                {"currency": {"ISO3": "USD", "name": "US Dollar", "unit": 1}, "buy": "135.00", "sell": "135.60"},
+                {"currency": {"ISO3": "JPY", "name": "Japanese Yen", "unit": 100}, "buy": "92.00", "sell": "92.50"},
+            ]},
+            {"date": "2025-01-03", "rates": [
+                {"currency": {"ISO3": "JPY", "name": "Japanese Yen", "unit": 100}, "buy": "91.00", "sell": "91.50"},
+                {"currency": {"ISO3": "BAD", "name": "Invalid unit", "unit": 0}, "buy": "10", "sell": "11"},
+            ]},
+        ]
+
+    monkeypatch.setattr(main, "_nrb_fetch_records", fake_fetch)
+    response = TestClient(app).get("/api/nepal-forex/history?currency=jpy")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["source"] == "Nepal Rastra Bank"
+    assert payload["currency"] == "JPY"
+    assert payload["history"] == [
+        {"date": "2025-01-03", "buy": 0.91, "sell": 0.915},
+        {"date": "2025-01-06", "buy": 0.92, "sell": 0.925},
+    ]
+    assert calls and calls[0][1] >= calls[0][0]
+
+
+def test_nrb_history_rejects_non_ascii_currency_code():
+    response = TestClient(app).get("/api/nepal-forex/history?currency=%C3%A5aa")
+    assert response.status_code == 400
+    assert "Invalid currency code" in response.json()["detail"]
+
+
+def test_nrb_history_normalization_is_unit_aware_and_rejects_invalid_codes():
+    from fastapi import HTTPException
+    from main import normalize_nrb_history, validate_nrb_currency_code
+
+    records = [
+        {"date": "2025-01-06", "rates": [
+            {"currency": {"ISO3": "JPY", "unit": 100}, "buy": "92", "sell": "92.5"},
+            {"currency": {"ISO3": "BAD", "unit": 0}, "buy": "1", "sell": "2"},
+        ]},
+        {"date": "2025-01-03", "rates": [
+            {"currency": {"ISO3": "JPY", "unit": 100}, "buy": "91", "sell": "91.5"},
+        ]},
+        {"date": "2025-01-07", "rates": [
+            {"currency": {"ISO3": "JPY", "unit": 100}, "buy": "NaN", "sell": "93"},
+        ]},
+    ]
+    assert validate_nrb_currency_code("jpy") == "JPY"
+    assert normalize_nrb_history(records, "JPY") == [
+        {"date": "2025-01-03", "buy": 0.91, "sell": 0.915},
+        {"date": "2025-01-06", "buy": 0.92, "sell": 0.925},
+    ]
+    with pytest.raises(HTTPException) as error:
+        validate_nrb_currency_code("åaa")
+    assert error.value.status_code == 400
 

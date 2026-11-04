@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 24968)
+Total output lines: 2839
+
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.background import BackgroundTask
@@ -192,6 +195,8 @@ async def security_headers_and_temp_cleanup(request: Request, call_next):
 # ============================================================
 
 MAX_FILE_SIZE = 50 * 1024 * 1024
+MAX_DOCUMENT_RENDER_PIXELS = 100_000_000
+MAX_DOCUMENT_EXTRACTED_IMAGE_PIXELS = 100_000_000
 _REQUEST_TEMP_JOBS: ContextVar[list[Path] | None] = ContextVar("pdfora_request_temp_jobs", default=None)
 
 # Upload protection defaults. Redis is recommended for multi-instance deployments.
@@ -417,6 +422,85 @@ async def save_upload(
         raise
 
 
+def set_literal_cell(worksheet, row: int, column: int, value):
+    """Write untrusted extracted document text as a literal spreadsheet string."""
+    cell = worksheet.cell(row=row, column=column, value="" if value is None else str(value))
+    cell.data_type = "s"
+    return cell
+
+
+def csv_safe_text(value) -> str:
+    """Neutralize spreadsheet formula prefixes in CSV exports."""
+    text = "" if value is None else str(value).strip()
+    if text.lstrip().startswith(("=", "+", "-", "@")):
+        return "'" + text
+    return text
+
+
+def open_pdf_limited(path):
+    """Open a PDF with a consistent page-count ceiling across every tool endpoint."""
+    document = fitz.open(path)
+    if len(document) > 1000:
+        document.close()
+        raise HTTPException(status_code=413, detail="PDFs with more than 1,000 pages are not supported.")
+    return document
+
+
+def display_point_to_page(page, x: float, y: float) -> fitz.Point:
+    """Convert a point in the visible (rotated) page coordinate space to PDF page space."""
+    return fitz.Point(x, y) * page.derotation_matrix
+
+
+def display_rect_to_page(page, rect: fitz.Rect) -> fitz.Rect:
+    """Convert a rectangle in visible (rotated) page coordinates to PDF page space."""
+    return fitz.Rect(rect) * page.derotation_matrix
+
+
+def display_text_rotation(page) -> int:
+    """Counter-rotate inserted text so it stays upright in the visible page."""
+    return (-page.rotation) % 360
+
+
+def safe_render_matrix(page, requested_scale: float = 2.0, max_pixels: int = 20_000_000):
+    """Return a bounded render matrix so unusually large pages cannot exhaust memory."""
+    rect = page.rect
+    width = max(1.0, float(rect.width))
+    height = max(1.0, float(rect.height))
+    if width * height > max_pixels:
+        raise HTTPException(status_code=413, detail="This PDF page is too large to render safely.")
+    scale = min(requested_scale, (max_pixels / (width * height)) ** 0.5)
+    if scale < 0.25:
+        raise HTTPException(status_code=413, detail="This PDF page is too large to render safely.")
+    return fitz.Matrix(scale, scale)
+
+
+def reserve_render_pixels(page, already_reserved: int, requested_scale: float = 2.0) -> int:
+    """Bound total raster work/output for a multi-page conversion, not only each page."""
+    matrix = safe_render_matrix(page, requested_scale)
+    rect = page.rect
+    page_pixels = int(float(rect.width) * matrix.a + 0.999) * int(float(rect.height) * matrix.d + 0.999)
+    total = already_reserved + page_pixels
+    if total > MAX_DOCUMENT_RENDER_PIXELS:
+        raise HTTPException(
+            status_code=413,
+            detail="This PDF would exceed the 100-million-pixel document conversion limit.",
+        )
+    return total
+
+
+def reserve_extracted_image_pixels(width: int, height: int, already_reserved: int) -> int:
+    """Reject pathological embedded images before asking MuPDF to extract/decode them."""
+    if width <= 0 or height <= 0:
+        raise HTTPException(status_code=422, detail="The PDF contains an image with invalid dimensions.")
+    image_pixels = width * height
+    if image_pixels > 20_000_000:
+        raise HTTPException(status_code=413, detail="An embedded image exceeds the 20-million-pixel extraction limit.")
+    total = already_reserved + image_pixels
+    if total > MAX_DOCUMENT_EXTRACTED_IMAGE_PIXELS:
+        raise HTTPException(status_code=413, detail="Embedded images exceed the 100-million-pixel document extraction limit.")
+    return total
+
+
 def read_pdf(path: Path):
 
     # Validate the actual file signature; never trust the filename or browser MIME type.
@@ -551,6 +635,10 @@ def _nrb_cached(key: str, ttl: int, loader):
     try:
         result = loader()
         with _NRB_CACHE_LOCK:
+            # Keep cache memory bounded when callers request many historical dates.
+            if len(_NRB_CACHE) >= 128 and key not in _NRB_CACHE:
+                oldest_key = min(_NRB_CACHE, key=lambda item: _NRB_CACHE[item][0])
+                _NRB_CACHE.pop(oldest_key, None)
             _NRB_CACHE[key] = (time.monotonic(), result)
         return {**result, "cached": False, "stale": False}
     except Exception:
@@ -574,7 +662,9 @@ async def nepal_forex(date: str | None = Query(default=None)):
     except ValueError:
         raise HTTPException(status_code=400, detail="Date must be a valid YYYY-MM-DD value.")
 
-    start = (selected - timedelta(days=10)).isoformat()
+    # Include several weeks so the response can compare against the previous
+    # published business-day snapshot across weekends and extended holidays.
+    start = (selected - timedelta(days=30)).isoformat()
     # Keep a stable cache key for the live/latest view so a new day can still
     # fall back to the last successful published rate if NRB is temporarily down.
     key = "rates:latest" if date is None else "rates:" + requested
@@ -582,28 +672,36 @@ async def nepal_forex(date: str | None = Query(default=None)):
     def load():
         records = _nrb_fetch_records(start, requested)
         valid = [item for item in records if item.get("date") and isinstance(item.get("rates"), list)]
-        latest = max(valid, key=lambda item: str(item.get("date", "")), default=None)
+        ordered = sorted(valid, key=lambda item: str(item.get("date", "")), reverse=True)
+        latest = ordered[0] if ordered else None
         if not latest:
             raise RuntimeError("NRB has not published a rate for this date range")
-        rates = []
-        for item in latest.get("rates", []):
-            currency = item.get("currency") or {}
-            code = str(currency.get("ISO3") or currency.get("iso3") or "").upper()
-            name = str(currency.get("name") or "")
-            try:
-                unit, buy, sell = float(currency.get("unit") or 1), float(item.get("buy")), float(item.get("sell"))
-            except (TypeError, ValueError):
-                continue
-            if len(code) == 3 and code.isalpha() and name and unit > 0 and all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
-                rates.append({"code": code, "name": name, "unit": unit, "buy": buy, "sell": sell})
+        def normalize_rates(record):
+            rates = []
+            for item in record.get("rates", []):
+                currency = item.get("currency") or {}
+                code = str(currency.get("ISO3") or currency.get("iso3") or "").upper()
+                name = str(currency.get("name") or "")
+                try:
+                    unit, buy, sell = float(currency.get("unit") or 1), float(item.get("buy")), float(item.get("sell"))
+                except (TypeError, ValueError):
+                    continue
+                if len(code) == 3 and code.isalpha() and name and unit > 0 and all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
+                    rates.append({"code": code, "name": name, "unit": unit, "buy": buy, "sell": sell})
+            return rates
+
+        rates = normalize_rates(latest)
         if not rates:
             raise RuntimeError("NRB returned no valid currency rates")
+        previous = next((record for record in ordered[1:] if normalize_rates(record)), None)
         return {
             "source": "Nepal Rastra Bank",
             "requestedDate": requested,
             "rateDate": latest["date"],
             "publishedOn": latest.get("published_on"),
             "rates": rates,
+            "previousRateDate": previous.get("date") if previous else None,
+            "previousRates": normalize_rates(previous) if previous else [],
         }
 
     try:
@@ -612,14 +710,40 @@ async def nepal_forex(date: str | None = Query(default=None)):
         raise HTTPException(status_code=502, detail="Could not retrieve published rates from Nepal Rastra Bank. Please retry later.")
 
 
+def validate_nrb_currency_code(currency: str) -> str:
+    code = currency.upper()
+    if not re.fullmatch(r"[A-Z]{3}", code):
+        raise HTTPException(status_code=400, detail="Invalid currency code.")
+
+    return code
+
+
+def normalize_nrb_history(records: list[dict], code: str) -> list[dict]:
+    history = []
+    for record in records:
+        item = next((rate for rate in (record.get("rates") or [])
+                     if str((rate.get("currency") or {}).get("ISO3") or (rate.get("currency") or {}).get("iso3") or "").upper() == code), None)
+        if not item or not record.get("date"):
+            continue
+        currency_data = item.get("currency") or {}
+        try:
+            unit = float(currency_data.get("unit") or 1)
+            buy, sell = float(item.get("buy")), float(item.get("sell"))
+        except (TypeError, ValueError):
+            continue
+        if unit <= 0 or not all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
+            continue
+        history.append({"date": record["date"], "buy": buy / unit, "sell": sell / unit})
+    history.sort(key=lambda item: item["date"])
+    return history
+
+
 @app.get("/api/nepal-forex/history")
 async def nepal_forex_history(currency: str = Query(default="USD", min_length=3, max_length=3)):
     """Return 90 days of official NRB buying/selling rates, normalized per currency unit."""
-    from datetime import date as Date, timedelta, datetime, timezone
+    from datetime import timedelta, datetime, timezone
 
-    code = currency.upper()
-    if not code.isalpha():
-        raise HTTPException(status_code=400, detail="Invalid currency code.")
+    code = validate_nrb_currency_code(currency)
     nepal_tz = timezone(timedelta(hours=5, minutes=45))
     end = datetime.now(nepal_tz).date()
     start = end - timedelta(days=90)
@@ -627,22 +751,7 @@ async def nepal_forex_history(currency: str = Query(default="USD", min_length=3,
 
     def load():
         records = _nrb_fetch_records(start.isoformat(), end.isoformat())
-        history = []
-        for record in records:
-            item = next((rate for rate in (record.get("rates") or [])
-                         if str((rate.get("currency") or {}).get("ISO3") or (rate.get("currency") or {}).get("iso3") or "").upper() == code), None)
-            if not item or not record.get("date"):
-                continue
-            currency_data = item.get("currency") or {}
-            try:
-                unit = float(currency_data.get("unit") or 1)
-                buy, sell = float(item.get("buy")), float(item.get("sell"))
-            except (TypeError, ValueError):
-                continue
-            if unit <= 0 or not all(map(lambda x: x == x and abs(x) != float("inf"), (unit, buy, sell))):
-                continue
-            history.append({"date": record["date"], "buy": buy / unit, "sell": sell / unit})
-        history.sort(key=lambda item: item["date"])
+        history = normalize_nrb_history(records, code)
         if not history:
             raise RuntimeError(f"No NRB historical rates found for {code}")
         return {"source": "Nepal Rastra Bank", "currency": code, "history": history}
@@ -965,7 +1074,15 @@ async def images_to_pdf(
                 if total_image_pixels > 40_000_000:
                     raise HTTPException(status_code=413, detail="The combined images must not exceed 40 megapixels.")
                 image.verify()
-                image = Image.open(io.BytesIO(data)).convert("RGB")
+                image = Image.open(io.BytesIO(data)).convert("RGBA")
+                # Flatten transparent pixels onto white before PDF conversion.
+                if "A" in image.getbands():
+                    background = Image.new("RGB", image.size, "white")
+                    background.paste(image, mask=image.getchannel("A"))
+                    image.close()
+                    image = background
+                else:
+                    image = image.convert("RGB")
                 images.append(image)
             except HTTPException:
                 raise
@@ -1036,10 +1153,9 @@ async def pdf_to_jpg(
             input_file
         )
 
-        document = fitz.open(
-            str(input_file)
-        )
+        document = open_pdf_limited(input_file)
 
+        rendered_pixels = 0
         with zipfile.ZipFile(
             zip_file,
             "w",
@@ -1050,11 +1166,10 @@ async def pdf_to_jpg(
                 document
             ):
 
+                rendered_pixels = reserve_render_pixels(page, rendered_pixels, 1.5)
+
                 pixmap = page.get_pixmap(
-                    matrix=fitz.Matrix(
-                        1.5,
-                        1.5
-                    ),
+                    matrix=safe_render_matrix(page, 1.5),
                     alpha=False
                 )
 
@@ -1181,730 +1296,7 @@ async def delete_pages(
 
         await save_upload(
             file,
-            input_file
-        )
-
-        reader = read_pdf(
-            input_file
-        )
-
-        try:
-
-            delete_set = {
-                int(value.strip())
-                for value in pages.split(",")
-                if value.strip()
-            }
-
-        except Exception:
-
-            raise HTTPException(
-                status_code=400,
-                detail="Pages must look like: 2,4,7"
-            )
-
-        if not delete_set:
-
-            raise HTTPException(
-                status_code=400,
-                detail="Enter at least one page number."
-            )
-
-        total = len(reader.pages)
-
-        invalid = [
-            number
-            for number in delete_set
-            if number < 1 or number > total
-        ]
-
-        if invalid:
-
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid page number: {invalid[0]}"
-            )
-
-        writer = PdfWriter()
-
-        for index, page in enumerate(
-            reader.pages,
-            start=1
-        ):
-
-            if index not in delete_set:
-
-                writer.add_page(page)
-
-        if len(writer.pages) == 0:
-
-            raise HTTPException(
-                status_code=400,
-                detail="You cannot delete every page."
-            )
-
-        with open(output, "wb") as output_file:
-
-            writer.write(
-                output_file
-            )
-
-        return pdf_response(
-            output,
-            "NIROJ-Deleted-Pages.pdf"
-        )
-
-    finally:
-
-        try:
-            await file.close()
-        except Exception:
-            pass
-
-
-# ============================================================
-# EXTRACT PAGES
-# ============================================================
-
-@app.post("/api/extract-pages")
-async def extract_pages(
-    file: UploadFile = File(...),
-    pages: str = Form(...)
-):
-
-    validate_pdf_upload(file)
-
-    job = create_job()
-
-    input_file = job / "input.pdf"
-
-    output = job / "NIROJ-Extracted.pdf"
-
-    try:
-
-        await save_upload(
-            file,
-            input_file
-        )
-
-        reader = read_pdf(
-            input_file
-        )
-
-        try:
-
-            selected = [
-                int(value.strip())
-                for value in pages.split(",")
-                if value.strip()
-            ]
-
-        except Exception:
-
-            raise HTTPException(
-                status_code=400,
-                detail="Pages must look like: 1,3,5"
-            )
-
-        if not selected:
-
-            raise HTTPException(
-                status_code=400,
-                detail="Enter at least one page number."
-            )
-
-        total = len(reader.pages)
-
-        for page_number in selected:
-
-            if page_number < 1 or page_number > total:
-
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Invalid page number: {page_number}"
-                )
-
-        writer = PdfWriter()
-
-        for page_number in selected:
-
-            writer.add_page(
-                reader.pages[
-                    page_number - 1
-                ]
-            )
-
-        with open(output, "wb") as output_file:
-
-            writer.write(
-                output_file
-            )
-
-        return pdf_response(
-            output,
-            "NIROJ-Extracted.pdf"
-        )
-
-    finally:
-
-        try:
-            await file.close()
-        except Exception:
-            pass
-
-
-# ============================================================
-# WATERMARK PDF
-# ============================================================
-
-@app.post("/api/watermark")
-async def watermark_pdf(
-    file: UploadFile = File(...),
-    text: str = Form(...)
-):
-
-    validate_pdf_upload(file)
-
-    text = text.strip()
-
-    if not text:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Watermark text is required."
-        )
-
-    if len(text) > 200:
-
-        raise HTTPException(
-            status_code=400,
-            detail="Watermark text is too long."
-        )
-
-    job = create_job()
-
-    input_file = job / "input.pdf"
-
-    output = job / "NIROJ-Watermarked.pdf"
-
-    try:
-
-        await save_upload(
-            file,
-            input_file
-        )
-
-        # Open source PDF using PyMuPDF
-        document = fitz.open(
-            str(input_file)
-        )
-
-        if document.page_count == 0:
-
-            document.close()
-
-            raise HTTPException(
-                status_code=400,
-                detail="PDF contains no pages."
-            )
-
-        # ----------------------------------------------------
-        # IMPORTANT:
-        # PyMuPDF insert_text() only accepts rotation:
-        # 0, 90, 180, 270.
-        #
-        # We use 45-degree text by creating the text
-        # as a separate PDF image and rotating that image.
-        # This avoids the "bad rotate value" error.
-        # ----------------------------------------------------
-
-        for page in document:
-
-            rect = page.rect
-
-            # Center point
-            center_x = rect.width / 2
-            center_y = rect.height / 2
-
-            # Create temporary watermark PDF
-            wm = fitz.open()
-
-            wm_page = wm.new_page(
-                width=rect.width,
-                height=rect.height
-            )
-
-            # Use normal rotation here.
-            # PyMuPDF accepts 90.
-            wm_page.insert_text(
-                (
-                    center_x - 120,
-                    center_y
-                ),
-                text,
-                fontsize=32,
-                fontname="helv",
-                color=(0.5, 0.5, 0.5),
-                fill_opacity=0.25,
-                rotate=90
-            )
-
-            # Save temporary watermark
-            wm_bytes = wm.tobytes(
-                garbage=4,
-                deflate=True
-            )
-
-            wm.close()
-
-            # Open watermark PDF from memory
-            wm_doc = fitz.open(
-                stream=wm_bytes,
-                filetype="pdf"
-            )
-
-            # Overlay watermark
-            page.show_pdf_page(
-                rect,
-                wm_doc,
-                0,
-                overlay=True
-            )
-
-            wm_doc.close()
-
-        # Save final PDF
-        document.save(
-            str(output),
-            garbage=4,
-            deflate=True
-        )
-
-        document.close()
-
-        return pdf_response(
-            output,
-            "NIROJ-Watermarked.pdf"
-        )
-
-    except HTTPException:
-        raise
-
-    except Exception as exc:
-
-        raise HTTPException(
-            status_code=500,
-            detail=f"Watermark failed: {str(exc)}"
-        )
-
-    finally:
-
-        try:
-            await file.close()
-        except Exception:
-            pass
-
-
-# ============================================================
-# CLEANUP
-# ============================================================
-
-# ============================================================
-# PDF TO EXCEL
-# ============================================================
-
-@app.post("/api/pdf-to-excel")
-async def pdf_to_excel(
-    file: UploadFile = File(...)
-):
-    validate_pdf_upload(file)
-
-    job = create_job()
-
-    try:
-        input_path = job / "input.pdf"
-        output_path = job / "converted.xlsx"
-
-        await save_upload(file, input_path)
-
-        workbook = Workbook()
-        default_sheet = workbook.active
-        workbook.remove(default_sheet)
-
-        extracted_anything = False
-
-        with pdfplumber.open(input_path) as pdf:
-            for page_number, page in enumerate(pdf.pages, start=1):
-
-                tables = page.extract_tables()
-
-                if tables:
-                    for table_number, table in enumerate(tables, start=1):
-
-                        if not table:
-                            continue
-
-                        extracted_anything = True
-
-                        sheet_name = (
-                            f"Page {page_number}"
-                            if len(tables) == 1
-                            else f"Page {page_number}-{table_number}"
-                        )
-
-                        worksheet = workbook.create_sheet(
-                            title=sheet_name[:31]
-                        )
-
-                        for row_number, row in enumerate(table, start=1):
-
-                            if row is None:
-                                continue
-
-                            for column_number, value in enumerate(
-                                row,
-                                start=1
-                            ):
-                                if value is not None:
-                                    worksheet.cell(
-                                        row=row_number,
-                                        column=column_number,
-                                        value=str(value).strip()
-                                    )
-
-                        for column_cells in worksheet.columns:
-
-                            max_length = 0
-                            column_letter = column_cells[0].column_letter
-
-                            for cell in column_cells:
-                                if cell.value is not None:
-                                    max_length = max(
-                                        max_length,
-                                        len(str(cell.value))
-                                    )
-
-                            worksheet.column_dimensions[
-                                column_letter
-                            ].width = min(
-                                max(max_length + 2, 10),
-                                50
-                            )
-
-                else:
-                    text = page.extract_text()
-
-                    if text and text.strip():
-
-                        extracted_anything = True
-
-                        worksheet = workbook.create_sheet(
-                            title=f"Page {page_number}"[:31]
-                        )
-
-                        for row_number, line in enumerate(
-                            text.splitlines(),
-                            start=1
-                        ):
-                            worksheet.cell(
-                                row=row_number,
-                                column=1,
-                                value=line.strip()
-                            )
-
-                        worksheet.column_dimensions["A"].width = 100
-
-        if not extracted_anything:
-            raise HTTPException(
-                status_code=422,
-                detail=(
-                    "No readable text or tables were found in this PDF. "
-                    "The PDF may be scanned or image-based."
-                )
-            )
-
-        workbook.save(output_path)
-
-        return FileResponse(
-            path=str(output_path),
-            media_type=(
-                "application/vnd.openxmlformats-officedocument."
-                "spreadsheetml.sheet"
-            ),
-            filename="pdfora-converted.xlsx",
-            background=BackgroundTask(cleanup_job, job)
-        )
-
-    except HTTPException:
-        cleanup_job(job)
-        raise
-
-    except Exception as exc:
-        cleanup_job(job)
-
-        raise HTTPException(
-            status_code=500,
-            detail=f"PDF to Excel conversion failed: {str(exc)}"
-        )
-
-@app.post("/api/cleanup")
-def cleanup(request: Request):
-    admin_token = os.getenv("CLEANUP_ADMIN_TOKEN", "")
-    supplied_token = request.headers.get("X-Admin-Token", "")
-    if not admin_token or not hmac.compare_digest(supplied_token, admin_token):
-        raise HTTPException(status_code=404, detail="Not found")
-
-    removed = 0
-
-    now = time.time()
-
-    if not TEMP_DIR.exists():
-
-        return {
-            "status": "ok",
-            "removed_jobs": 0
-        }
-
-    for directory in TEMP_DIR.iterdir():
-
-        if not directory.is_dir():
-            continue
-
-        try:
-
-            age = now - directory.stat().st_mtime
-
-            if age > 3600:
-
-                shutil.rmtree(
-                    directory,
-                    ignore_errors=True
-                )
-
-                removed += 1
-
-        except Exception:
-            pass
-
-    return {
-        "status": "ok",
-        "removed_jobs": removed
-    }
-
-
-# ============================================================
-# PDF TO WORD
-# ============================================================
-
-@app.post("/api/pdf-to-word")
-async def pdf_to_word(
-    file: UploadFile = File(...)
-):
-
-    validate_pdf_upload(file)
-
-    job = create_job()
-
-    input_path = job / "input.pdf"
-
-    output_path = job / "output.docx"
-
-    try:
-
-        await save_upload(
-            file,
-            input_path
-        )
-
-        pdf = fitz.open(
-            str(input_path)
-        )
-
-        doc = Document()
-
-        for page_number, page in enumerate(pdf):
-
-            text = page.get_text("text")
-
-            if text.strip():
-
-                for line in text.splitlines():
-
-                    doc.add_paragraph(line)
-
-            else:
-
-                doc.add_paragraph("")
-
-            if page_number < len(pdf) - 1:
-
-                doc.add_page_break()
-
-        pdf.close()
-
-        doc.save(
-            str(output_path)
-        )
-
-        return FileResponse(
-            path=str(output_path),
-            media_type=(
-                "application/vnd.openxmlformats-"
-                "officedocument.wordprocessingml.document"
-            ),
-            filename="converted.docx",
-            background=BackgroundTask(cleanup_job, job)
-        )
-
-    except HTTPException:
-        raise
-
-    except Exception as exc:
-
-        shutil.rmtree(
-            job,
-            ignore_errors=True
-        )
-
-        raise HTTPException(
-            status_code=500,
-            detail=f"PDF to Word conversion failed: {str(exc)}"
-        )
-
-    finally:
-
-        try:
-            await file.close()
-        except Exception:
-            pass
-
-
-
-
-
-# ============================================================
-# PDFORA ADDITIONAL PDF TOOLS
-# ============================================================
-from fastapi import BackgroundTasks
-from pypdf import PdfReader as _PdfReader, PdfWriter as _PdfWriter
-from starlette.background import BackgroundTask
-
-def _tool_file_response(path: Path, filename: str, media_type: str = "application/pdf"):
-    return FileResponse(
-        path=str(path),
-        media_type=media_type,
-        filename=filename,
-        background=BackgroundTask(cleanup_job, path.parent),
-    )
-
-def _parse_page_order(value: str, total: int) -> list[int]:
-    try:
-        order = [int(x.strip()) for x in value.split(",") if x.strip()]
-    except Exception:
-        raise HTTPException(status_code=400, detail="Enter page order like 3,1,2.")
-    if not order or len(order) != total or sorted(order) != list(range(1, total + 1)):
-        raise HTTPException(status_code=400, detail=f"Enter every page number from 1 to {total} exactly once.")
-    return order
-
-@app.post("/api/reorder")
-async def reorder_pdf(file: UploadFile = File(...), order: str = Form(...)):
-    validate_pdf_upload(file)
-    job=create_job()
-    try:
-        src=job/"input.pdf"; out=job/"reordered.pdf"
-        await save_upload(file,src)
-        reader=read_pdf(src); sequence=_parse_page_order(order,len(reader.pages))
-        writer=PdfWriter()
-        for n in sequence: writer.add_page(reader.pages[n-1])
-        with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"NIROJ-Reordered.pdf")
-    finally:
-        await file.close()
-
-@app.post("/api/page-numbers")
-async def add_page_numbers(file: UploadFile = File(...), position: str = Form("bottom-center"), start_number: int = Form(1), skip_first: bool = Form(False), font_size: int = Form(11)):
-    validate_pdf_upload(file)
-    if position not in {"bottom-center","bottom-left","bottom-right","top-center","top-left","top-right"} or not 1 <= font_size <= 36 or start_number < 0:
-        raise HTTPException(status_code=400, detail="Invalid page-number settings.")
-    job=create_job()
-    try:
-        src=job/"input.pdf"; out=job/"numbered.pdf"
-        await save_upload(file,src); doc=fitz.open(src)
-        for i,page in enumerate(doc):
-            if skip_first and i==0: continue
-            r=page.rect; x={"left":36,"center":r.width/2,"right":r.width-36}[position.split("-")[1]]
-            y=24 if position.startswith("top") else r.height-24
-            page.insert_text((x,y),str(start_number+i-(1 if skip_first and i>0 else 0)),fontsize=font_size, color=(0.25,0.25,0.3))
-        doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"NIROJ-Page-Numbers.pdf")
-    finally: await file.close()
-
-@app.post("/api/crop")
-async def crop_pdf(file: UploadFile = File(...), margin: float = Form(36), pages: str = Form("all")):
-    validate_pdf_upload(file)
-    if margin < 0 or margin > 300: raise HTTPException(status_code=400,detail="Margin must be between 0 and 300 points.")
-    job=create_job()
-    try:
-        src=job/"input.pdf"; out=job/"cropped.pdf"; await save_upload(file,src); doc=fitz.open(src)
-        selected=set(range(len(doc)))
-        if pages.strip().lower()!="all":
-            try: selected={int(x.strip())-1 for x in pages.split(",")}
-            except Exception: raise HTTPException(status_code=400,detail="Pages must look like 1,3,5 or all.")
-            if not selected or min(selected)<0 or max(selected)>=len(doc): raise HTTPException(status_code=400,detail="Selected page number is out of range.")
-        for i in selected:
-            p=doc[i]; r=p.rect
-            if r.width<=2*margin or r.height<=2*margin: raise HTTPException(status_code=400,detail="Margin is too large for one or more pages.")
-            p.set_cropbox(fitz.Rect(r.x0+margin,r.y0+margin,r.x1-margin,r.y1-margin))
-        doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"NIROJ-Cropped.pdf")
-    finally: await file.close()
-
-@app.post("/api/header-footer")
-async def header_footer(file: UploadFile = File(...), header: str = Form(""), footer: str = Form(""), font_size: int = Form(10)):
-    validate_pdf_upload(file)
-    if len(header)>300 or len(footer)>300 or not 6<=font_size<=24 or (not header and not footer): raise HTTPException(status_code=400,detail="Enter header or footer text (up to 300 characters) and font size 6–24.")
-    job=create_job()
-    try:
-        src=job/"input.pdf"; out=job/"header-footer.pdf"; await save_upload(file,src); doc=fitz.open(src)
-        for p in doc:
-            r=p.rect
-            if header: p.insert_text((36,24),header[:300],fontsize=font_size)
-            if footer: p.insert_text((36,r.height-24),footer[:300],fontsize=font_size)
-        doc.save(out,garbage=4,deflate=True); doc.close()
-        return _tool_file_response(out,"NIROJ-Header-Footer.pdf")
-    finally: await file.close()
-
-@app.post("/api/protect")
-async def protect_pdf(file: UploadFile = File(...), password: str = Form(...)):
-    validate_pdf_upload(file)
-    if len(password)<6 or len(password)>128: raise HTTPException(status_code=400,detail="Password must be 6–128 characters.")
-    job=create_job()
-    try:
-        src=job/"input.pdf"; out=job/"protected.pdf"; await save_upload(file,src); reader=read_pdf(src); writer=PdfWriter()
-        # Explicit page copying avoids fragile catalog cloning on complex PDFs.
-        for page in reader.pages:
-            writer.add_page(page)
-        if reader.metadata:
-            safe_metadata = {str(key): str(value) for key, value in reader.metadata.items() if value is not None}
-            if safe_metadata:
-                writer.add_metadata(safe_metadata)
-        writer.encrypt(user_password=password, owner_password=password)
-        with open(out,"wb") as f: writer.write(f)
-        return _tool_file_response(out,"NIROJ-Protected.pdf")
-    finally: await file.close()
-
-@app.post("/api/unlock")
-async def unlock_pdf(file: UploadFile = File(...), password: str = Form(...)):
-    validate_pdf_upload(file)
-    job=create_job()
-    try:
-        src=job/"input.pdf"; out=job/"unlocked.pdf"; await save_upload(file,src); reader=PdfReader(str(src))
-        if reader.is_encrypted:
-            try: ok=reader.decrypt(password)
-            except Exception: ok=0
-            if not ok: raise HTTPException(status_code=400,detail="Incorrect password or unsupported encryption.")
-        writer=PdfWriter()
-        for p in reader.pages: writer.add_page(p)
+            input_fil…4968 tokens truncated…er.add_page(p)
         with open(out,"wb") as f: writer.write(f)
         return _tool_file_response(out,"NIROJ-Unlocked.pdf")
     finally: await file.close()
@@ -1915,12 +1307,15 @@ async def sign_pdf(file: UploadFile = File(...), signature_text: str = Form(...)
     if not signature_text.strip() or len(signature_text)>100: raise HTTPException(status_code=400,detail="Enter a signature name (maximum 100 characters).")
     job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"signed.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"signed.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         p=doc[-1]; r=p.rect
-        box=fitz.Rect(36,r.height-90,min(r.width-36,300),r.height-36)
+        display_box=fitz.Rect(36,r.height-90,min(r.width-36,300),r.height-36)
+        box=display_rect_to_page(p,display_box)
         p.draw_rect(box,color=(0.35,0.2,0.6),width=1)
-        p.insert_text((box.x0+8,box.y0+28),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35))
-        p.insert_text((box.x0+8,box.y0+44),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4))
+        name_box = fitz.Rect(display_box.x0 + 8, display_box.y0 + 6, display_box.x1 - 8, display_box.y0 + 30)
+        detail_box = fitz.Rect(display_box.x0 + 8, display_box.y0 + 30, display_box.x1 - 8, display_box.y1 - 6)
+        p.insert_textbox(display_rect_to_page(p,name_box),signature_text.strip(),fontsize=18,fontname="tiit",color=(0.2,0.15,0.35),rotate=display_text_rotation(p))
+        p.insert_textbox(display_rect_to_page(p,detail_box),"Electronic visual signature",fontsize=7,color=(0.4,0.4,0.4),rotate=display_text_rotation(p))
         doc.save(out,garbage=4,deflate=True); doc.close()
         return _tool_file_response(out,"NIROJ-Signed.pdf")
     finally: await file.close()
@@ -1929,11 +1324,13 @@ async def _render_pdf_images(file: UploadFile, fmt: str, quality: int=85):
     validate_pdf_upload(file)
     job=create_job(); doc=None
     try:
-        src=job/"input.pdf"; archive=job/f"images-{fmt}.zip"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; archive=job/f"images-{fmt}.zip"; await save_upload(file,src); doc=open_pdf_limited(src)
         if len(doc)>200: raise HTTPException(status_code=413,detail="Maximum 200 pages per image conversion.")
+        rendered_pixels=0
         with zipfile.ZipFile(archive,"w",zipfile.ZIP_DEFLATED) as z:
             for i,p in enumerate(doc):
-                pix=p.get_pixmap(matrix=fitz.Matrix(2,2),alpha=False)
+                rendered_pixels=reserve_render_pixels(p,rendered_pixels,2.0)
+                pix=p.get_pixmap(matrix=safe_render_matrix(p, 2.0),alpha=False)
                 im=Image.frombytes("RGB",[pix.width,pix.height],pix.samples)
                 dest=io.BytesIO()
                 opts={"quality":quality,"method":6} if fmt=="webp" else {}
@@ -1957,7 +1354,7 @@ async def pdf_to_webp(file: UploadFile = File(...), quality: int = Form(85)):
 async def pdf_to_text(file: UploadFile = File(...)):
     validate_pdf_upload(file); job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"extracted.txt"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"extracted.txt"; await save_upload(file,src); doc=open_pdf_limited(src)
         with open(out,"w",encoding="utf-8") as f:
             for i,p in enumerate(doc):
                 f.write(f"--- Page {i+1} ---\n{p.get_text('text')}\n\n")
@@ -1969,12 +1366,14 @@ async def pdf_to_text(file: UploadFile = File(...)):
 async def grayscale_pdf(file: UploadFile = File(...)):
     validate_pdf_upload(file); job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"grayscale.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"grayscale.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for grayscale conversion.")
         flattened=fitz.open()
+        rendered_pixels=0
         for p in doc:
             rect=p.rect
-            pix=p.get_pixmap(matrix=fitz.Matrix(1.5,1.5),colorspace=fitz.csGRAY,alpha=False,annots=True)
+            rendered_pixels=reserve_render_pixels(p,rendered_pixels,1.5)
+            pix=p.get_pixmap(matrix=safe_render_matrix(p, 1.5),colorspace=fitz.csGRAY,alpha=False,annots=True)
             page=flattened.new_page(width=rect.width,height=rect.height)
             page.insert_image(page.rect,stream=pix.tobytes("png"))
         doc.close()
@@ -1986,13 +1385,15 @@ async def grayscale_pdf(file: UploadFile = File(...)):
 async def flatten_pdf(file: UploadFile = File(...)):
     validate_pdf_upload(file); job=create_job()
     try:
-        src=job/"input.pdf"; out=job/"flattened.pdf"; await save_upload(file,src); doc=fitz.open(src)
+        src=job/"input.pdf"; out=job/"flattened.pdf"; await save_upload(file,src); doc=open_pdf_limited(src)
         if len(doc)>100: raise HTTPException(status_code=413,detail="Maximum 100 pages for flattening.")
         # Render each page into a fresh PDF page. This removes interactive annotations/widgets.
         flattened=fitz.open()
+        rendered_pixels=0
         for page in doc:
             rect=page.rect
-            pix=page.get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False,annots=True)
+            rendered_pixels=reserve_render_pixels(page,rendered_pixels,1.5)
+            pix=page.get_pixmap(matrix=safe_render_matrix(page, 1.5),alpha=False,annots=True)
             target=flattened.new_page(width=rect.width,height=rect.height)
             target.insert_image(target.rect,stream=pix.tobytes("png"))
         doc.close()
@@ -2007,7 +1408,8 @@ async def edit_pdf_metadata(file: UploadFile = File(...), title: str = Form(""),
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"metadata.pdf"; await save_upload(file,src); reader=PdfReader(str(src)); writer=PdfWriter(); writer.clone_document_from_reader(reader)
-        writer.add_metadata({"/Title":title,"/Author":author,"/Subject":subject,"/Keywords":keywords})
+        # Explicit empty strings clear old values instead of silently retaining them.
+        writer.add_metadata({"/Title":title.strip(),"/Author":author.strip(),"/Subject":subject.strip(),"/Keywords":keywords.strip()})
         with open(out,"wb") as f: writer.write(f)
         return _tool_file_response(out,"NIROJ-Updated-Metadata.pdf")
     finally: await file.close()
@@ -2018,7 +1420,7 @@ async def repair_pdf(file: UploadFile = File(...)):
     try:
         src=job/"input.pdf"; out=job/"repaired.pdf"; await save_upload(file,src)
         try:
-            doc=fitz.open(src)
+            doc=open_pdf_limited(src)
             if doc.is_repaired is False and len(doc)==0: raise ValueError("Empty PDF")
             doc.save(out,garbage=4,deflate=True,clean=True); doc.close()
         except Exception:
@@ -2042,7 +1444,7 @@ async def pdf_to_html(file: UploadFile = File(...)):
     try:
         src=job/"input.pdf"; out=job/"converted.html"
         await save_upload(file,src)
-        doc=fitz.open(src)
+        doc=open_pdf_limited(src)
         parts=["<!doctype html><html><head><meta charset='utf-8'><title>PDF to HTML</title><style>body{font-family:Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;color:#222}.pdf-page{white-space:pre-wrap;border-bottom:1px solid #ddd;padding:24px 0;line-height:1.6}</style></head><body>"]
         for i,page in enumerate(doc):
             text=page.get_text("text")
@@ -2061,13 +1463,14 @@ async def extract_images(file: UploadFile = File(...)):
     try:
         src=job/"input.pdf"; out=job/"extracted-images.zip"
         await save_upload(file,src)
-        doc=fitz.open(src); count=0; seen=set()
+        doc=open_pdf_limited(src); count=0; seen=set(); extracted_pixels=0
         with zipfile.ZipFile(out,"w",zipfile.ZIP_DEFLATED) as archive:
             for page_no,page in enumerate(doc,start=1):
                 for image_no,item in enumerate(page.get_images(full=True),start=1):
                     xref=item[0]
                     if xref in seen: continue
                     seen.add(xref)
+                    extracted_pixels=reserve_extracted_image_pixels(int(item[2]),int(item[3]),extracted_pixels)
                     try:
                         data=doc.extract_image(xref)
                         raw=data.get("image")
@@ -2090,7 +1493,7 @@ async def remove_blank_pages(file: UploadFile = File(...), threshold: int = Form
     job=create_job()
     try:
         src=job/"input.pdf"; out=job/"without-blank-pages.pdf"
-        await save_upload(file,src); doc=fitz.open(src); kept=[]; removed=[]
+        await save_upload(file,src); doc=open_pdf_limited(src); kept=[]; removed=[]
         for i,page in enumerate(doc):
             text="".join(page.get_text("text").split())
             has_images=bool(page.get_images(full=True))
@@ -2175,7 +1578,7 @@ async def rotate_selected_pages(file: UploadFile = File(...), pages: str = Form(
         src = job / "input.pdf"
         out = job / "rotated-selected-pages.pdf"
         await save_upload(file, src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         if pages.strip().lower() == "all":
             selected = list(range(len(doc)))
         else:
@@ -2208,7 +1611,7 @@ async def remove_annotations(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "without-annotations.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for page in doc:
             annot = page.first_annot
             while annot:
@@ -2236,7 +1639,7 @@ async def remove_pdf_links(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "without-links.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for page in doc:
             for link in page.get_links():
                 page.delete_link(link)
@@ -2261,11 +1664,11 @@ async def pdf_page_counter(file: UploadFile = File(...)):
         size = await save_upload(file, src)
         reader = read_pdf(src)
         report = (
-            "PDFora - PDF Page Count Report\\n"
-            "================================\\n"
-            f"File name: {Path(file.filename).name}\\n"
-            f"Total pages: {len(reader.pages)}\\n"
-            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\\n"
+            "PDFora - PDF Page Count Report\n"
+            "================================\n"
+            f"File name: {Path(file.filename).name}\n"
+            f"Total pages: {len(reader.pages)}\n"
+            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\n"
         )
         out.write_text(report, encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Page-Count.txt", background=BackgroundTask(cleanup_job, job))
@@ -2287,7 +1690,7 @@ async def pdf_information(file: UploadFile = File(...)):
         size = await save_upload(file, src)
         reader = read_pdf(src)
         metadata = reader.metadata or {}
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         first = doc[0].rect
         lines = [
             "PDFora - PDF Information Report",
@@ -2303,7 +1706,7 @@ async def pdf_information(file: UploadFile = File(...)):
             f"Creator: {metadata.get('/Creator') or 'Not set'}",
             f"Encrypted: {'Yes' if reader.is_encrypted else 'No'}",
         ]
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Information.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
@@ -2324,14 +1727,14 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Bookmarks.txt"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         toc = doc.get_toc()
         if not toc:
             raise HTTPException(status_code=404, detail="This PDF does not contain bookmarks.")
         lines = ["PDFora - PDF Bookmarks", "=======================", ""]
         for level, title, page in toc:
             lines.append(f"{'  ' * max(0, level - 1)}Page {page}: {title}")
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Bookmarks.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
@@ -2351,7 +1754,7 @@ async def remove_pdf_metadata(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "metadata-removed.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         doc.set_metadata({})
         doc.del_xml_metadata()
         doc.save(out, garbage=4, deflate=True)
@@ -2376,15 +1779,16 @@ async def pdf_to_json(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Text.json"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         pages = []
         for index, page in enumerate(doc):
             blocks = []
             for block in page.get_text("blocks"):
                 if len(block) >= 5 and str(block[4]).strip():
+                    display_block = fitz.Rect(block[:4]) * page.rotation_matrix
                     blocks.append({
-                        "x0": round(block[0], 2), "y0": round(block[1], 2),
-                        "x1": round(block[2], 2), "y1": round(block[3], 2),
+                        "x0": round(display_block.x0, 2), "y0": round(display_block.y0, 2),
+                        "x1": round(display_block.x1, 2), "y1": round(display_block.y1, 2),
                         "text": str(block[4]).strip(),
                     })
             pages.append({"page": index + 1, "width": round(page.rect.width, 2), "height": round(page.rect.height, 2), "blocks": blocks})
@@ -2418,7 +1822,7 @@ async def pdf_to_csv(file: UploadFile = File(...)):
                     for row_number, row in enumerate(table, start=1):
                         for column_number, value in enumerate(row or [], start=1):
                             if value is not None and str(value).strip():
-                                writer.writerow([page_number, table_number, row_number, column_number, str(value).strip()])
+                                writer.writerow([page_number, table_number, row_number, column_number, csv_safe_text(value)])
                                 rows_written += 1
         if rows_written == 0:
             raise HTTPException(status_code=422, detail="No extractable tables were found in this PDF.")
@@ -2440,7 +1844,7 @@ async def add_pdf_bookmarks(file: UploadFile = File(...), bookmarks: str = Form(
         src, out = job / "input.pdf", job / "bookmarked.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         toc = []
         for line in bookmarks.splitlines():
             if not line.strip():
@@ -2481,10 +1885,11 @@ async def bates_numbering(file: UploadFile = File(...), prefix: str = Form(""), 
         src, out = job / "input.pdf", job / "bates-numbered.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for index, page in enumerate(doc):
             label = f"{prefix[:20]}{start + index:0{digits}d}"
-            page.insert_text((page.rect.width - 150, page.rect.height - 24), label, fontsize=9, color=(0, 0, 0))
+            point = display_point_to_page(page, page.rect.width - 150, page.rect.height - 24)
+            page.insert_text(point, label, fontsize=9, color=(0, 0, 0), rotate=display_text_rotation(page))
         doc.save(out, garbage=4, deflate=True)
         return pdf_response(out, "NIROJ-Bates-Numbered.pdf")
     finally:
@@ -2506,12 +1911,14 @@ async def pdf_to_tiff(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-TIFF-Pages.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         if len(doc) > 200:
             raise HTTPException(status_code=413, detail="TIFF conversion is limited to 200 pages per file.")
+        rendered_pixels = 0
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, page in enumerate(doc):
-                pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                rendered_pixels = reserve_render_pixels(page, rendered_pixels, 1.5)
+                pix = page.get_pixmap(matrix=safe_render_matrix(page, 1.5), alpha=False)
                 image = Image.open(io.BytesIO(pix.tobytes("png")))
                 buffer = io.BytesIO()
                 image.save(buffer, format="TIFF", compression="tiff_deflate")
@@ -2536,12 +1943,14 @@ async def pdf_to_bmp(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-BMP-Pages.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         if len(doc) > 200:
             raise HTTPException(status_code=413, detail="BMP conversion is limited to 200 pages per file.")
+        rendered_pixels = 0
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, page in enumerate(doc):
-                pix = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                rendered_pixels = reserve_render_pixels(page, rendered_pixels, 1.5)
+                pix = page.get_pixmap(matrix=safe_render_matrix(page, 1.5), alpha=False)
                 image = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
                 buffer = io.BytesIO()
                 image.save(buffer, format="BMP")
@@ -2566,13 +1975,16 @@ async def split_pdf_by_bookmarks(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Bookmark-Sections.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         toc = doc.get_toc()
         if not toc:
             raise HTTPException(status_code=422, detail="This PDF has no bookmarks to split by.")
         starts = sorted(set(max(1, min(len(doc), int(item[2]))) for item in toc if len(item) >= 3 and int(item[2]) > 0))
         if not starts:
             raise HTTPException(status_code=422, detail="No valid bookmark destinations were found.")
+        # Keep pages before the first bookmark instead of silently dropping them.
+        if starts[0] > 1:
+            starts.insert(0, 1)
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for index, start_page in enumerate(starts):
                 end_page = starts[index + 1] - 1 if index + 1 < len(starts) else len(doc)
@@ -2603,7 +2015,7 @@ async def pdf_to_markdown(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Text.md"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         parts = [f"# Extracted content: {Path(file.filename).stem}\n"]
         for index, page in enumerate(doc, start=1):
             parts.append(f"\n## Page {index}\n")
@@ -2628,7 +2040,7 @@ async def remove_pdf_attachments(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Attachments-Removed.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for attachment_name in list(doc.embfile_names()):
             doc.embfile_del(attachment_name)
         doc.save(out, garbage=4, deflate=True)
@@ -2657,11 +2069,12 @@ async def add_pdf_background(file: UploadFile = File(...), text: str = Form("DRA
         src, out = job / "input.pdf", job / "background.pdf"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         for page in doc:
             rect = page.rect
-            page.draw_rect(rect, color=None, fill=colors[color], overlay=False)
-            page.insert_textbox(fitz.Rect(30, rect.height / 2 - 40, rect.width - 30, rect.height / 2 + 40), text.strip(), fontsize=34, color=(0.55, 0.55, 0.55), align=1, rotate=0, overlay=True)
+            page.draw_rect(display_rect_to_page(page, rect), color=None, fill=colors[color], overlay=False)
+            display_text_box = fitz.Rect(30, rect.height / 2 - 40, rect.width - 30, rect.height / 2 + 40)
+            page.insert_textbox(display_rect_to_page(page, display_text_box), text.strip(), fontsize=34, color=(0.55, 0.55, 0.55), align=1, rotate=display_text_rotation(page), overlay=True)
         doc.save(out, garbage=4, deflate=True)
         return pdf_response(out, "NIROJ-Background.pdf")
     finally:
@@ -2683,15 +2096,28 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Page-Images.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             count = 0
+            total_extracted_bytes = 0
+            extracted_pixels = 0
+            seen_images = set()
             for page_index, page in enumerate(doc):
                 for image_index, item in enumerate(page.get_images(full=True), start=1):
                     xref = item[0]
+                    if not xref or xref in seen_images:
+                        continue
+                    seen_images.add(xref)
+                    extracted_pixels = reserve_extracted_image_pixels(int(item[2]), int(item[3]), extracted_pixels)
                     extracted = doc.extract_image(xref)
+                    if not extracted or not extracted.get("image"):
+                        continue
                     ext = extracted.get("ext", "bin")
-                    archive.writestr(f"page-{page_index + 1:04d}-image-{image_index:03d}.{ext}", extracted["image"])
+                    image_bytes = extracted["image"]
+                    total_extracted_bytes += len(image_bytes)
+                    if total_extracted_bytes > 100 * 1024 * 1024:
+                        raise HTTPException(status_code=413, detail="Extracted page images exceed the 100 MB archive limit.")
+                    archive.writestr(f"page-{page_index + 1:04d}-image-{image_index:03d}.{ext}", image_bytes)
                     count += 1
         if count == 0:
             raise HTTPException(status_code=422, detail="No embedded images were found in this PDF.")
@@ -2715,24 +2141,29 @@ async def extract_pdf_fonts(file: UploadFile = File(...)):
         src, out = job / "input.pdf", job / "NIROJ-Fonts.zip"
         await save_upload(file, src)
         read_pdf(src)
-        doc = fitz.open(src)
+        doc = open_pdf_limited(src)
         found = set()
+        written = 0
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
             for page_index, page in enumerate(doc):
                 for font in page.get_fonts(full=True):
                     xref = font[0]
                     if not xref or xref in found:
                         continue
-                    found.add(xref)
                     extracted = doc.extract_font(xref)
                     if extracted and extracted[3]:
                         name, ext, _, data = extracted
+                        if not data:
+                            continue
                         safe_name = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in name)[:80]
                         archive.writestr(f"{safe_name or 'font'}-{xref}.{ext}", data)
-        if not found:
+                        found.add(xref)
+                        written += 1
+        if written == 0:
             raise HTTPException(status_code=422, detail="No extractable embedded fonts were found.")
         return FileResponse(str(out), media_type="application/zip", filename="NIROJ-Fonts.zip", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
             doc.close()
         await file.close()
+

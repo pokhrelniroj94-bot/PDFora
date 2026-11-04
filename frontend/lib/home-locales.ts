@@ -190,6 +190,6 @@ export const supportedHomeLanguages = Object.values(homeLocales).map((locale) =>
 export const homeLanguageAlternates: Record<string, string> = {
   en: "https://pd-fora.vercel.app/",
   ne: "https://pd-fora.vercel.app/ne",
-  ...Object.fromEntries(Object.keys(homeLocales).map((code) => [code, `https://pd-fora.vercel.app/${code}`])),
+  ...Object.fromEntries(Object.keys(homeLocales).filter((code) => code !== "en" && code !== "ne").map((code) => [code, `https://pd-fora.vercel.app/${code}`])),
   "x-default": "https://pd-fora.vercel.app/",
 };

@@ -66,7 +66,7 @@ export default async function LocalizedHomePage({ params }: { params: Promise<{ 
           <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-6xl">{content.heading}</h1>
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300">{content.intro}</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/tools" className="rounded-xl bg-teal-400 px-5 py-3 font-bold text-slate-950 hover:bg-teal-300">{content.primary}</Link>
+            <Link href={`/${locale}/tools`} className="rounded-xl bg-teal-400 px-5 py-3 font-bold text-slate-950 hover:bg-teal-300">{content.primary}</Link>
             <Link href="#popular-tools" className="rounded-xl border border-white/20 px-5 py-3 font-bold text-white hover:bg-white/10">{content.secondary}</Link>
           </div>
         </div>

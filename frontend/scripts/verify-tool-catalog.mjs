@@ -21,6 +21,7 @@ const aiWritingTools = read("../components/AIWritingTools.tsx");
 const marketIntelligence = read("../components/MarketIntelligence.tsx");
 const siteAIHelp = read("../components/SiteAIHelp.tsx");
 const rootLayout = read("../app/layout.tsx");
+const newTools = read("../components/NewTools.tsx");
 const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
@@ -113,7 +114,7 @@ const legacySlugValues = [...legacyRoutesSource.matchAll(/^\s*"([^"]+)",?$/gm)].
 const canonicalCatalogSlugs = catalog.filter((slug) => slug !== "ocr-pdf" && slug !== "pdf-tools" && !legacySlugValues.includes(slug));
 const canonicalToolSlugs = [...legacySlugValues, ...canonicalCatalogSlugs];
 assert.equal(new Set(canonicalToolSlugs).size, canonicalToolSlugs.length, "Canonical tool sitemap routes must be unique");
-assert.equal(canonicalToolSlugs.length, 172, `Expected 172 canonical tool URLs in the sitemap, found ${canonicalToolSlugs.length}`);
+assert.equal(canonicalToolSlugs.length, 176, `Expected 176 canonical tool URLs in the sitemap, found ${canonicalToolSlugs.length}`);
 for (const slug of catalog) {
   if (slug === "ocr-pdf" || slug === "pdf-tools") continue;
   assert.ok(
@@ -143,10 +144,18 @@ for (const href of availablePdfHrefs) {
   assert.ok(layoutSource.includes(`getToolMetadata("${slug}")`), `PDF tool ${slug} is missing generated metadata`);
   assert.ok(layoutSource.includes(`ToolSEOContent slug="${slug}"`), `PDF tool ${slug} is missing its on-page SEO guide`);
 }
-assert.equal(catalog.length, 123, "Expected 123 catalog utilities including four free AI tools after retiring the NRB forex tool");
-assert.equal(allHrefs.length, 172, "Expected 172 available tools (49 PDF tools + 123 catalog utilities)");
+assert.equal(catalog.length, 127, "Expected 127 catalog utilities including four free AI tools and four new utilities after retiring the NRB forex tool");
+assert.equal(allHrefs.length, 176, "Expected 176 available tools (49 PDF tools + 127 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(catalog.includes("ai-resume-writer") && catalog.includes("ai-cover-letter-generator") && catalog.includes("ai-humanizer") && catalog.includes("market-ai"), "AI tools are missing from the canonical catalog");
+assert.ok(catalog.includes("ats-resume-checker") && catalog.includes("invoice-quotation-generator") && catalog.includes("image-resizer-compressor") && catalog.includes("business-break-even-calculator"), "New utility tools are missing from the canonical catalog");
+assert.ok(allTools.includes('import NewTools from "./NewTools"'), "NewTools component is not imported");
+for (const slug of ["ats-resume-checker", "invoice-quotation-generator", "image-resizer-compressor", "business-break-even-calculator"]) {
+  assert.ok(newTools.includes('slug==="' + slug + '"'), "NewTools component is missing handler for " + slug);
+  assert.ok(allTools.includes('"' + slug + '"'), "AllTools dispatcher is missing " + slug);
+  assert.ok(seoContent.includes('"' + slug + '"'), "New utility is missing specific SEO guidance: " + slug);
+}
+
 assert.ok(allTools.includes('import AIWritingTools from "./AIWritingTools"') && allTools.includes('import MarketIntelligence from "./MarketIntelligence"'), "AI tool workspaces are not imported");
 assert.ok(allTools.includes('includes(slug)) return <main') && allTools.includes("<AIWritingTools slug={slug}/>") && allTools.includes("<MarketIntelligence/>"), "AI tool dispatch handlers are missing");
 assert.ok(aiRoute.includes('"site-help"') && aiRoute.includes('"ai-resume-writer"') && aiRoute.includes('"ai-cover-letter-generator"') && aiRoute.includes('"ai-humanizer"'), "AI API task allowlist is incomplete");

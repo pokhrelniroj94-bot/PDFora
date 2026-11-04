@@ -372,7 +372,7 @@ export default function HomePageClient() {
           <Link href="/tools/nepse-market-news" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 font-bold text-rose-900 hover:bg-rose-100">📰 NEPSE &amp; IPO News <span className="mt-1 block text-xs font-medium">Latest headlines</span></Link>
           <Link href="/tools/nepal-share-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">📈 Share Profit Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Buy, sell &amp; charges</span></Link>
           <Link href="/tools/nepse-dividend-calculator" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💸 Dividend Calculator <span className="mt-1 block text-xs font-medium text-slate-500">Cash &amp; bonus estimate</span></Link>
-          <Link href="/tools/nepal-forex-rates" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💱 NRB Forex Rates <span className="mt-1 block text-xs font-medium text-slate-500">Official buying &amp; selling</span></Link>
+          <Link href="/tools/currency-converter" className="rounded-2xl border border-slate-200 bg-white p-4 font-bold hover:border-teal-400">💱 Currency Converter <span className="mt-1 block text-xs font-medium text-slate-500">Convert between supported currencies</span></Link>
           <Link href="/market" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 font-bold text-teal-950 hover:border-teal-400">📊 NEPSE Market Dashboard <span className="mt-1 block text-xs font-medium text-teal-800">Index charts, stock prices &amp; market movers</span></Link>
         </div>
         <NepalMarketNews />
@@ -462,7 +462,7 @@ export default function HomePageClient() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            { href: "/tools/nepal-forex-rates", title: "NRB Exchange Rates", desc: "Daily official currency buying and selling rates." },
+            { href: "/tools/currency-converter", title: "NRB Exchange Rates", desc: "Daily official currency buying and selling rates." },
             { href: "/tools/nepal-salary-tax-calculator", title: "Nepal Salary Tax Calculator", desc: "Estimate FY 2083/84 annual and monthly income tax." },
             { href: "/tools/nepal-electricity-bill-calculator", title: "NEA Electricity Bill", desc: "Estimate a single-phase domestic electricity bill." },
             { href: "/tools/nepali-date-converter", title: "BS to AD Date Converter", desc: "Convert Bikram Sambat and Gregorian dates." },

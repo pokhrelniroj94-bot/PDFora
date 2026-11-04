@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: { default: "PDFora Tools", template: "%s | PDFora" },
     description: "Browse PDFora's online tools and utilities.",
-    alternates: { canonical: `${site}/${locale}/tools` },
+    alternates: { canonical: `${site}/tools` },
     // Tool workspaces are not fully translated yet. Keep them out of search
     // until their visible tool content is genuinely localized.
     robots: { index: false, follow: true, googleBot: { index: false, follow: true } },

@@ -60,7 +60,7 @@ export default function SiteAIHelp() {
           kind: "site-help",
           page: pathname || "/",
           question: clean,
-          history: next.slice(-7).map((item) => item.role.toUpperCase() + ": " + item.text).join("\n").slice(0, 2600),
+          history: next.slice(-8, -1).map((item) => item.role.toUpperCase() + ": " + item.text).join("\n").slice(0, 2600),
           pageData: pageContext,
         }),
       });

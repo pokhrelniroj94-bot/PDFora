@@ -56,14 +56,16 @@ export default function ResumeBuilder({locale="en"}:{locale?:string}) {
       try {
         const saved = sessionStorage.getItem("pdfora-ai-resume-draft");
         if (!saved) return;
-        const draft = JSON.parse(saved) as { summary?: string; skills?: string; experience?: string };
-        if (draft.summary) setSummary(draft.summary);
-        if (draft.skills) setSkills(draft.skills.replace(/\r?\n/g, ", "));
-        if (draft.experience) setJobs((rows) => rows.map((row, index) => index === 0 ? { ...row, details: draft.experience || "" } : row));
+        const parsed: unknown = JSON.parse(saved);
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Invalid AI draft");
+        const draft = parsed as Record<string, unknown>;
+        if (typeof draft.summary === "string") setSummary(draft.summary);
+        if (typeof draft.skills === "string") setSkills(draft.skills.replace(/\r?\n/g, ", "));
+        if (typeof draft.experience === "string") setJobs((rows) => rows.map((row, index) => index === 0 ? { ...row, details: draft.experience as string } : row));
         setAiDraftNotice("AI draft imported. Review and edit every section before exporting your CV.");
         sessionStorage.removeItem("pdfora-ai-resume-draft");
       } catch {
-        sessionStorage.removeItem("pdfora-ai-resume-draft");
+        setAiDraftNotice("The AI draft could not be imported. Generate it again or paste the content manually.");
       }
     }, 0);
     return () => window.clearTimeout(timer);

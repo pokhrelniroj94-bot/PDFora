@@ -21,6 +21,7 @@ const aiWritingTools = read("../components/AIWritingTools.tsx");
 const marketIntelligence = read("../components/MarketIntelligence.tsx");
 const siteAIHelp = read("../components/SiteAIHelp.tsx");
 const rootLayout = read("../app/layout.tsx");
+const documentLanguage = read("../components/DocumentLanguage.tsx");
 const newTools = read("../components/NewTools.tsx");
 const resumeBuilder = read("../components/ResumeBuilder.tsx");
 const backendSource = read("../../backend/main.py");
@@ -165,6 +166,7 @@ assert.ok(aiRoute.includes("api.cloudflare.com/client/v4/accounts/") && !aiRoute
 assert.ok(aiWritingTools.includes("/api/ai-writing") && marketIntelligence.includes("/api/ai-writing"), "AI frontends are not connected to the AI API");
 assert.ok(siteAIHelp.includes('kind: "site-help"') && siteAIHelp.includes("/api/ai-writing"), "Site-wide AI Help request is not wired to the supported API task");
 assert.ok(rootLayout.includes('import SiteAIHelp from "../components/SiteAIHelp"') && rootLayout.includes("<SiteAIHelp />"), "Site-wide AI Help is not mounted in the root layout");
+assert.ok(rootLayout.includes('import DocumentLanguage from "../components/DocumentLanguage"') && rootLayout.includes("<DocumentLanguage />") && documentLanguage.includes("document.documentElement.lang = language"), "Localized document language and RTL direction are not applied");
 assert.ok(resumeBuilder.includes("pdfora-ai-resume-draft") && resumeBuilder.includes("AI draft imported"), "AI resume drafts are not imported into the Resume Builder");
 assert.equal((resumeBuilder.match(/id: "/g) || []).length, 20, "Resume Builder must expose 20 templates");
 assert.ok(aiRoute.includes("Preferred output language") && aiWritingTools.includes("locale") && marketIntelligence.includes("locale"), "AI tools must receive the selected language");

@@ -86,7 +86,7 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
       "Job description: " + safe("jobDescription", 1800),
       "Writing style: " + (safe("style", 80) || "Professional"),
       "",
-      "Return: Professional Summary, Core Skills, Experience Bullets (only if experience was provided), and Optional ATS Keywords. Do not add commentary."
+      "Use these exact section headings in English, even when writing the content in another language: Professional Summary, Core Skills, Experience Bullets, Optional ATS Keywords. Do not translate these heading labels. Return only these sections; include Experience Bullets only if experience was provided. Do not add commentary."
     ].join("\n");
   }
   if (kind === "ai-cover-letter-generator") {

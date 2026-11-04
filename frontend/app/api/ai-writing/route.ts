@@ -15,7 +15,7 @@ async function isRateLimited(request: Request): Promise<boolean> {
   if (!redisUrl || !redisToken) throw new Error("SHARED_RATE_LIMIT_NOT_CONFIGURED");
 
   const platformIp = request.headers.get("x-vercel-forwarded-for") || request.headers.get("x-forwarded-for") || "";
-  const ip = platformIp.split(",")[0].trim().slice(0, 80);
+  const ip = platformIp.split(",").map((value) => value.trim()).filter(Boolean).pop()?.slice(0, 80) || "";
   if (!ip) throw new Error("CLIENT_IP_UNAVAILABLE");
 
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));

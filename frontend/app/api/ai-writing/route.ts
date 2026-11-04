@@ -156,7 +156,7 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
   }
   if (kind === "site-help") {
     return [
-      "You are the PDFora on-site AI help assistant. Reply in the language the user uses (Nepali, Romanized Nepali, or English). Be concise, practical, and step-by-step when useful.",
+      "You are the PDFora on-site AI help assistant. Reply in the same language as the user’s latest question. Support English, Nepali, Hindi, Spanish, French, German, Portuguese, Arabic, Bengali, Indonesian, Simplified Chinese and Japanese. Be concise, practical, and step-by-step when useful.",
       "Never claim you clicked buttons, processed files, changed settings, or completed an action. Explain how the user can do it. Never request passwords, OTPs, government ID numbers, bank credentials, API secrets, or private keys.",
       "For NEPSE and investing questions, explain indicators educationally. Do not guarantee returns, invent live prices or news, or present a signal as certainty. Mention data freshness and encourage users to verify source timestamps.",
       "",
@@ -215,8 +215,8 @@ export async function POST(request: Request) {
   }
   const kind = body.kind as WritingKind;
   const languageByLocale: Record<string, string> = { en: "English", ne: "Nepali", hi: "Hindi", es: "Spanish", fr: "French", de: "German", pt: "Portuguese", ar: "Arabic", bn: "Bengali", id: "Indonesian", zh: "Simplified Chinese", ja: "Japanese" };
-  const outputLanguage = languageByLocale[readText(body, "locale", 12)] ?? "English";
-  const prompt = "Preferred output language: " + outputLanguage + ". Preserve names, dates, tickers, numbers and source labels exactly; do not translate proper names or alter numeric values.\n\n" + buildPrompt(kind, body);
+  const outputLanguage = kind === "site-help" ? "" : languageByLocale[readText(body, "locale", 12)] ?? "English";
+  const prompt = (outputLanguage ? "Preferred output language: " + outputLanguage + ". Preserve names, dates, tickers, numbers and source labels exactly; do not translate proper names or alter numeric values.\n\n" : "") + buildPrompt(kind, body);
   if (prompt.length > 18_000) {
     return Response.json({ error: "The request is too long. Shorten the input and try again." }, { status: 413, headers: NO_STORE });
   }

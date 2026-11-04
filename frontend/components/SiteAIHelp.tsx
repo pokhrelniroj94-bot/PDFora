@@ -34,12 +34,6 @@ export default function SiteAIHelp() {
           if (!response.ok) return;
           const data = await response.json();
           setPageContext(JSON.stringify({ pageType: "NEPSE market", source: data.source, sourceUpdatedAt: data.sourceUpdatedAt, latestHistoryDate: data.latestHistoryDate, quoteStale: data.quoteStale, status: data.status, indices: data.indices, recentDailyHistory: Array.isArray(data.points) ? data.points.slice(-45) : [] }).slice(0, 3200));
-        } else if (pagePath === "/tools/nepal-forex-rates" || pagePath === "/tools/currency-converter") {
-          const response = await fetch("/api/nepal-forex", { cache: "no-store", signal: controller.signal });
-          if (!response.ok) return;
-          const data = await response.json();
-          const preferred = Array.isArray(data.rates) ? data.rates.filter((rate: { code?: string }) => ["USD","EUR","GBP","INR","JPY","CNY","AUD","CAD","AED","SAR","QAR","MYR"].includes(rate.code || "")) : [];
-          setPageContext(JSON.stringify({ pageType: "Nepal Rastra Bank daily forex", source: data.source, rateDate: data.rateDate, requestedDate: data.requestedDate, isStale: data.isStale, notice: data.notice, selectedReferenceRates: preferred }).slice(0, 3200));
         }
       } catch {
         if (!controller.signal.aborted) setPageContext("Live page data could not be loaded. Do not invent current values; explain this limitation and guide the user to refresh the data panel.");

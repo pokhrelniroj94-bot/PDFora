@@ -180,12 +180,13 @@ export const homeLocales: Record<string, HomeLocale> = {
   },
 };
 
-export const supportedHomeLanguages = Object.values(homeLocales).map((locale) => ({
-  code: locale.code,
-  name: locale.name,
-  nativeName: locale.nativeName,
-  href: locale.code === "en" ? "/" : `/${locale.code}`,
-}));
+export const supportedHomeLanguages = [
+  { code: "en", name: "English", nativeName: "English", href: "/" },
+  { code: "ne", name: "Nepali", nativeName: "नेपाली", href: "/ne" },
+  ...Object.values(homeLocales).map((locale) => ({
+    code: locale.code, name: locale.name, nativeName: locale.nativeName, href: `/${locale.code}`,
+  })),
+];
 
 export const homeLanguageAlternates: Record<string, string> = {
   en: "https://pd-fora.vercel.app/",

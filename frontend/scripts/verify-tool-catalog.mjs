@@ -43,8 +43,8 @@ const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
 const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
-const multiRouteSlugs = [...allTools.matchAll(/if\\s*\\(\\[([\\s\\S]*?)\\]\\.includes\\(slug\\)\\)/g)].flatMap((block) => [...block[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]));
-const newToolCases = [...newTools.matchAll(/if\\s*\\(slug\\s*===\\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
+const multiRouteSlugs = [...allTools.matchAll(/if\s*\(\[([\s\S]*?)\]\.includes\(slug\)\)/g)].flatMap((block) => [...block[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]));
+const newToolCases = [...newTools.matchAll(/if\s*\(slug\s*===\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs, ...multiRouteSlugs, ...newToolCases]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
 if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {

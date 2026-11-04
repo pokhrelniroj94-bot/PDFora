@@ -196,7 +196,7 @@ export async function POST(request: Request) {
   const languageByLocale: Record<string, string> = { en: "English", ne: "Nepali", hi: "Hindi", es: "Spanish", fr: "French", de: "German", pt: "Portuguese", ar: "Arabic", bn: "Bengali", id: "Indonesian", zh: "Simplified Chinese", ja: "Japanese" };
   const outputLanguage = languageByLocale[readText(body, "locale", 12)] ?? "English";
   const prompt = "Preferred output language: " + outputLanguage + ". Preserve names, dates, tickers, numbers and source labels exactly; do not translate proper names or alter numeric values.\\n\\n" + buildPrompt(kind, body);
-  if (prompt.length > MAX_INPUT + 7000) {
+  if (prompt.length > 18_000) {
     return Response.json({ error: "The request is too long. Shorten the input and try again." }, { status: 413, headers: NO_STORE });
   }
 

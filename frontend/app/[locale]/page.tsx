@@ -14,11 +14,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const content = homeLocales[locale];
   if (!content) return {};
-  const languages = Object.fromEntries(Object.entries(homeLanguageAlternates).map(([key, url]) => [key, url]));
   return {
     title: content.title,
     description: content.description,
-    alternates: { canonical: `${site}/${locale}`, languages },
+    alternates: { canonical: `${site}/${locale}`, languages: homeLanguageAlternates },
     openGraph: {
       type: "website", siteName: "PDFora", title: content.title,
       description: content.description, url: `${site}/${locale}`,

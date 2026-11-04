@@ -2,6 +2,7 @@ import { blogPosts, isCatalogGeneratedGuide } from "../lib/blog-posts";
 import type { MetadataRoute } from "next";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
+import { homeLocales, homeLanguageAlternates } from "../lib/home-locales";
 
 const baseUrl = "https://pd-fora.vercel.app";
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
@@ -25,7 +26,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
-    { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8, alternates: { languages: homeLanguageAlternates } },
+    ...Object.keys(homeLocales).filter((locale) => locale !== "en" && locale !== "ne").map((locale) => ({
+      url: `${baseUrl}/${locale}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.75,
+      alternates: { languages: homeLanguageAlternates },
+    })),
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/market`, changeFrequency: "daily", priority: 0.85 },
     { url: `${baseUrl}/nepse-lab`, changeFrequency: "weekly", priority: 0.75 },

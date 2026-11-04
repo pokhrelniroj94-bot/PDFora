@@ -77,13 +77,17 @@ export default async function LocalizedHomePage({ params }: { params: Promise<{ 
         <h2 className="mt-2 text-3xl font-black">{content.popular}</h2>
         <p className="mt-3 text-slate-600">{content.toolsIntro}</p>
         <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {content.tools.map((tool) => (
-            <Link key={tool.href} href={`/${locale}/tools/${tool.href.replace(/^\\/+/, "")}`} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-teal-500 hover:shadow-lg">
+          {content.tools.map((tool) => {
+            const slug = tool.href.split("/").filter(Boolean).pop() ?? "";
+            const href = toolCatalog.some((item) => item.slug === slug) ? `/${locale}/tools/${slug}` : tool.href;
+            return (
+            <Link key={tool.href} href={href} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-teal-500 hover:shadow-lg" >
               <h3 className="font-bold">{tool.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-600">{tool.description}</p>
               <span className="mt-4 inline-block text-sm font-bold text-teal-700">{content.primary} →</span>
             </Link>
-          ))}
+            );
+          })}
         </div>
         <p className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">{content.note}</p>
       </section>

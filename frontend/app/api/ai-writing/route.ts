@@ -14,7 +14,7 @@ async function isRateLimited(request: Request): Promise<boolean> {
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!redisUrl || !redisToken) throw new Error("SHARED_RATE_LIMIT_NOT_CONFIGURED");
 
-  const platformIp = request.headers.get("x-vercel-forwarded-for") || "";
+  const platformIp = request.headers.get("x-vercel-forwarded-for") || request.headers.get("x-forwarded-for") || "";
   const ip = platformIp.split(",")[0].trim().slice(0, 80);
   if (!ip) throw new Error("CLIENT_IP_UNAVAILABLE");
 

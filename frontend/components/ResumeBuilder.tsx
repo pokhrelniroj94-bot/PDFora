@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { toolUi } from "../lib/tool-ui-i18n";
 
 type Entry = { id: string; school: string; degree: string; place: string; dates: string };
 type Job = { id: string; role: string; company: string; dates: string; details: string };
@@ -30,7 +31,8 @@ const uid = () => Math.random().toString(36).slice(2, 9);
 const initialEntry = (): Entry => ({ id: uid(), school: "", degree: "", place: "", dates: "" });
 const initialJob = (): Job => ({ id: uid(), role: "", company: "", dates: "", details: "" });
 
-export default function ResumeBuilder() {
+export default function ResumeBuilder({locale="en"}:{locale?:string}) {
+  const tr=(source:string)=>toolUi(locale,source);
   const [template, setTemplate] = useState("harvard");
   const [accent, setAccent] = useState("#0f766e");
   const [font, setFont] = useState("Arial");
@@ -55,15 +57,15 @@ export default function ResumeBuilder() {
   const updateJob = (id: string, key: keyof Job, value: string) => setJobs(rows => rows.map(row => row.id === id ? { ...row, [key]: value } : row));
   const input = "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100";
   const label = "mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500";
-  const field = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{title}</span><input className={input} value={value} onChange={e => setter(e.target.value)} placeholder={placeholder} /></label>;
-  const area = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{title}</span><textarea className={input + " min-h-24 resize-y"} value={value} onChange={e => setter(e.target.value)} placeholder={placeholder} /></label>;
+  const field = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{tr(title)}</span><input className={input} value={value} onChange={e => setter(e.target.value)} placeholder={tr(placeholder)} /></label>;
+  const area = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{tr(title)}</span><textarea className={input + " min-h-24 resize-y"} value={value} onChange={e => setter(e.target.value)} placeholder={tr(placeholder)} /></label>;
   const print = () => window.print();
   const heading = (title: string) => <h3 className="mb-3 mt-6 border-b pb-2 text-sm font-extrabold uppercase tracking-widest" style={{ color: accent, borderColor: accent + "55" }}>{title}</h3>;
 
   return <main className="mx-auto min-h-screen max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8">
     <div className="mb-7 flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Career Studio</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Professional Resume Builder</h1><p className="mt-2 max-w-2xl text-slate-600">Build a polished, job-ready CV with live preview, six layouts and print-ready A4 PDF export.</p></div>
-      <button onClick={print} className="no-print rounded-xl bg-teal-700 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800">Download CV as PDF ↗</button>
+      <button onClick={print} className="no-print rounded-xl bg-teal-700 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800">{tr("Download CV as PDF")} ↗</button>
     </div>
     <div className="no-print mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {templates.map(t => <button key={t.id} onClick={() => setTemplate(t.id)} className={"rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md " + (template === t.id ? "border-teal-600 bg-teal-50 ring-2 ring-teal-100" : "border-slate-200 bg-white")}>
@@ -83,7 +85,7 @@ export default function ResumeBuilder() {
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"><h2 className="mb-4 text-lg font-extrabold text-slate-900">5. Skills & additional information</h2><div className="grid gap-4 sm:grid-cols-2">{area("Skills (comma separated)",skills,setSkills,"Financial analysis, Excel, Communication")}{area("Languages",languages,setLanguages,"Nepali (Native), English (Professional)")}{area("Projects",projects,setProjects,"Project name — what you built and the result")}{area("Certifications",certifications,setCertifications,"Course / certificate — issuer, year")}{area("References (optional)",references,setReferences,"Available upon request")}</div></div>
       </section>
       <section className="min-w-0 xl:sticky xl:top-4">
-        <div className="no-print mb-3 flex items-center justify-between"><div><h2 className="font-extrabold text-slate-900">Live CV preview</h2><p className="text-xs text-slate-500">Updates as you type · A4 print layout</p></div><button onClick={print} className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold text-white">Export PDF</button></div>
+        <div className="no-print mb-3 flex items-center justify-between"><div><h2 className="font-extrabold text-slate-900">Live CV preview</h2><p className="text-xs text-slate-500">Updates as you type · A4 print layout</p></div><button onClick={print} className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold text-white">{tr("Export PDF")}</button></div>
         <article id="resume-paper" className={"resume-paper mx-auto min-h-[800px] w-full max-w-[794px] overflow-hidden bg-white text-slate-800 shadow-[0_20px_70px_rgba(15,23,42,.14)] " + (["modern","creative","tech","finance","clean-two-column","navy","emerald"].includes(template) ? "resume-sidebar" : "")} style={{ fontFamily: font }}>
           {(["modern","creative","tech","finance","clean-two-column","navy","emerald"].includes(template)) ? <div className="grid min-h-[1123px] grid-cols-[31%_69%]">
             <aside className="p-6 text-white" style={{background:accent}}>{photo && <img src={photo} alt="Profile" className="mb-5 h-24 w-24 rounded-full object-cover" />}<h1 className="break-words text-2xl font-black leading-tight">{name || "Your Name"}</h1><p className="mt-2 text-sm opacity-90">{role || "Professional Title"}</p><div className="mt-7 space-y-2 break-words text-xs">{[email,phone,location,website].filter(Boolean).map(x=><p key={x}>{x}</p>)}</div><h3 className="mt-8 border-b border-white/40 pb-2 text-xs font-extrabold uppercase tracking-widest">Skills</h3><ul className="mt-3 space-y-2 text-xs">{skillList.map(s=><li key={s}>• {s}</li>)}</ul>{languages && <><h3 className="mt-8 border-b border-white/40 pb-2 text-xs font-extrabold uppercase tracking-widest">Languages</h3><p className="mt-3 whitespace-pre-line text-xs">{languages}</p></>}</aside>

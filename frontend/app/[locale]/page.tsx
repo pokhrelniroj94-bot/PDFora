@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       type: "website", siteName: "PDFora", title: content.title,
       description: content.description, url: `${site}/${locale}`,
-      locale: ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID", zh: "zh_CN", ja: "ja_JP" } as Record<string, string>)[locale],
+      locale: ({ ne: "ne_NP", hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID", zh: "zh_CN", ja: "ja_JP" } as Record<string, string>)[locale],
       alternateLocale: ["en_US", "ne_NP", "hi_IN", "es_ES", "fr_FR", "de_DE", "pt_BR", "ar_SA", "bn_BD", "id_ID", "zh_CN", "ja_JP"].filter((item) => item !== ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID", zh: "zh_CN", ja: "ja_JP" } as Record<string, string>)[locale]),
     },
     twitter: { card: "summary_large_image", title: content.title, description: content.description },
@@ -45,7 +45,7 @@ export default async function LocalizedHomePage({ params }: { params: Promise<{ 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2" aria-label="PDFora home">
+          <Link href={`/${locale}`} className="flex items-center gap-2" aria-label="PDFora home">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-600 font-black text-white">P</span>
             <span className="text-xl font-black">PDFora</span>
           </Link>
@@ -77,7 +77,7 @@ export default async function LocalizedHomePage({ params }: { params: Promise<{ 
         <p className="mt-3 text-slate-600">{content.toolsIntro}</p>
         <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {content.tools.map((tool) => (
-            <Link key={tool.href} href={tool.href} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-teal-500 hover:shadow-lg">
+            <Link key={tool.href} href={`/${locale}/tools/${tool.href.replace(/^\\/+/, "")}`} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-teal-500 hover:shadow-lg">
               <h3 className="font-bold">{tool.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-600">{tool.description}</p>
               <span className="mt-4 inline-block text-sm font-bold text-teal-700">{content.primary} →</span>

@@ -61,6 +61,7 @@ Push-Location $frontend
 try {
     Invoke-Check "Install frontend dependencies" "npm" @("ci")
     Invoke-Check "Verify tool catalog" "npm" @("run", "verify:tools")
+    Invoke-Check "Verify NEPSE market-intelligence freshness guard" "npm" @("run", "verify:market-intelligence")
     Invoke-Check "Run frontend lint" "npm" @("run", "lint")
     Invoke-Check "Build frontend for production" "npm" @("run", "build")
     Invoke-Check "Audit production npm dependencies" "npm" @("audit", "--omit=dev", "--audit-level=high")

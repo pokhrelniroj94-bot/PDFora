@@ -115,7 +115,7 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
       safe("pageData", 3200),
       "",
       "Answer the user's latest question directly. Use the same language as the user's question when practical. Never claim an action was performed unless the tool actually performed it."
-    ].join("\\n");
+    ].join("\n");
   }
   if (kind === "ai-humanizer") {
     return [

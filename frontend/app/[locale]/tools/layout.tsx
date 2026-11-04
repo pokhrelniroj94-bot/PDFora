@@ -8,12 +8,17 @@ const languages = [
   ["id", "Bahasa Indonesia"], ["zh", "简体中文"], ["ja", "日本語"],
 ] as const;
 
-export const metadata: Metadata = {
-  title: { default: "PDFora Tools", template: "%s | PDFora" },
-  description: "Browse PDFora's online tools and utilities.",
-  alternates: { canonical: `${site}/tools` },
-  robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: { default: "PDFora Tools", template: "%s | PDFora" },
+    description: "Browse PDFora's online tools and utilities.",
+    alternates: { canonical: `${site}/${locale}/tools` },
+    // Tool workspaces are not fully translated yet. Keep them out of search
+    // until their visible tool content is genuinely localized.
+    robots: { index: false, follow: true, googleBot: { index: false, follow: true } },
+  };
+}
 
 export default async function LocalizedToolsLayout({ children, params }: Readonly<{ children: React.ReactNode; params: Promise<{ locale: string }> }>) {
   const { locale } = await params;

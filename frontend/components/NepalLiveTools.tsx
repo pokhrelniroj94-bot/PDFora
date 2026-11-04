@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import NepalMarketNews from "./NepalMarketNews";
+import { toolUi } from "../lib/tool-ui-i18n";
 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
@@ -168,7 +169,8 @@ function NepseDividendTool() {
   </div>;
 }
 
-export default function NepalLiveTools({ slug }: { slug: string }) {
+export default function NepalLiveTools({ slug, locale="en" }: { slug: string; locale?: string }) {
+ const tr=(source:string)=>toolUi(locale,source);
   if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool/>;
   if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool/>;
   if (slug === "nepal-public-holidays-2083") return <HolidayTool/>;

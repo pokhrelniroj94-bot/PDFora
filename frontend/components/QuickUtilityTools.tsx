@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toolUi } from "../lib/tool-ui-i18n";
 
 type Values = Record<string, string>;
 const defaults: Record<string, Values> = {
@@ -45,7 +46,8 @@ const morse:Record<string,string>={a:".-",b:"-...",c:"-.-.",d:"-..",e:".",f:"..-
 const romanPairs:[number,string][]=[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
 function toRoman(value:number){let n=value,out="";for(const [v,s] of romanPairs)while(n>=v){out+=s;n-=v;}return out;}
 function fromRoman(s:string){const map:Record<string,number>={I:1,V:5,X:10,L:50,C:100,D:500,M:1000};let n=0;for(let i=0;i<s.length;i++){const v=map[s[i]],next=map[s[i+1]]||0;if(!v)throw Error("Invalid Roman numeral.");n+=v<next?-v:v;}if(n<1||n>3999||toRoman(n)!==s)throw Error("Use a canonical Roman numeral from I to MMMCMXCIX.");return n;}
-export default function QuickUtilityTools({slug}:{slug:string}) {
+export default function QuickUtilityTools({slug,locale="en"}:{slug:string;locale?:string}) {
+ const tr=(source:string)=>toolUi(locale,source);
  const initial=defaults[slug]||{text:""};const [v,setV]=useState<Values>(initial);const [out,setOut]=useState("");const [error,setError]=useState("");
  const get=(k:string)=>v[k]??"";const n=(k:string)=>{const x=Number(get(k));if(!Number.isFinite(x))throw Error("Enter valid numbers.");return x;};
  const run=()=>{setError("");setOut("");try{const t=get("text");let result="";
@@ -54,11 +56,11 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "reading-time-calculator":{const count=words(t).length,wpm=Math.max(1,n("wpm"));result=count+" words\nEstimated reading time: "+(count/wpm<1?Math.max(1,Math.ceil(count/wpm*60))+" seconds":(count/wpm).toFixed(1)+" minutes");break;}
  case "line-counter":{const a=t.split(/\r?\n/);result="Total lines: "+a.length+"\nNon-empty: "+a.filter(x=>x.trim()).length+"\nUnique: "+new Set(a).size;break;}
  case "sentence-counter":{const a=t.trim().split(/[.!?]+(?=\s|$)/).filter(x=>x.trim()),w=words(t).length;result="Sentences: "+a.length+"\nWords: "+w+"\nAverage words per sentence: "+(a.length?(w/a.length).toFixed(1):"0");break;}
- case "email-extractor":result=[...new Set(t.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)||[])].join("\n")||"No email addresses found.";break;
- case "url-extractor":result=[...new Set(t.match(/https?:\/\/[^\s<>()\[\]{}"']+/gi)||[])].join("\n")||"No URLs found.";break;
- case "phone-number-extractor":result=[...new Set(t.match(/(?:\+?\d[\d\s().-]{6,}\d)/g)||[])].map(x=>x.trim()).join("\n")||"No phone-like numbers found.";break;
- case "number-extractor":result=(t.match(/[-+]?\d+(?:[,.]\d+)?/g)||[]).join("\n")||"No numbers found.";break;
- case "hashtag-extractor":result=[...new Set(t.match(/#[\p{L}\p{N}_]+/gu)||[])].join("\n")||"No hashtags found.";break;
+ case "email-extractor":result=[...new Set(t.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)||[])].join("\n")||tr("No email addresses found.");break;
+ case "url-extractor":result=[...new Set(t.match(/https?:\/\/[^\s<>()\[\]{}"']+/gi)||[])].join("\n")||tr("No URLs found.");break;
+ case "phone-number-extractor":result=[...new Set(t.match(/(?:\+?\d[\d\s().-]{6,}\d)/g)||[])].map(x=>x.trim()).join("\n")||tr("No phone-like numbers found.");break;
+ case "number-extractor":result=(t.match(/[-+]?\d+(?:[,.]\d+)?/g)||[]).join("\n")||tr("No numbers found.");break;
+ case "hashtag-extractor":result=[...new Set(t.match(/#[\p{L}\p{N}_]+/gu)||[])].join("\n")||tr("No hashtags found.");break;
  case "remove-duplicate-words":{const seen=new Set<string>();result=words(t).filter(w=>{const k=w.toLocaleLowerCase();if(seen.has(k))return false;seen.add(k);return true;}).join(" ");break;}
  case "find-replace-text":if(!get("find"))throw Error("Enter the text to find.");result=t.split(get("find")).join(get("replace"));break;
  case "text-to-binary":result=Array.from(new TextEncoder().encode(t)).map(b=>b.toString(2).padStart(8,"0")).join(" ");break;
@@ -101,13 +103,13 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  default:throw Error("This utility is not available yet. Please use the directory to find another tool.");
  }
  setOut(result);
- }catch(e){setError(e instanceof Error?e.message:"Could not process this input.");}};
- if(!initial)return <p className="text-sm text-slate-600">This tool is not configured.</p>;
+ }catch(e){setError(tr(e instanceof Error?e.message:"Could not process this input."));}};
+ if(!initial)return <p className="text-sm text-slate-600">{tr("This tool is not configured.")}</p>;
  return <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
-  <div className="grid gap-4 sm:grid-cols-2">{Object.entries(v).map(([key,value])=><label key={key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{labels[key]||key}</span><input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={key==="date"||key==="start"||key==="end"?"date":slug==="css-gradient-generator"&&(key==="a"||key==="b")?"color":"text"} inputMode={numeric.has(key)?"decimal":"text"} value={value} onChange={e=>setV(p=>({...p,[key]:e.target.value}))}/></label>)}</div>
-  <div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">Run tool</button><button onClick={()=>{setV(initial);setOut("");setError("");}} className="rounded-xl border px-4 py-2.5 text-sm">Reset</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">Copy result</button>}</div>
+  <div className="grid gap-4 sm:grid-cols-2">{Object.entries(v).map(([key,value])=><label key={key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{tr(labels[key]||key)}</span><input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={key==="date"||key==="start"||key==="end"?"date":slug==="css-gradient-generator"&&(key==="a"||key==="b")?"color":"text"} inputMode={numeric.has(key)?"decimal":"text"} value={value} onChange={e=>setV(p=>({...p,[key]:e.target.value}))}/></label>)}</div>
+  <div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">{tr("Run tool")}</button><button onClick={()=>{setV(initial);setOut("");setError("");}} className="rounded-xl border px-4 py-2.5 text-sm">{tr("Reset")}</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">{tr("Copy result")}</button>}</div>
   {error&&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{error}</p>}
   {out&&<div aria-live="polite" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5"><pre className="whitespace-pre-wrap break-words font-sans text-base leading-7">{out}</pre></div>}
-  <p className="text-xs leading-5 text-slate-500">Runs in your browser. Check important results independently. This tool does not send your input to a server.</p>
+  <p className="text-xs leading-5 text-slate-500">{tr("Runs in your browser. Check important results independently. This tool does not send your input to a server.")}</p>
  </div>;
 }

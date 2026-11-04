@@ -67,7 +67,7 @@ export default function AIWritingTools({ slug, locale = "en" }: Props) {
     const sections: Record<string, string> = {};
     let current = "";
     for (const line of result.split(/\r?\n/)) {
-      const normalized = line.trim().replace(/^#{1,3}\s*/, "").replace(/:$/, "").trim();
+      const normalized = line.trim().replace(/^#{1,3}\s*/, "").replace(/^\*\*(.*?)\*\*$/, "$1").replace(/:$/, "").trim();
       const heading = headings.find((item) => item.toLowerCase() === normalized.toLowerCase());
       if (heading) { current = heading; sections[current] = ""; continue; }
       if (current) sections[current] += (sections[current] ? "\n" : "") + line;
@@ -94,7 +94,7 @@ export default function AIWritingTools({ slug, locale = "en" }: Props) {
     anchor.href = url;
     anchor.download = humanizer ? "pdfora-humanized-text.txt" : cover ? "pdfora-cover-letter.txt" : "pdfora-ai-resume-content.txt";
     anchor.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   return (

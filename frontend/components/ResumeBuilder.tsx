@@ -58,7 +58,7 @@ export default function ResumeBuilder({locale="en"}:{locale?:string}) {
         if (!saved) return;
         const draft = JSON.parse(saved) as { summary?: string; skills?: string; experience?: string };
         if (draft.summary) setSummary(draft.summary);
-        if (draft.skills) setSkills(draft.skills.replace(/\\r?\\n/g, ", "));
+        if (draft.skills) setSkills(draft.skills.replace(/\r?\n/g, ", "));
         if (draft.experience) setJobs((rows) => rows.map((row, index) => index === 0 ? { ...row, details: draft.experience || "" } : row));
         setAiDraftNotice("AI draft imported. Review and edit every section before exporting your CV.");
         sessionStorage.removeItem("pdfora-ai-resume-draft");

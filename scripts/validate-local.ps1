@@ -17,7 +17,7 @@ function Invoke-Check {
 $root = Split-Path -Parent $PSScriptRoot
 $frontend = Join-Path $root "frontend"
 $backend = Join-Path $root "backend"
-$venvPython = Join-Path $backend ".venv\Scripts\python.exe"
+$venvPython = Join-Path $root ".venv-pdfora\\Scripts\\python.exe"
 
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     throw "Node.js 22 is required. Install Node.js 22 and reopen PowerShell."
@@ -38,9 +38,7 @@ if ($nodeMajor -lt 20 -or ($nodeMajor -eq 20 -and $nodeMinor -lt 9)) {
 }
 
 $pythonVersion = python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"
-if ($pythonVersion -ne "3.12") {
-    throw "Python 3.12 is required to match CI. Detected: $pythonVersion"
-}
+if ($pythonVersion -notin @("3.12", "3.13")) {\n    throw "Python 3.12 or 3.13 is supported for local validation. Detected: $pythonVersion"\n}
 
 Write-Host "PDFora local validation (no GitHub Actions billing required)" -ForegroundColor Green
 

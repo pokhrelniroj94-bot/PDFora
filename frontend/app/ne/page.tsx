@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { supportedHomeLanguages, homeLanguageAlternates } from "../../lib/home-locales";
 
 const site = "https://pd-fora.vercel.app";
 
 export const metadata: Metadata = {
   title: "नि:शुल्क PDF उपकरण र नेपालका अनलाइन टुलहरू",
   description: "PDF मर्ज, स्प्लिट, कम्प्रेस र रूपान्तरण गर्नुहोस्। नेपाली मिति, Unicode typing, विदेशी विनिमय दर र अन्य उपयोगी नेपाल टुलहरू प्रयोग गर्नुहोस्।",
-  alternates: { canonical: `${site}/ne`, languages: { en: site, ne: `${site}/ne`, "x-default": site } },
+  alternates: { canonical: `${site}/ne`, languages: homeLanguageAlternates },
   openGraph: {
     type: "website",
     title: "PDFora नेपाली — PDF Tools र नेपालका उपयोगी टुलहरू",
@@ -35,7 +36,7 @@ const tools = [
 const nepalTools = [
   { href: "/tools/nepali-date-converter", title: "नेपाली मिति रूपान्तरण", description: "विक्रम संवत् र इस्वी संवत् मिति रूपान्तरण गर्नुहोस्।" },
   { href: "/tools/nepali-unicode-typing", title: "नेपाली Unicode Typing", description: "Romanized Nepali लेखेर देवनागरी Unicode text बनाउनुहोस्।" },
-  { href: "/tools/nepal-forex-rates", title: "नेपाल राष्ट्र बैंक विनिमय दर", description: "उपलब्ध पछिल्लो प्रकाशित विदेशी मुद्रा दर हेर्नुहोस्।" },
+  { href: "/tools/currency-converter", title: "मुद्रा रूपान्तरण", description: "उपलब्ध विनिमय दर प्रयोग गरी मुद्राहरू रूपान्तरण गर्नुहोस्।" },
   { href: "/tools/nepal-salary-tax-calculator", title: "नेपाल तलब कर क्याल्कुलेटर", description: "आयकरको अनुमानित हिसाब गर्नुहोस्; नतिजा आधिकारिक कर निर्धारण होइन।" },
   { href: "/tools/nepal-electricity-bill-calculator", title: "NEA बिजुली बिल अनुमान", description: "समर्थित घरेलु single-phase जडानका लागि बिल अनुमान गर्नुहोस्।" },
   { href: "/tools/nepal-public-holidays-2083", title: "नेपालका सार्वजनिक बिदा २०८३", description: "राष्ट्रिय र क्षेत्रगत सार्वजनिक बिदा हेर्नुहोस्।" },
@@ -76,8 +77,16 @@ export default function NepaliHomePage() {
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 font-black text-white">P</span>
             <span className="text-xl font-black">PDFora</span>
           </Link>
-          <nav className="flex items-center gap-3 text-sm font-semibold">
-            <Link href="/" className="text-slate-600 hover:text-blue-700">English</Link>
+          <nav aria-label="Language and main navigation" className="flex items-center gap-2 text-sm font-semibold">
+            <details className="relative">
+              <summary className="cursor-pointer list-none rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800">🌐 भाषा / Language</summary>
+              <div className="absolute right-0 z-50 mt-2 grid max-h-80 min-w-48 gap-1 overflow-y-auto rounded-xl border border-slate-200 bg-white p-2 text-slate-800 shadow-xl">
+                {supportedHomeLanguages.map((language) => (
+                  <Link key={language.code} href={language.href} hrefLang={language.code} lang={language.code}
+                    className="rounded-lg px-3 py-2 text-sm hover:bg-blue-50">{language.nativeName}</Link>
+                ))}
+              </div>
+            </details>
             <Link href="/tools" className="rounded-xl bg-blue-600 px-4 py-2.5 text-white hover:bg-blue-700">सबै टुलहरू</Link>
           </nav>
         </div>

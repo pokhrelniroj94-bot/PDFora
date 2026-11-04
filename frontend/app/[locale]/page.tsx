@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       type: "website", siteName: "PDFora", title: content.title,
       description: content.description, url: `${site}/${locale}`,
-      locale: ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID" } as Record<string, string>)[locale],
-      alternateLocale: ["en_US", "ne_NP", "hi_IN", "es_ES", "fr_FR", "de_DE", "pt_BR", "ar_SA", "bn_BD", "id_ID"].filter((item) => item !== ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID" } as Record<string, string>)[locale]),
+      locale: ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID", zh: "zh_CN", ja: "ja_JP" } as Record<string, string>)[locale],
+      alternateLocale: ["en_US", "ne_NP", "hi_IN", "es_ES", "fr_FR", "de_DE", "pt_BR", "ar_SA", "bn_BD", "id_ID", "zh_CN", "ja_JP"].filter((item) => item !== ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID", zh: "zh_CN", ja: "ja_JP" } as Record<string, string>)[locale]),
     },
     twitter: { card: "summary_large_image", title: content.title, description: content.description },
   };
@@ -66,7 +66,7 @@ export default async function LocalizedHomePage({ params }: { params: Promise<{ 
           <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-6xl">{content.heading}</h1>
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-300">{content.intro}</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/tools" className="rounded-xl bg-teal-400 px-5 py-3 font-bold text-slate-950 hover:bg-teal-300">{content.primary}</Link>
+            <Link href={`/${locale}/tools`} className="rounded-xl bg-teal-400 px-5 py-3 font-bold text-slate-950 hover:bg-teal-300">{content.primary}</Link>
             <Link href="#popular-tools" className="rounded-xl border border-white/20 px-5 py-3 font-bold text-white hover:bg-white/10">{content.secondary}</Link>
           </div>
         </div>
@@ -89,8 +89,8 @@ export default async function LocalizedHomePage({ params }: { params: Promise<{ 
       <footer className="border-t border-slate-200 bg-slate-950 px-4 py-8 text-center text-sm text-slate-300">
         <p>{content.footer}</p>
         <div className="mt-3 flex justify-center gap-5">
-          <Link href="/privacy" className="underline underline-offset-4">Privacy</Link>
-          <Link href="/terms" className="underline underline-offset-4">Terms</Link>
+          <Link href={`/${locale}/privacy`} className="underline underline-offset-4">Privacy</Link>
+          <Link href={`/${locale}/terms`} className="underline underline-offset-4">Terms</Link>
           <Link href="/" hrefLang="en" className="underline underline-offset-4">English</Link>
         </div>
       </footer>

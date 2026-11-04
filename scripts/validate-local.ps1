@@ -26,7 +26,7 @@ if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
     throw "npm was not found. Reinstall Node.js 22 with npm."
 }
 if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-    throw "Python 3.12 is required. Install Python 3.12 and reopen PowerShell."
+    throw "Python 3.12 or 3.13 is required. Install a supported Python version and reopen PowerShell."
 }
 
 $nodeVersion = node -p "process.versions.node"
@@ -47,7 +47,7 @@ Write-Host "PDFora local validation (no GitHub Actions billing required)" -Foreg
 Invoke-Check "Legacy Express syntax" "node" @("--check", (Join-Path $backend "backend\server.js"))
 
 if (-not (Test-Path $venvPython)) {
-    Invoke-Check "Create backend virtual environment" "python" @("-m", "venv", (Join-Path $backend ".venv"))
+    Invoke-Check "Create isolated project virtual environment" "python" @("-m", "venv", (Join-Path $backend ".venv"))
 }
 
 Invoke-Check "Install backend dependencies" $venvPython @("-m", "pip", "install", "--upgrade", "pip")

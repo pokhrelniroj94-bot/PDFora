@@ -20,6 +20,7 @@ const aiRoute = read("../app/api/ai-writing/route.ts");
 const aiWritingTools = read("../components/AIWritingTools.tsx");
 const marketIntelligence = read("../components/MarketIntelligence.tsx");
 const siteAIHelp = read("../components/SiteAIHelp.tsx");
+const rootLayout = read("../app/layout.tsx");
 const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
@@ -153,7 +154,7 @@ assert.ok(aiRoute.includes("UPSTASH_REDIS_REST_URL") && aiRoute.includes("UPSTAS
 assert.ok(aiRoute.includes("api.cloudflare.com/client/v4/accounts/") && !aiRoute.includes("api.openai.com") && !aiRoute.includes("api.anthropic.com"), "AI provider must remain Cloudflare-only with no paid fallback");
 assert.ok(aiWritingTools.includes("/api/ai-writing") && marketIntelligence.includes("/api/ai-writing"), "AI frontends are not connected to the AI API");
 assert.ok(siteAIHelp.includes('kind: "site-help"') && siteAIHelp.includes("/api/ai-writing"), "Site-wide AI Help request is not wired to the supported API task");
-assert.ok(layout.includes('import SiteAIHelp from "../components/SiteAIHelp"') && layout.includes("<SiteAIHelp />"), "Site-wide AI Help is not mounted in the root layout");
+assert.ok(rootLayout.includes('import SiteAIHelp from "../components/SiteAIHelp"') && rootLayout.includes("<SiteAIHelp />"), "Site-wide AI Help is not mounted in the root layout");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
 assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");

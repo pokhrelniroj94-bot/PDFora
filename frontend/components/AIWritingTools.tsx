@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Props = { slug: string };
+type Props = { slug: string; locale?: string };
 type Values = Record<string, string>;
 
 const inputClass = "w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100";
 const labelClass = "mb-1.5 block text-sm font-semibold text-slate-700";
 const panelClass = "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7";
 
-export default function AIWritingTools({ slug }: Props) {
+export default function AIWritingTools({ slug, locale = "en" }: Props) {
   const router = useRouter();
   const [values, setValues] = useState<Values>({});
   const [result, setResult] = useState("");
@@ -45,7 +45,7 @@ export default function AIWritingTools({ slug }: Props) {
       const response = await fetch("/api/ai-writing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind: slug, ...values }),
+        body: JSON.stringify({ kind: slug, locale, ...values }),
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "The AI request could not be completed.");

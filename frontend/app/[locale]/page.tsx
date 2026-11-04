@@ -6,7 +6,7 @@ import { homeLocales, supportedHomeLanguages, homeLanguageAlternates } from "../
 const site = "https://pd-fora.vercel.app";
 
 export function generateStaticParams() {
-  return Object.keys(homeLocales).map((locale) => ({ locale }));
+  return Object.keys(homeLocales).filter((locale) => locale !== "en" && locale !== "ne").map((locale) => ({ locale }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {

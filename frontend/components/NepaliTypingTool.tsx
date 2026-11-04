@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toolUi } from "../lib/tool-ui-i18n";
 
 declare global {
   interface Window {
@@ -10,7 +11,8 @@ declare global {
   }
 }
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
-export default function NepaliTypingTool() {
+export default function NepaliTypingTool({locale="en"}:{locale?:string}) {
+  const tr=(source:string)=>toolUi(locale,source);
   const [roman, setRoman] = useState("namaste mero desh nepal ho");
   const [output, setOutput] = useState("");
   const [ready, setReady] = useState(false);

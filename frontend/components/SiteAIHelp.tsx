@@ -14,6 +14,7 @@ const quickQuestions = [
 
 export default function SiteAIHelp() {
   const pathname = usePathname();
+  const pagePath = (pathname || "/").replace(/^\\/(ne|hi|es|fr|de|pt|ar|bn|id|zh|ja)(?=\\/|$)/, "") || "/";
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([
@@ -28,12 +29,12 @@ export default function SiteAIHelp() {
     async function loadPageContext() {
       setPageContext("");
       try {
-        if (pathname === "/market" || pathname === "/tools/market-ai") {
+        if (pagePath === "/market" || pagePath === "/tools/market-ai") {
           const response = await fetch("/api/nepse-market?symbol=NEPSE&period=1Y", { cache: "no-store", signal: controller.signal });
           if (!response.ok) return;
           const data = await response.json();
           setPageContext(JSON.stringify({ pageType: "NEPSE market", source: data.source, sourceUpdatedAt: data.sourceUpdatedAt, latestHistoryDate: data.latestHistoryDate, quoteStale: data.quoteStale, status: data.status, indices: data.indices, recentDailyHistory: Array.isArray(data.points) ? data.points.slice(-45) : [] }).slice(0, 3200));
-        } else if (pathname === "/tools/nepal-forex-rates" || pathname === "/tools/currency-converter") {
+        } else if (pagePath === "/tools/nepal-forex-rates" || pagePath === "/tools/currency-converter") {
           const response = await fetch("/api/nepal-forex", { cache: "no-store", signal: controller.signal });
           if (!response.ok) return;
           const data = await response.json();

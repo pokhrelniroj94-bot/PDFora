@@ -5,6 +5,7 @@ import CookieConsent, { CookieSettingsLink } from "../components/CookieConsent";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
 import SiteAIHelp from "../components/SiteAIHelp";
+import DocumentLanguage from "../components/DocumentLanguage";
 import { supportedHomeLanguages } from "../lib/home-locales";
 
 const geistSans = Geist({
@@ -62,6 +63,7 @@ export default function RootLayout({
           <CookieSettingsLink />
         </footer>
         <ToolDirectory />
+        <DocumentLanguage />
         <SiteAIHelp />
         <Script
           id="pdfora-structured-data"

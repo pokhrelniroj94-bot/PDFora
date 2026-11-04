@@ -136,7 +136,7 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
       "",
       "User question: " + safe("question", 900),
       "Return a concise structured explanation with summary, evidence, risks, missing data and what to verify next. Do not claim to have searched beyond the supplied records."
-    ].join("\\n");
+    ].join("\n");
   }
   if (kind === "forex-explain") {
     return [

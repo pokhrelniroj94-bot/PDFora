@@ -20,12 +20,6 @@ const notices: Record<string,string> = {
  ja:"このツールの主要な作業画面はまだ英語です。翻訳が完了し、確認されるまで、このページは Google にインデックスされません。"
 };
 
-export function generateStaticParams() {
-  return locales.flatMap((locale) =>
-    toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ locale, slug: tool.slug }))
-  );
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);

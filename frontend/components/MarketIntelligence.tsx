@@ -228,7 +228,8 @@ export default function MarketIntelligence({ locale = "en" }: { locale?: string 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [aiText, setAiText] = useState("");
-  const [aiBusy, setAiBusy] = useState(false);\n  const [newsReview, setNewsReview] = useState<NewsReview | null>(null);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [newsReview, setNewsReview] = useState<NewsReview | null>(null);
 
   async function loadNepse() {
     setBusy(true); setError(""); setAnalysis(null); setAiText("");

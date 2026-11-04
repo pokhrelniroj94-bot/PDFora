@@ -89,8 +89,8 @@ export default async function LocalizedHomePage({ params }: { params: Promise<{ 
       <footer className="border-t border-slate-200 bg-slate-950 px-4 py-8 text-center text-sm text-slate-300">
         <p>{content.footer}</p>
         <div className="mt-3 flex justify-center gap-5">
-          <Link href="/privacy" className="underline underline-offset-4">Privacy</Link>
-          <Link href="/terms" className="underline underline-offset-4">Terms</Link>
+          <Link href={`/${locale}/privacy`} className="underline underline-offset-4">Privacy</Link>
+          <Link href={`/${locale}/terms`} className="underline underline-offset-4">Terms</Link>
           <Link href="/" hrefLang="en" className="underline underline-offset-4">English</Link>
         </div>
       </footer>

@@ -28,7 +28,7 @@ export default function LocalizedToolsPage() {
  const filtered=useMemo(()=>{
   const q=query.toLowerCase().trim();
   return allTools.filter(tool=>{
-   const categoryMatch=category==="All"||(category==="PDF"?tool.kind==="pdf":tool.category===category);
+   const categoryMatch=category==="All"||(category==="PDF"?(tool.kind==="pdf"||tool.category==="PDF"):tool.category===category);
    const searchMatch=!q||[tool.name,tool.description,tool.keywords,tool.href].join(" ").toLowerCase().includes(q);
    return categoryMatch&&searchMatch;
   });

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { homeLocales, supportedHomeLanguages, homeLanguageAlternates } from "../../lib/home-locales";
+import { toolCatalog } from "../../components/toolCatalog";
 
 const site = "https://pd-fora.vercel.app";
 

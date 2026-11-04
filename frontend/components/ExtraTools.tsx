@@ -41,7 +41,8 @@ const config:Record<string,F[]> = {
 const gcd=(a:number,b:number):number=>b?gcd(b,a%b):Math.abs(a);
 const escapeHtml=(s:string)=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const lum=(h:string)=>{const x=h.slice(1).match(/.{2}/g)!.map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*x[0]+.7152*x[1]+.0722*x[2];};
-export default function ExtraTools({slug}:{slug:string}){
+export default function ExtraTools({slug,locale="en"}:{slug:string;locale?:string}){
+ const tr=(source:string)=>toolUi(locale,source);
  const fields=config[slug];const [v,setV]=useState<Record<string,string>>(()=>Object.fromEntries((fields??[]).map(f=>[f.key,f.value])));
  const [out,setOut]=useState("");const [err,setErr]=useState("");
  const val=(k:string)=>v[k]??"";const num=(k:string)=>{const x=Number(val(k));if(!Number.isFinite(x))throw Error("Enter valid numbers.");return x;};

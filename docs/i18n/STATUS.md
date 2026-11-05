@@ -15,6 +15,36 @@ English defines seven registered namespaces: `common`, `accessibility`, `seo`, `
 The non-English tool/content dictionaries are incomplete. For example, the Nepali `tools.json` currently contains the translated UI labels but an empty `entries` object. Other locale dictionaries must be checked against the English key/type/placeholder schema before being considered complete.
 The i18n checker now distinguishes the published homepage shell from separately gated tool content: published homepage locales are checked for the three namespaces they actually ship, while unpublished locales continue to receive full-schema work-in-progress diagnostics. This is a validation-scope correction, not a claim that all seven namespaces are translated.
 
+## Measured source inventory and focused comparison (2026-11-05)
+
+A fresh read of the seven English JSON dictionaries on this branch counted the following leaf values (nested object leaves and array/scalar leaves counted as individual values):
+
+| Namespace | English leaf values |
+|---|---:|
+| common | 5 |
+| accessibility | 2 |
+| seo | 2 |
+| tools | 755 |
+| guides | 547 |
+| calculators | 675 |
+| faqs | 764 |
+| **Total** | **2,750** |
+
+A key-by-key structural comparison was completed for Nepali's three published homepage namespaces against English:
+- `common`: 5/5 keys present; 0 missing, 0 extra, 0 type mismatches, 0 placeholder mismatches, 0 empty strings; 1 string leaf exactly matches English.
+- `accessibility`: 2/2 keys present; 0 missing, 0 extra, 0 type mismatches, 0 placeholder mismatches, 0 empty strings; 0 string leaves exactly match English.
+- `seo`: 2/2 keys present; 0 missing, 0 extra, 0 type mismatches, 0 placeholder mismatches, 0 empty strings; 0 string leaves exactly match English.
+
+This establishes 9/9 (100%) structural key presence for the inspected Nepali homepage dictionaries, not human translation approval or semantic quality. The one identical English leaf is retained as a proper noun/brand only if a reviewer confirms that context; otherwise it should be translated. No all-locale or all-seven-namespace parity percentage is claimed: the 70-file exhaustive comparison remains outstanding. The 2,750 English leaf count is the measured denominator for future coverage reporting, not a translation completion score.
+
+## RTL and accessibility source review (2026-11-05)
+
+- `proxy.ts` resolves the first URL segment through the locale registry and forwards `x-pdfora-html-lang` and `x-pdfora-dir`; the root layout applies those values to `<html lang dir>`. Arabic's configured `dir` is `rtl`.
+- The language switcher uses a native `details/summary`, translated accessible label props, `lang`/`hreflang`, and logical `text-start`/`end-0` positioning.
+- Global CSS includes Arabic font fallbacks, an RTL icon-flip helper and an LTR isolation helper for URLs/numbers.
+- Gaps found in source review: the root footer's link labels are hard-coded English; global RTL rules do not establish a complete logical alignment/layout policy for all components; no component-level RTL visual, keyboard, screen-reader or responsive QA was possible. Financial calculator and tool-panel alignment is therefore **not verified**.
+- Arabic remains unpublished, so the current production route gate prevents treating the Arabic layout as release-ready. Do not publish Arabic until full visual and accessibility QA is performed.
+
 ## Implementation notes
 - `proxy.ts` forwards locale and direction headers to the root layout, which sets document-level `lang` and `dir`.
 - Homepage hreflang is generated from the published-locale registry. Other paths are not offered as translations until equivalent localized pages exist.
@@ -25,14 +55,14 @@ The i18n checker now distinguishes the published homepage shell from separately 
 ## Verification status
 | Check | Status |
 |---|---|
-| Locale configuration and routing | Source inspected |
-| Nepali homepage dictionaries | Files inspected; three homepage namespaces present |
-| Tool/guide/calculator/FAQ translation coverage | Incomplete; tool content is not published |
+| Locale configuration and routing | Source inspected; root lang/dir binding verified statically |
+| Nepali homepage dictionaries | 9/9 structural keys present across common/accessibility/seo; semantic review still required |
+| All-locale, seven-namespace schema parity | Not completed; no all-locale percentage claimed; 2,750 English leaf-value baseline measured |
 | i18n checker scope | Corrected in development branch; not executed in this environment |
 | i18n unit tests | Not executed on latest commit |
 | Tool catalog verification | Not executed on latest commit |
 | TypeScript / ESLint / Next.js build | Not verified on latest commit |
-| Sitemap runtime output | Not verified on latest commit |
+| Sitemap runtime output | Static source inspected; runtime output not executed |
 | Production | Unchanged; no production deployment action taken |
 
 Earlier Preview builds exposed two issues: an outdated test expectation that Nepali remain unpublished, and a missing site constant in the extracted Nepali component. Both were corrected in later commits. A full build of the latest commit has not run because Vercel reported its free daily deployment API allowance was exceeded. No build success is claimed.

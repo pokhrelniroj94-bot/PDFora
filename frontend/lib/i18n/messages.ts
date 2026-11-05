@@ -30,6 +30,10 @@ const loaders: Partial<Record<Locale, Partial<Record<Namespace, Loader>>>> = {
     common: () => import("./messages/ne/common.json"),
     accessibility: () => import("./messages/ne/accessibility.json"),
     seo: () => import("./messages/ne/seo.json"),
+    tools: () => import("./messages/ne/tools.json"),
+    guides: () => import("./messages/ne/guides.json"),
+    calculators: () => import("./messages/ne/calculators.json"),
+    faqs: () => import("./messages/ne/faqs.json"),
   },
   hi: {
     common: () => import("./messages/hi/common.json"),

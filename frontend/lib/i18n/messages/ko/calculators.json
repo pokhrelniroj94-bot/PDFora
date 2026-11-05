@@ -1,0 +1,19 @@
+{
+  "ui": {
+    "amount": "금액",
+    "principal": "대출 원금",
+    "annualRate": "연이율 (%)",
+    "monthlyRate": "월이율 (%)",
+    "termMonths": "기간 (개월)",
+    "termYears": "기간 (년)",
+    "monthlyPayment": "월 상환액 (EMI)",
+    "totalPayment": "총 상환액",
+    "totalInterest": "총 이자",
+    "baseAmount": "공급가액",
+    "taxRate": "세율 (%)",
+    "result": "계산 결과",
+    "formula": "계산식",
+    "rounding": "표시된 결과는 반올림될 수 있습니다"
+  },
+  "entries": {}
+}

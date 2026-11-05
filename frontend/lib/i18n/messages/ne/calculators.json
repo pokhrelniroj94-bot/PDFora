@@ -18,5 +18,1143 @@
     "outputs": "गणना हुने नतिजा",
     "assumptions": "सूत्रका मान्यताहरू"
   },
-  "entries": {}
+  "entries": {
+    "loan-emi-calculator": {
+      "title": "ऋण तथा EMI क्याल्कुलेटर",
+      "description": "मासिक किस्ता, कुल ब्याज र कुल भुक्तानी गणना गर्नुहोस्।",
+      "formula": "EMI = P × r × (1+r)^n ÷ ((1+r)^n − 1); यहाँ r = वार्षिक ब्याजदर ÷ १२ ÷ १०० र n = मासिक किस्ताको संख्या हो।",
+      "inputs": [
+        "ऋण रकम (रु.)",
+        "वार्षिक ब्याजदर (%)",
+        "ऋण अवधि (महिना)"
+      ],
+      "outputs": [
+        "मासिक EMI",
+        "कुल भुक्तानी = EMI × महिना",
+        "कुल ब्याज = कुल भुक्तानी − मूलधन"
+      ],
+      "assumptions": "यो गणना समान मासिक किस्ता र घट्दो मौज्दात ब्याजमा आधारित छ। बैंक शुल्क, बीमा र ब्याजदर परिवर्तन समावेश छैन।",
+      "sourceComponent": "AllTools",
+      "fieldSchema": [
+        {
+          "key": "principal",
+          "label": "ऋण रकम (रु.)",
+          "type": "number",
+          "defaultValue": "1000000"
+        },
+        {
+          "key": "rate",
+          "label": "वार्षिक ब्याजदर (%)",
+          "type": "number",
+          "defaultValue": "10"
+        },
+        {
+          "key": "months",
+          "label": "ऋण अवधि (महिना)",
+          "type": "number",
+          "defaultValue": "60"
+        }
+      ]
+    },
+    "compound-interest-sip-calculator": {
+      "title": "चक्रवृद्धि ब्याज तथा SIP क्याल्कुलेटर",
+      "description": "चक्रवृद्धि वृद्धि र मासिक SIP लगानीको अनुमानित भविष्य मूल्य निकाल्नुहोस्।",
+      "formula": "भविष्य मूल्य = प्रारम्भिक लगानी × (1+r)^n + मासिक योगदानको चक्रवृद्धि योग; r = वार्षिक प्रतिफल ÷ १२०० र n = वर्ष × १२।",
+      "inputs": [
+        "मासिक SIP (रु.)",
+        "प्रारम्भिक लगानी (रु.)",
+        "अपेक्षित वार्षिक प्रतिफल (%)",
+        "लगानी अवधि (वर्ष)"
+      ],
+      "outputs": [
+        "अनुमानित भविष्य मूल्य",
+        "कुल लगानी रकम",
+        "अनुमानित वृद्धि"
+      ],
+      "assumptions": "वार्षिक दरबाट मासिक दर निकालिएको र प्रत्येक महिनाको अन्त्यमा रकम जम्मा भएको मानिन्छ। प्रतिफल सुनिश्चित हुँदैन।",
+      "sourceComponent": "AllTools",
+      "fieldSchema": [
+        {
+          "key": "monthly",
+          "label": "मासिक SIP (रु.)",
+          "type": "number",
+          "defaultValue": "5000"
+        },
+        {
+          "key": "initial",
+          "label": "प्रारम्भिक लगानी (रु.)",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "key": "rate",
+          "label": "अपेक्षित वार्षिक प्रतिफल (%)",
+          "type": "number",
+          "defaultValue": "10"
+        },
+        {
+          "key": "years",
+          "label": "लगानी अवधि (वर्ष)",
+          "type": "number",
+          "defaultValue": "10"
+        }
+      ]
+    },
+    "discount-percentage-calculator": {
+      "title": "छुट तथा प्रतिशत क्याल्कुलेटर",
+      "description": "छुट रकम, छुटपछिको मूल्य र प्रतिशत परिवर्तन गणना गर्नुहोस्।",
+      "formula": "छुट = अंकित मूल्य × छुट दर ÷ १००; अन्तिम मूल्य = अंकित मूल्य − छुट।",
+      "inputs": [
+        "मूल वा अंकित मूल्य",
+        "छुट (%) वा नयाँ मान"
+      ],
+      "outputs": [
+        "छुट रकम",
+        "अन्तिम मूल्य",
+        "प्रतिशत परिवर्तन"
+      ],
+      "assumptions": "ढुवानी, कर वा विक्रेताले लगाउने अतिरिक्त शुल्क समावेश हुँदैन।",
+      "sourceComponent": "AllTools",
+      "fieldSchema": [
+        {
+          "key": "price",
+          "label": "मूल्य",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "rate",
+          "label": "छुट (%)",
+          "type": "number",
+          "defaultValue": "10"
+        }
+      ]
+    },
+    "percentage-change-calculator": {
+      "title": "प्रतिशत परिवर्तन क्याल्कुलेटर",
+      "description": "दुई मानबीचको प्रतिशत वृद्धि वा कमी गणना गर्नुहोस्।",
+      "formula": "प्रतिशत परिवर्तन = (नयाँ मान − पुरानो मान) ÷ |पुरानो मान| × १००; पुरानो मान शून्य भए गणना परिभाषित हुँदैन।",
+      "inputs": [
+        "पुरानो मान",
+        "नयाँ मान"
+      ],
+      "outputs": [
+        "प्रतिशत वृद्धि वा कमी"
+      ],
+      "assumptions": "पुरानो मान शून्य भए प्रतिशत परिवर्तन गणना गर्न मिल्दैन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "पुरानो मान",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "b",
+          "label": "नयाँ मान",
+          "type": "number",
+          "defaultValue": "120"
+        }
+      ]
+    },
+    "average-calculator": {
+      "title": "औसत क्याल्कुलेटर",
+      "description": "संख्याहरूको माध्य, मध्यिका, बहुलक र दायरा निकाल्नुहोस्।",
+      "formula": "माध्य = योगफल ÷ संख्या; मध्यिका क्रमबद्ध सूचीको बीचको मान हो; बहुलक सबैभन्दा धेरै दोहोरिने मान हो; दायरा = अधिकतम − न्यूनतम।",
+      "inputs": [
+        "अल्पविराम वा खाली ठाउँले छुट्याएका संख्याहरू"
+      ],
+      "outputs": [
+        "संख्या गणना, माध्य, मध्यिका, बहुलक र दायरा"
+      ],
+      "assumptions": "सबै प्रविष्टि मान्य सीमित संख्या हुनुपर्छ। कुनै मान दोहोरिएको छैन भने बहुलक हुँदैन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "text",
+          "label": "अल्पविराम वा खाली ठाउँले छुट्याएका संख्याहरू",
+          "type": "text",
+          "defaultValue": "10, 20, 30, 40"
+        }
+      ]
+    },
+    "fraction-calculator": {
+      "title": "भिन्न क्याल्कुलेटर",
+      "description": "भिन्नहरूको जोड, घटाउ, गुणन र भाग गर्नुहोस्।",
+      "formula": "a/b र c/d का लागि जोड/घटाउ = (ad ± bc)/bd; गुणन = ac/bd; भाग = ad/bc।",
+      "inputs": [
+        "पहिलो अंश र हर",
+        "दोस्रो अंश र हर",
+        "गणितीय क्रिया (+, −, ×, ÷)"
+      ],
+      "outputs": [
+        "सरलीकृत भिन्न र दशमलव मान"
+      ],
+      "assumptions": "अंश र हर पूर्णाङ्क हुनुपर्छ। हर शून्य हुन पाउँदैन र शून्य भिन्नले भाग गर्न मिल्दैन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "पहिलो अंश",
+          "type": "number",
+          "defaultValue": "1"
+        },
+        {
+          "key": "b",
+          "label": "पहिलो हर",
+          "type": "number",
+          "defaultValue": "2"
+        },
+        {
+          "key": "c",
+          "label": "दोस्रो अंश",
+          "type": "number",
+          "defaultValue": "1"
+        },
+        {
+          "key": "d",
+          "label": "दोस्रो हर",
+          "type": "number",
+          "defaultValue": "3"
+        },
+        {
+          "key": "op",
+          "label": "क्रिया (+ - * /)",
+          "type": "text",
+          "defaultValue": "+"
+        }
+      ]
+    },
+    "age-calculator": {
+      "title": "उमेर क्याल्कुलेटर",
+      "description": "जन्ममितिका आधारमा वर्ष, महिना र दिनमा उमेर निकाल्नुहोस्।",
+      "formula": "जन्ममिति र गणना गर्ने मितिबीचको क्यालेन्डर अन्तरलाई वर्ष, महिना र दिनमा गणना गरिन्छ।",
+      "inputs": [
+        "जन्ममिति",
+        "कुन मितिसम्म उमेर गणना गर्ने"
+      ],
+      "outputs": [
+        "पूरा वर्ष, महिना र दिन"
+      ],
+      "assumptions": "औसत दिनको संख्या होइन, वास्तविक क्यालेन्डर महिनाको लम्बाइ प्रयोग हुन्छ। गणना मिति जन्ममितिभन्दा अघि हुन पाउँदैन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "जन्ममिति",
+          "type": "date",
+          "defaultValue": "2000-01-01"
+        },
+        {
+          "key": "b",
+          "label": "गणना गर्ने मिति",
+          "type": "date",
+          "defaultValue": "current date"
+        }
+      ]
+    },
+    "date-difference-calculator": {
+      "title": "मिति अन्तर क्याल्कुलेटर",
+      "description": "दुई मितिबीचको दिन, हप्ता र अनुमानित महिनाको अन्तर निकाल्नुहोस्।",
+      "formula": "दिन = दुई मितिबीचको पूर्ण क्यालेन्डर दिन; हप्ता = दिन ÷ ७; अनुमानित महिना = दिन ÷ ३०.४३७५।",
+      "inputs": [
+        "सुरु मिति",
+        "अन्तिम मिति"
+      ],
+      "outputs": [
+        "दिन, हप्ता र अनुमानित औसत महिना"
+      ],
+      "assumptions": "महिना औसत लम्बाइका आधारमा अनुमान गरिन्छ; यो क्यालेन्डर महिनाको प्रत्यक्ष गणना होइन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "सुरु मिति",
+          "type": "date",
+          "defaultValue": "current date"
+        },
+        {
+          "key": "b",
+          "label": "अन्तिम मिति",
+          "type": "date",
+          "defaultValue": "current date"
+        }
+      ]
+    },
+    "time-duration-calculator": {
+      "title": "समय अवधि क्याल्कुलेटर",
+      "description": "सुरु र अन्त्य समयबीच बितेको अवधि गणना गर्नुहोस्।",
+      "formula": "बितेका मिनेट = अन्त्य समय − सुरु समय; नतिजा ऋणात्मक भए मध्यरात पार भएको मान्दै १,४४० मिनेट थपिन्छ।",
+      "inputs": [
+        "सुरु समय",
+        "अन्त्य समय"
+      ],
+      "outputs": [
+        "बितेको घण्टा र मिनेट"
+      ],
+      "assumptions": "अन्त्य समय सुरु समयभन्दा पहिले भए एकपटक मध्यरात पार भएको मानिन्छ।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "सुरु समय",
+          "type": "time",
+          "defaultValue": "09:00"
+        },
+        {
+          "key": "b",
+          "label": "अन्त्य समय",
+          "type": "time",
+          "defaultValue": "17:00"
+        }
+      ]
+    },
+    "profit-margin-calculator": {
+      "title": "नाफा मार्जिन क्याल्कुलेटर",
+      "description": "लागत र बिक्री मूल्यबाट कुल नाफा तथा नाफा मार्जिन निकाल्नुहोस्।",
+      "formula": "कुल नाफा = बिक्री मूल्य − लागत; नाफा मार्जिन (%) = कुल नाफा ÷ बिक्री मूल्य × १००।",
+      "inputs": [
+        "लागत",
+        "बिक्री मूल्य"
+      ],
+      "outputs": [
+        "कुल नाफा",
+        "नाफा मार्जिन (%)"
+      ],
+      "assumptions": "बिक्री मूल्य शून्य भए मार्जिन परिभाषित हुँदैन। सञ्चालन खर्च, कर र कारोबार शुल्क समावेश छैन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "cost",
+          "label": "लागत",
+          "type": "number",
+          "defaultValue": "60"
+        },
+        {
+          "key": "price",
+          "label": "बिक्री मूल्य",
+          "type": "number",
+          "defaultValue": "100"
+        }
+      ]
+    },
+    "markup-calculator": {
+      "title": "मार्कअप क्याल्कुलेटर",
+      "description": "लागतबाट बिक्री मूल्य र मार्कअप प्रतिशत गणना गर्नुहोस्।",
+      "formula": "मार्कअप रकम = लागत × मार्कअप दर ÷ १००; बिक्री मूल्य = लागत + मार्कअप रकम।",
+      "inputs": [
+        "लागत",
+        "मार्कअप (%)"
+      ],
+      "outputs": [
+        "मार्कअप रकम",
+        "बिक्री मूल्य"
+      ],
+      "assumptions": "मार्कअप लागतमा गणना हुन्छ, बिक्री मूल्यमा होइन। लागतमा समावेश नभएसम्म कर र अन्य खर्च समावेश हुँदैन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "cost",
+          "label": "लागत",
+          "type": "number",
+          "defaultValue": "60"
+        },
+        {
+          "key": "rate",
+          "label": "मार्कअप (%)",
+          "type": "number",
+          "defaultValue": "40"
+        }
+      ]
+    },
+    "break-even-calculator": {
+      "title": "ब्रेक-इभेन क्याल्कुलेटर",
+      "description": "स्थिर र परिवर्तनशील लागतबाट लागत बराबर हुने बिक्री मात्रा निकाल्नुहोस्।",
+      "formula": "ब्रेक-इभेन एकाइ = स्थिर लागत ÷ (प्रति एकाइ बिक्री मूल्य − प्रति एकाइ परिवर्तनशील लागत)।",
+      "inputs": [
+        "स्थिर लागत",
+        "प्रति एकाइ बिक्री मूल्य",
+        "प्रति एकाइ परिवर्तनशील लागत"
+      ],
+      "outputs": [
+        "प्रति एकाइ योगदान",
+        "ब्रेक-इभेन बिक्री मात्रा"
+      ],
+      "assumptions": "बिक्री मूल्य परिवर्तनशील लागतभन्दा बढी हुनुपर्छ। मूल्य र लागत स्थिर रहेको मानिन्छ।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "fixed",
+          "label": "स्थिर लागत",
+          "type": "number",
+          "defaultValue": "100000"
+        },
+        {
+          "key": "price",
+          "label": "प्रति एकाइ बिक्री मूल्य",
+          "type": "number",
+          "defaultValue": "500"
+        },
+        {
+          "key": "variable",
+          "label": "प्रति एकाइ परिवर्तनशील लागत",
+          "type": "number",
+          "defaultValue": "300"
+        }
+      ]
+    },
+    "sales-tax-calculator": {
+      "title": "बिक्री कर क्याल्कुलेटर",
+      "description": "निर्धारित प्रतिशतका आधारमा बिक्री कर थप्नुहोस् वा समावेश मूल्यबाट हटाउनुहोस्।",
+      "formula": "कर थप्दा: कर = आधार रकम × दर ÷ १००; करसहित रकम = आधार रकम + कर। कर हटाउँदा: आधार रकम = कुल रकम ÷ (१ + दर/१००)।",
+      "inputs": [
+        "रकम",
+        "कर दर (%)",
+        "गणना विधि (थप्ने वा हटाउने)"
+      ],
+      "outputs": [
+        "कर रकम",
+        "करअघिको रकम",
+        "करसहित कुल रकम"
+      ],
+      "assumptions": "प्रयोगकर्ताले दिएको कर दर लागू हुन्छ। कर नियम र थप शुल्क छुट्टै पुष्टि गर्नुहोस्।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "amount",
+          "label": "रकम",
+          "type": "number",
+          "defaultValue": "1000"
+        },
+        {
+          "key": "rate",
+          "label": "कर दर (%)",
+          "type": "number",
+          "defaultValue": "13"
+        },
+        {
+          "key": "mode",
+          "label": "गणना विधि",
+          "type": "select",
+          "defaultValue": "add"
+        }
+      ]
+    },
+    "salary-breakdown-calculator": {
+      "title": "तलब विवरण क्याल्कुलेटर",
+      "description": "मासिक र वार्षिक कुल तलब रूपान्तरण गरी अनुमानित कट्टीपछिको रकम निकाल्नुहोस्।",
+      "formula": "वार्षिक तलब = मासिक तलब × १२; अनुमानित हातमा आउने रकम = कुल तलब × (१ − कट्टी दर/१००)।",
+      "inputs": [
+        "मासिक कुल तलब",
+        "अनुमानित कट्टी (%)"
+      ],
+      "outputs": [
+        "वार्षिक कुल तलब",
+        "अनुमानित कट्टी रकम",
+        "अनुमानित हातमा आउने रकम"
+      ],
+      "assumptions": "यो सरल अनुमान हो; वास्तविक कर, सञ्चय कोष, बीमा र अन्य कट्टी फरक हुन सक्छन्।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "salary",
+          "label": "मासिक कुल तलब",
+          "type": "number",
+          "defaultValue": "50000"
+        },
+        {
+          "key": "rate",
+          "label": "अनुमानित कट्टी (%)",
+          "type": "number",
+          "defaultValue": "10"
+        }
+      ]
+    },
+    "savings-goal-calculator": {
+      "title": "बचत लक्ष्य क्याल्कुलेटर",
+      "description": "चयन गरिएको समयभित्र बचत लक्ष्य पूरा गर्न आवश्यक मासिक बचत अनुमान गर्नुहोस्।",
+      "formula": "आवश्यक मासिक बचत = (लक्ष्य रकम − हालसम्मको बचत) ÷ बाँकी महिना।",
+      "inputs": [
+        "बचत लक्ष्य",
+        "हालसम्म बचत भएको रकम",
+        "लक्ष्यसम्म बाँकी महिना"
+      ],
+      "outputs": [
+        "बाँकी बचत रकम",
+        "आवश्यक मासिक बचत"
+      ],
+      "assumptions": "ब्याज वा लगानी प्रतिफल समावेश छैन। लक्ष्य रकम र समयावधि सही प्रविष्ट गर्नुहोस्।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "target",
+          "label": "बचत लक्ष्य",
+          "type": "number",
+          "defaultValue": "100000"
+        },
+        {
+          "key": "saved",
+          "label": "हालसम्म बचत भएको रकम",
+          "type": "number",
+          "defaultValue": "10000"
+        },
+        {
+          "key": "months",
+          "label": "लक्ष्यसम्म बाँकी महिना",
+          "type": "number",
+          "defaultValue": "12"
+        }
+      ]
+    },
+    "reading-time-calculator": {
+      "title": "पढ्ने समय क्याल्कुलेटर",
+      "description": "शब्द संख्या र पढ्ने गतिका आधारमा लेख पढ्न लाग्ने समय अनुमान गर्नुहोस्।",
+      "formula": "पढ्ने समय (मिनेट) = शब्द संख्या ÷ प्रति मिनेट पढिने शब्द।",
+      "inputs": [
+        "पाठ",
+        "पढ्ने गति (शब्द/मिनेट)"
+      ],
+      "outputs": [
+        "शब्द संख्या",
+        "अनुमानित पढ्ने समय"
+      ],
+      "assumptions": "वास्तविक समय पाठको कठिनाइ र पाठकको गतिअनुसार फरक हुन सक्छ।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "text",
+          "label": "पाठ",
+          "type": "textarea",
+          "defaultValue": "Paste your article here."
+        },
+        {
+          "key": "wpm",
+          "label": "पढ्ने गति (शब्द/मिनेट)",
+          "type": "number",
+          "defaultValue": "200"
+        }
+      ]
+    },
+    "bmi-calculator": {
+      "title": "BMI क्याल्कुलेटर",
+      "description": "उचाइ र तौलबाट शरीरको द्रव्यमान सूचकांक (BMI) गणना गर्नुहोस्।",
+      "formula": "BMI = तौल (किलोग्राम) ÷ [उचाइ (मिटर)]²।",
+      "inputs": [
+        "तौल (किलोग्राम)",
+        "उचाइ (सेन्टिमिटर)"
+      ],
+      "outputs": [
+        "BMI मान",
+        "वयस्क BMI वर्ग"
+      ],
+      "assumptions": "BMI सामान्य जाँच सूचक मात्र हो; यो रोग निदान वा व्यक्तिगत स्वास्थ्य मूल्याङ्कन होइन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "weight",
+          "label": "तौल (किलोग्राम)",
+          "type": "number",
+          "defaultValue": "65"
+        },
+        {
+          "key": "height",
+          "label": "उचाइ (सेन्टिमिटर)",
+          "type": "number",
+          "defaultValue": "170"
+        }
+      ]
+    },
+    "bmr-calculator": {
+      "title": "BMR क्याल्कुलेटर",
+      "description": "Mifflin-St Jeor सूत्रबाट आधारभूत दैनिक ऊर्जा खपत अनुमान गर्नुहोस्।",
+      "formula": "Mifflin-St Jeor सूत्र: पुरुषका लागि १०×तौल + ६.२५×उचाइ − ५×उमेर + ५; महिलाका लागि १०×तौल + ६.२५×उचाइ − ५×उमेर − १६१।",
+      "inputs": [
+        "तौल (किलोग्राम)",
+        "उचाइ (सेन्टिमिटर)",
+        "उमेर (वर्ष)",
+        "लिङ्ग (पुरुष/महिला)"
+      ],
+      "outputs": [
+        "अनुमानित BMR (kcal/दिन)"
+      ],
+      "assumptions": "यो सूत्रमा आधारित अनुमान हो; वास्तविक ऊर्जा आवश्यकता गतिविधि र व्यक्तिगत अवस्थाअनुसार फरक हुन्छ।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "weight",
+          "label": "तौल (किलोग्राम)",
+          "type": "number",
+          "defaultValue": "65"
+        },
+        {
+          "key": "height",
+          "label": "उचाइ (सेन्टिमिटर)",
+          "type": "number",
+          "defaultValue": "170"
+        },
+        {
+          "key": "age",
+          "label": "उमेर (वर्ष)",
+          "type": "number",
+          "defaultValue": "25"
+        },
+        {
+          "key": "sex",
+          "label": "लिङ्ग (पुरुष/महिला)",
+          "type": "select",
+          "defaultValue": "male"
+        }
+      ]
+    },
+    "tip-calculator": {
+      "title": "टिप क्याल्कुलेटर",
+      "description": "रेस्टुरेन्ट टिप, कुल बिल र प्रतिव्यक्ति रकम गणना गर्नुहोस्।",
+      "formula": "टिप = बिल × टिप दर ÷ १००; कुल = बिल + टिप; प्रतिव्यक्ति = कुल ÷ व्यक्ति संख्या।",
+      "inputs": [
+        "बिल रकम",
+        "टिप (%)",
+        "व्यक्ति संख्या"
+      ],
+      "outputs": [
+        "टिप रकम",
+        "कुल बिल",
+        "प्रतिव्यक्ति रकम"
+      ],
+      "assumptions": "व्यक्ति संख्या शून्यभन्दा ठूलो हुनुपर्छ। सेवा शुल्क वा कर छुट्टै हुन सक्छ।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "bill",
+          "label": "बिल रकम",
+          "type": "number",
+          "defaultValue": "2500"
+        },
+        {
+          "key": "tip",
+          "label": "टिप (%)",
+          "type": "number",
+          "defaultValue": "10"
+        },
+        {
+          "key": "people",
+          "label": "व्यक्ति संख्या",
+          "type": "number",
+          "defaultValue": "2"
+        }
+      ]
+    },
+    "split-bill-calculator": {
+      "title": "बिल बाँडफाँट क्याल्कुलेटर",
+      "description": "साझा बिललाई व्यक्तिहरूबीच बाँड्नुहोस् र अतिरिक्त रकम समावेश गर्नुहोस्।",
+      "formula": "प्रतिव्यक्ति रकम = (बिल + अतिरिक्त रकम) ÷ व्यक्ति संख्या।",
+      "inputs": [
+        "बिल रकम",
+        "अतिरिक्त रकम",
+        "व्यक्ति संख्या"
+      ],
+      "outputs": [
+        "कुल रकम",
+        "प्रतिव्यक्ति रकम"
+      ],
+      "assumptions": "सबैले बराबर रकम तिर्ने मानिन्छ। व्यक्ति संख्या शून्यभन्दा ठूलो हुनुपर्छ।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "bill",
+          "label": "बिल रकम",
+          "type": "number",
+          "defaultValue": "3000"
+        },
+        {
+          "key": "extra",
+          "label": "अतिरिक्त रकम",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "key": "people",
+          "label": "व्यक्ति संख्या",
+          "type": "number",
+          "defaultValue": "3"
+        }
+      ]
+    },
+    "simple-interest-calculator": {
+      "title": "साधारण ब्याज क्याल्कुलेटर",
+      "description": "मूलधन, ब्याजदर र समयबाट साधारण ब्याज तथा जम्मा रकम निकाल्नुहोस्।",
+      "formula": "साधारण ब्याज = मूलधन × ब्याजदर × समय ÷ १००; जम्मा रकम = मूलधन + ब्याज।",
+      "inputs": [
+        "मूलधन",
+        "ब्याजदर (%)",
+        "समय (वर्ष)"
+      ],
+      "outputs": [
+        "साधारण ब्याज",
+        "परिपक्वतामा जम्मा रकम"
+      ],
+      "assumptions": "ब्याज मूलधनमा मात्र गणना हुन्छ; चक्रवृद्धि ब्याज समावेश छैन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "principal",
+          "label": "मूलधन",
+          "type": "number",
+          "defaultValue": "10000"
+        },
+        {
+          "key": "rate",
+          "label": "ब्याजदर (%)",
+          "type": "number",
+          "defaultValue": "8"
+        },
+        {
+          "key": "years",
+          "label": "समय (वर्ष)",
+          "type": "number",
+          "defaultValue": "3"
+        }
+      ]
+    },
+    "commission-calculator": {
+      "title": "कमिसन क्याल्कुलेटर",
+      "description": "बिक्री रकम र कमिसन प्रतिशतबाट कमिसन आम्दानी निकाल्नुहोस्।",
+      "formula": "कमिसन = बिक्री रकम × कमिसन दर ÷ १००।",
+      "inputs": [
+        "बिक्री रकम",
+        "कमिसन दर (%)"
+      ],
+      "outputs": [
+        "कमिसन रकम",
+        "कमिसनसहित कुल"
+      ],
+      "assumptions": "कर वा अन्य कट्टी समावेश छैन; लागू हुने कमिसन दर प्रविष्ट गर्नुहोस्।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "sales",
+          "label": "बिक्री रकम",
+          "type": "number",
+          "defaultValue": "100000"
+        },
+        {
+          "key": "rate",
+          "label": "कमिसन दर (%)",
+          "type": "number",
+          "defaultValue": "5"
+        }
+      ]
+    },
+    "hourly-to-salary-calculator": {
+      "title": "घण्टाको ज्याला तलब क्याल्कुलेटर",
+      "description": "प्रति घण्टा ज्यालाबाट साप्ताहिक, मासिक र वार्षिक आम्दानी अनुमान गर्नुहोस्।",
+      "formula": "साप्ताहिक आम्दानी = प्रतिघण्टा ज्याला × साप्ताहिक घण्टा; मासिक र वार्षिक रकम क्रमशः ५२ हप्ता/१२ महिना र ५२ हप्ताका आधारमा अनुमान गरिन्छ।",
+      "inputs": [
+        "प्रति घण्टा ज्याला",
+        "प्रति हप्ता काम गर्ने घण्टा"
+      ],
+      "outputs": [
+        "साप्ताहिक आम्दानी",
+        "मासिक अनुमान",
+        "वार्षिक अनुमान"
+      ],
+      "assumptions": "ओभरटाइम, बिदा, कर र अन्य कट्टी समावेश छैन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "wage",
+          "label": "प्रति घण्टा ज्याला",
+          "type": "number",
+          "defaultValue": "15"
+        },
+        {
+          "key": "hours",
+          "label": "प्रति हप्ता काम गर्ने घण्टा",
+          "type": "number",
+          "defaultValue": "40"
+        }
+      ]
+    },
+    "percentage-of-number-calculator": {
+      "title": "संख्याको प्रतिशत क्याल्कुलेटर",
+      "description": "कुनै संख्याको निश्चित प्रतिशत र बाँकी रकम गणना गर्नुहोस्।",
+      "formula": "प्रतिशत रकम = संख्या × दर ÷ १००; बाँकी = संख्या − प्रतिशत रकम।",
+      "inputs": [
+        "संख्या",
+        "दर (%)"
+      ],
+      "outputs": [
+        "प्रतिशत रकम",
+        "बाँकी रकम"
+      ],
+      "assumptions": "दर प्रयोगकर्ताले प्रविष्ट गरेको मान हो; आवश्यक भए शून्यदेखि १०० सम्मको दर प्रयोग गर्नुहोस्।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "value",
+          "label": "संख्या",
+          "type": "number",
+          "defaultValue": "250"
+        },
+        {
+          "key": "rate",
+          "label": "दर (%)",
+          "type": "number",
+          "defaultValue": "15"
+        }
+      ]
+    },
+    "gcd-lcm-calculator": {
+      "title": "GCD र LCM क्याल्कुलेटर",
+      "description": "दुई पूर्णाङ्कको महत्तम समापवर्तक र लघुत्तम समापवर्त्य निकाल्नुहोस्।",
+      "formula": "LCM(a,b) = |a×b| ÷ GCD(a,b), जहाँ GCD यूक्लिड विधिबाट निकालिन्छ।",
+      "inputs": [
+        "पहिलो पूर्णाङ्क",
+        "दोस्रो पूर्णाङ्क"
+      ],
+      "outputs": [
+        "महत्तम समापवर्तक (GCD)",
+        "लघुत्तम समापवर्त्य (LCM)"
+      ],
+      "assumptions": "इनपुट पूर्णाङ्क हुनुपर्छ। दुवै संख्या शून्य भए LCM परिभाषित हुँदैन।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "पहिलो पूर्णाङ्क",
+          "type": "number",
+          "defaultValue": "24"
+        },
+        {
+          "key": "b",
+          "label": "दोस्रो पूर्णाङ्क",
+          "type": "number",
+          "defaultValue": "36"
+        }
+      ]
+    },
+    "date-add-subtract-calculator": {
+      "title": "मिति थपघट क्याल्कुलेटर",
+      "description": "सुरु मितिमा निश्चित दिन थप्नुहोस् वा घटाउनुहोस्।",
+      "formula": "नतिजा मिति = सुरु मिति + थप्ने/घटाउने दिन संख्या।",
+      "inputs": [
+        "सुरु मिति",
+        "थप्ने वा घटाउने दिन"
+      ],
+      "outputs": [
+        "नतिजा मिति"
+      ],
+      "assumptions": "दिनको संख्या धनात्मक वा ऋणात्मक हुन सक्छ। क्यालेन्डरको leap year नियम लागू हुन्छ।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "date",
+          "label": "सुरु मिति",
+          "type": "date",
+          "defaultValue": "2026-11-01"
+        },
+        {
+          "key": "days",
+          "label": "थप्ने/घटाउने दिन",
+          "type": "number",
+          "defaultValue": "30"
+        }
+      ]
+    },
+    "business-days-calculator": {
+      "title": "कार्यदिन क्याल्कुलेटर",
+      "description": "शनिबार र आइतबार हटाएर दुई मितिबीचका कार्यदिन गणना गर्नुहोस्।",
+      "formula": "कार्यदिन = सुरु र अन्तिम मितिबीचका सोमबारदेखि शुक्रबारसम्मका दिन; शनिबार र आइतबार हटाइन्छ।",
+      "inputs": [
+        "सुरु मिति",
+        "अन्तिम मिति"
+      ],
+      "outputs": [
+        "कार्यदिन संख्या"
+      ],
+      "assumptions": "सार्वजनिक बिदा स्वतः हटाइँदैन। नेपालका बिदा छुट्टै हिसाब गर्नुहोस्।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "start",
+          "label": "सुरु मिति",
+          "type": "date",
+          "defaultValue": "2026-11-01"
+        },
+        {
+          "key": "end",
+          "label": "अन्तिम मिति",
+          "type": "date",
+          "defaultValue": "2026-11-30"
+        }
+      ]
+    },
+    "aspect-ratio-calculator": {
+      "title": "Aspect Ratio क्याल्कुलेटर",
+      "description": "तस्बिरको अनुपात गणना गर्नुहोस् र हराएको चौडाइ वा उचाइ निकाल्नुहोस्।",
+      "formula": "Aspect ratio = चौडाइ : उचाइ; अनुपात कायम राख्दा नयाँ आयाम सोही अनुपातमा परिवर्तन हुन्छ।",
+      "inputs": [
+        "चौडाइ (px)",
+        "उचाइ (px)"
+      ],
+      "outputs": [
+        "Aspect ratio",
+        "अनुपातअनुसार आयाम"
+      ],
+      "assumptions": "चौडाइ र उचाइ शून्यभन्दा ठूला हुनुपर्छ।",
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "width",
+          "label": "चौडाइ (px)",
+          "type": "number",
+          "defaultValue": "1920"
+        },
+        {
+          "key": "height",
+          "label": "उचाइ (px)",
+          "type": "number",
+          "defaultValue": "1080"
+        }
+      ]
+    },
+    "nepali-vat-calculator": {
+      "title": "नेपाल VAT क्याल्कुलेटर (१३%)",
+      "description": "नेपाली रुपैयाँमा मूल्यमा १३% VAT थप्नुहोस् वा VAT सहितको रकमबाट VAT छुट्याउनुहोस्।",
+      "formula": "VAT = करअघिको रकम × १३ ÷ १००; VAT सहितको कुल = करअघिको रकम + VAT।",
+      "inputs": [
+        "रकम (रु.)",
+        "VAT दर (%)",
+        "गणना विधि"
+      ],
+      "outputs": [
+        "VAT रकम",
+        "करअघिको रकम",
+        "VAT सहितको कुल रकम"
+      ],
+      "assumptions": "यो सामान्य १३% दरको अनुमान हो। लागू हुने कर नियम र अपवाद आधिकारिक स्रोतबाट जाँच गर्नुहोस्।",
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "amount",
+          "label": "रकम (रु.)",
+          "type": "number",
+          "defaultValue": "1000"
+        },
+        {
+          "key": "rate",
+          "label": "VAT दर (%)",
+          "type": "number",
+          "defaultValue": "13"
+        },
+        {
+          "key": "taxMode",
+          "label": "गणना विधि",
+          "type": "select",
+          "defaultValue": "add"
+        }
+      ]
+    },
+    "neb-gpa-calculator": {
+      "title": "NEB GPA क्याल्कुलेटर",
+      "description": "NEB विषयका ग्रेड पोइन्ट र क्रेडिट आवरबाट भारित GPA गणना गर्नुहोस्।",
+      "formula": "GPA = Σ(ग्रेड पोइन्ट × क्रेडिट आवर) ÷ Σ(क्रेडिट आवर)।",
+      "inputs": [
+        "विषयको नाम",
+        "क्रेडिट आवर",
+        "ग्रेड पोइन्ट (०–४)"
+      ],
+      "outputs": [
+        "भारित GPA",
+        "कुल क्रेडिट आवर"
+      ],
+      "assumptions": "प्रत्येक विषयको ग्रेड पोइन्ट र क्रेडिट आवर सही प्रविष्ट गर्नुहोस्। आधिकारिक GPA का लागि NEB नियम जाँच गर्नुहोस्।",
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "subject",
+          "label": "विषयको नाम",
+          "type": "text",
+          "defaultValue": "Subject"
+        },
+        {
+          "key": "credit",
+          "label": "क्रेडिट आवर",
+          "type": "number",
+          "defaultValue": "4"
+        },
+        {
+          "key": "grade",
+          "label": "ग्रेड पोइन्ट (०–४)",
+          "type": "number",
+          "defaultValue": "4"
+        }
+      ]
+    },
+    "nepal-share-calculator": {
+      "title": "NEPSE शेयर खरिद/बिक्री नाफा क्याल्कुलेटर",
+      "description": "ब्रोकर, SEBON, DP र CGT शुल्कको अनुमानसहित शेयर कारोबारको लागत र नाफा निकाल्नुहोस्।",
+      "formula": "खरिद/बिक्री रकम = शेयर संख्या × प्रति शेयर मूल्य; शुद्ध नाफा = बिक्रीबाट प्राप्त रकम − खरिद लागत − लागू शुल्क तथा कर।",
+      "inputs": [
+        "शेयर संख्या",
+        "प्रति शेयर खरिद मूल्य (रु.)",
+        "प्रति शेयर बिक्री मूल्य (रु.)",
+        "ब्रोकर कमिसन (%)",
+        "SEBON शुल्क (%)",
+        "DP शुल्क (रु.)",
+        "CGT अनुमान (%)"
+      ],
+      "outputs": [
+        "कुल खरिद लागत",
+        "बिक्रीबाट प्राप्त रकम",
+        "शुल्क तथा कर",
+        "अनुमानित शुद्ध नाफा"
+      ],
+      "assumptions": "कमिसन, DP र CGT दरहरू परिवर्तन हुन सक्छन्। गणनाका दरहरू अनुमान हुन्; कारोबारअघि ब्रोकरको विवरण जाँच गर्नुहोस्।",
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "shares",
+          "label": "शेयर संख्या",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "buyPrice",
+          "label": "प्रति शेयर खरिद मूल्य (रु.)",
+          "type": "number",
+          "defaultValue": "300"
+        },
+        {
+          "key": "sellPrice",
+          "label": "प्रति शेयर बिक्री मूल्य (रु.)",
+          "type": "number",
+          "defaultValue": "350"
+        },
+        {
+          "key": "brokerRate",
+          "label": "ब्रोकर कमिसन (%)",
+          "type": "number",
+          "defaultValue": "0.4"
+        },
+        {
+          "key": "sebonRate",
+          "label": "SEBON शुल्क (%)",
+          "type": "number",
+          "defaultValue": "0.015"
+        },
+        {
+          "key": "dpCharge",
+          "label": "DP शुल्क (रु.)",
+          "type": "number",
+          "defaultValue": "25"
+        },
+        {
+          "key": "cgtRate",
+          "label": "CGT अनुमान (%)",
+          "type": "number",
+          "defaultValue": "5"
+        }
+      ]
+    },
+    "nepal-salary-tax-calculator": {
+      "title": "नेपाल तलब कर क्याल्कुलेटर आर्थिक वर्ष २०८३/८४",
+      "description": "नेपालको आर्थिक वर्ष २०८३/८४ का कर दरबाट वार्षिक तथा मासिक आयकर अनुमान गर्नुहोस्।",
+      "formula": "वार्षिक कर = लागू हुने प्रगतिशील कर स्ल्याबअनुसार प्रत्येक आय तहमा लाग्ने करको योग।",
+      "inputs": [
+        "वार्षिक करयोग्य आय (रु.)"
+      ],
+      "outputs": [
+        "अनुमानित वार्षिक कर",
+        "अनुमानित मासिक कर",
+        "करपछिको अनुमानित आय"
+      ],
+      "assumptions": "निवासी व्यक्तिको अनुमानित कर हो। व्यक्तिगत अवस्था, छुट र आधिकारिक कर नियम फरक हुन सक्छन्।",
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "income",
+          "label": "वार्षिक करयोग्य आय (रु.)",
+          "type": "number",
+          "defaultValue": ""
+        }
+      ]
+    },
+    "nepal-electricity-bill-calculator": {
+      "title": "NEA बिजुली बिल क्याल्कुलेटर",
+      "description": "मासिक युनिट र मिटर क्षमताका आधारमा नेपालमा घरेलु बिजुली बिल अनुमान गर्नुहोस्।",
+      "formula": "कुल बिल = लागू ऊर्जा स्ल्याब शुल्क + न्यूनतम शुल्क + लागू VAT।",
+      "inputs": [
+        "मासिक खपत (kWh)",
+        "मिटर क्षमता"
+      ],
+      "outputs": [
+        "ऊर्जा शुल्क",
+        "न्यूनतम शुल्क",
+        "VAT",
+        "अनुमानित कुल बिल"
+      ],
+      "assumptions": "यो एकल-फेज घरेलु जडानका लागि अनुमान हो। NEA को अद्यावधिक दर र मिटर क्षमताअनुसार बिल फरक हुन सक्छ।",
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "units",
+          "label": "मासिक खपत (kWh)",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "capacity",
+          "label": "मिटर क्षमता",
+          "type": "select",
+          "defaultValue": "5A"
+        }
+      ]
+    },
+    "nepse-dividend-calculator": {
+      "title": "NEPSE लाभांश तथा बोनस शेयर क्याल्कुलेटर",
+      "description": "रोक्का करपछिको नगद लाभांश र बोनस शेयरको संख्या अनुमान गर्नुहोस्।",
+      "formula": "नगद लाभांश = योग्य शेयर × अंकित मूल्य × लाभांश दर; बोनस शेयर = योग्य शेयर × बोनस दर ÷ १००।",
+      "inputs": [
+        "शेयर संख्या",
+        "नगद लाभांश (%)",
+        "बोनस शेयर (%)",
+        "रोक्का कर (%)"
+      ],
+      "outputs": [
+        "कुल नगद लाभांश",
+        "कर कट्टी",
+        "शुद्ध नगद लाभांश",
+        "बोनस शेयर संख्या"
+      ],
+      "assumptions": "लाभांश दर र कर अनुमान हुन्। कम्पनीको आधिकारिक सूचना र लागू कर नियमबाट पुष्टि गर्नुहोस्।",
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "shares",
+          "label": "शेयर संख्या",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "cashRate",
+          "label": "नगद लाभांश (%)",
+          "type": "number",
+          "defaultValue": "10"
+        },
+        {
+          "key": "bonusRate",
+          "label": "बोनस शेयर (%)",
+          "type": "number",
+          "defaultValue": "5"
+        },
+        {
+          "key": "taxRate",
+          "label": "रोक्का कर (%)",
+          "type": "number",
+          "defaultValue": "5"
+        }
+      ]
+    }
+  }
 }

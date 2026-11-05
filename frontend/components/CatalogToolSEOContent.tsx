@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ToolInfo } from "./toolCatalog";
+import type { ToolGuide } from "../lib/tool-guides";
 
 type Question = { q: string; a: string };
 
@@ -64,12 +65,14 @@ export default function CatalogToolSEOContent({
   tool,
   questions,
   related,
-  guideSlug
+  guideSlug,
+  guide
 }: {
   tool: ToolInfo;
   questions: Question[];
   related: ToolInfo[];
   guideSlug?: string;
+  guide?: ToolGuide;
 }) {
   const uniqueFaqItems = questions.slice(0, 4);
   if (tool.slug === "market-ai") {
@@ -508,10 +511,10 @@ export default function CatalogToolSEOContent({
   const taskDescription = tool.description.replace(/[.!?]$/, "");
   const categoryFallback = categoryAdvice[tool.category] ?? categoryAdvice.Math;
   const generatedAdvice = {
-    example: `For example, use the ${title.toLowerCase()} with a small input whose expected result you can check. ${taskDescription}. Compare the displayed output with the original input and the format or units required by the destination.`,
-    accuracy: `The ${title.toLowerCase()} processes the values or content you provide; its output is only as reliable as the input, selected options and supported formats. ${categoryFallback.accuracy}`,
-    workflow: `Start with a representative sample in the ${title.toLowerCase()}, check each displayed option and inspect the result before using it. ${categoryFallback.workflow}`,
-    mistakes: `For the ${title.toLowerCase()}, avoid unsupported input formats, mismatched units and assumptions that are not shown by the tool. ${categoryFallback.mistakes}`
+    example: `Use the ${title.toLowerCase()} for this task: ${taskDescription}. Try a small representative input first, then compare the result with the format or value you expect.`,
+    accuracy: `The ${title.toLowerCase()} is designed to ${taskDescription.toLowerCase()}. Results depend on the source input and the options supported by this page; inspect the output before using it elsewhere.`,
+    workflow: `Open the ${title.toLowerCase()}, prepare the input described above, run the available action and check the resulting value or file. Repeat with a known sample if the result is unexpected.`,
+    mistakes: `For the ${title.toLowerCase()}, check that the input matches the requested format and that you have selected the intended options. Do not assume unsupported formats or unshown features are handled automatically.`
   };
   const advice = toolAdvice[tool.slug] ?? generatedAdvice;
   const preparation: Record<string, string> = {
@@ -533,19 +536,20 @@ export default function CatalogToolSEOContent({
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Complete tool guide</p>
           <h2 className="mt-2 text-2xl font-black text-slate-950">What is the {title}?</h2>
-          <p className="mt-4 leading-8 text-slate-700">{tool.description} This page explains the purpose of the tool, the information to prepare, how to interpret the result and the checks worth making before you use it. The aim is to help you complete one clear task without installing extra software or guessing which settings to choose.</p>
+          <p className="mt-4 leading-8 text-slate-700">{tool.description} {guide?.purpose ?? `Use this page when you need to ${taskDescription.toLowerCase()}.`}</p>
           
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">How to use the {title} step by step</h2>
           <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
-            <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
-            <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>
-            <li><strong>Enter a representative sample.</strong> If the task is unfamiliar, start with a small sample or values whose expected result you can check. This helps reveal input mistakes early.</li>
-            <li><strong>Use the available control.</strong> Some tools update automatically as you type; others require a Convert, Calculate or Process action. Follow the control shown in the workspace.</li>
-            <li><strong>Review the output.</strong> Check the result, compare it with the original or a known answer, and look for missing content, unexpected formatting or implausible values.</li>
-            <li><strong>Save or copy only after checking.</strong> Use the output only when it meets the requirements of your task. Keep the original until you no longer need it.</li>
+            {(guide?.steps?.length ? guide.steps : [
+              `Prepare the input required to ${taskDescription.toLowerCase()}.`,
+              `Open the ${title} workspace and follow the field labels and supported options.`,
+              `Run the tool and compare its output with a small known example or the source material.`,
+              `Save or download the result only after checking that it meets your task requirements.`
+            ]).map((step, index) => <li key={index}>{step}</li>)}
           </ol>
+          {guide?.caution && <p className="mt-4 rounded-xl bg-amber-50 p-4 text-sm leading-7 text-amber-900"><strong>Important:</strong> {guide.caution}</p>}
           
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">

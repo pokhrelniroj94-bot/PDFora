@@ -33,15 +33,7 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
     const catalog: MetadataRoute.Sitemap = toolCatalog
       .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf" && !legacyToolSlugSet.has(tool.slug))
       .map((tool) => ({ url: `${SITE_URL}/tools/${tool.slug}`, changeFrequency: "monthly" as const, priority: 0.7 }));
-    const localized: MetadataRoute.Sitemap = toolContentPublishedLocales.flatMap((locale) => toolCatalog
-      .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf")
-      .map((tool) => ({
-        url: `${SITE_URL}/${locale}/tools/${tool.slug}`,
-        changeFrequency: "monthly" as const,
-        priority: 0.7,
-        alternates: { languages: Object.fromEntries([["en", `${SITE_URL}/tools/${tool.slug}`], ...toolContentPublishedLocales.map((activeLocale) => [activeLocale, `${SITE_URL}/${activeLocale}/tools/${tool.slug}`]), ["x-default", `${SITE_URL}/tools/${tool.slug}`]]) }
-      })));
-    return [...legacy, ...catalog, ...localized];
+    return [...legacy, ...catalog];
   }
   if (sitemapId === "editorial") {
     return [
@@ -55,12 +47,21 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
     ];
   }
   if (sitemapId === "locales") {
-    return locales.filter((locale) => locale !== defaultLocale && isPublished(locale) && hasLocalizedPage("/", locale)).map((locale) => ({
+    const localizedToolPages: MetadataRoute.Sitemap = toolContentPublishedLocales.flatMap((locale) => toolCatalog
+      .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf")
+      .map((tool) => ({
+        url: `${SITE_URL}/${locale}/tools/${tool.slug}`,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+        alternates: { languages: Object.fromEntries([["en", `${SITE_URL}/tools/${tool.slug}`], ...toolContentPublishedLocales.map((activeLocale) => [activeLocale, `${SITE_URL}/${activeLocale}/tools/${tool.slug}`]), ["x-default", `${SITE_URL}/tools/${tool.slug}`]]) }
+      })));
+    const localizedHomepages = locales.filter((locale) => locale !== defaultLocale && isPublished(locale) && hasLocalizedPage("/", locale)).map((locale) => ({
       url: absoluteUrl("/", locale),
       changeFrequency: "weekly" as const,
       priority: 0.8,
       alternates: { languages: hreflangMap("/") ?? { [localeInfo[locale].hreflang]: absoluteUrl("/", locale) } },
     }));
+    return [...localizedHomepages, ...localizedToolPages];
   }
   return [];
 }

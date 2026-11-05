@@ -2684,17 +2684,12 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
+        if len(doc) == 0:
+            raise HTTPException(status_code=422, detail="This PDF has no pages to render.")
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-            count = 0
-            for page_index, page in enumerate(doc):
-                for image_index, item in enumerate(page.get_images(full=True), start=1):
-                    xref = item[0]
-                    extracted = doc.extract_image(xref)
-                    ext = extracted.get("ext", "bin")
-                    archive.writestr(f"page-{page_index + 1:04d}-image-{image_index:03d}.{ext}", extracted["image"])
-                    count += 1
-        if count == 0:
-            raise HTTPException(status_code=422, detail="No embedded images were found in this PDF.")
+            for page_index, page in enumerate(doc, start=1):
+                pixmap = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                archive.writestr(f"page-{page_index:04d}.png", pixmap.tobytes("png"))
         return FileResponse(str(out), media_type="application/zip", filename="NIROJ-Page-Images.zip", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:

@@ -47,15 +47,31 @@ export default function PDForaTool({
 
   function applyFiles(selectedFiles: File[]) {
     const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
+    const acceptedTypes = accept.split(',').map((item) => item.trim().toLowerCase()).filter(Boolean);
+    const invalid = selected.find((file) => {
+      if (acceptedTypes.length === 0) return false;
+      const name = file.name.toLowerCase();
+      return !acceptedTypes.some((rule) => {
+        if (rule.startsWith('.')) return name.endsWith(rule);
+        if (rule.endsWith('/*')) return file.type.startsWith(rule.slice(0, -1));
+        return file.type === rule;
+      });
+    });
+    if (invalid) {
+      setFiles([]);
+      setMessage(invalid.name + ' is not an accepted file type. Allowed: ' + accept + '.');
+      if (inputRef.current) inputRef.current.value = '';
+      return;
+    }
     const oversized = selected.find((file) => file.size > 50 * 1024 * 1024);
     if (oversized) {
       setFiles([]);
-      setMessage(`${oversized.name} exceeds the 50 MB per-file limit.`);
-      if (inputRef.current) inputRef.current.value = "";
+      setMessage(oversized.name + ' exceeds the 50 MB per-file limit.');
+      if (inputRef.current) inputRef.current.value = '';
       return;
     }
     setFiles(selected);
-    setMessage("");
+    setMessage('');
   }
 
   function handleFiles(event: ChangeEvent<HTMLInputElement>) {
@@ -79,7 +95,7 @@ export default function PDForaTool({
   }
 
   function chooseFiles() {
-    inputRef.current?.click();
+    if (!loading) inputRef.current?.click();
   }
 
   async function processPDF() {
@@ -247,12 +263,13 @@ export default function PDForaTool({
           {/* Upload Area */}
           <button
             type="button"
+            disabled={loading}
             onClick={chooseFiles}
             onDragOver={(event) => { event.preventDefault(); if (!loading) setDragActive(true); }}
             onDragLeave={(event) => { event.preventDefault(); setDragActive(false); }}
             onDrop={handleDrop}
             aria-label="Choose or drop PDF files"
-            className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] sm:min-h-64 ${dragActive ? "border-teal-500 bg-teal-50" : "border-slate-300 bg-slate-50/80 hover:border-teal-400 hover:bg-teal-50"}`}
+            className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-64 ${dragActive ? "border-teal-500 bg-teal-50" : "border-slate-300 bg-slate-50/80 hover:border-teal-400 hover:bg-teal-50"}`}
           >
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-3xl ring-1 ring-teal-900/5">
               📄
@@ -333,13 +350,14 @@ export default function PDForaTool({
           {/* Extra input */}
           {(formField || queryField) && (
             <div className="mt-4">
-              <label className="mb-2 block text-sm font-bold">
+              <label htmlFor="pdfora-extra-input" className="mb-2 block text-sm font-bold">
                 {queryField === "degrees"
                   ? "Rotation angle"
                   : formPlaceholder || "Enter value"}
               </label>
 
               <input
+                id="pdfora-extra-input"
                 value={value}
                 onChange={(event) =>
                   setValue(event.target.value)
@@ -362,7 +380,7 @@ export default function PDForaTool({
             type="button"
             onClick={processPDF}
             disabled={loading || files.length === 0}
-            className="mt-5 flex min-h-14 w-full items-center justify-center rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-700 px-5 text-sm font-black text-white shadow-lg shadow-teal-900/15 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-teal-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="mt-5 flex min-h-14 w-full items-center justify-center rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-700 px-5 text-sm font-black text-white shadow-lg shadow-teal-900/15 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-teal-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:bg-slate-300"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -382,7 +400,9 @@ export default function PDForaTool({
               className={`mt-4 rounded-xl border px-4 py-3 text-center text-sm font-semibold ${
                 success
                   ? "border-green-200 bg-green-50 text-green-700"
-                  : "border-red-200 bg-red-50 text-red-700"
+                  : loading
+                    ? "border-blue-200 bg-blue-50 text-blue-800"
+                    : "border-red-200 bg-red-50 text-red-700"
               }`}
             >
               {message}

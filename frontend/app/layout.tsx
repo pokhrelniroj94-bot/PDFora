@@ -4,7 +4,6 @@ import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import CookieConsent, { CookieSettingsLink } from "../components/CookieConsent";
 import "./globals.css";
-import ToolDirectory from "../components/ToolDirectory";
 import SiteAIHelp from "../components/SiteAIHelp";
 
 const geistSans = Geist({
@@ -55,17 +54,20 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         <footer className="border-t border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-600">
-          <a href="/tools" className="font-semibold text-blue-700 hover:underline">All Tools</a>
+          <a href="/tools" className="font-semibold text-blue-700 hover:underline">{htmlLang === "ne" ? "सबै टुलहरू" : "All Tools"}</a>
           <span className="mx-2">·</span>
-          <a href="/blog" className="font-semibold text-blue-700 hover:underline">Guides &amp; Tutorials</a>
+          <a href="/blog" className="hover:underline">{htmlLang === "ne" ? "गाइड र ट्युटोरियल" : "Guides &amp; Tutorials"}</a>
           <span className="mx-2">·</span>
-          <a href="/about" className="hover:underline">About PDFora</a>
+          <a href="/about" className="hover:underline">{htmlLang === "ne" ? "PDFora बारे" : "About PDFora"}</a>
           <span className="mx-2">·</span>
-          <a href="/contact" className="hover:underline">Contact</a>
+          <a href="/contact" className="hover:underline">{htmlLang === "ne" ? "सम्पर्क" : "Contact"}</a>
+          <span className="mx-2">·</span>
+          <a href="/privacy" className="hover:underline">{htmlLang === "ne" ? "गोपनीयता" : "Privacy"}</a>
+          <span className="mx-2">·</span>
+          <a href="/terms" className="hover:underline">{htmlLang === "ne" ? "सेवाका सर्तहरू" : "Terms"}</a>
           <span className="mx-2">·</span>
           <CookieSettingsLink />
         </footer>
-        <ToolDirectory />
         <SiteAIHelp />
         <Script
           id="pdfora-structured-data"

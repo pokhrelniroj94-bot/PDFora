@@ -72,7 +72,14 @@ export function SmartToolCenter() {
   const categories = useMemo(() => {
     const counts = new Map<string, number>();
     allTools.forEach((tool) => counts.set(tool.category, (counts.get(tool.category) ?? 0) + 1));
-    return [{ name: "All", count: allTools.length }, ...Array.from(counts, ([name, count]) => ({ name, count })).sort((a, b) => a.name.localeCompare(b.name))];
+    const pdfCount = allTools.filter((tool) => tool.kind === "pdf").length;
+    return [
+      { name: "All", count: allTools.length },
+      { name: "PDF", count: pdfCount },
+      ...Array.from(counts, ([name, count]) => ({ name, count }))
+        .filter((item) => item.name !== "PDF")
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    ];
   }, []);
 
   const filtered = useMemo(() => {
@@ -87,7 +94,12 @@ export function SmartToolCenter() {
     return result;
   }, [query, category, sort]);
 
-  const popular = popularSlugs.map((slug) => allTools.find((tool) => tool.slug === slug)).filter((tool) => tool && (category === "All" || tool.category === category));
+  const popular = popularSlugs
+    .map((slug) => allTools.find((tool) => tool.slug === slug))
+    .filter((tool) => tool && (
+      category === "All" ||
+      (category === "PDF" ? tool.kind === "pdf" : tool.category === category)
+    ));
 
   function chooseTask(task: string) {
     setQuery(task);
@@ -105,7 +117,7 @@ export function SmartToolCenter() {
           </Link>
           <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <Link href="/ne" lang="ne" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2.5 text-[11px] font-extrabold text-blue-800 transition hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">नेपाली</Link>
-            <Link href="/market" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2.5 text-[11px] font-bold text-teal-800 transition hover:border-teal-400 hover:bg-teal-100 sm:px-3 sm:text-xs"><span aria-hidden="true">📈</span><span className="ml-1">Market</span></Link>
+            <Link href="/market" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2.5 text-[11px] font-bold text-teal-800 transition hover:border-teal-400 hover:bg-teal-100 sm:px-3 sm:text-xs"><span aria-hidden="true">📈</span><span className="ml-1 hidden sm:inline">Market</span></Link>
             <Link href="/tools" aria-current="page" className="inline-flex min-h-9 items-center justify-center rounded-lg bg-slate-950 px-3 text-[11px] font-bold text-white shadow-sm transition hover:bg-slate-800 sm:px-4 sm:text-xs">Tools</Link>
           </nav>
         </div>
@@ -119,7 +131,7 @@ export function SmartToolCenter() {
           <form className="mt-7 flex max-w-3xl flex-col gap-2 rounded-2xl bg-white p-2 shadow-2xl shadow-black/20 sm:flex-row" onSubmit={(event) => { event.preventDefault(); document.getElementById("tool-results")?.scrollIntoView({ behavior: "smooth" }); }}>
             <label className="flex min-w-0 flex-1 items-center gap-3 px-3">
               <span className="text-xl text-slate-400" aria-hidden="true">⌕</span>
-              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try “compress PDF”, “photo size”, “salary tax”..." aria-label="Search all tools" className="h-12 w-full min-w-0 border-0 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:ring-0" />
+              <input type="search" autoComplete="off" aria-controls="tool-results" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try “compress PDF”, “photo size”, “salary tax”..." aria-label="Search all tools" className="h-12 w-full min-w-0 border-0 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:ring-0" />
               {query && <button type="button" onClick={() => setQuery("")} className="rounded-lg px-2 py-1 text-sm font-bold text-slate-500 hover:bg-slate-100" aria-label="Clear search">Clear</button>}
             </label>
             <button className="rounded-xl bg-teal-700 px-7 py-3 text-sm font-bold text-white transition hover:bg-teal-800" type="submit">Find a tool</button>
@@ -135,7 +147,7 @@ export function SmartToolCenter() {
             <span className="text-xs text-slate-500">Tap a shortcut to explore</span>
           </div>
           <div className="pdfora-stagger grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {taskShortcuts.map((task) => <button key={task.label} onClick={() => chooseTask(task.query)} className="group flex min-h-24 flex-col items-start justify-center rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md"><span className="text-2xl" aria-hidden="true">{task.icon}</span><span className="mt-2 text-sm font-bold text-slate-800 group-hover:text-teal-800">{task.label}</span></button>)}
+            {taskShortcuts.map((task) => <button type="button" key={task.label} onClick={() => chooseTask(task.query)} className="group flex min-h-24 flex-col items-start justify-center rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md"><span className="text-2xl" aria-hidden="true">{task.icon}</span><span className="mt-2 text-sm font-bold text-slate-800 group-hover:text-teal-800">{task.label}</span></button>)}
           </div>
         </section>
 
@@ -152,8 +164,8 @@ export function SmartToolCenter() {
             <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">Sort <select value={sort} onChange={(event) => setSort(event.target.value as "recommended" | "az")} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"><option value="recommended">Recommended</option><option value="az">A to Z</option></select></label>
           </div>
 
-          <div className="mt-5 flex gap-2 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter tools by category">
-            {categories.map((item) => <button key={item.name} onClick={() => setCategory(item.name)} aria-pressed={category === item.name} className={"shrink-0 rounded-full px-4 py-2.5 text-sm font-bold transition " + (category === item.name ? "bg-teal-800 text-white shadow-sm" : "border border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:text-teal-800")}>{item.name}<span className={"ml-2 text-xs " + (category === item.name ? "text-teal-100" : "text-slate-400")}>{item.count}</span></button>)}
+          <div role="group" className="mt-5 flex gap-2 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter tools by category">
+            {categories.map((item) => <button type="button" key={item.name} onClick={() => setCategory(item.name)} aria-pressed={category === item.name} className={"shrink-0 rounded-full px-4 py-2.5 text-sm font-bold transition " + (category === item.name ? "bg-teal-800 text-white shadow-sm" : "border border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:text-teal-800")}>{item.name}<span className={"ml-2 text-xs " + (category === item.name ? "text-teal-100" : "text-slate-400")}>{item.count}</span></button>)}
           </div>
 
           {filtered.length ? <div className="pdfora-stagger mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -163,7 +175,7 @@ export function SmartToolCenter() {
               <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">{tool.description}</p>
               <span className="mt-auto pt-4 text-xs font-bold text-teal-700">Open tool <span aria-hidden="true">→</span></span>
             </Link>)}
-          </div> : <div className="mt-5 rounded-3xl border border-dashed border-slate-300 bg-white px-5 py-12 text-center"><span className="text-4xl" aria-hidden="true">🔎</span><h3 className="mt-3 text-lg font-black">No matching tools yet</h3><p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Try a shorter phrase, a different keyword, or choose another category.</p><button onClick={() => { setQuery(""); setCategory("All"); }} className="mt-5 rounded-xl bg-teal-800 px-5 py-3 text-sm font-bold text-white hover:bg-teal-900">Show all {allTools.length} tools</button></div>}
+          </div> : <div className="mt-5 rounded-3xl border border-dashed border-slate-300 bg-white px-5 py-12 text-center"><span className="text-4xl" aria-hidden="true">🔎</span><h3 className="mt-3 text-lg font-black">No matching tools yet</h3><p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Try a shorter phrase, a different keyword, or choose another category.</p><button type="button" onClick={() => { setQuery(""); setCategory("All"); }} className="mt-5 rounded-xl bg-teal-800 px-5 py-3 text-sm font-bold text-white hover:bg-teal-900">Show all {allTools.length} tools</button></div>}
         </section>
 
         <p className="mt-10 rounded-2xl border border-slate-200 bg-white p-4 text-center text-xs leading-5 text-slate-500">Tip: Search using a task such as “make PDF smaller”, “convert image”, “calculate EMI” or “Nepali date”. You can also browse by category above.</p>

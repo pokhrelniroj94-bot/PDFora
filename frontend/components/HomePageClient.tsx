@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import AdsterraNative from "../app/components/AdsterraNative";
+import ToolDirectory from "./ToolDirectory";
 import { allTools, type Tool } from "../lib/tool-directory";
 
 const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
@@ -155,6 +156,7 @@ export default function HomePageClient() {
         <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6 lg:px-8">
           <Link
             href="/"
+            aria-current="page"
             className="flex items-center gap-2"
             aria-label="PDFora home"
           >
@@ -167,9 +169,9 @@ export default function HomePageClient() {
             </span>
           </Link>
 
-          <nav aria-label="Main navigation" className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+          <nav aria-label="Main navigation" className="flex min-w-0 items-center gap-1 sm:gap-2">
             <Link href="/ne" lang="ne" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2 py-2 text-[11px] font-extrabold text-blue-800 hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">नेपाली</Link>
-            <Link href="/market" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2 py-2 text-[10px] font-bold text-teal-800 hover:border-teal-400 sm:px-3 sm:text-xs">📈 <span className="ml-1">Market</span></Link>
+            <Link href="/market" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2 py-2 text-[10px] font-bold text-teal-800 hover:border-teal-400 sm:px-3 sm:text-xs">📈 <span className="ml-1 hidden sm:inline">Market</span></Link>
             <Link href="/tools" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 px-2.5 py-2 text-[10px] font-bold text-white transition hover:bg-slate-800 sm:px-4 sm:text-xs">Tools</Link>
           </nav>
         </div>
@@ -205,12 +207,12 @@ export default function HomePageClient() {
             <div className="mt-10 max-w-2xl rounded-2xl border border-white/15 bg-white/[0.08] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl focus-within:border-teal-300/60">
               <div className="flex items-center gap-3">
                 <span className="pl-3 text-xl text-teal-200" aria-hidden="true">⌕</span>
-                <input value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); }} placeholder="What do you need to do?  e.g. merge PDF, compress image…" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" />
+                <input type="search" autoComplete="off" value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); }} placeholder="What do you need to do?  e.g. merge PDF, compress image…" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" aria-controls="homepage-tool-search-results" aria-expanded={Boolean(query.trim())} />
                 {query && <button type="button" onClick={() => setQuery("")} className="rounded-xl px-3 py-2 text-xs font-bold text-slate-300 hover:bg-white/10">Clear</button>}
               </div>
             </div>
             {query.trim() && (
-              <div className="mt-3 max-h-[min(65vh,32rem)] max-w-2xl overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#102b2a] text-left shadow-2xl" role="region" aria-label="Live tool search results">
+              <div id="homepage-tool-search-results" className="mt-3 max-h-[min(65vh,32rem)] max-w-2xl overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#102b2a] text-left shadow-2xl" role="region" aria-label="Live tool search results">
                 <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 text-xs"><span className="font-extrabold text-teal-100">All matching tools</span><span className="text-slate-400">{searchResults.length} results</span></div>
                 {searchResults.length ? <div className="divide-y divide-white/10">{searchResults.map(tool=><Link key={tool.href} href={tool.href} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-white/[0.06]"><span className="min-w-0"><span className="block text-sm font-bold text-white">{tool.name}</span><span className="mt-0.5 block truncate text-xs text-slate-400">{tool.description}</span></span><span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold text-teal-100">{tool.category}</span></Link>)}</div> : <p className="px-4 py-5 text-sm text-slate-300">No matching tools. Try another search.</p>}
               </div>
@@ -500,7 +502,9 @@ export default function HomePageClient() {
                   onClick={() =>
                     setOpenFaq(isOpen ? null : index)
                   }
+                  id={`faq-question-${index}`}
                   aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${index}`}
                   className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                 >
                   <span className="text-sm font-black">
@@ -516,7 +520,12 @@ export default function HomePageClient() {
                 </button>
 
                 {isOpen && (
-                  <div className="border-t border-slate-100 px-5 py-4 text-sm leading-6 text-slate-600">
+                  <div
+                    id={`faq-answer-${index}`}
+                    role="region"
+                    aria-labelledby={`faq-question-${index}`}
+                    className="border-t border-slate-100 px-5 py-4 text-sm leading-6 text-slate-600"
+                  >
                     {faq.answer}
                   </div>
                 )}
@@ -557,123 +566,8 @@ export default function HomePageClient() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="border-t border-slate-200 bg-slate-950 px-4 py-12 text-white sm:px-6">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid gap-10 md:grid-cols-4">
-            {/* BRAND */}
-            <div>
-              <Link
-                href="/"
-                className="flex items-center gap-2"
-                aria-label="PDFora home"
-              >
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
-                  P
-                </div>
 
-                <span className="text-xl font-black">
-                  PDFora
-                </span>
-              </Link>
-
-              <p className="mt-4 max-w-sm text-sm leading-6 text-slate-400">
-                Free online tools for PDF, images, text and everyday digital tasks.
-              </p>
-            </div>
-
-            {/* TOOLS */}
-            <div>
-              <h3 className="text-sm font-black">
-                Popular tools
-              </h3>
-
-              <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
-                <FooterLink href="/merge-pdf">
-                  Merge PDF
-                </FooterLink>
-
-                <FooterLink href="/split-pdf">
-                  Split PDF
-                </FooterLink>
-
-                <FooterLink href="/compress-pdf">
-                  Compress PDF
-                </FooterLink>
-
-                <FooterLink href="/pdf-to-word">
-                  PDF to Word
-                </FooterLink>
-
-                <FooterLink href="/pdf-to-jpg">
-                  PDF to JPG
-                </FooterLink>
-
-                <FooterLink href="/images-to-pdf">
-                  Images to PDF
-                </FooterLink>
-              </div>
-            </div>
-
-            {/* COMPANY */}
-            <div>
-              <h3 className="text-sm font-black">
-                PDFora
-              </h3>
-
-              <div className="mt-4 flex flex-col gap-3 text-sm text-slate-400">
-                <FooterLink href="/about">
-                  About
-                </FooterLink>
-
-                <FooterLink href="/contact">
-                  Contact
-                </FooterLink>
-
-                <FooterLink href="/privacy">
-                  Privacy Policy
-                </FooterLink>
-
-                <FooterLink href="/terms">
-                  Terms of Service
-                </FooterLink>
-
-                <FooterLink href="#faq">
-                  FAQ
-                </FooterLink>
-              </div>
-            </div>
-
-            {/* ABOUT */}
-            <div>
-              <h3 className="text-sm font-black">
-                About PDFora
-              </h3>
-
-              <p className="mt-4 text-sm leading-6 text-slate-400">
-                PDFora is an all-in-one online utility platform. We are expanding from PDF tools into image, text, calculator, developer and productivity tools.
-              </p>
-
-              <Link
-                href="/about"
-                className="mt-4 inline-block text-sm font-bold text-white hover:text-orange-400"
-              >
-                Learn more →
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-10 flex flex-col gap-3 border-t border-slate-800 pt-6 text-center text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:text-left">
-            <p>
-              © 2026 PDFora. All rights reserved.
-            </p>
-
-            <p>
-              Developed by Niroj Pokhrel
-            </p>
-          </div>
-        </div>
-      </footer>
+      <ToolDirectory />
     </main>
   );
 }
@@ -808,23 +702,6 @@ function InfoLink({
       <span className="mt-4 inline-block text-sm font-bold text-orange-600">
         Learn more →
       </span>
-    </Link>
-  );
-}
-
-function FooterLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="hover:text-white"
-    >
-      {children}
     </Link>
   );
 }

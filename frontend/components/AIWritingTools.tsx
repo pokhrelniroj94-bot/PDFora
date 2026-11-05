@@ -17,6 +17,7 @@ export default function AIWritingTools({ slug }: Props) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [copyStatus, setCopyStatus] = useState("");
   const set = (key: string, value: string) => setValues((old) => ({ ...old, [key]: value }));
   const value = (key: string) => values[key] ?? "";
   const humanizer = slug === "ai-humanizer";
@@ -58,8 +59,15 @@ export default function AIWritingTools({ slug }: Props) {
     }
   }
 
-  function copyResult() {
-    void navigator.clipboard?.writeText(result);
+  async function copyResult() {
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+      await navigator.clipboard.writeText(result);
+      setCopyStatus("Copied to clipboard.");
+    } catch {
+      setCopyStatus("Copy failed. Select the result text and copy it manually.");
+    }
+    window.setTimeout(() => setCopyStatus(""), 2500);
   }
 
   function useInResumeBuilder() {
@@ -94,7 +102,7 @@ export default function AIWritingTools({ slug }: Props) {
     anchor.href = url;
     anchor.download = humanizer ? "pdfora-humanized-text.txt" : cover ? "pdfora-cover-letter.txt" : "pdfora-ai-resume-content.txt";
     anchor.click();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   return (
@@ -134,7 +142,7 @@ export default function AIWritingTools({ slug }: Props) {
 
       {error && <div role="alert" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">{error}</div>}
       {result && <section className={panelClass}>
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-extrabold text-slate-900">Your result</h2><div className="flex gap-2"><button type="button" onClick={copyResult} className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-slate-50">Copy</button><button type="button" onClick={downloadResult} className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800">Download TXT</button></div></div>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-extrabold text-slate-900">Your result</h2><div className="flex flex-wrap items-center gap-2">{copyStatus && <span role="status" className="text-xs text-slate-600">{copyStatus}</span>}<button type="button" onClick={() => void copyResult()} className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-slate-50">Copy</button><button type="button" onClick={downloadResult} className="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800">Download TXT</button></div></div>
         <textarea aria-label="Generated result" className={inputClass + " min-h-80 leading-7"} value={result} onChange={(event) => setResult(event.target.value)} />
         <p className="mt-3 text-xs text-slate-500">Review all details before using. AI may make mistakes. Never include achievements or qualifications you cannot verify.</p>
         {!humanizer && !cover && <button type="button" onClick={useInResumeBuilder} className="mt-4 inline-flex rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800">Use this draft in Resume Builder →</button>}

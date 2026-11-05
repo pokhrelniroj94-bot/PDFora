@@ -460,18 +460,6 @@ export default function CatalogToolSEOContent({
     mistakes: `For the ${title.toLowerCase()}, check that the input matches the requested format and that you have selected the intended options. Do not assume unsupported formats or unshown features are handled automatically.`
   };
   const advice = toolAdvice[tool.slug] ?? generatedAdvice;
-  const preparation: Record<string, string> = {
-    PDF: "Keep an untouched copy of the original PDF. Check whether it contains scans, forms, bookmarks, annotations or digital signatures that may affect the result.",
-    Finance: "Have the principal or amount, rate, currency and calculation period ready. Check whether the rate is annual or monthly and whether fees or taxes are included.",
-    Text: "Prepare the exact text you want to process. Preserve a backup if you are replacing, removing, sorting or converting text in bulk.",
-    Developer: "Prepare a small representative sample and know the target format or encoding. Do not use real passwords, API keys, private tokens or confidential source code.",
-    Image: "Use a copy of the source image and check the required output format, dimensions, transparency and maximum file size before exporting.",
-    Math: "Check the units and input format for each value. For dates, identify the start and end date; for percentages, confirm whether the value is entered as a number or decimal.",
-    SEO: "Copy the exact page URL, title, description or content you intend to audit. Treat the output as a diagnostic aid and verify important findings on the live page.",
-    Business: "Collect the relevant cost, selling price, revenue, wage or target figures. Confirm the time period and whether tax is included before calculating.",
-    Nepal: "Check the applicable fiscal year, BS or AD date, NPR amount, local unit and eligibility conditions. Verify official matters with the responsible Nepalese authority."
-  };
-  const inputNote = preparation[tool.category] ?? "Prepare the source information requested by the tool and check the units, format and assumptions before processing.";
   // Keep only FAQs written for this tool or its category.
   return (
     <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">

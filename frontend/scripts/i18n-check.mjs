@@ -47,7 +47,9 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
   const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")) : [];
   const published = config.isPublished(locale);
   const problems = [];
-  for (const ns of Object.keys(en)) {
+  const namespacesToCheck = published ? config.localeInfo[locale].publishedNamespaces : Object.keys(en);
+  for (const ns of namespacesToCheck) {
+    if (!(ns in en)) { problems.push(`${ns}: not in English source`); continue; }
     if (!files.includes(`${ns}.json`)) { problems.push(`${ns}: file missing`); continue; }
     const tr = readNs(locale, `${ns}.json`);
     if (tr.__error) { problems.push(`${ns}: invalid JSON`); continue; }
@@ -58,10 +60,13 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
     }
     for (const key of Object.keys(tr)) if (!(key in en[ns])) problems.push(`${ns}.${key}: not in English source`);
   }
-  const label = `${locale} (${published ? "PUBLISHED" : "unpublished"}, ${files.length}/${enFiles.length} namespaces)`;
-  if (!problems.length && files.length === enFiles.length) console.log(`${label}\n  ok   complete`);
-  else if (published) { console.log(label); problems.forEach((p) => fail(p)); }
-  else console.log(`${label}\n  work in progress: ${problems.length} issue(s)${files.length ? "" : " (no files yet)"}`);
+  const label = `${locale} (${published ? "PUBLISHED" : "unpublished"}, ${published ? config.localeInfo[locale].publishedNamespaces.length : files.length}/${enFiles.length} namespaces checked)`;
+  if (published) {
+    if (!problems.length) console.log(`${label}\n  ok   published namespaces complete`);
+    else { console.log(label); problems.forEach((p) => fail(p)); }
+  } else {
+    console.log(`${label}\n  work in progress: ${problems.length} issue(s)${files.length ? "" : " (no files yet)"}`);
+  }
 }
 
 console.log(hardFailures ? `\n${hardFailures} blocking problem(s).` : "\nNo blocking problems.");

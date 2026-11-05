@@ -23,7 +23,7 @@ Keep all credentials server-side in Vercel Environment Variables. Never use `NEX
 - Upstash Redis offers a $0 Free tier with 500,000 commands/month, 256 MB data and 10 GB monthly bandwidth. Keep the database on Free; do not enable Pay as You Go or a paid Fixed plan.
 - Provider selection is Cloudflare-only. There is no automatic paid-provider fallback.
 - The current model is `@cf/meta/llama-3.2-3b-instruct`.
-- The route uses an atomic Redis Lua counter through Upstash REST (8 requests per IP per 60 seconds). IP addresses are SHA-256 hashed before being used as Redis keys. If Upstash is missing or unavailable, the API fails closed and does not call the model.
+- The route accepts request bodies up to 64 KiB and caps the assembled prompt at 18,000 characters. It uses an atomic Redis Lua counter through Upstash REST (8 requests per IP per 60 seconds). IP addresses are SHA-256 hashed before being used as Redis keys. If Upstash is missing or unavailable, the API fails closed and does not call the model.
 
 ## Preview test checklist
 
@@ -32,6 +32,7 @@ Keep all credentials server-side in Vercel Environment Variables. Never use `NEX
 3. Deploy a Preview build and test a harmless prompt.
 4. Verify invalid JSON, oversized bodies, missing credentials, provider errors, and 429 responses fail safely.
 5. Verify requests stop when the Cloudflare free allocation is exhausted; never enable a paid upgrade to resolve quota errors.
-6. Keep Production disabled until build and browser QA pass.
+6. Confirm multilingual inputs (including Nepali Unicode) stay within the documented body and prompt limits.
+7. Keep Production disabled until build and browser QA pass.
 
 Official limits: https://developers.cloudflare.com/workers-ai/platform/pricing/ and https://upstash.com/pricing/redis

@@ -426,8 +426,7 @@ export default function Home() {
             </h2>
 
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500">
-              PDFora focuses on making everyday PDF tasks easier to access
-              without requiring desktop software installation.
+              PDFora brings PDF, image, text, calculator, developer, career and Nepal-focused utilities into one browser-based workspace.
             </p>
           </div>
 
@@ -435,7 +434,7 @@ export default function Home() {
             <InfoCard
               icon="⚡"
               title="Simple workflow"
-              description="Choose a tool, upload your document and start the requested PDF operation through a straightforward interface."
+              description="Choose the right utility, enter your information or select a file, and follow a clear workflow."
             />
 
             <InfoCard

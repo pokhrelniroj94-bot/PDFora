@@ -1,0 +1,11 @@
+{
+  "ui": {
+    "heading": "Häufig gestellte Fragen",
+    "howWorks": "Wie funktioniert dieses Tool?",
+    "accuracy": "Ist das Ergebnis genau?",
+    "privacy": "Ist meine Datei geschützt?",
+    "formats": "Welche Dateiformate werden unterstützt?",
+    "troubleshooting": "Fehlerbehebung"
+  },
+  "entries": {}
+}

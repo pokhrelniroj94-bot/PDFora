@@ -126,6 +126,22 @@ export async function loadMessages(locale: Locale, wanted: readonly Namespace[] 
   return { messages, fallback: await loadLocale("en", wanted) };
 }
 
+/**
+ * Load a slug-specific localized content entry without silently substituting English.
+ * Returning undefined is intentional: callers must hide the localized section or keep
+ * the locale unpublished instead of presenting fallback-heavy SEO copy as translated.
+ */
+export async function getLocalizedEntry(locale: Locale, namespace: "tools" | "guides" | "calculators" | "faqs", slug: string): Promise<unknown | undefined> {
+  const loaded = await loadLocale(locale, [namespace]);
+  const node = loaded[namespace] as MessageTree | undefined;
+  if (!node || typeof node !== "object") return undefined;
+  const entries = node.entries;
+  if (!entries || typeof entries !== "object" || typeof entries === "string") return undefined;
+  const entry = (entries as MessageTree)[slug];
+  if (!entry || typeof entry !== "object" || typeof entry === "string") return undefined;
+  return entry;
+}
+
 /** Convenience: load + build a translator that warns (server log) on every missing key. */
 export async function getTranslator(locale: Locale, wanted: readonly Namespace[] = namespaces): Promise<Translator> {
   const { messages, fallback } = await loadMessages(locale, wanted);

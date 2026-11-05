@@ -25,9 +25,9 @@ const validEntry = (namespace, entry) => {
   return false;
 };
 let blockers = 0;
-// Nepali currently publishes only its migrated homepage; it has no localized tool routes yet.
-for (const locale of config.locales.filter((l) => l !== "en" && l !== "ne")) {
-  const published = config.isPublished(locale);
+// All non-English locales are checked. An incomplete tool pack is a warning until tool routes are explicitly published.
+for (const locale of config.locales.filter((l) => l !== "en")) {
+  const published = config.isPublished(locale) && locale !== "ne"; // Nepali homepage is public; localized tool routes are gated separately.
   let missing = 0;
   for (const [namespace, slugs] of Object.entries(required)) {
     const file = path.join(root, locale, namespace + ".json");

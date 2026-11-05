@@ -118,14 +118,7 @@ export default function NepaliHomePage() {
         </div>
       </section>
 
-      <footer className="border-t border-slate-200 bg-slate-950 px-4 py-8 text-center text-sm text-slate-300">
-        <p>© 2026 PDFora — उपयोगी अनलाइन टुलहरू</p>
-        <div className="mt-3 flex justify-center gap-4">
-          <Link href="/privacy" className="underline underline-offset-4">गोपनीयता नीति</Link>
-          <Link href="/terms" className="underline underline-offset-4">सेवाका सर्तहरू</Link>
-          <Link href="/" className="underline underline-offset-4">English</Link>
-        </div>
-      </footer>
+
     </main>
   );
 }

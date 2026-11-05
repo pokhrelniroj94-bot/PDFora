@@ -13,6 +13,14 @@ const guideSlugs = [...guideSource.matchAll(/"slug"\s*:\s*"([^"]+)"/g)].map((m) 
 const adviceBlock = adviceSource.match(/const toolAdvice[\s\S]*?=\s*\\{([\s\S]*?)\\n\s*\\};/);
 const adviceSlugs = adviceBlock ? [...adviceBlock[1].matchAll(/"([^"]+)"\s*:\s*\\{\s*example\s*:/g)].map((m) => m[1]) : [];
 const required = { tools: adviceSlugs, guides: guideSlugs, faqs: guideSlugs };
+const validEntry = (namespace, entry) => {
+  if (!entry || typeof entry !== "object") return false;
+  const nonempty = (value) => typeof value === "string" && value.trim().length > 0;
+  if (namespace === "tools") return ["example", "accuracy", "workflow", "mistakes"].every((k) => nonempty(entry[k]));
+  if (namespace === "guides") return nonempty(entry.purpose) && nonempty(entry.caution) && Array.isArray(entry.steps) && entry.steps.length >= 3 && entry.steps.every(nonempty);
+  if (namespace === "faqs") return Array.isArray(entry) && entry.length >= 3 && entry.every((item) => nonempty(item.q) && nonempty(item.a));
+  return false;
+};
 let blockers = 0;
 for (const locale of config.locales.filter((l) => l !== "en")) {
   const published = config.isPublished(locale);
@@ -24,13 +32,13 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
     const entries = data.entries ?? {};
     for (const slug of slugs) {
       const entry = entries[slug];
-      if (!entry || typeof entry !== "object" || !Object.values(entry).some((v) => typeof v === "string" && v.trim())) missing++;
+      if (!validEntry(namespace, entry)) missing++;
     }
   }
   const calculatorFile = path.join(root, locale, "calculators.json");
   const calculatorData = fs.existsSync(calculatorFile) ? JSON.parse(fs.readFileSync(calculatorFile, "utf8")) : {};
   const calculatorEntries = calculatorData.entries ?? {};
-  const calculatorCount = Object.keys(calculatorEntries).length;
+  const calculatorCount = Object.values(calculatorEntries).filter((entry) => entry && typeof entry === "object" && typeof entry.formula === "string" && entry.formula.trim() && Array.isArray(entry.inputs) && entry.inputs.length && Array.isArray(entry.outputs) && entry.outputs.length && typeof entry.assumptions === "string" && entry.assumptions.trim()).length;
   const label = `${locale}: ${missing} missing tool/guide/FAQ entries; ${calculatorCount} calculator definitions`;
   if (missing || calculatorCount === 0) {
     console.log(`  ${published ? "FAIL" : "WARN"} ${label}`);

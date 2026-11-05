@@ -13,7 +13,10 @@
     "taxRate": "Tipo impositivo (%)",
     "result": "Resultado del cálculo",
     "formula": "Fórmula",
-    "rounding": "El resultado mostrado puede estar redondeado"
+    "rounding": "El resultado mostrado puede estar redondeado",
+    "inputs": "Datos de entrada",
+    "outputs": "Resultados calculados",
+    "assumptions": "Supuestos de la fórmula"
   },
   "entries": {}
 }

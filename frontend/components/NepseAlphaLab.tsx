@@ -44,7 +44,6 @@ function runBacktest(rows:Bar[], mode:string, costPct:number):Result {
 
 export default function NepseAlphaLab(){
  const [symbol,setSymbol]=useState("NABIL"),[mode,setMode]=useState("sma"),[cost,setCost]=useState("0.45"),[rows,setRows]=useState<Bar[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(""),[source,setSource]=useState("");
- const [result,setResult]=useState<Result|null>(null);
  async function load(){
   setBusy(true);setError("");
   try{const res=await fetch("/api/nepse-market?symbol="+encodeURIComponent(symbol.trim().toUpperCase())+"&period=1Y",{cache:"no-store"});const data=await res.json();if(!res.ok)throw new Error(data.error||"Historical prices unavailable.");

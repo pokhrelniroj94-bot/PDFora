@@ -47,17 +47,25 @@ function normalizeNrbPayload(payload: unknown, requestedDate: string) {
   const data = asRecord(root.data);
   const records = data.payload;
   if (!Array.isArray(records)) throw new Error("NRB returned no published snapshots for this date range.");
-  const valid = (records as NrbRecord[]).filter((item) => item?.date && Array.isArray(item.rates));
+  const valid = (records as unknown[]).filter((value): value is NrbRecord & { date: string; rates: NonNullable<NrbRecord["rates"]> } => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+    const item = value as NrbRecord;
+    return typeof item.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(item.date) && Array.isArray(item.rates);
+  });
   const latest = [...valid].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
   if (!latest) throw new Error("No published NRB rate was found in the requested date range.");
+  const latestDate = latest.date;
   const rates = toRateList(latest.rates || []);
   if (!rates.length) throw new Error("NRB returned a snapshot but no valid currency rates.");
   return {
     source: "Nepal Rastra Bank",
     requestedDate,
-    rateDate: latest.date,
+    rateDate: latestDate,
     publishedOn: latest.published_on || null,
     rates,
+    isStale: latestDate < requestedDate,
+    notice: latestDate < requestedDate ? `NRB has not published a rate for ${requestedDate}; showing the latest available official rate dated ${latestDate}.` : undefined,
+    updatedAt: new Date().toISOString(),
   };
 }
 
@@ -72,6 +80,9 @@ function normalizeBackendPayload(payload: unknown, requestedDate: string) {
     rateDate: typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate,
     publishedOn: typeof root.publishedOn === "string" ? root.publishedOn : typeof root.published_on === "string" ? root.published_on : null,
     rates,
+    isStale: (typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate) < requestedDate,
+    notice: (typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate) < requestedDate ? `Showing the latest available NRB reference rate dated ${typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate}; requested date was ${requestedDate}.` : undefined,
+    updatedAt: new Date().toISOString(),
   };
 }
 
@@ -94,7 +105,7 @@ async function fetchDirectFromNrb(requestedDate: string) {
       Referer: "https://www.nrb.org.np/forex/",
     },
     cache: "no-store",
-    signal: AbortSignal.timeout(12_000),
+    signal: AbortSignal.timeout(10_000),
   });
   if (!response.ok) throw new Error(`NRB API returned HTTP ${response.status}`);
   return normalizeNrbPayload(await response.json(), requestedDate);
@@ -159,7 +170,9 @@ async function fetchFromOfficialPage(requestedDate: string) {
     publishedOn: rateDate,
     rates: unique,
     fallback: true,
-    stale: rateDate < requestedDate,
+    isStale: rateDate < requestedDate,
+    notice: rateDate < requestedDate ? `NRB has not published a new rate for ${requestedDate}; the latest official published rate is dated ${rateDate}.` : undefined,
+    updatedAt: new Date().toISOString(),
   };
 }
 
@@ -169,7 +182,7 @@ async function fetchFromBackend(requestedDate: string) {
   const response = await fetch(target, {
     headers: { Accept: "application/json" },
     cache: "no-store",
-    signal: AbortSignal.timeout(10_000),
+    signal: AbortSignal.timeout(18_000),
   });
   if (!response.ok) throw new Error(`Forex backend returned HTTP ${response.status}`);
   return normalizeBackendPayload(await response.json(), requestedDate);
@@ -186,32 +199,32 @@ export async function GET(request: Request) {
     if (!Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== dateParam) {
       return Response.json({ error: "Invalid calendar date." }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
-    const today = new Date();
-    const maxDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 1));
-    if (parsed.getTime() > maxDate.getTime()) {
-      return Response.json({ error: "Future exchange-rate dates are not supported." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    const todayInNepal = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+    }).format(new Date());
+    if (dateParam > todayInNepal) {
+      return Response.json({ error: "Future exchange-rate dates are not supported in Nepal time." }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
   }
   const requestedDate = incoming.searchParams.get("date") || new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());
-  // Prefer the official NRB feed. Only use the Render mirror if NRB is unreachable.
+  // Try the official API and (for today's request only) the official published
+  // page concurrently. This avoids serial 10s + 10s waits when one NRB path fails.
+  const todayInNepal = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
+  const officialAttempts: Promise<unknown>[] = [
+    fetchDirectFromNrb(requestedDate),
+  ];
+  if (requestedDate === todayInNepal) officialAttempts.push(fetchFromOfficialPage(requestedDate));
   try {
-    const payload = await fetchDirectFromNrb(requestedDate);
-    return Response.json(payload, {
-      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
-    });
-  } catch {
-    console.warn("[nepal-forex] Direct NRB request failed; trying Render mirror.");
-  }
-
-  try {
-    const payload = await fetchFromOfficialPage(requestedDate);
+    const payload = await Promise.any(officialAttempts);
     return Response.json(payload, {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900" },
     });
-  } catch (pageError) {
-    console.warn("[nepal-forex] Official NRB page fallback failed:", pageError instanceof Error ? pageError.message : "unknown error");
+  } catch {
+    console.warn("[nepal-forex] Official NRB API/page sources unavailable; trying the Render mirror.");
   }
 
   try {
@@ -219,8 +232,8 @@ export async function GET(request: Request) {
     return Response.json({ ...payload, fallback: true }, {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900" },
     });
-  } catch {
-    console.error("[nepal-forex] NRB API, official page and Render mirror all failed.");
+  } catch (backendError) {
+    console.error("[nepal-forex] NRB and Render forex sources failed:", backendError instanceof Error ? backendError.message : "unknown error");
     return Response.json(
       { error: "Official NRB rates could not be reached right now. Please refresh in a moment." },
       { status: 502, headers: { "Cache-Control": "no-store" } },

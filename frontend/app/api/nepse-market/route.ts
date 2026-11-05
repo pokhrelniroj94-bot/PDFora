@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const BASE = "https://shubhamnpk.github.io/yonepse";
+const BASE = "https://raw.githubusercontent.com/Shubhamnpk/yonepse/main";
 const INDEX_SYMBOLS = new Set(["NEPSE", "SENSIND", "FLOATIND", "SENSFLTIND", "BANKSUBIND", "DEVBANKIND", "FININD", "HOTELIND", "HYDPOWIND", "INVIDX", "LIFINSIND", "MANPROCIND", "MICRFININD", "MUTUALIND", "NONLIFIND", "OTHERSIND", "TRDIND"]);
 type Json = Record<string, unknown>;
 
@@ -71,7 +71,7 @@ async function fetchNepsemanSnapshot() {
       volume: Number(firstValue(row, ["volume", "totalTradeQuantity", "tradedShares"]) || 0),
       turnover: Number(firstValue(row, ["turnover", "totalTradeValue", "amount"]) || 0),
       trades: Number(firstValue(row, ["trades", "totalTrades", "totalTransactions"]) || 0),
-      last_updated: typeof updated === "string" ? updated : "",
+      last_updated: normalizeNepalTimestamp(updated),
     }];
   });
   const timestamp = stocks.reduce((latest, stock) => stock.last_updated > latest ? stock.last_updated : latest, "");
@@ -93,6 +93,15 @@ async function read<T>(path: string, revalidateSeconds = 900): Promise<T> {
   if (!response.ok) throw new Error("Market data source returned " + response.status + " for " + path);
   return response.json() as Promise<T>;
 }
+function normalizeNepalTimestamp(value: unknown): string {
+  if (typeof value !== "string" || !value.trim()) return "";
+  const timestamp = value.trim().replace(" ", "T");
+  if (/(?:Z|[+-]\d{2}:?\d{2})$/i.test(timestamp)) return timestamp;
+  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/.test(timestamp)
+    ? timestamp + "+05:45"
+    : value.trim();
+}
+
 function monthCount(period: string) {
   return period === "1M" ? 1 : period === "3M" ? 3 : 12;
 }
@@ -106,22 +115,30 @@ export async function GET(request: Request) {
   const [unofficialSnapshot, liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.all([
     fetchNepsemanSnapshot().catch(() => null),
     Promise.allSettled([read<unknown[]>("/data/market/live.json", 60)]).then((items) => items[0]),
-    Promise.allSettled([read<unknown[]>("/data/nepse_data.json")]).then((items) => items[0]),
-    Promise.allSettled([read<unknown[]>("/data/market/indices.json")]).then((items) => items[0]),
-    Promise.allSettled([read<Json>("/data/market/status.json")]).then((items) => items[0]),
-    Promise.allSettled([read<unknown[]>("/data/market/summary.json")]).then((items) => items[0]),
-    Promise.allSettled([read<Json>("/data/market/top_stocks.json")]).then((items) => items[0]),
-    Promise.allSettled([read<unknown[]>("/data/market/sector_indices.json")]).then((items) => items[0]),
-    Promise.allSettled([read<Json>("/data/market/supply_demand.json")]).then((items) => items[0]),
-    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json")]).then((items) => items[0]),
-    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json")]).then((items) => items[0]),
+    Promise.allSettled([read<unknown[]>("/data/nepse_data.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<unknown[]>("/data/market/indices.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<Json>("/data/market/status.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<unknown[]>("/data/market/summary.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<Json>("/data/market/top_stocks.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<unknown[]>("/data/market/sector_indices.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<Json>("/data/market/supply_demand.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json", 300)]).then((items) => items[0]),
+    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json", 300)]).then((items) => items[0]),
   ]);
   const liveStocks = liveStocksResult.status === "fulfilled" && Array.isArray(liveStocksResult.value) ? liveStocksResult.value : [];
   const fallbackStocks = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
   const usingUnofficialLive = Boolean(unofficialSnapshot);
   const usingLiveQuotes = usingUnofficialLive || liveStocks.length > 0;
   const stocks = usingUnofficialLive ? unofficialSnapshot!.stocks : usingLiveQuotes ? liveStocks : fallbackStocks;
-  const indices = indicesResult.status === "fulfilled" && Array.isArray(indicesResult.value) ? indicesResult.value : [];
+  const indices = indicesResult.status === "fulfilled" && Array.isArray(indicesResult.value)
+    ? indicesResult.value.map((item) => {
+        const row = asRecord(item);
+        return row ? { ...row, generatedTime: normalizeNepalTimestamp(row.generatedTime) } : item;
+      })
+    : [];
+  const marketStatus = statusResult.status === "fulfilled"
+    ? { ...statusResult.value, last_checked: normalizeNepalTimestamp(statusResult.value.last_checked) }
+    : {};
   if (!stocks.length && !indices.length) {
     return Response.json(
       { error: "NEPSE market snapshot is temporarily unavailable. Please retry or visit the official NEPSE market page." },
@@ -158,6 +175,33 @@ export async function GET(request: Request) {
       }
     }
   }
+  // The archived NEPSE index series can lag behind the current market snapshot.
+  // Append the latest dated index close so the chart does not stop at an older archive date.
+  if (isIndex) {
+    const indexNameBySymbol: Record<string, string> = {
+      NEPSE: "NEPSE Index", SENSIND: "Sensitive Index", FLOATIND: "Float Index",
+      SENSFLTIND: "Sensitive Float Index", BANKSUBIND: "Banking SubIndex", DEVBANKIND: "Development Bank Index",
+      FININD: "Finance Index", HOTELIND: "Hotels And Tourism Index", HYDPOWIND: "HydroPower Index",
+      INVIDX: "Investment Index", LIFINSIND: "Life Insurance Index", MANPROCIND: "Manufacturing And Processing",
+      MICRFININD: "Microfinance Index", MUTUALIND: "Mutual Fund Index", NONLIFIND: "Non Life Insurance Index",
+      OTHERSIND: "Others Index", TRDIND: "Trading Index",
+    };
+    const latestIndex = indices.map(asRecord).find((row) => row && row.index === indexNameBySymbol[symbol]);
+    const rawDate = latestIndex?.generatedTime;
+    const latestDate = typeof rawDate === "string" && rawDate
+      ? new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(rawDate))
+      : "";
+    const latestClose = Number(latestIndex?.close);
+    if (latestDate && Number.isFinite(latestClose) && latestClose > 0 && !points.some((point) => point.date === latestDate)) {
+      points.push({
+        date: latestDate,
+        close: latestClose,
+        open: Number(latestIndex?.open),
+        high: Number(latestIndex?.high),
+        low: Number(latestIndex?.low),
+      });
+    }
+  }
   points.sort((a, b) => a.date.localeCompare(b.date));
   const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)
     ? sectorsResult.value as Array<{ indexCode?: string; indexName?: string; description?: string }>
@@ -188,9 +232,12 @@ export async function GET(request: Request) {
     return { ...sector, currentValue: latest?.close ?? null, change, perChange, latestDate: latest?.date ?? null };
   });
   const pick = <T,>(result: PromiseSettledResult<T>, fallback: T): T => result.status === "fulfilled" ? result.value : fallback;
-  const sourceUpdatedAt = usingUnofficialLive
+  const sourceUpdatedAtRaw = usingUnofficialLive
     ? unofficialSnapshot!.timestamp
     : (stocks as Array<{ last_updated?: string }>).reduce((latest, stock) => stock.last_updated && stock.last_updated > latest ? stock.last_updated : latest, "");
+  // YONEPSE timestamps without an explicit offset are Nepal-local exchange times.
+  // Normalize them to +05:45 before age calculations and before displaying the timestamp.
+  const sourceUpdatedAt = normalizeNepalTimestamp(sourceUpdatedAtRaw) || sourceUpdatedAtRaw;
   const quoteTimestamp = Date.parse(sourceUpdatedAt);
   const quoteAgeHours = Number.isFinite(quoteTimestamp) ? (Date.now() - quoteTimestamp) / 3_600_000 : Number.POSITIVE_INFINITY;
   // Weekends/holidays can legitimately pause NEPSE updates; four days is a conservative stale-data warning.
@@ -206,7 +253,7 @@ export async function GET(request: Request) {
     providerRefreshCadence: usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Approximately hourly on weekdays during market hours (provider documentation)",
     quoteStale,
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
-    status: pick(statusResult, {}),
+    status: marketStatus,
     indices,
     summary: pick(summaryResult, []),
     topStocks: pick(topResult, {}),

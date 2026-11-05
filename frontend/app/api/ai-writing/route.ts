@@ -24,7 +24,7 @@ async function isRateLimited(request: Request): Promise<boolean> {
   if (redisEndpoint.protocol !== "https:" || !redisEndpoint.hostname) {
     throw new Error("SHARED_RATE_LIMIT_INVALID_URL");
   }
-  redisEndpoint.pathname = redisEndpoint.pathname.replace(/\\/+$/, "") || "/";
+  redisEndpoint.pathname = redisEndpoint.pathname.replace(/\/+$/, "") || "/";
 
   // Prefer Vercel's trusted client-IP header. On deployments where it is
   // absent, use the right-most address appended by the hosting proxy.
@@ -40,7 +40,7 @@ async function isRateLimited(request: Request): Promise<boolean> {
   const script = "local count = redis.call('INCR', KEYS[1]); if count == 1 then redis.call('EXPIRE', KEYS[1], tonumber(ARGV[2])); end; return count";
   let response: Response;
   try {
-    response = await fetch(redisUrl.replace(/\/$/, ""), {
+    response = await fetch(redisEndpoint.toString(), {
       method: "POST",
       headers: { Authorization: "Bearer " + redisToken, "Content-Type": "application/json" },
       body: JSON.stringify(["EVAL", script, "1", key, "8", "60"]),

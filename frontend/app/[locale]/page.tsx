@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import NepaliHomePage from "../../components/NepaliHomePage";
 import { notFound } from "next/navigation";
 import LanguageSwitcher from "../../components/i18n/LanguageSwitcher";
 import { isLocale, isPublished, isRoutable, localeInfo } from "../../lib/i18n/config";
@@ -12,18 +13,19 @@ type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale) || !isRoutable(locale)) return { title: "Page not found", robots: { index: false, follow: true } };
+  if (locale === "ne") return buildLocaleMetadata({ locale, path: "/", title: "निःशुल्क PDF टुल, नेपालका क्याल्कुलेटर र उपयोगी उपकरण", description: "PDF जोड्नुहोस्, छुट्याउनुहोस्, कम्प्रेस र रूपान्तरण गर्नुहोस्। नेपालका क्याल्कुलेटर, नेपाली मिति र दैनिक उपयोगी उपकरण प्रयोग गर्नुहोस्।" });
   const t = await getTranslator(locale);
   return buildLocaleMetadata({ locale, path: "/", title: t("seo.home.title"), description: t("seo.home.description") });
 }
 
 /**
- * Phase 2 locale home SHELL. It proves routing, dictionary loading, language switching and
- * RTL isolation. It is not the translated homepage (Phase 3) and is only reachable for
- * unpublished locales when PDFORA_I18N_PREVIEW=1 (noindex, no hreflang).
+ * Published Nepali uses its complete localized homepage. Other locales remain unpublished
+ * until their dictionaries and genuinely localized content have passed review.
  */
 export default async function LocalizedHomePage({ params }: Props) {
   const { locale } = await params;
   if (!isLocale(locale) || !isRoutable(locale)) notFound();
+  if (locale === "ne") return <NepaliHomePage />;
   const t = await getTranslator(locale);
   const info = localeInfo[locale];
   return (

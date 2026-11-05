@@ -1,51 +1,47 @@
-# PDFora i18n architecture (Phase 2)
+# PDFora i18n architecture
 
-Branch `i18n/global-multilingual`. Not merged, not deployed. See `STATUS.md` for verification state.
+Branch: codex/niroj-tools-development. Development-only implementation; not merged or deployed to production.
 
 ## URL scheme
-
-English keeps every existing URL. Other locales are prefixed.
+English retains every existing URL. A non-English locale is prefixed and is only published when its content is complete.
 
 | URL | Meaning |
 |---|---|
-| `/`, `/merge-pdf`, `/tools/loan-emi-calculator`, `/blog/x` | English, unchanged |
-| `/ar`, `/de`, `/ja` ... | Locale home shell (Phase 2). 404 unless the locale is published or preview is on |
-| `/ar/tools/x` | Reserved pattern. Not built yet, so it 404s (Phase 3/4) |
-| `/en`, `/en/anything` | 301 to the unprefixed English URL (never a duplicate) |
-| `/ne` | Existing hand-written Nepali page. Static route; untouched and still wins over `[locale]` |
+| /, /merge-pdf, /tools/loan-emi-calculator, /blog/x | English, unchanged |
+| /ne | Published Nepali homepage, rendered through app/[locale]/page.tsx and components/NepaliHomePage.tsx |
+| /hi, /es, /fr, /de, /ar, /zh, /ja, /ko | Unpublished locale routes; 404 in production unless preview is enabled; preview metadata is noindex |
+| /ne/tools/x, /ne/blog/x | Not localized or published; excluded from switcher and hreflang |
+| /en, /en/anything | Permanent redirect to unprefixed English URL |
 
-## Modules (`frontend/lib/i18n`)
+## Locale and document metadata
+- lib/i18n/config.ts owns locale codes, native names, direction, HTML language, hreflang and publication status.
+- Only English and Nepali are published. Nepali dictionaries cover all currently registered namespaces: common, accessibility and seo.
+- proxy.ts identifies the first URL segment and forwards x-pdfora-html-lang and x-pdfora-dir to the root layout.
+- app/layout.tsx reads those request headers and sets document-level html lang and dir.
+- app/[locale]/layout.tsx validates locale routes and scopes lang/dir on the locale content wrapper.
+- lib/i18n/routing.ts is the source of truth for localized URLs and reciprocal hreflang. The registry currently contains only the localized homepage path.
+- lib/i18n/metadata.ts creates self-referencing canonical URLs and only includes alternates for published, genuinely localized equivalents.
 
-- `config.ts`: the 10 locales, native names, `dir`, `htmlLang`, `hreflang`, Intl tag, **publish status**, preview flag.
-- `routing.ts`: `localizePath`, `stripLocale`, `absoluteUrl`, `hreflangMap`, and the registry of paths that have a real localized page.
-- `translate.ts`: `{placeholder}` interpolation, Intl plural categories, English fallback that is always reported through `onMissing`.
-- `messages.ts` + `messages/<locale>/<namespace>.json`: per-namespace dictionaries, loaded on demand (a page loads only what it renders). English namespaces now: `common`, `accessibility`, `seo`.
-- `format.ts`: number/currency/date through `Intl`. Latin digits by default so calculator output never changes numerals. BS dates stay with `lib/nepali-date-converter`.
-- `preference.ts`: `pdfora-locale` cookie and browser-language matching. Used only to *suggest*; nothing redirects. zh-TW/zh-HK/zh-Hant are never mapped to Simplified.
-- `switcher.ts`: language options for a page. Lists only locales that are servable **and** have a real equivalent, so a switch cannot land on a 404.
-- `metadata.ts`: self-referencing canonical; hreflang only for published + localized pages; unpublished locales are `noindex, nofollow`.
+## Publishing policy
+A locale is publishable only after all namespaces registered in messages.ts exist, have matching keys and placeholders, contain no empty strings, and have been reviewed. Unpublished locales are excluded from hreflang and sitemap output and have noindex metadata. Preview mode does not make incomplete content indexable.
 
-## Publishing policy (enforced in code)
+## Sitemap
+app/sitemap.ts uses Next.js generateSitemaps() to partition core, tools, editorial and published-locale sitemap files. Catalog-generated noindex guides and OCR are excluded. The root robots.txt continues to reference /sitemap.xml, the generated sitemap index.
 
-All non-English locales are `unpublished`. Unpublished means: no hreflang, no sitemap entry, `noindex`, and 404 in production. To review one locally set `PDFORA_I18N_PREVIEW=1` on the server. A locale becomes `published` only by editing its `status` in `config.ts` after `npm run i18n:check` reports it complete (key parity, placeholder parity, no empty strings) **and** a human has reviewed the translations.
+## Internal links and guide content
+- Blog articles link to their declared tool links, normalized to canonical tool URLs.
+- Tool pages identify matching guides by canonical and legacy tool paths.
+- Tool pages receive matching ToolGuide data where available, including purpose, actionable steps and cautions.
+- Generic SEO boilerplate was removed from catalog-guide fallback content; fallback copy uses the specific tool name and description. Existing per-tool advice remains preferred.
 
-## Arabic RTL isolation
+## Verification and limitations
+The latest source changes have not passed a full Preview build. Earlier Preview runs exposed and helped fix an outdated publishing-policy test and a missing constant in the extracted Nepali component. Vercel then rejected a new Preview deployment because its free daily deployment API allowance had been exceeded. Do not treat earlier failed Preview deployments as verification of the latest commit.
 
-`app/[locale]/layout.tsx` wraps content in `<div lang dir>`. Only `ar` has `dir="rtl"`. CSS helpers are scoped to `[dir="rtl"]`, and `:lang()` font stacks only match their own language.
+Still required after a Preview build is available:
+1. Run tool verification, i18n tests, i18n completeness, ESLint, TypeScript and Next.js build.
+2. Inspect rendered / and /ne HTML for reciprocal hreflang, canonical, lang and dir.
+3. Fetch each generated sitemap and verify only published/indexable URLs appear.
+4. Check internal links and representative tool guides in the browser.
+5. Run mobile/Lighthouse/Core Web Vitals tests; no performance score is claimed here.
 
-## Known limitations
-
-1. **Nothing here has been compiled, type-checked, linted or built.** npm is blocked in the authoring sandbox. Verified by execution: `verify:tools`, `i18n:test` (13 tests, Node type stripping, not `tsc`), `i18n:check`. Unverified: `app/[locale]/*`, `LanguageSwitcher.tsx`, `next.config.ts`, `globals.css`.
-2. Next 16 docs (`node_modules/next/dist/docs`, required by `AGENTS.md`) could not be read. Only long-stable App Router APIs are used (async `params`, `notFound`, `generateMetadata`); confirm with the first local build.
-3. `<html lang>` is still `en` for every route. The locale wrapper carries `lang`/`dir`. The root layout's footer, tool directory and cookie banner still render in English inside locale pages. Phase 3 decision: per-locale root layouts via route groups (moves ~60 route folders and needs import fixes, so it should follow a green local build) or another approach.
-4. Only the locale home shell exists. `/ar/merge-pdf` and similar 404.
-5. No non-English translations exist yet. In preview, missing text falls back to English with a banner and a server warning.
-6. The existing `/ne` page and the homepage's current `en`/`ne` hreflang are unchanged. `ne` migrates into this system in a later phase.
-7. The language suggestion banner (browser-language detection) is tested as logic but not mounted; there is nothing published to suggest yet.
-8. The preference cookie is client-set and holds only a locale code. It must be described in the Cookie/Privacy policy (Phase 6).
-9. Sitemap and robots are unchanged (no locale URLs are published).
-10. `zh`: `htmlLang` is `zh-Hans`, `hreflang` is `zh`.
-
-## verify:tools fix (commit d7da3a1)
-
-The script failed before any i18n work. Cause 1: the homepage UI moved to `components/HomePageClient.tsx` while the script read only the thin `app/page.tsx`; it now reads both. Cause 2: `app/api/nepse-market/route.ts` was rewritten (each `read<...>()` now passes a `60` cache argument; `source:` reports three feeds), so five file-mapping assertions now expect `, 60` and the source assertion requires all three labels. No assertion was removed. **Please review these assertion edits** since they describe your NEPSE feature.
+Only the homepage is localized in Nepali. Shared footer, directory and help UI may still contain English copy. Arabic is configured for RTL but remains unpublished and untested visually.

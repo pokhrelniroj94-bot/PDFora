@@ -1,0 +1,19 @@
+{
+  "ui": {
+    "amount": "Betrag",
+    "principal": "Darlehensbetrag",
+    "annualRate": "Jährlicher Zinssatz (%)",
+    "monthlyRate": "Monatlicher Zinssatz (%)",
+    "termMonths": "Laufzeit (Monate)",
+    "termYears": "Laufzeit (Jahre)",
+    "monthlyPayment": "Monatliche Rate (EMI)",
+    "totalPayment": "Gesamtrückzahlung",
+    "totalInterest": "Gesamtzinsen",
+    "baseAmount": "Nettobetrag",
+    "taxRate": "Steuersatz (%)",
+    "result": "Berechnungsergebnis",
+    "formula": "Formel",
+    "rounding": "Das angezeigte Ergebnis kann gerundet sein"
+  },
+  "entries": {}
+}

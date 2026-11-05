@@ -75,6 +75,7 @@ const searchTerms: Record<string, string> = {
 const howToUse: Record<string, string> = {
     "/merge-pdf": "Choose at least two PDFs, arrange their order, then merge and download one file.",
     "/split-pdf": "Upload a PDF, select the page range or split option, then download the separated pages.",
+    "/tools/loan-emi-calculator": "Enter the loan amount in NPR, annual interest rate and loan term in months. Review the estimated monthly EMI, total repayment and total interest. The estimate assumes monthly reducing-balance repayments and excludes lender-specific fees; compare it with your bank schedule.",
     "/compress-pdf": "Upload your PDF and run compression to create a smaller file for sharing.",
     "/images-to-pdf": "Select JPG, PNG or WebP images, arrange them, then create one PDF.",
     "/pdf-to-jpg": "Upload a PDF and download its pages as JPG images in a ZIP archive.",
@@ -717,7 +718,7 @@ function ToolCard({
       <div className="mt-auto pt-4">
         <p className="rounded-xl bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-600">
           <span className="font-extrabold text-blue-700">How to use:</span>{" "}
-          {howToUse[tool.href] || "Open this tool, upload the required file, follow the options and download the result."}
+          {howToUse[tool.href] || (tool.category === "Finance" ? "Enter the amount and assumptions requested, then review the estimate, calculation period and any excluded fees before relying on the result." : tool.category === "Math" ? "Enter the requested values and units, calculate the result, then compare it with a simple example you can verify." : tool.category === "Text" ? "Enter or paste the text, choose the available operation, then review formatting and special characters before copying the result." : tool.category === "PDF" ? "Select the source PDF, choose the required operation, then inspect the processed document before downloading or sharing it." : "Enter the information requested by the tool, follow its on-screen options and check the result before using it.")}
         </p>
         <div className="mt-4 flex items-center justify-between text-sm font-bold text-blue-700">
           <span>Open tool</span><span aria-hidden="true">→</span>

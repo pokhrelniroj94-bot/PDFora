@@ -113,6 +113,21 @@ test("preference: cookie parse/serialize is strict", () => {
   assert.match(c, /^pdfora-locale=de; Path=\/; Max-Age=31536000; SameSite=Lax; Secure$/);
 });
 
+test("preference: storeLocalePreference writes the cookie and never throws", () => {
+  const original = globalThis.document;
+  try {
+    globalThis.document = { cookie: "" };
+    preference.storeLocalePreference("ja");
+    assert.match(globalThis.document.cookie, /^pdfora-locale=ja; Path=\//);
+    Object.defineProperty(globalThis, "document", { value: { set cookie(_v) { throw new Error("blocked"); } }, configurable: true, writable: true });
+    assert.doesNotThrow(() => preference.storeLocalePreference("ja"));
+    delete globalThis.document;
+    assert.doesNotThrow(() => preference.storeLocalePreference("ja"), "no document (server) is a no-op");
+  } finally {
+    if (original === undefined) delete globalThis.document; else globalThis.document = original;
+  }
+});
+
 test("translate: interpolation, plurals, fallback reporting", () => {
   const messages = { a: { hello: "Hi {name}", files: { one: "{count} file", other: "{count} files" } } };
   const missing = [];

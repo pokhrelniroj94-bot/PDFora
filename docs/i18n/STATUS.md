@@ -25,9 +25,21 @@ Branch: `i18n/global-multilingual` (from `feat/pdf-ora-ai-help-market-signals` @
 | 9 Regression | NOT STARTED |
 
 ## Verification log (only things actually executed)
-| Check | Result | Where |
-|---|---|---|
-| `node scripts/verify-tool-catalog.mjs` | PASS (124 catalog, 173 directory tools) | authoring sandbox |
-| `node scripts/i18n.test.mjs` | PASS 13/13 (type stripping, not tsc) | authoring sandbox |
-| `node scripts/i18n-check.mjs` | PASS (English valid; 9 locales unpublished) | authoring sandbox |
-| `npm ci`, `tsc`, `lint`, `next build` | NOT RUN (npm blocked) | pending your local run |
+Local run by the project owner on Windows, commit 2131ace (output reviewed):
+| Check | Result |
+|---|---|
+| `npm ci` | PASS (366 packages; 8 moderate audit findings, pre-existing, for Phase 8) |
+| `npm run verify:tools` | PASS |
+| `npm run i18n:test` | PASS 13/13 |
+| `npm run i18n:check` | PASS (English valid; 9 locales unpublished) |
+| `npx tsc --noEmit` | PASS (no output) |
+| `npm run build` | PASS (Next 16.4.3 Turbopack; `/[locale]` dynamic, `/ne` static, existing routes intact) |
+| `npm run lint` | FAIL: 2 errors, 3 warnings. 2 in LanguageSwitcher.tsx were caused by this work (fixed afterwards, see below); 3 are pre-existing in NepalLiveTools.tsx (error), NepseAlphaLab.tsx and SiteAIHelp.tsx (warnings) |
+
+After the lint fix (authoring sandbox only; lint/tsc/build must be re-run locally):
+| Check | Result |
+|---|---|
+| `verify:tools`, `i18n:test` (14 tests), `i18n:check` | PASS |
+| `lint`, `tsc`, `build` of the fix | NOT RUN |
+
+Not yet tested by anyone: runtime behavior of /ar, /de etc. in preview mode, 404 without preview, /en redirect, switcher keyboard use.

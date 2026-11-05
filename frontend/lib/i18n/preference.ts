@@ -48,3 +48,17 @@ export function localeCookieString(locale: Locale, options: { secure?: boolean; 
   const maxAge = Math.round((options.days ?? 365) * 86400);
   return `${LOCALE_COOKIE}=${locale}; Path=/; Max-Age=${maxAge}; SameSite=Lax${options.secure ? "; Secure" : ""}`;
 }
+
+/**
+ * Browser-only: stores the preference cookie. Lives here (not in a component) so React
+ * lint's immutability rule does not treat the document.cookie write as a component mutation.
+ * Never throws; if cookies are blocked, switching still works through the URL.
+ */
+export function storeLocalePreference(locale: Locale): void {
+  if (typeof document === "undefined") return;
+  try {
+    document.cookie = localeCookieString(locale, { secure: typeof location !== "undefined" && location.protocol === "https:" });
+  } catch {
+    // Cookies unavailable.
+  }
+}

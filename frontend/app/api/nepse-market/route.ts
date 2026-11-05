@@ -232,9 +232,12 @@ export async function GET(request: Request) {
     return { ...sector, currentValue: latest?.close ?? null, change, perChange, latestDate: latest?.date ?? null };
   });
   const pick = <T,>(result: PromiseSettledResult<T>, fallback: T): T => result.status === "fulfilled" ? result.value : fallback;
-  const sourceUpdatedAt = usingUnofficialLive
+  const sourceUpdatedAtRaw = usingUnofficialLive
     ? unofficialSnapshot!.timestamp
     : (stocks as Array<{ last_updated?: string }>).reduce((latest, stock) => stock.last_updated && stock.last_updated > latest ? stock.last_updated : latest, "");
+  // YONEPSE timestamps without an explicit offset are Nepal-local exchange times.
+  // Normalize them to +05:45 before age calculations and before displaying the timestamp.
+  const sourceUpdatedAt = normalizeNepalTimestamp(sourceUpdatedAtRaw) || sourceUpdatedAtRaw;
   const quoteTimestamp = Date.parse(sourceUpdatedAt);
   const quoteAgeHours = Number.isFinite(quoteTimestamp) ? (Date.now() - quoteTimestamp) / 3_600_000 : Number.POSITIVE_INFINITY;
   // Weekends/holidays can legitimately pause NEPSE updates; four days is a conservative stale-data warning.

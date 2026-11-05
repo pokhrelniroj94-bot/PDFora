@@ -1,0 +1,19 @@
+{
+  "ui": {
+    "amount": "Amount",
+    "principal": "Principal",
+    "annualRate": "Annual interest rate (%)",
+    "monthlyRate": "Monthly interest rate (%)",
+    "termMonths": "Term (months)",
+    "termYears": "Term (years)",
+    "monthlyPayment": "Monthly payment (EMI)",
+    "totalPayment": "Total repayment",
+    "totalInterest": "Total interest",
+    "baseAmount": "Base amount",
+    "taxRate": "Tax rate (%)",
+    "result": "Calculation result",
+    "formula": "Formula",
+    "rounding": "Displayed results may be rounded"
+  },
+  "entries": {}
+}

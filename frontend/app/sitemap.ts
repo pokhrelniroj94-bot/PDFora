@@ -3,7 +3,7 @@ import { blogPosts, isCatalogGeneratedGuide } from "../lib/blog-posts";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
 import { defaultLocale, locales, isPublished, localeInfo, SITE_URL } from "../lib/i18n/config";
-import { absoluteUrl, hreflangMap } from "../lib/i18n/routing";
+import { absoluteUrl, hasLocalizedPage, hreflangMap } from "../lib/i18n/routing";
 
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
 
@@ -47,7 +47,7 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
     ];
   }
   if (sitemapId === "locales") {
-    return locales.filter((locale) => locale !== defaultLocale && isPublished(locale)).map((locale) => ({
+    return locales.filter((locale) => locale !== defaultLocale && isPublished(locale) && hasLocalizedPage("/", locale)).map((locale) => ({
       url: absoluteUrl("/", locale),
       changeFrequency: "weekly" as const,
       priority: 0.8,

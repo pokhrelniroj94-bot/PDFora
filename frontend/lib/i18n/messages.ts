@@ -17,8 +17,8 @@ export type Namespace = (typeof namespaces)[number];
 
 type Loader = () => Promise<{ default: unknown }>;
 
-// Import paths must be static strings so the bundler can split them. No other locale has
-// translated files yet; add entries below only together with the reviewed JSON files.
+// Import paths must be static strings so the bundler can split them. Add a locale only
+// together with complete, reviewed namespace files and a published status in config.ts.
 const loaders: Partial<Record<Locale, Partial<Record<Namespace, Loader>>>> = {
   en: {
     common: () => import("./messages/en/common.json"),

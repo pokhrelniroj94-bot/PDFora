@@ -7,7 +7,10 @@
     "supportedFormats": "Formats pris en charge",
     "privacy": "Confidentialité des fichiers et des données",
     "download": "Télécharger le résultat",
-    "trySample": "Commencez par tester un petit exemple"
+    "trySample": "Commencez par tester un petit exemple",
+    "workflow": "Méthode recommandée",
+    "accuracy": "Précision et limites",
+    "mistakes": "Erreurs fréquentes"
   },
   "entries": {}
 }

@@ -84,7 +84,7 @@ export default function AIWritingTools({ slug, locale = "en" }: Props) {
       setError("Your browser could not temporarily transfer this draft. Copy the text and paste it into Resume Builder instead.");
       return;
     }
-    router.push("/resume-builder");
+    router.push(locale === "en" ? "/resume-builder" : `/${locale}/tools/resume-builder`);
   }
 
   function downloadResult() {

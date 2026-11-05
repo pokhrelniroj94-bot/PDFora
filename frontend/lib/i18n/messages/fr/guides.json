@@ -1,0 +1,12 @@
+{
+  "ui": {
+    "overview": "Quand utiliser cet outil",
+    "steps": "Mode d’emploi étape par étape",
+    "example": "Exemple et cas d’utilisation",
+    "limitations": "Limites et précision",
+    "commonMistakes": "Erreurs fréquentes",
+    "safety": "Utilisation en toute sécurité",
+    "related": "Outils associés et ressources"
+  },
+  "entries": {}
+}

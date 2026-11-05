@@ -1,0 +1,19 @@
+{
+  "ui": {
+    "amount": "Montant",
+    "principal": "Capital emprunté",
+    "annualRate": "Taux d’intérêt annuel (%)",
+    "monthlyRate": "Taux d’intérêt mensuel (%)",
+    "termMonths": "Durée (mois)",
+    "termYears": "Durée (années)",
+    "monthlyPayment": "Mensualité (EMI)",
+    "totalPayment": "Montant total remboursé",
+    "totalInterest": "Intérêts totaux",
+    "baseAmount": "Montant hors taxe",
+    "taxRate": "Taux de taxe (%)",
+    "result": "Résultat du calcul",
+    "formula": "Formule",
+    "rounding": "Le résultat affiché peut être arrondi"
+  },
+  "entries": {}
+}

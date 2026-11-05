@@ -1,6 +1,7 @@
 "use client";
 
 import type { MouseEvent } from "react";
+import { useRouter } from "next/navigation";
 import type { Locale } from "../../lib/i18n/config";
 import { storeLocalePreference } from "../../lib/i18n/client-preference";
 import type { SwitcherOption } from "../../lib/i18n/switcher";
@@ -22,6 +23,7 @@ interface LanguageSwitcherProps {
  * hash, and never redirects automatically.
  */
 export default function LanguageSwitcher({ current, options, label, currentLabel }: LanguageSwitcherProps) {
+  const router = useRouter();
   const active = options.find((o) => o.locale === current);
 
   function choose(event: MouseEvent<HTMLAnchorElement>, option: SwitcherOption) {
@@ -29,7 +31,7 @@ export default function LanguageSwitcher({ current, options, label, currentLabel
     const modified = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
     if (modified) return; // let the browser open it in a new tab as usual
     event.preventDefault();
-    window.location.assign(`${option.href}${window.location.search}${window.location.hash}`);
+    router.push(`${option.href}${window.location.search}${window.location.hash}`);
   }
 
   return (

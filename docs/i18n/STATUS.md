@@ -50,3 +50,13 @@ Pre-existing findings fixed with minimal edits, no behavior change:
 - NepseAlphaLab.tsx: removed `result`/`setResult` state that was only ever set to null and never read (displayed results come from the `metrics` useMemo).
 - SiteAIHelp.tsx: effect deps `[pathname]` -> `[pathname, pagePath]`; pagePath is derived from pathname, so run timing is unchanged.
 Authoring sandbox re-ran verify:tools, i18n:test (14/14), i18n:check: PASS. lint/tsc/build: NOT RUN here; pending owner's local run.
+
+## Local verification at 4591021 (owner's Windows run, output reviewed)
+| Check | Result |
+|---|---|
+| `npm run lint` | PASS: no output (0 errors, 0 warnings) |
+| `npx tsc --noEmit` | PASS: no output |
+| `npm run build` | PASS: Next 16.4.3 Turbopack, 384 static pages; route list identical to the pre-fix build (`/[locale]` dynamic, `/ne` static, all existing routes, 6 API routes, 193 blog and 124 tool SSG paths) |
+Earlier on the same commit family: verify:tools, i18n:test (14/14), i18n:check passed locally.
+Still NOT verified: runtime behavior in a browser (preview-mode /ar and /de, 404 without preview, /en redirect, switcher keyboard use).
+Phase 2 status: PARTIALLY COMPLETE until the browser checks are reported.

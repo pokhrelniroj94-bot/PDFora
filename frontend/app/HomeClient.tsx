@@ -124,7 +124,42 @@ const howToUse: Record<string, string> = {
     "/remove-pdf-links": "Upload a PDF and strip clickable link annotations from its pages.",
     "/remove-pdf-metadata": "Upload a PDF and clear document metadata such as title and author.",
     "/split-by-bookmarks": "Upload a bookmarked PDF and split it into sections using bookmark destinations.",
+    "/tools/loan-emi-calculator": "Enter the loan amount, annual interest rate and repayment period to calculate the monthly EMI, total interest and total repayment.",
+    "/tools/notes-to-pdf": "Type or paste your notes, adjust the page layout and use your browser's print dialog to save them as a PDF.",
+    "/tools/nepal-share-calculator": "Enter the share quantity, buy and sell prices, and review the editable broker, SEBON, DP and tax assumptions before estimating profit or loss.",
+    "/tools/nepse-dividend-calculator": "Enter your shareholding and the announced cash or bonus dividend rates to estimate the dividend and bonus entitlement.",
+    "/tools/resume-builder": "Choose a CV template, fill in your personal details, education, skills and experience, preview the A4 layout, then export your CV as a PDF.",
+    "/tools/ai-resume-writer": "Enter your real education, skills and experience, review the privacy notice, then generate and verify your resume content.",
+    "/tools/ai-cover-letter-generator": "Add your real skills and experience, paste the target job description, review the privacy notice and generate a tailored draft.",
+    "/tools/ai-humanizer": "Paste the text you wrote, choose a writing style and review the rewritten version for accuracy.",
+    "/tools/market-ai": "Choose NEPSE historical analysis or upload a Forex/Crypto OHLCV CSV, then review the indicators, data date and risk notes.",
+    "/tools/ats-resume-checker": "Paste your resume and the target job description to review relevant keywords, sections and measurable details locally in your browser.",
+    "/tools/invoice-quotation-generator": "Add your business and customer details, enter line items and quantities, review totals and optional tax, then print or save as PDF.",
+    "/tools/image-resizer-compressor": "Choose an image, set the target dimensions and output format, preview the result and download the resized image.",
+    "/tools/business-break-even-calculator": "Enter fixed costs, variable cost per unit and selling price to estimate the break-even quantity and revenue.",
   };
+
+  function utilityHowTo(tool: Tool) {
+    if (tool.category === "Finance" || tool.category === "Math" || tool.category === "Business") {
+      return "Enter the values requested by the calculator, check the units and assumptions, then review the calculated result before using it.";
+    }
+    if (tool.category === "Nepal") {
+      return "Enter or select the relevant Nepal-specific details, review the displayed assumptions and source date, then check the result before relying on it.";
+    }
+    if (tool.category === "Text" || tool.category === "SEO" || tool.category === "Developer" || tool.category === "Security") {
+      return "Paste or enter the text or value to process, choose the available options, review the output and copy or download it.";
+    }
+    if (tool.category === "Image") {
+      return "Select an image or enter its dimensions or color values, adjust the available options, preview the result and export it.";
+    }
+    if (tool.category === "Career Tools") {
+      return "Enter your real education, skills and experience, review the available options, then check every generated or evaluated detail before using it.";
+    }
+    if (tool.category === "PDF") {
+      return "Open the PDF tool, follow its on-screen instructions, review the selected pages or settings and download the result.";
+    }
+    return "Open the tool, enter the information it requests, review the result and use the available copy, print or download option.";
+  }
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -434,19 +469,19 @@ export default function Home() {
           <StepCard
             number="01"
             title="Choose a tool"
-            description="Select the PDF operation you need from the PDFora toolbox."
+            description="Choose a PDF operation, calculator, text utility or Nepal-focused tool from the toolbox."
           />
 
           <StepCard
             number="02"
             title="Upload your file"
-            description="Select the document or files required for the chosen operation."
+            description="Enter the requested values or select the files needed by that tool. Many calculators and text utilities do not require file uploads."
           />
 
           <StepCard
             number="03"
             title="Process and download"
-            description="Run the requested operation and download the resulting document."
+            description="Review the result, then copy, print or download it when that option is available."
           />
         </div>
       </section>
@@ -468,7 +503,7 @@ export default function Home() {
             { href: "/tools/nepal-public-holidays-2083", title: "Nepal Public Holidays 2083", desc: "Search national, regional and community holidays." },
           ].map((item) => <Link key={item.href} href={item.href} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-blue-400 hover:shadow-sm"><h3 className="font-bold text-slate-900">{item.title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{item.desc}</p><span className="mt-4 inline-block text-sm font-semibold text-blue-700">Open tool →</span></Link>)}
         </div>
-        <Link href="/tools" className="mt-6 inline-flex rounded-xl bg-blue-700 px-5 py-3 text-sm font-bold text-white">Explore all 100+ tools</Link>
+        <Link href="/tools" className="mt-6 inline-flex rounded-xl bg-blue-700 px-5 py-3 text-sm font-bold text-white">Explore all {allTools.length} tools</Link>
       </section>
 
       {/* FAQ */}
@@ -726,7 +761,7 @@ function ToolCard({
       <div className="mt-auto pt-4">
         <p className="rounded-xl bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-600">
           <span className="font-extrabold text-blue-700">How to use:</span>{" "}
-          {howToUse[tool.href] || "Open this tool, upload the required file, follow the options and download the result."}
+          {howToUse[tool.href] || utilityHowTo(tool)}
         </p>
         <div className="mt-4 flex items-center justify-between text-sm font-bold text-blue-700">
           <span>Open tool</span><span aria-hidden="true">→</span>

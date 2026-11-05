@@ -7,7 +7,10 @@
     "supportedFormats": "Supported file formats",
     "privacy": "File and data privacy",
     "download": "Download result",
-    "trySample": "Test with a small sample first"
+    "trySample": "Test with a small sample first",
+    "workflow": "Recommended workflow",
+    "accuracy": "Accuracy and limitations",
+    "mistakes": "Common mistakes"
   },
   "entries": {}
 }

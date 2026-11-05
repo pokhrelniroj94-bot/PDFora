@@ -63,8 +63,8 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
     }
     for (const key of Object.keys(tr)) if (!(key in en[ns])) problems.push(`${ns}.${key}: not in English source`);
   }
-  const label = `${locale} (${published ? "PUBLISHED" : "unpublished"}, ${files.length}/${enFiles.length} namespaces)`;
-  if (!problems.length && files.length === enFiles.length) console.log(`${label}\n  ok   complete`);
+  const label = `${locale} (${published ? "PUBLISHED" : "unpublished"}, ${requiredNamespaces.length} required namespaces checked)`;
+  if (!problems.length) console.log(`${label}\n  ok   complete for its publication scope`);
   else if (published) { console.log(label); problems.forEach((p) => fail(p)); }
   else console.log(`${label}\n  work in progress: ${problems.length} issue(s)${files.length ? "" : " (no files yet)"}`);
 }

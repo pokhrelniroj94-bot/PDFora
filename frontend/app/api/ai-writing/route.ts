@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
 const MODEL = "@cf/meta/llama-3.2-3b-instruct";
-const MAX_BODY_BYTES = 16 * 1024;
+const MAX_BODY_BYTES = 64 * 1024;
 const MAX_INPUT = 7000;
 const NO_STORE = { "Cache-Control": "no-store, max-age=0" } as const;
 

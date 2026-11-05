@@ -243,6 +243,26 @@ def test_remove_blank_pages_removes_only_the_empty_page():
     assert len(result.pages) == 3
 
 
+def test_extract_fonts_returns_nonempty_archive_for_embedded_fonts():
+    response = post_pdf("/api/extract-fonts", make_sample_pdf())
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = archive.namelist()
+        assert names
+        assert all(archive.read(name) for name in names)
+
+
+def test_extract_fonts_rejects_non_embedded_standard_fonts():
+    doc = fitz.open()
+    page = doc.new_page()
+    page.insert_text((50, 70), "Standard Helvetica is not embedded")
+    pdf = doc.tobytes()
+    doc.close()
+    response = post_pdf("/api/extract-fonts", pdf)
+    assert response.status_code == 422
+    assert "No extractable embedded fonts" in response.json()["detail"]
+
+
 def test_protect_pdf_encrypts_and_preserves_pages():
     response = post_pdf("/api/protect", make_sample_pdf(), data={"password": "PDFora-Test-Password"})
     assert response.status_code == 200

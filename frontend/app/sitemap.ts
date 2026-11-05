@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { blogPosts, isCatalogGeneratedGuide } from "../lib/blog-posts";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
-import { defaultLocale, locales, isPublished, localeInfo, SITE_URL } from "../lib/i18n/config";
+import { defaultLocale, locales, isPublished, localeInfo, SITE_URL, toolContentPublishedLocales } from "../lib/i18n/config";
 import { absoluteUrl, hasLocalizedPage, hreflangMap } from "../lib/i18n/routing";
 
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
@@ -33,7 +33,15 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
     const catalog: MetadataRoute.Sitemap = toolCatalog
       .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf" && !legacyToolSlugSet.has(tool.slug))
       .map((tool) => ({ url: `${SITE_URL}/tools/${tool.slug}`, changeFrequency: "monthly" as const, priority: 0.7 }));
-    return [...legacy, ...catalog];
+    const localized: MetadataRoute.Sitemap = toolContentPublishedLocales.flatMap((locale) => toolCatalog
+      .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf")
+      .map((tool) => ({
+        url: `${SITE_URL}/${locale}/tools/${tool.slug}`,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+        alternates: { languages: Object.fromEntries([["en", `${SITE_URL}/tools/${tool.slug}`], ...toolContentPublishedLocales.map((activeLocale) => [activeLocale, `${SITE_URL}/${activeLocale}/tools/${tool.slug}`]), ["x-default", `${SITE_URL}/tools/${tool.slug}`]]) }
+      })));
+    return [...legacy, ...catalog, ...localized];
   }
   if (sitemapId === "editorial") {
     return [

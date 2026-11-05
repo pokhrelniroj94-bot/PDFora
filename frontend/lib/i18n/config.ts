@@ -34,8 +34,8 @@ export interface LocaleInfo {
 
 export const localeInfo: Record<Locale, LocaleInfo> = {
   en: { code: "en", englishName: "English", nativeName: "English", dir: "ltr", htmlLang: "en", hreflang: "en", intl: "en-US", status: "published" },
-  // Nepali homepage content is integrated into the locale route and has complete reviewed
-  // common, accessibility and SEO dictionaries; it is published alongside English.
+  // The existing Nepali homepage is integrated into the locale route. Its common,
+  // accessibility and SEO namespace files are complete; Nepali retains its existing published status.
   ne: { code: "ne", englishName: "Nepali", nativeName: "नेपाली", dir: "ltr", htmlLang: "ne", hreflang: "ne", intl: "ne-NP", status: "published" },
   hi: { code: "hi", englishName: "Hindi", nativeName: "हिन्दी", dir: "ltr", htmlLang: "hi", hreflang: "hi", intl: "hi-IN", status: "unpublished" },
   es: { code: "es", englishName: "Spanish", nativeName: "Español", dir: "ltr", htmlLang: "es", hreflang: "es", intl: "es-ES", status: "unpublished" },

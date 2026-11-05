@@ -17,13 +17,13 @@ const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_XML_BYTES = 1_500_000;
 
 function clean(value: string) {
-  return value.replace(/<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>/g, "$1")
+  return value.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-    .replace(/&#(\\d+);/g, (_, code: string) => {
+    .replace(/&#(\d+);/g, (_, code: string) => {
       const number = Number(code);
       return number > 0 && number <= 0x10ffff ? String.fromCodePoint(number) : " ";
-    }).replace(/\\s+/g, " ").trim();
+    }).replace(/\s+/g, " ").trim();
 }
 
 async function readFeed(query: string): Promise<Story[]> {
@@ -38,14 +38,14 @@ async function readFeed(query: string): Promise<Story[]> {
   const xml = await response.text();
   if (xml.length > MAX_XML_BYTES) throw new Error("GLOBAL_NEWS_FEED_TOO_LARGE");
   const cutoff = Date.now() - MAX_AGE_MS;
-  const stories = [...xml.matchAll(/<item\\b[^>]*>([\\s\\S]*?)<\\/item>/gi)].map((match): Story | null => {
+  const stories = [...xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/gi)].map((match): Story | null => {
     const item = match[1];
-    const value = (tag: string) => clean(item.match(new RegExp("<" + tag + "(?:\\\\s[^>]*)?>([\\s\\S]*?)<\\/" + tag + ">", "i"))?.[1] ?? "");
+    const value = (tag: string) => clean(item.match(new RegExp("<" + tag + "(?:\s[^>]*)?>([\s\S]*?)<\/" + tag + ">", "i"))?.[1] ?? "");
     const title = value("title");
     const link = value("link");
     const published = new Date(value("pubDate"));
     const source = value("source") || "Google News";
-    if (!title || !/^https:\\/\\//i.test(link) || Number.isNaN(published.getTime()) || published.getTime() > Date.now() + 5 * 60_000 || published.getTime() < cutoff) return null;
+    if (!title || !/^https:\/\//i.test(link) || Number.isNaN(published.getTime()) || published.getTime() > Date.now() + 5 * 60_000 || published.getTime() < cutoff) return null;
     return { title, link, publishedAt: published.toISOString(), source };
   }).filter((story): story is Story => story !== null);
   const unique = new Map<string, Story>();

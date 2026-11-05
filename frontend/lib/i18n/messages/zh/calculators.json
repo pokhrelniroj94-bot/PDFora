@@ -13,7 +13,10 @@
     "taxRate": "税率（%）",
     "result": "计算结果",
     "formula": "计算公式",
-    "rounding": "显示结果可能经过四舍五入"
+    "rounding": "显示结果可能经过四舍五入",
+    "inputs": "所需输入",
+    "outputs": "计算结果",
+    "assumptions": "公式假设"
   },
   "entries": {}
 }

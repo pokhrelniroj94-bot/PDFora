@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - niroj-tools-development
+      - i18n/global-multilingual
     paths:
       - "backend/**"
       - ".github/workflows/backend-validation.yml"

@@ -243,7 +243,7 @@ export async function GET(request: Request) {
   // Reject future-dated provider timestamps as well as old snapshots.
   // Weekends/holidays can legitimately pause NEPSE updates, so retain a four-day calendar grace period.
   const quoteStale = !usingLiveQuotes || !Number.isFinite(quoteTimestamp) || quoteAgeHours < -(2 / 60) || quoteAgeHours > 96;
-  const indexUpdatedAt = indices.reduce((latest, item) => {
+  const indexUpdatedAt = indices.reduce<string>((latest, item) => {
     const row = asRecord(item);
     const value = typeof row?.generatedTime === "string" ? row.generatedTime : "";
     return value && value > latest ? value : latest;

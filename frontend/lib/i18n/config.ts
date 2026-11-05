@@ -71,3 +71,10 @@ export function isRoutable(locale: Locale): boolean {
 export function getRoutableLocales(): Locale[] {
   return locales.filter(isRoutable);
 }
+
+/** Localized tool routes have a stricter release gate than the locale homepage. */
+export const toolContentPublishedLocales: readonly Locale[] = [];
+
+export function isToolContentPublished(locale: Locale): boolean {
+  return toolContentPublishedLocales.includes(locale);
+}

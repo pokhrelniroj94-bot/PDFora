@@ -232,7 +232,7 @@ export async function POST(request: Request) {
   const sharedLimiterConfigured = Boolean(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
   if (!explicitlyEnabled || !sharedRateLimitReady || !sharedLimiterConfigured || !providerReady) {
     return Response.json({
-      error: "PDFora AI is not enabled or its provider/rate limiter is not configured. Add the selected provider's server-side credentials and verify shared rate limiting. No AI provider was contacted.",
+      error: "PDFora AI is temporarily unavailable while its free provider and abuse protection are being configured. You can still use the non-AI tools. No question was sent to an AI provider.",
       code: "AI_NOT_CONFIGURED",
     }, { status: 503, headers: NO_STORE });
   }

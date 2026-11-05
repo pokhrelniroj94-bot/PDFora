@@ -3,11 +3,17 @@ import { legacyToolSlugs } from "./lib/legacy-tool-slugs";
 
 const nextConfig: NextConfig = {
   async redirects() {
-    return legacyToolSlugs.map((slug) => ({
-      source: `/tools/${slug}`,
-      destination: `/${slug}`,
-      permanent: true,
-    }));
+    return [
+      ...legacyToolSlugs.map((slug) => ({
+        source: `/tools/${slug}`,
+        destination: `/${slug}`,
+        permanent: true,
+      })),
+      // English is served from the unprefixed URLs and never under /en. Redirect any
+      // /en URL so a typed or shared link cannot create a duplicate of an English page.
+      { source: "/en", destination: "/", permanent: true },
+      { source: "/en/:path*", destination: "/:path*", permanent: true },
+    ];
   },
   async headers() {
     return [

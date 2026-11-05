@@ -13,7 +13,10 @@
     "taxRate": "세율 (%)",
     "result": "계산 결과",
     "formula": "계산식",
-    "rounding": "표시된 결과는 반올림될 수 있습니다"
+    "rounding": "표시된 결과는 반올림될 수 있습니다",
+    "inputs": "필수 입력값",
+    "outputs": "계산 결과",
+    "assumptions": "계산식의 가정"
   },
   "entries": {}
 }

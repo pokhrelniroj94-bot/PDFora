@@ -26,13 +26,28 @@ async function isRateLimited(request: Request): Promise<boolean> {
   const hash = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
   const key = "pdfora:ai:minute:" + hash;
   const script = "local count = redis.call('INCR', KEYS[1]); if count == 1 then redis.call('EXPIRE', KEYS[1], tonumber(ARGV[2])); end; return count";
-  const response = await fetch(redisUrl.replace(/\/$/, ""), {
-    method: "POST",
-    headers: { Authorization: "Bearer " + redisToken, "Content-Type": "application/json" },
-    body: JSON.stringify(["EVAL", script, "1", key, "8", "60"]),
-    cache: "no-store",
-    signal: AbortSignal.timeout(4000),
-  });
+  let response: Response;
+  try {
+    response = await fetch(redisUrl.replace(/\/$/, ""), {
+      method: "POST",
+      headers: { Authorization: "Bearer " + redisToken, "Content-Type": "application/json" },
+      body: JSON.stringify(["EVAL", script, "1", key, "8", "60"]),
+      cache: "no-store",
+      signal: AbortSignal.timeout(4000),
+    });
+  } catch (error) {
+    const cause = error instanceof Error && "cause" in error
+      ? (error as Error & { cause?: { code?: unknown } }).cause
+      : undefined;
+    const causeCode = typeof cause?.code === "string" && /^[A-Z0-9_]{1,40}$/.test(cause.code)
+      ? cause.code
+      : "NO_SYSTEM_CODE";
+    const errorName = error instanceof Error && /^[A-Za-z]{1,40}$/.test(error.name)
+      ? error.name
+      : "UnknownError";
+    console.error("[PDFora AI] Upstash transport failed:", errorName, causeCode);
+    throw new Error("SHARED_RATE_LIMIT_NETWORK_OR_TLS_ERROR");
+  }
   if (!response.ok) throw new Error("SHARED_RATE_LIMIT_UNAVAILABLE");
   const payload = await response.json() as { result?: number | string; error?: string };
   if (payload.error || !Number.isFinite(Number(payload.result))) throw new Error("SHARED_RATE_LIMIT_INVALID_RESPONSE");

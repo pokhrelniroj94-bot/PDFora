@@ -13,7 +13,10 @@
     "taxRate": "税率（%）",
     "result": "計算結果",
     "formula": "計算式",
-    "rounding": "表示結果は丸められている場合があります"
+    "rounding": "表示結果は丸められている場合があります",
+    "inputs": "入力項目",
+    "outputs": "計算結果",
+    "assumptions": "計算式の前提"
   },
   "entries": {}
 }

@@ -47,7 +47,7 @@ export default function SiteAIHelp() {
     }
     void loadPageContext();
     return () => controller.abort();
-  }, [pathname]);
+  }, [pathname, pagePath]); // pagePath is derived from pathname, so the effect still runs only when the route changes
 
 
   async function send(text: string) {

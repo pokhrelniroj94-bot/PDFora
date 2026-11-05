@@ -172,7 +172,7 @@ function ForexTool() {
 
     {data && <section className="rounded-2xl border border-teal-200 bg-teal-50/50 p-4 shadow-sm sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><p className="text-xs font-black uppercase tracking-wide text-teal-800">PDFora NRB AI</p><h3 className="mt-1 font-bold text-slate-950">Understand today's published rates</h3><p className="mt-1 text-xs text-slate-600">Explains the actual NRB rate table and unit values; it does not predict FX prices.</p></div>
+        <div><p className="text-xs font-black uppercase tracking-wide text-teal-800">PDFora NRB AI</p><h3 className="mt-1 font-bold text-slate-950">Understand today&apos;s published rates</h3><p className="mt-1 text-xs text-slate-600">Explains the actual NRB rate table and unit values; it does not predict FX prices.</p></div>
         <button type="button" onClick={() => void explainRates()} disabled={aiBusy || !data.rates.length} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Explaining…" : "Explain rates with AI"}</button>
       </div>
       {aiError && <p role="alert" className="mt-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-800">{aiError}</p>}

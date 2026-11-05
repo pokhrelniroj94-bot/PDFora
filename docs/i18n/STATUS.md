@@ -43,3 +43,10 @@ After the lint fix (authoring sandbox only; lint/tsc/build must be re-run locall
 | `lint`, `tsc`, `build` of the fix | NOT RUN |
 
 Not yet tested by anyone: runtime behavior of /ar, /de etc. in preview mode, 404 without preview, /en redirect, switcher keyboard use.
+
+## Phase 2 lint cleanup (commit follows 43b98f3)
+Pre-existing findings fixed with minimal edits, no behavior change:
+- NepalLiveTools.tsx:175 `today's` -> `today&apos;s` (renders identically).
+- NepseAlphaLab.tsx: removed `result`/`setResult` state that was only ever set to null and never read (displayed results come from the `metrics` useMemo).
+- SiteAIHelp.tsx: effect deps `[pathname]` -> `[pathname, pagePath]`; pagePath is derived from pathname, so run timing is unchanged.
+Authoring sandbox re-ran verify:tools, i18n:test (14/14), i18n:check: PASS. lint/tsc/build: NOT RUN here; pending owner's local run.

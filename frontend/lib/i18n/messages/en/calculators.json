@@ -114,7 +114,21 @@
         "Percentage change"
       ],
       "assumptions": "Uses the entered values and does not include shipping, taxes or seller-specific rounding.",
-      "sourceComponent": "AllTools"
+      "sourceComponent": "AllTools",
+      "fieldSchema": [
+        {
+          "key": "price",
+          "label": "Original price",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "rate",
+          "label": "Discount (%)",
+          "type": "number",
+          "defaultValue": "10"
+        }
+      ]
     },
     "percentage-change-calculator": {
       "title": "Percentage Change Calculator",

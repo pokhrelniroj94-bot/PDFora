@@ -1,0 +1,12 @@
+{
+  "ui": {
+    "overview": "何时使用此工具",
+    "steps": "分步操作说明",
+    "example": "示例与使用场景",
+    "limitations": "限制与准确性",
+    "commonMistakes": "常见错误",
+    "safety": "安全使用",
+    "related": "相关工具与延伸阅读"
+  },
+  "entries": {}
+}

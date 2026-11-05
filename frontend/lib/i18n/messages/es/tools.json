@@ -1,0 +1,13 @@
+{
+  "ui": {
+    "search": "Buscar herramientas",
+    "input": "Entrada",
+    "output": "Resultado",
+    "features": "Funciones principales",
+    "supportedFormats": "Formatos compatibles",
+    "privacy": "Privacidad de archivos y datos",
+    "download": "Descargar resultado",
+    "trySample": "Prueba primero con un ejemplo pequeño"
+  },
+  "entries": {}
+}

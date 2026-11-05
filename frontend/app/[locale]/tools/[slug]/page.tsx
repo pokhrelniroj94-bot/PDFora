@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import ToolWorkspace from "../../../../components/AllTools";
 import LocalizedToolContent from "../../../../components/LocalizedToolContent";
 import { toolCatalog } from "../../../../components/toolCatalog";
-import { isLocale, isRoutable, isToolContentPublished, localeInfo, SITE_URL } from "../../../../lib/i18n/config";
+import { isLocale, isRoutable, isToolContentPublished, localeInfo, SITE_URL, toolContentPublishedLocales } from "../../../../lib/i18n/config";
 import { getLocalizedEntry } from "../../../../lib/i18n/messages";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -56,7 +56,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: content.tool.title,
     description: content.tool.description,
-    alternates: { canonical: `${SITE_URL}/${locale}/tools/${slug}` },
+    alternates: {
+      canonical: `${SITE_URL}/${locale}/tools/${slug}`,
+      languages: Object.fromEntries([
+        ["en", `${SITE_URL}/tools/${slug}`],
+        ...toolContentPublishedLocales.map((activeLocale) => [activeLocale, `${SITE_URL}/${activeLocale}/tools/${slug}`]),
+        ["x-default", `${SITE_URL}/tools/${slug}`]
+      ])
+    },
     robots: { index: isToolContentPublished(locale), follow: true }
   };
 }

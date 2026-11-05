@@ -13,9 +13,14 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
   const [analytics, setAnalytics] = useState(false);
   const [advertising, setAdvertising] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    const openSettings = () => setOpen(true);
+    const openSettings = () => {
+      const active = document.activeElement;
+      returnFocusRef.current = active instanceof HTMLElement ? active : null;
+      setOpen(true);
+    };
     window.addEventListener("pdfora:open-cookie-settings", openSettings);
     const timer = window.setTimeout(() => {
       try {
@@ -39,6 +44,7 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
 
   useEffect(() => {
     if (open) closeButtonRef.current?.focus();
+    else returnFocusRef.current?.focus();
   }, [open]);
 
   const save = (nextAnalytics: boolean, nextAdvertising: boolean) => {
@@ -60,7 +66,7 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
       <p id="cookie-consent-description" className="mt-1 text-sm leading-6 text-slate-600">PDFora uses essential storage to keep the site working. With your permission, analytics cookies help us understand site usage. You can change your choice anytime in Cookie settings.</p>
       <div className="mt-3 flex flex-wrap gap-2">
         <button type="button" onClick={() => save(false, false)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700">Reject optional</button>
-        <button type="button" onClick={() => setOpen(true)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700">Customize</button>
+        <button type="button" onClick={(event) => { returnFocusRef.current = event.currentTarget; setOpen(true); }} className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700">Customize</button>
         <button type="button" onClick={() => save(true, true)} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white">Accept all</button>
       </div>
     </section>}

@@ -7,7 +7,10 @@
     "supportedFormats": "支持的文件格式",
     "privacy": "文件与数据隐私",
     "download": "下载结果",
-    "trySample": "请先使用一个小样本进行测试"
+    "trySample": "请先使用一个小样本进行测试",
+    "workflow": "推荐操作流程",
+    "accuracy": "准确性与限制",
+    "mistakes": "常见错误"
   },
   "entries": {}
 }

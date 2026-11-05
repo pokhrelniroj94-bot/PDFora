@@ -39,7 +39,7 @@ async function getPageContent(locale: import("../../../../lib/i18n/config").Loca
     getLocalizedEntry(locale, "guides", slug),
     getLocalizedEntry(locale, "calculators", slug),
     getLocalizedEntry(locale, "faqs", slug),
-    import("../../../../lib/i18n/messages").then(({ getTranslator }) => getTranslator(locale, ["tools", "guides", "calculators", "faqs"]))
+    import("../../../../lib/i18n/messages").then(({ getTranslator }) => getTranslator(locale, ["common", "tools", "guides", "calculators", "faqs"]))
   ]);
   return { tool, guide, calculator, faqs, ui };
 }

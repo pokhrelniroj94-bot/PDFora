@@ -7,7 +7,10 @@
     "supportedFormats": "지원 파일 형식",
     "privacy": "파일 및 데이터 개인정보 보호",
     "download": "결과 다운로드",
-    "trySample": "먼저 작은 샘플로 테스트하세요"
+    "trySample": "먼저 작은 샘플로 테스트하세요",
+    "workflow": "권장 작업 순서",
+    "accuracy": "정확도 및 제한 사항",
+    "mistakes": "자주 발생하는 실수"
   },
   "entries": {}
 }

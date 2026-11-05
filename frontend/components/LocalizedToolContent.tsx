@@ -24,7 +24,7 @@ export default function LocalizedToolContent({
 }) {
   return <article className="mx-auto w-full max-w-4xl space-y-5 px-4 pb-14 sm:px-6">
     <header className="py-5">
-      <h1 className="text-3xl font-black leading-tight text-slate-950">{tool.title}</h1>
+      <h2 className="text-2xl font-black leading-tight text-slate-950">{tool.title}</h2>
       <p className="mt-3 max-w-3xl text-base leading-8 text-slate-700">{tool.description}</p>
     </header>
     <Section title={labels.example}><p>{tool.example}</p></Section>

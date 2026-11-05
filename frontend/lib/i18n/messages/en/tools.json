@@ -1,0 +1,13 @@
+{
+  "ui": {
+    "search": "Search tools",
+    "input": "Input",
+    "output": "Output",
+    "features": "Key features",
+    "supportedFormats": "Supported file formats",
+    "privacy": "File and data privacy",
+    "download": "Download result",
+    "trySample": "Test with a small sample first"
+  },
+  "entries": {}
+}

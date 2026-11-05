@@ -24,6 +24,8 @@ test("publishing policy: English and reviewed Nepali are published; incomplete l
   assert.equal(config.isPublished("en"), true);
   assert.equal(config.isPublished("ne"), true, "Nepali homepage and dictionaries are published");
   assert.equal(config.isRoutable("ne"), true);
+  assert.deepEqual(config.localeInfo.ne.publishedNamespaces, ["accessibility", "common", "seo"]);
+  assert.equal(config.isToolContentPublished("ne"), false, "Nepali tool pages stay unpublished until their content is complete");
   for (const l of config.locales.filter((x) => x !== "en" && x !== "ne")) {
     assert.equal(config.isPublished(l), false, `${l} must stay unpublished until reviewed`);
     assert.equal(config.isRoutable(l), false);

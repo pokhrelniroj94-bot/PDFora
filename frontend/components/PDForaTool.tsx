@@ -269,7 +269,7 @@ export default function PDForaTool({
             onDragLeave={(event) => { event.preventDefault(); setDragActive(false); }}
             onDrop={handleDrop}
             aria-label="Choose or drop PDF files"
-            className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] sm:min-h-64 ${dragActive ? "border-teal-500 bg-teal-50" : "border-slate-300 bg-slate-50/80 hover:border-teal-400 hover:bg-teal-50"}`}
+            className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-64 ${dragActive ? "border-teal-500 bg-teal-50" : "border-slate-300 bg-slate-50/80 hover:border-teal-400 hover:bg-teal-50"}`}
           >
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-3xl ring-1 ring-teal-900/5">
               📄

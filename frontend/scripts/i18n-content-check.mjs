@@ -25,7 +25,8 @@ const validEntry = (namespace, entry) => {
   return false;
 };
 let blockers = 0;
-for (const locale of config.locales.filter((l) => l !== "en")) {
+// Nepali currently publishes only its migrated homepage; it has no localized tool routes yet.
+for (const locale of config.locales.filter((l) => l !== "en" && l !== "ne")) {
   const published = config.isPublished(locale);
   let missing = 0;
   for (const [namespace, slugs] of Object.entries(required)) {

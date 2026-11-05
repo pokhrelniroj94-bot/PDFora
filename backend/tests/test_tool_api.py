@@ -263,6 +263,15 @@ def test_extract_fonts_rejects_non_embedded_standard_fonts():
     assert "No extractable embedded fonts" in response.json()["detail"]
 
 
+def test_pdf_to_csv_exports_detected_table_cells():
+    response = post_pdf("/api/pdf-to-csv", make_sample_pdf())
+    assert response.status_code == 200
+    csv_text = response.content.decode("utf-8-sig")
+    assert "Region" in csv_text and "Sales" in csv_text
+    assert "North" in csv_text and "South" in csv_text
+    assert "100" in csv_text and "200" in csv_text
+
+
 def test_protect_pdf_encrypts_and_preserves_pages():
     response = post_pdf("/api/protect", make_sample_pdf(), data={"password": "PDFora-Test-Password"})
     assert response.status_code == 200

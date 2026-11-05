@@ -147,7 +147,7 @@ export function SmartToolCenter() {
             <span className="text-xs text-slate-500">Tap a shortcut to explore</span>
           </div>
           <div className="pdfora-stagger grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {taskShortcuts.map((task) => <button key={task.label} onClick={() => chooseTask(task.query)} className="group flex min-h-24 flex-col items-start justify-center rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md"><span className="text-2xl" aria-hidden="true">{task.icon}</span><span className="mt-2 text-sm font-bold text-slate-800 group-hover:text-teal-800">{task.label}</span></button>)}
+            {taskShortcuts.map((task) => <button type="button" key={task.label} onClick={() => chooseTask(task.query)} className="group flex min-h-24 flex-col items-start justify-center rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md"><span className="text-2xl" aria-hidden="true">{task.icon}</span><span className="mt-2 text-sm font-bold text-slate-800 group-hover:text-teal-800">{task.label}</span></button>)}
           </div>
         </section>
 
@@ -165,7 +165,7 @@ export function SmartToolCenter() {
           </div>
 
           <div role="group" className="mt-5 flex gap-2 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter tools by category">
-            {categories.map((item) => <button key={item.name} onClick={() => setCategory(item.name)} aria-pressed={category === item.name} className={"shrink-0 rounded-full px-4 py-2.5 text-sm font-bold transition " + (category === item.name ? "bg-teal-800 text-white shadow-sm" : "border border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:text-teal-800")}>{item.name}<span className={"ml-2 text-xs " + (category === item.name ? "text-teal-100" : "text-slate-400")}>{item.count}</span></button>)}
+            {categories.map((item) => <button type="button" key={item.name} onClick={() => setCategory(item.name)} aria-pressed={category === item.name} className={"shrink-0 rounded-full px-4 py-2.5 text-sm font-bold transition " + (category === item.name ? "bg-teal-800 text-white shadow-sm" : "border border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:text-teal-800")}>{item.name}<span className={"ml-2 text-xs " + (category === item.name ? "text-teal-100" : "text-slate-400")}>{item.count}</span></button>)}
           </div>
 
           {filtered.length ? <div className="pdfora-stagger mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -175,7 +175,7 @@ export function SmartToolCenter() {
               <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">{tool.description}</p>
               <span className="mt-auto pt-4 text-xs font-bold text-teal-700">Open tool <span aria-hidden="true">→</span></span>
             </Link>)}
-          </div> : <div className="mt-5 rounded-3xl border border-dashed border-slate-300 bg-white px-5 py-12 text-center"><span className="text-4xl" aria-hidden="true">🔎</span><h3 className="mt-3 text-lg font-black">No matching tools yet</h3><p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Try a shorter phrase, a different keyword, or choose another category.</p><button onClick={() => { setQuery(""); setCategory("All"); }} className="mt-5 rounded-xl bg-teal-800 px-5 py-3 text-sm font-bold text-white hover:bg-teal-900">Show all {allTools.length} tools</button></div>}
+          </div> : <div className="mt-5 rounded-3xl border border-dashed border-slate-300 bg-white px-5 py-12 text-center"><span className="text-4xl" aria-hidden="true">🔎</span><h3 className="mt-3 text-lg font-black">No matching tools yet</h3><p className="mx-auto mt-2 max-w-md text-sm text-slate-500">Try a shorter phrase, a different keyword, or choose another category.</p><button type="button" onClick={() => { setQuery(""); setCategory("All"); }} className="mt-5 rounded-xl bg-teal-800 px-5 py-3 text-sm font-bold text-white hover:bg-teal-900">Show all {allTools.length} tools</button></div>}
         </section>
 
         <p className="mt-10 rounded-2xl border border-slate-200 bg-white p-4 text-center text-xs leading-5 text-slate-500">Tip: Search using a task such as “make PDF smaller”, “convert image”, “calculate EMI” or “Nepali date”. You can also browse by category above.</p>

@@ -131,7 +131,7 @@ export function SmartToolCenter() {
           <form className="mt-7 flex max-w-3xl flex-col gap-2 rounded-2xl bg-white p-2 shadow-2xl shadow-black/20 sm:flex-row" onSubmit={(event) => { event.preventDefault(); document.getElementById("tool-results")?.scrollIntoView({ behavior: "smooth" }); }}>
             <label className="flex min-w-0 flex-1 items-center gap-3 px-3">
               <span className="text-xl text-slate-400" aria-hidden="true">⌕</span>
-              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try “compress PDF”, “photo size”, “salary tax”..." aria-label="Search all tools" className="h-12 w-full min-w-0 border-0 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:ring-0" />
+              <input type="search" autoComplete="off" aria-controls="tool-results" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Try “compress PDF”, “photo size”, “salary tax”..." aria-label="Search all tools" className="h-12 w-full min-w-0 border-0 bg-transparent text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:ring-0" />
               {query && <button type="button" onClick={() => setQuery("")} className="rounded-lg px-2 py-1 text-sm font-bold text-slate-500 hover:bg-slate-100" aria-label="Clear search">Clear</button>}
             </label>
             <button className="rounded-xl bg-teal-700 px-7 py-3 text-sm font-bold text-white transition hover:bg-teal-800" type="submit">Find a tool</button>
@@ -164,7 +164,7 @@ export function SmartToolCenter() {
             <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">Sort <select value={sort} onChange={(event) => setSort(event.target.value as "recommended" | "az")} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"><option value="recommended">Recommended</option><option value="az">A to Z</option></select></label>
           </div>
 
-          <div className="mt-5 flex gap-2 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter tools by category">
+          <div role="group" className="mt-5 flex gap-2 overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Filter tools by category">
             {categories.map((item) => <button key={item.name} onClick={() => setCategory(item.name)} aria-pressed={category === item.name} className={"shrink-0 rounded-full px-4 py-2.5 text-sm font-bold transition " + (category === item.name ? "bg-teal-800 text-white shadow-sm" : "border border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:text-teal-800")}>{item.name}<span className={"ml-2 text-xs " + (category === item.name ? "text-teal-100" : "text-slate-400")}>{item.count}</span></button>)}
           </div>
 

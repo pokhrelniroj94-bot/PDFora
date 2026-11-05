@@ -9,9 +9,9 @@ const { config } = await loadI18n();
 const root = path.join(frontendRoot, "lib", "i18n", "messages");
 const guideSource = fs.readFileSync(path.join(frontendRoot, "lib", "tool-guides.ts"), "utf8");
 const adviceSource = fs.readFileSync(path.join(frontendRoot, "components", "CatalogToolSEOContent.tsx"), "utf8");
-const guideSlugs = [...guideSource.matchAll(/"slug"\\s*:\\s*"([^"]+)"/g)].map((m) => m[1]);
-const adviceBlock = adviceSource.match(/const toolAdvice[\\s\\S]*?=\\s*\\{([\\s\\S]*?)\\n\\s*\\};/);
-const adviceSlugs = adviceBlock ? [...adviceBlock[1].matchAll(/"([^"]+)"\\s*:\\s*\\{\\s*example\\s*:/g)].map((m) => m[1]) : [];
+const guideSlugs = [...guideSource.matchAll(/"slug"\s*:\s*"([^"]+)"/g)].map((m) => m[1]);
+const adviceBlock = adviceSource.match(/const toolAdvice[\s\S]*?=\s*\\{([\s\S]*?)\\n\s*\\};/);
+const adviceSlugs = adviceBlock ? [...adviceBlock[1].matchAll(/"([^"]+)"\s*:\s*\\{\s*example\s*:/g)].map((m) => m[1]) : [];
 const required = { tools: adviceSlugs, guides: guideSlugs, faqs: guideSlugs };
 let blockers = 0;
 for (const locale of config.locales.filter((l) => l !== "en")) {

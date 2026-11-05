@@ -3,8 +3,14 @@ import AdsterraNative from "../../components/AdsterraNative";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
+import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
 
 const baseUrl = "https://pd-fora.vercel.app";
+
+function canonicalToolHref(href: string): string {
+  const slug = href.startsWith("/tools/") ? href.slice("/tools/".length) : href.slice(1);
+  return legacyToolSlugSet.has(slug) ? `/${slug}` : href;
+}
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -103,7 +109,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
             <h2 className="text-xl font-black text-slate-950">Try a related tool</h2>
             <p className="mt-2 text-sm leading-7 text-slate-700">Continue with a related PDFora utility when you are ready to put this guide into practice.</p>
             <div className="mt-4 flex flex-wrap gap-3">
-              {post.toolLinks.map((tool) => <Link key={tool.href} href={tool.href} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
+              {post.toolLinks.map((tool) => <Link key={tool.href} href={canonicalToolHref(tool.href)} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
             </div>
           </section>
         </div>

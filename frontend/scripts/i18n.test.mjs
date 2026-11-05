@@ -58,8 +58,8 @@ test("routing: absolute URLs keep existing canonical conventions", () => {
   assert.equal(routing.absoluteUrl("/tools/x", "de"), "https://pd-fora.vercel.app/de/tools/x");
 });
 
-test("hreflang: none while nothing is published; reciprocal and absolute when available", () => {
-  assert.equal(routing.hreflangMap("/"), undefined, "unpublished locales must produce no hreflang");
+test("hreflang: published homepage alternates are reciprocal; unavailable paths stay excluded", () => {
+  assert.deepEqual(Object.keys(routing.hreflangMap("/")).sort(), ["en", "ne", "x-default"], "only English and published Nepali homepage are alternates");
   const avail = new Set(["ne", "ar"]);
   const map = routing.hreflangMap("/tools/x", { isAvailable: (l) => avail.has(l) });
   assert.deepEqual(Object.keys(map).sort(), ["ar", "en", "ne", "x-default"]);
@@ -71,7 +71,7 @@ test("hreflang: none while nothing is published; reciprocal and absolute when av
 
 test("switcher: never offers an unavailable page", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
-  assert.deepEqual(switcher.getSwitcherOptions("/").map((o) => o.locale), ["en"]);
+  assert.deepEqual(switcher.getSwitcherOptions("/").map((o) => o.locale), ["en", "ne"]);
   process.env.PDFORA_I18N_PREVIEW = "1";
   const home = switcher.getSwitcherOptions("/");
   assert.equal(home.length, 10);

@@ -2261,11 +2261,11 @@ async def pdf_page_counter(file: UploadFile = File(...)):
         size = await save_upload(file, src)
         reader = read_pdf(src)
         report = (
-            "PDFora - PDF Page Count Report\\n"
-            "================================\\n"
-            f"File name: {Path(file.filename).name}\\n"
-            f"Total pages: {len(reader.pages)}\\n"
-            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\\n"
+            "PDFora - PDF Page Count Report\n"
+            "================================\n"
+            f"File name: {Path(file.filename).name}\n"
+            f"Total pages: {len(reader.pages)}\n"
+            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\n"
         )
         out.write_text(report, encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Page-Count.txt", background=BackgroundTask(cleanup_job, job))
@@ -2303,7 +2303,7 @@ async def pdf_information(file: UploadFile = File(...)):
             f"Creator: {metadata.get('/Creator') or 'Not set'}",
             f"Encrypted: {'Yes' if reader.is_encrypted else 'No'}",
         ]
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Information.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
@@ -2331,7 +2331,7 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
         lines = ["PDFora - PDF Bookmarks", "=======================", ""]
         for level, title, page in toc:
             lines.append(f"{'  ' * max(0, level - 1)}Page {page}: {title}")
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Bookmarks.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:

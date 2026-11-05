@@ -1,0 +1,12 @@
+{
+  "ui": {
+    "overview": "Wann Sie dieses Tool verwenden",
+    "steps": "Schritt-für-Schritt-Anleitung",
+    "example": "Beispiel und Anwendungsfälle",
+    "limitations": "Grenzen und Genauigkeit",
+    "commonMistakes": "Häufige Fehler",
+    "safety": "Sichere Nutzung",
+    "related": "Verwandte Tools und weiterführende Informationen"
+  },
+  "entries": {}
+}

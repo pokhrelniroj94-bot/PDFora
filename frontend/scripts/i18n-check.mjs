@@ -61,9 +61,12 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
     for (const key of Object.keys(tr)) if (!(key in en[ns])) problems.push(`${ns}.${key}: not in English source`);
   }
   const label = `${locale} (${published ? "PUBLISHED" : "unpublished"}, ${published ? config.localeInfo[locale].publishedNamespaces.length : files.length}/${enFiles.length} namespaces checked)`;
-  if (!problems.length && (!published || files.length === enFiles.length || config.localeInfo[locale].publishedNamespaces.length > 0)) console.log(`${label}\n  ok   ${published ? "published namespaces complete" : "work in progress; unpublished"}`);
-  else if (published) { console.log(label); problems.forEach((p) => fail(p)); }
-  else console.log(`${label}\n  work in progress: ${problems.length} issue(s)${files.length ? "" : " (no files yet)"}`);
+  if (published) {
+    if (!problems.length) console.log(`${label}\n  ok   published namespaces complete`);
+    else { console.log(label); problems.forEach((p) => fail(p)); }
+  } else {
+    console.log(`${label}\n  work in progress: ${problems.length} issue(s)${files.length ? "" : " (no files yet)"}`);
+  }
 }
 
 console.log(hardFailures ? `\n${hardFailures} blocking problem(s).` : "\nNo blocking problems.");

@@ -7,6 +7,7 @@ const quickTools = read("../components/QuickUtilityTools.tsx");
 const extraTools = read("../components/ExtraTools.tsx");
 const nepalTools = read("../components/NepalTools.tsx");
 const nepalLiveTools = read("../components/NepalLiveTools.tsx");
+const resumeBuilder = read("../components/ResumeBuilder.tsx");
 const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
 const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
 const blogPostsSource = read("../lib/blog-posts.ts");
@@ -133,6 +134,10 @@ assert.ok(newsComponent.includes("10 * 60 * 1000"), "News component must auto-re
 assert.ok(pageImagesToolPage.includes("Render PDF Pages to PNG") && pageImagesToolPage.includes("Render every PDF page as a PNG image"), "Page-image tool must clearly describe full-page PNG rendering");
 assert.ok(nepalLiveTools.includes("Effective tax rate: {amount > 0 ?") && !nepalLiveTools.includes("Effective tax rate: ${amount > 0 ?"), "Nepal salary tax effective rate must display as a percentage, not currency");
 assert.ok(catalogSource.includes("Explore 49 PDF Tools") && catalogSource.includes("49 available PDF tools"), "PDF tool catalogue must advertise the 49 enabled PDF tools accurately");
+const resumeTemplateBlock = resumeBuilder.match(/const templates = \[([\s\S]*?)\n\];/);
+assert.ok(resumeTemplateBlock, "Resume Builder template list is missing");
+assert.equal([...resumeTemplateBlock[1].matchAll(/\bid:\s*"/g)].length, 20, "Resume Builder must expose 20 templates");
+assert.ok(catalogSource.includes("20 professional templates"), "Resume Builder catalogue must advertise the 20 available templates");
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");

@@ -34,7 +34,27 @@
         "Total interest = total repayment − principal"
       ],
       "assumptions": "Reducing-balance loan with equal monthly payments; zero-interest case is principal divided by months. Excludes lender fees, insurance and rate resets.",
-      "sourceComponent": "AllTools"
+      "sourceComponent": "AllTools",
+      "fieldSchema": [
+        {
+          "key": "principal",
+          "label": "Loan amount (NPR)",
+          "type": "number",
+          "defaultValue": "1000000"
+        },
+        {
+          "key": "rate",
+          "label": "Annual interest rate (%)",
+          "type": "number",
+          "defaultValue": "10"
+        },
+        {
+          "key": "months",
+          "label": "Loan term (months)",
+          "type": "number",
+          "defaultValue": "60"
+        }
+      ]
     },
     "compound-interest-sip-calculator": {
       "title": "Compound Interest & SIP Calculator",
@@ -52,7 +72,33 @@
         "Estimated growth"
       ],
       "assumptions": "Assumes a constant monthly rate derived from the annual rate and end-of-month contributions; returns are illustrative, not guaranteed.",
-      "sourceComponent": "AllTools"
+      "sourceComponent": "AllTools",
+      "fieldSchema": [
+        {
+          "key": "monthly",
+          "label": "Monthly SIP (NPR)",
+          "type": "number",
+          "defaultValue": "5000"
+        },
+        {
+          "key": "initial",
+          "label": "Initial investment (NPR)",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "key": "rate",
+          "label": "Expected annual return (%)",
+          "type": "number",
+          "defaultValue": "10"
+        },
+        {
+          "key": "years",
+          "label": "Investment period (years)",
+          "type": "number",
+          "defaultValue": "10"
+        }
+      ]
     },
     "discount-percentage-calculator": {
       "title": "Discount & Percentage Calculator",
@@ -82,7 +128,21 @@
         "Percentage increase or decrease"
       ],
       "assumptions": "Percentage change is undefined when the original value is zero.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "Original value",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "b",
+          "label": "New value",
+          "type": "number",
+          "defaultValue": "120"
+        }
+      ]
     },
     "average-calculator": {
       "title": "Average Calculator",
@@ -95,7 +155,15 @@
         "Count, mean, median, mode and range"
       ],
       "assumptions": "All tokens must parse as finite numbers. If every value occurs once, no repeated mode is reported.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "text",
+          "label": "Numbers separated by commas or spaces",
+          "type": "text",
+          "defaultValue": "10, 20, 30, 40"
+        }
+      ]
     },
     "fraction-calculator": {
       "title": "Fraction Calculator",
@@ -110,7 +178,39 @@
         "Reduced fraction and decimal value"
       ],
       "assumptions": "Numerators and denominators must be integers; denominators cannot be zero and division by a zero fraction is rejected.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "First numerator",
+          "type": "number",
+          "defaultValue": "1"
+        },
+        {
+          "key": "b",
+          "label": "First denominator",
+          "type": "number",
+          "defaultValue": "2"
+        },
+        {
+          "key": "c",
+          "label": "Second numerator",
+          "type": "number",
+          "defaultValue": "1"
+        },
+        {
+          "key": "d",
+          "label": "Second denominator",
+          "type": "number",
+          "defaultValue": "3"
+        },
+        {
+          "key": "op",
+          "label": "Operation (+ - * /)",
+          "type": "text",
+          "defaultValue": "+"
+        }
+      ]
     },
     "age-calculator": {
       "title": "Age Calculator",
@@ -124,7 +224,21 @@
         "Completed years, months and days"
       ],
       "assumptions": "Uses calendar dates, not an average number of days per year. The as-of date must not precede the birth date.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "Birth date",
+          "type": "date",
+          "defaultValue": "2000-01-01"
+        },
+        {
+          "key": "b",
+          "label": "Calculate as of",
+          "type": "date",
+          "defaultValue": "current date"
+        }
+      ]
     },
     "date-difference-calculator": {
       "title": "Date Difference Calculator",
@@ -138,7 +252,21 @@
         "Days, weeks and approximate average months"
       ],
       "assumptions": "Dates are parsed at local midnight; months are an average-length estimate, not calendar-month counting.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "Start date",
+          "type": "date",
+          "defaultValue": "current date"
+        },
+        {
+          "key": "b",
+          "label": "End date",
+          "type": "date",
+          "defaultValue": "current date"
+        }
+      ]
     },
     "time-duration-calculator": {
       "title": "Time Duration Calculator",
@@ -152,7 +280,21 @@
         "Elapsed hours and minutes"
       ],
       "assumptions": "Assumes a same-day interval unless the end time is earlier, in which case it assumes one midnight crossing.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "Start time",
+          "type": "time",
+          "defaultValue": "09:00"
+        },
+        {
+          "key": "b",
+          "label": "End time",
+          "type": "time",
+          "defaultValue": "17:00"
+        }
+      ]
     },
     "profit-margin-calculator": {
       "title": "Profit Margin Calculator",
@@ -167,7 +309,21 @@
         "Gross margin (%)"
       ],
       "assumptions": "Margin is undefined when selling price is zero; excludes operating expenses, tax and transaction fees.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "cost",
+          "label": "Cost",
+          "type": "number",
+          "defaultValue": "60"
+        },
+        {
+          "key": "price",
+          "label": "Selling price",
+          "type": "number",
+          "defaultValue": "100"
+        }
+      ]
     },
     "markup-calculator": {
       "title": "Markup Calculator",
@@ -182,7 +338,21 @@
         "Selling price"
       ],
       "assumptions": "Markup is calculated on cost, not selling price; excludes tax and overhead unless included in cost.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "cost",
+          "label": "Cost",
+          "type": "number",
+          "defaultValue": "60"
+        },
+        {
+          "key": "rate",
+          "label": "Markup (%)",
+          "type": "number",
+          "defaultValue": "40"
+        }
+      ]
     },
     "break-even-calculator": {
       "title": "Break-even Calculator",
@@ -198,7 +368,27 @@
         "Break-even sales volume"
       ],
       "assumptions": "Requires selling price above variable cost. Assumes constant prices, unit costs and fixed costs.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "fixed",
+          "label": "Fixed costs",
+          "type": "number",
+          "defaultValue": "100000"
+        },
+        {
+          "key": "price",
+          "label": "Selling price per unit",
+          "type": "number",
+          "defaultValue": "500"
+        },
+        {
+          "key": "variable",
+          "label": "Variable cost per unit",
+          "type": "number",
+          "defaultValue": "300"
+        }
+      ]
     },
     "sales-tax-calculator": {
       "title": "Sales Tax Calculator",
@@ -215,7 +405,27 @@
         "Tax-inclusive total"
       ],
       "assumptions": "The entered rate is applied uniformly. The tool is not a substitute for jurisdiction-specific tax advice.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "amount",
+          "label": "Amount",
+          "type": "number",
+          "defaultValue": "1000"
+        },
+        {
+          "key": "rate",
+          "label": "Tax rate (%)",
+          "type": "number",
+          "defaultValue": "13"
+        },
+        {
+          "key": "mode",
+          "label": "Mode (add or remove)",
+          "type": "select",
+          "defaultValue": "add"
+        }
+      ]
     },
     "salary-breakdown-calculator": {
       "title": "Salary Breakdown Calculator",
@@ -229,7 +439,21 @@
         "Monthly gross, deduction and take-home; annualized equivalents"
       ],
       "assumptions": "Uses one flat editable deduction rate; it is not a statutory payroll or income-tax calculation.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "salary",
+          "label": "Gross monthly salary",
+          "type": "number",
+          "defaultValue": "50000"
+        },
+        {
+          "key": "rate",
+          "label": "Estimated deduction (%)",
+          "type": "number",
+          "defaultValue": "10"
+        }
+      ]
     },
     "savings-goal-calculator": {
       "title": "Savings Goal Calculator",
@@ -245,7 +469,27 @@
         "Required monthly saving"
       ],
       "assumptions": "Assumes equal contributions and no interest, investment return, fees or inflation.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "target",
+          "label": "Savings target",
+          "type": "number",
+          "defaultValue": "100000"
+        },
+        {
+          "key": "saved",
+          "label": "Already saved",
+          "type": "number",
+          "defaultValue": "10000"
+        },
+        {
+          "key": "months",
+          "label": "Months to goal",
+          "type": "number",
+          "defaultValue": "12"
+        }
+      ]
     },
     "reading-time-calculator": {
       "title": "Reading Time Calculator",
@@ -259,7 +503,21 @@
         "Word count and estimated reading time"
       ],
       "assumptions": "A simple average estimate; actual reading speed varies with language, complexity and reader.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "text",
+          "label": "Text",
+          "type": "textarea",
+          "defaultValue": "Paste your article here."
+        },
+        {
+          "key": "wpm",
+          "label": "Reading speed (words/min)",
+          "type": "number",
+          "defaultValue": "200"
+        }
+      ]
     },
     "bmi-calculator": {
       "title": "BMI Calculator",
@@ -273,7 +531,21 @@
         "BMI value and standard adult category"
       ],
       "assumptions": "Uses standard adult BMI categories; BMI is a screening measure and not a diagnosis or suitable standalone assessment for children or pregnancy.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "weight",
+          "label": "Weight (kg)",
+          "type": "number",
+          "defaultValue": "65"
+        },
+        {
+          "key": "height",
+          "label": "Height (cm)",
+          "type": "number",
+          "defaultValue": "170"
+        }
+      ]
     },
     "bmr-calculator": {
       "title": "BMR Calculator",
@@ -289,7 +561,33 @@
         "Estimated basal metabolic rate (kcal/day)"
       ],
       "assumptions": "An equation-based estimate for adults; actual energy needs vary and the sex coefficient is a model input, not a clinical assessment.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "weight",
+          "label": "Weight (kg)",
+          "type": "number",
+          "defaultValue": "65"
+        },
+        {
+          "key": "height",
+          "label": "Height (cm)",
+          "type": "number",
+          "defaultValue": "170"
+        },
+        {
+          "key": "age",
+          "label": "Age (years)",
+          "type": "number",
+          "defaultValue": "25"
+        },
+        {
+          "key": "sex",
+          "label": "Sex (male/female)",
+          "type": "select",
+          "defaultValue": "male"
+        }
+      ]
     },
     "tip-calculator": {
       "title": "Tip Calculator",
@@ -304,7 +602,27 @@
         "Tip amount, total bill and per-person amount"
       ],
       "assumptions": "Assumes an equal split and does not account for service charges or tax unless included in bill.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "bill",
+          "label": "Bill amount",
+          "type": "number",
+          "defaultValue": "2500"
+        },
+        {
+          "key": "tip",
+          "label": "Tip (%)",
+          "type": "number",
+          "defaultValue": "10"
+        },
+        {
+          "key": "people",
+          "label": "People",
+          "type": "number",
+          "defaultValue": "2"
+        }
+      ]
     },
     "split-bill-calculator": {
       "title": "Split Bill Calculator",
@@ -319,7 +637,27 @@
         "Total shared amount and each person's share"
       ],
       "assumptions": "Assumes an equal split among a positive whole number of people.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "bill",
+          "label": "Bill amount",
+          "type": "number",
+          "defaultValue": "3000"
+        },
+        {
+          "key": "extra",
+          "label": "Extra amount",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "key": "people",
+          "label": "People",
+          "type": "number",
+          "defaultValue": "3"
+        }
+      ]
     },
     "simple-interest-calculator": {
       "title": "Simple Interest Calculator",
@@ -334,7 +672,27 @@
         "Simple interest and maturity value"
       ],
       "assumptions": "Assumes a constant annual rate and no compounding, fees, tax or interim payments.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "principal",
+          "label": "Principal",
+          "type": "number",
+          "defaultValue": "10000"
+        },
+        {
+          "key": "rate",
+          "label": "Rate (%)",
+          "type": "number",
+          "defaultValue": "8"
+        },
+        {
+          "key": "years",
+          "label": "Years",
+          "type": "number",
+          "defaultValue": "3"
+        }
+      ]
     },
     "commission-calculator": {
       "title": "Commission Calculator",
@@ -348,7 +706,21 @@
         "Commission earned"
       ],
       "assumptions": "Assumes a flat commission percentage on the entire entered sales amount.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "sales",
+          "label": "Sales amount",
+          "type": "number",
+          "defaultValue": "100000"
+        },
+        {
+          "key": "rate",
+          "label": "Rate (%)",
+          "type": "number",
+          "defaultValue": "5"
+        }
+      ]
     },
     "hourly-to-salary-calculator": {
       "title": "Hourly to Salary Calculator",
@@ -362,7 +734,21 @@
         "Weekly, monthly and annual gross earnings"
       ],
       "assumptions": "Assumes 52 paid weeks per year and no overtime, unpaid leave, tax or benefits.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "wage",
+          "label": "Hourly wage",
+          "type": "number",
+          "defaultValue": "15"
+        },
+        {
+          "key": "hours",
+          "label": "Hours per week",
+          "type": "number",
+          "defaultValue": "40"
+        }
+      ]
     },
     "percentage-of-number-calculator": {
       "title": "Percentage of a Number Calculator",
@@ -376,7 +762,21 @@
         "Calculated percentage and remaining value"
       ],
       "assumptions": "Uses the entered rate directly; negative values are mathematically permitted where the tool accepts them.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "value",
+          "label": "Value",
+          "type": "number",
+          "defaultValue": "250"
+        },
+        {
+          "key": "rate",
+          "label": "Rate (%)",
+          "type": "number",
+          "defaultValue": "15"
+        }
+      ]
     },
     "gcd-lcm-calculator": {
       "title": "GCD and LCM Calculator",
@@ -390,7 +790,21 @@
         "Greatest common divisor and least common multiple"
       ],
       "assumptions": "Inputs are expected to be integers; results are exact for safe integer inputs.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "a",
+          "label": "First integer",
+          "type": "number",
+          "defaultValue": "24"
+        },
+        {
+          "key": "b",
+          "label": "Second integer",
+          "type": "number",
+          "defaultValue": "36"
+        }
+      ]
     },
     "date-add-subtract-calculator": {
       "title": "Date Add or Subtract Calculator",
@@ -404,7 +818,21 @@
         "Resulting calendar date"
       ],
       "assumptions": "Uses calendar-day arithmetic; it does not skip weekends or public holidays.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "date",
+          "label": "Starting date",
+          "type": "date",
+          "defaultValue": "2026-11-01"
+        },
+        {
+          "key": "days",
+          "label": "Days to add/subtract",
+          "type": "number",
+          "defaultValue": "30"
+        }
+      ]
     },
     "business-days-calculator": {
       "title": "Business Days Calculator",
@@ -418,7 +846,21 @@
         "Weekday/business-day count"
       ],
       "assumptions": "Public holidays are not excluded. Confirm whether the interval endpoints are included in the implementation before relying on the count.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "start",
+          "label": "Start date",
+          "type": "date",
+          "defaultValue": "2026-11-01"
+        },
+        {
+          "key": "end",
+          "label": "End date",
+          "type": "date",
+          "defaultValue": "2026-11-30"
+        }
+      ]
     },
     "aspect-ratio-calculator": {
       "title": "Aspect Ratio Calculator",
@@ -432,7 +874,21 @@
         "Reduced aspect ratio and derived dimension"
       ],
       "assumptions": "Requires positive dimensions. Pixel dimensions do not determine physical print size without resolution metadata.",
-      "sourceComponent": "ExtraTools/QuickUtilityTools"
+      "sourceComponent": "ExtraTools/QuickUtilityTools",
+      "fieldSchema": [
+        {
+          "key": "width",
+          "label": "Width (px)",
+          "type": "number",
+          "defaultValue": "1920"
+        },
+        {
+          "key": "height",
+          "label": "Height (px)",
+          "type": "number",
+          "defaultValue": "1080"
+        }
+      ]
     },
     "nepali-vat-calculator": {
       "title": "Nepal VAT Calculator (13%)",
@@ -447,7 +903,27 @@
         "Base amount, VAT amount and VAT-inclusive total"
       ],
       "assumptions": "The interface defaults to 13% but allows editing. Confirm current Inland Revenue Department rules and applicable exemptions.",
-      "sourceComponent": "NepalTools/NepalLiveTools"
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "amount",
+          "label": "Amount (NPR)",
+          "type": "number",
+          "defaultValue": "1000"
+        },
+        {
+          "key": "rate",
+          "label": "VAT rate (%)",
+          "type": "number",
+          "defaultValue": "13"
+        },
+        {
+          "key": "taxMode",
+          "label": "Calculation mode",
+          "type": "select",
+          "defaultValue": "add"
+        }
+      ]
     },
     "neb-gpa-calculator": {
       "title": "NEB GPA Calculator",
@@ -462,7 +938,27 @@
         "Total credit hours and weighted GPA"
       ],
       "assumptions": "Uses grade points entered by the user; the UI grade-point mapping must match the applicable NEB grading framework and transcript.",
-      "sourceComponent": "NepalTools/NepalLiveTools"
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "subject",
+          "label": "Subject name",
+          "type": "text",
+          "defaultValue": "Subject"
+        },
+        {
+          "key": "credit",
+          "label": "Credit hours",
+          "type": "number",
+          "defaultValue": "4"
+        },
+        {
+          "key": "grade",
+          "label": "Grade point (0–4)",
+          "type": "number",
+          "defaultValue": "4"
+        }
+      ]
     },
     "nepal-share-calculator": {
       "title": "NEPSE Share Buy/Sell Profit Calculator",
@@ -480,7 +976,51 @@
         "Buy value, estimated buy/sell charges, gross profit, net profit and estimated CGT"
       ],
       "assumptions": "All fee and tax rates are editable assumptions. Actual broker charges, holding-period tax rules and applicable regulations must be checked for the trade date.",
-      "sourceComponent": "NepalTools/NepalLiveTools"
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "shares",
+          "label": "Quantity (shares)",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "buyPrice",
+          "label": "Buy price per share (NPR)",
+          "type": "number",
+          "defaultValue": "300"
+        },
+        {
+          "key": "sellPrice",
+          "label": "Sell price per share (NPR)",
+          "type": "number",
+          "defaultValue": "350"
+        },
+        {
+          "key": "brokerRate",
+          "label": "Broker commission (%)",
+          "type": "number",
+          "defaultValue": "0.4"
+        },
+        {
+          "key": "sebonRate",
+          "label": "SEBON fee (%)",
+          "type": "number",
+          "defaultValue": "0.015"
+        },
+        {
+          "key": "dpCharge",
+          "label": "DP charge (NPR)",
+          "type": "number",
+          "defaultValue": "25"
+        },
+        {
+          "key": "cgtRate",
+          "label": "CGT assumption (%)",
+          "type": "number",
+          "defaultValue": "5"
+        }
+      ]
     },
     "nepal-salary-tax-calculator": {
       "title": "Nepal Salary Tax Calculator FY 2083/84",
@@ -493,7 +1033,15 @@
         "Estimated annual and monthly income tax"
       ],
       "assumptions": "The catalog labels FY 2083/84. Verify tax bands, thresholds, deductions, residency and fiscal-year rules against current official IRD guidance before use.",
-      "sourceComponent": "NepalTools/NepalLiveTools"
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "income",
+          "label": "Annual taxable income (NPR)",
+          "type": "number",
+          "defaultValue": ""
+        }
+      ]
     },
     "nepal-electricity-bill-calculator": {
       "title": "NEA Electricity Bill Calculator",
@@ -507,7 +1055,21 @@
         "Energy charge, minimum charge, VAT and estimated total"
       ],
       "assumptions": "Must use the current NEA domestic single-phase tariff blocks and capacity-specific minimum charges; tariffs can change and should be independently verified.",
-      "sourceComponent": "NepalTools/NepalLiveTools"
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "units",
+          "label": "Monthly consumption (kWh)",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "capacity",
+          "label": "Meter capacity",
+          "type": "select",
+          "defaultValue": "5A"
+        }
+      ]
     },
     "nepse-dividend-calculator": {
       "title": "NEPSE Dividend & Bonus Share Calculator",
@@ -523,7 +1085,33 @@
         "Gross and net cash dividend; estimated bonus shares"
       ],
       "assumptions": "Rates and withholding treatment are issuer- and fiscal-year-specific. Check the official corporate action and current tax rules; fractional bonus entitlement may be rounded by the issuer.",
-      "sourceComponent": "NepalTools/NepalLiveTools"
+      "sourceComponent": "NepalTools/NepalLiveTools",
+      "fieldSchema": [
+        {
+          "key": "shares",
+          "label": "Share quantity",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "key": "cashRate",
+          "label": "Cash dividend (%)",
+          "type": "number",
+          "defaultValue": "10"
+        },
+        {
+          "key": "bonusRate",
+          "label": "Bonus share (%)",
+          "type": "number",
+          "defaultValue": "5"
+        },
+        {
+          "key": "taxRate",
+          "label": "Withholding tax (%)",
+          "type": "number",
+          "defaultValue": "5"
+        }
+      ]
     }
   }
 }

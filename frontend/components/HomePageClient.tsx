@@ -500,7 +500,9 @@ export default function HomePageClient() {
                   onClick={() =>
                     setOpenFaq(isOpen ? null : index)
                   }
+                  id={`faq-question-${index}`}
                   aria-expanded={isOpen}
+                  aria-controls={`faq-answer-${index}`}
                   className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                 >
                   <span className="text-sm font-black">
@@ -516,7 +518,12 @@ export default function HomePageClient() {
                 </button>
 
                 {isOpen && (
-                  <div className="border-t border-slate-100 px-5 py-4 text-sm leading-6 text-slate-600">
+                  <div
+                    id={`faq-answer-${index}`}
+                    role="region"
+                    aria-labelledby={`faq-question-${index}`}
+                    className="border-t border-slate-100 px-5 py-4 text-sm leading-6 text-slate-600"
+                  >
                     {faq.answer}
                   </div>
                 )}

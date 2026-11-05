@@ -202,6 +202,19 @@ def test_extract_bookmarks_report_uses_real_newlines():
     assert "\\n" not in report
 
 
+def test_extract_page_images_renders_every_page_as_png():
+    response = post_pdf("/api/extract-page-images", make_sample_pdf())
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("application/zip")
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = sorted(archive.namelist())
+        assert names == [f"page-{index:04d}.png" for index in range(1, 5)]
+        for name in names:
+            with Image.open(io.BytesIO(archive.read(name))) as rendered:
+                assert rendered.format == "PNG"
+                assert rendered.width > 0 and rendered.height > 0
+
+
 def test_protect_pdf_encrypts_and_preserves_pages():
     response = post_pdf("/api/protect", make_sample_pdf(), data={"password": "PDFora-Test-Password"})
     assert response.status_code == 200

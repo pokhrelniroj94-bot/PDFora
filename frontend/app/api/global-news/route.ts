@@ -40,7 +40,7 @@ async function readFeed(query: string): Promise<Story[]> {
   const cutoff = Date.now() - MAX_AGE_MS;
   const stories = [...xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/gi)].map((match): Story | null => {
     const item = match[1];
-    const value = (tag: string) => clean(item.match(new RegExp("<" + tag + "(?:\s[^>]*)?>([\s\S]*?)<\/" + tag + ">", "i"))?.[1] ?? "");
+    const value = (tag: string) => clean(item.match(new RegExp("<" + tag + "(?:\\s[^>]*)?>([\\s\\S]*?)<\\/" + tag + ">", "i"))?.[1] ?? "");
     const title = value("title");
     const link = value("link");
     const published = new Date(value("pubDate"));

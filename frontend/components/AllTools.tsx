@@ -37,7 +37,21 @@ function Field({title,children}:{title:string;children:React.ReactNode}) { retur
 function Result({children}:{children:React.ReactNode}) { return <div aria-live="polite" className="mt-4 rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5">{children}</div>; }
 function money(n:number,currency=""):string { return currency+" "+(Number.isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):"—"); }
 function downloadText(name:string,text:string,type="text/plain") { const a=document.createElement("a"); const u=URL.createObjectURL(new Blob([text],{type})); a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(u),1000); }
-function CopyButton({value}:{value:string}) { return <button type="button" className="rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-slate-50" onClick={()=>navigator.clipboard?.writeText(value)}>Copy</button>; }
+function CopyButton({value}:{value:string}) {
+ const [status,setStatus]=useState<"idle"|"copied"|"failed">("idle");
+ const copy=async()=>{
+  try {
+   if(!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+   await navigator.clipboard.writeText(value);
+   setStatus("copied");
+   window.setTimeout(()=>setStatus("idle"),1800);
+  } catch {
+   setStatus("failed");
+   window.setTimeout(()=>setStatus("idle"),2200);
+  }
+ };
+ return <button type="button" className="rounded-lg border px-3 py-2 text-sm font-semibold hover:bg-slate-50" onClick={()=>void copy()} aria-live="polite">{status==="copied"?"Copied":status==="failed"?"Copy failed":"Copy"}</button>;
+}
 
 export function ToolsDirectory() {
  const [category,setCategory]=useState("All"),[query,setQuery]=useState("");

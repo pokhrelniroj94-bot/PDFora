@@ -4,7 +4,6 @@ import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import CookieConsent, { CookieSettingsLink } from "../components/CookieConsent";
 import "./globals.css";
-import ToolDirectory from "../components/ToolDirectory";
 import SiteAIHelp from "../components/SiteAIHelp";
 
 const geistSans = Geist({
@@ -54,7 +53,6 @@ export default async function RootLayout({
 
       <body className="min-h-full flex flex-col">
         {children}
-        <ToolDirectory />
         <footer className="border-t border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-600">
           <a href="/tools" className="font-semibold text-blue-700 hover:underline">{htmlLang === "ne" ? "सबै टुलहरू" : "All Tools"}</a>
           <span className="mx-2">·</span>

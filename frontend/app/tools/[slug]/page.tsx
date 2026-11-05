@@ -5,6 +5,7 @@ import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
 import { toolCatalog } from "../../../components/toolCatalog";
 import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
+import { toolGuides } from "../../../lib/tool-guides";
 
 const site = "https://pd-fora.vercel.app";
 export function generateStaticParams() {
@@ -96,7 +97,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   if (!tool || slug === "pdf-tools") notFound();
   if (legacyToolSlugSet.has(slug)) permanentRedirect(`/${slug}`);
   const related = toolCatalog.filter((item) => item.category === tool.category && item.slug !== slug && item.slug !== "pdf-tools").slice(0, 4);
-  const guide = blogPosts.find((post) => post.toolLinks.some((link) => link.href === `/tools/${slug}`));
+  const toolPath = legacyToolSlugSet.has(slug) ? `/${slug}` : `/tools/${slug}`;
+  const guide = blogPosts.find((post) => post.toolLinks.some((link) => link.href === toolPath || link.href === `/tools/${slug}` || link.href === `/${slug}`));
+  const toolGuide = toolGuides.find((item) => item.slug === slug);
   const categoryChecks: Record<string, string> = {
     PDF: "Check page order, layout, selectable text, links, forms and signatures in the exported file. Keep the original document until you have verified the result.",
     Finance: "Check the currency, time period, rate, fees and assumptions. Compare the estimate with an official statement or provider quote before making a financial decision.",
@@ -428,6 +431,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
     <ToolWorkspace slug={slug} />
-    <CatalogToolSEOContent tool={tool} questions={questions} related={related} guideSlug={guide?.slug} />
+    <CatalogToolSEOContent tool={tool} questions={questions} related={related} guideSlug={guide?.slug ?? toolGuide?.blogSlug} guide={toolGuide} />
   </>;
 }

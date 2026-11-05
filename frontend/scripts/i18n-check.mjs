@@ -46,8 +46,13 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
   const dir = path.join(root, locale);
   const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")) : [];
   const published = config.isPublished(locale);
+  // A published locale may currently ship only its localized homepage shell.
+  // Tool/guide/calculator/FAQ namespaces have a separate slug-level release gate.
+  const requiredNamespaces = published && !config.isToolContentPublished(locale)
+    ? ["common", "accessibility", "seo"]
+    : Object.keys(en);
   const problems = [];
-  for (const ns of Object.keys(en)) {
+  for (const ns of requiredNamespaces) {
     if (!files.includes(`${ns}.json`)) { problems.push(`${ns}: file missing`); continue; }
     const tr = readNs(locale, `${ns}.json`);
     if (tr.__error) { problems.push(`${ns}: invalid JSON`); continue; }

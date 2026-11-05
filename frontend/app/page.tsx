@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HomePageClient from "../components/HomePageClient";
+import { hreflangMap } from "../lib/i18n/routing";
 
 const site = "https://pd-fora.vercel.app";
 
@@ -7,14 +8,7 @@ export const metadata: Metadata = {
   title: "Free Online PDF Tools, Nepal Calculators & Utilities",
   description:
     "Merge, split, compress and convert PDF files online. Use practical Nepal calculators, Nepali date tools, image converters and everyday utilities with PDFora.",
-  alternates: {
-    canonical: site,
-    languages: {
-      en: site,
-      ne: `${site}/ne`,
-      "x-default": site,
-    },
-  },
+  alternates: { canonical: site, languages: hreflangMap("/") ?? { en: site, "x-default": site } },
   openGraph: {
     type: "website",
     url: site,

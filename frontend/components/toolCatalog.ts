@@ -1,7 +1,7 @@
 export type ToolInfo = { slug: string; name: string; category: string; description: string; keywords: string };
 export const toolCatalog: ToolInfo[] = [
 {slug:"resume-builder",name:"Professional Resume & CV Builder",category:"Career Tools",description:"Create a polished CV with 20 professional templates, live A4 preview, editable sections and free PDF export.",keywords:"resume cv maker builder templates europass harvard job application cover letter career"},
-{slug:"pdf-tools",name:"Explore 50+ PDF Tools",category:"PDF",description:"Open the full PDF toolbox for merging, splitting, compressing, converting, editing and securing documents.",keywords:"pdf merge split compress convert edit tools"},
+{slug:"pdf-tools",name:"Explore 49 PDF Tools",category:"PDF",description:"Open 49 available PDF tools for merging, splitting, compressing, converting, editing and securing documents.",keywords:"pdf merge split compress convert edit tools"},
 {slug:"loan-emi-calculator",name:"Loan & EMI Calculator",category:"Finance",description:"Calculate monthly EMI, total interest and total repayment.",keywords:"loan emi interest installment mortgage finance"},
 {slug:"compound-interest-sip-calculator",name:"Compound Interest & SIP Calculator",category:"Finance",description:"Estimate compound growth and monthly SIP investment value.",keywords:"compound interest sip investment return"},
 {slug:"discount-percentage-calculator",name:"Discount & Percentage Calculator",category:"Finance",description:"Calculate discounts, percentages and percentage change.",keywords:"discount percentage shopping sale"},

@@ -6,6 +6,7 @@ import { toolCatalog } from "../../../components/toolCatalog";
 import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
 import { toolGuides } from "../../../lib/tool-guides";
+import { toolContentPublishedLocales } from "../../../lib/i18n/config";
 
 const site = "https://pd-fora.vercel.app";
 export function generateStaticParams() {
@@ -85,7 +86,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
   return {
     title, description, keywords,
-    alternates: { canonical },
+    alternates: { canonical, languages: Object.fromEntries([["en", canonical], ...toolContentPublishedLocales.map((locale) => [locale, `${site}/${locale}/tools/${slug}`]), ["x-default", canonical]]) },
     robots: { index: slug !== "ocr-pdf", follow: true },
     openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
     twitter: { card: "summary_large_image", title: socialTitle, description, images: [`/tools/${tool.slug}/opengraph-image`] },

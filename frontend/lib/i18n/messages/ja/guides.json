@@ -1,0 +1,12 @@
+{
+  "ui": {
+    "overview": "このツールを使う場面",
+    "steps": "手順を追った使い方",
+    "example": "使用例と活用方法",
+    "limitations": "制限事項と精度",
+    "commonMistakes": "よくある間違い",
+    "safety": "安全な利用方法",
+    "related": "関連ツールと参考情報"
+  },
+  "entries": {}
+}

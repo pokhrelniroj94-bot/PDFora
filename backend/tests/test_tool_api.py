@@ -179,9 +179,27 @@ def test_pdf_information_handles_missing_metadata():
     response = post_pdf("/api/pdf-info", make_sample_pdf())
     assert response.status_code == 200
     report = response.content.decode("utf-8")
-    assert "Page count: 4" in report
+    assert "Page count: 4\n" in report
     assert "Title: Not set" in report
     assert "Author: Not set" in report
+    assert "\\n" not in report
+
+
+def test_page_counter_report_uses_real_newlines():
+    response = post_pdf("/api/page-counter", make_sample_pdf())
+    assert response.status_code == 200
+    report = response.content.decode("utf-8")
+    assert "Total pages: 4\n" in report
+    assert "\\n" not in report
+
+
+def test_extract_bookmarks_report_uses_real_newlines():
+    response = post_pdf("/api/extract-bookmarks", make_sample_pdf())
+    assert response.status_code == 200
+    report = response.content.decode("utf-8")
+    assert "Page 1: Introduction\n" in report
+    assert "Page 2: Second section\n" in report
+    assert "\\n" not in report
 
 
 def test_protect_pdf_encrypts_and_preserves_pages():

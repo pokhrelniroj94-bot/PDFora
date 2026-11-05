@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ToolDirectory from "./ToolDirectory";
 
 const site = "https://pd-fora.vercel.app";
 
@@ -119,6 +120,7 @@ export default function NepaliHomePage() {
       </section>
 
 
+      <ToolDirectory />
     </main>
   );
 }

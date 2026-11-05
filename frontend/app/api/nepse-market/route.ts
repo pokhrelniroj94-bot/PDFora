@@ -175,6 +175,33 @@ export async function GET(request: Request) {
       }
     }
   }
+  // The archived NEPSE index series can lag behind the current market snapshot.
+  // Append the latest dated index close so the chart does not stop at an older archive date.
+  if (isIndex) {
+    const indexNameBySymbol: Record<string, string> = {
+      NEPSE: "NEPSE Index", SENSIND: "Sensitive Index", FLOATIND: "Float Index",
+      SENSFLTIND: "Sensitive Float Index", BANKSUBIND: "Banking SubIndex", DEVBANKIND: "Development Bank Index",
+      FININD: "Finance Index", HOTELIND: "Hotels And Tourism Index", HYDPOWIND: "HydroPower Index",
+      INVIDX: "Investment Index", LIFINSIND: "Life Insurance Index", MANPROCIND: "Manufacturing And Processing",
+      MICRFININD: "Microfinance Index", MUTUALIND: "Mutual Fund Index", NONLIFIND: "Non Life Insurance Index",
+      OTHERSIND: "Others Index", TRDIND: "Trading Index",
+    };
+    const latestIndex = indices.map(asRecord).find((row) => row && row.index === indexNameBySymbol[symbol]);
+    const rawDate = latestIndex?.generatedTime;
+    const latestDate = typeof rawDate === "string" && rawDate
+      ? new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(rawDate))
+      : "";
+    const latestClose = Number(latestIndex?.close);
+    if (latestDate && Number.isFinite(latestClose) && latestClose > 0 && !points.some((point) => point.date === latestDate)) {
+      points.push({
+        date: latestDate,
+        close: latestClose,
+        open: Number(latestIndex?.open),
+        high: Number(latestIndex?.high),
+        low: Number(latestIndex?.low),
+      });
+    }
+  }
   points.sort((a, b) => a.date.localeCompare(b.date));
   const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)
     ? sectorsResult.value as Array<{ indexCode?: string; indexName?: string; description?: string }>

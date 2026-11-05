@@ -85,7 +85,7 @@ export default function SiteAIHelp() {
             <button type="button" onClick={() => setOpen(false)} aria-label="Close AI Help" className="rounded-lg px-2 py-1 text-xl hover:bg-white/10">×</button>
           </header>
           <div className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-3" aria-live="polite">
-            <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] leading-4 text-amber-900">AI answers may be wrong. Do not share passwords, OTPs, bank details or confidential information. Your question is sent to our configured AI provider.</p>
+            <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] leading-4 text-amber-900">AI answers may be wrong. Do not share passwords, OTPs, bank details or confidential information. If AI is enabled, your question is sent to the configured provider. Do not share sensitive information.</p>
             {messages.map((message, index) => (
               <div key={index} className={"max-w-[90%] whitespace-pre-wrap rounded-2xl px-3 py-2.5 text-sm leading-5 " + (message.role === "user" ? "ml-auto bg-teal-700 text-white" : "mr-auto border border-slate-200 bg-white text-slate-800")}>{message.text}</div>
             ))}

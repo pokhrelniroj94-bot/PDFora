@@ -2711,20 +2711,22 @@ async def extract_pdf_fonts(file: UploadFile = File(...)):
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
-        found = set()
+        seen = set()
+        extracted_count = 0
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-            for page_index, page in enumerate(doc):
+            for page in doc:
                 for font in page.get_fonts(full=True):
                     xref = font[0]
-                    if not xref or xref in found:
+                    if not xref or xref in seen:
                         continue
-                    found.add(xref)
+                    seen.add(xref)
                     extracted = doc.extract_font(xref)
                     if extracted and extracted[3]:
                         name, ext, _, data = extracted
                         safe_name = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in name)[:80]
                         archive.writestr(f"{safe_name or 'font'}-{xref}.{ext}", data)
-        if not found:
+                        extracted_count += 1
+        if extracted_count == 0:
             raise HTTPException(status_code=422, detail="No extractable embedded fonts were found.")
         return FileResponse(str(out), media_type="application/zip", filename="NIROJ-Fonts.zip", background=BackgroundTask(cleanup_job, job))
     finally:

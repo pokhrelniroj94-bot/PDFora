@@ -1,33 +1,36 @@
 # PDFora i18n rollout: status
 
-Branch: `i18n/global-multilingual` (from `feat/pdf-ora-ai-help-market-signals` @ 8cf31b8). Not merged, not deployed.
+Branch: codex/niroj-tools-development. Development-only work; not merged or deployed to production.
 
-## Execution limits (verified in this sandbox)
-- `npm ci` / `next build` / lint / tsc: BLOCKED. npm crashes and the egress proxy answers 403 for registry.npmjs.org. Nothing has been built or tested; no result below is a PASS.
-- Existing `npm run verify:tools` FAILS on this branch before any i18n change: "Homepage is not using the canonical tool directory" (scripts/verify-tool-catalog.mjs:87). The homepage moved to `components/HomePageClient.tsx` while the script reads `app/page.tsx`. Needs a reviewed fix; the test was not edited or removed.
+## Current implementation
+- English retains its existing unprefixed URLs.
+- Nepali homepage is integrated into the /[locale] route through components/NepaliHomePage.tsx; the duplicate app/ne/page.tsx route was removed.
+- English and Nepali are the only published locales. Nepali has complete common, accessibility and SEO dictionaries.
+- Hindi, Spanish, French, German, Arabic, Chinese, Japanese and Korean remain unpublished and are excluded from hreflang and sitemap output.
+- proxy.ts forwards locale and direction headers to the root layout, which sets document-level lang and dir.
+- Homepage hreflang is generated from the published-locale registry. Other paths are not offered as translations until equivalent localized pages exist.
+- Sitemap output is partitioned into core, tools, editorial and published-locale sitemaps.
+- Tool guides prefer per-tool guide data; editorial and tool-page links resolve to canonical tool paths.
+- Loan & EMI homepage instructions now describe its actual inputs and outputs.
 
-## Inventory (static parse, see inventory.json)
-- Page routes 63, API routes 6, catalog entries 125 (10 categories), 49 legacy root-level PDF slugs.
-- Hand-written blog slugs: 8 (blog-posts.ts) + 19 (nepal-blog-posts.ts); tool-guides.ts adds posts at runtime (count to confirm at build time).
-- Branch-specific features to preserve: NEPSE market/research/lab, forex, news APIs, AI writing (`/api/ai-writing`, Upstash + Cloudflare rate limiting), SiteAIHelp, SmartToolCenter, MarketIntelligence.
-
-## Status table
-| Phase | Status |
+## Verification status
+| Check | Status |
 |---|---|
-| 1 Discovery | PARTIALLY COMPLETE (static only) |
-| 2 Core i18n | PARTIALLY COMPLETE: library tested by execution; Next.js integration written but NOT BUILT |
-| 3 Shared UI | NOT STARTED |
-| 4 Tools (125 catalog entries) | NOT STARTED |
-| 5 Blog | NOT STARTED |
-| 6 Static pages | NOT STARTED |
-| 7 SEO | NOT STARTED |
-| 8 Security/perf | NOT STARTED |
-| 9 Regression | NOT STARTED |
+| Source integration | Implemented; source inspected |
+| Nepali dictionaries | Added; parity check not rerun on latest commit |
+| i18n unit tests | Updated; not re-executed on latest commit |
+| TypeScript / ESLint / Next build | Not verified on latest commit |
+| Sitemap runtime output | Not verified on latest commit |
+| Production | Unchanged; no production deployment action taken |
 
-## Verification log (only things actually executed)
-| Check | Result | Where |
-|---|---|---|
-| `node scripts/verify-tool-catalog.mjs` | PASS (124 catalog, 173 directory tools) | authoring sandbox |
-| `node scripts/i18n.test.mjs` | PASS 13/13 (type stripping, not tsc) | authoring sandbox |
-| `node scripts/i18n-check.mjs` | PASS (English valid; 9 locales unpublished) | authoring sandbox |
-| `npm ci`, `tsc`, `lint`, `next build` | NOT RUN (npm blocked) | pending your local run |
+Earlier Preview builds exposed two issues: an outdated test expectation that Nepali remain unpublished, and a missing site constant in the extracted Nepali component. Both were corrected in later commits. A full build of the latest commit has not run because Vercel reported its free daily deployment API allowance was exceeded. No build success is claimed.
+
+## Remaining limitations
+1. Only the homepage is genuinely localized in Nepali. Nepali tool and blog routes are not published equivalents.
+2. Shared footer, tool directory and AI help UI may still contain English copy on the Nepali homepage.
+3. Arabic RTL is wired at the document level but Arabic remains unpublished and needs visual QA.
+4. Mobile rendering, Lighthouse and Core Web Vitals have not been measured.
+5. Tool/API runtime behaviour is not established by source inspection.
+
+## Next verification
+After Vercel deployment allowance resets, build the latest development commit and inspect full logs. Require passing tool verification, i18n tests, i18n completeness, ESLint, TypeScript and Next.js build. Then verify / and /ne HTML, reciprocal hreflang, document lang/dir, sitemap partitions and canonical internal links on Preview.

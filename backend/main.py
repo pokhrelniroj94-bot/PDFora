@@ -125,7 +125,7 @@ app.add_middleware(
     ],
     # Allow only deployment URLs belonging to this PDFora Vercel project.
     # Preview URLs change per deployment, so enumerating individual hosts is brittle.
-    allow_origin_regex=r"https://pd-fora-[a-z0-9-]+-pokhrelniroj94-7012s-projects\\.vercel\\.app",
+    allow_origin_regex=r"https://pd-fora-[a-z0-9-]+-pokhrelniroj94-7012s-projects\.vercel\.app",
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],

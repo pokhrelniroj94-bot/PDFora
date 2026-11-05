@@ -72,7 +72,14 @@ export function SmartToolCenter() {
   const categories = useMemo(() => {
     const counts = new Map<string, number>();
     allTools.forEach((tool) => counts.set(tool.category, (counts.get(tool.category) ?? 0) + 1));
-    return [{ name: "All", count: allTools.length }, ...Array.from(counts, ([name, count]) => ({ name, count })).sort((a, b) => a.name.localeCompare(b.name))];
+    const pdfCount = allTools.filter((tool) => tool.kind === "pdf").length;
+    return [
+      { name: "All", count: allTools.length },
+      { name: "PDF", count: pdfCount },
+      ...Array.from(counts, ([name, count]) => ({ name, count }))
+        .filter((item) => item.name !== "PDF")
+        .sort((a, b) => a.name.localeCompare(b.name)),
+    ];
   }, []);
 
   const filtered = useMemo(() => {
@@ -87,7 +94,12 @@ export function SmartToolCenter() {
     return result;
   }, [query, category, sort]);
 
-  const popular = popularSlugs.map((slug) => allTools.find((tool) => tool.slug === slug)).filter((tool) => tool && (category === "All" || tool.category === category));
+  const popular = popularSlugs
+    .map((slug) => allTools.find((tool) => tool.slug === slug))
+    .filter((tool) => tool && (
+      category === "All" ||
+      (category === "PDF" ? tool.kind === "pdf" : tool.category === category)
+    ));
 
   function chooseTask(task: string) {
     setQuery(task);

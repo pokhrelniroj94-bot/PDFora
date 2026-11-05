@@ -19,14 +19,16 @@ test("locale table: 10 locales, English default, Arabic is the only RTL", () => 
   for (const l of config.locales) assert.equal(config.localeInfo[l].code, l);
 });
 
-test("publishing policy: only English is published; non-English is not routable without preview", () => {
+test("publishing policy: English and reviewed Nepali are published; incomplete locales stay hidden", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
   assert.equal(config.isPublished("en"), true);
-  for (const l of config.locales.filter((x) => x !== "en")) {
-    assert.equal(config.isPublished(l), false, `${l} must start unpublished`);
+  assert.equal(config.isPublished("ne"), true, "Nepali homepage and dictionaries are published");
+  assert.equal(config.isRoutable("ne"), true);
+  for (const l of config.locales.filter((x) => x !== "en" && x !== "ne")) {
+    assert.equal(config.isPublished(l), false, `${l} must stay unpublished until reviewed`);
     assert.equal(config.isRoutable(l), false);
   }
-  assert.deepEqual(config.getRoutableLocales(), []);
+  assert.deepEqual(config.getRoutableLocales(), ["ne"]);
   assert.equal(config.isRoutable("en"), false, "English is served unprefixed, never at /en");
   process.env.PDFORA_I18N_PREVIEW = "1";
   assert.deepEqual(config.getRoutableLocales(), ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"]);

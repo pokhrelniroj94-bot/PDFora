@@ -156,6 +156,7 @@ export default function HomePageClient() {
         <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6 lg:px-8">
           <Link
             href="/"
+            aria-current="page"
             className="flex items-center gap-2"
             aria-label="PDFora home"
           >

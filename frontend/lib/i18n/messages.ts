@@ -12,7 +12,7 @@ import { createTranslator, type MessageTree, type Translator } from "./translate
  * tool-descriptions, forms, validation, errors, downloads, blog, faq, about, privacy,
  * terms, contact, cookies, footer.
  */
-export const namespaces = ["common", "accessibility", "seo"] as const;
+export const namespaces = ["common", "accessibility", "seo", "tools", "guides", "calculators", "faqs"] as const;
 export type Namespace = (typeof namespaces)[number];
 
 type Loader = () => Promise<{ default: unknown }>;
@@ -24,51 +24,91 @@ const loaders: Partial<Record<Locale, Partial<Record<Namespace, Loader>>>> = {
     common: () => import("./messages/en/common.json"),
     accessibility: () => import("./messages/en/accessibility.json"),
     seo: () => import("./messages/en/seo.json"),
+    tools: () => import("./messages/en/tools.json"),
+    guides: () => import("./messages/en/guides.json"),
+    calculators: () => import("./messages/en/calculators.json"),
+    faqs: () => import("./messages/en/faqs.json"),
   },
   ne: {
     common: () => import("./messages/ne/common.json"),
     accessibility: () => import("./messages/ne/accessibility.json"),
     seo: () => import("./messages/ne/seo.json"),
+    tools: () => import("./messages/ne/tools.json"),
+    guides: () => import("./messages/ne/guides.json"),
+    calculators: () => import("./messages/ne/calculators.json"),
+    faqs: () => import("./messages/ne/faqs.json"),
   },
   hi: {
     common: () => import("./messages/hi/common.json"),
     accessibility: () => import("./messages/hi/accessibility.json"),
     seo: () => import("./messages/hi/seo.json"),
+    tools: () => import("./messages/hi/tools.json"),
+    guides: () => import("./messages/hi/guides.json"),
+    calculators: () => import("./messages/hi/calculators.json"),
+    faqs: () => import("./messages/hi/faqs.json"),
   },
   es: {
     common: () => import("./messages/es/common.json"),
     accessibility: () => import("./messages/es/accessibility.json"),
     seo: () => import("./messages/es/seo.json"),
+    tools: () => import("./messages/es/tools.json"),
+    guides: () => import("./messages/es/guides.json"),
+    calculators: () => import("./messages/es/calculators.json"),
+    faqs: () => import("./messages/es/faqs.json"),
   },
   fr: {
     common: () => import("./messages/fr/common.json"),
     accessibility: () => import("./messages/fr/accessibility.json"),
     seo: () => import("./messages/fr/seo.json"),
+    tools: () => import("./messages/fr/tools.json"),
+    guides: () => import("./messages/fr/guides.json"),
+    calculators: () => import("./messages/fr/calculators.json"),
+    faqs: () => import("./messages/fr/faqs.json"),
   },
   de: {
     common: () => import("./messages/de/common.json"),
     accessibility: () => import("./messages/de/accessibility.json"),
     seo: () => import("./messages/de/seo.json"),
+    tools: () => import("./messages/de/tools.json"),
+    guides: () => import("./messages/de/guides.json"),
+    calculators: () => import("./messages/de/calculators.json"),
+    faqs: () => import("./messages/de/faqs.json"),
   },
   ar: {
     common: () => import("./messages/ar/common.json"),
     accessibility: () => import("./messages/ar/accessibility.json"),
     seo: () => import("./messages/ar/seo.json"),
+    tools: () => import("./messages/ar/tools.json"),
+    guides: () => import("./messages/ar/guides.json"),
+    calculators: () => import("./messages/ar/calculators.json"),
+    faqs: () => import("./messages/ar/faqs.json"),
   },
   zh: {
     common: () => import("./messages/zh/common.json"),
     accessibility: () => import("./messages/zh/accessibility.json"),
     seo: () => import("./messages/zh/seo.json"),
+    tools: () => import("./messages/zh/tools.json"),
+    guides: () => import("./messages/zh/guides.json"),
+    calculators: () => import("./messages/zh/calculators.json"),
+    faqs: () => import("./messages/zh/faqs.json"),
   },
   ja: {
     common: () => import("./messages/ja/common.json"),
     accessibility: () => import("./messages/ja/accessibility.json"),
     seo: () => import("./messages/ja/seo.json"),
+    tools: () => import("./messages/ja/tools.json"),
+    guides: () => import("./messages/ja/guides.json"),
+    calculators: () => import("./messages/ja/calculators.json"),
+    faqs: () => import("./messages/ja/faqs.json"),
   },
   ko: {
     common: () => import("./messages/ko/common.json"),
     accessibility: () => import("./messages/ko/accessibility.json"),
     seo: () => import("./messages/ko/seo.json"),
+    tools: () => import("./messages/ko/tools.json"),
+    guides: () => import("./messages/ko/guides.json"),
+    calculators: () => import("./messages/ko/calculators.json"),
+    faqs: () => import("./messages/ko/faqs.json"),
   },
 };
 

@@ -81,9 +81,9 @@ export default async function LocalizedToolPage({ params }: Props) {
   return <>
     <main className="flex-1" lang={info.htmlLang} dir={info.dir}>
       <div className="mx-auto max-w-7xl px-4 pt-5">
-        <p className="text-xs font-semibold text-amber-700" role="note">{ui("common.previewBanner")}</p>
+        {!isToolContentPublished(locale) && <p className="text-xs font-semibold text-amber-700" role="note">{ui("common.previewBanner")}</p>}
       </div>
-      <ToolWorkspace slug={slug} />
+      <ToolWorkspace slug={slug} localizedTitle={tool.title} localizedDescription={tool.description} />
       <LocalizedToolContent tool={tool} guide={validGuide} calculator={validCalculator} faqs={faqs}
         labels={{
           overview: String(ui("guides.overview")), example: String(ui("guides.example")),

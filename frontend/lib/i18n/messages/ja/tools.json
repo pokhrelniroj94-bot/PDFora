@@ -7,7 +7,10 @@
     "supportedFormats": "対応ファイル形式",
     "privacy": "ファイルとデータのプライバシー",
     "download": "結果をダウンロード",
-    "trySample": "まず小さなサンプルでお試しください"
+    "trySample": "まず小さなサンプルでお試しください",
+    "workflow": "推奨する手順",
+    "accuracy": "精度と制限事項",
+    "mistakes": "よくある間違い"
   },
   "entries": {}
 }

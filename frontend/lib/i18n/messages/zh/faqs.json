@@ -1,0 +1,11 @@
+{
+  "ui": {
+    "heading": "常见问题",
+    "howWorks": "此工具如何工作？",
+    "accuracy": "结果准确吗？",
+    "privacy": "我的文件是否安全？",
+    "formats": "支持哪些文件格式？",
+    "troubleshooting": "故障排查"
+  },
+  "entries": {}
+}

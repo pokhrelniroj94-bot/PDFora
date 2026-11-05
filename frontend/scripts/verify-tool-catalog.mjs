@@ -68,7 +68,8 @@ assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal la
 assert.ok(nepalTools.includes('from "../lib/nepali-date-converter"') && nepalTools.includes("new DateConverter"), "Bundled Nepali date converter is missing");
 
 const toolDirectory = read("../lib/tool-directory.ts");
-const homepage = read("../app/page.tsx");
+// The homepage UI moved from app/page.tsx into components/HomePageClient.tsx; page.tsx is now a thin metadata wrapper.
+const homepage = read("../app/page.tsx") + "\n" + read("../components/HomePageClient.tsx");
 const directoryComponent = read("../components/AllTools.tsx");
 const pdfBlock = toolDirectory.split("const rawPdfTools")[1]?.split("\n];")[0];
 assert.ok(pdfBlock, "Canonical PDF tool list is missing");
@@ -110,12 +111,15 @@ const marketPage = read("../app/market/page.tsx");
 const newsApi = read("../app/api/nepal-market-news/route.ts");
 const newsComponent = read("../components/NepalMarketNews.tsx");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
-assert.ok(marketApi.includes('source: usingLiveQuotes ? "YONEPSE live quote snapshot"'), "NEPSE API must identify the live quote source");
-assert.ok(marketApi.includes('read<Json>("/data/market/status.json")'), "NEPSE status source must be mapped correctly");
-assert.ok(marketApi.includes('read<unknown[]>("/data/market/summary.json")'), "NEPSE summary source must be an array");
-assert.ok(marketApi.includes('read<Json>("/data/market/top_stocks.json")'), "NEPSE top movers source must be an object");
-assert.ok(marketApi.includes('read<unknown[]>("/data/market/sector_indices.json")'), "NEPSE sector source must be an array");
-assert.ok(marketApi.includes('read<Json>("/data/market/supply_demand.json")'), "NEPSE supply/demand source must be an object");
+assert.ok(
+  marketApi.includes('"NEPSE unofficial live API (nepseman-api)"') && marketApi.includes('"YONEPSE public market snapshot"') && marketApi.includes('"YONEPSE historical snapshot fallback"'),
+  "NEPSE API must identify the live, snapshot and fallback quote sources",
+);
+assert.ok(marketApi.includes('read<Json>("/data/market/status.json", 60)'), "NEPSE status source must be mapped correctly");
+assert.ok(marketApi.includes('read<unknown[]>("/data/market/summary.json", 60)'), "NEPSE summary source must be an array");
+assert.ok(marketApi.includes('read<Json>("/data/market/top_stocks.json", 60)'), "NEPSE top movers source must be an object");
+assert.ok(marketApi.includes('read<unknown[]>("/data/market/sector_indices.json", 60)'), "NEPSE sector source must be an array");
+assert.ok(marketApi.includes('read<Json>("/data/market/supply_demand.json", 60)'), "NEPSE supply/demand source must be an object");
 assert.ok(marketApi.includes("summary: pick(summaryResult, [])"), "NEPSE summary fallback must remain an array for dashboard rendering");
 assert.ok(marketApi.includes('s-maxage=60'), "NEPSE API response cache must allow frequent quote updates");
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");

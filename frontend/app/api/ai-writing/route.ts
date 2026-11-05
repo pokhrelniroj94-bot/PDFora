@@ -258,6 +258,7 @@ export async function POST(request: Request) {
     const diagnostic = [
       "CLIENT_IP_UNAVAILABLE",
       "SHARED_RATE_LIMIT_NOT_CONFIGURED",
+      "SHARED_RATE_LIMIT_INVALID_URL",
       "SHARED_RATE_LIMIT_UNAVAILABLE",
       "SHARED_RATE_LIMIT_INVALID_RESPONSE",
     ].includes(reason) ? reason : "SHARED_RATE_LIMIT_NETWORK_OR_TLS_ERROR";

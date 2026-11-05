@@ -117,7 +117,7 @@ export function SmartToolCenter() {
           </Link>
           <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <Link href="/ne" lang="ne" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2.5 text-[11px] font-extrabold text-blue-800 transition hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">नेपाली</Link>
-            <Link href="/market" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2.5 text-[11px] font-bold text-teal-800 transition hover:border-teal-400 hover:bg-teal-100 sm:px-3 sm:text-xs"><span aria-hidden="true">📈</span><span className="ml-1">Market</span></Link>
+            <Link href="/market" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2.5 text-[11px] font-bold text-teal-800 transition hover:border-teal-400 hover:bg-teal-100 sm:px-3 sm:text-xs"><span aria-hidden="true">📈</span><span className="ml-1 hidden sm:inline">Market</span></Link>
             <Link href="/tools" aria-current="page" className="inline-flex min-h-9 items-center justify-center rounded-lg bg-slate-950 px-3 text-[11px] font-bold text-white shadow-sm transition hover:bg-slate-800 sm:px-4 sm:text-xs">Tools</Link>
           </nav>
         </div>

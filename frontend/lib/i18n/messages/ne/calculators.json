@@ -1,0 +1,19 @@
+{
+  "ui": {
+    "amount": "रकम",
+    "principal": "मूलधन",
+    "annualRate": "वार्षिक ब्याजदर (%)",
+    "monthlyRate": "मासिक ब्याजदर (%)",
+    "termMonths": "अवधि (महिना)",
+    "termYears": "अवधि (वर्ष)",
+    "monthlyPayment": "मासिक किस्ता (EMI)",
+    "totalPayment": "कुल भुक्तानी",
+    "totalInterest": "कुल ब्याज",
+    "baseAmount": "आधार रकम",
+    "taxRate": "कर दर (%)",
+    "result": "गणनाको नतिजा",
+    "formula": "सूत्र",
+    "rounding": "देखाइएको नतिजा राउन्ड गरिएको हुन सक्छ"
+  },
+  "entries": {}
+}

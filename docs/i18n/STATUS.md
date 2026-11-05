@@ -15,11 +15,19 @@ Branch: `i18n/global-multilingual` (from `feat/pdf-ora-ai-help-market-signals` @
 | Phase | Status |
 |---|---|
 | 1 Discovery | PARTIALLY COMPLETE (static only) |
-| 2 Core i18n | NOT STARTED (needs build) |
+| 2 Core i18n | PARTIALLY COMPLETE: library tested by execution; Next.js integration written but NOT BUILT |
 | 3 Shared UI | NOT STARTED |
-| 4 Tools (125) | NOT STARTED |
+| 4 Tools (125 catalog entries) | NOT STARTED |
 | 5 Blog | NOT STARTED |
 | 6 Static pages | NOT STARTED |
 | 7 SEO | NOT STARTED |
 | 8 Security/perf | NOT STARTED |
 | 9 Regression | NOT STARTED |
+
+## Verification log (only things actually executed)
+| Check | Result | Where |
+|---|---|---|
+| `node scripts/verify-tool-catalog.mjs` | PASS (124 catalog, 173 directory tools) | authoring sandbox |
+| `node scripts/i18n.test.mjs` | PASS 13/13 (type stripping, not tsc) | authoring sandbox |
+| `node scripts/i18n-check.mjs` | PASS (English valid; 9 locales unpublished) | authoring sandbox |
+| `npm ci`, `tsc`, `lint`, `next build` | NOT RUN (npm blocked) | pending your local run |

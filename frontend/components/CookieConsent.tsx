@@ -66,7 +66,16 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
     </section>}
 
     {open && <div className="fixed inset-0 z-[80] flex items-end justify-center bg-slate-950/50 p-3 sm:items-center" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}>
-      <section role="dialog" aria-modal="true" aria-labelledby="cookie-settings-title" aria-describedby="cookie-settings-description" onKeyDown={(event) => { if (event.key === "Escape") setOpen(false); }} className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-2xl">
+      <section role="dialog" aria-modal="true" aria-labelledby="cookie-settings-title" aria-describedby="cookie-settings-description" onKeyDown={(event) => {
+          if (event.key === "Escape") { setOpen(false); return; }
+          if (event.key === "Tab") {
+            const focusable = event.currentTarget.querySelectorAll<HTMLElement>("button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]");
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+          }
+        }} className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-2xl">
         <div className="flex items-center justify-between gap-3"><h2 id="cookie-settings-title" className="text-lg font-extrabold text-slate-900">Cookie settings</h2><button ref={closeButtonRef} type="button" onClick={() => setOpen(false)} className="rounded-lg px-2 py-1 text-xl text-slate-500" aria-label="Close cookie settings">×</button></div>
         <p id="cookie-settings-description" className="mt-2 text-sm leading-6 text-slate-600">Choose which optional cookies PDFora may use. Essential storage is always active because it supports core site functions and remembers your privacy choice.</p>
         <div className="mt-4 space-y-3">

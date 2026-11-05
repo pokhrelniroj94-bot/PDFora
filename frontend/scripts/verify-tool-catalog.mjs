@@ -129,6 +129,8 @@ assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
 assert.ok(newsComponent.includes("10 * 60 * 1000"), "News component must auto-refresh headlines every 10 minutes");
+assert.ok(nepalLiveTools.includes("Effective tax rate: {amount > 0 ?") && !nepalLiveTools.includes("Effective tax rate: ${amount > 0 ?"), "Nepal salary tax effective rate must display as a percentage, not currency");
+assert.ok(catalogSource.includes("Explore 49 PDF Tools") && catalogSource.includes("49 available PDF tools"), "PDF tool catalogue must advertise the 49 enabled PDF tools accurately");
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");

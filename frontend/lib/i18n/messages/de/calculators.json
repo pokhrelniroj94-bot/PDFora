@@ -13,7 +13,10 @@
     "taxRate": "Steuersatz (%)",
     "result": "Berechnungsergebnis",
     "formula": "Formel",
-    "rounding": "Das angezeigte Ergebnis kann gerundet sein"
+    "rounding": "Das angezeigte Ergebnis kann gerundet sein",
+    "inputs": "Eingaben",
+    "outputs": "Berechnete Ergebnisse",
+    "assumptions": "Annahmen der Formel"
   },
   "entries": {}
 }

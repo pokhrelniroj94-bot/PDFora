@@ -7,5 +7,1770 @@
     "formats": "Which file formats are supported?",
     "troubleshooting": "Troubleshooting"
   },
-  "entries": {}
+  "entries": {
+    "resume-builder": [
+      {
+        "q": "What should I check before using Professional Resume & CV Builder?",
+        "a": "Start with a clean ATS-friendly layout such as Harvard Classic or Compact ATS for online applications. Tailor the summary and achievement bullets to the vacancy, use measurable results where truthful, then check the A4 PDF on desktop and mobile."
+      },
+      {
+        "q": "How accurate is Professional Resume & CV Builder?",
+        "a": "The builder formats the information you provide. It does not independently verify employment, qualifications, dates, contact details or ATS compatibility. Review every field and the final printed pages before applying."
+      },
+      {
+        "q": "What is a common mistake when using Professional Resume & CV Builder?",
+        "a": "Avoid invented achievements, generic objective statements, spelling errors, excessive graphics and unprofessional email addresses. Keep dates consistent and do not include sensitive personal information unless the employer specifically requires it."
+      }
+    ],
+    "loan-emi-calculator": [
+      {
+        "q": "How is monthly EMI calculated?",
+        "a": "The calculator uses the reducing-balance EMI formula with the annual interest rate converted to a monthly rate and the loan term entered in months."
+      },
+      {
+        "q": "Does the EMI include bank fees and insurance?",
+        "a": "No. It estimates principal and interest only. Check the lender's repayment schedule for fees, insurance, floating rates and other charges."
+      },
+      {
+        "q": "Why does a longer loan term increase total interest?",
+        "a": "A longer term spreads repayment over more months. The monthly EMI may fall, but interest can accumulate for longer."
+      }
+    ],
+    "compound-interest-sip-calculator": [
+      {
+        "q": "Does the SIP calculator assume monthly deposits?",
+        "a": "Yes. It assumes monthly deposits at the end of each month and a constant monthly return based on the annual rate entered."
+      },
+      {
+        "q": "Are the estimated investment returns guaranteed?",
+        "a": "No. The future value is a mathematical projection, not a guaranteed market return or investment recommendation."
+      },
+      {
+        "q": "Does the result include fees and taxes?",
+        "a": "No. The estimate does not automatically deduct investment fees, taxes or inflation."
+      }
+    ],
+    "discount-percentage-calculator": [
+      {
+        "q": "What should I check before using Discount & Percentage Calculator?",
+        "a": "Enter the original price and discount rate, then compare the final price and savings. Use the percentage fields separately when you want to calculate one value as a share of another."
+      },
+      {
+        "q": "How accurate is Discount & Percentage Calculator?",
+        "a": "The result is arithmetic only and does not include delivery charges, coupons, tax or store-specific terms unless they are included in the input."
+      },
+      {
+        "q": "What is a common mistake when using Discount & Percentage Calculator?",
+        "a": "Enter 20 for 20%, not 0.20. Check that the discount is between 0 and 100 and that the original price is not negative."
+      }
+    ],
+    "percentage-change-calculator": [
+      {
+        "q": "What should I check before using Percentage Change Calculator?",
+        "a": "Use the same unit and time basis for both values. Check the sign and whether the result is labelled as an increase or decrease."
+      },
+      {
+        "q": "How accurate is Percentage Change Calculator?",
+        "a": "Percentage change uses the original value as the baseline and cannot be calculated when the original value is zero."
+      },
+      {
+        "q": "What is a common mistake when using Percentage Change Calculator?",
+        "a": "Do not reverse the original and new values. A change from 120 to 100 is not the same percentage as a change from 100 to 120."
+      }
+    ],
+    "average-calculator": [
+      {
+        "q": "What statistics does the average calculator show?",
+        "a": "It calculates count, mean, median, mode and range from the numbers entered."
+      },
+      {
+        "q": "How should I separate the numbers?",
+        "a": "Use commas, semicolons or spaces between valid numbers. Avoid mixing text labels with the number list."
+      },
+      {
+        "q": "What if there is no repeated number?",
+        "a": "The tool reports that there is no repeated value for the mode when every number occurs only once."
+      }
+    ],
+    "fraction-calculator": [
+      {
+        "q": "What should I check before using Fraction Calculator?",
+        "a": "Enter both numerators and denominators, select the operation, then check the simplified fraction and decimal equivalent."
+      },
+      {
+        "q": "How accurate is Fraction Calculator?",
+        "a": "The calculator expects whole-number numerators and non-zero denominators. Division by a zero fraction is undefined."
+      },
+      {
+        "q": "What is a common mistake when using Fraction Calculator?",
+        "a": "Do not put a denominator in the numerator field. Keep denominators non-zero and confirm the selected operation before using the result."
+      }
+    ],
+    "age-calculator": [
+      {
+        "q": "What should I check before using Age Calculator?",
+        "a": "Use the date of birth exactly as recorded and select the intended reference date. Check the day, month and year order in the input fields."
+      },
+      {
+        "q": "How accurate is Age Calculator?",
+        "a": "The result depends on the dates entered and calendar month lengths. It is not an identity or legal age verification."
+      },
+      {
+        "q": "What is a common mistake when using Age Calculator?",
+        "a": "Do not swap the birth date and reference date. A reference date earlier than the birth date is invalid."
+      }
+    ],
+    "date-difference-calculator": [
+      {
+        "q": "What should I check before using Date Difference Calculator?",
+        "a": "Enter both dates in the same calendar and check whether you need elapsed days or an inclusive count for your task."
+      },
+      {
+        "q": "How accurate is Date Difference Calculator?",
+        "a": "Weeks and average months are derived from the day count; calendar months have different lengths. The day difference does not count inclusive endpoints as separate extra days."
+      },
+      {
+        "q": "What is a common mistake when using Date Difference Calculator?",
+        "a": "Do not interpret an average month as an exact calendar month. Check the start and end dates before copying the day total."
+      }
+    ],
+    "time-duration-calculator": [
+      {
+        "q": "What should I check before using Time Duration Calculator?",
+        "a": "Enter both times in 24-hour format and decide whether the end time is on the same day or the following day."
+      },
+      {
+        "q": "How accurate is Time Duration Calculator?",
+        "a": "The tool calculates clock duration and does not account for daylight-saving changes, unpaid breaks or shift rules."
+      },
+      {
+        "q": "What is a common mistake when using Time Duration Calculator?",
+        "a": "Check AM/PM conversion when using a 12-hour clock and subtract breaks separately if the task requires paid working time."
+      }
+    ],
+    "profit-margin-calculator": [
+      {
+        "q": "How is gross profit margin calculated?",
+        "a": "Gross profit is selling price minus cost. Profit margin is gross profit divided by selling price, multiplied by 100."
+      },
+      {
+        "q": "Is profit margin the same as markup?",
+        "a": "No. Margin divides profit by selling price, while markup divides profit by cost."
+      },
+      {
+        "q": "Does the calculator include overhead and tax?",
+        "a": "No. It uses only the entered cost and selling price, so it is a gross margin estimate before other expenses."
+      }
+    ],
+    "markup-calculator": [
+      {
+        "q": "What should I check before using Markup Calculator?",
+        "a": "Enter the cost and desired markup percentage, then review the markup amount and suggested selling price."
+      },
+      {
+        "q": "How accurate is Markup Calculator?",
+        "a": "This calculation applies a markup percentage to cost. It does not calculate a target profit margin or include tax and overhead."
+      },
+      {
+        "q": "What is a common mistake when using Markup Calculator?",
+        "a": "Do not enter the desired margin as though it were a markup. Margin and markup use different denominators."
+      }
+    ],
+    "break-even-calculator": [
+      {
+        "q": "What is the break-even point?",
+        "a": "It is the sales volume where revenue covers fixed and variable costs, leaving no profit or loss under the entered assumptions."
+      },
+      {
+        "q": "Why must selling price exceed variable cost?",
+        "a": "Each unit must contribute a positive amount toward fixed costs. If price does not exceed variable cost, selling more units cannot cover fixed costs."
+      },
+      {
+        "q": "Does it round the required units?",
+        "a": "Yes. It rounds the calculated break-even quantity up to the next whole unit and also shows estimated break-even revenue."
+      }
+    ],
+    "sales-tax-calculator": [
+      {
+        "q": "What should I check before using Sales Tax Calculator?",
+        "a": "Choose add-tax or remove-tax mode carefully, enter the amount and rate, then inspect the tax component and total."
+      },
+      {
+        "q": "How accurate is Sales Tax Calculator?",
+        "a": "The tool applies a simple percentage and does not determine which tax rate, exemption or jurisdiction applies to a transaction."
+      },
+      {
+        "q": "What is a common mistake when using Sales Tax Calculator?",
+        "a": "When removing tax, enter the tax-inclusive amount. Do not simply subtract the percentage from the inclusive total."
+      }
+    ],
+    "salary-breakdown-calculator": [
+      {
+        "q": "Is this Nepal's official salary tax calculator?",
+        "a": "No. It applies a simple editable deduction percentage and is not a statutory payroll or progressive income-tax calculation."
+      },
+      {
+        "q": "Can I convert monthly salary into annual take-home?",
+        "a": "Yes. The tool estimates monthly gross, deduction, monthly take-home and annual take-home based on the same simple deduction assumption."
+      },
+      {
+        "q": "Should I use this for a final payslip?",
+        "a": "No. Compare with your employer's payroll statement and use the dedicated Nepal salary-tax calculator for a separate FY-specific tax estimate."
+      }
+    ],
+    "savings-goal-calculator": [
+      {
+        "q": "How is monthly savings needed calculated?",
+        "a": "The calculator subtracts current savings from the target and divides the remaining amount by the number of months available."
+      },
+      {
+        "q": "Does it include interest or investment returns?",
+        "a": "No. It assumes you save the same amount each month and excludes interest, investment returns, fees and inflation."
+      },
+      {
+        "q": "What if I have already reached my target?",
+        "a": "The remaining amount and monthly savings needed are shown as zero when current savings meet or exceed the target."
+      }
+    ],
+    "simple-interest-calculator": [
+      {
+        "q": "What should I check before using Simple Interest Calculator?",
+        "a": "Check principal, annual rate and time period. Make sure the time is expressed in years as expected by the tool."
+      },
+      {
+        "q": "How accurate is Simple Interest Calculator?",
+        "a": "Simple interest is calculated on the original principal and does not compound. Actual deposits or loans may use different conventions and fees."
+      },
+      {
+        "q": "What is a common mistake when using Simple Interest Calculator?",
+        "a": "Do not enter a monthly rate as an annual rate or confuse simple interest with compound interest."
+      }
+    ],
+    "commission-calculator": [
+      {
+        "q": "What should I check before using Commission Calculator?",
+        "a": "Enter the eligible sales amount and commission percentage, then compare the result with the written commission agreement."
+      },
+      {
+        "q": "How accurate is Commission Calculator?",
+        "a": "The estimate uses one flat commission rate and does not model tiered targets, refunds, taxes or employer-specific terms."
+      },
+      {
+        "q": "What is a common mistake when using Commission Calculator?",
+        "a": "Check whether the rate applies to gross sales, net sales or collected revenue before relying on the amount."
+      }
+    ],
+    "hourly-to-salary-calculator": [
+      {
+        "q": "What should I check before using Hourly to Salary Calculator?",
+        "a": "Enter the hourly wage and typical paid hours per week. Compare weekly, average monthly and annual gross figures."
+      },
+      {
+        "q": "How accurate is Hourly to Salary Calculator?",
+        "a": "The estimate assumes 52 paid weeks and does not subtract leave, unpaid time, overtime rules, tax or other deductions."
+      },
+      {
+        "q": "What is a common mistake when using Hourly to Salary Calculator?",
+        "a": "Do not assume 4 weeks equals one average month. Check whether the hours entered are paid hours and whether work is available all year."
+      }
+    ],
+    "tip-calculator": [
+      {
+        "q": "What should I check before using Tip Calculator?",
+        "a": "Enter the bill, tip percentage and number of people. Check the total and per-person share before settling."
+      },
+      {
+        "q": "How accurate is Tip Calculator?",
+        "a": "This is a simple tip estimate and does not account for service charges already included in a bill."
+      },
+      {
+        "q": "What is a common mistake when using Tip Calculator?",
+        "a": "Check whether the bill already includes a service charge and enter the number of people as a positive whole number."
+      }
+    ],
+    "split-bill-calculator": [
+      {
+        "q": "What should I check before using Split Bill Calculator?",
+        "a": "Enter the bill, any extra amount and the number of people sharing it. Confirm whether everyone is paying an equal share."
+      },
+      {
+        "q": "How accurate is Split Bill Calculator?",
+        "a": "The tool divides the total evenly. It does not calculate unequal shares, itemised orders or separate tax rates."
+      },
+      {
+        "q": "What is a common mistake when using Split Bill Calculator?",
+        "a": "Do not forget to include any extra charge or use the number of items instead of the number of people."
+      }
+    ],
+    "bmi-calculator": [
+      {
+        "q": "How is BMI calculated?",
+        "a": "BMI is weight in kilograms divided by height in metres squared. For example, 70 kg at 1.75 m gives a BMI of about 22.86."
+      },
+      {
+        "q": "Does BMI measure body fat directly?",
+        "a": "No. BMI is a screening measure based on height and weight and does not directly measure body fat or individual health."
+      },
+      {
+        "q": "Can I use adult BMI ranges for children?",
+        "a": "No. Children and teenagers need age- and sex-specific BMI-for-age interpretation from an appropriate health professional."
+      }
+    ],
+    "bmr-calculator": [
+      {
+        "q": "What does BMR mean?",
+        "a": "Basal metabolic rate estimates the energy the body uses at rest to maintain basic functions."
+      },
+      {
+        "q": "Is BMR the same as daily maintenance calories?",
+        "a": "No. Total daily energy expenditure also includes movement, exercise and digestion, so it is generally higher than BMR."
+      },
+      {
+        "q": "Is the result an exact metabolic measurement?",
+        "a": "No. It is an equation-based estimate. A laboratory measurement may differ."
+      }
+    ],
+    "unit-converter": [
+      {
+        "q": "Which units can I convert?",
+        "a": "The available categories include common length, mass, temperature and volume units. The options shown in the converter define the supported units."
+      },
+      {
+        "q": "Can I convert any two units?",
+        "a": "Only compatible units should be converted, such as metres to feet or kilograms to pounds. Different physical quantities cannot be directly converted without additional information."
+      },
+      {
+        "q": "Why is temperature conversion different?",
+        "a": "Celsius, Fahrenheit and Kelvin conversions use offset formulas, not just a simple multiplication factor."
+      }
+    ],
+    "ratio-simplifier": [
+      {
+        "q": "How do I simplify a ratio?",
+        "a": "Divide both terms by their greatest common divisor. For example, 12:18 becomes 2:3 after dividing both terms by 6."
+      },
+      {
+        "q": "Does simplifying change the ratio?",
+        "a": "No. Dividing both terms by the same non-zero factor preserves the relationship."
+      },
+      {
+        "q": "Can I simplify ratios with different units?",
+        "a": "Convert both quantities to the same unit before simplifying so the comparison is meaningful."
+      }
+    ],
+    "gcd-lcm-calculator": [
+      {
+        "q": "What is the difference between GCD and LCM?",
+        "a": "GCD is the largest integer that divides each input exactly; LCM is the smallest positive integer that is a multiple of each input."
+      },
+      {
+        "q": "How can I check the answer for two positive integers?",
+        "a": "For two positive integers, GCD multiplied by LCM equals the product of the two numbers."
+      },
+      {
+        "q": "Can I enter decimal values?",
+        "a": "Use integers when the calculator asks for whole numbers. Decimals are not standard inputs for integer GCD and LCM calculations."
+      }
+    ],
+    "prime-number-checker": [
+      {
+        "q": "What is a prime number?",
+        "a": "A prime number is an integer greater than 1 with exactly two positive factors: 1 and itself."
+      },
+      {
+        "q": "Is 1 a prime number?",
+        "a": "No. The number 1 has only one positive factor, so it is neither prime nor composite."
+      },
+      {
+        "q": "Does the checker show factors for composite numbers?",
+        "a": "The tool can list factors for composite inputs where supported; review the output to see which integers divide the number exactly."
+      }
+    ],
+    "random-number-generator": [
+      {
+        "q": "Are the minimum and maximum values included?",
+        "a": "The tool describes an inclusive range, meaning both the entered minimum and maximum may be generated."
+      },
+      {
+        "q": "Can the generator avoid duplicate values?",
+        "a": "Check whether a unique-values option is enabled. Independent random draws can repeat unless uniqueness is specifically enforced."
+      },
+      {
+        "q": "Can I use it for an official lottery?",
+        "a": "No. Do not use a general-purpose browser utility as a certified or regulated lottery drawing system."
+      }
+    ],
+    "dice-roller": [
+      {
+        "q": "What should I check before using Dice Roller?",
+        "a": "Choose the number of dice, roll, then inspect each die and the combined total rather than only the sum."
+      },
+      {
+        "q": "How accurate is Dice Roller?",
+        "a": "A digital dice roll is a simulation and does not replace certified random equipment for regulated games."
+      },
+      {
+        "q": "What is a common mistake when using Dice Roller?",
+        "a": "Do not confuse the number of dice with the number of sides or assume every total has the same probability."
+      }
+    ],
+    "business-days-calculator": [
+      {
+        "q": "Which days are excluded?",
+        "a": "The calculator excludes Saturdays and Sundays. It does not automatically remove every Nepal public holiday unless that feature is explicitly provided."
+      },
+      {
+        "q": "Does it include the start and end dates?",
+        "a": "Check the date-count convention stated in the result. Inclusive business-day counts can differ from elapsed weekday counts."
+      },
+      {
+        "q": "Are Nepal public holidays removed automatically?",
+        "a": "No. Treat this as a weekday count and check applicable government, regional or employer holidays separately."
+      }
+    ],
+    "unix-timestamp-converter": [
+      {
+        "q": "What is a Unix timestamp?",
+        "a": "It is a count of seconds or milliseconds since 1970-01-01 00:00:00 UTC, depending on the format used by the source."
+      },
+      {
+        "q": "How can I tell seconds from milliseconds?",
+        "a": "Common modern timestamps have about 10 digits in seconds and 13 digits in milliseconds, but validate the source format rather than relying only on digit count."
+      },
+      {
+        "q": "Why does local time differ from UTC?",
+        "a": "UTC is a global reference time. Local display applies the selected or device timezone offset."
+      }
+    ],
+    "date-add-subtract-calculator": [
+      {
+        "q": "What should I check before using Date Add or Subtract Calculator?",
+        "a": "Enter the starting date, choose add or subtract, enter the number of days and check the resulting date and year boundary."
+      },
+      {
+        "q": "How accurate is Date Add or Subtract Calculator?",
+        "a": "The result depends on whether the tool adds calendar days or calendar months and how it handles month-end dates."
+      },
+      {
+        "q": "What is a common mistake when using Date Add or Subtract Calculator?",
+        "a": "Do not confuse 30 days with one calendar month or overlook leap years and month lengths."
+      }
+    ],
+    "aspect-ratio-calculator": [
+      {
+        "q": "What is an aspect ratio?",
+        "a": "It is the proportional relationship between width and height, commonly written as 16:9 or 4:3."
+      },
+      {
+        "q": "Will the calculator resize my image file?",
+        "a": "No. It calculates proportions and dimensions; use an image editor or resizer to change the actual file."
+      },
+      {
+        "q": "How do I avoid stretching an image?",
+        "a": "Keep the same aspect ratio when changing width or height, or crop the image if a different frame is required."
+      }
+    ],
+    "px-rem-converter": [
+      {
+        "q": "What should I check before using PX to REM Converter?",
+        "a": "Set the correct root font size, enter the pixel or rem value, then verify the computed size in the browser's rendered layout."
+      },
+      {
+        "q": "How accurate is PX to REM Converter?",
+        "a": "The conversion depends on the root font size configured in the calculator and the CSS root font size used by the actual page."
+      },
+      {
+        "q": "What is a common mistake when using PX to REM Converter?",
+        "a": "Do not assume the root size is always 16 px or confuse rem with em, which depends on the parent element's font size."
+      }
+    ],
+    "color-contrast-checker": [
+      {
+        "q": "What should I check before using Color Contrast Checker?",
+        "a": "Enter foreground and background colours, inspect the contrast ratio and check the WCAG result for normal and large text."
+      },
+      {
+        "q": "How accurate is Color Contrast Checker?",
+        "a": "Contrast ratio is calculated from relative luminance. It does not assess font size, font weight, colour perception or every accessibility requirement."
+      },
+      {
+        "q": "What is a common mistake when using Color Contrast Checker?",
+        "a": "Do not test only the brand colour in isolation; test the actual text/background pair and include hover, disabled and focus states."
+      }
+    ],
+    "word-character-counter": [
+      {
+        "q": "Does the counter include spaces?",
+        "a": "It displays the character counts according to the labels shown, including or excluding spaces where available."
+      },
+      {
+        "q": "Why can counts differ from Microsoft Word or social media?",
+        "a": "Apps may count emoji, Unicode graphemes, punctuation and line breaks differently. Follow the limit of the platform where you will publish."
+      },
+      {
+        "q": "Can I count Nepali text?",
+        "a": "Yes, paste Unicode Nepali text and review the count. Different software may treat combined characters and punctuation differently."
+      }
+    ],
+    "reading-time-calculator": [
+      {
+        "q": "How is reading time estimated?",
+        "a": "The estimate divides the word count by an assumed reading speed, usually expressed in words per minute."
+      },
+      {
+        "q": "Is the reading time exact?",
+        "a": "No. Reading speed varies with topic, language, formatting, tables and reader familiarity."
+      },
+      {
+        "q": "Can I change the reading speed?",
+        "a": "Use the available words-per-minute setting if provided, and compare estimates using the same speed assumption."
+      }
+    ],
+    "word-frequency-counter": [
+      {
+        "q": "What should I check before using Word Frequency Counter?",
+        "a": "Paste the text, choose the counting options, then inspect frequent words and decide whether common stop words should be excluded."
+      },
+      {
+        "q": "How accurate is Word Frequency Counter?",
+        "a": "Frequency depends on tokenisation, punctuation removal, case sensitivity and language-specific word boundaries."
+      },
+      {
+        "q": "What is a common mistake when using Word Frequency Counter?",
+        "a": "Do not compare results from different case or punctuation settings as if they used identical counting rules."
+      }
+    ],
+    "text-to-slug": [
+      {
+        "q": "What should I check before using Text to URL Slug Converter?",
+        "a": "Enter a concise page title, generate the slug, review transliteration and punctuation, then check that the final URL is unique and stable."
+      },
+      {
+        "q": "How accurate is Text to URL Slug Converter?",
+        "a": "Slug generation normalises text according to the tool's character and separator rules. Search engines do not require a specific slug format for ranking."
+      },
+      {
+        "q": "What is a common mistake when using Text to URL Slug Converter?",
+        "a": "Do not change an established URL without a redirect or assume keyword stuffing in a slug improves rankings."
+      }
+    ],
+    "json-formatter-validator": [
+      {
+        "q": "Does formatting JSON change its data?",
+        "a": "Pretty printing changes whitespace and indentation, not the parsed data structure. Minifying removes unnecessary whitespace."
+      },
+      {
+        "q": "Does valid JSON mean my API payload is correct?",
+        "a": "No. Syntax validation does not confirm that required fields, data types or application-specific schema rules are satisfied."
+      },
+      {
+        "q": "Can I use comments in JSON?",
+        "a": "Strict JSON does not support comments or trailing commas. Remove them before validating standard JSON."
+      }
+    ],
+    "base64-encoder-decoder": [
+      {
+        "q": "Is Base64 encryption?",
+        "a": "No. Base64 is a reversible encoding that changes how bytes are represented. It does not protect information with a secret key."
+      },
+      {
+        "q": "Can I decode a Base64 string?",
+        "a": "Yes. Choose decode mode and provide valid Base64 input. The decoded bytes must also match the expected text encoding."
+      },
+      {
+        "q": "Is it safe to encode passwords in Base64?",
+        "a": "No. Anyone can decode Base64. Never use it as password protection or secret storage."
+      }
+    ],
+    "url-encoder-decoder": [
+      {
+        "q": "What does URL encoding do?",
+        "a": "It represents characters that are not safe or reserved in a URL component using percent-encoded bytes."
+      },
+      {
+        "q": "Should I encode the entire URL?",
+        "a": "Usually no. Encode the query value or individual path component, not URL separators such as the scheme, slashes and query delimiters."
+      },
+      {
+        "q": "Why do spaces sometimes appear as plus signs?",
+        "a": "HTML form encoding commonly represents spaces as plus signs, while percent encoding often uses %20. Use the convention required by the destination."
+      }
+    ],
+    "hash-generator": [
+      {
+        "q": "Can a hash be converted back to the original text?",
+        "a": "A cryptographic hash is designed to be one-way; it is not a reversible encoding."
+      },
+      {
+        "q": "Which hash algorithm should I use?",
+        "a": "For general modern integrity checks, SHA-256 is preferable to legacy MD5 or SHA-1. Follow the security requirements of your application."
+      },
+      {
+        "q": "Is a hash the same as encryption?",
+        "a": "No. Encryption is reversible with a key; hashing produces a fixed-size digest and has no decryption step."
+      }
+    ],
+    "image-compressor": [
+      {
+        "q": "Will image compression reduce quality?",
+        "a": "It can, especially with lossy formats such as JPEG and WebP. Inspect the exported image at its intended display size."
+      },
+      {
+        "q": "Can I compress an image to an exact file size?",
+        "a": "A target size may be approximate because the final bytes depend on image content, dimensions and encoding settings."
+      },
+      {
+        "q": "Should I keep the original image?",
+        "a": "Yes. Keep an untouched copy so you can retry with a different quality or dimension setting."
+      }
+    ],
+    "image-format-converter": [
+      {
+        "q": "What should I check before using Image Format Converter?",
+        "a": "Choose an output format based on the destination, convert a copy and verify transparency, dimensions and visual quality after download."
+      },
+      {
+        "q": "How accurate is Image Format Converter?",
+        "a": "Format conversion can change transparency, metadata, colour profiles and file size. JPEG does not support transparency; PNG and WebP have different capabilities."
+      },
+      {
+        "q": "What is a common mistake when using Image Format Converter?",
+        "a": "Do not expect a format conversion to improve source quality or preserve transparency when exporting to JPEG."
+      }
+    ],
+    "password-strength-checker": [
+      {
+        "q": "Does a strong score guarantee password security?",
+        "a": "No. A score is only a heuristic and cannot prove that a password is unique or has not appeared in a data breach."
+      },
+      {
+        "q": "Should I enter my real password into a checker?",
+        "a": "Only if you have verified how the page processes and protects input. Safer practice is to test a sample rather than reuse an actual account password."
+      },
+      {
+        "q": "What makes a password safer?",
+        "a": "Length, uniqueness and unpredictable generation matter. A password manager helps create and store different passwords for every account."
+      }
+    ],
+    "password-generator": [
+      {
+        "q": "How long should a generated password be?",
+        "a": "Use a long, unique password that meets the destination service's requirements. A password manager can generate and store it safely."
+      },
+      {
+        "q": "Should I reuse a generated password?",
+        "a": "No. Use a different password for each account so a breach at one service does not expose other accounts."
+      },
+      {
+        "q": "Where should I save the password?",
+        "a": "Save it directly in a reputable password manager. Avoid plain-text notes, public documents or sending passwords in messages."
+      }
+    ],
+    "currency-converter": [
+      {
+        "q": "Where do currency exchange rates come from?",
+        "a": "The rate source and timestamp are displayed by the tool where available. Rates from banks, remittance providers and card networks can differ."
+      },
+      {
+        "q": "Will I receive exactly the converted amount?",
+        "a": "Not necessarily. Providers may apply their own buying or selling rate, spread and service fees."
+      },
+      {
+        "q": "Why can the rate date be older than today?",
+        "a": "Some public rate sources update only on working days. Weekends and public holidays may leave the previous published rate as the latest available."
+      }
+    ],
+    "case-converter": [
+      {
+        "q": "What should I check before using Case Converter?",
+        "a": "Test a short paragraph first, preserve acronyms and proper nouns, then convert the full text."
+      },
+      {
+        "q": "How accurate is Case Converter?",
+        "a": "Case rules differ for acronyms, names and language-specific letters. Title case is a formatting convention, not a grammar checker."
+      },
+      {
+        "q": "What is a common mistake when using Case Converter?",
+        "a": "Do not assume automatic title case will preserve every brand name or abbreviation."
+      }
+    ],
+    "lorem-ipsum-generator": [
+      {
+        "q": "What should I check before using Lorem Ipsum Generator?",
+        "a": "Generate only enough text to test the design, then replace it with reviewed original writing."
+      },
+      {
+        "q": "How accurate is Lorem Ipsum Generator?",
+        "a": "Placeholder text is not meaningful copy and must not be published as factual or SEO content."
+      },
+      {
+        "q": "What is a common mistake when using Lorem Ipsum Generator?",
+        "a": "Do not leave placeholder text on a public page or use it as a substitute for useful content."
+      }
+    ],
+    "text-diff-checker": [
+      {
+        "q": "What should I check before using Text Diff Checker?",
+        "a": "Compare two plain-text versions and review each changed block before accepting edits."
+      },
+      {
+        "q": "How accurate is Text Diff Checker?",
+        "a": "A text diff compares characters or lines; it does not decide whether a change is correct or preserve every rich-text style."
+      },
+      {
+        "q": "What is a common mistake when using Text Diff Checker?",
+        "a": "Do not overlook whitespace-only changes or assume visually similar Unicode characters are identical."
+      }
+    ],
+    "color-picker-palette": [
+      {
+        "q": "What should I check before using Color Picker & Palette Generator?",
+        "a": "Record the HEX or RGB value and test it in the actual interface where the colour will be used."
+      },
+      {
+        "q": "How accurate is Color Picker & Palette Generator?",
+        "a": "Screen appearance varies with display calibration and colour profiles. A palette is a design aid, not an accessibility check."
+      },
+      {
+        "q": "What is a common mistake when using Color Picker & Palette Generator?",
+        "a": "Do not judge text readability from colour harmony alone; check contrast separately."
+      }
+    ],
+    "remove-duplicate-lines": [
+      {
+        "q": "What should I check before using Remove Duplicate Lines?",
+        "a": "Test with a short list containing exact repeats and near-matches before cleaning a large dataset."
+      },
+      {
+        "q": "How accurate is Remove Duplicate Lines?",
+        "a": "Two lines that differ in spaces, letter case or Unicode characters may be treated as different values."
+      },
+      {
+        "q": "What is a common mistake when using Remove Duplicate Lines?",
+        "a": "Keep a copy of the source list and check whether case or whitespace should count as a duplicate."
+      }
+    ],
+    "sort-lines": [
+      {
+        "q": "What should I check before using Sort Text Lines?",
+        "a": "Try a small sample with numbers, uppercase letters and Nepali text to confirm the ordering."
+      },
+      {
+        "q": "How accurate is Sort Text Lines?",
+        "a": "Sorting follows text comparison rules and may not match numeric, date or language-specific ordering in every case."
+      },
+      {
+        "q": "What is a common mistake when using Sort Text Lines?",
+        "a": "Do not use alphabetical sorting when the original sequence carries meaning or priority."
+      }
+    ],
+    "reverse-text": [
+      {
+        "q": "What should I check before using Reverse Text Generator?",
+        "a": "Use this utility for simple text transformations and verify multilingual output before reuse."
+      },
+      {
+        "q": "How accurate is Reverse Text Generator?",
+        "a": "Reversing characters can split combined Unicode graphemes, emoji sequences or Nepali conjuncts in unexpected ways."
+      },
+      {
+        "q": "What is a common mistake when using Reverse Text Generator?",
+        "a": "Do not use character reversal on complex scripts without checking that each visible character remains intact."
+      }
+    ],
+    "whitespace-cleaner": [
+      {
+        "q": "What should I check before using Whitespace Cleaner?",
+        "a": "Choose a representative sample and compare line breaks before cleaning the full text."
+      },
+      {
+        "q": "How accurate is Whitespace Cleaner?",
+        "a": "Whitespace can be meaningful in code, fixed-width data, poetry and some document layouts."
+      },
+      {
+        "q": "What is a common mistake when using Whitespace Cleaner?",
+        "a": "Do not remove indentation from code or formatting where spaces affect meaning."
+      }
+    ],
+    "character-frequency": [
+      {
+        "q": "What should I check before using Character Frequency Counter?",
+        "a": "Compare a short known sample manually, then use the result to inspect larger text."
+      },
+      {
+        "q": "How accurate is Character Frequency Counter?",
+        "a": "Counts depend on whether spaces, punctuation, case and Unicode code points are included separately."
+      },
+      {
+        "q": "What is a common mistake when using Character Frequency Counter?",
+        "a": "Do not interpret character counts as word frequency or language statistics without checking the counting rules."
+      }
+    ],
+    "uuid-generator": [
+      {
+        "q": "What should I check before using UUID Generator?",
+        "a": "Generate IDs where needed and validate their format in the application that will store them."
+      },
+      {
+        "q": "How accurate is UUID Generator?",
+        "a": "UUIDs are identifiers, not passwords or access-control secrets. Uniqueness is probabilistic rather than a substitute for database constraints."
+      },
+      {
+        "q": "What is a common mistake when using UUID Generator?",
+        "a": "Do not expose a UUID as the only protection for sensitive resources."
+      }
+    ],
+    "html-encoder-decoder": [
+      {
+        "q": "What should I check before using HTML Encoder & Decoder?",
+        "a": "Encode for the correct HTML context and test the result in a safe local page or parser."
+      },
+      {
+        "q": "How accurate is HTML Encoder & Decoder?",
+        "a": "HTML encoding helps represent special characters in markup but does not replace context-aware output escaping or sanitization."
+      },
+      {
+        "q": "What is a common mistake when using HTML Encoder & Decoder?",
+        "a": "Do not treat encoded HTML as automatically safe in JavaScript, CSS, URL or attribute contexts."
+      }
+    ],
+    "regex-tester": [
+      {
+        "q": "What should I check before using Regex Tester?",
+        "a": "Test ordinary values, empty strings, boundary cases and malformed input before using a pattern in code."
+      },
+      {
+        "q": "How accurate is Regex Tester?",
+        "a": "Regular-expression syntax and features vary between programming languages. A match does not prove that input is valid for every business rule."
+      },
+      {
+        "q": "What is a common mistake when using Regex Tester?",
+        "a": "Avoid overly complex patterns on untrusted large input because some expressions can cause excessive processing."
+      }
+    ],
+    "jwt-decoder": [
+      {
+        "q": "What should I check before using JWT Decoder?",
+        "a": "Use a dummy or non-sensitive token and validate signature and claims with the trusted server-side library."
+      },
+      {
+        "q": "How accurate is JWT Decoder?",
+        "a": "Decoding does not verify a JWT signature, issuer, audience, expiry or trustworthiness. The payload may contain sensitive information."
+      },
+      {
+        "q": "What is a common mistake when using JWT Decoder?",
+        "a": "Never treat decoded claims as authenticated or paste production tokens into a public page."
+      }
+    ],
+    "css-minifier": [
+      {
+        "q": "What should I check before using CSS Minifier?",
+        "a": "Keep the original stylesheet, minify a copy and compare the rendered page across target screen sizes."
+      },
+      {
+        "q": "How accurate is CSS Minifier?",
+        "a": "Minification does not guarantee visual correctness and can expose syntax errors that were hidden by a poorly tested workflow."
+      },
+      {
+        "q": "What is a common mistake when using CSS Minifier?",
+        "a": "Do not deploy minified CSS without running the project's build and visual regression checks."
+      }
+    ],
+    "json-to-csv": [
+      {
+        "q": "What should I check before using JSON to CSV Converter?",
+        "a": "Test a small array containing empty and quoted values, then inspect the CSV in the target spreadsheet application."
+      },
+      {
+        "q": "How accurate is JSON to CSV Converter?",
+        "a": "Nested objects, arrays, missing keys, commas, quotes and line breaks need explicit handling; CSV cannot represent every JSON structure without flattening."
+      },
+      {
+        "q": "What is a common mistake when using JSON to CSV Converter?",
+        "a": "Do not assume a complex nested JSON document can be converted losslessly into a flat table."
+      }
+    ],
+    "meta-title-checker": [
+      {
+        "q": "What should I check before using SEO Meta Title Checker?",
+        "a": "Keep the page's main topic clear, place the most useful phrase naturally near the start and compare the title with the visible H1."
+      },
+      {
+        "q": "How accurate is SEO Meta Title Checker?",
+        "a": "Search engines may rewrite titles and truncate snippets differently by device, query and pixel width; character count alone is not a ranking score."
+      },
+      {
+        "q": "What is a common mistake when using SEO Meta Title Checker?",
+        "a": "Avoid repeating keywords, boilerplate titles or titles that promise content the page does not provide."
+      }
+    ],
+    "meta-description-checker": [
+      {
+        "q": "What should I check before using Meta Description Checker?",
+        "a": "Write a distinct, accurate summary of the page and make sure the visible content supports the promise."
+      },
+      {
+        "q": "How accurate is Meta Description Checker?",
+        "a": "Search engines may choose a different snippet from the page content. A description is not a direct ranking guarantee."
+      },
+      {
+        "q": "What is a common mistake when using Meta Description Checker?",
+        "a": "Avoid keyword stuffing, duplicate descriptions and claims that are not supported by the page."
+      }
+    ],
+    "keyword-density-checker": [
+      {
+        "q": "What should I check before using Keyword Density Checker?",
+        "a": "Use the output to spot accidental repetition, then judge the wording by usefulness and natural readability."
+      },
+      {
+        "q": "How accurate is Keyword Density Checker?",
+        "a": "Keyword density is a descriptive count, not a target percentage or a reliable ranking formula."
+      },
+      {
+        "q": "What is a common mistake when using Keyword Density Checker?",
+        "a": "Do not add repeated keywords merely to reach a numerical density."
+      }
+    ],
+    "robots-txt-generator": [
+      {
+        "q": "What should I check before using Robots.txt Generator?",
+        "a": "Test the file with the relevant search-engine robots tools and keep important public pages crawlable."
+      },
+      {
+        "q": "How accurate is Robots.txt Generator?",
+        "a": "Robots.txt controls crawler access but does not remove a URL from search results or protect private information."
+      },
+      {
+        "q": "What is a common mistake when using Robots.txt Generator?",
+        "a": "Do not block CSS, JavaScript, key pages or the entire site unintentionally."
+      }
+    ],
+    "sitemap-generator": [
+      {
+        "q": "What should I check before using XML Sitemap Generator?",
+        "a": "Use absolute canonical URLs, submit the sitemap in Search Console and update it when public pages change."
+      },
+      {
+        "q": "How accurate is XML Sitemap Generator?",
+        "a": "A sitemap helps discovery but does not guarantee crawling, indexing or ranking. Redirected, blocked, duplicate and noindex URLs should not be included."
+      },
+      {
+        "q": "What is a common mistake when using XML Sitemap Generator?",
+        "a": "Do not include private pages, tracking URLs, duplicate routes or URLs that return errors."
+      }
+    ],
+    "open-graph-preview": [
+      {
+        "q": "What should I check before using Open Graph Preview Tool?",
+        "a": "Use an absolute publicly accessible image URL, check the crop and test the live page with platform debuggers."
+      },
+      {
+        "q": "How accurate is Open Graph Preview Tool?",
+        "a": "Platforms can cache previews and apply their own image dimensions, title limits and fallback behaviour."
+      },
+      {
+        "q": "What is a common mistake when using Open Graph Preview Tool?",
+        "a": "Do not rely on a local image path or assume every platform displays the same preview."
+      }
+    ],
+    "url-query-parser": [
+      {
+        "q": "What should I check before using URL Query String Parser?",
+        "a": "Test a URL containing multiple query values, percent-encoded characters and a fragment before using the output."
+      },
+      {
+        "q": "How accurate is URL Query String Parser?",
+        "a": "URL parsing distinguishes encoded components and repeated parameters; malformed or relative URLs may behave differently."
+      },
+      {
+        "q": "What is a common mistake when using URL Query String Parser?",
+        "a": "Do not share URLs that contain private access tokens or session identifiers."
+      }
+    ],
+    "xml-formatter-validator": [
+      {
+        "q": "What should I check before using XML Formatter & Validator?",
+        "a": "Validate a small sample and then test the result against the target XSD or consuming application."
+      },
+      {
+        "q": "How accurate is XML Formatter & Validator?",
+        "a": "Well-formed XML may still violate a required schema, namespace rule or application-specific contract."
+      },
+      {
+        "q": "What is a common mistake when using XML Formatter & Validator?",
+        "a": "Do not assume formatting alone verifies the document's meaning or schema compliance."
+      }
+    ],
+    "notes-to-pdf": [
+      {
+        "q": "What should I check before using Notes to PDF?",
+        "a": "Use headings and short sections, export the PDF and open it in a separate reader before sharing."
+      },
+      {
+        "q": "How accurate is Notes to PDF?",
+        "a": "PDF layout can vary with long lines, special characters, fonts and page breaks. Always inspect the exported document."
+      },
+      {
+        "q": "What is a common mistake when using Notes to PDF?",
+        "a": "Do not assume the generated PDF preserves formatting from a rich-text editor unless it is shown in the preview."
+      }
+    ],
+    "line-counter": [
+      {
+        "q": "What should I check before using Line Counter?",
+        "a": "Test a sample with blank lines and a final newline to understand the counting convention."
+      },
+      {
+        "q": "How accurate is Line Counter?",
+        "a": "Different systems represent line endings differently, and a trailing newline can affect the reported count."
+      },
+      {
+        "q": "What is a common mistake when using Line Counter?",
+        "a": "Do not confuse non-empty lines with total line breaks."
+      }
+    ],
+    "sentence-counter": [
+      {
+        "q": "What should I check before using Sentence Counter?",
+        "a": "Compare a short sample with a manual count, especially where abbreviations or Nepali punctuation appear."
+      },
+      {
+        "q": "How accurate is Sentence Counter?",
+        "a": "Abbreviations, decimal points, initials and multilingual punctuation can make sentence boundaries ambiguous."
+      },
+      {
+        "q": "What is a common mistake when using Sentence Counter?",
+        "a": "Do not treat an automatic sentence count as a grammar or readability assessment."
+      }
+    ],
+    "email-extractor": [
+      {
+        "q": "What should I check before using Email Extractor?",
+        "a": "Review each extracted address, remove duplicates and obtain consent before sending bulk messages."
+      },
+      {
+        "q": "How accurate is Email Extractor?",
+        "a": "A pattern match cannot prove that an address exists, accepts mail or belongs to the intended person."
+      },
+      {
+        "q": "What is a common mistake when using Email Extractor?",
+        "a": "Do not use extracted contact details for unsolicited messages or assume every match is deliverable."
+      }
+    ],
+    "url-extractor": [
+      {
+        "q": "What should I check before using URL Extractor?",
+        "a": "Inspect each link's destination and protocol before opening or importing it into another system."
+      },
+      {
+        "q": "How accurate is URL Extractor?",
+        "a": "A syntactically plausible URL may be broken, malicious, redirected or inaccessible."
+      },
+      {
+        "q": "What is a common mistake when using URL Extractor?",
+        "a": "Do not open unknown links automatically or assume extraction verifies site safety."
+      }
+    ],
+    "phone-number-extractor": [
+      {
+        "q": "What should I check before using Phone Number Extractor?",
+        "a": "Check the country code and local format manually before saving or contacting a number."
+      },
+      {
+        "q": "How accurate is Phone Number Extractor?",
+        "a": "Number formats vary by country; a match does not confirm that a number is assigned, active or reachable."
+      },
+      {
+        "q": "What is a common mistake when using Phone Number Extractor?",
+        "a": "Do not treat extracted numbers as verified identities or consent to contact."
+      }
+    ],
+    "number-extractor": [
+      {
+        "q": "What should I check before using Number Extractor?",
+        "a": "Review each number with its surrounding text before using it in a spreadsheet or calculation."
+      },
+      {
+        "q": "How accurate is Number Extractor?",
+        "a": "The extraction may not distinguish dates, amounts, IDs, decimals and measurements without additional context."
+      },
+      {
+        "q": "What is a common mistake when using Number Extractor?",
+        "a": "Do not assume every extracted number represents a quantity or a value in the same unit."
+      }
+    ],
+    "hashtag-extractor": [
+      {
+        "q": "What should I check before using Hashtag Extractor?",
+        "a": "Remove duplicates and confirm each hashtag fits the post and platform conventions."
+      },
+      {
+        "q": "How accurate is Hashtag Extractor?",
+        "a": "A hashtag extractor finds text patterns; it does not measure popularity, relevance or platform reach."
+      },
+      {
+        "q": "What is a common mistake when using Hashtag Extractor?",
+        "a": "Do not add unrelated trending tags simply because they appear in an extracted list."
+      }
+    ],
+    "remove-duplicate-words": [
+      {
+        "q": "What should I check before using Remove Duplicate Words?",
+        "a": "Test a short paragraph first and compare the revised sentence with the source."
+      },
+      {
+        "q": "How accurate is Remove Duplicate Words?",
+        "a": "Duplicate detection can depend on case, punctuation and whitespace; repeated words may be intentional in natural language."
+      },
+      {
+        "q": "What is a common mistake when using Remove Duplicate Words?",
+        "a": "Do not automatically remove repeated words from legal, quoted or carefully edited text."
+      }
+    ],
+    "find-replace-text": [
+      {
+        "q": "What should I check before using Find and Replace Text?",
+        "a": "Check the number and context of matches, keep a source copy and review every replacement."
+      },
+      {
+        "q": "How accurate is Find and Replace Text?",
+        "a": "Plain-text replacement may be case-sensitive and can alter substrings inside larger words or identifiers."
+      },
+      {
+        "q": "What is a common mistake when using Find and Replace Text?",
+        "a": "Do not replace common fragments globally without checking unintended matches."
+      }
+    ],
+    "text-to-binary": [
+      {
+        "q": "What should I check before using Text to Binary Converter?",
+        "a": "Convert a short English and Nepali sample, then decode it back to confirm the expected encoding."
+      },
+      {
+        "q": "How accurate is Text to Binary Converter?",
+        "a": "The binary output depends on character encoding, typically UTF-8; non-ASCII characters use multiple bytes."
+      },
+      {
+        "q": "What is a common mistake when using Text to Binary Converter?",
+        "a": "Do not assume one character always maps to exactly eight bits."
+      }
+    ],
+    "binary-to-text": [
+      {
+        "q": "What should I check before using Binary to Text Converter?",
+        "a": "Use a known UTF-8 sample and check byte grouping before decoding a longer value."
+      },
+      {
+        "q": "How accurate is Binary to Text Converter?",
+        "a": "Invalid bit groups or a mismatched character encoding can produce errors or replacement characters."
+      },
+      {
+        "q": "What is a common mistake when using Binary to Text Converter?",
+        "a": "Do not interpret arbitrary binary data as text without knowing its encoding."
+      }
+    ],
+    "text-to-hex": [
+      {
+        "q": "What should I check before using Text to Hex Converter?",
+        "a": "Test with a known short string and preserve the encoding used for later decoding."
+      },
+      {
+        "q": "How accurate is Text to Hex Converter?",
+        "a": "Hex output represents bytes and depends on the character encoding; Nepali and emoji characters require multiple bytes."
+      },
+      {
+        "q": "What is a common mistake when using Text to Hex Converter?",
+        "a": "Do not confuse hexadecimal text representation with encryption."
+      }
+    ],
+    "hex-to-text": [
+      {
+        "q": "What should I check before using Hex to Text Converter?",
+        "a": "Check that the input contains valid byte pairs and use the same character encoding as the source."
+      },
+      {
+        "q": "How accurate is Hex to Text Converter?",
+        "a": "Odd-length, invalid or incorrectly encoded hex sequences may fail or produce unreadable characters."
+      },
+      {
+        "q": "What is a common mistake when using Hex to Text Converter?",
+        "a": "Do not assume every hexadecimal string represents UTF-8 text."
+      }
+    ],
+    "morse-code-translator": [
+      {
+        "q": "What should I check before using Morse Code Translator?",
+        "a": "Use a simple test phrase first and check separators between each letter and word."
+      },
+      {
+        "q": "How accurate is Morse Code Translator?",
+        "a": "Morse spacing separates letters and words; punctuation and language support may be limited by the tool's mapping."
+      },
+      {
+        "q": "What is a common mistake when using Morse Code Translator?",
+        "a": "Do not rely on an unverified translation for emergency, aviation or safety-critical communication."
+      }
+    ],
+    "palindrome-checker": [
+      {
+        "q": "What should I check before using Palindrome Checker?",
+        "a": "Test a simple known palindrome and check the displayed normalization rules for phrases."
+      },
+      {
+        "q": "How accurate is Palindrome Checker?",
+        "a": "Results can change depending on whether spaces, punctuation and letter case are ignored."
+      },
+      {
+        "q": "What is a common mistake when using Palindrome Checker?",
+        "a": "Do not assume a phrase-level check uses the same rules as a strict character-by-character comparison."
+      }
+    ],
+    "acronym-generator": [
+      {
+        "q": "What should I check before using Acronym Generator?",
+        "a": "Compare the generated acronym with common usage and edit it for clarity before publishing."
+      },
+      {
+        "q": "How accurate is Acronym Generator?",
+        "a": "Automatic initials may not follow an organisation's naming convention or established abbreviation."
+      },
+      {
+        "q": "What is a common mistake when using Acronym Generator?",
+        "a": "Do not assume the first-letter output is an officially recognised abbreviation."
+      }
+    ],
+    "camel-case-converter": [
+      {
+        "q": "What should I check before using Camel Case Converter?",
+        "a": "Test names with numbers and acronyms, then confirm the result follows the target codebase convention."
+      },
+      {
+        "q": "How accurate is Camel Case Converter?",
+        "a": "Automatic word splitting may not preserve acronyms, punctuation or language-specific names exactly."
+      },
+      {
+        "q": "What is a common mistake when using Camel Case Converter?",
+        "a": "Do not use generated identifiers without checking reserved words and naming rules."
+      }
+    ],
+    "snake-case-converter": [
+      {
+        "q": "What should I check before using Snake Case Converter?",
+        "a": "Review the output against the naming rules of the target framework or database."
+      },
+      {
+        "q": "How accurate is Snake Case Converter?",
+        "a": "Automatic conversion can change punctuation, accents and acronym boundaries."
+      },
+      {
+        "q": "What is a common mistake when using Snake Case Converter?",
+        "a": "Do not rename existing API fields or database columns without checking compatibility."
+      }
+    ],
+    "kebab-case-converter": [
+      {
+        "q": "What should I check before using Kebab Case Converter?",
+        "a": "Check the final slug for readability, uniqueness and compatibility with the target system."
+      },
+      {
+        "q": "How accurate is Kebab Case Converter?",
+        "a": "Slug rules differ for accents, Unicode letters, repeated separators and reserved URL characters."
+      },
+      {
+        "q": "What is a common mistake when using Kebab Case Converter?",
+        "a": "Do not change an established public URL without planning a redirect."
+      }
+    ],
+    "html-tag-stripper": [
+      {
+        "q": "What should I check before using HTML Tag Stripper?",
+        "a": "Test a small fragment containing paragraphs, lists and links before processing a full page."
+      },
+      {
+        "q": "How accurate is HTML Tag Stripper?",
+        "a": "Removing tags does not necessarily preserve links, table structure, accessibility labels or meaningful spacing."
+      },
+      {
+        "q": "What is a common mistake when using HTML Tag Stripper?",
+        "a": "Do not use stripped text as a safe HTML sanitizer or as a replacement for parsing."
+      }
+    ],
+    "csv-to-json": [
+      {
+        "q": "What should I check before using CSV to JSON Converter?",
+        "a": "Test a sample with commas inside quoted fields and missing values, then validate the JSON output."
+      },
+      {
+        "q": "How accurate is CSV to JSON Converter?",
+        "a": "Delimiter, quoting, escaped quotes, empty cells and duplicate column names affect how CSV is parsed."
+      },
+      {
+        "q": "What is a common mistake when using CSV to JSON Converter?",
+        "a": "Do not assume every CSV dialect uses commas or that all cells should be treated as strings."
+      }
+    ],
+    "json-to-yaml": [
+      {
+        "q": "What should I check before using JSON to YAML Converter?",
+        "a": "Parse the generated YAML with the target application's parser before deploying it."
+      },
+      {
+        "q": "How accurate is JSON to YAML Converter?",
+        "a": "YAML parsers can interpret strings, booleans, numbers and special characters differently depending on quoting and schema."
+      },
+      {
+        "q": "What is a common mistake when using JSON to YAML Converter?",
+        "a": "Do not paste secrets into public configuration tools or assume conversion validates application settings."
+      }
+    ],
+    "json-escape-unescape": [
+      {
+        "q": "What should I check before using JSON Escape and Unescape Tool?",
+        "a": "Test quotes, backslashes, newlines and Unicode characters, then parse the result in its target context."
+      },
+      {
+        "q": "How accurate is JSON Escape and Unescape Tool?",
+        "a": "Escaping depends on whether the input is a JSON string, a complete JSON document or text embedded in another language."
+      },
+      {
+        "q": "What is a common mistake when using JSON Escape and Unescape Tool?",
+        "a": "Do not double-escape content or confuse string escaping with encryption."
+      }
+    ],
+    "url-validator": [
+      {
+        "q": "What should I check before using URL Validator?",
+        "a": "Check the scheme, host and path, then test the destination separately using a trusted environment."
+      },
+      {
+        "q": "How accurate is URL Validator?",
+        "a": "A structurally valid URL may still point to a dead, unsafe or unintended destination."
+      },
+      {
+        "q": "What is a common mistake when using URL Validator?",
+        "a": "Do not treat syntax validation as malware scanning or proof that a site is trustworthy."
+      }
+    ],
+    "email-validator": [
+      {
+        "q": "What should I check before using Email Validator?",
+        "a": "Correct obvious formatting errors and use a confirmation email when account ownership matters."
+      },
+      {
+        "q": "How accurate is Email Validator?",
+        "a": "Syntax validation cannot prove mailbox ownership, deliverability or consent; only a confirmation process can verify control."
+      },
+      {
+        "q": "What is a common mistake when using Email Validator?",
+        "a": "Do not reject unusual but valid addresses solely because they do not match a simplistic pattern."
+      }
+    ],
+    "percentage-of-number-calculator": [
+      {
+        "q": "What should I check before using Percentage of a Number Calculator?",
+        "a": "Try a simple example such as 10% of 200 and confirm the result is 20 before entering larger figures."
+      },
+      {
+        "q": "How accurate is Percentage of a Number Calculator?",
+        "a": "A percentage result depends on which number is treated as the base and whether the rate is entered as a percentage or decimal."
+      },
+      {
+        "q": "What is a common mistake when using Percentage of a Number Calculator?",
+        "a": "Do not confuse percentage of a number with percentage increase or percentage-point change."
+      }
+    ],
+    "color-converter": [
+      {
+        "q": "What should I check before using HEX RGB HSL Color Converter?",
+        "a": "Copy the converted code and test it in the target browser or design application."
+      },
+      {
+        "q": "How accurate is HEX RGB HSL Color Converter?",
+        "a": "Conversions may round channel values and may not preserve wide-gamut or alpha-channel information in every format."
+      },
+      {
+        "q": "What is a common mistake when using HEX RGB HSL Color Converter?",
+        "a": "Do not assume visually similar colours have identical contrast or accessibility."
+      }
+    ],
+    "css-gradient-generator": [
+      {
+        "q": "What should I check before using CSS Gradient Generator?",
+        "a": "Test the generated CSS on the actual component and at different viewport sizes."
+      },
+      {
+        "q": "How accurate is CSS Gradient Generator?",
+        "a": "Browser rendering and colour interpolation can differ; complex gradients may need vendor or fallback handling in older environments."
+      },
+      {
+        "q": "What is a common mistake when using CSS Gradient Generator?",
+        "a": "Do not rely on a gradient as the only way to communicate important information."
+      }
+    ],
+    "roman-numeral-converter": [
+      {
+        "q": "What should I check before using Roman Numeral Converter?",
+        "a": "Test a known value such as 2026 and review the output before using it in a heading or label."
+      },
+      {
+        "q": "How accurate is Roman Numeral Converter?",
+        "a": "Traditional Roman numerals have a conventional range and notation rules; non-standard subtractive forms may be rejected."
+      },
+      {
+        "q": "What is a common mistake when using Roman Numeral Converter?",
+        "a": "Do not use Roman numerals for arithmetic or assume every historical notation follows modern conventions."
+      }
+    ],
+    "nepal-forex-rates": [
+      {
+        "q": "Where do the exchange rates come from?",
+        "a": "The tool requests the latest available published rates from the Nepal Rastra Bank official foreign-exchange API."
+      },
+      {
+        "q": "Why may the rate date be earlier than today?",
+        "a": "NRB may not publish a new rate on weekends or public holidays, so the latest available working-day rate is displayed."
+      },
+      {
+        "q": "Are these the exact rates at every bank?",
+        "a": "No. Individual banks, money changers and remittance providers may offer different rates and fees."
+      }
+    ],
+    "nepse-market-news": [
+      {
+        "q": "Where do the market and IPO headlines come from?",
+        "a": "The page fetches Google News RSS search results for Nepal stock-market and IPO topics. Each headline links to the publisher; it is not an official NEPSE notice feed."
+      },
+      {
+        "q": "Are headlines live NEPSE trading data?",
+        "a": "No. Headlines are automatically refreshed search results, not live prices, order-book data or confirmed corporate actions. Check NEPSE, SEBON, CDSC or the issuing company before acting."
+      },
+      {
+        "q": "How often is the feed refreshed?",
+        "a": "The server caches feed responses for about 15 minutes and serves stale results briefly during provider interruptions."
+      }
+    ],
+    "nepse-dividend-calculator": [
+      {
+        "q": "How are cash dividends calculated?",
+        "a": "The estimate multiplies your eligible share quantity by the declared cash-dividend percentage and subtracts the editable withholding-tax assumption."
+      },
+      {
+        "q": "How are bonus shares estimated?",
+        "a": "The calculator multiplies eligible shares by the declared bonus percentage. Fractional entitlements and book-closure rules are not determined by this estimate."
+      },
+      {
+        "q": "Is the result an official CDSC credit?",
+        "a": "No. Confirm eligibility, final tax and credited shares with the company, CDSC and Mero Share."
+      }
+    ],
+    "nepali-date-converter": [
+      {
+        "q": "Which dates does the Nepali date converter support?",
+        "a": "It supports Bikram Sambat dates from 1975-01-01 through 2099-12-30 and Gregorian dates from 1918-04-13 through 2043-04-13. Dates outside this range are rejected."
+      },
+      {
+        "q": "Can I convert both AD to BS and BS to AD?",
+        "a": "Yes. Choose English (AD) to Nepali (BS) or Nepali (BS) to English (AD), then enter the date in year-month-day order."
+      },
+      {
+        "q": "Does it accept Nepali digits?",
+        "a": "Yes. The converter accepts Devanagari numerals as well as English digits and supports common date separators."
+      },
+      {
+        "q": "Is the converted date an official government record?",
+        "a": "No. It is an online conversion aid. Verify dates used for legal, financial or government records against the original document and relevant authority."
+      }
+    ],
+    "nepali-vat-calculator": [
+      {
+        "q": "What VAT rate is preselected?",
+        "a": "The calculator starts with 13%, but the rate field is editable. Confirm the applicable rate and tax treatment with current Inland Revenue Department guidance."
+      },
+      {
+        "q": "How do I add VAT to a price?",
+        "a": "Multiply the pre-VAT amount by the VAT rate to get VAT, then add VAT to the base amount. At 13%, NPR 1,000 becomes NPR 1,130."
+      },
+      {
+        "q": "How do I remove VAT from a VAT-inclusive amount?",
+        "a": "Divide the inclusive amount by 1 plus the VAT rate as a decimal. At 13%, divide by 1.13 to find the pre-VAT base."
+      },
+      {
+        "q": "Is this an official tax assessment?",
+        "a": "No. It is a simple estimate and does not determine tax eligibility, exemptions or the correct treatment of a specific transaction."
+      }
+    ],
+    "nepal-land-area-converter": [
+      {
+        "q": "How many square feet are in one ropani?",
+        "a": "One standard ropani is 5,476 square feet, equal to 16 aana, 64 paisa or 256 daam."
+      },
+      {
+        "q": "How many square feet are in one bigha?",
+        "a": "The common Terai conversion is 72,900 square feet, equal to 20 kattha or 400 dhur."
+      },
+      {
+        "q": "Can I convert ropani and bigha directly?",
+        "a": "Yes. The converter first converts each local unit to square feet, then shows equivalent values in the hill and Terai systems as well as square metres."
+      },
+      {
+        "q": "Can I use this conversion for a land purchase or legal deed?",
+        "a": "Use it as a reference calculation only. Confirm the parcel's official area, boundary and unit with the cadastral record and relevant land revenue office."
+      }
+    ],
+    "nepali-number-converter": [
+      {
+        "q": "Does it use the lakh and crore number system?",
+        "a": "Yes. English number words use thousand, lakh and crore grouping for the supported whole-number range."
+      },
+      {
+        "q": "Can it convert Nepali digits?",
+        "a": "It displays the entered number in Devanagari digits as well as English words."
+      },
+      {
+        "q": "Does it spell every number in Nepali words?",
+        "a": "No. The current tool does not include full Nepali word spelling for every large number. Check the output and use another verified source if Nepali wording is required."
+      }
+    ],
+    "nepal-phone-validator": [
+      {
+        "q": "Which Nepal mobile number formats are checked?",
+        "a": "The checker recognises common 10-digit mobile numbers beginning with 96, 97 or 98, with an optional +977 or 977 country prefix."
+      },
+      {
+        "q": "Does a valid result mean the SIM is active?",
+        "a": "No. It checks number format only and does not contact telecom operators or confirm assignment, activity or reachability."
+      },
+      {
+        "q": "How do I write a Nepal number internationally?",
+        "a": "Use +977 followed by the 10-digit local mobile number, without the local trunk prefix."
+      }
+    ],
+    "gold-tola-gram-converter": [
+      {
+        "q": "How many grams are in one tola?",
+        "a": "One tola is approximately 11.6638038 grams."
+      },
+      {
+        "q": "Can I convert grams back to tola?",
+        "a": "Yes. Select the grams-to-tola direction and enter the weight in grams."
+      },
+      {
+        "q": "Does it calculate today's gold price?",
+        "a": "No. It converts weight only and does not include live gold prices, purity, making charges or wastage."
+      }
+    ],
+    "nepali-calendar": [
+      {
+        "q": "Can I see both BS and AD dates?",
+        "a": "Yes. The calendar displays each Bikram Sambat day alongside its corresponding Gregorian date and weekday."
+      },
+      {
+        "q": "Does the calendar show every public holiday?",
+        "a": "No. Festival and public-holiday labels may not be included. Check official holiday notices separately."
+      },
+      {
+        "q": "What if my BS year is outside the supported range?",
+        "a": "The tool rejects years outside its published calendar-data range rather than estimating dates."
+      }
+    ],
+    "nepali-digit-converter": [
+      {
+        "q": "Which digits does the converter change?",
+        "a": "It converts English numerals 0–9 to Nepali Devanagari numerals ०–९ and back."
+      },
+      {
+        "q": "Does it translate the text too?",
+        "a": "No. It changes digits only; words, punctuation and spaces are preserved."
+      },
+      {
+        "q": "Can I convert a full sentence with numbers?",
+        "a": "Yes. Paste the sentence and the converter changes the digits wherever they appear."
+      }
+    ],
+    "loksewa-photo-resizer": [
+      {
+        "q": "Which file-size targets are available?",
+        "a": "The tool offers 50 KB, 100 KB and 200 KB targets, with selectable maximum image dimensions."
+      },
+      {
+        "q": "Does it guarantee my Loksewa photo will be accepted?",
+        "a": "No. The form may also specify crop, aspect ratio, background, dimensions or file type. Follow the exact official notice."
+      },
+      {
+        "q": "What format does the resized photo use?",
+        "a": "The tool exports the resized image as JPEG."
+      }
+    ],
+    "neb-gpa-calculator": [
+      {
+        "q": "How is GPA calculated?",
+        "a": "Multiply each subject's grade point by its credit hours, add those weighted points, then divide by the total credit hours. GPA = Σ(credit × grade point) ÷ Σ(credit hours)."
+      },
+      {
+        "q": "Should I enter marks or grade points?",
+        "a": "Enter the grade point from your official grade sheet, not raw marks. Select the matching letter grade and enter the subject's credit hours."
+      },
+      {
+        "q": "Why does a 4-credit subject affect GPA more?",
+        "a": "A subject with more credit hours has a larger weight in the calculation. For example, 4 credits at 3.5 contributes 14 weighted points, while 2 credits at 3.5 contributes 7."
+      },
+      {
+        "q": "Is this an official NEB GPA result?",
+        "a": "No. This is an estimate using the displayed grade-point assumptions. Confirm your programme's grading scale and credit hours with the official NEB result or school."
+      }
+    ],
+    "nepal-share-calculator": [
+      {
+        "q": "Does the share calculator include transaction charges?",
+        "a": "It estimates broker commission, SEBON fee, DP charge and capital-gains tax using the editable assumptions shown in the form."
+      },
+      {
+        "q": "Are the default charges guaranteed to be current?",
+        "a": "No. Rates and tax treatment can change and may depend on transaction value, holding period and investor category. Confirm the current applicable charges."
+      },
+      {
+        "q": "How is estimated net profit calculated?",
+        "a": "The tool subtracts estimated purchase and sale charges from the gross price difference, then subtracts the estimated CGT from positive profit."
+      },
+      {
+        "q": "Does this guarantee the exact amount credited by my broker?",
+        "a": "No. It is a planning estimate, not a broker contract note or tax statement. Use your broker's final settlement report for the actual figure."
+      }
+    ],
+    "preeti-unicode-converter": [
+      {
+        "q": "What does Preeti to Unicode conversion do?",
+        "a": "It maps text encoded with the legacy Preeti font layout into standard Unicode Devanagari text."
+      },
+      {
+        "q": "Can I convert Unicode back to Preeti?",
+        "a": "Yes. Choose Unicode Nepali to Preeti before converting."
+      },
+      {
+        "q": "Will it preserve document formatting?",
+        "a": "It converts text encoding, not full document layout. Check formatting and glyphs in the destination application."
+      }
+    ],
+    "nepal-salary-tax-calculator": [
+      {
+        "q": "Which fiscal year does it calculate?",
+        "a": "The tool is labelled for Nepal FY 2083/84 and uses the progressive bands configured for that year."
+      },
+      {
+        "q": "Does it apply one tax rate to all salary?",
+        "a": "No. It calculates the taxable portions across progressive bands."
+      },
+      {
+        "q": "Is the result my final payroll tax?",
+        "a": "No. Allowances, deductions, rebates, employment category and personal circumstances can change the liability. Confirm with IRD or payroll."
+      }
+    ],
+    "nepal-electricity-bill-calculator": [
+      {
+        "q": "Which meter capacities are supported?",
+        "a": "The estimator supports single-phase domestic 5A, 15A, 30A and 60A connections as labelled in the tool."
+      },
+      {
+        "q": "Can I use it for commercial electricity bills?",
+        "a": "No. It is intended for the supported single-phase domestic tariff assumptions, not commercial or industrial tariffs."
+      },
+      {
+        "q": "Will the estimate exactly match my NEA bill?",
+        "a": "Not necessarily. Check the current tariff, meter category, minimum charge, VAT and any adjustments on your actual bill."
+      }
+    ],
+    "nepal-public-holidays-2083": [
+      {
+        "q": "Which year does this holiday calendar cover?",
+        "a": "It lists Nepal public holidays for Bikram Sambat 2083."
+      },
+      {
+        "q": "Are all holidays applicable throughout Nepal?",
+        "a": "No. Some notices can apply only to specific regions, communities or institutions. Read the note for each holiday."
+      },
+      {
+        "q": "Can holiday dates change?",
+        "a": "Government notices can be amended. Confirm the latest official announcement before making travel or work plans."
+      }
+    ],
+    "nepali-unicode-typing": [
+      {
+        "q": "Can I type Nepali with an English keyboard?",
+        "a": "Yes. Enter Romanized Nepali and the tool converts it into Devanagari Unicode text."
+      },
+      {
+        "q": "Does it translate English sentences into Nepali?",
+        "a": "No. It transliterates Romanized Nepali sounds; it is not a translation service."
+      },
+      {
+        "q": "Why should I review the converted words?",
+        "a": "Romanized input can map to multiple Nepali spellings, especially for names and uncommon words. Review the result before using it."
+      }
+    ],
+    "ai-resume-writer": [
+      {
+        "q": "What should I check before using AI Resume & CV Writer?",
+        "a": "Use specific facts, tailor the draft to one vacancy, remove anything you cannot prove, then choose a template and proofread the exported PDF."
+      },
+      {
+        "q": "How accurate is AI Resume & CV Writer?",
+        "a": "The model cannot verify employment, qualifications, dates or achievements. Review every claim before using the draft."
+      },
+      {
+        "q": "What is a common mistake when using AI Resume & CV Writer?",
+        "a": "Do not add invented metrics, employers, degrees, certificates or skills. Avoid confidential personal information."
+      }
+    ],
+    "ai-cover-letter-generator": [
+      {
+        "q": "What should I check before using AI Cover Letter Generator?",
+        "a": "Replace placeholders, check company and role names, add a genuine example that demonstrates fit, and proofread the final letter."
+      },
+      {
+        "q": "How accurate is AI Cover Letter Generator?",
+        "a": "The draft is based only on supplied details and may contain generic wording or factual errors. It does not verify the employer or vacancy."
+      },
+      {
+        "q": "What is a common mistake when using AI Cover Letter Generator?",
+        "a": "Do not claim experience or company knowledge you do not have. Avoid sending the same unedited letter to every employer."
+      }
+    ],
+    "ai-humanizer": [
+      {
+        "q": "What should I check before using AI Humanizer & Text Rewriter?",
+        "a": "Keep the original, rewrite a short sample, compare names, figures, citations and meaning, then edit the result in your own voice."
+      },
+      {
+        "q": "How accurate is AI Humanizer & Text Rewriter?",
+        "a": "The rewrite may alter nuance, tone or factual details. It cannot reliably determine who wrote a text or guarantee how a detector will classify it."
+      },
+      {
+        "q": "What is a common mistake when using AI Humanizer & Text Rewriter?",
+        "a": "Do not remove required citations or change factual claims. Always review the rewrite."
+      }
+    ],
+    "market-ai": [
+      {
+        "q": "Which markets can I analyse?",
+        "a": "You can analyse available historical daily NEPSE data or upload your own Forex and Crypto CSV. Forex and Crypto results depend on the accuracy and freshness of your file; they are not live market feeds."
+      },
+      {
+        "q": "Which CSV columns are required?",
+        "a": "Date and Close are required. Open, High, Low and Volume are recommended. Use one daily candle per date, ISO dates (YYYY-MM-DD), at least 50 valid rows and a file no larger than 5 MB."
+      },
+      {
+        "q": "Does a BUY signal mean the trade will be profitable?",
+        "a": "No. Signals are rule-based technical conditions, not predictions or win probabilities. Test strategies on separate historical data and include fees, spread, slippage and liquidity."
+      },
+      {
+        "q": "Why can the tool show HOLD / WATCH instead of BUY?",
+        "a": "Mixed indicators, unusual selling volume, elevated risk or stale historical data can weaken or suppress a potential BUY setup. A stale dataset suppresses new BUY/SELL signals."
+      },
+      {
+        "q": "What does the free AI explanation do?",
+        "a": "It explains the calculated indicators and warnings. It does not calculate a separate trading signal and must not override the rule-based result."
+      }
+    ]
+  }
 }

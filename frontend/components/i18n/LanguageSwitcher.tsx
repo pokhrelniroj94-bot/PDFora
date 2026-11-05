@@ -2,7 +2,7 @@
 
 import type { MouseEvent } from "react";
 import type { Locale } from "../../lib/i18n/config";
-import { localeCookieString } from "../../lib/i18n/preference";
+import { storeLocalePreference } from "../../lib/i18n/client-preference";
 import type { SwitcherOption } from "../../lib/i18n/switcher";
 
 interface LanguageSwitcherProps {
@@ -25,11 +25,7 @@ export default function LanguageSwitcher({ current, options, label, currentLabel
   const active = options.find((o) => o.locale === current);
 
   function choose(event: MouseEvent<HTMLAnchorElement>, option: SwitcherOption) {
-    try {
-      document.cookie = localeCookieString(option.locale, { secure: window.location.protocol === "https:" });
-    } catch {
-      // Cookies blocked: switching still works through the URL.
-    }
+    storeLocalePreference(option.locale);
     const modified = event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
     if (modified) return; // let the browser open it in a new tab as usual
     event.preventDefault();

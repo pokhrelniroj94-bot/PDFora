@@ -61,6 +61,9 @@ Push-Location $frontend
 try {
     Invoke-Check "Install frontend dependencies" "npm" @("ci")
     Invoke-Check "Verify tool catalog" "npm" @("run", "verify:tools")
+    Invoke-Check "Run i18n unit tests" "npm" @("run", "i18n:test")
+    Invoke-Check "Check i18n content" "npm" @("run", "i18n:check")
+    Invoke-Check "Run TypeScript check" "npx" @("tsc", "--noEmit")
     Invoke-Check "Run frontend lint" "npm" @("run", "lint")
     Invoke-Check "Build frontend for production" "npm" @("run", "build")
     Invoke-Check "Audit production npm dependencies" "npm" @("audit", "--omit=dev", "--audit-level=high")

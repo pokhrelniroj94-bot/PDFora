@@ -1,0 +1,19 @@
+{
+  "ui": {
+    "amount": "金額",
+    "principal": "元金",
+    "annualRate": "年利（%）",
+    "monthlyRate": "月利（%）",
+    "termMonths": "期間（月）",
+    "termYears": "期間（年）",
+    "monthlyPayment": "毎月の返済額（EMI）",
+    "totalPayment": "返済総額",
+    "totalInterest": "利息合計",
+    "baseAmount": "税抜金額",
+    "taxRate": "税率（%）",
+    "result": "計算結果",
+    "formula": "計算式",
+    "rounding": "表示結果は丸められている場合があります"
+  },
+  "entries": {}
+}

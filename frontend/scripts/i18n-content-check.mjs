@@ -25,9 +25,9 @@ const validEntry = (namespace, entry) => {
   return false;
 };
 let blockers = 0;
-// All non-English locales are checked. An incomplete tool pack is a warning until tool routes are explicitly published.
-for (const locale of config.locales.filter((l) => l !== "en")) {
-  const published = config.isToolContentPublished(locale);
+// English is the required source baseline; non-English locales block only after their tool-content publication switch is enabled.
+for (const locale of config.locales) {
+  const published = locale === "en" || config.isToolContentPublished(locale);
   let missing = 0;
   for (const [namespace, slugs] of Object.entries(required)) {
     const file = path.join(root, locale, namespace + ".json");

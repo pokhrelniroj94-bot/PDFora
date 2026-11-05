@@ -5,9 +5,8 @@ import { createTranslator, type MessageTree, type Translator } from "./translate
  * Per-namespace dictionaries, loaded on demand so a page only ships what it renders.
  * Files: lib/i18n/messages/<locale>/<namespace>.json
  *
- * Add a namespace here AND create messages/en/<namespace>.json (English is the source of
- * truth). Other locales add a file only when fully translated; `npm run i18n:check`
- * verifies key parity and placeholder parity against English.
+ * English dictionaries define the schema. Preview locales may contain translated interface tokens while
+ * slug-level content entries remain incomplete; `npm run i18n:content-check` enforces the publication gate.
  * Tool and guide content namespaces use slug-keyed entries; untranslated entries remain empty and block publication.
  */
 export const namespaces = ["common", "accessibility", "seo", "tools", "guides", "calculators", "faqs"] as const;

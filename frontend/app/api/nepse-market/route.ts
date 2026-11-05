@@ -71,7 +71,7 @@ async function fetchNepsemanSnapshot() {
       volume: Number(firstValue(row, ["volume", "totalTradeQuantity", "tradedShares"]) || 0),
       turnover: Number(firstValue(row, ["turnover", "totalTradeValue", "amount"]) || 0),
       trades: Number(firstValue(row, ["trades", "totalTrades", "totalTransactions"]) || 0),
-      last_updated: typeof updated === "string" ? updated : "",
+      last_updated: normalizeNepalTimestamp(updated),
     }];
   });
   const timestamp = stocks.reduce((latest, stock) => stock.last_updated > latest ? stock.last_updated : latest, "");
@@ -93,6 +93,15 @@ async function read<T>(path: string, revalidateSeconds = 900): Promise<T> {
   if (!response.ok) throw new Error("Market data source returned " + response.status + " for " + path);
   return response.json() as Promise<T>;
 }
+function normalizeNepalTimestamp(value: unknown): string {
+  if (typeof value !== "string" || !value.trim()) return "";
+  const timestamp = value.trim().replace(" ", "T");
+  if (/(?:Z|[+-]\\d{2}:?\\d{2})$/i.test(timestamp)) return timestamp;
+  return /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(?::\\d{2}(?:\\.\\d+)?)?$/.test(timestamp)
+    ? timestamp + "+05:45"
+    : value.trim();
+}
+
 function monthCount(period: string) {
   return period === "1M" ? 1 : period === "3M" ? 3 : 12;
 }
@@ -121,7 +130,15 @@ export async function GET(request: Request) {
   const usingUnofficialLive = Boolean(unofficialSnapshot);
   const usingLiveQuotes = usingUnofficialLive || liveStocks.length > 0;
   const stocks = usingUnofficialLive ? unofficialSnapshot!.stocks : usingLiveQuotes ? liveStocks : fallbackStocks;
-  const indices = indicesResult.status === "fulfilled" && Array.isArray(indicesResult.value) ? indicesResult.value : [];
+  const indices = indicesResult.status === "fulfilled" && Array.isArray(indicesResult.value)
+    ? indicesResult.value.map((item) => {
+        const row = asRecord(item);
+        return row ? { ...row, generatedTime: normalizeNepalTimestamp(row.generatedTime) } : item;
+      })
+    : [];
+  const marketStatus = statusResult.status === "fulfilled"
+    ? { ...statusResult.value, last_checked: normalizeNepalTimestamp(statusResult.value.last_checked) }
+    : {};
   if (!stocks.length && !indices.length) {
     return Response.json(
       { error: "NEPSE market snapshot is temporarily unavailable. Please retry or visit the official NEPSE market page." },
@@ -206,7 +223,7 @@ export async function GET(request: Request) {
     providerRefreshCadence: usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Approximately hourly on weekdays during market hours (provider documentation)",
     quoteStale,
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
-    status: pick(statusResult, {}),
+    status: marketStatus,
     indices,
     summary: pick(summaryResult, []),
     topStocks: pick(topResult, {}),

@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const BASE = "https://shubhamnpk.github.io/yonepse";
+const BASE = "https://raw.githubusercontent.com/Shubhamnpk/yonepse/main";
 const INDEX_SYMBOLS = new Set(["NEPSE", "SENSIND", "FLOATIND", "SENSFLTIND", "BANKSUBIND", "DEVBANKIND", "FININD", "HOTELIND", "HYDPOWIND", "INVIDX", "LIFINSIND", "MANPROCIND", "MICRFININD", "MUTUALIND", "NONLIFIND", "OTHERSIND", "TRDIND"]);
 type Json = Record<string, unknown>;
 
@@ -115,15 +115,15 @@ export async function GET(request: Request) {
   const [unofficialSnapshot, liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.all([
     fetchNepsemanSnapshot().catch(() => null),
     Promise.allSettled([read<unknown[]>("/data/market/live.json", 60)]).then((items) => items[0]),
-    Promise.allSettled([read<unknown[]>("/data/nepse_data.json")]).then((items) => items[0]),
-    Promise.allSettled([read<unknown[]>("/data/market/indices.json")]).then((items) => items[0]),
-    Promise.allSettled([read<Json>("/data/market/status.json")]).then((items) => items[0]),
-    Promise.allSettled([read<unknown[]>("/data/market/summary.json")]).then((items) => items[0]),
-    Promise.allSettled([read<Json>("/data/market/top_stocks.json")]).then((items) => items[0]),
-    Promise.allSettled([read<unknown[]>("/data/market/sector_indices.json")]).then((items) => items[0]),
-    Promise.allSettled([read<Json>("/data/market/supply_demand.json")]).then((items) => items[0]),
-    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json")]).then((items) => items[0]),
-    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json")]).then((items) => items[0]),
+    Promise.allSettled([read<unknown[]>("/data/nepse_data.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<unknown[]>("/data/market/indices.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<Json>("/data/market/status.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<unknown[]>("/data/market/summary.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<Json>("/data/market/top_stocks.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<unknown[]>("/data/market/sector_indices.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<Json>("/data/market/supply_demand.json", 60)]).then((items) => items[0]),
+    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json", 300)]).then((items) => items[0]),
+    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json", 300)]).then((items) => items[0]),
   ]);
   const liveStocks = liveStocksResult.status === "fulfilled" && Array.isArray(liveStocksResult.value) ? liveStocksResult.value : [];
   const fallbackStocks = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];

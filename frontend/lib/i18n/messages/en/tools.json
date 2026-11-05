@@ -12,5 +12,998 @@
     "accuracy": "Accuracy and limitations",
     "mistakes": "Common mistakes"
   },
-  "entries": {}
+  "entries": {
+    "resume-builder": {
+      "title": "Professional Resume & CV Builder",
+      "description": "Create a polished CV with 20 professional templates, live A4 preview, editable sections and free PDF export.",
+      "example": "Choose a CV layout, add your contact details, professional summary, experience, education, skills and optional projects or certifications. The live preview updates while you type; select Download CV as PDF and choose Save as PDF in the print dialog.",
+      "accuracy": "The builder formats the information you provide. It does not independently verify employment, qualifications, dates, contact details or ATS compatibility. Review every field and the final printed pages before applying.",
+      "workflow": "Start with a clean ATS-friendly layout such as Harvard Classic or Compact ATS for online applications. Tailor the summary and achievement bullets to the vacancy, use measurable results where truthful, then check the A4 PDF on desktop and mobile.",
+      "mistakes": "Avoid invented achievements, generic objective statements, spelling errors, excessive graphics and unprofessional email addresses. Keep dates consistent and do not include sensitive personal information unless the employer specifically requires it."
+    },
+    "loan-emi-calculator": {
+      "title": "Loan & EMI Calculator",
+      "description": "Calculate monthly EMI, total interest and total repayment.",
+      "example": "For a NPR 1,000,000 loan at 10% annual interest over 60 months, compare the monthly EMI with the total repayment and total interest. The result assumes a reducing-balance loan with monthly payments.",
+      "accuracy": "The estimate excludes lender-specific fees, insurance, floating-rate changes, penalties and payment-date conventions. Your bank's repayment schedule is authoritative.",
+      "workflow": "Change one input at a time—principal, annual rate or loan term—and compare how EMI and total interest move. A longer term may lower the EMI but increase total interest.",
+      "mistakes": "Do not enter a monthly interest rate in the annual-rate field. Check that the term is in months and that the displayed amount is in the same currency as the loan."
+    },
+    "compound-interest-sip-calculator": {
+      "title": "Compound Interest & SIP Calculator",
+      "description": "Estimate compound growth and monthly SIP investment value.",
+      "example": "Enter a monthly contribution, investment period, expected annual return and any initial investment. The calculator assumes month-end contributions and a constant monthly return.",
+      "accuracy": "Investment returns are not guaranteed. The estimate does not automatically account for market volatility, fees, taxes, inflation or missed contributions.",
+      "workflow": "Compare conservative, base and optimistic return assumptions. Also compare the final value with the total amount invested so the estimated gain is clear.",
+      "mistakes": "Do not treat an assumed annual return as a guaranteed rate or confuse monthly contribution with the initial lump-sum investment."
+    },
+    "discount-percentage-calculator": {
+      "title": "Discount & Percentage Calculator",
+      "description": "Calculate discounts, percentages and percentage change.",
+      "example": "A product priced at NPR 1,000 with a 20% discount costs NPR 800 before any extra fees. The tool also calculates what percentage one value is of another.",
+      "accuracy": "The result is arithmetic only and does not include delivery charges, coupons, tax or store-specific terms unless they are included in the input.",
+      "workflow": "Enter the original price and discount rate, then compare the final price and savings. Use the percentage fields separately when you want to calculate one value as a share of another.",
+      "mistakes": "Enter 20 for 20%, not 0.20. Check that the discount is between 0 and 100 and that the original price is not negative."
+    },
+    "percentage-change-calculator": {
+      "title": "Percentage Change Calculator",
+      "description": "Calculate percentage increase or decrease between two values.",
+      "example": "If a value rises from 100 to 120, the percentage change is a 20% increase. A fall from 100 to 80 is a 20% decrease.",
+      "accuracy": "Percentage change uses the original value as the baseline and cannot be calculated when the original value is zero.",
+      "workflow": "Use the same unit and time basis for both values. Check the sign and whether the result is labelled as an increase or decrease.",
+      "mistakes": "Do not reverse the original and new values. A change from 120 to 100 is not the same percentage as a change from 100 to 120."
+    },
+    "average-calculator": {
+      "title": "Average Calculator",
+      "description": "Calculate mean, median, mode and range from a list of numbers.",
+      "example": "For 10, 20, 30 and 40, the mean is 25, the median is 25, the range is 30 and there is no repeated mode.",
+      "accuracy": "The mean can be strongly affected by extreme values. The mode may be absent or multiple values may share the highest frequency.",
+      "workflow": "Enter values separated by commas, semicolons or spaces. Review the count, mean, median, mode and range to understand the distribution rather than relying on the mean alone.",
+      "mistakes": "Do not include labels or currency symbols in the number list. Check decimal separators and make sure every value is intentional."
+    },
+    "fraction-calculator": {
+      "title": "Fraction Calculator",
+      "description": "Add, subtract, multiply and divide fractions.",
+      "example": "For addition, 1/2 + 1/3 = 5/6. The calculator supports addition, subtraction, multiplication and division of fractions.",
+      "accuracy": "The calculator expects whole-number numerators and non-zero denominators. Division by a zero fraction is undefined.",
+      "workflow": "Enter both numerators and denominators, select the operation, then check the simplified fraction and decimal equivalent.",
+      "mistakes": "Do not put a denominator in the numerator field. Keep denominators non-zero and confirm the selected operation before using the result."
+    },
+    "age-calculator": {
+      "title": "Age Calculator",
+      "description": "Calculate age in years, months and days from a birth date.",
+      "example": "Enter a date of birth and the date to calculate as of. The result is expressed as completed years, months and days.",
+      "accuracy": "The result depends on the dates entered and calendar month lengths. It is not an identity or legal age verification.",
+      "workflow": "Use the date of birth exactly as recorded and select the intended reference date. Check the day, month and year order in the input fields.",
+      "mistakes": "Do not swap the birth date and reference date. A reference date earlier than the birth date is invalid."
+    },
+    "date-difference-calculator": {
+      "title": "Date Difference Calculator",
+      "description": "Find the exact days, weeks and months between two dates.",
+      "example": "The calculator returns the absolute number of days between two dates and also gives approximate weeks and average months.",
+      "accuracy": "Weeks and average months are derived from the day count; calendar months have different lengths. The day difference does not count inclusive endpoints as separate extra days.",
+      "workflow": "Enter both dates in the same calendar and check whether you need elapsed days or an inclusive count for your task.",
+      "mistakes": "Do not interpret an average month as an exact calendar month. Check the start and end dates before copying the day total."
+    },
+    "time-duration-calculator": {
+      "title": "Time Duration Calculator",
+      "description": "Calculate elapsed time between start and end times.",
+      "example": "A start time of 09:00 and end time of 17:30 produces 8 hours 30 minutes. An end time earlier than the start is treated as crossing midnight.",
+      "accuracy": "The tool calculates clock duration and does not account for daylight-saving changes, unpaid breaks or shift rules.",
+      "workflow": "Enter both times in 24-hour format and decide whether the end time is on the same day or the following day.",
+      "mistakes": "Check AM/PM conversion when using a 12-hour clock and subtract breaks separately if the task requires paid working time."
+    },
+    "profit-margin-calculator": {
+      "title": "Profit Margin Calculator",
+      "description": "Calculate gross profit and profit margin from cost and selling price.",
+      "example": "If an item costs NPR 700 and sells for NPR 1,000, gross profit is NPR 300 and gross margin is 30% of the selling price.",
+      "accuracy": "The calculator uses only the entered cost and selling price. It does not include overhead, tax, shipping, returns or other operating expenses.",
+      "workflow": "Enter unit cost and selling price on the same basis, then compare gross profit with the margin percentage.",
+      "mistakes": "Do not confuse profit margin (profit divided by selling price) with markup (profit divided by cost)."
+    },
+    "markup-calculator": {
+      "title": "Markup Calculator",
+      "description": "Calculate selling price and markup percentage from cost.",
+      "example": "A 25% markup on a NPR 800 cost adds NPR 200 and gives a selling price of NPR 1,000.",
+      "accuracy": "This calculation applies a markup percentage to cost. It does not calculate a target profit margin or include tax and overhead.",
+      "workflow": "Enter the cost and desired markup percentage, then review the markup amount and suggested selling price.",
+      "mistakes": "Do not enter the desired margin as though it were a markup. Margin and markup use different denominators."
+    },
+    "break-even-calculator": {
+      "title": "Break-even Calculator",
+      "description": "Calculate break-even sales volume from fixed and variable costs.",
+      "example": "If fixed costs are NPR 50,000, selling price is NPR 500 and variable cost is NPR 300 per unit, break-even is 250 units before rounding to a whole unit.",
+      "accuracy": "The estimate assumes fixed costs and per-unit variable costs remain constant and all units sell at the same price.",
+      "workflow": "Use the same period for fixed costs and sales assumptions. Review both break-even units and break-even revenue.",
+      "mistakes": "Selling price must exceed variable cost. Do not mix monthly fixed costs with annual sales volume."
+    },
+    "sales-tax-calculator": {
+      "title": "Sales Tax Calculator",
+      "description": "Add or remove a configurable sales tax percentage.",
+      "example": "Adding 10% tax to NPR 1,000 gives NPR 1,100. Removing 10% tax from NPR 1,100 gives a pre-tax amount of NPR 1,000.",
+      "accuracy": "The tool applies a simple percentage and does not determine which tax rate, exemption or jurisdiction applies to a transaction.",
+      "workflow": "Choose add-tax or remove-tax mode carefully, enter the amount and rate, then inspect the tax component and total.",
+      "mistakes": "When removing tax, enter the tax-inclusive amount. Do not simply subtract the percentage from the inclusive total."
+    },
+    "salary-breakdown-calculator": {
+      "title": "Salary Breakdown Calculator",
+      "description": "Convert gross salary between monthly and annual amounts and estimate take-home after a simple deduction rate.",
+      "example": "A monthly gross salary of NPR 50,000 with a 10% illustrative deduction produces NPR 5,000 estimated deductions and NPR 45,000 take-home.",
+      "accuracy": "This is a simple deduction-rate estimate, not a Nepal statutory payroll or income-tax calculator. It does not model allowances, social security, provident fund or progressive tax bands.",
+      "workflow": "Enter gross monthly salary and an assumed deduction percentage. Compare the estimated monthly and annual take-home values with an actual payslip.",
+      "mistakes": "Do not use this simple deduction field as a substitute for the Nepal salary tax calculator or an employer's payroll statement."
+    },
+    "savings-goal-calculator": {
+      "title": "Savings Goal Calculator",
+      "description": "Estimate monthly savings needed to reach a target by a chosen date.",
+      "example": "If your target is NPR 120,000, you have already saved NPR 30,000 and have 9 months remaining, the required monthly saving is NPR 10,000.",
+      "accuracy": "The estimate divides the remaining target evenly across the number of months and excludes interest, investment returns, inflation and fees.",
+      "workflow": "Enter your target, current savings and the number of months remaining. Recalculate when your savings or deadline changes.",
+      "mistakes": "Use the amount still needed rather than adding current savings twice. Enter a positive number of months."
+    },
+    "simple-interest-calculator": {
+      "title": "Simple Interest Calculator",
+      "description": "Calculate simple interest and total maturity value from principal, rate and time.",
+      "example": "For NPR 10,000 at 5% simple interest for 2 years, interest is NPR 1,000 and the total is NPR 11,000.",
+      "accuracy": "Simple interest is calculated on the original principal and does not compound. Actual deposits or loans may use different conventions and fees.",
+      "workflow": "Check principal, annual rate and time period. Make sure the time is expressed in years as expected by the tool.",
+      "mistakes": "Do not enter a monthly rate as an annual rate or confuse simple interest with compound interest."
+    },
+    "commission-calculator": {
+      "title": "Commission Calculator",
+      "description": "Calculate commission earnings from a sale amount and commission percentage.",
+      "example": "A 3% commission on NPR 100,000 in sales is NPR 3,000 before any deductions.",
+      "accuracy": "The estimate uses one flat commission rate and does not model tiered targets, refunds, taxes or employer-specific terms.",
+      "workflow": "Enter the eligible sales amount and commission percentage, then compare the result with the written commission agreement.",
+      "mistakes": "Check whether the rate applies to gross sales, net sales or collected revenue before relying on the amount."
+    },
+    "hourly-to-salary-calculator": {
+      "title": "Hourly to Salary Calculator",
+      "description": "Convert an hourly wage into estimated weekly, monthly and annual earnings.",
+      "example": "At NPR 500 per hour for 40 paid hours each week, estimated annual gross pay is NPR 1,040,000 and average monthly gross pay is about NPR 86,666.67.",
+      "accuracy": "The estimate assumes 52 paid weeks and does not subtract leave, unpaid time, overtime rules, tax or other deductions.",
+      "workflow": "Enter the hourly wage and typical paid hours per week. Compare weekly, average monthly and annual gross figures.",
+      "mistakes": "Do not assume 4 weeks equals one average month. Check whether the hours entered are paid hours and whether work is available all year."
+    },
+    "tip-calculator": {
+      "title": "Tip Calculator",
+      "description": "Calculate a restaurant tip, total bill and per-person split.",
+      "example": "A 10% tip on a NPR 2,000 bill is NPR 200. The calculator also divides the total including tip by the number of people.",
+      "accuracy": "This is a simple tip estimate and does not account for service charges already included in a bill.",
+      "workflow": "Enter the bill, tip percentage and number of people. Check the total and per-person share before settling.",
+      "mistakes": "Check whether the bill already includes a service charge and enter the number of people as a positive whole number."
+    },
+    "split-bill-calculator": {
+      "title": "Split Bill Calculator",
+      "description": "Divide a shared bill between people and include an optional extra amount.",
+      "example": "A NPR 3,000 bill plus NPR 200 extra split between four people gives NPR 800 per person.",
+      "accuracy": "The tool divides the total evenly. It does not calculate unequal shares, itemised orders or separate tax rates.",
+      "workflow": "Enter the bill, any extra amount and the number of people sharing it. Confirm whether everyone is paying an equal share.",
+      "mistakes": "Do not forget to include any extra charge or use the number of items instead of the number of people."
+    },
+    "bmi-calculator": {
+      "title": "BMI Calculator",
+      "description": "Calculate body mass index from height and weight with standard adult categories.",
+      "example": "A person weighing 70 kg and 1.75 m tall has BMI = 70 ÷ (1.75 × 1.75) = 22.86. Enter weight in kilograms and height in the unit requested by the fields.",
+      "accuracy": "BMI is a screening measure based on height and weight. It does not measure body fat directly and does not account for age, pregnancy, muscle mass or individual health conditions.",
+      "workflow": "Check the height unit first, enter current weight, calculate, then interpret the number using an appropriate age- and population-specific reference.",
+      "mistakes": "Do not enter centimetres into a metres field or interpret BMI as a diagnosis. For children and teenagers, adult BMI cut-offs are not appropriate."
+    },
+    "bmr-calculator": {
+      "title": "BMR Calculator",
+      "description": "Estimate basal metabolic rate using the Mifflin-St Jeor equation.",
+      "example": "BMR estimates the energy your body uses at rest. The result changes with the selected formula, age, height, weight and sex input used by that formula.",
+      "accuracy": "BMR is an equation-based estimate, not a direct metabolic measurement. Total daily energy expenditure is higher than BMR for most people because it includes activity and digestion.",
+      "workflow": "Enter age, height and weight carefully, note which equation is used, then apply an activity multiplier only if the page provides a TDEE estimate.",
+      "mistakes": "Do not confuse BMR with maintenance calories or use an activity multiplier as if it were measured energy expenditure."
+    },
+    "unit-converter": {
+      "title": "Unit Converter",
+      "description": "Convert common length, weight, temperature and volume units.",
+      "example": "For length, 1 metre equals 100 centimetres; for mass, 1 kilogram equals 1,000 grams. Select matching physical quantities before converting.",
+      "accuracy": "Conversions are only meaningful between compatible units. Temperature conversions use an offset formula, unlike simple multiplication for many length or mass units.",
+      "workflow": "Choose the quantity category, select source and target units, enter the value and check both the converted number and unit labels.",
+      "mistakes": "Do not convert mass as though it were weight force, mix volume with mass without density, or confuse Celsius and Fahrenheit formulas."
+    },
+    "ratio-simplifier": {
+      "title": "Ratio Simplifier",
+      "description": "Reduce ratios to their simplest whole-number form.",
+      "example": "A ratio of 12:18 simplifies to 2:3 after dividing both terms by their greatest common divisor, 6.",
+      "accuracy": "The simplified ratio preserves the relationship between the entered values. It does not mean the original quantities can be changed independently.",
+      "workflow": "Enter both positive quantities, simplify, then multiply the reduced terms by the same factor if you need an equivalent larger ratio.",
+      "mistakes": "Do not divide only one side or compare quantities measured in different units without converting them first."
+    },
+    "gcd-lcm-calculator": {
+      "title": "GCD and LCM Calculator",
+      "description": "Find the greatest common divisor and least common multiple of two integers.",
+      "example": "For 12 and 18, GCD is 6 and LCM is 36. For positive integers, GCD × LCM equals the product of the two numbers.",
+      "accuracy": "The calculator is intended for integer inputs. The identity is useful as a cross-check for two non-zero positive integers.",
+      "workflow": "Enter whole numbers, inspect both the greatest common divisor and least common multiple, and use the result to simplify fractions or find common denominators.",
+      "mistakes": "Do not enter decimals when the tool expects integers. Check how the tool handles zero and negative values before relying on edge cases."
+    },
+    "prime-number-checker": {
+      "title": "Prime Number Checker",
+      "description": "Check whether an integer is prime and list its factors when it is composite.",
+      "example": "29 is prime because its only positive factors are 1 and 29; 30 is composite because it is divisible by 2, 3 and 5.",
+      "accuracy": "A prime check applies to integers greater than 1. Zero, one and negative integers are not prime numbers.",
+      "workflow": "Enter a whole number, check the prime/composite status and inspect the factor list when the number is composite.",
+      "mistakes": "Do not classify 1 as prime or enter a decimal and interpret its result as an integer factorisation."
+    },
+    "random-number-generator": {
+      "title": "Random Number Generator",
+      "description": "Generate cryptographically random integers within a chosen inclusive range.",
+      "example": "If the inclusive minimum is 1 and maximum is 6, each generated result is an integer from 1 through 6.",
+      "accuracy": "The output is generated by the browser's cryptographic random number source where supported. Random output does not guarantee fairness for regulated lotteries or gambling.",
+      "workflow": "Set a valid minimum and maximum, choose how many values to generate and check whether duplicate values are allowed by the tool.",
+      "mistakes": "Do not reverse the minimum and maximum or assume generated values are unique unless the option explicitly enforces uniqueness."
+    },
+    "dice-roller": {
+      "title": "Dice Roller",
+      "description": "Roll a chosen number of standard six-sided dice and calculate the total.",
+      "example": "Rolling two six-sided dice produces a total from 2 through 12. The displayed total is the sum of the individual die results.",
+      "accuracy": "A digital dice roll is a simulation and does not replace certified random equipment for regulated games.",
+      "workflow": "Choose the number of dice, roll, then inspect each die and the combined total rather than only the sum.",
+      "mistakes": "Do not confuse the number of dice with the number of sides or assume every total has the same probability."
+    },
+    "business-days-calculator": {
+      "title": "Business Days Calculator",
+      "description": "Count weekdays between two dates, excluding Saturdays and Sundays.",
+      "example": "A Monday-to-Friday span contains five weekdays when no public holidays are excluded. Saturday and Sunday are omitted by this calculator.",
+      "accuracy": "This tool excludes weekends only unless it explicitly offers a holiday calendar. Nepal public holidays, local closures and organisation-specific workdays may change the actual count.",
+      "workflow": "Enter the start and end dates, confirm whether the endpoints are included as described by the result, and subtract applicable public holidays separately if needed.",
+      "mistakes": "Do not assume that excluding weekends also excludes Nepal government holidays or institution-specific leave days."
+    },
+    "unix-timestamp-converter": {
+      "title": "Unix Timestamp Converter",
+      "description": "Convert Unix seconds or milliseconds into a readable UTC date and time.",
+      "example": "Unix timestamp 0 represents 1970-01-01 00:00:00 UTC. A 13-digit millisecond timestamp must be interpreted differently from a 10-digit seconds timestamp.",
+      "accuracy": "Unix timestamps represent elapsed time from the Unix epoch in UTC. Local display depends on the selected timezone and daylight-saving rules.",
+      "workflow": "Check whether the source value is in seconds or milliseconds, convert it, then compare the UTC output with the intended local timezone.",
+      "mistakes": "Do not paste milliseconds into a seconds field or confuse UTC with your device's local time."
+    },
+    "date-add-subtract-calculator": {
+      "title": "Date Add or Subtract Calculator",
+      "description": "Add or subtract a number of days from a starting date.",
+      "example": "Adding 30 days to 1 January produces 31 January in a non-leap year. Calendar-month arithmetic is different from adding a fixed number of days.",
+      "accuracy": "The result depends on whether the tool adds calendar days or calendar months and how it handles month-end dates.",
+      "workflow": "Enter the starting date, choose add or subtract, enter the number of days and check the resulting date and year boundary.",
+      "mistakes": "Do not confuse 30 days with one calendar month or overlook leap years and month lengths."
+    },
+    "aspect-ratio-calculator": {
+      "title": "Aspect Ratio Calculator",
+      "description": "Calculate image aspect ratio and derive a missing width or height.",
+      "example": "A 1920 × 1080 image has a 16:9 aspect ratio. If the width is changed proportionally to 1280 pixels, the matching height is 720 pixels.",
+      "accuracy": "The calculator preserves proportions mathematically; it does not inspect or resize the actual image file.",
+      "workflow": "Enter both dimensions or one dimension with a target ratio, then check the derived dimension before exporting your image.",
+      "mistakes": "Do not swap width and height or stretch an image to a different ratio unless cropping or distortion is intended."
+    },
+    "px-rem-converter": {
+      "title": "PX to REM Converter",
+      "description": "Convert CSS pixel values to rem units using a configurable root font size.",
+      "example": "With a 16 px root font size, 24 px equals 1.5 rem. If the root size changes to 20 px, the same 24 px equals 1.2 rem.",
+      "accuracy": "The conversion depends on the root font size configured in the calculator and the CSS root font size used by the actual page.",
+      "workflow": "Set the correct root font size, enter the pixel or rem value, then verify the computed size in the browser's rendered layout.",
+      "mistakes": "Do not assume the root size is always 16 px or confuse rem with em, which depends on the parent element's font size."
+    },
+    "color-contrast-checker": {
+      "title": "Color Contrast Checker",
+      "description": "Check WCAG contrast ratio between foreground and background colors.",
+      "example": "Black text on a white background has a high contrast ratio, while light grey text on white may fail accessibility thresholds.",
+      "accuracy": "Contrast ratio is calculated from relative luminance. It does not assess font size, font weight, colour perception or every accessibility requirement.",
+      "workflow": "Enter foreground and background colours, inspect the contrast ratio and check the WCAG result for normal and large text.",
+      "mistakes": "Do not test only the brand colour in isolation; test the actual text/background pair and include hover, disabled and focus states."
+    },
+    "word-character-counter": {
+      "title": "Word & Character Counter",
+      "description": "Count words, characters, sentences, paragraphs and reading time.",
+      "example": "The sentence 'PDFora helps students.' contains four words and includes spaces and punctuation in its character count according to the displayed counting rules.",
+      "accuracy": "Word and character counts can differ between apps because Unicode graphemes, emoji, punctuation and whitespace may be counted differently.",
+      "workflow": "Paste the final text, check words, characters with and without spaces, sentences and reading-time estimate, then compare with the destination platform's limit.",
+      "mistakes": "Do not assume emoji always count as one character or that character count includes spaces unless the label says so."
+    },
+    "reading-time-calculator": {
+      "title": "Reading Time Calculator",
+      "description": "Estimate reading time from word count using an adjustable reading speed.",
+      "example": "A 600-word article at an assumed reading speed of 200 words per minute gives an estimated reading time of about 3 minutes.",
+      "accuracy": "Reading time is an estimate based on the configured words-per-minute rate. Technical writing, tables and non-English text may take longer.",
+      "workflow": "Paste the complete article, check the word count and note the assumed reading speed used for the estimate.",
+      "mistakes": "Do not treat reading time as a guaranteed duration or compare estimates made with different reading-speed assumptions."
+    },
+    "word-frequency-counter": {
+      "title": "Word Frequency Counter",
+      "description": "Count word frequency in pasted text and sort repeated words by occurrence.",
+      "example": "In 'PDF tools save time; PDF tools are simple', the word 'PDF' appears twice when matching is case-insensitive.",
+      "accuracy": "Frequency depends on tokenisation, punctuation removal, case sensitivity and language-specific word boundaries.",
+      "workflow": "Paste the text, choose the counting options, then inspect frequent words and decide whether common stop words should be excluded.",
+      "mistakes": "Do not compare results from different case or punctuation settings as if they used identical counting rules."
+    },
+    "text-to-slug": {
+      "title": "Text to URL Slug Converter",
+      "description": "Create clean lowercase URL slugs from titles and phrases.",
+      "example": "A title such as 'Best PDF Tools for Students' can become the URL-friendly slug 'best-pdf-tools-for-students'.",
+      "accuracy": "Slug generation normalises text according to the tool's character and separator rules. Search engines do not require a specific slug format for ranking.",
+      "workflow": "Enter a concise page title, generate the slug, review transliteration and punctuation, then check that the final URL is unique and stable.",
+      "mistakes": "Do not change an established URL without a redirect or assume keyword stuffing in a slug improves rankings."
+    },
+    "json-formatter-validator": {
+      "title": "JSON Formatter & Validator",
+      "description": "Validate JSON and format or minify it instantly.",
+      "example": "A JSON object such as { \"name\": \"PDFora\", \"active\": true } can be formatted with indentation and checked for valid JSON syntax.",
+      "accuracy": "A syntactically valid JSON document may still fail an application's schema or business rules. The tool does not prove data is trustworthy.",
+      "workflow": "Paste a small JSON sample, format or minify it, validate syntax and then test it against the target application's expected schema.",
+      "mistakes": "Do not use comments or trailing commas in strict JSON, and do not paste API credentials or confidential production payloads."
+    },
+    "base64-encoder-decoder": {
+      "title": "Base64 Encoder & Decoder",
+      "description": "Encode plain text to Base64 or decode Base64 back to text.",
+      "example": "The text 'Hello' encodes to 'SGVsbG8=' in Base64 and decodes back to the original text.",
+      "accuracy": "Base64 is a reversible encoding, not encryption. Anyone with the encoded string can decode it without a secret key.",
+      "workflow": "Choose encode or decode, paste the input and compare the decoded output with the original sample.",
+      "mistakes": "Do not store passwords or secrets in Base64 expecting them to be protected."
+    },
+    "url-encoder-decoder": {
+      "title": "URL Encoder & Decoder",
+      "description": "Safely encode or decode URL components using percent encoding for URLs and query values.",
+      "example": "A space in a URL query component is commonly encoded as %20 or + depending on the form-encoding context.",
+      "accuracy": "URL component encoding and HTML form encoding are related but not identical. Encode the query value or path segment, not an entire URL indiscriminately.",
+      "workflow": "Select the correct mode, paste only the component you need to encode or decode, and test the final URL in the destination application.",
+      "mistakes": "Do not double-encode an already encoded value or encode protocol separators and slashes when they are part of the URL structure."
+    },
+    "hash-generator": {
+      "title": "Hash Generator",
+      "description": "Generate SHA-256 and SHA-1 hashes in your browser.",
+      "example": "The SHA-256 digest for a given text is a fixed-length 256-bit hash; changing one character produces a different digest.",
+      "accuracy": "A cryptographic hash is one-way and is not encryption. SHA-1 is no longer recommended for collision-resistant security use.",
+      "workflow": "Select the requested algorithm, enter a non-sensitive test string and compare the digest with an independent trusted implementation.",
+      "mistakes": "Do not use a plain hash as password storage or assume MD5/SHA-1 is suitable for modern security-sensitive integrity checks."
+    },
+    "image-compressor": {
+      "title": "Image Compressor",
+      "description": "Compress JPEG, PNG and WebP images in your browser.",
+      "example": "A 2 MB JPEG may be reduced in size by lowering quality or dimensions, but fine text and image detail can become less clear.",
+      "accuracy": "Compression results depend on the source image, output format, quality and dimensions. Lossless and lossy formats behave differently.",
+      "workflow": "Keep the original, choose a target quality or file size, export a sample and inspect it at normal display size before processing a batch.",
+      "mistakes": "Do not repeatedly recompress an already lossy image or assume the smallest file is always the best output."
+    },
+    "image-format-converter": {
+      "title": "Image Format Converter",
+      "description": "Convert images between PNG, JPEG and WebP formats.",
+      "example": "A JPEG can be converted to PNG, but converting it to PNG does not restore image detail lost in earlier compression.",
+      "accuracy": "Format conversion can change transparency, metadata, colour profiles and file size. JPEG does not support transparency; PNG and WebP have different capabilities.",
+      "workflow": "Choose an output format based on the destination, convert a copy and verify transparency, dimensions and visual quality after download.",
+      "mistakes": "Do not expect a format conversion to improve source quality or preserve transparency when exporting to JPEG."
+    },
+    "password-strength-checker": {
+      "title": "Password Strength Checker",
+      "description": "Assess password length and character variety locally without transmitting it.",
+      "example": "A longer unique passphrase is generally harder to guess than a short password built from predictable substitutions.",
+      "accuracy": "A strength estimate is heuristic and cannot guarantee that a password has not been exposed in a breach or reused elsewhere.",
+      "workflow": "Use the checker only with a sample or locally entered password if the page processes it in-browser; prefer a reputable password manager to generate and store unique credentials.",
+      "mistakes": "Never paste a real password into a service unless you have verified its privacy and processing model. Do not reuse a password because it scores highly."
+    },
+    "password-generator": {
+      "title": "Password Generator",
+      "description": "Generate random passwords locally with configurable length and character sets.",
+      "example": "A randomly generated 16-character password with a mix of character classes has far more possible combinations than a short predictable word.",
+      "accuracy": "Security depends on randomness, length, uniqueness and safe storage. A generated password is only as safe as the method and device used.",
+      "workflow": "Choose a suitable length and character set, generate a password, copy it directly to a password manager and avoid reusing it.",
+      "mistakes": "Do not send generated passwords in chat, store them in plain text or choose an unnecessarily restrictive character set that makes the password predictable."
+    },
+    "currency-converter": {
+      "title": "Currency Converter",
+      "description": "Convert currencies using current public exchange-rate data.",
+      "example": "If the published rate is NPR 133 for USD 1, USD 10 converts to NPR 1,330 before any bank spread or fees.",
+      "accuracy": "Exchange-rate providers update at different times. Bank cash, card, remittance and market rates can differ from an indicative mid-market or central-bank reference.",
+      "workflow": "Check the rate source and timestamp, enter the amount and currencies, then compare the indicative result with the rate offered by your bank or provider.",
+      "mistakes": "Do not assume an online reference rate is the amount you will receive after fees or that buying and selling rates are identical."
+    },
+    "case-converter": {
+      "title": "Case Converter",
+      "description": "Convert text to uppercase, lowercase, title case or sentence case.",
+      "example": "Paste a sentence such as “PDFora makes online tasks easier” and compare uppercase, lowercase, title case and sentence case before copying the version you need.",
+      "accuracy": "Case rules differ for acronyms, names and language-specific letters. Title case is a formatting convention, not a grammar checker.",
+      "workflow": "Test a short paragraph first, preserve acronyms and proper nouns, then convert the full text.",
+      "mistakes": "Do not assume automatic title case will preserve every brand name or abbreviation."
+    },
+    "lorem-ipsum-generator": {
+      "title": "Lorem Ipsum Generator",
+      "description": "Generate placeholder text by paragraphs, sentences or words.",
+      "example": "Choose the required paragraph, sentence or word count and generate placeholder copy to test a page layout before real content is ready.",
+      "accuracy": "Placeholder text is not meaningful copy and must not be published as factual or SEO content.",
+      "workflow": "Generate only enough text to test the design, then replace it with reviewed original writing.",
+      "mistakes": "Do not leave placeholder text on a public page or use it as a substitute for useful content."
+    },
+    "text-diff-checker": {
+      "title": "Text Diff Checker",
+      "description": "Compare two text blocks and inspect added and removed lines.",
+      "example": "Paste the earlier text in the first box and the revised version in the second to inspect additions, removals and changed lines.",
+      "accuracy": "A text diff compares characters or lines; it does not decide whether a change is correct or preserve every rich-text style.",
+      "workflow": "Compare two plain-text versions and review each changed block before accepting edits.",
+      "mistakes": "Do not overlook whitespace-only changes or assume visually similar Unicode characters are identical."
+    },
+    "color-picker-palette": {
+      "title": "Color Picker & Palette Generator",
+      "description": "Pick a color, copy HEX and RGB values, and generate a palette.",
+      "example": "Select a colour or enter a HEX/RGB value, then inspect the generated palette and copy the exact colour code needed by your design.",
+      "accuracy": "Screen appearance varies with display calibration and colour profiles. A palette is a design aid, not an accessibility check.",
+      "workflow": "Record the HEX or RGB value and test it in the actual interface where the colour will be used.",
+      "mistakes": "Do not judge text readability from colour harmony alone; check contrast separately."
+    },
+    "remove-duplicate-lines": {
+      "title": "Remove Duplicate Lines",
+      "description": "Remove repeated lines while preserving the original order.",
+      "example": "Paste a list with repeated entries and remove duplicates while keeping the first occurrence and original order.",
+      "accuracy": "Two lines that differ in spaces, letter case or Unicode characters may be treated as different values.",
+      "workflow": "Test with a short list containing exact repeats and near-matches before cleaning a large dataset.",
+      "mistakes": "Keep a copy of the source list and check whether case or whitespace should count as a duplicate."
+    },
+    "sort-lines": {
+      "title": "Sort Text Lines",
+      "description": "Sort lines alphabetically or reverse their order.",
+      "example": "Paste one item per line and choose the required alphabetical or reverse ordering for a clean list.",
+      "accuracy": "Sorting follows text comparison rules and may not match numeric, date or language-specific ordering in every case.",
+      "workflow": "Try a small sample with numbers, uppercase letters and Nepali text to confirm the ordering.",
+      "mistakes": "Do not use alphabetical sorting when the original sequence carries meaning or priority."
+    },
+    "reverse-text": {
+      "title": "Reverse Text Generator",
+      "description": "Reverse characters or words in a text string.",
+      "example": "Enter a short phrase and choose whether to reverse its characters or its word order, then inspect the result.",
+      "accuracy": "Reversing characters can split combined Unicode graphemes, emoji sequences or Nepali conjuncts in unexpected ways.",
+      "workflow": "Use this utility for simple text transformations and verify multilingual output before reuse.",
+      "mistakes": "Do not use character reversal on complex scripts without checking that each visible character remains intact."
+    },
+    "whitespace-cleaner": {
+      "title": "Whitespace Cleaner",
+      "description": "Trim lines and normalize extra spaces and blank lines.",
+      "example": "Paste text with extra spaces, tabs or blank lines and inspect the normalized version before copying it.",
+      "accuracy": "Whitespace can be meaningful in code, fixed-width data, poetry and some document layouts.",
+      "workflow": "Choose a representative sample and compare line breaks before cleaning the full text.",
+      "mistakes": "Do not remove indentation from code or formatting where spaces affect meaning."
+    },
+    "character-frequency": {
+      "title": "Character Frequency Counter",
+      "description": "Count how often each character appears in text.",
+      "example": "Paste a sample to count how often each character appears and identify repeated letters, digits or symbols.",
+      "accuracy": "Counts depend on whether spaces, punctuation, case and Unicode code points are included separately.",
+      "workflow": "Compare a short known sample manually, then use the result to inspect larger text.",
+      "mistakes": "Do not interpret character counts as word frequency or language statistics without checking the counting rules."
+    },
+    "uuid-generator": {
+      "title": "UUID Generator",
+      "description": "Generate random UUID v4 identifiers in your browser.",
+      "example": "Generate UUID v4 identifiers for test records, local development and non-secret unique IDs.",
+      "accuracy": "UUIDs are identifiers, not passwords or access-control secrets. Uniqueness is probabilistic rather than a substitute for database constraints.",
+      "workflow": "Generate IDs where needed and validate their format in the application that will store them.",
+      "mistakes": "Do not expose a UUID as the only protection for sensitive resources."
+    },
+    "html-encoder-decoder": {
+      "title": "HTML Encoder & Decoder",
+      "description": "Encode special HTML characters or decode HTML entities.",
+      "example": "Paste text containing characters such as ampersands, quotation marks and angle brackets to see their HTML entity representation.",
+      "accuracy": "HTML encoding helps represent special characters in markup but does not replace context-aware output escaping or sanitization.",
+      "workflow": "Encode for the correct HTML context and test the result in a safe local page or parser.",
+      "mistakes": "Do not treat encoded HTML as automatically safe in JavaScript, CSS, URL or attribute contexts."
+    },
+    "regex-tester": {
+      "title": "Regex Tester",
+      "description": "Test a JavaScript regular expression against sample text.",
+      "example": "Enter a JavaScript regular expression and a sample string to inspect which text segments match and whether the pattern behaves as intended.",
+      "accuracy": "Regular-expression syntax and features vary between programming languages. A match does not prove that input is valid for every business rule.",
+      "workflow": "Test ordinary values, empty strings, boundary cases and malformed input before using a pattern in code.",
+      "mistakes": "Avoid overly complex patterns on untrusted large input because some expressions can cause excessive processing."
+    },
+    "jwt-decoder": {
+      "title": "JWT Decoder",
+      "description": "Decode JWT header and payload locally without verifying signatures.",
+      "example": "Paste a JSON Web Token to inspect its header and payload claims in readable JSON form.",
+      "accuracy": "Decoding does not verify a JWT signature, issuer, audience, expiry or trustworthiness. The payload may contain sensitive information.",
+      "workflow": "Use a dummy or non-sensitive token and validate signature and claims with the trusted server-side library.",
+      "mistakes": "Never treat decoded claims as authenticated or paste production tokens into a public page."
+    },
+    "css-minifier": {
+      "title": "CSS Minifier",
+      "description": "Remove comments and unnecessary whitespace from CSS.",
+      "example": "Paste CSS and minify whitespace and comments to create a smaller stylesheet for testing or deployment.",
+      "accuracy": "Minification does not guarantee visual correctness and can expose syntax errors that were hidden by a poorly tested workflow.",
+      "workflow": "Keep the original stylesheet, minify a copy and compare the rendered page across target screen sizes.",
+      "mistakes": "Do not deploy minified CSS without running the project's build and visual regression checks."
+    },
+    "json-to-csv": {
+      "title": "JSON to CSV Converter",
+      "description": "Convert an array of JSON objects into downloadable CSV.",
+      "example": "Provide an array of JSON objects with consistent fields and export rows as CSV for spreadsheet use.",
+      "accuracy": "Nested objects, arrays, missing keys, commas, quotes and line breaks need explicit handling; CSV cannot represent every JSON structure without flattening.",
+      "workflow": "Test a small array containing empty and quoted values, then inspect the CSV in the target spreadsheet application.",
+      "mistakes": "Do not assume a complex nested JSON document can be converted losslessly into a flat table."
+    },
+    "meta-title-checker": {
+      "title": "SEO Meta Title Checker",
+      "description": "Check title length and preview how a page title may appear in search.",
+      "example": "Paste a real page title and its target URL to review length and a search-result style preview.",
+      "accuracy": "Search engines may rewrite titles and truncate snippets differently by device, query and pixel width; character count alone is not a ranking score.",
+      "workflow": "Keep the page's main topic clear, place the most useful phrase naturally near the start and compare the title with the visible H1.",
+      "mistakes": "Avoid repeating keywords, boilerplate titles or titles that promise content the page does not provide."
+    },
+    "meta-description-checker": {
+      "title": "Meta Description Checker",
+      "description": "Check meta description length and preview its search snippet.",
+      "example": "Paste the page's actual meta description to review its length and a search snippet preview.",
+      "accuracy": "Search engines may choose a different snippet from the page content. A description is not a direct ranking guarantee.",
+      "workflow": "Write a distinct, accurate summary of the page and make sure the visible content supports the promise.",
+      "mistakes": "Avoid keyword stuffing, duplicate descriptions and claims that are not supported by the page."
+    },
+    "keyword-density-checker": {
+      "title": "Keyword Density Checker",
+      "description": "Measure keyword frequency and density in pasted content.",
+      "example": "Paste the page copy and enter a phrase to see how often it appears relative to the total text.",
+      "accuracy": "Keyword density is a descriptive count, not a target percentage or a reliable ranking formula.",
+      "workflow": "Use the output to spot accidental repetition, then judge the wording by usefulness and natural readability.",
+      "mistakes": "Do not add repeated keywords merely to reach a numerical density."
+    },
+    "robots-txt-generator": {
+      "title": "Robots.txt Generator",
+      "description": "Generate a robots.txt file from crawl rules and sitemap URL.",
+      "example": "Enter the site host, sitemap location and crawler rules, then review the generated robots.txt before publishing it at the domain root.",
+      "accuracy": "Robots.txt controls crawler access but does not remove a URL from search results or protect private information.",
+      "workflow": "Test the file with the relevant search-engine robots tools and keep important public pages crawlable.",
+      "mistakes": "Do not block CSS, JavaScript, key pages or the entire site unintentionally."
+    },
+    "sitemap-generator": {
+      "title": "XML Sitemap Generator",
+      "description": "Generate a basic XML sitemap from a list of URLs.",
+      "example": "Enter canonical public URLs and generate an XML sitemap for pages you want search engines to discover.",
+      "accuracy": "A sitemap helps discovery but does not guarantee crawling, indexing or ranking. Redirected, blocked, duplicate and noindex URLs should not be included.",
+      "workflow": "Use absolute canonical URLs, submit the sitemap in Search Console and update it when public pages change.",
+      "mistakes": "Do not include private pages, tracking URLs, duplicate routes or URLs that return errors."
+    },
+    "open-graph-preview": {
+      "title": "Open Graph Preview Tool",
+      "description": "Preview social sharing title, description and image URL metadata.",
+      "example": "Enter the exact title, description and image URL to preview how a page may appear when shared on social platforms.",
+      "accuracy": "Platforms can cache previews and apply their own image dimensions, title limits and fallback behaviour.",
+      "workflow": "Use an absolute publicly accessible image URL, check the crop and test the live page with platform debuggers.",
+      "mistakes": "Do not rely on a local image path or assume every platform displays the same preview."
+    },
+    "url-query-parser": {
+      "title": "URL Query String Parser",
+      "description": "Parse a URL and inspect its query parameters in a readable table.",
+      "example": "Paste a complete URL to inspect its protocol, host, path, query parameters and fragment separately.",
+      "accuracy": "URL parsing distinguishes encoded components and repeated parameters; malformed or relative URLs may behave differently.",
+      "workflow": "Test a URL containing multiple query values, percent-encoded characters and a fragment before using the output.",
+      "mistakes": "Do not share URLs that contain private access tokens or session identifiers."
+    },
+    "xml-formatter-validator": {
+      "title": "XML Formatter & Validator",
+      "description": "Validate XML syntax and format XML documents with readable indentation.",
+      "example": "Paste XML to format its indentation and check whether its markup is well-formed.",
+      "accuracy": "Well-formed XML may still violate a required schema, namespace rule or application-specific contract.",
+      "workflow": "Validate a small sample and then test the result against the target XSD or consuming application.",
+      "mistakes": "Do not assume formatting alone verifies the document's meaning or schema compliance."
+    },
+    "notes-to-pdf": {
+      "title": "Notes to PDF",
+      "description": "Write or paste notes, format the page and save them as a PDF using your browser's print dialog.",
+      "example": "Write or paste notes, review the line breaks and create a PDF copy for sharing or printing.",
+      "accuracy": "PDF layout can vary with long lines, special characters, fonts and page breaks. Always inspect the exported document.",
+      "workflow": "Use headings and short sections, export the PDF and open it in a separate reader before sharing.",
+      "mistakes": "Do not assume the generated PDF preserves formatting from a rich-text editor unless it is shown in the preview."
+    },
+    "line-counter": {
+      "title": "Line Counter",
+      "description": "Count total, non-empty and unique lines in a text block.",
+      "example": "Paste text to count its lines and compare the total with the expected line breaks in the source.",
+      "accuracy": "Different systems represent line endings differently, and a trailing newline can affect the reported count.",
+      "workflow": "Test a sample with blank lines and a final newline to understand the counting convention.",
+      "mistakes": "Do not confuse non-empty lines with total line breaks."
+    },
+    "sentence-counter": {
+      "title": "Sentence Counter",
+      "description": "Count sentences and estimate average sentence length in pasted text.",
+      "example": "Paste a paragraph to count sentences and inspect how punctuation affects the result.",
+      "accuracy": "Abbreviations, decimal points, initials and multilingual punctuation can make sentence boundaries ambiguous.",
+      "workflow": "Compare a short sample with a manual count, especially where abbreviations or Nepali punctuation appear.",
+      "mistakes": "Do not treat an automatic sentence count as a grammar or readability assessment."
+    },
+    "email-extractor": {
+      "title": "Email Extractor",
+      "description": "Find and extract email addresses from text, documents or copied lists.",
+      "example": "Paste text and extract email-like strings for review before preparing a contact list.",
+      "accuracy": "A pattern match cannot prove that an address exists, accepts mail or belongs to the intended person.",
+      "workflow": "Review each extracted address, remove duplicates and obtain consent before sending bulk messages.",
+      "mistakes": "Do not use extracted contact details for unsolicited messages or assume every match is deliverable."
+    },
+    "url-extractor": {
+      "title": "URL Extractor",
+      "description": "Find web links in pasted text and list unique URLs.",
+      "example": "Paste text to identify URL-like strings and review the links found in the content.",
+      "accuracy": "A syntactically plausible URL may be broken, malicious, redirected or inaccessible.",
+      "workflow": "Inspect each link's destination and protocol before opening or importing it into another system.",
+      "mistakes": "Do not open unknown links automatically or assume extraction verifies site safety."
+    },
+    "phone-number-extractor": {
+      "title": "Phone Number Extractor",
+      "description": "Find phone-like number sequences in text for quick list cleanup.",
+      "example": "Paste text to identify phone-number-like sequences and review the extracted values.",
+      "accuracy": "Number formats vary by country; a match does not confirm that a number is assigned, active or reachable.",
+      "workflow": "Check the country code and local format manually before saving or contacting a number.",
+      "mistakes": "Do not treat extracted numbers as verified identities or consent to contact."
+    },
+    "number-extractor": {
+      "title": "Number Extractor",
+      "description": "Extract integer and decimal numbers from text into a clean list.",
+      "example": "Paste a block of text to collect numeric sequences for review or further analysis.",
+      "accuracy": "The extraction may not distinguish dates, amounts, IDs, decimals and measurements without additional context.",
+      "workflow": "Review each number with its surrounding text before using it in a spreadsheet or calculation.",
+      "mistakes": "Do not assume every extracted number represents a quantity or a value in the same unit."
+    },
+    "hashtag-extractor": {
+      "title": "Hashtag Extractor",
+      "description": "Extract unique hashtags from social captions and text drafts.",
+      "example": "Paste social post text to collect hashtags and review which tags appear in the content.",
+      "accuracy": "A hashtag extractor finds text patterns; it does not measure popularity, relevance or platform reach.",
+      "workflow": "Remove duplicates and confirm each hashtag fits the post and platform conventions.",
+      "mistakes": "Do not add unrelated trending tags simply because they appear in an extracted list."
+    },
+    "remove-duplicate-words": {
+      "title": "Remove Duplicate Words",
+      "description": "Remove repeated words from a sentence or text while preserving first occurrence.",
+      "example": "Paste a sentence or list and remove repeated words while checking that the original meaning and order remain clear.",
+      "accuracy": "Duplicate detection can depend on case, punctuation and whitespace; repeated words may be intentional in natural language.",
+      "workflow": "Test a short paragraph first and compare the revised sentence with the source.",
+      "mistakes": "Do not automatically remove repeated words from legal, quoted or carefully edited text."
+    },
+    "find-replace-text": {
+      "title": "Find and Replace Text",
+      "description": "Replace matching text throughout a pasted block with your chosen replacement.",
+      "example": "Enter the text to find and its replacement, then test the change on a short sample before applying it to a full document.",
+      "accuracy": "Plain-text replacement may be case-sensitive and can alter substrings inside larger words or identifiers.",
+      "workflow": "Check the number and context of matches, keep a source copy and review every replacement.",
+      "mistakes": "Do not replace common fragments globally without checking unintended matches."
+    },
+    "text-to-binary": {
+      "title": "Text to Binary Converter",
+      "description": "Convert plain text into UTF-8 binary bytes in your browser.",
+      "example": "Enter plain text to represent its characters as binary bytes and inspect the output grouping.",
+      "accuracy": "The binary output depends on character encoding, typically UTF-8; non-ASCII characters use multiple bytes.",
+      "workflow": "Convert a short English and Nepali sample, then decode it back to confirm the expected encoding.",
+      "mistakes": "Do not assume one character always maps to exactly eight bits."
+    },
+    "binary-to-text": {
+      "title": "Binary to Text Converter",
+      "description": "Decode a sequence of binary bytes into readable UTF-8 text.",
+      "example": "Paste binary byte groups in the supported format to decode them into readable text.",
+      "accuracy": "Invalid bit groups or a mismatched character encoding can produce errors or replacement characters.",
+      "workflow": "Use a known UTF-8 sample and check byte grouping before decoding a longer value.",
+      "mistakes": "Do not interpret arbitrary binary data as text without knowing its encoding."
+    },
+    "text-to-hex": {
+      "title": "Text to Hex Converter",
+      "description": "Convert text into its UTF-8 hexadecimal byte representation.",
+      "example": "Enter text to view its encoded byte values in hexadecimal form.",
+      "accuracy": "Hex output represents bytes and depends on the character encoding; Nepali and emoji characters require multiple bytes.",
+      "workflow": "Test with a known short string and preserve the encoding used for later decoding.",
+      "mistakes": "Do not confuse hexadecimal text representation with encryption."
+    },
+    "hex-to-text": {
+      "title": "Hex to Text Converter",
+      "description": "Decode hexadecimal byte pairs into readable UTF-8 text.",
+      "example": "Paste hexadecimal byte pairs in the expected format and decode them into text.",
+      "accuracy": "Odd-length, invalid or incorrectly encoded hex sequences may fail or produce unreadable characters.",
+      "workflow": "Check that the input contains valid byte pairs and use the same character encoding as the source.",
+      "mistakes": "Do not assume every hexadecimal string represents UTF-8 text."
+    },
+    "morse-code-translator": {
+      "title": "Morse Code Translator",
+      "description": "Encode text into Morse code or decode Morse code into text.",
+      "example": "Enter a short message and translate letters and numbers into Morse code or decode a supported Morse sequence.",
+      "accuracy": "Morse spacing separates letters and words; punctuation and language support may be limited by the tool's mapping.",
+      "workflow": "Use a simple test phrase first and check separators between each letter and word.",
+      "mistakes": "Do not rely on an unverified translation for emergency, aviation or safety-critical communication."
+    },
+    "palindrome-checker": {
+      "title": "Palindrome Checker",
+      "description": "Check whether a word or phrase reads the same forwards and backwards.",
+      "example": "Enter a word or phrase to check whether it reads the same forward and backward under the tool's comparison rules.",
+      "accuracy": "Results can change depending on whether spaces, punctuation and letter case are ignored.",
+      "workflow": "Test a simple known palindrome and check the displayed normalization rules for phrases.",
+      "mistakes": "Do not assume a phrase-level check uses the same rules as a strict character-by-character comparison."
+    },
+    "acronym-generator": {
+      "title": "Acronym Generator",
+      "description": "Create an acronym from the initial letters of a phrase or title.",
+      "example": "Enter a phrase to create an initial-based acronym and review whether the result is understandable.",
+      "accuracy": "Automatic initials may not follow an organisation's naming convention or established abbreviation.",
+      "workflow": "Compare the generated acronym with common usage and edit it for clarity before publishing.",
+      "mistakes": "Do not assume the first-letter output is an officially recognised abbreviation."
+    },
+    "camel-case-converter": {
+      "title": "Camel Case Converter",
+      "description": "Convert phrases into camelCase identifiers for JavaScript and other code.",
+      "example": "Enter a phrase and convert it to camelCase for a variable or property name.",
+      "accuracy": "Automatic word splitting may not preserve acronyms, punctuation or language-specific names exactly.",
+      "workflow": "Test names with numbers and acronyms, then confirm the result follows the target codebase convention.",
+      "mistakes": "Do not use generated identifiers without checking reserved words and naming rules."
+    },
+    "snake-case-converter": {
+      "title": "Snake Case Converter",
+      "description": "Convert phrases into snake_case identifiers for code and databases.",
+      "example": "Enter a phrase and convert it to snake_case for filenames, variables or database fields.",
+      "accuracy": "Automatic conversion can change punctuation, accents and acronym boundaries.",
+      "workflow": "Review the output against the naming rules of the target framework or database.",
+      "mistakes": "Do not rename existing API fields or database columns without checking compatibility."
+    },
+    "kebab-case-converter": {
+      "title": "Kebab Case Converter",
+      "description": "Convert phrases into kebab-case strings for URLs and CSS class names.",
+      "example": "Enter a phrase and convert it to kebab-case for URL slugs, CSS classes or filenames.",
+      "accuracy": "Slug rules differ for accents, Unicode letters, repeated separators and reserved URL characters.",
+      "workflow": "Check the final slug for readability, uniqueness and compatibility with the target system.",
+      "mistakes": "Do not change an established public URL without planning a redirect."
+    },
+    "html-tag-stripper": {
+      "title": "HTML Tag Stripper",
+      "description": "Remove HTML tags and return readable text content from an HTML snippet.",
+      "example": "Paste HTML markup to remove tags and inspect the remaining text content.",
+      "accuracy": "Removing tags does not necessarily preserve links, table structure, accessibility labels or meaningful spacing.",
+      "workflow": "Test a small fragment containing paragraphs, lists and links before processing a full page.",
+      "mistakes": "Do not use stripped text as a safe HTML sanitizer or as a replacement for parsing."
+    },
+    "csv-to-json": {
+      "title": "CSV to JSON Converter",
+      "description": "Convert comma-separated data with a header row into a JSON array.",
+      "example": "Paste CSV with a header row and convert its records into JSON objects for use in a script or API.",
+      "accuracy": "Delimiter, quoting, escaped quotes, empty cells and duplicate column names affect how CSV is parsed.",
+      "workflow": "Test a sample with commas inside quoted fields and missing values, then validate the JSON output.",
+      "mistakes": "Do not assume every CSV dialect uses commas or that all cells should be treated as strings."
+    },
+    "json-to-yaml": {
+      "title": "JSON to YAML Converter",
+      "description": "Convert basic JSON objects and arrays into readable YAML syntax.",
+      "example": "Paste valid JSON and convert it into YAML for configuration or data exchange.",
+      "accuracy": "YAML parsers can interpret strings, booleans, numbers and special characters differently depending on quoting and schema.",
+      "workflow": "Parse the generated YAML with the target application's parser before deploying it.",
+      "mistakes": "Do not paste secrets into public configuration tools or assume conversion validates application settings."
+    },
+    "json-escape-unescape": {
+      "title": "JSON Escape and Unescape Tool",
+      "description": "Escape special characters for JSON strings or decode escaped JSON text.",
+      "example": "Paste a JSON string or escaped text and convert quote, slash and control-character escapes as required.",
+      "accuracy": "Escaping depends on whether the input is a JSON string, a complete JSON document or text embedded in another language.",
+      "workflow": "Test quotes, backslashes, newlines and Unicode characters, then parse the result in its target context.",
+      "mistakes": "Do not double-escape content or confuse string escaping with encryption."
+    },
+    "url-validator": {
+      "title": "URL Validator",
+      "description": "Check whether a URL has a valid structure and show its parsed components.",
+      "example": "Enter a URL to check its basic structure and supported format before using it in a link or configuration.",
+      "accuracy": "A structurally valid URL may still point to a dead, unsafe or unintended destination.",
+      "workflow": "Check the scheme, host and path, then test the destination separately using a trusted environment.",
+      "mistakes": "Do not treat syntax validation as malware scanning or proof that a site is trustworthy."
+    },
+    "email-validator": {
+      "title": "Email Validator",
+      "description": "Check the basic syntax of an email address without sending a message.",
+      "example": "Enter an email address to check its basic syntax and common formatting issues.",
+      "accuracy": "Syntax validation cannot prove mailbox ownership, deliverability or consent; only a confirmation process can verify control.",
+      "workflow": "Correct obvious formatting errors and use a confirmation email when account ownership matters.",
+      "mistakes": "Do not reject unusual but valid addresses solely because they do not match a simplistic pattern."
+    },
+    "percentage-of-number-calculator": {
+      "title": "Percentage of a Number Calculator",
+      "description": "Calculate a percentage of any number and show the remaining value.",
+      "example": "Enter the base number and percentage to calculate the corresponding amount, then compare it with the original value.",
+      "accuracy": "A percentage result depends on which number is treated as the base and whether the rate is entered as a percentage or decimal.",
+      "workflow": "Try a simple example such as 10% of 200 and confirm the result is 20 before entering larger figures.",
+      "mistakes": "Do not confuse percentage of a number with percentage increase or percentage-point change."
+    },
+    "color-converter": {
+      "title": "HEX RGB HSL Color Converter",
+      "description": "Convert a color between HEX, RGB and HSL representations.",
+      "example": "Enter a colour in a supported format such as HEX, RGB or HSL and compare its equivalent representations.",
+      "accuracy": "Conversions may round channel values and may not preserve wide-gamut or alpha-channel information in every format.",
+      "workflow": "Copy the converted code and test it in the target browser or design application.",
+      "mistakes": "Do not assume visually similar colours have identical contrast or accessibility."
+    },
+    "css-gradient-generator": {
+      "title": "CSS Gradient Generator",
+      "description": "Generate a reusable CSS linear-gradient declaration from two colors and an angle.",
+      "example": "Choose gradient colours, direction and stops, then preview the CSS before copying it into a stylesheet.",
+      "accuracy": "Browser rendering and colour interpolation can differ; complex gradients may need vendor or fallback handling in older environments.",
+      "workflow": "Test the generated CSS on the actual component and at different viewport sizes.",
+      "mistakes": "Do not rely on a gradient as the only way to communicate important information."
+    },
+    "roman-numeral-converter": {
+      "title": "Roman Numeral Converter",
+      "description": "Convert integers to Roman numerals and supported Roman numerals back to numbers.",
+      "example": "Enter a supported integer or Roman numeral and convert it to the corresponding representation.",
+      "accuracy": "Traditional Roman numerals have a conventional range and notation rules; non-standard subtractive forms may be rejected.",
+      "workflow": "Test a known value such as 2026 and review the output before using it in a heading or label.",
+      "mistakes": "Do not use Roman numerals for arithmetic or assume every historical notation follows modern conventions."
+    },
+    "nepal-forex-rates": {
+      "title": "Nepal Rastra Bank Exchange Rates",
+      "description": "View official Nepal Rastra Bank daily currency buying and selling rates and convert NPR using the published unit values.",
+      "example": "Check the published currency, buying and selling rate, unit multiplier and update date before converting an amount to NPR.",
+      "accuracy": "Published central-bank reference rates can differ from cash exchange, remittance, card and commercial-bank rates; a displayed rate may not be real-time.",
+      "workflow": "Use the published timestamp, choose the correct currency unit and compare the estimate with your bank or licensed provider before exchanging money.",
+      "mistakes": "Do not treat an indicative published rate as a guaranteed transaction quote or ignore the currency's quoted unit."
+    },
+    "nepse-market-news": {
+      "title": "NEPSE Market & IPO News",
+      "description": "Read automatically refreshed Nepal stock-market, IPO, FPO and allotment headlines with publisher links and publication times.",
+      "example": "Review the headline, publication time and original publisher link for recent Nepal market and IPO coverage.",
+      "accuracy": "News feeds can include delayed, duplicate or unrelated stories and are not a substitute for official NEPSE, SEBON, CDSC or company notices.",
+      "workflow": "Open the publisher's original report and cross-check market-sensitive facts with the responsible official source.",
+      "mistakes": "Do not make a buy or sell decision from a headline or an unverified social-media summary."
+    },
+    "nepse-dividend-calculator": {
+      "title": "NEPSE Dividend & Bonus Share Calculator",
+      "description": "Estimate cash dividends after an editable withholding-tax assumption and calculate bonus-share entitlement from your holdings.",
+      "example": "Enter the eligible share quantity and announced cash or bonus dividend rate to estimate the gross entitlement and applicable deduction assumptions.",
+      "accuracy": "Dividend eligibility, book-close dates, withholding tax and bonus-share crediting depend on the company's official announcement and current tax rules.",
+      "workflow": "Compare the estimate with the book-close notice, shareholder record and company announcement before relying on it.",
+      "mistakes": "Do not treat the estimate as a confirmed CDSC credit or guaranteed dividend payment."
+    },
+    "nepali-date-converter": {
+      "title": "Nepali Date Converter (BS ↔ AD)",
+      "description": "Convert Bikram Sambat Nepali dates to Gregorian English dates and back, with Nepali month names and digits.",
+      "example": "Choose AD → BS or BS → AD, enter a date in YYYY-MM-DD order and compare the displayed Nepali month, weekday and Devanagari digits with the source date.",
+      "accuracy": "Conversion is limited to the bundled calendar dataset range shown on the page. Dates outside that range are rejected; do not use an estimate as an official date certificate.",
+      "workflow": "Test one known AD date and one known BS date in both directions. Check leap-year and month-boundary dates before using a converted date on a form or legal record.",
+      "mistakes": "Do not swap month and day, mix BS and AD fields, or assume dates outside the supported calendar range can be extrapolated."
+    },
+    "nepali-vat-calculator": {
+      "title": "Nepal VAT Calculator (13%)",
+      "description": "Add 13% VAT to a price or extract VAT from a VAT-inclusive amount in Nepalese rupees.",
+      "example": "Enter a taxable base amount in NPR and choose Add VAT to calculate the 13% tax and inclusive total, or Remove VAT to split an inclusive price into its base amount and VAT component.",
+      "accuracy": "The calculator applies the selected rate mathematically; it does not decide whether a supply is taxable, exempt, zero-rated or eligible for input-tax credit under Nepal tax law.",
+      "workflow": "Check whether the quoted price already includes VAT. Compare the base, VAT and total with the invoice and current Inland Revenue Department rules.",
+      "mistakes": "Do not add VAT to an amount that already includes it, enter 13 instead of 13% where the field expects a percentage, or treat every transaction as VAT-taxable."
+    },
+    "nepal-land-area-converter": {
+      "title": "Ropani Aana Paisa Daam Converter",
+      "description": "Convert traditional Nepali land units into square feet, square metres and ropani.",
+      "example": "Enter Ropani, Aana, Paisa and Daam for hill units, Bigha, Kattha and Dhur for Terai units, or a square-foot value to see metric and local-unit equivalents.",
+      "accuracy": "The conversion uses fixed conventional area factors. It is not a cadastral measurement and cannot verify boundaries, plot shape, ownership or official land records.",
+      "workflow": "Read the result in square feet and square metres, then compare the normalized Ropani–Aana–Paisa–Daam or Bigha–Kattha–Dhur breakdown with the source document.",
+      "mistakes": "Do not mix hill and Terai units, enter square metres into a square-foot field, or rely on rounded decimals for a legal land transfer."
+    },
+    "nepali-number-converter": {
+      "title": "Nepali Number to Words Converter",
+      "description": "Convert numbers into English words using thousand, lakh and crore and display Nepali digits.",
+      "example": "Enter a whole number and read the English words and Nepali Devanagari digits. The current number-to-words range follows the Indian grouping system of thousand, lakh and crore.",
+      "accuracy": "The converter supports non-negative safe integers up to 999,999,999. Nepali word spelling is only supplied for the smaller values implemented by the tool; larger values are shown in English words and Nepali digits.",
+      "workflow": "Check the comma grouping and read the generated words aloud before copying an amount into a cheque, receipt or form.",
+      "mistakes": "Do not enter decimals, negative values or numbers beyond the supported maximum. Review Nepali wording for values that the tool does not spell out."
+    },
+    "nepal-phone-validator": {
+      "title": "Nepal Mobile Number Checker",
+      "description": "Check common Nepal mobile number format and generate the international +977 format.",
+      "example": "Paste a Nepal mobile number with or without spaces, brackets or the +977 country prefix to check the common 10-digit mobile format.",
+      "accuracy": "This is a format check only. It does not query a telecom operator, confirm SIM ownership, check whether a number is active or verify reachability.",
+      "workflow": "Normalize the number, confirm the local 10-digit version and use the +977 international format when a service requests a country code.",
+      "mistakes": "Do not mistake a format-valid number for an active subscriber or include an extra country prefix twice."
+    },
+    "gold-tola-gram-converter": {
+      "title": "Tola to Gram Converter",
+      "description": "Convert gold and silver weight between tola and grams using the standard conversion.",
+      "example": "Enter a gold or silver weight in tola or grams and switch direction to convert using the fixed tola-to-gram factor shown by the tool.",
+      "accuracy": "This converts mass only. It does not fetch today's gold or silver price, assess purity, or include making charges, wastage or dealer margins.",
+      "workflow": "Keep the unit visible when comparing jewellery quotations and multiply the converted weight by the separately verified rate per gram or tola if you need a price estimate.",
+      "mistakes": "Do not confuse grams with milligrams or treat a weight conversion as a live metal-price quotation."
+    },
+    "nepali-calendar": {
+      "title": "Nepali Calendar (BS Patro)",
+      "description": "View a Bikram Sambat month with its corresponding Gregorian dates and weekdays using calendar data.",
+      "example": "Select a Bikram Sambat year and month to view each supported BS day alongside its Gregorian date and weekday.",
+      "accuracy": "Calendar rows depend on the bundled date dataset and supported range. Festival labels and every local or government holiday are not guaranteed to be included.",
+      "workflow": "Check the year, month and weekday, then compare dates used for official appointments or forms with the relevant government notice.",
+      "mistakes": "Do not assume the calendar is a complete holiday list or extrapolate months outside the supported date range."
+    },
+    "nepali-digit-converter": {
+      "title": "Nepali Unicode Digit Converter",
+      "description": "Convert English digits to Nepali Devanagari digits and Nepali digits back to English while preserving text.",
+      "example": "Paste a sentence containing English and Nepali numerals to convert 0–9 into ०–९ and back while leaving words and punctuation unchanged.",
+      "accuracy": "The tool changes digit characters only. It does not translate Nepali or English text, change date formats or validate the meaning of a number.",
+      "workflow": "Convert a short sample first, then copy the desired Nepali-digit or English-digit output into your document.",
+      "mistakes": "Do not expect the converter to translate words or convert a number into words; check which output direction you are copying."
+    },
+    "loksewa-photo-resizer": {
+      "title": "Loksewa & Online Form Photo Resizer",
+      "description": "Resize and compress a photo to a selected 50 KB, 100 KB or 200 KB file-size target for online forms.",
+      "example": "Choose a photo, select a maximum file-size target such as 50 KB, 100 KB or 200 KB and choose the maximum image dimension before downloading the JPEG.",
+      "accuracy": "The tool resizes and compresses an image but cannot guarantee that a Loksewa or other application accepts its crop, background, aspect ratio, dimensions or file type.",
+      "workflow": "Keep the original photo, compare the downloaded pixel dimensions and file size with the vacancy notice, and inspect the image at full size before uploading.",
+      "mistakes": "Do not assume the file-size target alone satisfies an application. Check face framing, background, dimensions and the exact format required by the notice."
+    },
+    "neb-gpa-calculator": {
+      "title": "NEB GPA Calculator",
+      "description": "Calculate a credit-weighted GPA from NEB subject grade points and credit hours.",
+      "example": "Add each subject, enter the credit hours and select the grade point printed on your grade sheet. The calculator multiplies each subject's credits by its grade point, adds the weighted points and divides by total credits.",
+      "accuracy": "The result is a credit-weighted GPA using the grade-point options displayed by the tool. Programme-specific rules, practical subjects, absent or NG treatment and official transcript rules may differ.",
+      "workflow": "Enter every subject exactly once, use the credit hours from the grade sheet, then inspect the subject-wise weighted-points table and total-credit denominator.",
+      "mistakes": "Do not take a simple average of subject grade points when credits differ, omit a subject, or substitute percentage marks for grade points."
+    },
+    "nepal-share-calculator": {
+      "title": "NEPSE Share Buy/Sell Profit Calculator",
+      "description": "Estimate share purchase cost, sale proceeds, charges and profit using editable broker, SEBON, DP and CGT assumptions.",
+      "example": "Enter the share quantity, buy price, sell price and fee assumptions to estimate purchase cost, sale proceeds, transaction charges, capital-gains tax and net profit or loss.",
+      "accuracy": "Brokerage slabs, SEBON and DP charges, CGT rules and tax treatment can change. Editable rates are assumptions and the result is not a broker contract note or official tax calculation.",
+      "workflow": "Set the correct buy and sell dates and applicable fee rates, compare the estimate with your broker's contract note and confirm current tax rules before filing.",
+      "mistakes": "Do not confuse gross price difference with net profit, forget per-transaction charges, or use a tax rate that does not match your holding period or investor category."
+    },
+    "preeti-unicode-converter": {
+      "title": "Preeti ↔ Nepali Unicode Converter",
+      "description": "Convert legacy Preeti-encoded Nepali text to Unicode Devanagari and Unicode Nepali back to Preeti.",
+      "example": "Paste text that was actually typed using the legacy Preeti font encoding, choose Preeti → Unicode or Unicode → Preeti and review the converted Devanagari text.",
+      "accuracy": "The tool converts character encoding, not document layout. Mixed fonts, copied Unicode text, unsupported glyphs and spelling ambiguities can produce output that needs manual correction.",
+      "workflow": "Keep the original text, convert a short paragraph first and verify names, conjuncts, punctuation and line breaks in the destination application.",
+      "mistakes": "Do not paste ordinary Unicode Nepali as if it were Preeti-encoded text or expect the converter to preserve page formatting, tables and images."
+    },
+    "nepal-salary-tax-calculator": {
+      "title": "Nepal Salary Tax Calculator FY 2083/84",
+      "description": "Estimate annual and monthly resident individual income tax using the published Nepal FY 2083/84 progressive tax bands.",
+      "example": "Enter the annual taxable salary and select the applicable taxpayer assumptions to estimate progressive income tax for the fiscal year named on the calculator.",
+      "accuracy": "The result depends on the configured FY 2083/84 tax bands and selected assumptions. Allowances, deductions, rebates, marital status, employment category and later government amendments can change actual payroll tax.",
+      "workflow": "Use annual figures, review each progressive tax band and compare the estimate with your employer's payroll statement and current Inland Revenue Department guidance.",
+      "mistakes": "Do not apply one marginal rate to the entire salary, mix monthly income with annual tax bands or assume the estimate includes every deduction and rebate."
+    },
+    "nepal-electricity-bill-calculator": {
+      "title": "NEA Electricity Bill Calculator",
+      "description": "Estimate a Nepal single-phase domestic electricity bill by monthly units and meter capacity with energy blocks, minimum charge and VAT assumptions.",
+      "example": "Enter monthly electricity units and select the supported single-phase domestic meter capacity to estimate the energy charge, service charge and VAT assumptions.",
+      "accuracy": "The estimate is limited to the domestic tariff categories and rates configured in the tool. Actual NEA bills can include updated tariffs, minimum charges, meter categories, adjustments or other items.",
+      "workflow": "Compare the selected meter capacity and monthly units with your NEA bill, then verify the current tariff table before budgeting or disputing a charge.",
+      "mistakes": "Do not use this domestic single-phase estimator for commercial or industrial connections or assume the estimate exactly matches every NEA bill."
+    },
+    "nepal-public-holidays-2083": {
+      "title": "Nepal Public Holidays Calendar 2083",
+      "description": "Search Nepal government public holidays for 2083 BS with Gregorian dates and national, regional and community-specific notes.",
+      "example": "Browse the listed 2083 BS holidays and check each Gregorian date, regional note and category before planning an appointment or work schedule.",
+      "accuracy": "The list is a reference and may omit institution-specific, regional or newly amended notices. Holiday applicability can vary by province, community and employer.",
+      "workflow": "Use the BS and AD date together, then confirm the latest Cabinet or responsible authority notice before booking travel or assuming an office is closed.",
+      "mistakes": "Do not assume every listed holiday applies nationwide or that a static list overrides a later official notice."
+    },
+    "nepali-unicode-typing": {
+      "title": "Nepali Unicode Typing Tool",
+      "description": "Type Romanized Nepali using an English keyboard and convert it into Devanagari Unicode text in your browser.",
+      "example": "Type Romanized Nepali using an English keyboard and review the suggested Devanagari text before copying it into a document or message.",
+      "accuracy": "Romanized typing is transliteration, not translation. A Roman spelling can map to multiple Nepali words, names or conjuncts, so the output may require correction.",
+      "workflow": "Type a short phrase, choose the intended word where alternatives appear and proofread matras, halants, names and punctuation before using the text.",
+      "mistakes": "Do not assume the tool translates English sentences or that every Romanized spelling has only one correct Nepali equivalent."
+    },
+    "ai-resume-writer": {
+      "title": "AI Resume & CV Writer",
+      "description": "Generate an honest, ATS-readable resume summary, skills and experience bullets from your real background using free AI.",
+      "example": "Enter the target role, real experience, education, skills and job description. Review the generated summary and bullet points, then copy accurate content into the PDFora Resume Builder.",
+      "accuracy": "The model cannot verify employment, qualifications, dates or achievements. Review every claim before using the draft.",
+      "workflow": "Use specific facts, tailor the draft to one vacancy, remove anything you cannot prove, then choose a template and proofread the exported PDF.",
+      "mistakes": "Do not add invented metrics, employers, degrees, certificates or skills. Avoid confidential personal information."
+    },
+    "ai-cover-letter-generator": {
+      "title": "AI Cover Letter Generator",
+      "description": "Create a tailored professional cover letter from your real skills, experience and the target job description.",
+      "example": "Provide the real job title, company, relevant experience and job description to create a focused letter.",
+      "accuracy": "The draft is based only on supplied details and may contain generic wording or factual errors. It does not verify the employer or vacancy.",
+      "workflow": "Replace placeholders, check company and role names, add a genuine example that demonstrates fit, and proofread the final letter.",
+      "mistakes": "Do not claim experience or company knowledge you do not have. Avoid sending the same unedited letter to every employer."
+    },
+    "ai-humanizer": {
+      "title": "AI Humanizer & Text Rewriter",
+      "description": "Rewrite text in a natural, clear voice while preserving meaning and facts. No AI-detector bypass claims.",
+      "example": "Paste a paragraph and choose a natural, professional, academic or simple-English style. Compare the rewrite with the original.",
+      "accuracy": "The rewrite may alter nuance, tone or factual details. It cannot reliably determine who wrote a text or guarantee how a detector will classify it.",
+      "workflow": "Keep the original, rewrite a short sample, compare names, figures, citations and meaning, then edit the result in your own voice.",
+      "mistakes": "Do not remove required citations or change factual claims. Always review the rewrite."
+    },
+    "market-ai": {
+      "title": "PDFora Smart Market AI",
+      "description": "Analyse NEPSE history or upload Forex and Crypto OHLCV data to review trend, momentum, volatility, support, resistance and risk.",
+      "example": "Select a NEPSE index or listed symbol to analyse available history, or upload at least 50 daily Forex/Crypto price rows in CSV format.",
+      "accuracy": "The engine uses rule-based EMA, RSI, MACD and volatility calculations. NEPSE data comes from the existing third-party dataset; Forex/Crypto results depend on the quality and freshness of the uploaded CSV. No signal guarantees profit.",
+      "workflow": "Check the latest data date, inspect trend and momentum together, define a maximum loss, and test any entry/exit rule on separate historical data including fees and slippage.",
+      "mistakes": "Do not treat a confluence score as a win probability, rely on stale or incomplete data, or trade with leverage based only on one signal."
+    }
+  }
 }

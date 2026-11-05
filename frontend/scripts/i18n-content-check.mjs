@@ -18,7 +18,7 @@ const required = { tools: adviceSlugs, guides: guideSlugs, calculators: calculat
 const validEntry = (namespace, entry) => {
   if (!entry || typeof entry !== "object") return false;
   const nonempty = (value) => typeof value === "string" && value.trim().length > 0;
-  if (namespace === "tools") return ["example", "accuracy", "workflow", "mistakes"].every((k) => nonempty(entry[k]));
+  if (namespace === "tools") return ["title", "description", "example", "accuracy", "workflow", "mistakes"].every((k) => nonempty(entry[k]));
   if (namespace === "guides") return nonempty(entry.purpose) && nonempty(entry.caution) && Array.isArray(entry.steps) && entry.steps.length >= 3 && entry.steps.every(nonempty);
   if (namespace === "calculators") return nonempty(entry.formula) && Array.isArray(entry.inputs) && entry.inputs.length > 0 && Array.isArray(entry.outputs) && entry.outputs.length > 0 && nonempty(entry.assumptions);
   if (namespace === "faqs") return Array.isArray(entry) && entry.length >= 3 && entry.every((item) => nonempty(item.q) && nonempty(item.a));
@@ -27,7 +27,7 @@ const validEntry = (namespace, entry) => {
 let blockers = 0;
 // All non-English locales are checked. An incomplete tool pack is a warning until tool routes are explicitly published.
 for (const locale of config.locales.filter((l) => l !== "en")) {
-  const published = config.isPublished(locale) && locale !== "ne"; // Nepali homepage is public; localized tool routes are gated separately.
+  const published = config.isToolContentPublished(locale);
   let missing = 0;
   for (const [namespace, slugs] of Object.entries(required)) {
     const file = path.join(root, locale, namespace + ".json");

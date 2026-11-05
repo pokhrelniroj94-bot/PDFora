@@ -8,9 +8,7 @@ import { createTranslator, type MessageTree, type Translator } from "./translate
  * Add a namespace here AND create messages/en/<namespace>.json (English is the source of
  * truth). Other locales add a file only when fully translated; `npm run i18n:check`
  * verifies key parity and placeholder parity against English.
- * Planned namespaces (added per phase): navigation, homepage, tools, categories,
- * tool-descriptions, forms, validation, errors, downloads, blog, faq, about, privacy,
- * terms, contact, cookies, footer.
+ * Tool and guide content namespaces use slug-keyed entries; untranslated entries remain empty and block publication.
  */
 export const namespaces = ["common", "accessibility", "seo", "tools", "guides", "calculators", "faqs"] as const;
 export type Namespace = (typeof namespaces)[number];
@@ -33,10 +31,6 @@ const loaders: Partial<Record<Locale, Partial<Record<Namespace, Loader>>>> = {
     common: () => import("./messages/ne/common.json"),
     accessibility: () => import("./messages/ne/accessibility.json"),
     seo: () => import("./messages/ne/seo.json"),
-    tools: () => import("./messages/ne/tools.json"),
-    guides: () => import("./messages/ne/guides.json"),
-    calculators: () => import("./messages/ne/calculators.json"),
-    faqs: () => import("./messages/ne/faqs.json"),
   },
   hi: {
     common: () => import("./messages/hi/common.json"),

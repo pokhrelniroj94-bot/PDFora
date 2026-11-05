@@ -11,9 +11,9 @@ const guideSource = fs.readFileSync(path.join(frontendRoot, "lib", "tool-guides.
 const adviceSource = fs.readFileSync(path.join(frontendRoot, "components", "CatalogToolSEOContent.tsx"), "utf8");
 const catalogSource = fs.readFileSync(path.join(frontendRoot, "components", "toolCatalog.ts"), "utf8");
 const guideSlugs = [...guideSource.matchAll(/"slug"\s*:\s*"([^"]+)"/g)].map((m) => m[1]);
-const adviceBlock = adviceSource.match(/const toolAdvice[\s\S]*?=\s*\\{([\s\S]*?)\\n\s*\\};/);
-const adviceSlugs = adviceBlock ? [...adviceBlock[1].matchAll(/"([^"]+)"\s*:\s*\\{\s*example\s*:/g)].map((m) => m[1]) : [];
-const calculatorSlugs = [...catalogSource.matchAll(/\\{slug:\\s*"([^"]+)",name:\\s*"([^"]+)"/g)].filter((m) => /calculator/i.test(m[2])).map((m) => m[1]);
+const adviceBlock = adviceSource.match(/const toolAdvice[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
+const adviceSlugs = adviceBlock ? [...adviceBlock[1].matchAll(/"([^"]+)"\s*:\s*\{\s*example\s*:/g)].map((m) => m[1]) : [];
+const calculatorSlugs = [...catalogSource.matchAll(/\{slug:\\s*"([^"]+)",name:\\s*"([^"]+)"/g)].filter((m) => /calculator/i.test(m[2])).map((m) => m[1]);
 const required = { tools: adviceSlugs, guides: guideSlugs, calculators: calculatorSlugs, faqs: adviceSlugs };
 const validEntry = (namespace, entry) => {
   if (!entry || typeof entry !== "object") return false;

@@ -240,14 +240,25 @@ export async function GET(request: Request) {
   const sourceUpdatedAt = normalizeNepalTimestamp(sourceUpdatedAtRaw) || sourceUpdatedAtRaw;
   const quoteTimestamp = Date.parse(sourceUpdatedAt);
   const quoteAgeHours = Number.isFinite(quoteTimestamp) ? (Date.now() - quoteTimestamp) / 3_600_000 : Number.POSITIVE_INFINITY;
-  // Weekends/holidays can legitimately pause NEPSE updates; four days is a conservative stale-data warning.
-  const quoteStale = !usingLiveQuotes || !Number.isFinite(quoteTimestamp) || quoteAgeHours > 96;
+  // Reject future-dated provider timestamps as well as old snapshots.
+  // Weekends/holidays can legitimately pause NEPSE updates, so retain a four-day calendar grace period.
+  const quoteStale = !usingLiveQuotes || !Number.isFinite(quoteTimestamp) || quoteAgeHours < -(2 / 60) || quoteAgeHours > 96;
+  const indexUpdatedAt = indices.reduce((latest, item) => {
+    const row = asRecord(item);
+    const value = typeof row?.generatedTime === "string" ? row.generatedTime : "";
+    return value && value > latest ? value : latest;
+  }, "");
+  const indexTimestamp = Date.parse(indexUpdatedAt);
+  const indexAgeHours = Number.isFinite(indexTimestamp) ? (Date.now() - indexTimestamp) / 3_600_000 : Number.POSITIVE_INFINITY;
+  const indexStale = !Number.isFinite(indexTimestamp) || indexAgeHours < -(2 / 60) || indexAgeHours > 96;
   const response = {
     symbol,
     period,
     // YONEPSE documents an approximately hourly update cadence; do not label this as exchange-tick live data.
     source: usingUnofficialLive ? "NEPSE unofficial live API (nepseman-api)" : usingLiveQuotes ? "YONEPSE public market snapshot" : "YONEPSE historical snapshot fallback",
     sourceUpdatedAt: sourceUpdatedAt || null,
+    indexUpdatedAt: indexUpdatedAt || null,
+    indexStale,
     fetchedAt: new Date().toISOString(),
     quoteAgeMinutes: Number.isFinite(quoteTimestamp) ? Math.max(0, Math.round((Date.now() - quoteTimestamp) / 60_000)) : null,
     providerRefreshCadence: usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Approximately hourly on weekdays during market hours (provider documentation)",

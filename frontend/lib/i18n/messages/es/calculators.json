@@ -1,0 +1,19 @@
+{
+  "ui": {
+    "amount": "Importe",
+    "principal": "Capital",
+    "annualRate": "Tipo de interés anual (%)",
+    "monthlyRate": "Tipo de interés mensual (%)",
+    "termMonths": "Plazo (meses)",
+    "termYears": "Plazo (años)",
+    "monthlyPayment": "Cuota mensual (EMI)",
+    "totalPayment": "Pago total",
+    "totalInterest": "Intereses totales",
+    "baseAmount": "Importe base",
+    "taxRate": "Tipo impositivo (%)",
+    "result": "Resultado del cálculo",
+    "formula": "Fórmula",
+    "rounding": "El resultado mostrado puede estar redondeado"
+  },
+  "entries": {}
+}

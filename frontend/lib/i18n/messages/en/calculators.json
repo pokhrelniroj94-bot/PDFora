@@ -18,5 +18,512 @@
     "outputs": "Calculated outputs",
     "assumptions": "Formula assumptions"
   },
-  "entries": {}
+  "entries": {
+    "loan-emi-calculator": {
+      "title": "Loan & EMI Calculator",
+      "description": "Calculate monthly EMI, total interest and total repayment.",
+      "formula": "EMI = P × r × (1+r)^n ÷ ((1+r)^n − 1), where r is annual rate ÷ 12 ÷ 100 and n is the number of monthly instalments.",
+      "inputs": [
+        "Loan amount (NPR)",
+        "Annual interest rate (%)",
+        "Loan term (months)"
+      ],
+      "outputs": [
+        "Monthly EMI",
+        "Total repayment = EMI × months",
+        "Total interest = total repayment − principal"
+      ],
+      "assumptions": "Reducing-balance loan with equal monthly payments; zero-interest case is principal divided by months. Excludes lender fees, insurance and rate resets.",
+      "sourceComponent": "AllTools"
+    },
+    "compound-interest-sip-calculator": {
+      "title": "Compound Interest & SIP Calculator",
+      "description": "Estimate compound growth and monthly SIP investment value.",
+      "formula": "Future value = initial investment × (1+r)^n + Σ monthly contribution × (1+r)^(n−i), where r = annual rate ÷ 1200 and n = years × 12.",
+      "inputs": [
+        "Monthly SIP (NPR)",
+        "Initial investment (NPR)",
+        "Expected annual return (%)",
+        "Investment period (years)"
+      ],
+      "outputs": [
+        "Estimated future value",
+        "Total amount invested",
+        "Estimated growth"
+      ],
+      "assumptions": "Assumes a constant monthly rate derived from the annual rate and end-of-month contributions; returns are illustrative, not guaranteed.",
+      "sourceComponent": "AllTools"
+    },
+    "discount-percentage-calculator": {
+      "title": "Discount & Percentage Calculator",
+      "description": "Calculate discounts, percentages and percentage change.",
+      "formula": "Discount = marked price × discount rate ÷ 100; sale price = marked price − discount. Percentage change = (new − original) ÷ |original| × 100.",
+      "inputs": [
+        "Original or marked price",
+        "Discount (%) or new value"
+      ],
+      "outputs": [
+        "Discount amount",
+        "Final price",
+        "Percentage change"
+      ],
+      "assumptions": "Uses the entered values and does not include shipping, taxes or seller-specific rounding.",
+      "sourceComponent": "AllTools"
+    },
+    "percentage-change-calculator": {
+      "title": "Percentage Change Calculator",
+      "description": "Calculate percentage increase or decrease between two values.",
+      "formula": "((new value − original value) ÷ |original value|) × 100; zero original value is rejected.",
+      "inputs": [
+        "Original value",
+        "New value"
+      ],
+      "outputs": [
+        "Percentage increase or decrease"
+      ],
+      "assumptions": "Percentage change is undefined when the original value is zero.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "average-calculator": {
+      "title": "Average Calculator",
+      "description": "Calculate mean, median, mode and range from a list of numbers.",
+      "formula": "Mean = sum ÷ count; median is the middle sorted value (or mean of two middle values); mode is the most frequent value; range = maximum − minimum.",
+      "inputs": [
+        "Numbers separated by commas, semicolons or spaces"
+      ],
+      "outputs": [
+        "Count, mean, median, mode and range"
+      ],
+      "assumptions": "All tokens must parse as finite numbers. If every value occurs once, no repeated mode is reported.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "fraction-calculator": {
+      "title": "Fraction Calculator",
+      "description": "Add, subtract, multiply and divide fractions.",
+      "formula": "For a/b and c/d: addition/subtraction use (ad ± bc)/bd; multiplication uses ac/bd; division uses ad/bc.",
+      "inputs": [
+        "First numerator and denominator",
+        "Second numerator and denominator",
+        "Operation (+, −, ×, ÷)"
+      ],
+      "outputs": [
+        "Reduced fraction and decimal value"
+      ],
+      "assumptions": "Numerators and denominators must be integers; denominators cannot be zero and division by a zero fraction is rejected.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "age-calculator": {
+      "title": "Age Calculator",
+      "description": "Calculate age in years, months and days from a birth date.",
+      "formula": "Calendar difference between birth date and the selected as-of date, with day and month borrowing based on calendar month lengths.",
+      "inputs": [
+        "Birth date",
+        "Calculate as of date"
+      ],
+      "outputs": [
+        "Completed years, months and days"
+      ],
+      "assumptions": "Uses calendar dates, not an average number of days per year. The as-of date must not precede the birth date.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "date-difference-calculator": {
+      "title": "Date Difference Calculator",
+      "description": "Find the exact days, weeks and months between two dates.",
+      "formula": "Absolute difference in whole calendar days; weeks = days ÷ 7; average months = days ÷ 30.4375.",
+      "inputs": [
+        "Start date",
+        "End date"
+      ],
+      "outputs": [
+        "Days, weeks and approximate average months"
+      ],
+      "assumptions": "Dates are parsed at local midnight; months are an average-length estimate, not calendar-month counting.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "time-duration-calculator": {
+      "title": "Time Duration Calculator",
+      "description": "Calculate elapsed time between start and end times.",
+      "formula": "Elapsed minutes = end time − start time; if negative, add 1,440 minutes to represent an overnight interval.",
+      "inputs": [
+        "Start time",
+        "End time"
+      ],
+      "outputs": [
+        "Elapsed hours and minutes"
+      ],
+      "assumptions": "Assumes a same-day interval unless the end time is earlier, in which case it assumes one midnight crossing.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "profit-margin-calculator": {
+      "title": "Profit Margin Calculator",
+      "description": "Calculate gross profit and profit margin from cost and selling price.",
+      "formula": "Gross profit = selling price − cost; gross margin (%) = gross profit ÷ selling price × 100.",
+      "inputs": [
+        "Cost",
+        "Selling price"
+      ],
+      "outputs": [
+        "Gross profit",
+        "Gross margin (%)"
+      ],
+      "assumptions": "Margin is undefined when selling price is zero; excludes operating expenses, tax and transaction fees.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "markup-calculator": {
+      "title": "Markup Calculator",
+      "description": "Calculate selling price and markup percentage from cost.",
+      "formula": "Markup amount = cost × markup rate ÷ 100; selling price = cost + markup amount.",
+      "inputs": [
+        "Cost",
+        "Markup (%)"
+      ],
+      "outputs": [
+        "Markup amount",
+        "Selling price"
+      ],
+      "assumptions": "Markup is calculated on cost, not selling price; excludes tax and overhead unless included in cost.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "break-even-calculator": {
+      "title": "Break-even Calculator",
+      "description": "Calculate break-even sales volume from fixed and variable costs.",
+      "formula": "Break-even units = fixed costs ÷ (selling price per unit − variable cost per unit).",
+      "inputs": [
+        "Fixed costs",
+        "Selling price per unit",
+        "Variable cost per unit"
+      ],
+      "outputs": [
+        "Contribution per unit",
+        "Break-even sales volume"
+      ],
+      "assumptions": "Requires selling price above variable cost. Assumes constant prices, unit costs and fixed costs.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "sales-tax-calculator": {
+      "title": "Sales Tax Calculator",
+      "description": "Add or remove a configurable sales tax percentage.",
+      "formula": "Add mode: tax = amount × rate/100 and total = amount + tax. Remove mode: base = inclusive amount ÷ (1+rate/100), tax = inclusive amount − base.",
+      "inputs": [
+        "Amount",
+        "Tax rate (%)",
+        "Add tax or extract included tax"
+      ],
+      "outputs": [
+        "Tax-exclusive amount",
+        "Tax amount",
+        "Tax-inclusive total"
+      ],
+      "assumptions": "The entered rate is applied uniformly. The tool is not a substitute for jurisdiction-specific tax advice.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "salary-breakdown-calculator": {
+      "title": "Salary Breakdown Calculator",
+      "description": "Convert gross salary between monthly and annual amounts and estimate take-home after a simple deduction rate.",
+      "formula": "Estimated deduction = gross monthly salary × deduction rate/100; estimated take-home = gross − deduction; annual figures are monthly values × 12.",
+      "inputs": [
+        "Gross monthly salary",
+        "Estimated deduction (%)"
+      ],
+      "outputs": [
+        "Monthly gross, deduction and take-home; annualized equivalents"
+      ],
+      "assumptions": "Uses one flat editable deduction rate; it is not a statutory payroll or income-tax calculation.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "savings-goal-calculator": {
+      "title": "Savings Goal Calculator",
+      "description": "Estimate monthly savings needed to reach a target by a chosen date.",
+      "formula": "Monthly saving required = (target − already saved) ÷ months to goal.",
+      "inputs": [
+        "Savings target",
+        "Already saved",
+        "Months to goal"
+      ],
+      "outputs": [
+        "Remaining amount",
+        "Required monthly saving"
+      ],
+      "assumptions": "Assumes equal contributions and no interest, investment return, fees or inflation.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "reading-time-calculator": {
+      "title": "Reading Time Calculator",
+      "description": "Estimate reading time from word count using an adjustable reading speed.",
+      "formula": "Estimated minutes = word count ÷ selected reading speed (words per minute).",
+      "inputs": [
+        "Text",
+        "Reading speed (words per minute)"
+      ],
+      "outputs": [
+        "Word count and estimated reading time"
+      ],
+      "assumptions": "A simple average estimate; actual reading speed varies with language, complexity and reader.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "bmi-calculator": {
+      "title": "BMI Calculator",
+      "description": "Calculate body mass index from height and weight with standard adult categories.",
+      "formula": "BMI = weight in kilograms ÷ (height in metres)².",
+      "inputs": [
+        "Weight (kg)",
+        "Height (cm)"
+      ],
+      "outputs": [
+        "BMI value and standard adult category"
+      ],
+      "assumptions": "Uses standard adult BMI categories; BMI is a screening measure and not a diagnosis or suitable standalone assessment for children or pregnancy.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "bmr-calculator": {
+      "title": "BMR Calculator",
+      "description": "Estimate basal metabolic rate using the Mifflin-St Jeor equation.",
+      "formula": "Mifflin–St Jeor: male BMR = 10W + 6.25H − 5A + 5; female BMR = 10W + 6.25H − 5A − 161.",
+      "inputs": [
+        "Weight (kg)",
+        "Height (cm)",
+        "Age (years)",
+        "Sex input used by equation"
+      ],
+      "outputs": [
+        "Estimated basal metabolic rate (kcal/day)"
+      ],
+      "assumptions": "An equation-based estimate for adults; actual energy needs vary and the sex coefficient is a model input, not a clinical assessment.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "tip-calculator": {
+      "title": "Tip Calculator",
+      "description": "Calculate a restaurant tip, total bill and per-person split.",
+      "formula": "Tip = bill × tip rate/100; total = bill + tip; per-person share = total ÷ people.",
+      "inputs": [
+        "Bill amount",
+        "Tip (%)",
+        "Number of people"
+      ],
+      "outputs": [
+        "Tip amount, total bill and per-person amount"
+      ],
+      "assumptions": "Assumes an equal split and does not account for service charges or tax unless included in bill.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "split-bill-calculator": {
+      "title": "Split Bill Calculator",
+      "description": "Divide a shared bill between people and include an optional extra amount.",
+      "formula": "Per-person amount = (bill + extra amount) ÷ number of people.",
+      "inputs": [
+        "Bill amount",
+        "Extra amount",
+        "Number of people"
+      ],
+      "outputs": [
+        "Total shared amount and each person's share"
+      ],
+      "assumptions": "Assumes an equal split among a positive whole number of people.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "simple-interest-calculator": {
+      "title": "Simple Interest Calculator",
+      "description": "Calculate simple interest and total maturity value from principal, rate and time.",
+      "formula": "Simple interest = principal × annual rate × time ÷ 100; maturity value = principal + interest.",
+      "inputs": [
+        "Principal",
+        "Annual interest rate (%)",
+        "Time (years)"
+      ],
+      "outputs": [
+        "Simple interest and maturity value"
+      ],
+      "assumptions": "Assumes a constant annual rate and no compounding, fees, tax or interim payments.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "commission-calculator": {
+      "title": "Commission Calculator",
+      "description": "Calculate commission earnings from a sale amount and commission percentage.",
+      "formula": "Commission = sales amount × commission rate ÷ 100.",
+      "inputs": [
+        "Sales amount",
+        "Commission rate (%)"
+      ],
+      "outputs": [
+        "Commission earned"
+      ],
+      "assumptions": "Assumes a flat commission percentage on the entire entered sales amount.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "hourly-to-salary-calculator": {
+      "title": "Hourly to Salary Calculator",
+      "description": "Convert an hourly wage into estimated weekly, monthly and annual earnings.",
+      "formula": "Weekly earnings = hourly wage × hours per week; annual estimate = weekly earnings × 52; monthly estimate = annual estimate ÷ 12.",
+      "inputs": [
+        "Hourly wage",
+        "Hours per week"
+      ],
+      "outputs": [
+        "Weekly, monthly and annual gross earnings"
+      ],
+      "assumptions": "Assumes 52 paid weeks per year and no overtime, unpaid leave, tax or benefits.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "percentage-of-number-calculator": {
+      "title": "Percentage of a Number Calculator",
+      "description": "Calculate a percentage of any number and show the remaining value.",
+      "formula": "Percentage amount = value × rate ÷ 100; remainder = value − percentage amount.",
+      "inputs": [
+        "Value",
+        "Percentage rate (%)"
+      ],
+      "outputs": [
+        "Calculated percentage and remaining value"
+      ],
+      "assumptions": "Uses the entered rate directly; negative values are mathematically permitted where the tool accepts them.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "gcd-lcm-calculator": {
+      "title": "GCD and LCM Calculator",
+      "description": "Find the greatest common divisor and least common multiple of two integers.",
+      "formula": "GCD is found using the Euclidean algorithm; LCM = |a × b| ÷ GCD (with zero handled as zero).",
+      "inputs": [
+        "First integer",
+        "Second integer"
+      ],
+      "outputs": [
+        "Greatest common divisor and least common multiple"
+      ],
+      "assumptions": "Inputs are expected to be integers; results are exact for safe integer inputs.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "date-add-subtract-calculator": {
+      "title": "Date Add or Subtract Calculator",
+      "description": "Add or subtract a number of days from a starting date.",
+      "formula": "Result date = starting date shifted by the signed number of calendar days.",
+      "inputs": [
+        "Starting date",
+        "Days to add or subtract"
+      ],
+      "outputs": [
+        "Resulting calendar date"
+      ],
+      "assumptions": "Uses calendar-day arithmetic; it does not skip weekends or public holidays.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "business-days-calculator": {
+      "title": "Business Days Calculator",
+      "description": "Count weekdays between two dates, excluding Saturdays and Sundays.",
+      "formula": "Counts Monday–Friday dates in the selected date interval, excluding Saturdays and Sundays.",
+      "inputs": [
+        "Start date",
+        "End date"
+      ],
+      "outputs": [
+        "Weekday/business-day count"
+      ],
+      "assumptions": "Public holidays are not excluded. Confirm whether the interval endpoints are included in the implementation before relying on the count.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "aspect-ratio-calculator": {
+      "title": "Aspect Ratio Calculator",
+      "description": "Calculate image aspect ratio and derive a missing width or height.",
+      "formula": "Aspect ratio = width ÷ height, reduced by the greatest common divisor; the same ratio is used to derive a missing dimension.",
+      "inputs": [
+        "Width (px)",
+        "Height (px)"
+      ],
+      "outputs": [
+        "Reduced aspect ratio and derived dimension"
+      ],
+      "assumptions": "Requires positive dimensions. Pixel dimensions do not determine physical print size without resolution metadata.",
+      "sourceComponent": "ExtraTools/QuickUtilityTools"
+    },
+    "nepali-vat-calculator": {
+      "title": "Nepal VAT Calculator (13%)",
+      "description": "Add 13% VAT to a price or extract VAT from a VAT-inclusive amount in Nepalese rupees.",
+      "formula": "Add: VAT = base amount × rate/100; total = base + VAT. Remove: base = inclusive amount ÷ (1+rate/100); VAT = inclusive amount − base.",
+      "inputs": [
+        "Amount (NPR)",
+        "VAT rate (%) (default 13; editable)",
+        "Add VAT or extract VAT"
+      ],
+      "outputs": [
+        "Base amount, VAT amount and VAT-inclusive total"
+      ],
+      "assumptions": "The interface defaults to 13% but allows editing. Confirm current Inland Revenue Department rules and applicable exemptions.",
+      "sourceComponent": "NepalTools/NepalLiveTools"
+    },
+    "neb-gpa-calculator": {
+      "title": "NEB GPA Calculator",
+      "description": "Calculate a credit-weighted GPA from NEB subject grade points and credit hours.",
+      "formula": "Credit-weighted GPA = Σ(credit hours × grade point) ÷ Σ(credit hours).",
+      "inputs": [
+        "Subject name",
+        "Credit hours per subject",
+        "Grade point per subject (0–4)"
+      ],
+      "outputs": [
+        "Total credit hours and weighted GPA"
+      ],
+      "assumptions": "Uses grade points entered by the user; the UI grade-point mapping must match the applicable NEB grading framework and transcript.",
+      "sourceComponent": "NepalTools/NepalLiveTools"
+    },
+    "nepal-share-calculator": {
+      "title": "NEPSE Share Buy/Sell Profit Calculator",
+      "description": "Estimate share purchase cost, sale proceeds, charges and profit using editable broker, SEBON, DP and CGT assumptions.",
+      "formula": "Buy value = shares × buy price; sell value = shares × sell price; estimated charges use editable broker and SEBON rates plus DP charge; profit = sell value − buy value − buy charges − sell charges; CGT estimate = max(0, profit) × entered CGT rate/100.",
+      "inputs": [
+        "Share quantity",
+        "Buy and sell price per share (NPR)",
+        "Broker commission (%)",
+        "SEBON fee (%)",
+        "DP charge (NPR)",
+        "CGT assumption (%)"
+      ],
+      "outputs": [
+        "Buy value, estimated buy/sell charges, gross profit, net profit and estimated CGT"
+      ],
+      "assumptions": "All fee and tax rates are editable assumptions. Actual broker charges, holding-period tax rules and applicable regulations must be checked for the trade date.",
+      "sourceComponent": "NepalTools/NepalLiveTools"
+    },
+    "nepal-salary-tax-calculator": {
+      "title": "Nepal Salary Tax Calculator FY 2083/84",
+      "description": "Estimate annual and monthly resident individual income tax using the published Nepal FY 2083/84 progressive tax bands.",
+      "formula": "Progressive annual income tax = sum of each applicable tax-band slice × its statutory marginal rate; monthly estimate = annual estimate ÷ 12.",
+      "inputs": [
+        "Annual salary and applicable resident individual tax inputs (as implemented)"
+      ],
+      "outputs": [
+        "Estimated annual and monthly income tax"
+      ],
+      "assumptions": "The catalog labels FY 2083/84. Verify tax bands, thresholds, deductions, residency and fiscal-year rules against current official IRD guidance before use.",
+      "sourceComponent": "NepalTools/NepalLiveTools"
+    },
+    "nepal-electricity-bill-calculator": {
+      "title": "NEA Electricity Bill Calculator",
+      "description": "Estimate a Nepal single-phase domestic electricity bill by monthly units and meter capacity with energy blocks, minimum charge and VAT assumptions.",
+      "formula": "Estimated bill = sum of applicable energy-block charges + minimum charge (where applicable) + VAT under the configured tariff and meter-capacity assumptions.",
+      "inputs": [
+        "Monthly electricity units (kWh)",
+        "Meter capacity / tariff category"
+      ],
+      "outputs": [
+        "Energy charge, minimum charge, VAT and estimated total"
+      ],
+      "assumptions": "Must use the current NEA domestic single-phase tariff blocks and capacity-specific minimum charges; tariffs can change and should be independently verified.",
+      "sourceComponent": "NepalTools/NepalLiveTools"
+    },
+    "nepse-dividend-calculator": {
+      "title": "NEPSE Dividend & Bonus Share Calculator",
+      "description": "Estimate cash dividends after an editable withholding-tax assumption and calculate bonus-share entitlement from your holdings.",
+      "formula": "Cash dividend = eligible investment amount × cash dividend rate; estimated net cash = gross cash dividend − withholding tax. Bonus shares = eligible shareholding × bonus rate/100.",
+      "inputs": [
+        "Share quantity or eligible investment basis (as required)",
+        "Cash dividend rate (%)",
+        "Bonus share rate (%)",
+        "Withholding-tax assumption (%)"
+      ],
+      "outputs": [
+        "Gross and net cash dividend; estimated bonus shares"
+      ],
+      "assumptions": "Rates and withholding treatment are issuer- and fiscal-year-specific. Check the official corporate action and current tax rules; fractional bonus entitlement may be rounded by the issuer.",
+      "sourceComponent": "NepalTools/NepalLiveTools"
+    }
+  }
 }

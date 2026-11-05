@@ -18,7 +18,7 @@ export default function SiteAIHelp() {
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", text: "Namaste! Ma PDFora ko AI Help ho. Kun tool use garna, result bujhna, wa problem solve garna help chahiyo?" },
+    { role: "assistant", text: "Namaste! Ma PDFora Help ho. Free AI service enable bhayeko bela matra AI answer aauna sakcha. Kun tool use garna, result bujhna, wa problem solve garna help chahiyo?" },
   ]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -81,20 +81,20 @@ export default function SiteAIHelp() {
       {open && (
         <section aria-label="PDFora AI Help" className="flex h-[min(620px,calc(100dvh-112px))] w-[min(390px,calc(100vw-32px))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
           <header className="flex items-center justify-between bg-[#082321] px-4 py-3 text-white">
-            <div><p className="text-sm font-extrabold">PDFora AI Help</p><p className="text-[11px] text-teal-100">Help for the page you are viewing</p></div>
+            <div><p className="text-sm font-extrabold">PDFora Help</p><p className="text-[11px] text-teal-100">Help for the page you are viewing</p></div>
             <button type="button" onClick={() => setOpen(false)} aria-label="Close AI Help" className="rounded-lg px-2 py-1 text-xl hover:bg-white/10">×</button>
           </header>
           <div className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-3" aria-live="polite">
-            <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] leading-4 text-amber-900">AI answers may be wrong. Do not share passwords, OTPs, bank details or confidential information. If AI is enabled, your question is sent to the configured provider. Do not share sensitive information.</p>
+            <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] leading-4 text-amber-900">Your question is sent to Cloudflare Workers AI only when the free provider and shared rate protection are enabled. If they are not configured, no question is sent to an AI provider. AI answers may be wrong; never share passwords, OTPs, bank details or confidential information.</p>
             {messages.map((message, index) => (
               <div key={index} className={"max-w-[90%] whitespace-pre-wrap rounded-2xl px-3 py-2.5 text-sm leading-5 " + (message.role === "user" ? "ml-auto bg-teal-700 text-white" : "mr-auto border border-slate-200 bg-white text-slate-800")}>{message.text}</div>
             ))}
-            {busy && <p className="mr-auto rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">PDFora AI is thinking…</p>}
+            {busy && <p className="mr-auto rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">Checking your request…</p>}
             {error && <p role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-xs text-rose-800">{error}</p>}
             {messages.length === 1 && <div className="flex flex-wrap gap-2">{quickQuestions.map((item) => <button type="button" key={item} onClick={() => void send(item)} className="rounded-full border border-teal-200 bg-white px-3 py-1.5 text-left text-[11px] font-semibold text-teal-800 hover:bg-teal-50">{item}</button>)}</div>}
           </div>
           <form onSubmit={(event) => { event.preventDefault(); void send(question); }} className="flex gap-2 border-t border-slate-200 bg-white p-3">
-            <input value={question} onChange={(event) => setQuestion(event.target.value)} maxLength={2000} disabled={busy} placeholder="Ask for help…" aria-label="Ask PDFora AI Help" className="min-w-0 flex-1 rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100" />
+            <input value={question} onChange={(event) => setQuestion(event.target.value)} maxLength={2000} disabled={busy} placeholder="Ask for help…" aria-label="Ask PDFora Help Help" className="min-w-0 flex-1 rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100" />
             <button type="submit" disabled={busy || !question.trim()} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white disabled:opacity-50">Send</button>
           </form>
         </section>

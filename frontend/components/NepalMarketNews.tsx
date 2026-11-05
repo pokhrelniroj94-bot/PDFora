@@ -97,4 +97,3 @@ export default function NepalMarketNews() {
     <div className="flex flex-wrap gap-4 text-sm font-semibold"><a className="text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noopener noreferrer">NEPSE official</a><a className="text-teal-700 underline" href="https://www.sebon.gov.np/" target="_blank" rel="noopener noreferrer">SEBON official</a><a className="text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noopener noreferrer">Mero Share</a></div>
   </div>;
 }
-}

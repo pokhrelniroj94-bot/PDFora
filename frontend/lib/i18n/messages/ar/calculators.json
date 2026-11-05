@@ -1,0 +1,19 @@
+{
+  "ui": {
+    "amount": "المبلغ",
+    "principal": "أصل القرض",
+    "annualRate": "معدل الفائدة السنوي (%)",
+    "monthlyRate": "معدل الفائدة الشهري (%)",
+    "termMonths": "المدة (بالأشهر)",
+    "termYears": "المدة (بالسنوات)",
+    "monthlyPayment": "القسط الشهري (EMI)",
+    "totalPayment": "إجمالي السداد",
+    "totalInterest": "إجمالي الفائدة",
+    "baseAmount": "المبلغ الأساسي",
+    "taxRate": "معدل الضريبة (%)",
+    "result": "نتيجة الحساب",
+    "formula": "المعادلة",
+    "rounding": "قد تكون النتيجة المعروضة مقربة"
+  },
+  "entries": {}
+}

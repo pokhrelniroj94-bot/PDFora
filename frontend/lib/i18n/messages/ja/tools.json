@@ -1,0 +1,13 @@
+{
+  "ui": {
+    "search": "ツールを検索",
+    "input": "入力",
+    "output": "結果",
+    "features": "主な機能",
+    "supportedFormats": "対応ファイル形式",
+    "privacy": "ファイルとデータのプライバシー",
+    "download": "結果をダウンロード",
+    "trySample": "まず小さなサンプルでお試しください"
+  },
+  "entries": {}
+}

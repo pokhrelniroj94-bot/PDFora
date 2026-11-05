@@ -13,7 +13,10 @@
     "taxRate": "Taux de taxe (%)",
     "result": "Résultat du calcul",
     "formula": "Formule",
-    "rounding": "Le résultat affiché peut être arrondi"
+    "rounding": "Le résultat affiché peut être arrondi",
+    "inputs": "Données d’entrée",
+    "outputs": "Résultats calculés",
+    "assumptions": "Hypothèses de la formule"
   },
   "entries": {}
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import CookieConsent, { CookieSettingsLink } from "../components/CookieConsent";
 import "./globals.css";
@@ -35,14 +36,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const requestHeaders = await headers();
+  const htmlLang = requestHeaders.get("x-pdfora-html-lang") ?? "en";
+  const htmlDir = requestHeaders.get("x-pdfora-dir") === "rtl" ? "rtl" : "ltr";
   return (
     <html
-      lang="en"
+      lang={htmlLang}
+      dir={htmlDir}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
 

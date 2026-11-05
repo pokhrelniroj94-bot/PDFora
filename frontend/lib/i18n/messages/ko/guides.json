@@ -1,0 +1,12 @@
+{
+  "ui": {
+    "overview": "이 도구를 사용하는 경우",
+    "steps": "단계별 사용 방법",
+    "example": "예시 및 활용 사례",
+    "limitations": "제한 사항 및 정확도",
+    "commonMistakes": "자주 발생하는 실수",
+    "safety": "안전한 사용",
+    "related": "관련 도구 및 추가 자료"
+  },
+  "entries": {}
+}

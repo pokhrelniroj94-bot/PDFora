@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main, master, feat/free-market-data-fallbacks, i18n/global-multilingual]
   push:
-    branches: [master, niroj77-seo-ux-security]
+    branches: [master, niroj77-seo-ux-security, i18n/global-multilingual]
   workflow_dispatch:
 permissions:
   contents: read

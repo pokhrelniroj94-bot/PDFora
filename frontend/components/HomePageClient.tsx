@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import AdsterraNative from "../app/components/AdsterraNative";
+import ToolDirectory from "./ToolDirectory";
 import { allTools, type Tool } from "../lib/tool-directory";
 
 const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
@@ -565,6 +566,7 @@ export default function HomePageClient() {
       </section>
 
 
+      <ToolDirectory />
     </main>
   );
 }

@@ -1,0 +1,13 @@
+{
+  "ui": {
+    "search": "도구 검색",
+    "input": "입력",
+    "output": "결과",
+    "features": "주요 기능",
+    "supportedFormats": "지원 파일 형식",
+    "privacy": "파일 및 데이터 개인정보 보호",
+    "download": "결과 다운로드",
+    "trySample": "먼저 작은 샘플로 테스트하세요"
+  },
+  "entries": {}
+}

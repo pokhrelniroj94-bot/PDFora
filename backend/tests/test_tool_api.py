@@ -215,6 +215,34 @@ def test_extract_page_images_renders_every_page_as_png():
                 assert rendered.width > 0 and rendered.height > 0
 
 
+def test_split_by_bookmarks_creates_valid_sections():
+    response = post_pdf("/api/split-by-bookmarks", make_sample_pdf())
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = sorted(archive.namelist())
+        assert len(names) == 2
+        page_counts = [len(PdfReader(io.BytesIO(archive.read(name))).pages) for name in names]
+        assert page_counts == [1, 3]
+
+
+def test_extract_images_returns_embedded_image_files():
+    response = post_pdf("/api/extract-images", make_sample_pdf())
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = archive.namelist()
+        assert names
+        image_data = archive.read(names[0])
+        with Image.open(io.BytesIO(image_data)) as extracted:
+            assert extracted.width == 40 and extracted.height == 40
+
+
+def test_remove_blank_pages_removes_only_the_empty_page():
+    response = post_pdf("/api/remove-blank-pages", make_sample_pdf())
+    assert response.status_code == 200
+    result = PdfReader(io.BytesIO(response.content))
+    assert len(result.pages) == 3
+
+
 def test_protect_pdf_encrypts_and_preserves_pages():
     response = post_pdf("/api/protect", make_sample_pdf(), data={"password": "PDFora-Test-Password"})
     assert response.status_code == 200

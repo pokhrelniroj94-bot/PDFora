@@ -696,23 +696,6 @@ function InfoLink({
   );
 }
 
-function FooterLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="hover:text-white"
-    >
-      {children}
-    </Link>
-  );
-}
-
 
 
 

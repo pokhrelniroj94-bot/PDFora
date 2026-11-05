@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+const site = "https://pd-fora.vercel.app";
+
 const tools = [
   { href: "/merge-pdf", title: "PDF जोड्नुहोस् (Merge PDF)", description: "धेरै PDF फाइललाई एउटै कागजातमा जोड्नुहोस्।" },
   { href: "/split-pdf", title: "PDF छुट्याउनुहोस् (Split PDF)", description: "PDF का पृष्ठ वा पृष्ठ समूह छुट्टाछुट्टै बनाउनुहोस्।" },

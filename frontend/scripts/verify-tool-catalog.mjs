@@ -16,6 +16,14 @@ const pdfToolSEO = read("../lib/tool-seo.ts");
 const pdfSEOContent = read("../components/ToolSEOContent.tsx");
 const nextConfig = read("../next.config.ts");
 const resumeBuilderPage = read("../app/resume-builder/page.tsx");
+const aiRoute = read("../app/api/ai-writing/route.ts");
+const aiWritingTools = read("../components/AIWritingTools.tsx");
+const marketIntelligence = read("../components/MarketIntelligence.tsx");
+const siteAIHelp = read("../components/SiteAIHelp.tsx");
+const rootLayout = read("../app/layout.tsx");
+const documentLanguage = read("../components/DocumentLanguage.tsx");
+const newTools = read("../components/NewTools.tsx");
+const resumeBuilder = read("../components/ResumeBuilder.tsx");
 const backendSource = read("../../backend/main.py");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
@@ -35,7 +43,9 @@ const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
 const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
-const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
+const multiRouteSlugs = [...allTools.matchAll(/if\s*\(\[([\s\S]*?)\]\.includes\(slug\)\)/g)].flatMap((block) => [...block[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]));
+const newToolCases = [...newTools.matchAll(/if\s*\(slug\s*===\s*"([a-z0-9-]+)"/g)].map((m) => m[1]);
+const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs, ...multiRouteSlugs, ...newToolCases]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
 if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {
   implemented.add("image-compressor");
@@ -108,7 +118,7 @@ const legacySlugValues = [...legacyRoutesSource.matchAll(/^\s*"([^"]+)",?$/gm)].
 const canonicalCatalogSlugs = catalog.filter((slug) => slug !== "ocr-pdf" && slug !== "pdf-tools" && !legacySlugValues.includes(slug));
 const canonicalToolSlugs = [...legacySlugValues, ...canonicalCatalogSlugs];
 assert.equal(new Set(canonicalToolSlugs).size, canonicalToolSlugs.length, "Canonical tool sitemap routes must be unique");
-assert.equal(canonicalToolSlugs.length, 168, `Expected 168 canonical tool URLs in the sitemap, found ${canonicalToolSlugs.length}`);
+assert.equal(canonicalToolSlugs.length, 176, `Expected 176 canonical tool URLs in the sitemap, found ${canonicalToolSlugs.length}`);
 for (const slug of catalog) {
   if (slug === "ocr-pdf" || slug === "pdf-tools") continue;
   assert.ok(
@@ -119,7 +129,7 @@ for (const slug of catalog) {
 assert.ok(sitemapSource.includes("url: `${baseUrl}/${slug}`"), "Legacy tool sitemap entries must use their root-level canonical URLs");
 assert.ok(sitemapSource.includes("url: `${baseUrl}/tools/${tool.slug}`"), "Non-legacy catalog sitemap entries must use their /tools canonical URLs");
 const toolDirectory = read("../lib/tool-directory.ts");
-const homepage = read("../app/page.tsx");
+const homepage = read("../app/HomeClient.tsx");
 const directoryComponent = read("../components/AllTools.tsx");
 const pdfBlock = toolDirectory.split("const rawPdfTools")[1]?.split("\n];")[0];
 assert.ok(pdfBlock, "Canonical PDF tool list is missing");
@@ -138,9 +148,31 @@ for (const href of availablePdfHrefs) {
   assert.ok(layoutSource.includes(`getToolMetadata("${slug}")`), `PDF tool ${slug} is missing generated metadata`);
   assert.ok(layoutSource.includes(`ToolSEOContent slug="${slug}"`), `PDF tool ${slug} is missing its on-page SEO guide`);
 }
-assert.equal(catalog.length, 119, "Expected 119 catalog utilities after retiring the NRB forex tool");
-assert.equal(allHrefs.length, 168, "Expected 168 available tools (49 PDF tools + 119 catalog utilities)");
+assert.equal(catalog.length, 127, "Expected 127 catalog utilities including four free AI tools and four new utilities after retiring the NRB forex tool");
+assert.equal(allHrefs.length, 176, "Expected 176 available tools (49 PDF tools + 127 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
+assert.ok(catalog.includes("ai-resume-writer") && catalog.includes("ai-cover-letter-generator") && catalog.includes("ai-humanizer") && catalog.includes("market-ai"), "AI tools are missing from the canonical catalog");
+assert.ok(catalog.includes("ats-resume-checker") && catalog.includes("invoice-quotation-generator") && catalog.includes("image-resizer-compressor") && catalog.includes("business-break-even-calculator"), "New utility tools are missing from the canonical catalog");
+assert.ok(allTools.includes('import NewTools from "./NewTools"'), "NewTools component is not imported");
+for (const slug of ["ats-resume-checker", "invoice-quotation-generator", "image-resizer-compressor", "business-break-even-calculator"]) {
+  assert.ok(newTools.includes('slug==="' + slug + '"'), "NewTools component is missing handler for " + slug);
+  assert.ok(allTools.includes('"' + slug + '"'), "AllTools dispatcher is missing " + slug);
+  assert.ok(seoContent.includes('"' + slug + '"'), "New utility is missing specific SEO guidance: " + slug);
+}
+
+assert.ok(allTools.includes('import AIWritingTools from "./AIWritingTools"') && allTools.includes('import MarketIntelligence from "./MarketIntelligence"'), "AI tool workspaces are not imported");
+assert.ok(allTools.includes('includes(slug)) return <main') && allTools.includes("<AIWritingTools slug={slug} locale={locale}/>") && allTools.includes("<MarketIntelligence locale={locale}/>"), "AI tool dispatch handlers are missing");
+assert.ok(aiRoute.includes('"site-help"') && aiRoute.includes('"ai-resume-writer"') && aiRoute.includes('"ai-cover-letter-generator"') && aiRoute.includes('"ai-humanizer"'), "AI API task allowlist is incomplete");
+assert.ok(aiRoute.includes("UPSTASH_REDIS_REST_URL") && aiRoute.includes("UPSTASH_REDIS_REST_TOKEN") && aiRoute.includes("EVAL"), "AI API must use the shared atomic Upstash rate limiter");
+assert.ok(aiRoute.includes("api.cloudflare.com/client/v4/accounts/") && !aiRoute.includes("api.openai.com") && !aiRoute.includes("api.anthropic.com"), "AI provider must remain Cloudflare-only with no paid fallback");
+assert.ok(aiWritingTools.includes("/api/ai-writing") && marketIntelligence.includes("/api/ai-writing"), "AI frontends are not connected to the AI API");
+assert.ok(siteAIHelp.includes('kind: "site-help"') && siteAIHelp.includes("/api/ai-writing"), "Site-wide AI Help request is not wired to the supported API task");
+assert.ok(rootLayout.includes('import SiteAIHelp from "../components/SiteAIHelp"') && rootLayout.includes("<SiteAIHelp />"), "Site-wide AI Help is not mounted in the root layout");
+assert.ok(rootLayout.includes('import DocumentLanguage from "../components/DocumentLanguage"') && rootLayout.includes("<DocumentLanguage />") && documentLanguage.includes("document.documentElement.lang = language"), "Localized document language and RTL direction are not applied");
+assert.ok(resumeBuilder.includes("pdfora-ai-resume-draft") && resumeBuilder.includes("AI draft imported"), "AI resume drafts are not imported into the Resume Builder");
+assert.equal((resumeBuilder.match(/id: "/g) || []).length, 20, "Resume Builder must expose 20 templates");
+assert.ok(aiRoute.includes("Preferred output language") && aiWritingTools.includes("locale") && marketIntelligence.includes("locale"), "AI tools must receive the selected language");
+
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
 assert.ok(homepage.includes('import { allTools, type Tool } from "../lib/tool-directory"'), "Homepage is not using the canonical tool directory");

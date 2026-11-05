@@ -5,6 +5,11 @@ import { homeLocales, supportedHomeLanguages, homeLanguageAlternates } from "../
 import { toolCatalog } from "../../components/toolCatalog";
 
 const site = "https://pd-fora.vercel.app";
+const openGraphLocaleByCode: Record<string, string> = {
+  en: "en_US", ne: "ne_NP", hi: "hi_IN", es: "es_ES", fr: "fr_FR",
+  de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID",
+  zh: "zh_CN", ja: "ja_JP",
+};
 
 export function generateStaticParams() {
   return Object.keys(homeLocales).map((locale) => ({ locale }));
@@ -14,16 +19,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const content = homeLocales[locale];
   if (!content) return {};
-  const languages = Object.fromEntries(Object.entries(homeLanguageAlternates).map(([key, url]) => [key, url]));
   return {
     title: content.title,
     description: content.description,
-    alternates: { canonical: `${site}/${locale}`, languages },
+    alternates: { canonical: `${site}/${locale}`, languages: homeLanguageAlternates },
     openGraph: {
       type: "website", siteName: "PDFora", title: content.title,
       description: content.description, url: `${site}/${locale}`,
-      locale: ({ ne: "ne_NP", hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID", zh: "zh_CN", ja: "ja_JP" } as Record<string, string>)[locale],
-      alternateLocale: ["en_US", "ne_NP", "hi_IN", "es_ES", "fr_FR", "de_DE", "pt_BR", "ar_SA", "bn_BD", "id_ID", "zh_CN", "ja_JP"].filter((item) => item !== ({ hi: "hi_IN", es: "es_ES", fr: "fr_FR", de: "de_DE", pt: "pt_BR", ar: "ar_SA", bn: "bn_BD", id: "id_ID", zh: "zh_CN", ja: "ja_JP" } as Record<string, string>)[locale]),
+      locale: openGraphLocaleByCode[locale],
+      alternateLocale: Object.values(openGraphLocaleByCode).filter((item) => item !== openGraphLocaleByCode[locale]),
     },
     twitter: { card: "summary_large_image", title: content.title, description: content.description },
   };

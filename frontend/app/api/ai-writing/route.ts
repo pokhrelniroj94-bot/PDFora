@@ -14,8 +14,12 @@ async function isRateLimited(request: Request): Promise<boolean> {
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!redisUrl || !redisToken) throw new Error("SHARED_RATE_LIMIT_NOT_CONFIGURED");
 
+  // Prefer Vercel's trusted client-IP header. On deployments where it is
+  // absent, use the right-most address appended by the hosting proxy.
   const platformIp = request.headers.get("x-vercel-forwarded-for") || "";
-  const ip = platformIp.split(",")[0].trim().slice(0, 80);
+  const forwardedFor = request.headers.get("x-forwarded-for") || "";
+  const realIp = request.headers.get("x-real-ip") || "";
+  const ip = (platformIp || realIp || forwardedFor.split(",").at(-1) || "").trim().slice(0, 80);
   if (!ip) throw new Error("CLIENT_IP_UNAVAILABLE");
 
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
@@ -220,8 +224,21 @@ export async function POST(request: Request) {
         status: 429, headers: { ...NO_STORE, "Retry-After": "60" },
       });
     }
-  } catch {
-    return Response.json({ error: "AI is temporarily unavailable because the shared abuse-protection service could not be verified.", code: "RATE_LIMIT_UNAVAILABLE" }, { status: 503, headers: NO_STORE });
+  } catch (error) {
+    // Log only a fixed diagnostic code; never log IPs, request bodies, URLs,
+    // credentials, or provider response content.
+    const reason = error instanceof Error ? error.message : "UNKNOWN_RATE_LIMIT_ERROR";
+    const diagnostic = [
+      "CLIENT_IP_UNAVAILABLE",
+      "SHARED_RATE_LIMIT_NOT_CONFIGURED",
+      "SHARED_RATE_LIMIT_UNAVAILABLE",
+      "SHARED_RATE_LIMIT_INVALID_RESPONSE",
+    ].includes(reason) ? reason : "SHARED_RATE_LIMIT_NETWORK_OR_TLS_ERROR";
+    console.error("[PDFora AI] shared rate limiter failed:", diagnostic);
+    return Response.json({
+      error: "AI is temporarily unavailable because the shared abuse-protection service could not be verified.",
+      code: "RATE_LIMIT_UNAVAILABLE",
+    }, { status: 503, headers: NO_STORE });
   }
 
   const maxTokens = kind === "market-explain" ? 1800 : kind === "site-help" || kind === "forex-explain" ? 900 : kind === "ai-humanizer" ? 900 : 1100;

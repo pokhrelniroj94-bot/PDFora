@@ -1,0 +1,19 @@
+{
+  "ui": {
+    "amount": "金额",
+    "principal": "贷款本金",
+    "annualRate": "年利率（%）",
+    "monthlyRate": "月利率（%）",
+    "termMonths": "期限（月）",
+    "termYears": "期限（年）",
+    "monthlyPayment": "每月还款额（EMI）",
+    "totalPayment": "还款总额",
+    "totalInterest": "利息总额",
+    "baseAmount": "基础金额",
+    "taxRate": "税率（%）",
+    "result": "计算结果",
+    "formula": "计算公式",
+    "rounding": "显示结果可能经过四舍五入"
+  },
+  "entries": {}
+}

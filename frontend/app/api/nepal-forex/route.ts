@@ -100,6 +100,69 @@ async function fetchDirectFromNrb(requestedDate: string) {
   return normalizeNrbPayload(await response.json(), requestedDate);
 }
 
+async function fetchFromOfficialPage(requestedDate: string) {
+  const response = await fetch("https://www.nrb.org.np/forex/", {
+    headers: { Accept: "text/html", "User-Agent": "Mozilla/5.0 PDForaForex/1.2" },
+    cache: "no-store",
+    signal: AbortSignal.timeout(12_000),
+  });
+  if (!response.ok) throw new Error(`NRB published page returned HTTP ${response.status}`);
+  const html = await response.text();
+  if (html.length > 2_000_000) throw new Error("NRB published page response was unexpectedly large.");
+
+  const strip = (value: string) => value
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&quot;/gi, '"')
+    .replace(/\s+/g, " ").trim();
+  const pageText = strip(html);
+  const dateMatch = pageText.match(/Showing Exchange Rate for\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})/i);
+  const parsedDate = dateMatch ? new Date(dateMatch[1]) : null;
+  const rateDate = parsedDate && Number.isFinite(parsedDate.getTime())
+    ? parsedDate.toISOString().slice(0, 10)
+    : "";
+  if (!rateDate) throw new Error("Could not determine the publication date on NRB's official forex page.");
+
+  const rows = [...html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)];
+  const rates: NormalizedRate[] = [];
+  for (const row of rows) {
+    const cells = [...row[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)]
+      .map((cell) => strip(cell[1]));
+    if (cells.length < 4) continue;
+    const codeMatch = cells[0].match(/^([A-Za-z]{3})\b/);
+    const code = codeMatch?.[1]?.toUpperCase() || "";
+    const unit = Number(cells[1].replace(/,/g, ""));
+    const buy = Number(cells[2].replace(/,/g, ""));
+    const sell = Number(cells[3].replace(/,/g, ""));
+    if (!/^[A-Z]{3}$/.test(code) || !Number.isFinite(unit) || unit <= 0 ||
+        !Number.isFinite(buy) || !Number.isFinite(sell) || buy <= 0 || sell <= 0) continue;
+    rates.push({ code, name: cells[0].replace(/^[A-Za-z]{3}\s*[-(]?\s*/, "").replace(/\)?$/, "").trim() || code, unit, buy, sell });
+  }
+  const unique = [...new Map(rates.map((rate) => [rate.code, rate])).values()];
+  if (unique.length < 10) throw new Error("NRB official page did not contain enough valid currency rows.");
+  // This page exposes only its currently published table, not an arbitrary historical date.
+  // For today's request, a previous working day's published rate is valid and is marked stale.
+  const todayInNepal = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
+  if (requestedDate !== rateDate && requestedDate !== todayInNepal) {
+    throw new Error("NRB's published-page fallback only supports today's currently displayed rate date.");
+  }
+  return {
+    source: "Nepal Rastra Bank official published page",
+    requestedDate,
+    rateDate,
+    publishedOn: rateDate,
+    rates: unique,
+    fallback: true,
+    stale: rateDate < requestedDate,
+  };
+}
+
 async function fetchFromBackend(requestedDate: string) {
   const target = new URL("/api/nepal-forex", BACKEND_URL);
   target.searchParams.set("date", requestedDate);
@@ -143,12 +206,21 @@ export async function GET(request: Request) {
   }
 
   try {
-    const payload = await fetchFromBackend(requestedDate);
+    const payload = await fetchFromOfficialPage(requestedDate);
     return Response.json(payload, {
-      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
+      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900" },
+    });
+  } catch (pageError) {
+    console.warn("[nepal-forex] Official NRB page fallback failed:", pageError instanceof Error ? pageError.message : "unknown error");
+  }
+
+  try {
+    const payload = await fetchFromBackend(requestedDate);
+    return Response.json({ ...payload, fallback: true }, {
+      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900" },
     });
   } catch {
-    console.error("[nepal-forex] Both NRB and Render forex sources failed.");
+    console.error("[nepal-forex] NRB API, official page and Render mirror all failed.");
     return Response.json(
       { error: "Official NRB rates could not be reached right now. Please refresh in a moment." },
       { status: 502, headers: { "Cache-Control": "no-store" } },

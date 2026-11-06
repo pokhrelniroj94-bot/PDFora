@@ -2,16 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import LanguageSwitcher from "../../components/i18n/LanguageSwitcher";
-import { isLocale, isPublished, isRoutable, localeInfo } from "../../lib/i18n/config";
+import { isLocale, isPublished, localeFallbackCopy, localeInfo } from "../../lib/i18n/config";
 import { getTranslator } from "../../lib/i18n/messages";
 import { buildLocaleMetadata } from "../../lib/i18n/metadata";
 import { getSwitcherOptions } from "../../lib/i18n/switcher";
 
-type Props = { params: Promise<{ locale: string }> };
+type Props = { params: Promise<{ locale: string }>; searchParams?: Promise<{ from?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  if (!isLocale(locale) || !isRoutable(locale)) return { title: "Page not found", robots: { index: false, follow: true } };
+  if (!isLocale(locale) || locale === "en") return { title: "Page not found", robots: { index: false, follow: true } };
+  if (!isPublished(locale)) {
+    const copy = localeFallbackCopy[locale];
+    return { title: copy.title, description: copy.message, robots: { index: false, follow: true }, alternates: { canonical: `https://pd-fora.vercel.app/${locale}` } };
+  }
   const t = await getTranslator(locale);
   return buildLocaleMetadata({ locale, path: "/", title: t("seo.home.title"), description: t("seo.home.description") });
 }
@@ -21,9 +25,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * RTL isolation. It is not the translated homepage (Phase 3) and is only reachable for
  * unpublished locales when PDFORA_I18N_PREVIEW=1 (noindex, no hreflang).
  */
-export default async function LocalizedHomePage({ params }: Props) {
+export default async function LocalizedHomePage({ params, searchParams }: Props) {
   const { locale } = await params;
-  if (!isLocale(locale) || !isRoutable(locale)) notFound();
+  if (!isLocale(locale) || locale === "en") notFound();
+  if (!isPublished(locale)) {
+    const copy = localeFallbackCopy[locale];
+    const from = searchParams ? (await searchParams).from : undefined;
+    return (
+      <main id="main" lang={localeInfo[locale].htmlLang} dir={localeInfo[locale].dir} className="mx-auto w-full max-w-3xl flex-1 px-4 py-16">
+        <h1 className="text-3xl font-bold text-slate-900">{copy.title}</h1>
+        <p className="mt-6 rounded-lg border border-amber-300 bg-amber-50 px-4 py-4 text-amber-900">{copy.message}</p>
+        <Link href={from && from.startsWith("/") ? from : "/"} hrefLang="en" lang="en" className="mt-8 inline-block font-semibold text-blue-700 underline">{copy.back}</Link>
+      </main>
+    );
+  }
   const t = await getTranslator(locale);
   const info = localeInfo[locale];
   return (

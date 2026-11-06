@@ -14,13 +14,13 @@ import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
 ensureTypeStripping();
 const { config, routing, translate, format, preference, switcher, metadata } = await loadI18n();
 
-test("locale table: 10 locales, English default, Arabic is the only RTL", () => {
-  assert.deepEqual([...config.locales], ["en", "ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"]);
+test("locale table: requested 12 locales, English default, Arabic and Urdu are RTL", () => {
+  assert.deepEqual([...config.locales], ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
   assert.equal(config.defaultLocale, "en");
   const rtl = config.locales.filter((l) => config.localeInfo[l].dir === "rtl");
-  assert.deepEqual(rtl, ["ar"]);
+  assert.deepEqual(rtl, ["ur", "ar"]);
   const names = config.locales.map((l) => config.localeInfo[l].nativeName);
-  assert.equal(new Set(names).size, 10, "native names must be unique");
+  assert.equal(new Set(names).size, 12, "native names must be unique");
   assert.equal(config.localeInfo.ar.nativeName, "العربية");
   for (const l of config.locales) assert.equal(config.localeInfo[l].code, l);
 });
@@ -36,7 +36,7 @@ test("publishing policy: English and reviewed Nepali routes are published", () =
   assert.deepEqual(config.getRoutableLocales(), ["ne"]);
   assert.equal(config.isRoutable("en"), false, "English is served unprefixed, never at /en");
   process.env.PDFORA_I18N_PREVIEW = "1";
-  assert.deepEqual(config.getRoutableLocales(), ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"]);
+  assert.deepEqual(config.getRoutableLocales(), ["ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 
@@ -104,7 +104,7 @@ test("preference: browser language matching", () => {
   assert.equal(m("zh-Hans"), "zh");
   assert.equal(m("zh-TW"), undefined);
   assert.equal(m("zh-Hant-HK"), undefined);
-  assert.equal(m("pt-BR"), undefined);
+  assert.equal(m("pt-BR"), "pt");
   assert.equal(m("ar_EG"), "ar");
   assert.equal(preference.detectBrowserLocale(["pt-BR", "fr-CA", "de"], ["en", "de"]), "de");
   assert.equal(preference.detectBrowserLocale(["fr"], ["en"]), undefined);
@@ -115,7 +115,7 @@ test("preference: cookie parse/serialize is strict", () => {
   assert.equal(preference.parseLocaleCookie("ar"), "ar");
   assert.equal(preference.parseLocaleCookie("../evil"), undefined);
   assert.equal(preference.parseLocaleCookie(undefined), undefined);
-  assert.equal(preference.readLocaleFromCookieHeader("a=1; pdfora-locale=ko; b=2"), "ko");
+  assert.equal(preference.readLocaleFromCookieHeader("a=1; pdfora-locale=pt; b=2"), "pt");
   assert.equal(preference.readLocaleFromCookieHeader("pdfora-locale=xx"), undefined);
   const c = preference.localeCookieString("de", { secure: true });
   assert.match(c, /^pdfora-locale=de; Path=\/; Max-Age=31536000; SameSite=Lax; Secure$/);

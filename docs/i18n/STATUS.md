@@ -1,5 +1,37 @@
 # PDFora i18n rollout: status
 
+## 12-language foundation snapshot
+
+Branch: `i18n/12-language-foundation`, based on master `6cc1f06`. This branch is not
+merged or deployed. It registers exactly the requested locales: English, Nepali, Hindi,
+Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and
+Japanese.
+
+English and the existing reviewed Nepali pages remain published. The other ten locales
+are intentionally unpublished: their locale home routes provide a localized,
+`noindex` fallback explaining that the requested page is not translated, while fake
+localized tool/blog URLs are not advertised in hreflang or the sitemap. Arabic and Urdu
+use RTL direction. The language selector exposes all requested languages and preserves
+the current route only when a reviewed equivalent exists; otherwise it preserves the
+destination in a fallback link.
+
+The middleware now passes the locale's BCP-47 HTML language and direction to the root
+layout, so the initial server-rendered `<html>` has the correct `lang` and `dir`.
+
+Current truthful coverage: English is complete for the existing published site; Nepali
+is complete only for the existing homepage and six PDF routes plus the reviewed shared
+namespaces/guides already present in the repository; Hindi, Bengali, Urdu, Arabic,
+Spanish, French, German, Portuguese, Chinese and Japanese are not translated or
+published.
+
+Verification performed on this branch:
+- `npm run verify:tools`: PASS (124 catalog tools, 173 unified homepage/directory tools)
+- `npm run i18n:test`: PASS (20/20)
+- `npm run i18n:check`: PASS with ten locales explicitly reported as unpublished
+- `npx tsc --noEmit`: PASS
+- `npm run lint -- --quiet`: PASS (existing non-blocking `<img>` warning is suppressed)
+- `npm run build`: PASS (390 generated routes; Next warns that `middleware` is deprecated in favor of `proxy`)
+
 Branch: `i18n/global-multilingual` (from `feat/pdf-ora-ai-help-market-signals` @ 8cf31b8). Not merged, not deployed.
 
 ## Execution limits (verified in this sandbox)

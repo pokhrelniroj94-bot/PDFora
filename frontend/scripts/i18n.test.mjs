@@ -6,6 +6,7 @@ import test from "node:test";
 import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui.ts";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne.ts";
+import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne.ts";
 import { toolGuides } from "../lib/tool-guides.ts";
 import { getPdfToolMetadata } from "../lib/i18n/pdf-tool-seo.ts";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
@@ -200,11 +201,26 @@ test("Nepali PDF guide translations cover all 49 live tool slugs", () => {
 });
 
 
+test("Nepali PDF tool names cover every live PDF slug", () => {
+  assert.equal(Object.keys(nepaliToolNames).length, 49);
+  for (const guide of toolGuides) {
+    assert.ok(nepaliToolNames[guide.slug]?.trim(), guide.slug + " must have a Nepali display name");
+  }
+});
+
+
 test("PDF SEO metadata is unique, canonical and within search description length for all tools", () => {
+  const titles = new Set();
+  const descriptions = new Set();
   for (const guide of toolGuides) {
     const metadata = getPdfToolMetadata(guide.slug);
     assert.ok(String(metadata.title).includes(guide.name), guide.slug + " title must include the tool name");
+    assert.ok(String(metadata.title).length <= 70, guide.slug + " title should remain concise");
+    assert.ok(!titles.has(metadata.title), guide.slug + " title must be unique");
+    titles.add(metadata.title);
     assert.ok(typeof metadata.description === "string" && metadata.description.length >= 80 && metadata.description.length <= 160, guide.slug + " description must be useful and within 160 characters");
+    assert.ok(!descriptions.has(metadata.description), guide.slug + " description must be unique");
+    descriptions.add(metadata.description);
     assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
     assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
   }

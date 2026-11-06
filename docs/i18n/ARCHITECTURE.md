@@ -49,3 +49,21 @@ All non-English locales are `unpublished`. Unpublished means: no hreflang, no si
 ## verify:tools fix (commit d7da3a1)
 
 The script failed before any i18n work. Cause 1: the homepage UI moved to `components/HomePageClient.tsx` while the script read only the thin `app/page.tsx`; it now reads both. Cause 2: `app/api/nepse-market/route.ts` was rewritten (each `read<...>()` now passes a `60` cache argument; `source:` reports three feeds), so five file-mapping assertions now expect `, 60` and the source assertion requires all three labels. No assertion was removed. **Please review these assertion edits** since they describe your NEPSE feature.
+
+## Tool adapter and localized tool route (scope: catalog utilities)
+
+Route: `app/[locale]/tools/[slug]/page.tsx` -> `/ne/tools/loan-emi-calculator`, `/ar/tools/<slug>`, ... English is unchanged at `/tools/<slug>` and `/en/*` still 301s to it.
+
+- `lib/tools/adapter.ts`: `resolveCatalogTool(slug)` returns a discriminated result: `{ ok: true, implementation: { kind: "catalog-workspace", slug, entry } }` or `{ ok: false, reason }` with reasons `invalid-slug`, `reserved-entry` (`pdf-tools` placeholder), `pdf-root-tool` (the root PDF pages, not served yet), `unknown-tool`, `incomplete-entry`. It renders nothing; accepted slugs are handed to the existing `ToolWorkspace` (`components/AllTools.tsx`), which keeps dispatching to its own specialized handlers. No second workspace, no fallback tool.
+- `lib/tools/localized-route.ts`: validates locale + slug together. 404 reasons: `invalid-locale`, `locale-not-served` (English, or an unpublished locale without `PDFORA_I18N_PREVIEW=1`), or the adapter reason.
+- `lib/tools/localized-metadata.ts`: title/description only from the catalog entry (English source text; no localized tool copy exists yet), self-referencing canonical, no hreflang. Robots is **default-deny**: indexable only if the locale is published AND the slug is listed in `lib/tools/localized-verification.ts` (empty today). The sitemap is not touched.
+- The page declares the tool UI as `lang="en" dir="ltr"` (it is not translated), shows a notice with a link to the English tool, and adds no page-level JSON-LD.
+
+Not covered yet: the 49 PDF tools (separate root pages with inline `PDForaTool` / `Niroj77Tool` props). They return 404 under `/<locale>/tools/<slug>` (for example `/ne/tools/compress-pdf`) by design. Next step: extract their inline props into a registry with a drift test, then add a `/[locale]/<slug>` route.
+
+Known limits of this route:
+1. The root layout's site-wide `WebSite`/`Organization`/`SoftwareApplication` JSON-LD (`inLanguage: "en"`) still appears on every page, including localized ones.
+2. English chrome (footer, cookie banner, AI help) still wraps localized routes; the tool's own "All tools" links go to the English directory.
+3. Static checks (`npm run tools:test`) cover logic and source contracts only; real status codes need the HTTP checks below.
+
+HTTP checks (preview on, `npm run dev`): `/ne/tools/loan-emi-calculator` 200, `noindex`, canonical `https://pd-fora.vercel.app/ne/tools/loan-emi-calculator`, no `hreflang` links; `/ne/tools/not-a-tool`, `/ne/tools/pdf-tools`, `/ne/tools/compress-pdf`, `/xx/tools/loan-emi-calculator`, `/en/tools/loan-emi-calculator` (301 to `/tools/loan-emi-calculator`) behave as described. Without preview, `/ne/tools/loan-emi-calculator` is 404.

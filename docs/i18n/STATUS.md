@@ -60,3 +60,9 @@ Authoring sandbox re-ran verify:tools, i18n:test (14/14), i18n:check: PASS. lint
 Earlier on the same commit family: verify:tools, i18n:test (14/14), i18n:check passed locally.
 Still NOT verified: runtime behavior in a browser (preview-mode /ar and /de, 404 without preview, /en redirect, switcher keyboard use).
 Phase 2 status: PARTIALLY COMPLETE until the browser checks are reported.
+
+## Tool adapter + localized tool route (catalog utilities)
+Verified here (authoring sandbox, commands actually run): `verify:tools` PASS; `i18n:test` 14/14; `i18n:check` no blocking problems; `tools:test` 12/12 (4 injected defects were each caught by the suite); bun syntax check of the 5 new TS/TSX files OK; partial strict `tsc` on the 4 pure modules reports nothing beyond the expected missing-`next`/`process` types.
+Not run here (npm blocked): `npm run lint`, `npx tsc --noEmit` (full), `npm run build`, browser/HTTP checks. Pending owner's local run.
+Unchanged by this work (git diff vs HEAD empty): `app/tools`, `app/sitemap.ts`, `app/robots.ts`, all of `components/`.
+Status: adapter PARTIALLY COMPLETE (catalog utilities only; PDF tools deferred); localized route WRITTEN, NOT BUILT; indexing: DISABLED by default (nothing verified); sitemap: UNCHANGED.

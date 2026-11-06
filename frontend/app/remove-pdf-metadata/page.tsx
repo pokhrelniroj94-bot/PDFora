@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "Remove PDF Metadata Online Free | PDFora",
-  description: "Remove hidden PDF metadata such as author, title, subject and keywords online. Download a cleaner PDF with PDFora.",
-  alternates: { canonical: "https://pd-fora.vercel.app/remove-pdf-metadata" },
-};
+export const metadata = getPdfToolMetadata("remove-pdf-metadata");
 
 export default function Page() {
   const description = "Remove document properties such as title, author, subject, creator and keywords from a PDF file to help protect document privacy.";

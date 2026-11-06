@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+// React import removed as not needed in Server Component
 import { notFound, permanentRedirect } from "next/navigation";
 import ToolWorkspace from "../../../components/AllTools";
 import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";

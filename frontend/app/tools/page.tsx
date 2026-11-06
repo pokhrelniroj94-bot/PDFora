@@ -1,25 +1,29 @@
 import type { Metadata } from "next";
-import { ToolsDirectory } from "../../components/AllTools";
+import { SmartToolCenter } from "../../components/SmartToolCenter";
 
 export const metadata: Metadata = {
-  title: "Free Online Tools – PDF, Calculators, Text & Nepal Utilities",
-  description: "Use free PDF converters, calculators, image and text tools, developer utilities, SEO checkers and Nepal tools for BS dates, NEPSE, tax, forex and land units.",
+  title: "All Online Tools – Smart PDF, Image, Nepal & Finance Tool Finder | PDFora",
+  description: "Find the right free online tool by task. Search PDF tools, image converters, calculators, Nepal utilities, text tools, developer tools and more in one searchable directory.",
   alternates: { canonical: "https://pd-fora.vercel.app/tools" },
-  keywords: ["Nepali date converter", "BS to AD", "AD to BS", "VAT calculator Nepal", "Ropani to Aana", "Nepali number converter", "Preeti to Unicode", "Unicode to Preeti", "Nepali calendar 2083", "NEB GPA calculator", "Loksewa photo resizer", "NEPSE share calculator", "NRB exchange rates", "Nepal salary tax calculator 2083/84", "NEA electricity bill calculator", "Nepal public holidays 2083", "Nepali Unicode typing", "free online tools Nepal", "PDFora"],
+  keywords: [
+    "free online tools", "PDF tools", "PDF converter", "image converter",
+    "Nepal online tools", "Nepali date converter", "salary tax calculator Nepal",
+    "NEPSE calculator", "EMI calculator", "text tools", "developer tools", "PDFora",
+  ],
   openGraph: {
     type: "website",
-    title: "Free Online Tools – PDF, Calculators, Text & Nepal Utilities | PDFora",
-    description: "Explore PDF processing, calculators, image conversion, text utilities, developer tools, SEO checkers and practical Nepal-focused tools.",
+    title: "Smart Tool Center – Find the Right Tool | PDFora",
+    description: "Search and discover PDF, image, finance, Nepal, text and developer tools by the task you want to complete.",
     url: "https://pd-fora.vercel.app/tools",
     siteName: "PDFora",
   },
   twitter: {
     card: "summary",
-    title: "Free Online PDF, Calculator, Text & Nepal Tools | PDFora",
-    description: "Find PDF tools, calculators, text and developer utilities, SEO checkers, image tools and useful Nepal converters in one place.",
+    title: "Smart Tool Center | PDFora",
+    description: "Find the right tool by task across PDF, image, finance, Nepal and productivity utilities.",
   },
 };
 
 export default function ToolsPage() {
-  return <ToolsDirectory />;
+  return <SmartToolCenter />;
 }

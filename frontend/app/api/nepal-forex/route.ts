@@ -5,6 +5,7 @@ export const maxDuration = 30;
 const BACKEND_URL = (process.env.PDFORA_BACKEND_URL || "https://pdfora-493r.onrender.com").replace(/\/$/, "");
 const NRB_URL = "https://www.nrb.org.np/api/forex/v1/rates";
 
+type JsonRecord = Record<string, unknown>;
 type NormalizedRate = { code: string; name: string; unit: number; buy: number; sell: number };
 type NrbRecord = {
   date?: string;
@@ -16,25 +17,35 @@ type NrbRecord = {
   }>;
 };
 
-function toRateList(items: any[]): NormalizedRate[] {
-  return items.flatMap((item) => {
-    const currency = item?.currency || {};
-    const code = String(item?.code || item?.iso3 || currency.ISO3 || currency.iso3 || "").toUpperCase();
-    const name = String(item?.name || item?.currencyName || currency.name || "");
-    const unit = Number(item?.unit ?? currency.unit ?? 1);
-    const buy = Number(item?.buy);
-    const sell = Number(item?.sell);
+function asRecord(value: unknown): JsonRecord {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+    ? value as JsonRecord
+    : {};
+}
+
+function toRateList(items: unknown[]): NormalizedRate[] {
+  return items.flatMap((value) => {
+    const item = asRecord(value);
+    const currency = asRecord(item.currency);
+    const code = String(item.code || item.iso3 || currency.ISO3 || currency.iso3 || "").toUpperCase();
+    const name = String(item.name || item.currencyName || currency.name || "");
+    const unit = Number(item.unit ?? currency.unit ?? 1);
+    const buy = Number(item.buy);
+    const sell = Number(item.sell);
     if (!/^[A-Z]{3}$/.test(code) || !name || !Number.isFinite(unit) || unit <= 0 ||
         !Number.isFinite(buy) || !Number.isFinite(sell) || buy <= 0 || sell <= 0) return [];
     return [{ code, name, unit, buy, sell }];
   });
 }
 
-function normalizeNrbPayload(payload: any, requestedDate: string) {
-  if (payload?.status?.code && Number(payload.status.code) !== 200) {
-    throw new Error(`NRB API body status ${payload.status.code}`);
+function normalizeNrbPayload(payload: unknown, requestedDate: string) {
+  const root = asRecord(payload);
+  const status = asRecord(root.status);
+  if (status.code && Number(status.code) !== 200) {
+    throw new Error(`NRB API body status ${String(status.code)}`);
   }
-  const records = payload?.data?.payload;
+  const data = asRecord(root.data);
+  const records = data.payload;
   if (!Array.isArray(records)) throw new Error("NRB returned no published snapshots for this date range.");
   const valid = (records as NrbRecord[]).filter((item) => item?.date && Array.isArray(item.rates));
   const latest = [...valid].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
@@ -50,15 +61,16 @@ function normalizeNrbPayload(payload: any, requestedDate: string) {
   };
 }
 
-function normalizeBackendPayload(payload: any, requestedDate: string) {
-  const rawRates = Array.isArray(payload?.rates) ? payload.rates : [];
+function normalizeBackendPayload(payload: unknown, requestedDate: string) {
+  const root = asRecord(payload);
+  const rawRates = Array.isArray(root.rates) ? root.rates : [];
   const rates = toRateList(rawRates);
   if (!rates.length) throw new Error("Render forex response did not contain valid normalized rates.");
   return {
-    source: payload.source || "Nepal Rastra Bank",
-    requestedDate: payload.requestedDate || requestedDate,
-    rateDate: payload.rateDate || payload.date || requestedDate,
-    publishedOn: payload.publishedOn || payload.published_on || null,
+    source: typeof root.source === "string" ? root.source : "Nepal Rastra Bank",
+    requestedDate: typeof root.requestedDate === "string" ? root.requestedDate : requestedDate,
+    rateDate: typeof root.rateDate === "string" ? root.rateDate : typeof root.date === "string" ? root.date : requestedDate,
+    publishedOn: typeof root.publishedOn === "string" ? root.publishedOn : typeof root.published_on === "string" ? root.published_on : null,
     rates,
   };
 }
@@ -102,18 +114,32 @@ async function fetchFromBackend(requestedDate: string) {
 
 export async function GET(request: Request) {
   const incoming = new URL(request.url);
+  const dateParam = incoming.searchParams.get("date");
+  if (dateParam && !/^\d{4}-\d{2}-\d{2}$/.test(dateParam)) {
+    return Response.json({ error: "Date must use YYYY-MM-DD format." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+  }
+  if (dateParam) {
+    const parsed = new Date(dateParam + "T00:00:00Z");
+    if (!Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== dateParam) {
+      return Response.json({ error: "Invalid calendar date." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    }
+    const today = new Date();
+    const maxDate = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 1));
+    if (parsed.getTime() > maxDate.getTime()) {
+      return Response.json({ error: "Future exchange-rate dates are not supported." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    }
+  }
   const requestedDate = incoming.searchParams.get("date") || new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date());
-
   // Prefer the official NRB feed. Only use the Render mirror if NRB is unreachable.
   try {
     const payload = await fetchDirectFromNrb(requestedDate);
     return Response.json(payload, {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
     });
-  } catch (nrbError) {
-    console.warn("[nepal-forex] Direct NRB request failed; trying Render mirror", nrbError);
+  } catch {
+    console.warn("[nepal-forex] Direct NRB request failed; trying Render mirror.");
   }
 
   try {
@@ -121,8 +147,8 @@ export async function GET(request: Request) {
     return Response.json(payload, {
       headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
     });
-  } catch (backendError) {
-    console.error("[nepal-forex] Both NRB and Render forex sources failed", backendError);
+  } catch {
+    console.error("[nepal-forex] Both NRB and Render forex sources failed.");
     return Response.json(
       { error: "Official NRB rates could not be reached right now. Please refresh in a moment." },
       { status: 502, headers: { "Cache-Control": "no-store" } },

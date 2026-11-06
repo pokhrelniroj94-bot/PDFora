@@ -14,7 +14,7 @@ export default function PrivacyPage() {
         <h1 className="mb-4 text-4xl font-bold">Privacy Policy</h1>
 
         <p className="mb-8 text-gray-600">
-          Last updated: August 12, 2026
+          Last updated: November 3, 2026
         </p>
 
         <section className="space-y-6 leading-7">
@@ -92,6 +92,35 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
+              6. AI Writing and Market Explanation Tools
+            </h2>
+            <p>
+              If you choose to use AI Resume Writer, Cover Letter Generator,
+              Humanizer, or the optional Market AI explanation, the text and
+              details you submit are sent to Cloudflare Workers AI to generate
+              a response. These features require your confirmation before
+              submitting text. Do not submit passwords, government identity
+              numbers, bank or broker credentials, private keys, or confidential
+              employer or client information.
+            </p>
+            <p className="mt-2">
+              PDFora does not intentionally save AI prompts or generated
+              responses in its own application database. The AI provider
+              processes requests under its own terms and privacy practices.
+              Review the <a className="underline" href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noreferrer">Cloudflare Privacy Policy</a>
+              before using these features. AI-generated content may be
+              inaccurate and should be reviewed before use.
+            </p>
+            <p className="mt-2">
+              Resume Builder details and profile photos are handled in your
+              browser to create the preview and PDF. AI-generated resume text
+              is transferred to the builder only within the current browser
+              tab session and is removed after import.
+            </p>
+          </div>
+
+          <div>
+            <h2 className="mb-2 text-2xl font-semibold">
               6. Data Security
             </h2>
             <p>
@@ -103,7 +132,7 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              7. Children&apos;s Privacy
+              8. Children&apos;s Privacy
             </h2>
             <p>
               PDFora is not intentionally designed to collect personal
@@ -115,7 +144,7 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              8. Changes to This Policy
+              9. Changes to This Policy
             </h2>
             <p>
               We may update this Privacy Policy from time to time as our
@@ -125,7 +154,7 @@ export default function PrivacyPage() {
           </div>
 
           <div>
-            <h2 className="mb-2 text-2xl font-semibold">9. Contact</h2>
+            <h2 className="mb-2 text-2xl font-semibold">10. Contact</h2>
             <p>
               If you have questions about this Privacy Policy or PDFora&apos;s
               privacy practices, please contact the PDFora team through the

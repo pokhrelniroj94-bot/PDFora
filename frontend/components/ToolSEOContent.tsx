@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AdsterraNative from "../app/components/AdsterraNative";
 import { getToolGuide } from "../lib/tool-guides";
+import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
 const seoLabels = {
   en: ["PDFora practical guide", "What does", "do?", "How to", "step by step", "When is this PDF operation useful?", "PDF quality, compatibility and limitations", "Tips for a reliable result", "Privacy and safe document handling", "Troubleshooting common PDF problems", "Preparing PDFs for study, work and online forms", "Frequently asked questions"],
   ne: ["PDFora प्रयोगात्मक मार्गदर्शिका", "के गर्छ", "?", "कसरी", "चरणबद्ध रूपमा", "यो PDF प्रक्रिया कहिले उपयोगी हुन्छ?", "PDF गुणस्तर, अनुकूलता र सीमाहरू", "भरपर्दो नतिजाका लागि सुझाव", "गोपनीयता र सुरक्षित कागजात व्यवस्थापन", "सामान्य PDF समस्याको समाधान", "अध्ययन, काम र अनलाइन फारामका लागि PDF तयारी", "बारम्बार सोधिने प्रश्नहरू"],
@@ -55,9 +56,9 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
     { q: localizedFaqs[locale]?.[0]?.replace("{name}", toolName) || `What does ${toolName} do?`, a: guide.purpose },
     { q: localizedFaqs[locale]?.[1]?.replace("{name}", toolName) || `How do I ${toolName.toLowerCase()} online?`, a: guide.steps.join(" ") },
     { q: localizedFaqs[locale]?.[2]?.replace("{name}", toolName) || `What should I check after using ${toolName.toLowerCase()}?`, a: guide.caution },
-    { q: localizedFaqs[locale]?.[3] || "Which PDF tasks may I need next?", a: `Depending on your document workflow, related tasks include ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}. Keep the original PDF and inspect each processed file before sharing it.` },
-    { q: localizedFaqs[locale]?.[4] || "Can I use this PDF tool on a phone?", a: "The tool is available in modern mobile browsers. File selection and download behaviour can vary by device, browser and available storage." },
-    { q: localizedFaqs[locale]?.[5] || "Should I keep a copy of the original PDF?", a: "Yes. Keep an untouched copy until you have opened and checked the final file and confirmed that it contains the pages and information you need." }
+    { q: localizedFaqs[locale]?.[3] || "Which PDF tasks may I need next?", a: locale === "ne" ? `तपाईंको कामअनुसार सम्बन्धित टुलहरू प्रयोग गर्न सक्नुहुन्छ: ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}। मूल PDF सुरक्षित राख्नुहोस् र नतिजा साझा गर्नुअघि जाँच्नुहोस्।` : `Depending on your document workflow, related tasks include ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}. Keep the original PDF and inspect each processed file before sharing it.` },
+    { q: localizedFaqs[locale]?.[4] || "Can I use this PDF tool on a phone?", a: locale === "ne" ? "यो टुल आधुनिक मोबाइल ब्राउजरमा उपलब्ध छ। फाइल छान्ने र डाउनलोड गर्ने तरिका तपाईंको डिभाइस, ब्राउजर र उपलब्ध स्टोरेजअनुसार फरक हुन सक्छ।" : "The tool is available in modern mobile browsers. File selection and download behaviour can vary by device, browser and available storage." },
+    { q: localizedFaqs[locale]?.[5] || "Should I keep a copy of the original PDF?", a: locale === "ne" ? "हो। अन्तिम फाइल खोलेर जाँच नगरेसम्म र आवश्यक पृष्ठ तथा जानकारी भएको पुष्टि नगरेसम्म मूल PDF को नबदलिएको प्रतिलिपि राख्नुहोस्।" : "Yes. Keep an untouched copy until you have opened and checked the final file and confirmed that it contains the pages and information you need." }
   ];
   const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
   return (

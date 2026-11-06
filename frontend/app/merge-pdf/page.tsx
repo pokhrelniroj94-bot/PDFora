@@ -1,31 +1,7 @@
-﻿import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/PDForaTool";
 
-export const metadata: Metadata = {
-  title: "Merge PDF Online Free",
-  description:
-    "Merge multiple PDF files into one PDF online for free. Combine PDF documents quickly and easily with PDFora. No software installation required.",
-  keywords: [
-    "merge PDF",
-    "merge PDF online",
-    "merge PDF free",
-    "combine PDF",
-    "combine PDF files",
-    "PDF merger",
-    "merge multiple PDFs",
-  ],
-  alternates: {
-    canonical: "https://pd-fora.vercel.app/merge-pdf",
-  },
-  openGraph: {
-    title: "Merge PDF Online Free | PDFora",
-    description:
-      "Combine multiple PDF files into one PDF document quickly and easily with PDFora.",
-    url: "https://pd-fora.vercel.app/merge-pdf",
-    siteName: "PDFora",
-    type: "website",
-  },
-};
+export const metadata = getPdfToolMetadata("merge-pdf");
 
 export default function Page() {
   return (

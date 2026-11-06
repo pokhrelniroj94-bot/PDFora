@@ -6,6 +6,7 @@ import { isLocale, isPublished, localeFallbackCopy, localeInfo } from "../../lib
 import { getTranslator } from "../../lib/i18n/messages";
 import { buildLocaleMetadata } from "../../lib/i18n/metadata";
 import { getSwitcherOptions } from "../../lib/i18n/switcher";
+import NepaliHomePage from "../../components/NepaliHomePage";
 
 type Props = { params: Promise<{ locale: string }>; searchParams?: Promise<{ from?: string }> };
 
@@ -41,6 +42,7 @@ export default async function LocalizedHomePage({ params, searchParams }: Props)
   }
   const t = await getTranslator(locale);
   const info = localeInfo[locale];
+  if (locale === "ne") return <NepaliHomePage />;
   return (
     <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
       {!isPublished(locale) && (

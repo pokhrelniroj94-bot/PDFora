@@ -58,6 +58,17 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
+test("Nepali homepage renders reviewed content and honest fallback links", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "NepaliHomePage.tsx"), "utf8");
+  for (const phrase of ["नेपालीमा उपलब्ध PDF टुलहरू", "सोधिने प्रश्नहरू", "सबै टुलहरू", "PDFora बारेमा"]) {
+    assert.ok(source.includes(phrase), `Nepali homepage must include reviewed copy: ${phrase}`);
+  }
+  assert.ok(source.includes('const fallback = (path: string) => localizedOrFallbackPath(path, "ne")'));
+  assert.ok(source.includes('fallback("/tools")'));
+  assert.ok(source.includes('fallback("/blog")'));
+  assert.ok(source.includes('href={`/ne/${slug}`}'));
+});
+
 test("published Nepali PDF routes use localized names and guide copy", () => {
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
   assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);

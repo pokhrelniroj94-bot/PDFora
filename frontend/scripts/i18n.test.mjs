@@ -70,6 +70,16 @@ test("Nepali homepage renders reviewed content and honest fallback links", () =>
   assert.ok(source.includes('href={`/ne/${slug}`}'));
 });
 
+test("Nepali utility workspace contains real localized calculator surfaces", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "NepaliUtilityWorkspace.tsx"), "utf8");
+  for (const phrase of ["नेपाली अंक रूपान्तरण", "विक्रम संवत्", "रोपनी–आना–पैसा–दाम", "नेपाल VAT क्याल्कुलेटर", "NEB GPA क्याल्कुलेटर"]) {
+    assert.ok(source.includes(phrase), `Nepali utility workspace must include: ${phrase}`);
+  }
+  for (const slug of ["nepali-digit-converter", "nepali-number-converter", "nepali-date-converter", "nepal-land-area-converter", "nepali-vat-calculator", "neb-gpa-calculator"]) {
+    assert.ok(source.includes(`slug === "${slug}"`), `${slug} must have a localized implementation`);
+  }
+});
+
 test("published Nepali PDF routes use localized names and guide copy", () => {
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
   assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);

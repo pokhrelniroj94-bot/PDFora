@@ -47,3 +47,11 @@ No locale should be marked published until all localized PDF pages pass the chec
 - Related PDF-tool links now preserve the selected locale prefix when a localized route is available.
 - This step does not translate the 49 tool-specific purpose/steps/caution fields or the FAQ answers and long-form SEO paragraphs. Those remain incomplete and non-English locales must remain unpublished/noindex.
 - CI has not run for the latest commit; the Vercel status check is pending. Do not merge or deploy based on this partial work.
+
+
+## Step 3 — Nepali tool-specific guide batch 1 (2026-11-06)
+
+- Added reviewed Nepali purpose, three usage steps and cautions for 10 tools: add-background, add-blank-pages, add-bookmarks, add-page-numbers, bates-numbering, compare-pdf, compress-pdf, crop-pdf, delete-pages and edit-pdf-metadata.
+- Wired these fields into the server-rendered guide content when the locale is Nepali. The first three FAQ answers now use the translated purpose, steps and caution; the related-task, mobile-use and original-copy answers also have Nepali text.
+- Remaining tool-specific guide batch: 39 of 49 slugs. The longer SEO paragraphs, remaining FAQ content, tool-specific UI controls, and route/hreflang validation are still outstanding.
+- This is partial Nepali content only. Keep Nepali and all other non-English locales unpublished/noindex until the full page content is translated, reviewed and tested.

@@ -2,6 +2,7 @@ import Link from "next/link";
 import AdsterraNative from "../app/components/AdsterraNative";
 import { getToolGuide } from "../lib/tool-guides";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
+import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 const seoLabels = {
   en: ["PDFora practical guide", "What does", "do?", "How to", "step by step", "When is this PDF operation useful?", "PDF quality, compatibility and limitations", "Tips for a reliable result", "Privacy and safe document handling", "Troubleshooting common PDF problems", "Preparing PDFs for study, work and online forms", "Frequently asked questions"],
   ne: ["PDFora प्रयोगात्मक मार्गदर्शिका", "के गर्छ", "?", "कसरी", "चरणबद्ध रूपमा", "यो PDF प्रक्रिया कहिले उपयोगी हुन्छ?", "PDF गुणस्तर, अनुकूलता र सीमाहरू", "भरपर्दो नतिजाका लागि सुझाव", "गोपनीयता र सुरक्षित कागजात व्यवस्थापन", "सामान्य PDF समस्याको समाधान", "अध्ययन, काम र अनलाइन फारामका लागि PDF तयारी", "बारम्बार सोधिने प्रश्नहरू"],
@@ -15,27 +16,6 @@ const seoLabels = {
   ko: ["PDFora 실용 가이드", "의 기능은 무엇인가요", "?", "방법:", "단계별 안내", "이 PDF 작업은 언제 유용한가요?", "PDF 품질, 호환성 및 제한 사항", "안정적인 결과를 위한 팁", "개인정보 보호 및 안전한 문서 처리", "일반적인 PDF 문제 해결", "학습, 업무 및 온라인 양식용 PDF 준비", "자주 묻는 질문"]
 } as const;
 
-const localizedToolNames: Record<string, Record<string, string>> = {
-  ne: {
-    "add-background": "PDF मा पृष्ठभूमि थप्नुहोस्", "add-blank-pages": "PDF मा खाली पृष्ठ थप्नुहोस्", "add-bookmarks": "PDF बुकमार्क थप्नुहोस्",
-    "add-page-numbers": "PDF मा पृष्ठ नम्बर थप्नुहोस्", "bates-numbering": "PDF मा क्रमिक Bates नम्बर राख्नुहोस्", "compare-pdf": "दुई PDF तुलना गर्नुहोस्",
-    "compress-pdf": "PDF को आकार घटाउनुहोस्", "crop-pdf": "PDF पृष्ठ काटछाँट गर्नुहोस्", "delete-pages": "PDF का पृष्ठ हटाउनुहोस्",
-    "edit-pdf-metadata": "PDF विवरण (Metadata) सम्पादन गर्नुहोस्", "extract-bookmarks": "PDF बुकमार्क निकाल्नुहोस्", "extract-fonts": "PDF बाट फन्ट निकाल्नुहोस्",
-    "extract-images": "PDF भित्रका तस्बिर निकाल्नुहोस्", "extract-page-images": "PDF का पृष्ठलाई तस्बिरमा निकाल्नुहोस्", "extract-pages": "PDF का छानिएका पृष्ठ निकाल्नुहोस्",
-    "flatten-pdf": "PDF का फाराम र टिप्पणी स्थिर बनाउनुहोस्", "grayscale-pdf": "PDF लाई ग्रेस्केलमा बदल्नुहोस्", "header-footer": "PDF मा हेडर र फुटर थप्नुहोस्",
-    "images-to-pdf": "तस्बिरलाई PDF मा बदल्नुहोस्", "merge-pdf": "PDF फाइल जोड्नुहोस्", "page-counter": "PDF पृष्ठ संख्या गन्नुहोस्",
-    "pdf-information": "PDF को जानकारी हेर्नुहोस्", "pdf-to-bmp": "PDF लाई BMP मा बदल्नुहोस्", "pdf-to-csv": "PDF लाई CSV मा बदल्नुहोस्",
-    "pdf-to-excel": "PDF लाई Excel मा बदल्नुहोस्", "pdf-to-html": "PDF लाई HTML मा बदल्नुहोस्", "pdf-to-jpg": "PDF लाई JPG मा बदल्नुहोस्",
-    "pdf-to-json": "PDF लाई JSON मा बदल्नुहोस्", "pdf-to-markdown": "PDF लाई Markdown मा बदल्नुहोस्", "pdf-to-png": "PDF लाई PNG मा बदल्नुहोस्",
-    "pdf-to-text": "PDF बाट Text निकाल्नुहोस्", "pdf-to-tiff": "PDF लाई TIFF मा बदल्नुहोस्", "pdf-to-webp": "PDF लाई WebP मा बदल्नुहोस्",
-    "pdf-to-word": "PDF लाई Word मा बदल्नुहोस्", "protect-pdf": "PDF मा पासवर्ड सुरक्षा राख्नुहोस्", "remove-annotations": "PDF का टिप्पणी हटाउनुहोस्",
-    "remove-attachments": "PDF का संलग्न फाइल हटाउनुहोस्", "remove-blank-pages": "PDF का खाली पृष्ठ हटाउनुहोस्", "remove-pdf-links": "PDF का लिंक हटाउनुहोस्",
-    "remove-pdf-metadata": "PDF को Metadata हटाउनुहोस्", "reorder-pdf": "PDF पृष्ठको क्रम मिलाउनुहोस्", "repair-pdf": "बिग्रिएको PDF मर्मत गर्नुहोस्",
-    "rotate-pdf": "PDF घुमाउनुहोस्", "rotate-selected-pages": "PDF का छानिएका पृष्ठ घुमाउनुहोस्", "sign-pdf": "PDF मा हस्ताक्षर गर्नुहोस्",
-    "split-by-bookmarks": "बुकमार्कअनुसार PDF छुट्याउनुहोस्", "split-pdf": "PDF छुट्टाछुट्टै भागमा विभाजन गर्नुहोस्", "unlock-pdf": "PDF को पासवर्ड हटाउनुहोस्",
-    "watermark": "PDF मा वाटरमार्क थप्नुहोस्"
-  }
-};
 const localizedFaqs: Record<string, string[]> = {
   ne: [
     "{name} ले के गर्छ?",
@@ -52,12 +32,12 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
   const baseGuide = getToolGuide(slug);
   if (!baseGuide) return null;
   const guide = locale === "ne" && nepaliToolGuides[slug] ? { ...baseGuide, ...nepaliToolGuides[slug] } : baseGuide;
-  const toolName = localizedToolNames[locale]?.[slug] || guide.name;
+  const toolName = locale === "ne" ? nepaliToolNames[slug] || guide.name : guide.name;
   const faqs = [
     { q: localizedFaqs[locale]?.[0]?.replace("{name}", toolName) || `What does ${toolName} do?`, a: guide.purpose },
     { q: localizedFaqs[locale]?.[1]?.replace("{name}", toolName) || `How do I ${toolName.toLowerCase()} online?`, a: guide.steps.join(" ") },
     { q: localizedFaqs[locale]?.[2]?.replace("{name}", toolName) || `What should I check after using ${toolName.toLowerCase()}?`, a: guide.caution },
-    { q: localizedFaqs[locale]?.[3] || "Which PDF tasks may I need next?", a: locale === "ne" ? `तपाईंको कामअनुसार सम्बन्धित टुलहरू प्रयोग गर्न सक्नुहुन्छ: ${guide.related.map((item) => localizedToolNames.ne?.[item] || item).join(", ")}। मूल PDF सुरक्षित राख्नुहोस् र नतिजा साझा गर्नुअघि जाँच्नुहोस्।` : `Depending on your document workflow, related tasks include ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}. Keep the original PDF and inspect each processed file before sharing it.` },
+    { q: localizedFaqs[locale]?.[3] || "Which PDF tasks may I need next?", a: locale === "ne" ? `तपाईंको कामअनुसार सम्बन्धित टुलहरू प्रयोग गर्न सक्नुहुन्छ: ${guide.related.map((item) => nepaliToolNames[item] || item).join(", ")}। मूल PDF सुरक्षित राख्नुहोस् र नतिजा साझा गर्नुअघि जाँच्नुहोस्।` : `Depending on your document workflow, related tasks include ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}. Keep the original PDF and inspect each processed file before sharing it.` },
     { q: localizedFaqs[locale]?.[4] || "Can I use this PDF tool on a phone?", a: locale === "ne" ? "यो टुल आधुनिक मोबाइल ब्राउजरमा उपलब्ध छ। फाइल छान्ने र डाउनलोड गर्ने तरिका तपाईंको डिभाइस, ब्राउजर र उपलब्ध स्टोरेजअनुसार फरक हुन सक्छ।" : "The tool is available in modern mobile browsers. File selection and download behaviour can vary by device, browser and available storage." },
     { q: localizedFaqs[locale]?.[5] || "Should I keep a copy of the original PDF?", a: locale === "ne" ? "हो। अन्तिम फाइल खोलेर जाँच नगरेसम्म र आवश्यक पृष्ठ तथा जानकारी भएको पुष्टि नगरेसम्म मूल PDF को नबदलिएको प्रतिलिपि राख्नुहोस्।" : "Yes. Keep an untouched copy until you have opened and checked the final file and confirmed that it contains the pages and information you need." }
   ];
@@ -147,7 +127,7 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
         <p className="mt-3 text-sm leading-8 text-slate-700">{locale === "ne" ? "केही PDF काम सही क्रममा गर्दा सजिलो हुन्छ। पहिले कागजात व्यवस्थित गर्नुहोस्, त्यसपछि मुख्य प्रक्रिया पूरा गरी अन्तिम नतिजा जाँच्नुहोस्। आवश्यक काम मात्र गर्नुहोस्; उपलब्ध सबै प्रक्रिया अनावश्यक रूपमा लागू नगर्नुहोस्।" : "Some PDF tasks are easier when completed in a sensible order. You may want to organise or prepare a document first, complete the main operation, and then inspect the final result. Use only the steps required for your document rather than applying every available operation."}</p>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link href={`/blog/${guide.blogSlug}`} className="rounded-xl bg-violet-700 px-4 py-2 text-sm font-bold text-white hover:bg-violet-800">{locale === "ne" ? `${toolName} को विस्तृत मार्गदर्शिका पढ्नुहोस्` : `Read the complete ${toolName} guide`}</Link>
-          {guide.related.map((slug) => { const related = getToolGuide(slug); return related ? <Link key={slug} href={`${locale === "en" ? "" : `/${locale}`}/${slug}`} className="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-bold text-violet-800 hover:bg-violet-100">{localizedToolNames[locale]?.[slug] || related.name}</Link> : null; })}
+          {guide.related.map((slug) => { const related = getToolGuide(slug); return related ? <Link key={slug} href={`${locale === "en" ? "" : `/${locale}`}/${slug}`} className="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-bold text-violet-800 hover:bg-violet-100">{(locale === "ne" ? nepaliToolNames[slug] : undefined) || related.name}</Link> : null; })}
         </div>
       </section>
     </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /></article>

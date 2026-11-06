@@ -53,7 +53,7 @@ export default function NirojToolsTool({
   const localizedExtraFields = locale === "ne" ? extraFields.map((field) => ({ ...field, label: getNepaliPdfFieldText(field.label) || field.label, placeholder: getNepaliPdfFieldText(field.placeholder) })) : extraFields;
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
-  const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((f) => [f.name, f.defaultValue || ""])));
+  const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((field) => [field.name, locale === "ne" ? getNepaliPdfFieldText(field.defaultValue) || field.defaultValue || "" : field.defaultValue || ""])));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [dragActive, setDragActive] = useState(false);

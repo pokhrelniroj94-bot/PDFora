@@ -17,6 +17,9 @@
   behavior.
 - Cookie consent copy is now localized for English and Nepali, including dialog,
   settings, optional categories and accessibility labels.
+- Nepali now has a localized homepage plus six reviewed PDF route pages; all other
+  Nepali destinations remain explicit fallback routes until their full content is
+  translated and reviewed.
 - The remaining English/Nepali route surfaces still require page-specific migration,
   especially blogs, legal pages, calculators, market tools and form/error messages.
 

@@ -7,6 +7,10 @@ mergeable, and not merged or deployed. The translation coverage generator now ru
 CI and reports source-language content separately from reviewed translations. Cookie
 consent is localized for English and Nepali, including the consent dialog, settings,
 accessibility label and privacy-policy link.
+The Nepali locale home page is now a reviewed localized page with six supported PDF
+workflows, FAQs, localized discovery links and explicit fallback links for untranslated
+tools, calculators, market pages, AI pages and editorial content. Shared language and
+cookie controls also use localized English/Nepali labels.
 
 Latest executed checks: frontend Jest 5/5, i18n 22/22 plus 2 coverage tests, TypeScript,
 ESLint, catalog validation, i18n validation, production build (390 generated routes),

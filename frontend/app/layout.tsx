@@ -31,7 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Script id="pdfora-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@graph": [
-            { "@type": "WebSite", "@id": "https://pd-fora.vercel.app/#website", name: "PDFora", url: "https://pd-fora.vercel.app/", inLanguage: ["en", "ne"] },
+            { "@type": "WebSite", "@id": "https://pd-fora.vercel.app/#website", name: "PDFora", url: "https://pd-fora.vercel.app/", inLanguage: "en" },
             { "@type": "Organization", "@id": "https://pd-fora.vercel.app/#organization", name: "PDFora", url: "https://pd-fora.vercel.app/" },
             { "@type": "SoftwareApplication", "@id": "https://pd-fora.vercel.app/#application", name: "PDFora", url: "https://pd-fora.vercel.app/", applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description: "Free browser-based tools for PDF, image, text and everyday productivity tasks.", offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } }
           ]

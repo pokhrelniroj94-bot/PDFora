@@ -1,14 +1,8 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import { getToolGuide } from "../../lib/tool-guides";
 
 const guide = getToolGuide("watermark");
-export const metadata: Metadata = {
-  title: `${guide?.name ?? "PDF tool"} Online | PDFora`,
-  description: guide ? `${guide.purpose} ${guide.keyword}. Use PDFora online and inspect the output before sharing.`.slice(0, 160) : "Use this free PDF tool online with PDFora.",
-  keywords: [guide?.name ?? "PDF tool", guide?.keyword ?? "PDF tool online", "free online PDF tool"],
-  alternates: { canonical: "https://pd-fora.vercel.app/watermark" },
-  openGraph: { type: "website", title: `${guide?.name ?? "PDF tool"} Online | PDFora`, description: guide?.purpose ?? "Use a free online PDF tool with PDFora.", url: "https://pd-fora.vercel.app/watermark", siteName: "PDFora" },
-};
+export const metadata = getPdfToolMetadata("watermark");
 
 import Niroj77Tool from "../../components/Niroj77Tool";
 

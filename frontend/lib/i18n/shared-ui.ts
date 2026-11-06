@@ -7,6 +7,7 @@ export type SharedUiCopy = {
   about: string;
   contact: string;
   language: string;
+  languageHint: string;
   englishHomepageNotice: string;
   directoryLabel: string;
   directoryTitle: string;
@@ -42,6 +43,7 @@ const english: SharedUiCopy = {
   about: "About PDFora",
   contact: "Contact",
   language: "Language",
+  languageHint: "Choose a translated page where available; otherwise a clear fallback is shown.",
   englishHomepageNotice: "Nepali homepage available; other pages are being translated.",
   directoryLabel: "Explore PDFora PDF tools",
   directoryTitle: "Explore all tools",
@@ -82,6 +84,7 @@ const nepali: SharedUiCopy = {
   about: "PDFora बारेमा",
   contact: "सम्पर्क",
   language: "भाषा",
+  languageHint: "अनुवाद उपलब्ध भएको पृष्ठ छान्नुहोस्; नभए स्पष्ट fallback देखाइन्छ।",
   englishHomepageNotice: "हाल नेपाली होमपेज उपलब्ध छ; अन्य पेजहरू अनुवाद हुँदैछन्।",
   directoryLabel: "PDFora का PDF टुलहरू",
   directoryTitle: "सबै PDF टुलहरू",

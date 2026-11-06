@@ -82,5 +82,7 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
 }
 
 export function CookieSettingsLink() {
-  return <button type="button" onClick={() => window.dispatchEvent(new Event("pdfora:open-cookie-settings"))} className="hover:underline">Cookie settings</button>;
+  const pathname = usePathname() || "/";
+  const copy = getSharedUiCopy(localeFromPathname(pathname)).cookie;
+  return <button type="button" onClick={() => window.dispatchEvent(new Event("pdfora:open-cookie-settings"))} className="hover:underline">{copy.settings}</button>;
 }

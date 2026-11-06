@@ -41,11 +41,12 @@ test("publishing policy: English and reviewed Nepali routes are published", () =
 });
 
 test("shared UI coverage: English and Nepali copy is complete and route-aware", () => {
-  const required = ["footerNavigation", "allTools", "guides", "about", "contact", "language", "directoryLabel", "directoryTitle", "directoryDescription", "directoryLink"];
+  const required = ["footerNavigation", "allTools", "guides", "about", "contact", "language", "languageHint", "directoryLabel", "directoryTitle", "directoryDescription", "directoryLink"];
   for (const locale of ["en", "ne"]) {
     const copy = sharedUi.getSharedUiCopy(locale);
     for (const key of required) assert.equal(typeof copy[key], "string", `${locale}.${key} must be translated`);
     assert.deepEqual(Object.keys(copy.groups).sort(), ["Convert PDF", "Edit PDF", "Organize PDF", "Secure & manage"]);
+    assert.ok(copy.cookie.settings && copy.cookie.privacyPolicy, `${locale}.cookie must be localized`);
   }
   assert.equal(sharedUi.localeFromPathname("/ne/merge-pdf"), "ne");
   assert.equal(sharedUi.localeFromPathname("/merge-pdf"), "en");

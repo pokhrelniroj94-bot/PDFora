@@ -49,8 +49,9 @@ const localizedFaqs: Record<string, string[]> = {
 
 export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; locale?: string }) {
   const labels = seoLabels[locale as keyof typeof seoLabels] || seoLabels.en;
-  const guide = getToolGuide(slug);
-  if (!guide) return null;
+  const baseGuide = getToolGuide(slug);
+  if (!baseGuide) return null;
+  const guide = locale === "ne" && nepaliToolGuides[slug] ? { ...baseGuide, ...nepaliToolGuides[slug] } : baseGuide;
   const toolName = localizedToolNames[locale]?.[slug] || guide.name;
   const faqs = [
     { q: localizedFaqs[locale]?.[0]?.replace("{name}", toolName) || `What does ${toolName} do?`, a: guide.purpose },

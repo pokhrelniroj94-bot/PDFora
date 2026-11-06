@@ -273,7 +273,7 @@ export default function NirojToolsTool({
             </p>
 
             <span className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-gradient-to-r from-teal-600 to-cyan-700 px-5 text-sm font-bold text-white shadow-md shadow-teal-900/15">
-              Choose File
+              {ui.chooseFile}
             </span>
           </button>
 
@@ -292,7 +292,7 @@ export default function NirojToolsTool({
             <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
               <div className="border-b border-slate-200 px-4 py-3">
                 <p className="text-sm font-black">
-                  Selected files
+                  {ui.selectedFiles}
                 </p>
               </div>
 
@@ -405,20 +405,20 @@ export default function NirojToolsTool({
         <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
           <InfoCard
             icon="⚡"
-            title="Easy"
-            description="Choose your file and process it with one tap."
+            title={ui.easy}
+            description={ui.easyDescription}
           />
 
           <InfoCard
             icon="🔒"
-            title="Private"
-            description="Files are processed by the PDFora backend."
+            title={ui.private}
+            description={ui.privateDescription}
           />
 
           <InfoCard
             icon="📱"
-            title="Mobile Ready"
-            description="Designed to work smoothly on phones and desktops."
+            title={ui.mobileReady}
+            description={ui.mobileDescription}
           />
         </div>
       </section>

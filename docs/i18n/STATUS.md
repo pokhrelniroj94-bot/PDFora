@@ -2,7 +2,7 @@
 
 ## Current continuation status
 
-Branch: `feature/complete-12-language-platform` at `c98b849`; PR #77 remains open,
+Branch: `feature/complete-12-language-platform` at `ba93eeb`; PR #77 remains open,
 mergeable, and not merged or deployed. The translation coverage generator now runs in
 CI and reports source-language content separately from reviewed translations. Cookie
 consent is localized for English and Nepali, including the consent dialog, settings,
@@ -12,10 +12,15 @@ workflows, FAQs, localized discovery links and explicit fallback links for untra
 tools, calculators, market pages, AI pages and editorial content. Shared language and
 cookie controls also use localized English/Nepali labels.
 
-Latest executed checks: frontend Jest 5/5, i18n 22/22 plus 2 coverage tests, TypeScript,
-ESLint, catalog validation, i18n validation, production build (390 generated routes),
-backend pytest 27 passed, npm audit and pip-audit passed. The Vercel check remains
-blocked by the provider's build-rate quota, not by the local build.
+Latest executed checks for the AI localization stage: frontend Jest 5/5, i18n 27/27
+plus 2 coverage tests, TypeScript through the production build, ESLint, catalog
+validation, i18n validation and production build (390 generated routes). Backend pytest
+was unavailable in this shell. The Vercel check remains blocked by the provider's
+build-rate quota, not by the local build.
+
+The current evidence report measures 24 Nepali route equivalents, including three AI
+writing routes. Resume Builder, blogs, guides, legal/static pages and remaining
+utilities remain incomplete and are not counted as localized.
 
 ## 12-language foundation snapshot
 
@@ -128,3 +133,7 @@ Verified here (authoring sandbox, commands actually run): `verify:tools` PASS; `
 Browser/HTTP checks remain pending; build, lint and TypeScript have since been run successfully on the continuation branch.
 Unchanged by this work (git diff vs HEAD empty): `app/tools`, `app/sitemap.ts`, `app/robots.ts`, all of `components/`.
 Status: adapter PARTIALLY COMPLETE (catalog utilities only; PDF tools deferred); localized route WRITTEN, NOT BUILT; indexing: DISABLED by default (nothing verified); sitemap: UNCHANGED.
+Latest verified Nepali route evidence (commit `ba93eeb`): 24 route equivalents are
+measured, including three AI writing routes (Resume Writer, Cover Letter Generator and
+Humanizer). This does not include the Resume Builder, blogs, legal/static pages or
+remaining utilities; those remain unpublished through fallback routing until reviewed.

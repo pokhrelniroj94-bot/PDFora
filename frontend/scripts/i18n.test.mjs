@@ -8,6 +8,7 @@ import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui.ts";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne.ts";
 import { toolGuides } from "../lib/tool-guides.ts";
 import { getPdfToolMetadata } from "../lib/i18n/pdf-tool-seo.ts";
+import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
 
 ensureTypeStripping();
 const { config, routing, translate, format, preference, switcher, metadata } = await loadI18n();
@@ -207,4 +208,18 @@ test("PDF SEO metadata is unique, canonical and within search description length
     assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
     assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
   }
+});
+
+
+test("Nepali PDF form labels and placeholders have reviewed translations", () => {
+  const samples = [
+    ["Background text", "पृष्ठभूमिको पाठ"],
+    ["Number of blank pages to add", "थप्नुपर्ने खाली पृष्ठ संख्या"],
+    ["Starting number", "सुरु हुने नम्बर"],
+    ["Password (minimum 6 characters)", "पासवर्ड (कम्तीमा ६ अक्षर)"],
+    ["Page order (example: 3,1,2)", "पृष्ठक्रम (उदाहरण: ३,१,२)"],
+    ["Enter watermark text", "वाटरमार्कको पाठ लेख्नुहोस्"]
+  ];
+  for (const [source, translated] of samples) assert.equal(getNepaliPdfFieldText(source), translated);
+  assert.equal(getNepaliPdfFieldText("Unmapped field"), "Unmapped field", "unknown fields must remain visible rather than disappear");
 });

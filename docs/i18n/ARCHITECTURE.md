@@ -31,7 +31,7 @@ All non-English locales are `unpublished`. Unpublished means: no hreflang, no si
 
 ## RTL and server-rendered language
 
-`middleware.ts` derives the locale from the URL and passes the correct BCP-47 language
+`proxy.ts` derives the locale from the URL and passes the correct BCP-47 language
 and direction to `app/layout.tsx`, which renders them on the root `<html>`.
 `app/[locale]/layout.tsx` also keeps a locale wrapper as a defense-in-depth boundary.
 Both `ar` and `ur` use `dir="rtl"`.
@@ -41,7 +41,7 @@ Both `ar` and `ur` use `dir="rtl"`.
 1. The ten new locales are registered and safely unpublished, but their published page,
    tool, blog, legal and metadata translations do not yet exist.
 2. Next 16 docs (`node_modules/next/dist/docs`, required by `AGENTS.md`) could not be read. Only long-stable App Router APIs are used (async `params`, `notFound`, `generateMetadata`); confirm with the first local build.
-3. The root layout now receives the locale's initial `lang`/`dir` from middleware. Site-wide footer, tool directory and cookie content remain English on unpublished fallback routes.
+3. The root layout now receives the locale's initial `lang`/`dir` from `proxy.ts`. Site-wide footer, tool directory and cookie content remain English on unpublished fallback routes.
 4. Only the existing Nepali routes are translated. Untranslated paths are not advertised;
    selecting them shows the localized fallback.
 5. No non-English translations exist yet. In preview, missing text falls back to English with a banner and a server warning.

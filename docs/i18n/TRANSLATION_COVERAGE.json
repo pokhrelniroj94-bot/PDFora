@@ -1,0 +1,135 @@
+{
+  "generatedAt": "2026-11-06T15:53:26.923Z",
+  "sourceCommit": "8323820",
+  "inventory": {
+    "frontendPageFiles": 66,
+    "apiRouteFiles": 6,
+    "pdfGuides": 49,
+    "editorialBlogArticles": 8,
+    "nepalBlogArticles": 19,
+    "publishedNepaliPdfRoutes": 6,
+    "registeredLocalizedPaths": 7
+  },
+  "locales": {
+    "en": {
+      "status": "Fully translated and reviewed",
+      "published": true,
+      "translatedRoutes": 66,
+      "routeCoveragePercent": 100,
+      "namespaceFiles": 3,
+      "namespaceCoveragePercent": 100,
+      "pdfGuideCoveragePercent": 100,
+      "blogCoveragePercent": 100
+    },
+    "ne": {
+      "status": "Partially translated",
+      "published": true,
+      "translatedRoutes": 7,
+      "routeCoveragePercent": 10.61,
+      "namespaceFiles": 3,
+      "namespaceCoveragePercent": 100,
+      "pdfGuideCoveragePercent": 100,
+      "blogCoveragePercent": 0
+    },
+    "hi": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    },
+    "bn": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    },
+    "ur": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    },
+    "ar": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    },
+    "es": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    },
+    "fr": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    },
+    "de": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    },
+    "pt": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    },
+    "zh": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    },
+    "ja": {
+      "status": "Not published",
+      "published": false,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "namespaceFiles": 0,
+      "namespaceCoveragePercent": 0,
+      "pdfGuideCoveragePercent": 0,
+      "blogCoveragePercent": 0
+    }
+  }
+}

@@ -6,7 +6,7 @@ import { isLocale, localeInfo } from "../../lib/i18n/config";
  * Wrapper for every non-English locale route (/ne, /ar, ...). English is served from the
  * unprefixed routes and is never rendered here.
  *
- * The middleware/root layout pair sets the initial HTML lang and dir. This wrapper keeps the
+ * The proxy/root layout pair sets the initial HTML lang and dir. This wrapper keeps the
  * locale available to nested components and provides a defense-in-depth direction boundary.
  */
 export default async function LocaleLayout({ children, params }: { children: ReactNode; params: Promise<{ locale: string }> }) {

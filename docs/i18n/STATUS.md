@@ -15,7 +15,7 @@ use RTL direction. The language selector exposes all requested languages and pre
 the current route only when a reviewed equivalent exists; otherwise it preserves the
 destination in a fallback link.
 
-The middleware now passes the locale's BCP-47 HTML language and direction to the root
+The proxy now passes the locale's BCP-47 HTML language and direction to the root
 layout, so the initial server-rendered `<html>` has the correct `lang` and `dir`.
 
 Current truthful coverage: English is complete for the existing published site; Nepali
@@ -30,12 +30,15 @@ Verification performed on this branch:
 - `npm run i18n:check`: PASS with ten locales explicitly reported as unpublished
 - `npx tsc --noEmit`: PASS
 - `npm run lint -- --quiet`: PASS (existing non-blocking `<img>` warning is suppressed)
-- `npm run build`: PASS (390 generated routes; Next warns that `middleware` is deprecated in favor of `proxy`)
+- `npm run build`: PASS (390 generated routes; locale handling uses the Next 16 `proxy.ts` convention)
 
 Branch: `i18n/global-multilingual` (from `feat/pdf-ora-ai-help-market-signals` @ 8cf31b8). Not merged, not deployed.
 
-## Execution limits (verified in this sandbox)
-- `npm ci` / `next build` / lint / tsc: BLOCKED. npm crashes and the egress proxy answers 403 for registry.npmjs.org. Nothing has been built or tested; no result below is a PASS.
+## Historical execution limits
+
+The earlier authoring environment could not run npm installation commands. Those
+historical limitations are superseded by the verification results above and in
+`docs/qa/TEST_RESULTS.md`.
 - Existing `npm run verify:tools` FAILS on this branch before any i18n change: "Homepage is not using the canonical tool directory" (scripts/verify-tool-catalog.mjs:87). The homepage moved to `components/HomePageClient.tsx` while the script reads `app/page.tsx`. Needs a reviewed fix; the test was not edited or removed.
 
 ## Inventory (static parse, see inventory.json)
@@ -95,6 +98,6 @@ Phase 2 status: PARTIALLY COMPLETE until the browser checks are reported.
 
 ## Tool adapter + localized tool route (catalog utilities)
 Verified here (authoring sandbox, commands actually run): `verify:tools` PASS; `i18n:test` 14/14; `i18n:check` no blocking problems; `tools:test` 12/12 (4 injected defects were each caught by the suite); bun syntax check of the 5 new TS/TSX files OK; partial strict `tsc` on the 4 pure modules reports nothing beyond the expected missing-`next`/`process` types.
-Not run here (npm blocked): `npm run lint`, `npx tsc --noEmit` (full), `npm run build`, browser/HTTP checks. Pending owner's local run.
+Browser/HTTP checks remain pending; build, lint and TypeScript have since been run successfully on the continuation branch.
 Unchanged by this work (git diff vs HEAD empty): `app/tools`, `app/sitemap.ts`, `app/robots.ts`, all of `components/`.
 Status: adapter PARTIALLY COMPLETE (catalog utilities only; PDF tools deferred); localized route WRITTEN, NOT BUILT; indexing: DISABLED by default (nothing verified); sitemap: UNCHANGED.

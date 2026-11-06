@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { getSharedUiCopy, localeFromPathname } from "../lib/i18n/shared-ui";
+import { localizedOrFallbackPath } from "../lib/i18n/routing";
 
 type Preferences = { necessary: true; analytics: boolean; advertising: boolean; savedAt: string };
 const STORAGE_KEY = "pdfora-cookie-preferences-v1";
@@ -74,7 +75,7 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
           <label className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border p-3"><span><span className="block font-semibold text-slate-900">{copy.advertising}</span><span className="text-xs text-slate-500">{copy.advertisingDescription}</span></span><input type="checkbox" checked={advertising} onChange={(event) => setAdvertising(event.target.checked)} className="h-5 w-5 accent-teal-700" /></label>
         </div>
         <div className="mt-5 flex flex-wrap justify-end gap-2"><button type="button" onClick={() => save(false, false)} className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700">{copy.rejectOptional}</button><button type="button" onClick={() => save(analytics, advertising)} className="rounded-lg bg-teal-700 px-4 py-2 text-sm font-semibold text-white">{copy.savePreferences}</button></div>
-        <a href="/privacy" className="mt-4 inline-block text-xs font-semibold text-teal-700 underline">{copy.privacyPolicy}</a>
+        <a href={localizedOrFallbackPath("/privacy", localeFromPathname(pathname))} className="mt-4 inline-block text-xs font-semibold text-teal-700 underline">{copy.privacyPolicy}</a>
       </section>
     </div>}
   </>;

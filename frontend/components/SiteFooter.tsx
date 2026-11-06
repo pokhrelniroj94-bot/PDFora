@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { CookieSettingsLink } from "./CookieConsent";
 import { getSharedUiCopy, localeFromPathname } from "../lib/i18n/shared-ui";
+import { localizedOrFallbackPath } from "../lib/i18n/routing";
 
 export default function SiteFooter() {
   const pathname = usePathname() || "/";
@@ -16,9 +17,9 @@ export default function SiteFooter() {
         <span aria-hidden="true">·</span>
         <a href={isNepali ? "/ne#guides" : "/blog"} className="font-semibold text-blue-700 hover:underline">{copy.guides}</a>
         <span aria-hidden="true">·</span>
-        <a href={isNepali ? "/ne?from=%2Fabout" : "/about"} className="hover:underline">{copy.about}</a>
+        <a href={localizedOrFallbackPath("/about", locale)} className="hover:underline">{copy.about}</a>
         <span aria-hidden="true">·</span>
-        <a href={isNepali ? "/ne?from=%2Fcontact" : "/contact"} className="hover:underline">{copy.contact}</a>
+        <a href={localizedOrFallbackPath("/contact", locale)} className="hover:underline">{copy.contact}</a>
         <span aria-hidden="true">·</span>
         <CookieSettingsLink />
       </nav>

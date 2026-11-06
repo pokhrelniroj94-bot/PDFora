@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Script from "next/script";
 import CookieConsent from "../components/CookieConsent";
 import "./globals.css";
@@ -17,9 +18,12 @@ export const metadata: Metadata = {
   verification: { google: "GtdQoYWrmiW3s7JYZ52_yBiif43rr3WU2QRaLErnE0k" },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const requestHeaders = await headers();
+  const htmlLang = requestHeaders.get("x-pdfora-lang") || "en";
+  const direction = requestHeaders.get("x-pdfora-dir") || "ltr";
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang={htmlLang} dir={direction} className="h-full antialiased">
       <body className="min-h-full flex flex-col">
         <SiteLanguageBar />
         {children}

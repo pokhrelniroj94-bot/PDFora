@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import ToolSEOContent from "./ToolSEOContent";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
+import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
+import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
@@ -43,6 +45,8 @@ export default function NirojToolsTool({
   const ui = getPdfToolCopy(pathname);
   const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
   const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
+  const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
+  const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
   const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((f) => [f.name, f.defaultValue || ""])));
@@ -238,11 +242,11 @@ export default function NirojToolsTool({
           </p>
 
           <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
-            {title}
+            {displayTitle}
           </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
-            {description}
+            {displayDescription}
           </p>
         </div>
 

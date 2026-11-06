@@ -31,3 +31,10 @@ Run from frontend with Node 22:
 - npm run build
 
 No locale should be marked published until all localized PDF pages pass the checks above.
+
+## Latest implementation update (2026-11-06)
+
+- Shared PDF workspace strings are wired into both shared PDF tool components for all 10 configured locales.
+- The common SEO guide section headings now have locale-specific labels, and the active locale is passed from each tool workspace into the server-rendered guide component.
+- This is heading-level localization only. The guide paragraphs, per-tool title/description, field labels, FAQs and related links are not yet fully localized. Do not mark any non-English locale as published on this basis.
+- The remaining work is to create reviewed per-tool content for all 49 slugs, localize every visible control and FAQ, ensure locale-aware internal links, then run translation completeness checks, lint, build and browser tests.

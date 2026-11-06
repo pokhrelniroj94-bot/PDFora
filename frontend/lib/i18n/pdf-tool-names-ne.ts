@@ -1,5 +1,5 @@
 /** Human-reviewed Nepali display names for the 49 PDF tools. */
-export const nepaliToolNames: Record<string, string> = {{
+export const nepaliToolNames: Record<string, string> = {
     "add-background": "PDF मा पृष्ठभूमि थप्नुहोस्", "add-blank-pages": "PDF मा खाली पृष्ठ थप्नुहोस्", "add-bookmarks": "PDF बुकमार्क थप्नुहोस्",
     "add-page-numbers": "PDF मा पृष्ठ नम्बर थप्नुहोस्", "bates-numbering": "PDF मा क्रमिक Bates नम्बर राख्नुहोस्", "compare-pdf": "दुई PDF तुलना गर्नुहोस्",
     "compress-pdf": "PDF को आकार घटाउनुहोस्", "crop-pdf": "PDF पृष्ठ काटछाँट गर्नुहोस्", "delete-pages": "PDF का पृष्ठ हटाउनुहोस्",

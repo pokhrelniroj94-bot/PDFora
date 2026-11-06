@@ -4,6 +4,8 @@ import io
 import os
 import sys
 import zipfile
+
+import pytest
 from pathlib import Path
 
 import fitz
@@ -79,6 +81,33 @@ def make_sample_pdf() -> bytes:
     output = io.BytesIO()
     writer.write(output)
     return output.getvalue()
+
+
+def make_embedded_font_pdf() -> bytes:
+    """Create a minimal PDF that retains a genuinely embedded font."""
+    doc = fitz.open()
+    windows_fonts = Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts"
+    font_candidates = [
+        Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        windows_fonts / "arial.ttf",
+        windows_fonts / "segoeui.ttf",
+        Path("/Library/Fonts/Arial.ttf"),
+    ]
+    font_path = next((candidate for candidate in font_candidates if candidate.is_file()), None)
+    if font_path is None:
+        doc.close()
+        pytest.skip("No TrueType font is available to embed in this test environment.")
+
+    page = doc.new_page(width=612, height=792)
+    page.insert_text(
+        (50, 70),
+        "PDFora embedded font extraction regression",
+        fontfile=str(font_path),
+        fontname="PDForaEmbeddedTestFont",
+    )
+    result = doc.tobytes(garbage=4, deflate=True)
+    doc.close()
+    return result
 
 
 def make_encrypted_pdf(pdf_bytes: bytes, password: str = "PDFora-Test-Password") -> bytes:
@@ -251,7 +280,7 @@ def test_remove_blank_pages_removes_only_the_empty_page():
 
 
 def test_extract_fonts_returns_nonempty_archive_for_embedded_fonts():
-    response = post_pdf("/api/extract-fonts", make_sample_pdf())
+    response = post_pdf("/api/extract-fonts", make_embedded_font_pdf())
     assert response.status_code == 200
     with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
         names = archive.namelist()
@@ -328,6 +357,17 @@ def test_empty_upload_is_rejected():
         files={"file": ("empty.pdf", b"", "application/pdf")},
     )
     assert response.status_code == 400
+
+
+def test_legacy_rate_limit_environment_variable_remains_supported(monkeypatch):
+    from main import _configured_rate_limit_per_route
+
+    monkeypatch.delenv("PDFORA_RATE_LIMIT_PER_ROUTE", raising=False)
+    monkeypatch.setenv("PDFORA_RATE_LIMIT_ROUTE", "7")
+    assert _configured_rate_limit_per_route() == 7
+
+    monkeypatch.setenv("PDFORA_RATE_LIMIT_PER_ROUTE", "9")
+    assert _configured_rate_limit_per_route() == 9
 
 
 def test_rate_limit_returns_429_for_api_post(monkeypatch):

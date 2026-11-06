@@ -5,6 +5,7 @@ import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs
 
 ensureTypeStripping();
 const { config, "shared-ui": sharedUi, "tool-guides": guidesModule, "tool-guides-ne": nepaliGuidesModule, "nepali-pdf-routes": nepaliRoutesModule } = await loadI18n();
+const nepaliUtilityRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedUtilitySlugs;
 
 const repoRoot = path.resolve(frontendRoot, "..");
 const appRoot = path.join(frontendRoot, "app");
@@ -44,7 +45,7 @@ const apiRouteSourceFiles = walk(appRoot).filter((file) => file.endsWith("/route
 const editorialBlogCount = (blogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepalBlogCount = (nepalBlogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);
-const nepaliLocalizedRouteCount = nepaliPdfRouteSlugs.length + Number(nepaliHomeExists);
+const nepaliLocalizedRouteCount = nepaliPdfRouteSlugs.length + nepaliUtilityRoutes.length + Number(nepaliHomeExists);
 const sharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("en"));
 const nepaliSharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("ne"));
 const nepaliGuideCount = Object.keys(nepaliGuidesModule.nepaliToolGuides).length;
@@ -132,6 +133,7 @@ const report = {
     editorialBlogArticles: editorialBlogCount,
     nepalBlogArticles: nepalBlogCount,
     publishedNepaliPdfRoutes: nepaliPdfRouteSlugs.length,
+    publishedNepaliUtilityRoutes: nepaliUtilityRoutes.length,
     publishedNepaliHomeRoute: nepaliHomeExists,
     publishedNepaliRouteEquivalents: nepaliLocalizedRouteCount,
   },
@@ -162,7 +164,7 @@ Inventory: ${pageSourceFiles.length} frontend page source files, ${apiRouteSourc
 |---|---|---|---:|---:|---:|---:|---:|
 ${rows.join("\n")}
 
-Nepali currently has the homepage and six localized PDF routes. Its 49 Nepali PDF guide records are measured separately; the blog corpus remains untranslated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has the homepage, six localized PDF routes, and six localized utility routes. Its 49 Nepali PDF guide records are measured separately; the blog corpus remains untranslated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
 `;
 fs.writeFileSync(path.join(outputDir, "TRANSLATION_COVERAGE.md"), markdown);
 console.log(markdown);

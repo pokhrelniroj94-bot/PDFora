@@ -78,5 +78,3 @@ export default function NepaliUtilityWorkspace({ slug }: { slug: string }) {
 
   return null;
 }
-
-export const nepaliLocalizedUtilitySlugs = new Set(["nepali-digit-converter", "nepali-number-converter", "nepali-date-converter", "nepal-land-area-converter", "nepali-vat-calculator", "neb-gpa-calculator"]);

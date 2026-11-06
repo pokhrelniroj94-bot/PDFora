@@ -55,3 +55,13 @@ No locale should be marked published until all localized PDF pages pass the chec
 - Wired these fields into the server-rendered guide content when the locale is Nepali. The first three FAQ answers now use the translated purpose, steps and caution; the related-task, mobile-use and original-copy answers also have Nepali text.
 - Remaining tool-specific guide batch: 39 of 49 slugs. The longer SEO paragraphs, remaining FAQ content, tool-specific UI controls, and route/hreflang validation are still outstanding.
 - This is partial Nepali content only. Keep Nepali and all other non-English locales unpublished/noindex until the full page content is translated, reviewed and tested.
+
+
+## Step 4 — Nepali guide copy for all 49 PDF tools (2026-11-06)
+
+- Added Nepali purpose, three practical steps and tool-specific cautions for every enabled PDF tool (49/49).
+- Connected the guide dictionary to the server-rendered SEO guide component. Nepali pages now use the translated purpose, steps and cautions in the first three FAQ answers.
+- Localized the shared Nepali SEO guide paragraphs covering preparation, workflow, PDF compatibility, output quality, privacy, troubleshooting and study/work document use.
+- Localized related-tool link labels when a Nepali tool name exists.
+- Added an automated coverage test that checks the catalog contains 49 tools and every slug has non-empty Nepali purpose, three steps and caution.
+- This does not mean the localized pages are ready to index: tool workspace labels/options/validation still need per-tool translation and browser testing. Metadata/canonical/hreflang, sitemap policy and complete SEO review also remain release gates. Keep non-English locales unpublished/noindex.

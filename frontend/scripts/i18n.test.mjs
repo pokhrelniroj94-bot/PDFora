@@ -25,14 +25,15 @@ test("locale table: 10 locales, English default, Arabic is the only RTL", () => 
   for (const l of config.locales) assert.equal(config.localeInfo[l].code, l);
 });
 
-test("publishing policy: only English is published; non-English is not routable without preview", () => {
+test("publishing policy: English and reviewed Nepali routes are published", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
   assert.equal(config.isPublished("en"), true);
-  for (const l of config.locales.filter((x) => x !== "en")) {
+  assert.equal(config.isPublished("ne"), true);
+  for (const l of config.locales.filter((x) => !["en", "ne"].includes(x))) {
     assert.equal(config.isPublished(l), false, `${l} must start unpublished`);
     assert.equal(config.isRoutable(l), false);
   }
-  assert.deepEqual(config.getRoutableLocales(), []);
+  assert.deepEqual(config.getRoutableLocales(), ["ne"]);
   assert.equal(config.isRoutable("en"), false, "English is served unprefixed, never at /en");
   process.env.PDFORA_I18N_PREVIEW = "1";
   assert.deepEqual(config.getRoutableLocales(), ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"]);
@@ -64,8 +65,9 @@ test("routing: absolute URLs keep existing canonical conventions", () => {
   assert.equal(routing.absoluteUrl("/tools/x", "de"), "https://pd-fora.vercel.app/de/tools/x");
 });
 
-test("hreflang: none while nothing is published; reciprocal and absolute when available", () => {
-  assert.equal(routing.hreflangMap("/"), undefined, "unpublished locales must produce no hreflang");
+test("hreflang: only reviewed English/Nepali equivalents are advertised", () => {
+  const homeMap = routing.hreflangMap("/");
+  assert.deepEqual(Object.keys(homeMap).sort(), ["en", "ne", "x-default"]);
   const avail = new Set(["ne", "ar"]);
   const map = routing.hreflangMap("/tools/x", { isAvailable: (l) => avail.has(l) });
   assert.deepEqual(Object.keys(map).sort(), ["ar", "en", "ne", "x-default"]);
@@ -77,12 +79,12 @@ test("hreflang: none while nothing is published; reciprocal and absolute when av
 
 test("switcher: never offers an unavailable page", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
-  assert.deepEqual(switcher.getSwitcherOptions("/").map((o) => o.locale), ["en"]);
+  assert.deepEqual(switcher.getSwitcherOptions("/").map((o) => o.locale), ["en", "ne"]);
   process.env.PDFORA_I18N_PREVIEW = "1";
   const home = switcher.getSwitcherOptions("/");
-  assert.equal(home.length, 10);
-  assert.equal(home.find((o) => o.locale === "ar").href, "/ar");
-  assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en"], "no localized /merge-pdf exists yet");
+  assert.deepEqual(home.map((o) => o.locale), ["en", "ne"]);
+  assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"]);
+  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en"], "untranslated pages stay English-only");
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 
@@ -245,7 +247,7 @@ import { buildPdfToolLocalizedMetadata } from "../lib/i18n/pdf-tool-localized-me
 
 test("localized PDF metadata: self canonicals, reciprocal hreflang and indexing gate", () => {
   const pendingEn = buildPdfToolLocalizedMetadata({ locale: "en", slug: "merge-pdf", title: "Merge PDF Online", description: "Combine PDF files online.", translations: { en: true, ne: false } });
-  assert.equal(pendingEn.alternates.canonical, "https://pd-fora.vercel.app/en/merge-pdf");
+  assert.equal(pendingEn.alternates.canonical, "https://pd-fora.vercel.app/merge-pdf");
   assert.deepEqual(pendingEn.robots, { index: true, follow: true });
   assert.equal(pendingEn.alternates.languages, undefined, "do not advertise an incomplete translation");
 
@@ -256,9 +258,9 @@ test("localized PDF metadata: self canonicals, reciprocal hreflang and indexing 
   const published = buildPdfToolLocalizedMetadata({ locale: "ne", slug: "merge-pdf", title: "पीडीएफ जोड्नुहोस्", description: "धेरै पीडीएफ फाइललाई एउटै फाइलमा जोड्नुहोस्।", translations: { en: true, ne: true } });
   assert.equal(published.alternates.canonical, "https://pd-fora.vercel.app/ne/merge-pdf");
   assert.deepEqual(published.alternates.languages, {
-    en: "https://pd-fora.vercel.app/en/merge-pdf",
+    en: "https://pd-fora.vercel.app/merge-pdf",
     ne: "https://pd-fora.vercel.app/ne/merge-pdf",
-    "x-default": "https://pd-fora.vercel.app/en/merge-pdf",
+    "x-default": "https://pd-fora.vercel.app/merge-pdf",
   });
   assert.deepEqual(published.robots, { index: true, follow: true });
   assert.throws(() => buildPdfToolLocalizedMetadata({ locale: "en", slug: "../bad", title: "x", description: "y", translations: { en: true, ne: true } }));

@@ -36,7 +36,7 @@ export const localeInfo: Record<Locale, LocaleInfo> = {
   en: { code: "en", englishName: "English", nativeName: "English", dir: "ltr", htmlLang: "en", hreflang: "en", intl: "en-US", status: "published" },
   // NOTE: a hand-written Nepali page already lives at /ne (app/ne/page.tsx). It keeps
   // working untouched; "ne" stays unpublished in this system until it is migrated.
-  ne: { code: "ne", englishName: "Nepali", nativeName: "नेपाली", dir: "ltr", htmlLang: "ne", hreflang: "ne", intl: "ne-NP", status: "unpublished" },
+  ne: { code: "ne", englishName: "Nepali", nativeName: "नेपाली", dir: "ltr", htmlLang: "ne", hreflang: "ne", intl: "ne-NP", status: "published" },
   hi: { code: "hi", englishName: "Hindi", nativeName: "हिन्दी", dir: "ltr", htmlLang: "hi", hreflang: "hi", intl: "hi-IN", status: "unpublished" },
   es: { code: "es", englishName: "Spanish", nativeName: "Español", dir: "ltr", htmlLang: "es", hreflang: "es", intl: "es-ES", status: "unpublished" },
   fr: { code: "fr", englishName: "French", nativeName: "Français", dir: "ltr", htmlLang: "fr", hreflang: "fr", intl: "fr-FR", status: "unpublished" },

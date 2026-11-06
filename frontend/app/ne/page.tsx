@@ -24,11 +24,11 @@ export const metadata: Metadata = {
 };
 
 const tools = [
-  { href: "/merge-pdf", title: "PDF जोड्नुहोस् (Merge PDF)", description: "धेरै PDF फाइललाई एउटै कागजातमा जोड्नुहोस्।" },
-  { href: "/split-pdf", title: "PDF छुट्याउनुहोस् (Split PDF)", description: "PDF का पृष्ठ वा पृष्ठ समूह छुट्टाछुट्टै बनाउनुहोस्।" },
-  { href: "/compress-pdf", title: "PDF सानो बनाउनुहोस्", description: "अपलोड वा इमेलका लागि PDF फाइलको आकार घटाउनुहोस्।" },
-  { href: "/pdf-to-word", title: "PDF बाट Word", description: "समर्थित PDF बाट सम्पादन गर्न मिल्ने Word फाइल बनाउनुहोस्।" },
-  { href: "/pdf-to-jpg", title: "PDF बाट JPG", description: "PDF का पृष्ठलाई JPG image मा बदल्नुहोस्।" },
+  { href: "/ne/merge-pdf", title: "PDF जोड्नुहोस् (Merge PDF)", description: "धेरै PDF फाइललाई एउटै कागजातमा जोड्नुहोस्।" },
+  { href: "/ne/split-pdf", title: "PDF छुट्याउनुहोस् (Split PDF)", description: "PDF का पृष्ठ वा पृष्ठ समूह छुट्टाछुट्टै बनाउनुहोस्।" },
+  { href: "/ne/compress-pdf", title: "PDF सानो बनाउनुहोस्", description: "अपलोड वा इमेलका लागि PDF फाइलको आकार घटाउनुहोस्।" },
+  { href: "/ne/pdf-to-word", title: "PDF बाट Word", description: "समर्थित PDF बाट सम्पादन गर्न मिल्ने Word फाइल बनाउनुहोस्।" },
+  { href: "/ne/pdf-to-jpg", title: "PDF बाट JPG", description: "PDF का पृष्ठलाई JPG image मा बदल्नुहोस्।" },
   { href: "/images-to-pdf", title: "Image बाट PDF", description: "JPG, PNG र WebP तस्बिरलाई PDF मा राख्नुहोस्।" },
 ];
 
@@ -47,7 +47,8 @@ const faqs = [
   { q: "के क्याल्कुलेटरको नतिजा आधिकारिक हुन्छ?", a: "हुँदैन। कर, बिजुली वा वित्तीय नतिजा अनुमानका लागि हुन्। महत्त्वपूर्ण निर्णय गर्नुअघि सम्बन्धित आधिकारिक निकायसँग पुष्टि गर्नुहोस्।" },
 ];
 
-export default function NepaliHomePage() {
+export default async function NepaliHomePage({ searchParams }: { searchParams?: Promise<{ from?: string }> }) {
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const breadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -92,6 +93,11 @@ export default function NepaliHomePage() {
           </nav>
         </div>
       </header>
+      {resolvedSearchParams?.from && (
+        <div role="status" className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-900">
+          यो पृष्ठको नेपाली अनुवाद अझै उपलब्ध छैन। तपाईंलाई नेपाली होमपेज देखाइएको छ; अनुवाद उपलब्ध भएका पृष्ठहरूबाट मात्र भाषा परिवर्तन गर्दा उही पृष्ठ कायम रहन्छ।
+        </div>
+      )}
 
       <section className="bg-white px-4 py-14 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">

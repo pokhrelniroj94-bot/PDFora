@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import test from "node:test";
-import { frontendRoot } from "./lib/load-i18n.mjs";
+import { frontendRoot, loadI18n } from "./lib/load-i18n.mjs";
 
 const repoRoot = path.resolve(frontendRoot, "..");
 const reportPath = path.join(repoRoot, "docs", "i18n", "TRANSLATION_COVERAGE.json");
@@ -35,4 +35,14 @@ test("translation coverage report is conservative and tied to the current commit
 
   assert.match(report.methodology.routeCoverage, /source-file proxy/i);
   assert.match(report.methodology.review, /cannot certify/i);
+});
+
+const { routing } = await loadI18n();
+
+test("untranslated destinations preserve intent through the locale fallback route", () => {
+  assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
+  assert.equal(routing.localizedOrFallbackPath("/about", "ne"), "/ne?from=%2Fabout");
+  assert.equal(routing.localizedOrFallbackPath("/contact?source=footer", "ne"), "/ne?from=%2Fcontact");
+  assert.equal(routing.localizedOrFallbackPath("/about", "en"), "/about");
+  assert.equal(routing.localizedOrFallbackPath("/about", "ar"), "/ar?from=%2Fabout");
 });

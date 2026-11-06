@@ -14,31 +14,64 @@ const seoLabels = {
   ko: ["PDFora 실용 가이드", "의 기능은 무엇인가요", "?", "방법:", "단계별 안내", "이 PDF 작업은 언제 유용한가요?", "PDF 품질, 호환성 및 제한 사항", "안정적인 결과를 위한 팁", "개인정보 보호 및 안전한 문서 처리", "일반적인 PDF 문제 해결", "학습, 업무 및 온라인 양식용 PDF 준비", "자주 묻는 질문"]
 } as const;
 
+const localizedToolNames: Record<string, Record<string, string>> = {
+  ne: {
+    "add-background": "PDF मा पृष्ठभूमि थप्नुहोस्", "add-blank-pages": "PDF मा खाली पृष्ठ थप्नुहोस्", "add-bookmarks": "PDF बुकमार्क थप्नुहोस्",
+    "add-page-numbers": "PDF मा पृष्ठ नम्बर थप्नुहोस्", "bates-numbering": "PDF मा क्रमिक Bates नम्बर राख्नुहोस्", "compare-pdf": "दुई PDF तुलना गर्नुहोस्",
+    "compress-pdf": "PDF को आकार घटाउनुहोस्", "crop-pdf": "PDF पृष्ठ काटछाँट गर्नुहोस्", "delete-pages": "PDF का पृष्ठ हटाउनुहोस्",
+    "edit-pdf-metadata": "PDF विवरण (Metadata) सम्पादन गर्नुहोस्", "extract-bookmarks": "PDF बुकमार्क निकाल्नुहोस्", "extract-fonts": "PDF बाट फन्ट निकाल्नुहोस्",
+    "extract-images": "PDF भित्रका तस्बिर निकाल्नुहोस्", "extract-page-images": "PDF का पृष्ठलाई तस्बिरमा निकाल्नुहोस्", "extract-pages": "PDF का छानिएका पृष्ठ निकाल्नुहोस्",
+    "flatten-pdf": "PDF का फाराम र टिप्पणी स्थिर बनाउनुहोस्", "grayscale-pdf": "PDF लाई ग्रेस्केलमा बदल्नुहोस्", "header-footer": "PDF मा हेडर र फुटर थप्नुहोस्",
+    "images-to-pdf": "तस्बिरलाई PDF मा बदल्नुहोस्", "merge-pdf": "PDF फाइल जोड्नुहोस्", "page-counter": "PDF पृष्ठ संख्या गन्नुहोस्",
+    "pdf-information": "PDF को जानकारी हेर्नुहोस्", "pdf-to-bmp": "PDF लाई BMP मा बदल्नुहोस्", "pdf-to-csv": "PDF लाई CSV मा बदल्नुहोस्",
+    "pdf-to-excel": "PDF लाई Excel मा बदल्नुहोस्", "pdf-to-html": "PDF लाई HTML मा बदल्नुहोस्", "pdf-to-jpg": "PDF लाई JPG मा बदल्नुहोस्",
+    "pdf-to-json": "PDF लाई JSON मा बदल्नुहोस्", "pdf-to-markdown": "PDF लाई Markdown मा बदल्नुहोस्", "pdf-to-png": "PDF लाई PNG मा बदल्नुहोस्",
+    "pdf-to-text": "PDF बाट Text निकाल्नुहोस्", "pdf-to-tiff": "PDF लाई TIFF मा बदल्नुहोस्", "pdf-to-webp": "PDF लाई WebP मा बदल्नुहोस्",
+    "pdf-to-word": "PDF लाई Word मा बदल्नुहोस्", "protect-pdf": "PDF मा पासवर्ड सुरक्षा राख्नुहोस्", "remove-annotations": "PDF का टिप्पणी हटाउनुहोस्",
+    "remove-attachments": "PDF का संलग्न फाइल हटाउनुहोस्", "remove-blank-pages": "PDF का खाली पृष्ठ हटाउनुहोस्", "remove-pdf-links": "PDF का लिंक हटाउनुहोस्",
+    "remove-pdf-metadata": "PDF को Metadata हटाउनुहोस्", "reorder-pdf": "PDF पृष्ठको क्रम मिलाउनुहोस्", "repair-pdf": "बिग्रिएको PDF मर्मत गर्नुहोस्",
+    "rotate-pdf": "PDF घुमाउनुहोस्", "rotate-selected-pages": "PDF का छानिएका पृष्ठ घुमाउनुहोस्", "sign-pdf": "PDF मा हस्ताक्षर गर्नुहोस्",
+    "split-by-bookmarks": "बुकमार्कअनुसार PDF छुट्याउनुहोस्", "split-pdf": "PDF छुट्टाछुट्टै भागमा विभाजन गर्नुहोस्", "unlock-pdf": "PDF को पासवर्ड हटाउनुहोस्",
+    "watermark": "PDF मा वाटरमार्क थप्नुहोस्"
+  }
+};
+const localizedFaqs: Record<string, string[]> = {
+  ne: [
+    "{name} ले के गर्छ?",
+    "{name} अनलाइन कसरी प्रयोग गर्ने?",
+    "{name} प्रयोग गरेपछि के जाँच गर्ने?",
+    "यसपछि कुन PDF काम उपयोगी हुन सक्छ?",
+    "के यो PDF टुल मोबाइलमा चल्छ?",
+    "मूल PDF को प्रतिलिपि राख्नुपर्छ?"
+  ]
+};
+
 export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; locale?: string }) {
   const labels = seoLabels[locale as keyof typeof seoLabels] || seoLabels.en;
   const guide = getToolGuide(slug);
   if (!guide) return null;
+  const toolName = localizedToolNames[locale]?.[slug] || guide.name;
   const faqs = [
-    { q: `What does ${guide.name} do?`, a: guide.purpose },
-    { q: `How do I ${guide.name.toLowerCase()} online?`, a: guide.steps.join(" ") },
-    { q: `What should I check after using ${guide.name.toLowerCase()}?`, a: guide.caution },
-    { q: "Which PDF tasks may I need next?", a: `Depending on your document workflow, related tasks include ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}. Keep the original PDF and inspect each processed file before sharing it.` },
-    { q: "Can I use this PDF tool on a phone?", a: "The tool is available in modern mobile browsers. File selection and download behaviour can vary by device, browser and available storage." },
-    { q: "Should I keep a copy of the original PDF?", a: "Yes. Keep an untouched copy until you have opened and checked the final file and confirmed that it contains the pages and information you need." }
+    { q: localizedFaqs[locale]?.[0]?.replace("{name}", toolName) || `What does ${toolName} do?`, a: guide.purpose },
+    { q: localizedFaqs[locale]?.[1]?.replace("{name}", toolName) || `How do I ${toolName.toLowerCase()} online?`, a: guide.steps.join(" ") },
+    { q: localizedFaqs[locale]?.[2]?.replace("{name}", toolName) || `What should I check after using ${toolName.toLowerCase()}?`, a: guide.caution },
+    { q: localizedFaqs[locale]?.[3] || "Which PDF tasks may I need next?", a: `Depending on your document workflow, related tasks include ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}. Keep the original PDF and inspect each processed file before sharing it.` },
+    { q: localizedFaqs[locale]?.[4] || "Can I use this PDF tool on a phone?", a: "The tool is available in modern mobile browsers. File selection and download behaviour can vary by device, browser and available storage." },
+    { q: localizedFaqs[locale]?.[5] || "Should I keep a copy of the original PDF?", a: "Yes. Keep an untouched copy until you have opened and checked the final file and confirmed that it contains the pages and information you need." }
   ];
   const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
   return (
     <article className="mx-auto w-full max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-600">{labels[0]}</p>
-        <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-950">{labels[1]} {guide.name} {labels[2]}</h2>
+        <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-950">{labels[1]} {toolName} {labels[2]}</h2>
         <p className="mt-4 text-sm leading-8 text-slate-700">{guide.purpose}</p>
         <p className="mt-4 text-sm leading-8 text-slate-700">People search for phrases such as “{guide.keyword}” when they need to prepare a document for study, work, record keeping or an online submission. This guide explains the purpose of the operation, how to prepare a source file, what to check after processing and which limitations may affect the result. The exact controls are the ones displayed in the tool workspace above.</p>
         <p className="mt-4 text-sm leading-8 text-slate-700">Before you begin, open the original PDF and check that it contains the correct pages. If the document is important, save an untouched backup. Check whether the receiving website has a maximum file size, page count, page dimension or other PDF requirement. Preparing the right source file is often more useful than repeating the operation after a preventable input mistake.</p>
       </section>
       <AdsterraNative />
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">{labels[3]} {guide.name.toLowerCase()} {labels[4]}</h2>
+        <h2 className="text-xl font-black text-slate-950">{labels[3]} {toolName.toLowerCase()} {labels[4]}</h2>
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-8 text-slate-700">
           <li>Open the {guide.name} workspace on this page and choose the PDF you want to process.</li>
           {guide.steps.map((step) => <li key={step}>{step}</li>)}
@@ -91,7 +124,7 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
         <h2 className="text-xl font-black text-slate-950">Related PDF tools and guides</h2>
         <p className="mt-3 text-sm leading-8 text-slate-700">Some PDF tasks are easier when completed in a sensible order. You may want to organise or prepare a document first, complete the main operation, and then inspect the final result. Use only the steps required for your document rather than applying every available operation.</p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link href={`/blog/${guide.blogSlug}`} className="rounded-xl bg-violet-700 px-4 py-2 text-sm font-bold text-white hover:bg-violet-800">Read the complete {guide.name} guide</Link>
+          <Link href={`/blog/${guide.blogSlug}`} className="rounded-xl bg-violet-700 px-4 py-2 text-sm font-bold text-white hover:bg-violet-800">Read the complete {toolName} guide</Link>
           {guide.related.map((slug) => { const related = getToolGuide(slug); return related ? <Link key={slug} href={`/${slug}`} className="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-bold text-violet-800 hover:bg-violet-100">{related.name}</Link> : null; })}
         </div>
       </section>

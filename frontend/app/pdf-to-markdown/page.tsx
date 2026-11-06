@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "PDF to Markdown Converter Online | PDFora",
-  description: "Convert selectable PDF text into Markdown with page-by-page headings using PDFora.",
-  alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-markdown" },
-};
+export const metadata = getPdfToolMetadata("pdf-to-markdown");
 
 export default function Page() {
   const description = "Extract selectable text from PDF pages into a Markdown document with page headings.";

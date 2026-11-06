@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getSharedUiCopy, localeFromPathname } from "../lib/i18n/shared-ui";
-import { hasLocalizedPage, localizePath } from "../lib/i18n/routing";
+import { localizedOrFallbackPath } from "../lib/i18n/routing";
 
 const groups = [
   ["Organize PDF", "/merge-pdf", "/split-pdf", "/reorder-pdf", "/delete-pages", "/extract-pages", "/remove-blank-pages", "/add-blank-pages", "/page-counter", "/pdf-information", "/extract-bookmarks", "/add-bookmarks", "/split-by-bookmarks", "/pdf-to-json", "/pdf-to-csv", "/pdf-to-tiff", "/pdf-to-bmp", "/pdf-to-markdown", "/extract-page-images", "/extract-fonts"],
@@ -26,7 +26,7 @@ export default function ToolDirectory() {
  const locale = localeFromPathname(pathname);
  const isNe = locale === "ne";
  const copy = getSharedUiCopy(locale);
- const linkFor = (path: string) => locale === "en" ? path : hasLocalizedPage(path, locale) ? localizePath(path, locale) : `/${locale}?from=${encodeURIComponent(path)}`;
+ const linkFor = (path: string) => localizedOrFallbackPath(path, locale);
  return <section aria-label={copy.directoryLabel} className="border-t border-teal-100 bg-white px-4 py-10 sm:px-6">
   <div className="mx-auto max-w-6xl">
    <div className="mb-5 flex flex-wrap items-end justify-between gap-3"><div>

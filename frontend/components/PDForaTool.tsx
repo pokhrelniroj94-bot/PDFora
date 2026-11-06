@@ -5,6 +5,7 @@ import ToolSEOContent from "./ToolSEOContent";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
+import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
@@ -45,6 +46,7 @@ export default function PDForaTool({
   const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
   const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;
+  const localizedFormPlaceholder = locale === "ne" ? getNepaliPdfFieldText(formPlaceholder) : formPlaceholder;
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
   const [loading, setLoading] = useState(false);
@@ -341,7 +343,7 @@ export default function PDForaTool({
               <label className="mb-2 block text-sm font-bold">
                 {queryField === "degrees"
                   ? ui.rotationAngle
-                  : formPlaceholder || ui.enterValue}
+                  : localizedFormPlaceholder || ui.enterValue}
               </label>
 
               <input

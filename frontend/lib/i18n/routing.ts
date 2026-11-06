@@ -57,6 +57,17 @@ export function hasLocalizedPage(path: string, locale: Locale): boolean {
   return locale === "ne" && localizedPaths.has(normalizePath(path));
 }
 
+/**
+ * Return a real localized URL when one exists. Otherwise route through the selected
+ * locale's explicit fallback page and preserve the requested English destination.
+ */
+export function localizedOrFallbackPath(path: string, locale: Locale): string {
+  const normalized = normalizePath(path);
+  if (locale === defaultLocale) return normalized;
+  if (hasLocalizedPage(normalized, locale)) return localizePath(normalized, locale);
+  return `${localizePath("/", locale)}?from=${encodeURIComponent(normalized)}`;
+}
+
 export interface AlternateOptions {
   /** Whether a locale's equivalent page is live. Defaults to published + has a localized page. */
   isAvailable?: (locale: Locale, path: string) => boolean;

@@ -16,9 +16,9 @@ export default function SiteFooter() {
         <span aria-hidden="true">·</span>
         <a href={isNepali ? "/ne#guides" : "/blog"} className="font-semibold text-blue-700 hover:underline">{copy.guides}</a>
         <span aria-hidden="true">·</span>
-        <a href="/about" className="hover:underline">{copy.about}</a>
+        <a href={isNepali ? "/ne?from=%2Fabout" : "/about"} className="hover:underline">{copy.about}</a>
         <span aria-hidden="true">·</span>
-        <a href="/contact" className="hover:underline">{copy.contact}</a>
+        <a href={isNepali ? "/ne?from=%2Fcontact" : "/contact"} className="hover:underline">{copy.contact}</a>
         <span aria-hidden="true">·</span>
         <CookieSettingsLink />
       </nav>

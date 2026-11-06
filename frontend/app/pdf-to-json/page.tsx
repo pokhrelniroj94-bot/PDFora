@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "PDF to JSON Converter Online | PDFora",
-  description: "Convert PDF text and page layout into structured JSON with page numbers and text coordinates. Free online PDF to JSON tool.",
-  alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-json" },
-};
+export const metadata = getPdfToolMetadata("pdf-to-json");
 
 export default function Page() {
   const description = "Extract text blocks, page numbers, page dimensions and text positions from a PDF into structured JSON data.";

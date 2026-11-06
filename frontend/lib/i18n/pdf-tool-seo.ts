@@ -18,7 +18,7 @@ export function getPdfToolMetadata(slug: string): Metadata {
 
   const url = `${SITE}/${slug}`;
   const title = `${guide.name} Online | PDFora`;
-  const description = fitDescription(`${guide.purpose} ${guide.steps[0]} Check the result before sharing.`);
+  const description = fitDescription(guide.purpose);
   const keywords = [
     guide.name,
     guide.keyword,

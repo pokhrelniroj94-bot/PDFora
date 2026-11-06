@@ -26,7 +26,7 @@ export default function ToolDirectory() {
  const locale = localeFromPathname(pathname);
  const isNe = locale === "ne";
  const copy = getSharedUiCopy(locale);
- const linkFor = (path: string) => locale !== "en" && hasLocalizedPage(path, locale) ? localizePath(path, locale) : path;
+ const linkFor = (path: string) => locale === "en" ? path : hasLocalizedPage(path, locale) ? localizePath(path, locale) : `/${locale}?from=${encodeURIComponent(path)}`;
  return <section aria-label={copy.directoryLabel} className="border-t border-teal-100 bg-white px-4 py-10 sm:px-6">
   <div className="mx-auto max-w-6xl">
    <div className="mb-5 flex flex-wrap items-end justify-between gap-3"><div>

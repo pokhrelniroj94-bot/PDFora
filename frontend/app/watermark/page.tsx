@@ -1,7 +1,4 @@
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
-import { getToolGuide } from "../../lib/tool-guides";
-
-const guide = getToolGuide("watermark");
 export const metadata = getPdfToolMetadata("watermark");
 
 import Niroj77Tool from "../../components/Niroj77Tool";

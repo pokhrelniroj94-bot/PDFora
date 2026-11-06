@@ -12,7 +12,7 @@ import { buildPdfToolMetadata } from "../lib/i18n/pdf-tool-seo-core.ts";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
 
 ensureTypeStripping();
-const { config, routing, translate, format, preference, switcher, metadata, "shared-ui": sharedUi } = await loadI18n();
+const { config, routing, translate, format, preference, switcher, metadata, "shared-ui": sharedUi, "nepali-pdf-routes": nepaliRoutes, "pdf-tool-names-ne": nepaliNames, "tool-guides-ne": nepaliGuides } = await loadI18n();
 
 test("locale table: requested 12 locales, English default, Arabic and Urdu are RTL", () => {
   assert.deepEqual([...config.locales], ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
@@ -50,6 +50,16 @@ test("shared UI coverage: English and Nepali copy is complete and route-aware", 
   assert.equal(sharedUi.localeFromPathname("/ne/merge-pdf"), "ne");
   assert.equal(sharedUi.localeFromPathname("/merge-pdf"), "en");
   assert.equal(sharedUi.getSharedUiCopy("ne").directoryTitle, "सबै PDF टुलहरू");
+});
+
+test("published Nepali PDF routes use localized names and guide copy", () => {
+  const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
+  assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);
+  for (const slug of slugs) {
+    assert.ok(nepaliNames.nepaliToolNames[slug], `${slug} needs a Nepali tool name`);
+    const guide = nepaliGuides.nepaliToolGuides[slug];
+    assert.ok(guide?.purpose && guide.steps.length > 0 && guide.caution, `${slug} needs reviewed Nepali guide copy`);
+  }
 });
 
 test("routing: English URLs are unchanged, others are prefixed", () => {

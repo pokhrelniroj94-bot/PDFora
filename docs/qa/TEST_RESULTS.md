@@ -6,7 +6,7 @@ Results below were executed on branch `feature/complete-12-language-platform`.
 |---|---|---|
 | Catalog validation | PASS | 124 catalog tools and 173 unified entries |
 | Frontend Jest | PASS | 1 suite, 5 tests |
-| i18n unit/routing/shared UI tests | PASS | 21/21 |
+| i18n unit/routing/shared UI tests | PASS | 22/22 |
 | i18n dictionary check | PASS | Ten locales explicitly reported unpublished |
 | Translation coverage generation | PASS | `npm run i18n:coverage` |
 | TypeScript | PASS | `npx tsc --noEmit` |

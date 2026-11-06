@@ -35,10 +35,12 @@ export default async function NepaliPdfToolPage({ params }: Props) {
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale) || !route) notFound();
 
   const guide = nepaliToolGuides[slug];
+  const localizedName = nepaliToolNames[slug] ?? route.title;
+  const localizedDescription = guide?.purpose ?? route.description;
   const commonProps = {
     endpoint: route.endpoint,
-    title: route.title,
-    description: route.description,
+    title: localizedName,
+    description: localizedDescription,
     multiple: route.multiple,
     downloadName: route.downloadName,
     queryField: route.queryField,
@@ -51,12 +53,12 @@ export default async function NepaliPdfToolPage({ params }: Props) {
         <header className="text-center">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">PDFora नेपाली PDF टुल</p>
           <h1 className="mt-3 text-3xl font-black text-slate-950 sm:text-5xl">{nepaliToolNames[slug] ?? route.title}</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600">{guide?.purpose ?? route.description}</p>
+          <p className="mx-auto mt-4 max-w-2xl text-slate-600">{localizedDescription}</p>
         </header>
         <div className="mt-8">
           {route.component === "pdfora" ? <PDForaTool {...commonProps} /> : <Niroj77Tool {...commonProps} />}
         </div>
-        {guide && <ToolGuide guide={{ ...guide, slug, name: nepaliToolNames[slug] ?? route.title, keyword: "", related: [], blogSlug: "" }} />}
+        {guide && <ToolGuide guide={{ ...guide, slug, name: localizedName, keyword: "", related: [], blogSlug: "" }} />}
       </div>
     </main>
   );

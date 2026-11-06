@@ -39,6 +39,8 @@ Stage B progress on the continuation branch:
 - Nepali directory links use the localized `/ne/...` path only for the six reviewed
   equivalents; all other links remain explicitly English rather than pretending to be
   translated.
+- Published Nepali PDF route components now pass localized tool names and guide
+  descriptions into the processing UI instead of retaining the English registry labels.
 
 Branch: `i18n/global-multilingual` (from `feat/pdf-ora-ai-help-market-signals` @ 8cf31b8). Not merged, not deployed.
 

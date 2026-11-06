@@ -7,7 +7,9 @@ import { getTranslator } from "../../../../lib/i18n/messages";
 import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../../../../lib/tools/localized-metadata";
 import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-route";
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
-import { nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
+import NepalLiveTools from "../../../../components/NepalLiveTools";
+import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
+import { nepaliLocalizedFinancialSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const nepaliTitles: Record<string, string> = {
@@ -17,6 +19,13 @@ const nepaliTitles: Record<string, string> = {
   "nepal-land-area-converter": "रोपनी आना क्षेत्रफल रूपान्तरण",
   "nepali-vat-calculator": "नेपाल VAT क्याल्कुलेटर",
   "neb-gpa-calculator": "NEB GPA क्याल्कुलेटर",
+  "nepal-forex-rates": "नेपाल राष्ट्र बैंक विनिमय दर",
+  "nepal-salary-tax-calculator": "नेपाल तलब तथा आयकर क्याल्कुलेटर",
+  "nepse-dividend-calculator": "NEPSE लाभांश तथा बोनस शेयर क्याल्कुलेटर",
+  "nepse-market-news": "NEPSE तथा नेपाल बजार समाचार",
+  "loan-emi-calculator": "ऋण EMI क्याल्कुलेटर",
+  "compound-interest-sip-calculator": "चक्रवृद्धि ब्याज तथा SIP क्याल्कुलेटर",
+  "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -24,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const request = resolveLocalizedToolRequest(locale, slug);
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
-  if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
+  if (request.locale === "ne" && (nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number]) || nepaliLocalizedFinancialSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedFinancialSlugs)[number]))) {
     return { ...metadata, title: `${nepaliTitles[request.implementation.slug]} | PDFora` };
   }
   return metadata;
@@ -49,6 +58,12 @@ export default async function LocalizedToolPage({ params }: Props) {
   const toolSlug = request.implementation.slug;
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && nepaliLocalizedFinancialSlugs.includes(toolSlug as (typeof nepaliLocalizedFinancialSlugs)[number])) {
+    if (["loan-emi-calculator", "compound-interest-sip-calculator", "discount-percentage-calculator"].includes(toolSlug)) {
+      return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली वित्तीय टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliFinanceCalculatorWorkspace slug={toolSlug} /></section></main>;
+    }
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली वित्तीय टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">आधिकारिक स्रोत वा स्पष्ट गणना धारणासहितको नेपाली इन्टरफेस। बजार र दरसम्बन्धी डेटा उपलब्ध नभएमा त्यसैको सूचना देखाइन्छ।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepalLiveTools slug={toolSlug} locale="ne" /></section></main>;
   }
   return (
     <>

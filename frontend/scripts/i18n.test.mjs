@@ -80,6 +80,25 @@ test("Nepali utility workspace contains real localized calculator surfaces", () 
   }
 });
 
+test("Nepali market and finance surfaces contain localized rendered UI", () => {
+  const dashboard = fs.readFileSync(path.join(frontendRoot, "components", "NepseMarketDashboard.tsx"), "utf8");
+  const finance = fs.readFileSync(path.join(frontendRoot, "components", "NepalLiveTools.tsx"), "utf8");
+  const news = fs.readFileSync(path.join(frontendRoot, "components", "NepalMarketNews.tsx"), "utf8");
+  for (const phrase of ["NEPSE बजार ड्यासबोर्ड", "बजार डेटा अद्यावधिक गर्नुहोस्", "उच्च माग", "सूचीबद्ध कम्पनीहरू"]) {
+    assert.ok(dashboard.includes(phrase), `Nepali dashboard must include: ${phrase}`);
+  }
+  for (const phrase of ["नेपाल राष्ट्र बैंक विनिमय दर", "दर अद्यावधिक गर्नुहोस्", "खरिद · NPR", "नेपाल तलब / आयकर क्याल्कुलेटर", "NEPSE नगद लाभांश तथा बोनस शेयर क्याल्कुलेटर"]) {
+    assert.ok(finance.includes(phrase), `Nepali finance UI must include: ${phrase}`);
+  }
+  const calculators = fs.readFileSync(path.join(frontendRoot, "components", "NepaliFinanceCalculatorWorkspace.tsx"), "utf8");
+  for (const phrase of ["ऋण EMI क्याल्कुलेटर", "चक्रवृद्धि ब्याज तथा SIP क्याल्कुलेटर", "छुट प्रतिशत क्याल्कुलेटर"]) {
+    assert.ok(calculators.includes(phrase), `Nepali financial calculator must include: ${phrase}`);
+  }
+  for (const phrase of ["विश्व समाचार र नेपाल बजार समाचार", "समाचार अद्यावधिक गर्नुहोस्", "NEPSE तथा बजार अद्यावधिक"]) {
+    assert.ok(news.includes(phrase), `Nepali market news UI must include: ${phrase}`);
+  }
+});
+
 test("published Nepali PDF routes use localized names and guide copy", () => {
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
   assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);

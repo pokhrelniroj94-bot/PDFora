@@ -69,7 +69,31 @@ async function fetchLatestForex(): Promise<ForexResponse> {
   return json;
 }
 
-function ForexTool() {
+function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
+  const ne = locale === "ne";
+  const copy = ne ? {
+    eyebrow: "नेपाल · आधिकारिक सन्दर्भ दर", title: "नेपाल राष्ट्र बैंक विनिमय दर",
+    description: "NRB ले प्रकाशित गरेको दैनिक खरिद तथा बिक्री दर। सप्ताहन्त वा सार्वजनिक बिदामा पछिल्लो कार्यदिवसको दर देखिन सक्छ।",
+    refresh: "दर अद्यावधिक गर्नुहोस्", updating: "अद्यावधिक हुँदैछ…", waiting: "दरको प्रतीक्षा हुँदैछ",
+    rateDate: "दर मिति", source: "स्रोत", fetched: "लिइएको समय", published: "प्रकाशित मुद्रा दर",
+    currencies: "मुद्रा", unit: "एकाइ", buying: "खरिद · NPR", selling: "बिक्री · NPR",
+    converter: "NRB मुद्रा रूपान्तरण", quick: "छिटो रूपान्तरण", uses: "छानिएको मुद्राको प्रकाशित एकाइ, खरिद र बिक्री दर प्रयोग हुन्छ।",
+    currency: "मुद्रा", direction: "रूपान्तरण दिशा", amount: "रकम",
+    foreignNpr: "विदेशी मुद्रा → NPR (खरिद)", nprForeign: "NPR → विदेशी मुद्रा (बिक्री)",
+    estimated: "अनुमानित रूपान्तरण", explain: "आजका प्रकाशित दर बुझ्नुहोस्", explainButton: "AI बाट दर बुझ्नुहोस्",
+    unavailable: "NRB AI व्याख्या उपलब्ध छैन।", tryAgain: "पुनः प्रयास गर्नुहोस्",
+  } : {
+    eyebrow: "Nepal · Official reference rates", title: "Nepal Rastra Bank Exchange Rates",
+    description: "Daily buying and selling rates published by NRB. On weekends and public holidays, the latest available working-day rate may be shown.",
+    refresh: "Refresh rates", updating: "Updating…", waiting: "Waiting for rates",
+    rateDate: "Rate date", source: "Source", fetched: "Fetched", published: "Published currency rates",
+    currencies: "currencies", unit: "Unit", buying: "Buying · NPR", selling: "Selling · NPR",
+    converter: "NRB currency converter", quick: "Quick conversion", uses: "Uses the published unit, buying and selling rate for the selected currency.",
+    currency: "Currency", direction: "Conversion direction", amount: "Amount",
+    foreignNpr: "Foreign currency → NPR (buying)", nprForeign: "NPR → foreign currency (selling)",
+    estimated: "Estimated conversion", explain: "Understand today's published rates", explainButton: "Explain rates with AI",
+    unavailable: "NRB AI explanation is unavailable.", tryAgain: "Try again",
+  };
   const [data, setData] = useState<ForexResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -140,19 +164,19 @@ function ForexTool() {
     <header className="rounded-2xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-cyan-50 p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[.14em] text-teal-700">Nepal · Official reference rates</p>
-          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">Nepal Rastra Bank Exchange Rates</h2>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Daily buying and selling rates published by NRB. On weekends and public holidays, the latest available working-day rate may be shown.</p>
+          <p className="text-xs font-bold uppercase tracking-[.14em] text-teal-700">{copy.eyebrow}</p>
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">{copy.title}</h2>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">{copy.description}</p>
         </div>
         <button type="button" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-teal-200 bg-white px-4 py-2 text-sm font-semibold text-teal-800 shadow-sm hover:border-teal-400 hover:bg-teal-50 disabled:cursor-not-allowed disabled:opacity-60" disabled={loading} onClick={() => void loadRates()}>
           {loading && <span className="pdfora-spinner" aria-hidden="true" />}
-          {loading ? "Updating…" : "Refresh rates"}
+          {loading ? copy.updating : copy.refresh}
         </button>
       </div>
       <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-600">
-        <span><strong className="text-slate-800">Rate date:</strong> {data?.rateDate || "Waiting for rates"}</span>
-        {data?.source && <span><strong className="text-slate-800">Source:</strong> {data.source}</span>}
-        {data?.updatedAt && <span><strong className="text-slate-800">Fetched:</strong> {new Date(data.updatedAt).toLocaleString("en-NP", { timeZone: "Asia/Kathmandu" })}</span>}
+        <span><strong className="text-slate-800">{copy.rateDate}:</strong> {data?.rateDate || copy.waiting}</span>
+        {data?.source && <span><strong className="text-slate-800">{copy.source}:</strong> {data.source}</span>}
+        {data?.updatedAt && <span><strong className="text-slate-800">{copy.fetched}:</strong> {new Date(data.updatedAt).toLocaleString("en-NP", { timeZone: "Asia/Kathmandu" })}</span>}
       </div>
     </header>
 
@@ -161,10 +185,10 @@ function ForexTool() {
 
     {loading && !data && <div className="grid gap-2" aria-label="Loading exchange rates"><div className="pdfora-skeleton h-11 rounded-xl" /><div className="pdfora-skeleton h-11 rounded-xl" /><div className="pdfora-skeleton h-11 rounded-xl" /></div>}
     {data && <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3"><h3 className="font-bold text-slate-900">Published currency rates</h3><span className="text-xs text-slate-500">{data.rates.length} currencies</span></div>
+      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3"><h3 className="font-bold text-slate-900">{copy.published}</h3><span className="text-xs text-slate-500">{data.rates.length} {copy.currencies}</span></div>
       <div className="max-h-[520px] overflow-auto">
         <table className="w-full min-w-[540px] text-left text-sm">
-          <thead className="sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th scope="col" className="px-4 py-3">Currency</th><th scope="col" className="px-4 py-3 text-right">Unit</th><th scope="col" className="px-4 py-3 text-right">Buying · NPR</th><th scope="col" className="px-4 py-3 text-right">Selling · NPR</th></tr></thead>
+          <thead className="sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th scope="col" className="px-4 py-3">{copy.currency}</th><th scope="col" className="px-4 py-3 text-right">{copy.unit}</th><th scope="col" className="px-4 py-3 text-right">{copy.buying}</th><th scope="col" className="px-4 py-3 text-right">{copy.selling}</th></tr></thead>
           <tbody>{data.rates.map((item) => <tr key={item.code} className="border-t border-slate-100 transition-colors hover:bg-teal-50/50"><th scope="row" className="px-4 py-3 font-semibold text-slate-900"><span>{item.code}</span><span className="ml-2 font-normal text-slate-500">{item.name}</span></th><td className="px-4 py-3 text-right tabular-nums">{item.unit}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.buy.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.sell.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td></tr>)}</tbody>
         </table>
       </div>
@@ -172,21 +196,21 @@ function ForexTool() {
 
     {data && <section className="rounded-2xl border border-teal-200 bg-teal-50/50 p-4 shadow-sm sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><p className="text-xs font-black uppercase tracking-wide text-teal-800">PDFora NRB AI</p><h3 className="mt-1 font-bold text-slate-950">Understand today&apos;s published rates</h3><p className="mt-1 text-xs text-slate-600">Explains the actual NRB rate table and unit values; it does not predict FX prices.</p></div>
-        <button type="button" onClick={() => void explainRates()} disabled={aiBusy || !data.rates.length} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Explaining…" : "Explain rates with AI"}</button>
+        <div><p className="text-xs font-black uppercase tracking-wide text-teal-800">PDFora NRB AI</p><h3 className="mt-1 font-bold text-slate-950">{copy.explain}</h3><p className="mt-1 text-xs text-slate-600">{ne ? "वास्तविक NRB दर तालिका र एकाइ बुझाउँछ; FX मूल्यको भविष्यवाणी गर्दैन।" : "Explains the actual NRB rate table and unit values; it does not predict FX prices."}</p></div>
+        <button type="button" onClick={() => void explainRates()} disabled={aiBusy || !data.rates.length} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? (ne ? "व्याख्या हुँदैछ…" : "Explaining…") : copy.explainButton}</button>
       </div>
       {aiError && <p role="alert" className="mt-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-800">{aiError}</p>}
       {aiText && <p className="mt-3 whitespace-pre-wrap rounded-xl border border-teal-100 bg-white p-4 text-sm leading-6 text-slate-700">{aiText}</p>}
     </section>}
 
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-      <div><p className="text-xs font-bold uppercase tracking-[.12em] text-teal-700">Quick conversion</p><h3 className="mt-1 text-lg font-bold text-slate-950">NRB currency converter</h3><p className="mt-1 text-sm text-slate-600">Uses the published unit, buying and selling rate for the selected currency.</p></div>
+      <div><p className="text-xs font-bold uppercase tracking-[.12em] text-teal-700">{copy.quick}</p><h3 className="mt-1 text-lg font-bold text-slate-950">{copy.converter}</h3><p className="mt-1 text-sm text-slate-600">{copy.uses}</p></div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <label><span className={label}>Currency</span><select className={field} value={currency} onChange={(e) => setCurrency(e.target.value)}>{Array.from(new Map([...fallbackCurrencies, ...(data?.rates ?? []).map(({ code, name }) => ({ code, name }))].map(item => [item.code, item])).values()).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>
-        <label><span className={label}>Conversion direction</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option></select></label>
+        <label><span className={label}>{copy.currency}</span><select className={field} value={currency} onChange={(e) => setCurrency(e.target.value)}>{Array.from(new Map([...fallbackCurrencies, ...(data?.rates ?? []).map(({ code, name }) => ({ code, name }))].map(item => [item.code, item])).values()).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>
+        <label><span className={label}>{copy.direction}</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">{copy.foreignNpr}</option><option value="npr-to-foreign">{copy.nprForeign}</option></select></label>
       </div>
-      <div className="mt-3 max-w-sm"><Field title="Amount" value={amount} onChange={setAmount}/></div>
-      {converted !== null && selected ? <div className="pdfora-pop-in mt-4 rounded-xl border border-teal-100 bg-teal-50 p-4" aria-live="polite"><p className="text-xs font-semibold uppercase tracking-wide text-teal-800">Estimated conversion</p><p className="mt-1 break-words text-2xl font-bold tracking-tight text-teal-950">{direction === "foreign-to-npr" ? npr(converted) : converted.toLocaleString("en-IN", { maximumFractionDigits: 4 }) + " " + selected.code}</p><p className="mt-2 text-sm text-teal-900">{direction === "foreign-to-npr" ? value.toLocaleString() + " " + selected.code : npr(value)} · {direction === "foreign-to-npr" ? selected.buy : selected.sell} NPR per {selected.unit} {selected.code}</p><p className="mt-1 text-xs text-teal-800">Rate date: {data?.rateDate}</p></div> : <p role="status" className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">{error ? "The converter will calculate once official rates are available." : `No published rate is available for ${currency} yet.`}</p>}
+      <div className="mt-3 max-w-sm"><Field title={copy.amount} value={amount} onChange={setAmount}/></div>
+      {converted !== null && selected ? <div className="pdfora-pop-in mt-4 rounded-xl border border-teal-100 bg-teal-50 p-4" aria-live="polite"><p className="text-xs font-semibold uppercase tracking-wide text-teal-800">{copy.estimated}</p><p className="mt-1 break-words text-2xl font-bold tracking-tight text-teal-950">{direction === "foreign-to-npr" ? npr(converted) : converted.toLocaleString("en-IN", { maximumFractionDigits: 4 }) + " " + selected.code}</p><p className="mt-2 text-sm text-teal-900">{direction === "foreign-to-npr" ? value.toLocaleString() + " " + selected.code : npr(value)} · {direction === "foreign-to-npr" ? selected.buy : selected.sell} NPR per {selected.unit} {selected.code}</p><p className="mt-1 text-xs text-teal-800">{copy.rateDate}: {data?.rateDate}</p></div> : <p role="status" className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">{error ? (ne ? "आधिकारिक दर उपलब्ध भएपछि रूपान्तरण हुनेछ।" : "The converter will calculate once official rates are available.") : (ne ? `${currency} का लागि प्रकाशित दर उपलब्ध छैन।` : `No published rate is available for ${currency} yet.`)}</p>}
     </section>
 
     <p className="text-xs leading-5 text-slate-500">NRB reference rates are not necessarily the exact rates offered by individual banks, money changers or remittance providers. Always confirm the transaction rate with your provider before making a payment.</p>
@@ -194,7 +218,8 @@ function ForexTool() {
   </div>;
 }
 
-function SalaryTaxTool() {
+function SalaryTaxTool({ locale = "en" }: { locale?: "en" | "ne" }) {
+  const ne = locale === "ne";
   const [income, setIncome] = useState("1200000");
   const [firstBandExempt, setFirstBandExempt] = useState(false);
   const amount = Number(income);
@@ -216,10 +241,10 @@ function SalaryTaxTool() {
     return { taxable, rate: band.rate, charge };
   }).filter((item) => item.taxable > 0);
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">Nepal Salary / Income Tax Calculator · FY 2083/84</h2><p className="mt-1 text-sm text-slate-600">Progressive estimate for a resident natural person using the published 2083/84 bands.</p></div>
-    <Field title="Annual taxable salary / income (NPR, after eligible deductions)" value={income} onChange={setIncome}/>
-    <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" checked={firstBandExempt} onChange={(e) => setFirstBandExempt(e.target.checked)}/><span>First NPR 1,000,000 band is exempt from the 1% charge under an applicable statutory exception.</span></label>
-    {valid ? <><Result>Estimated annual income tax: {npr(tax)}\nEstimated monthly tax: {npr(tax / 12)}\nEstimated monthly take-home from taxable income: {npr((amount - tax) / 12)}\nEffective tax rate: {amount > 0 ? (tax / amount * 100).toFixed(2) : "0.00"}%</Result><div className="overflow-x-auto rounded-xl border"><table className="w-full text-sm"><thead className="bg-slate-100"><tr><th className="p-3 text-left">Taxable band portion</th><th className="p-3 text-right">Rate</th><th className="p-3 text-right">Tax</th></tr></thead><tbody>{breakdown.map((item, i) => <tr key={i} className="border-t"><td className="p-3">{npr(item.taxable)}</td><td className="p-3 text-right">{(item.rate * 100).toFixed(0)}%</td><td className="p-3 text-right">{npr(item.charge)}</td></tr>)}</tbody></table></div></> : <p role="alert" className="text-sm text-red-700">Enter a valid non-negative annual taxable income.</p>}
+    <div><h2 className="text-lg font-bold">{ne ? "नेपाल तलब / आयकर क्याल्कुलेटर · आर्थिक वर्ष २०८३/८४" : "Nepal Salary / Income Tax Calculator · FY 2083/84"}</h2><p className="mt-1 text-sm text-slate-600">{ne ? "प्रकाशित २०८३/८४ कर तहअनुसार निवासी प्राकृतिक व्यक्तिको प्रगतिशील अनुमान।" : "Progressive estimate for a resident natural person using the published 2083/84 bands."}</p></div>
+    <Field title={ne ? "वार्षिक करयोग्य तलब / आय (NPR, योग्य कटौतीपछि)" : "Annual taxable salary / income (NPR, after eligible deductions)"} value={income} onChange={setIncome}/>
+    <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" checked={firstBandExempt} onChange={(e) => setFirstBandExempt(e.target.checked)}/><span>{ne ? "लागू कानुनी अपवादअन्तर्गत पहिलो NPR १०,००,००० तहमा १% शुल्क नलाग्ने मान्नुहोस्।" : "First NPR 1,000,000 band is exempt from the 1% charge under an applicable statutory exception."}</span></label>
+    {valid ? <>{ne ? <Result>{`अनुमानित वार्षिक आयकर: ${npr(tax)}\nअनुमानित मासिक कर: ${npr(tax / 12)}\nकरयोग्य आयबाट अनुमानित मासिक हातमा आउने रकम: ${npr((amount - tax) / 12)}\nप्रभावकारी कर दर: ${amount > 0 ? (tax / amount * 100).toFixed(2) : "0.00"}%`}</Result> : <Result>Estimated annual income tax: {npr(tax)}{"\n"}Estimated monthly tax: {npr(tax / 12)}{"\n"}Estimated monthly take-home from taxable income: {npr((amount - tax) / 12)}{"\n"}Effective tax rate: {amount > 0 ? (tax / amount * 100).toFixed(2) : "0.00"}%</Result>}<div className="overflow-x-auto rounded-xl border"><table className="w-full text-sm"><thead className="bg-slate-100"><tr><th className="p-3 text-left">{ne ? "करयोग्य तहको भाग" : "Taxable band portion"}</th><th className="p-3 text-right">{ne ? "दर" : "Rate"}</th><th className="p-3 text-right">{ne ? "कर" : "Tax"}</th></tr></thead><tbody>{breakdown.map((item, i) => <tr key={i} className="border-t"><td className="p-3">{npr(item.taxable)}</td><td className="p-3 text-right">{(item.rate * 100).toFixed(0)}%</td><td className="p-3 text-right">{npr(item.charge)}</td></tr>)}</tbody></table></div></> : <p role="alert" className="text-sm text-red-700">{ne ? "शून्य वा सोभन्दा बढी मान्य वार्षिक करयोग्य आय लेख्नुहोस्।" : "Enter a valid non-negative annual taxable income."}</p>}
     <p className="text-xs leading-5 text-slate-500">This is an estimate for resident natural persons only. It does not calculate every rebate, allowance, retirement contribution, insurance deduction, non-resident case or special income category. The 1% first-band charge has statutory exceptions. Verify your situation against the current IRD notice or a tax professional.</p>
     <a className="text-sm font-semibold text-teal-700 underline" href="https://ird.gov.np/category/taxrateincentives/" target="_blank" rel="noreferrer">IRD official tax rates and incentives</a>
   </div>;
@@ -290,7 +315,8 @@ function HolidayTool() {
   </div>;
 }
 
-function NepseDividendTool() {
+function NepseDividendTool({ locale = "en" }: { locale?: "en" | "ne" }) {
+  const ne = locale === "ne";
   const [shares, setShares] = useState("100");
   const [cashRate, setCashRate] = useState("10");
   const [bonusRate, setBonusRate] = useState("5");
@@ -302,20 +328,20 @@ function NepseDividendTool() {
   const cashTax = cashGross * tax / 100;
   const bonusShares = quantity * bonus / 100;
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">NEPSE Cash Dividend & Bonus Share Calculator</h2><p className="mt-1 text-sm text-slate-600">Estimate cash dividend on the editable face value, after an editable withholding-tax assumption, and calculate bonus shares.</p></div>
+    <div><h2 className="text-lg font-bold">{ne ? "NEPSE नगद लाभांश तथा बोनस शेयर क्याल्कुलेटर" : "NEPSE Cash Dividend & Bonus Share Calculator"}</h2><p className="mt-1 text-sm text-slate-600">{ne ? "परिवर्तन गर्न मिल्ने अंकित मूल्य र कर धारणापछि नगद लाभांश तथा बोनस शेयरको अनुमान गर्नुहोस्।" : "Estimate cash dividend on the editable face value, after an editable withholding-tax assumption, and calculate bonus shares."}</p></div>
     <div className="grid gap-3 sm:grid-cols-2"><Field title="Shares held" value={shares} onChange={setShares}/><Field title="Cash dividend (%)" value={cashRate} onChange={setCashRate}/><Field title="Bonus shares (%)" value={bonusRate} onChange={setBonusRate}/><Field title="Face value per share (NPR)" value={faceValue} onChange={setFaceValue}/><Field title="Cash dividend tax assumption (%)" value={taxRate} onChange={setTaxRate}/></div>
-    {valid ? <Result>Eligible shares: {quantity.toLocaleString("en-IN")}\nGross cash dividend (face value basis): {npr(cashGross)}\nEstimated withholding tax: {npr(cashTax)}\nEstimated cash dividend after tax: {npr(cashGross - cashTax)}\nEstimated bonus shares: {bonusShares.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</Result> : <p role="alert" className="text-sm text-red-700">Enter a positive whole share quantity and valid non-negative percentages.</p>}
+    {valid ? <Result>{ne ? `योग्य शेयर: ${quantity.toLocaleString("en-IN")}\nकुल नगद लाभांश (अंकित मूल्य आधार): ${npr(cashGross)}\nअनुमानित रोक्का कर: ${npr(cashTax)}\nकरपछि अनुमानित नगद लाभांश: ${npr(cashGross - cashTax)}\nअनुमानित बोनस शेयर: ${bonusShares.toLocaleString("en-IN", { maximumFractionDigits: 4 })}` : `Eligible shares: ${quantity.toLocaleString("en-IN")}\nGross cash dividend (face value basis): ${npr(cashGross)}\nEstimated withholding tax: ${npr(cashTax)}\nEstimated cash dividend after tax: ${npr(cashGross - cashTax)}\nEstimated bonus shares: ${bonusShares.toLocaleString("en-IN", { maximumFractionDigits: 4 })}`}</Result> : <p role="alert" className="text-sm text-red-700">{ne ? "सकारात्मक पूर्ण शेयर संख्या र मान्य गैर-नकारात्मक प्रतिशत लेख्नुहोस्।" : "Enter a positive whole share quantity and valid non-negative percentages."}</p>}
     <p className="text-xs leading-5 text-slate-500">This is a percentage-based estimate, not an allotment confirmation. Fractional bonus entitlements, book closure eligibility, withholding rules and company-specific terms may change the final credited amount. Verify the declared corporate action and tax treatment with the company, CDSC and IRD.</p>
     <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noreferrer">NEPSE official</a><a className="font-semibold text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noreferrer">Mero Share</a></div>
   </div>;
 }
 
-export default function NepalLiveTools({ slug }: { slug: string }) {
-  if (slug === "nepal-forex-rates") return <ForexTool/>;
-  if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool/>;
+export default function NepalLiveTools({ slug, locale = "en" }: { slug: string; locale?: "en" | "ne" }) {
+  if (slug === "nepal-forex-rates") return <ForexTool locale={locale}/>;
+  if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool locale={locale}/>;
   if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool/>;
   if (slug === "nepal-public-holidays-2083") return <HolidayTool/>;
-  if (slug === "nepse-dividend-calculator") return <NepseDividendTool/>;
-  if (slug === "nepse-market-news") return <NepalMarketNews/>;
+  if (slug === "nepse-dividend-calculator") return <NepseDividendTool locale={locale}/>;
+  if (slug === "nepse-market-news") return <NepalMarketNews locale={locale}/>;
   return <p className="text-sm text-slate-600">Nepal tool not found.</p>;
 }

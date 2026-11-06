@@ -8,6 +8,7 @@ import { nepaliToolGuides } from "../../../lib/i18n/tool-guides-ne";
 import { nepaliToolNames } from "../../../lib/i18n/pdf-tool-names-ne";
 import { getNepaliPdfRoute, nepaliPdfRoutes } from "../../../lib/i18n/nepali-pdf-routes";
 import { buildLocaleMetadata } from "../../../lib/i18n/metadata";
+import NepseMarketDashboard from "../../../components/NepseMarketDashboard";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -17,6 +18,14 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
+  if (locale === "ne" && slug === "market") {
+    return buildLocaleMetadata({
+      locale,
+      path: "/market",
+      title: "NEPSE बजार ड्यासबोर्ड | PDFora",
+      description: "NEPSE सूचकाङ्क, शेयर मूल्य, बजारका बढेका/घटेका शेयर र ऐतिहासिक चार्टको नेपाली ड्यासबोर्ड।",
+    });
+  }
   const route = getNepaliPdfRoute(slug);
   if (!route || locale !== "ne") return { title: "Page not found", robots: { index: false, follow: true } };
   const name = nepaliToolNames[slug] ?? route.title;
@@ -31,6 +40,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NepaliPdfToolPage({ params }: Props) {
   const { locale, slug } = await params;
+  if (locale === "ne" && slug === "market") {
+    return <NepseMarketDashboard locale="ne" />;
+  }
   const route = getNepaliPdfRoute(slug);
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale) || !route) notFound();
 

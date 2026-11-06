@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Geist, Geist_Mono } from "next/font/google";
 import CookieConsent from "../components/CookieConsent";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
 import SiteAIHelp from "../components/SiteAIHelp";
 import SiteFooter from "../components/SiteFooter";
-
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+import SiteLanguageBar from "../components/SiteLanguageBar";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://pd-fora.vercel.app"),
@@ -22,8 +19,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
+        <SiteLanguageBar />
         {children}
         <SiteFooter />
         <ToolDirectory />

@@ -195,7 +195,9 @@ MAX_FILE_SIZE = 50 * 1024 * 1024
 _REQUEST_TEMP_JOBS: ContextVar[list[Path] | None] = ContextVar("pdfora_request_temp_jobs", default=None)
 
 # Upload protection defaults. Redis is recommended for multi-instance deployments.
-RATE_LIMIT_PER_ROUTE_PER_MINUTE = int(os.getenv("PDFORA_RATE_LIMIT_PER_ROUTE", "20"))
+RATE_LIMIT_PER_ROUTE_PER_MINUTE = int(
+    os.getenv("PDFORA_RATE_LIMIT_PER_ROUTE", os.getenv("PDFORA_RATE_LIMIT_ROUTE", "20"))
+)
 RATE_LIMIT_PER_IP_PER_HOUR = int(os.getenv("PDFORA_RATE_LIMIT_PER_HOUR", "120"))
 RATE_LIMIT_REDIS_URL = os.getenv("RATE_LIMIT_REDIS_URL", "").strip()
 _RATE_LIMIT_REDIS = None

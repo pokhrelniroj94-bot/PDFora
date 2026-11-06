@@ -54,7 +54,7 @@ export default function NepalMarketNews() {
       }
     };
     void load();
-    const timer = window.setInterval(() => { void load(); }, 15 * 60 * 1000);
+    const timer = window.setInterval(() => { void load(); }, 10 * 60 * 1000);
     return () => { active = false; window.clearInterval(timer); };
   }, [fetchFeed, fetchGlobalFeed]);
 

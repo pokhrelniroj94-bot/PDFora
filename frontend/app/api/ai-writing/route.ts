@@ -13,6 +13,18 @@ async function isRateLimited(request: Request): Promise<boolean> {
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!redisUrl || !redisToken) throw new Error("SHARED_RATE_LIMIT_NOT_CONFIGURED");
+  let redisEndpoint: URL;
+  try {
+    redisEndpoint = new URL(redisUrl);
+  } catch {
+    throw new Error("SHARED_RATE_LIMIT_INVALID_URL");
+  }
+  // Upstash REST accepts HTTPS requests. A Redis TCP connection string
+  // (redis:// or rediss://) is not a valid fetch endpoint.
+  if (redisEndpoint.protocol !== "https:" || !redisEndpoint.hostname) {
+    throw new Error("SHARED_RATE_LIMIT_INVALID_URL");
+  }
+  redisEndpoint.pathname = redisEndpoint.pathname.replace(/\/+$/, "") || "/";
 
   // Prefer Vercel's trusted client-IP header. On deployments where it is
   // absent, use the right-most address appended by the hosting proxy.
@@ -28,7 +40,7 @@ async function isRateLimited(request: Request): Promise<boolean> {
   const script = "local count = redis.call('INCR', KEYS[1]); if count == 1 then redis.call('EXPIRE', KEYS[1], tonumber(ARGV[2])); end; return count";
   let response: Response;
   try {
-    response = await fetch(redisUrl.replace(/\/$/, ""), {
+    response = await fetch(redisEndpoint.toString(), {
       method: "POST",
       headers: { Authorization: "Bearer " + redisToken, "Content-Type": "application/json" },
       body: JSON.stringify(["EVAL", script, "1", key, "8", "60"]),
@@ -246,6 +258,7 @@ export async function POST(request: Request) {
     const diagnostic = [
       "CLIENT_IP_UNAVAILABLE",
       "SHARED_RATE_LIMIT_NOT_CONFIGURED",
+      "SHARED_RATE_LIMIT_INVALID_URL",
       "SHARED_RATE_LIMIT_UNAVAILABLE",
       "SHARED_RATE_LIMIT_INVALID_RESPONSE",
     ].includes(reason) ? reason : "SHARED_RATE_LIMIT_NETWORK_OR_TLS_ERROR";

@@ -15,6 +15,8 @@ Required environment variables:
 - `PDFORA_CF_WORKERS_FREE_PLAN=true`
 - `PDFORA_AI_ENABLED=true` (keep `false` until ready for public launch)
 - `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (Upstash Redis Free REST credentials used by the API's atomic shared limiter)
+
+The `UPSTASH_REDIS_REST_URL` must be the HTTPS REST endpoint copied from the Upstash database's **REST API** section (normally `https://<database>.<region>.upstash.io`). Do not paste the Redis TCP connection string beginning with `redis://` or `rediss://`. The API validates HTTPS format before making a request and emits only a fixed diagnostic code; it never logs the URL or token.
 - `PDFORA_AI_RATE_LIMIT_READY=true` (only after the Upstash Free database is provisioned and the shared Redis limiter has been tested)
 
 **Important:** Do not upgrade the Cloudflare account to Workers Paid for this zero-cost configuration. Workers AI includes a limited daily free allocation; on the Workers Free plan, requests stop after the allocation is exhausted. They should not switch to a paid provider or paid fallback. Check the current Cloudflare pricing and model catalogue before changing the model.

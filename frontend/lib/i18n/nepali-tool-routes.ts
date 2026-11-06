@@ -18,3 +18,9 @@ export const nepaliLocalizedFinancialSlugs = [
   "compound-interest-sip-calculator",
   "discount-percentage-calculator",
 ] as const;
+
+export const nepaliLocalizedCareerSlugs = [
+  "ai-resume-writer",
+  "ai-cover-letter-generator",
+  "ai-humanizer",
+] as const;

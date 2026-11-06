@@ -11,7 +11,7 @@ Inventory: 66 frontend page source files, 6 API route source files, 49 English P
 | Code | Language | Status | Localized routes | Route/source-file proxy | Shared UI module | PDF guides | Blog content |
 |---|---|---|---:|---:|---:|---:|---:|
 | en | English | Source language; translation review not assessed | Source language | N/A | 100% | 100% | 100% |
-| ne | Nepali | Partially translated | 21 | 31.82% | 100% | 100% | 0% |
+| ne | Nepali | Partially translated | 24 | 36.36% | 100% | 100% | 0% |
 | hi | Hindi | Not published | 0 | 0% | 0% | 0% | 0% |
 | bn | Bengali | Not published | 0 | 0% | 0% | 0% | 0% |
 | ur | Urdu | Not published | 0 | 0% | 0% | 0% | 0% |
@@ -23,4 +23,4 @@ Inventory: 66 frontend page source files, 6 API route source files, 49 English P
 | zh | Chinese (Simplified) | Not published | 0 | 0% | 0% | 0% | 0% |
 | ja | Japanese | Not published | 0 | 0% | 0% | 0% | 0% |
 
-Nepali currently has the homepage, six localized PDF routes, six localized utility routes, seven localized financial/news/calculator routes, and the localized NEPSE market dashboard. Its 49 Nepali PDF guide records are measured separately; the blog corpus remains untranslated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has the homepage, six localized PDF routes, six localized utility routes, seven localized financial/news/calculator routes, three localized AI writing routes, and the localized NEPSE market dashboard. Its 49 Nepali PDF guide records are measured separately; the blog corpus remains untranslated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.

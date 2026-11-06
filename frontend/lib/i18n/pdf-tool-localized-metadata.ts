@@ -8,7 +8,7 @@ export interface PdfToolLocalizedMetadataInput { locale: PdfToolLocale; slug: st
 function absoluteToolUrl(locale: PdfToolLocale, slug: string): string {
   const safeSlug = slug.replace(/^\/+|\/+$/g, "");
   if (!safeSlug || safeSlug.includes("..") || safeSlug.includes("?") || safeSlug.includes("#")) throw new Error("Invalid PDF tool slug: " + slug);
-  return SITE_URL + "/" + locale + "/" + safeSlug;
+  return locale === "en" ? `${SITE_URL}/${safeSlug}` : `${SITE_URL}/${locale}/${safeSlug}`;
 }
 
 /** Self-canonical per locale. Hreflang is emitted only after both translations pass review. */

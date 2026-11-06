@@ -42,11 +42,19 @@ export function absoluteUrl(path: string, locale: Locale): string {
  * the language switcher and hreflang both read it, so users are never sent to a page
  * that does not exist.
  */
-const localizedPaths: ReadonlySet<string> = new Set(["/"]);
+const localizedPaths: ReadonlySet<string> = new Set([
+  "/",
+  "/merge-pdf",
+  "/split-pdf",
+  "/compress-pdf",
+  "/rotate-pdf",
+  "/pdf-to-word",
+  "/pdf-to-jpg",
+]);
 
 export function hasLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
-  return localizedPaths.has(normalizePath(path));
+  return locale === "ne" && localizedPaths.has(normalizePath(path));
 }
 
 export interface AlternateOptions {

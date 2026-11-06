@@ -25,6 +25,11 @@ const loaders: Partial<Record<Locale, Partial<Record<Namespace, Loader>>>> = {
     accessibility: () => import("./messages/en/accessibility.json"),
     seo: () => import("./messages/en/seo.json"),
   },
+  ne: {
+    common: () => import("./messages/ne/common.json"),
+    accessibility: () => import("./messages/ne/accessibility.json"),
+    seo: () => import("./messages/ne/seo.json"),
+  },
 };
 
 async function loadLocale(locale: Locale, wanted: readonly Namespace[]): Promise<MessageTree> {

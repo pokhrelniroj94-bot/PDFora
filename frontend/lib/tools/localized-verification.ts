@@ -13,7 +13,9 @@ import type { Locale } from "../i18n/config";
  * Never populate this from the catalog automatically. Today it is intentionally empty, so every
  * localized tool page is noindex/nofollow, has no hreflang and is not in the sitemap.
  */
-export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {};
+export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {
+  ne: ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"],
+};
 
 export function isLocalizedToolIndexable(locale: Locale, slug: string): boolean {
   return verifiedLocalizedTools[locale]?.includes(slug) === true;

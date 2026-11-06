@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "Remove PDF Annotations Online Free | PDFora",
-  description: "Remove comments, highlights and annotations from a PDF online while preserving the document pages. Download a clean PDF.",
-  alternates: { canonical: "https://pd-fora.vercel.app/remove-annotations" },
-};
+export const metadata = getPdfToolMetadata("remove-annotations");
 
 export default function Page() {
   const description = "Remove comments, highlights, sticky notes and other PDF annotations while keeping the page content.";

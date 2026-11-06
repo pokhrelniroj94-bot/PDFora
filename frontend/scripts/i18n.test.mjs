@@ -4,6 +4,12 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs";
+import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui.ts";
+import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne.ts";
+import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne.ts";
+import { toolGuides } from "../lib/tool-guides.ts";
+import { buildPdfToolMetadata } from "../lib/i18n/pdf-tool-seo-core.ts";
+import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
 
 ensureTypeStripping();
 const { config, routing, translate, format, preference, switcher, metadata } = await loadI18n();
@@ -167,4 +173,93 @@ test("message files: English source files exist and parse as JSON", () => {
     const tree = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
     assert.equal(typeof tree, "object", f);
   }
+});
+
+test("PDF tool UI dictionaries cover every supported locale", () => {
+  for (const locale of config.locales) {
+    const copy = getPdfToolCopy(`/${locale}/merge-pdf`);
+    for (const [key, value] of Object.entries(copy)) {
+      assert.equal(typeof value, "string", `${locale}.${key} must be a string`);
+      assert.ok(value.trim().length > 0, `${locale}.${key} must not be empty`);
+    }
+  }
+  assert.equal(getPdfToolCopy("/unknown/merge-pdf").chooseFile, getPdfToolCopy("/merge-pdf").chooseFile);
+});
+
+
+test("Nepali PDF guide translations cover all 49 live tool slugs", () => {
+  assert.equal(toolGuides.length, 49, "catalog should contain 49 enabled PDF tools");
+  assert.equal(Object.keys(nepaliToolGuides).length, 49, "all 49 tools must have Nepali copy");
+  for (const guide of toolGuides) {
+    const translated = nepaliToolGuides[guide.slug];
+    assert.ok(translated, guide.slug + " must have a Nepali guide");
+    assert.ok(translated.purpose.trim(), guide.slug + " purpose");
+    assert.ok(translated.caution.trim(), guide.slug + " caution");
+    assert.equal(translated.steps.length, 3, guide.slug + " must have three steps");
+    assert.ok(translated.steps.every((step) => step.trim()), guide.slug + " step copy");
+  }
+});
+
+
+test("Nepali PDF tool names cover every live PDF slug", () => {
+  assert.equal(Object.keys(nepaliToolNames).length, 49);
+  for (const guide of toolGuides) {
+    assert.ok(nepaliToolNames[guide.slug]?.trim(), guide.slug + " must have a Nepali display name");
+  }
+});
+
+
+test("PDF SEO metadata is unique, canonical and within search description length for all tools", () => {
+  const titles = new Set();
+  const descriptions = new Set();
+  for (const guide of toolGuides) {
+    const metadata = buildPdfToolMetadata(guide, guide.slug);
+    assert.ok(String(metadata.title).includes(guide.name), guide.slug + " title must include the tool name");
+    assert.ok(String(metadata.title).length <= 70, guide.slug + " title should remain concise");
+    assert.ok(!titles.has(metadata.title), guide.slug + " title must be unique");
+    titles.add(metadata.title);
+    assert.ok(typeof metadata.description === "string" && metadata.description.length >= 80 && metadata.description.length <= 160, guide.slug + " description must be useful and within 160 characters");
+    assert.ok(!descriptions.has(metadata.description), guide.slug + " description must be unique");
+    descriptions.add(metadata.description);
+    assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
+    assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
+  }
+});
+
+
+test("Nepali PDF form labels and placeholders have reviewed translations", () => {
+  const samples = [
+    ["Background text", "पृष्ठभूमिको पाठ"],
+    ["Number of blank pages to add", "थप्नुपर्ने खाली पृष्ठ संख्या"],
+    ["Starting number", "सुरु हुने नम्बर"],
+    ["Password (minimum 6 characters)", "पासवर्ड (कम्तीमा ६ अक्षर)"],
+    ["Page order (example: 3,1,2)", "पृष्ठक्रम (उदाहरण: ३,१,२)"],
+    ["Enter watermark text", "वाटरमार्कको पाठ लेख्नुहोस्"]
+  ];
+  for (const [source, translated] of samples) assert.equal(getNepaliPdfFieldText(source), translated);
+  assert.equal(getNepaliPdfFieldText("Unmapped field"), "Unmapped field", "unknown fields must remain visible rather than disappear");
+});
+
+
+import { buildPdfToolLocalizedMetadata } from "../lib/i18n/pdf-tool-localized-metadata.ts";
+
+test("localized PDF metadata: self canonicals, reciprocal hreflang and indexing gate", () => {
+  const pendingEn = buildPdfToolLocalizedMetadata({ locale: "en", slug: "merge-pdf", title: "Merge PDF Online", description: "Combine PDF files online.", translations: { en: true, ne: false } });
+  assert.equal(pendingEn.alternates.canonical, "https://pd-fora.vercel.app/en/merge-pdf");
+  assert.deepEqual(pendingEn.robots, { index: true, follow: true });
+  assert.equal(pendingEn.alternates.languages, undefined, "do not advertise an incomplete translation");
+
+  const pendingNe = buildPdfToolLocalizedMetadata({ locale: "ne", slug: "merge-pdf", title: "पीडीएफ जोड्नुहोस्", description: "धेरै पीडीएफ फाइललाई एउटै फाइलमा जोड्नुहोस्।", translations: { en: true, ne: false } });
+  assert.equal(pendingNe.alternates.canonical, "https://pd-fora.vercel.app/ne/merge-pdf");
+  assert.deepEqual(pendingNe.robots, { index: false, follow: false });
+
+  const published = buildPdfToolLocalizedMetadata({ locale: "ne", slug: "merge-pdf", title: "पीडीएफ जोड्नुहोस्", description: "धेरै पीडीएफ फाइललाई एउटै फाइलमा जोड्नुहोस्।", translations: { en: true, ne: true } });
+  assert.equal(published.alternates.canonical, "https://pd-fora.vercel.app/ne/merge-pdf");
+  assert.deepEqual(published.alternates.languages, {
+    en: "https://pd-fora.vercel.app/en/merge-pdf",
+    ne: "https://pd-fora.vercel.app/ne/merge-pdf",
+    "x-default": "https://pd-fora.vercel.app/en/merge-pdf",
+  });
+  assert.deepEqual(published.robots, { index: true, follow: true });
+  assert.throws(() => buildPdfToolLocalizedMetadata({ locale: "en", slug: "../bad", title: "x", description: "y", translations: { en: true, ne: true } }));
 });

@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "Remove Links from PDF Online Free | PDFora",
-  description: "Remove clickable hyperlinks from PDF files online while preserving visible text and page content. Free PDF link remover.",
-  alternates: { canonical: "https://pd-fora.vercel.app/remove-pdf-links" },
-};
+export const metadata = getPdfToolMetadata("remove-pdf-links");
 
 export default function Page() {
   const description = "Remove clickable hyperlinks from PDF pages while keeping the visible page content intact.";

@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "Extract PDF Bookmarks Online Free | PDFora",
-  description: "Extract PDF bookmarks and table of contents with page numbers into a text report. Free online PDF bookmark extractor.",
-  alternates: { canonical: "https://pd-fora.vercel.app/extract-bookmarks" },
-};
+export const metadata = getPdfToolMetadata("extract-bookmarks");
 
 export default function Page() {
   const description = "Extract the table of contents and bookmarks from a PDF into a downloadable text file, including bookmark titles and page numbers.";

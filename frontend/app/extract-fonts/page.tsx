@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "Extract Fonts from PDF Online | PDFora",
-  description: "Extract embedded font files from PDF documents and download available fonts in a ZIP archive.",
-  alternates: { canonical: "https://pd-fora.vercel.app/extract-fonts" },
-};
+export const metadata = getPdfToolMetadata("extract-fonts");
 
 export default function Page() {
   const description = "Extract embedded font files from a PDF when the document contains extractable embedded fonts.";

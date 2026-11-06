@@ -1,15 +1,9 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import { getToolGuide } from "../../lib/tool-guides";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
 const guide = getToolGuide("rotate-pdf");
-export const metadata: Metadata = {
-  title: "Rotate PDF Online – Rotate Pages by 90, 180 or 270 Degrees | PDFora",
-  description: guide ? `${guide.purpose} ${guide.keyword}. Use PDFora online and inspect the output before sharing.`.slice(0, 160) : "Rotate PDF pages by 90, 180 or 270 degrees online with PDFora.",
-  keywords: ["rotate PDF", "rotate PDF pages online", "rotate PDF 90 degrees", "rotate PDF 180 degrees"],
-  alternates: { canonical: "https://pd-fora.vercel.app/rotate-pdf" },
-  openGraph: { type: "website", title: "Rotate PDF Online | PDFora", description: guide?.purpose ?? "Rotate PDF pages by 90, 180 or 270 degrees online.", url: "https://pd-fora.vercel.app/rotate-pdf", siteName: "PDFora" },
-};
+export const metadata = getPdfToolMetadata("rotate-pdf");
 
 export default function Page() {
   return (

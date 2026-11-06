@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "PDF to BMP Converter Online | PDFora",
-  description: "Convert PDF pages to BMP images online and download all converted images in a ZIP file.",
-  alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-bmp" },
-};
+export const metadata = getPdfToolMetadata("pdf-to-bmp");
 
 export default function Page() {
   const description = "Convert each PDF page into a BMP image and download all pages in a ZIP archive.";

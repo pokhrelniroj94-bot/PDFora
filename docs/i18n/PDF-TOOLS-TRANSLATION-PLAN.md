@@ -83,3 +83,12 @@ No locale should be marked published until all localized PDF pages pass the chec
 - Automated tests have been added for guide completeness and metadata shape, but they have not been executed in a project runtime in this session.
 - GitHub reports no workflow runs for the latest commits. The Vercel status check on the latest docs commit failed with a Vercel build-rate-limit/upgrade notice; this is not evidence of a source-code build failure or success.
 - Do not merge or deploy until the build-rate-limit issue is resolved and the full test, lint, build and browser QA suite passes.
+
+
+## Step 6 — Nepali workspace headings and form fields (2026-11-06)
+
+- Extracted the 49 reviewed Nepali tool names into a shared module.
+- Both PDF workspace components now display the Nepali tool title and the tool-specific Nepali purpose as the main description on Nepali paths.
+- Added translations for the PDF workspace's known tool-specific labels and placeholders, including page ranges, watermark, password, rotation, Bates numbering, metadata, bookmarks, headers/footers and image quality.
+- Added tests for representative field-label translations. Unknown labels intentionally remain visible in their source language rather than disappearing.
+- The page-level wrapper headings and custom explanatory copy in some standalone route files are still English. The non-English route publishing gate remains closed until those page shells and all workspace options are translated and browser-tested.

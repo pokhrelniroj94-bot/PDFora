@@ -22,18 +22,44 @@ export function ensureTypeStripping() {
   process.exit(result.status ?? 1);
 }
 
-export async function loadI18n() {
-  const src = path.join(frontendRoot, "lib", "i18n");
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-i18n-"));
+/**
+ * Copies the listed frontend-relative .ts files into a temp tree (same relative layout),
+ * adds ".ts" to extensionless relative imports, and imports them via Node type stripping.
+ * Returns { [basename without extension]: module }.
+ */
+async function loadTsFiles(relFiles) {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-ts-"));
   fs.writeFileSync(path.join(tmp, "package.json"), '{"type":"module"}');
-  for (const file of fs.readdirSync(src)) {
-    if (!file.endsWith(".ts") || file === "messages.ts") continue;
-    const code = fs.readFileSync(path.join(src, file), "utf8").replace(/from\s+"(\.\/[^".]+)"/g, 'from "$1.ts"');
-    fs.writeFileSync(path.join(tmp, file), code);
+  for (const rel of relFiles) {
+    const target = path.join(tmp, rel);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    const code = fs.readFileSync(path.join(frontendRoot, rel), "utf8").replace(/from\s+"(\.{1,2}\/[^"]+?)"/g, (m, spec) => (/\.(ts|tsx|json|mjs|js)$/.test(spec) ? m : `from "${spec}.ts"`));
+    fs.writeFileSync(target, code);
   }
-  const mods = {};
-  for (const name of ["config", "routing", "translate", "format", "preference", "switcher", "metadata"]) {
-    mods[name] = await import(pathToFileURL(path.join(tmp, `${name}.ts`)).href);
-  }
-  return mods;
+  const out = {};
+  for (const rel of relFiles) out[path.basename(rel).replace(/\.ts$/, "")] = await import(pathToFileURL(path.join(tmp, rel)).href);
+  return out;
+}
+
+/** Pure i18n modules. messages.ts and client.ts are skipped (bundler JSON imports / React hooks). */
+export async function loadI18n() {
+  const dir = path.join(frontendRoot, "lib", "i18n");
+  const skip = new Set(["messages.ts", "client.ts", "shell.ts"]);
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith(".ts") && !skip.has(f)).map((f) => `lib/i18n/${f}`);
+  return loadTsFiles(files);
+}
+
+/** Tool adapter, localized-route resolver and metadata, with the real catalog and legacy slugs. */
+export async function loadToolAdapter() {
+  return loadTsFiles([
+    "lib/i18n/config.ts",
+    "lib/i18n/routing.ts",
+    "lib/i18n/metadata.ts",
+    "components/toolCatalog.ts",
+    "lib/legacy-tool-slugs.ts",
+    "lib/tools/adapter.ts",
+    "lib/tools/localized-verification.ts",
+    "lib/tools/localized-route.ts",
+    "lib/tools/localized-metadata.ts",
+  ]);
 }

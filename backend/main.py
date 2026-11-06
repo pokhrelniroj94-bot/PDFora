@@ -2261,11 +2261,11 @@ async def pdf_page_counter(file: UploadFile = File(...)):
         size = await save_upload(file, src)
         reader = read_pdf(src)
         report = (
-            "PDFora - PDF Page Count Report\\n"
-            "================================\\n"
-            f"File name: {Path(file.filename).name}\\n"
-            f"Total pages: {len(reader.pages)}\\n"
-            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\\n"
+            "PDFora - PDF Page Count Report\n"
+            "================================\n"
+            f"File name: {Path(file.filename).name}\n"
+            f"Total pages: {len(reader.pages)}\n"
+            f"File size: {size:,} bytes ({size / (1024 * 1024):.2f} MB)\n"
         )
         out.write_text(report, encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Page-Count.txt", background=BackgroundTask(cleanup_job, job))
@@ -2303,7 +2303,7 @@ async def pdf_information(file: UploadFile = File(...)):
             f"Creator: {metadata.get('/Creator') or 'Not set'}",
             f"Encrypted: {'Yes' if reader.is_encrypted else 'No'}",
         ]
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Information.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
@@ -2331,7 +2331,7 @@ async def extract_pdf_bookmarks(file: UploadFile = File(...)):
         lines = ["PDFora - PDF Bookmarks", "=======================", ""]
         for level, title, page in toc:
             lines.append(f"{'  ' * max(0, level - 1)}Page {page}: {title}")
-        out.write_text("\\n".join(lines) + "\\n", encoding="utf-8")
+        out.write_text("\n".join(lines) + "\n", encoding="utf-8")
         return FileResponse(str(out), media_type="text/plain; charset=utf-8", filename="NIROJ-Bookmarks.txt", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
@@ -2684,17 +2684,12 @@ async def extract_pdf_page_images(file: UploadFile = File(...)):
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
+        if len(doc) == 0:
+            raise HTTPException(status_code=422, detail="This PDF has no pages to render.")
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-            count = 0
-            for page_index, page in enumerate(doc):
-                for image_index, item in enumerate(page.get_images(full=True), start=1):
-                    xref = item[0]
-                    extracted = doc.extract_image(xref)
-                    ext = extracted.get("ext", "bin")
-                    archive.writestr(f"page-{page_index + 1:04d}-image-{image_index:03d}.{ext}", extracted["image"])
-                    count += 1
-        if count == 0:
-            raise HTTPException(status_code=422, detail="No embedded images were found in this PDF.")
+            for page_index, page in enumerate(doc, start=1):
+                pixmap = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5), alpha=False)
+                archive.writestr(f"page-{page_index:04d}.png", pixmap.tobytes("png"))
         return FileResponse(str(out), media_type="application/zip", filename="NIROJ-Page-Images.zip", background=BackgroundTask(cleanup_job, job))
     finally:
         if doc is not None:
@@ -2716,20 +2711,22 @@ async def extract_pdf_fonts(file: UploadFile = File(...)):
         await save_upload(file, src)
         read_pdf(src)
         doc = fitz.open(src)
-        found = set()
+        seen = set()
+        extracted_count = 0
         with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
-            for page_index, page in enumerate(doc):
+            for page in doc:
                 for font in page.get_fonts(full=True):
                     xref = font[0]
-                    if not xref or xref in found:
+                    if not xref or xref in seen:
                         continue
-                    found.add(xref)
+                    seen.add(xref)
                     extracted = doc.extract_font(xref)
                     if extracted and extracted[3]:
                         name, ext, _, data = extracted
                         safe_name = "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in name)[:80]
                         archive.writestr(f"{safe_name or 'font'}-{xref}.{ext}", data)
-        if not found:
+                        extracted_count += 1
+        if extracted_count == 0:
             raise HTTPException(status_code=422, detail="No extractable embedded fonts were found.")
         return FileResponse(str(out), media_type="application/zip", filename="NIROJ-Fonts.zip", background=BackgroundTask(cleanup_job, job))
     finally:

@@ -2,7 +2,7 @@ import Link from "next/link";
 import AdsterraNative from "../../components/AdsterraNative";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { blogPosts, getBlogPost } from "../../../lib/blog-posts";
+import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
 
 const baseUrl = "https://pd-fora.vercel.app";
 
@@ -19,6 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.title,
     description: post.description,
     alternates: { canonical: url },
+    robots: isCatalogGeneratedGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
     keywords: [post.keyword, "free online tools", "tool tutorial", "how-to guide", "PDFora"],
     openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated },
     twitter: { card: "summary", title: post.title, description: post.description },

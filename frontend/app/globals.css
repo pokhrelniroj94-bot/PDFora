@@ -100,3 +100,20 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
   .pdfora-enter, .pdfora-pop-in, .pdfora-stagger > *, .pdfora-skeleton, .pdfora-spinner { animation: none !important; }
   .tool-card, .tool-directory-card, button:not(:disabled), a, input, select, textarea { transition: none !important; }
 }
+
+
+/* Use explicit .pdfora-enter and .pdfora-stagger classes for predictable page motion. */
+
+/* i18n (Phase 2) ------------------------------------------------------------
+   Script-appropriate system font stacks: no web-font downloads, so no layout shift
+   or extra requests. Each selector matches only its own language, so English pages
+   are unaffected. */
+:lang(ar) { font-family: "Segoe UI", "Noto Sans Arabic", Tahoma, var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
+:lang(ne), :lang(hi) { font-family: "Nirmala UI", "Noto Sans Devanagari", Mangal, var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
+:lang(zh-Hans) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
+:lang(ja) { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
+:lang(ko) { font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
+
+/* RTL helpers, active only inside an element with dir="rtl" (Arabic pages). */
+[dir="rtl"] .i18n-flip { transform: scaleX(-1); } /* mirror directional arrows/chevrons */
+.i18n-ltr { direction: ltr; unicode-bidi: isolate; } /* keep filenames, URLs, numbers and code left-to-right inside RTL text */

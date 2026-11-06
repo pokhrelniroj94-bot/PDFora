@@ -97,7 +97,20 @@ export function SmartToolCenter() {
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-950">
-      <section className="relative overflow-hidden bg-[#082321] px-4 py-12 text-white sm:px-6 sm:py-16">
+      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-xl">
+        <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-2 px-3 sm:px-6 lg:px-8">
+          <Link href="/" className="flex min-w-0 items-center gap-2.5 rounded-lg" aria-label="PDFora home">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-cyan-700 text-base font-black text-white shadow-sm">P</span>
+            <span className="truncate text-lg font-black tracking-tight text-slate-950">PDFora</span>
+          </Link>
+          <nav aria-label="Main navigation" className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <Link href="/ne" lang="ne" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2.5 text-[11px] font-extrabold text-blue-800 transition hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">नेपाली</Link>
+            <Link href="/market" className="inline-flex min-h-9 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2.5 text-[11px] font-bold text-teal-800 transition hover:border-teal-400 hover:bg-teal-100 sm:px-3 sm:text-xs"><span aria-hidden="true">📈</span><span className="ml-1">Market</span></Link>
+            <Link href="/tools" aria-current="page" className="inline-flex min-h-9 items-center justify-center rounded-lg bg-slate-950 px-3 text-[11px] font-bold text-white shadow-sm transition hover:bg-slate-800 sm:px-4 sm:text-xs">Tools</Link>
+          </nav>
+        </div>
+      </header>
+      <section className="pdfora-enter relative overflow-hidden bg-[#082321] px-4 py-12 text-white sm:px-6 sm:py-16">
         <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-32 h-96 w-96 rounded-full bg-teal-400/20 blur-3xl" />
         <div className="relative mx-auto max-w-7xl">
           <p className="text-xs font-black uppercase tracking-[.2em] text-teal-200">PDFora · Smart Tool Center</p>
@@ -121,14 +134,14 @@ export function SmartToolCenter() {
             <div><p className="text-xs font-black uppercase tracking-widest text-teal-700">Start with a task</p><h2 id="task-heading" className="mt-1 text-xl font-black">What do you need help with?</h2></div>
             <span className="text-xs text-slate-500">Tap a shortcut to explore</span>
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="pdfora-stagger grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {taskShortcuts.map((task) => <button key={task.label} onClick={() => chooseTask(task.query)} className="group flex min-h-24 flex-col items-start justify-center rounded-2xl border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-teal-400 hover:shadow-md"><span className="text-2xl" aria-hidden="true">{task.icon}</span><span className="mt-2 text-sm font-bold text-slate-800 group-hover:text-teal-800">{task.label}</span></button>)}
           </div>
         </section>
 
         {!query && category === "All" && <section className="mt-10" aria-labelledby="popular-heading">
           <div className="mb-4 flex items-end justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-widest text-orange-600">Quick access</p><h2 id="popular-heading" className="mt-1 text-xl font-black">Popular tools</h2></div><span className="text-xs text-slate-500">Frequently used starting points</span></div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="pdfora-stagger grid grid-cols-2 gap-3 sm:grid-cols-4">
             {popular.map((tool) => tool && <Link key={tool.href} href={tool.href} className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-teal-400 hover:shadow-md"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-xl" aria-hidden="true">{tool.icon || categoryIcons[tool.category] || "🛠️"}</span><span className="min-w-0"><span className="block text-sm font-bold text-slate-900 group-hover:text-teal-800">{tool.name}</span><span className="mt-1 block text-xs text-slate-500">{tool.category}</span></span><span className="ml-auto text-slate-400 transition group-hover:translate-x-1 group-hover:text-teal-700" aria-hidden="true">→</span></Link>)}
           </div>
         </section>}
@@ -143,7 +156,7 @@ export function SmartToolCenter() {
             {categories.map((item) => <button key={item.name} onClick={() => setCategory(item.name)} aria-pressed={category === item.name} className={"shrink-0 rounded-full px-4 py-2.5 text-sm font-bold transition " + (category === item.name ? "bg-teal-800 text-white shadow-sm" : "border border-slate-200 bg-white text-slate-700 hover:border-teal-400 hover:text-teal-800")}>{item.name}<span className={"ml-2 text-xs " + (category === item.name ? "text-teal-100" : "text-slate-400")}>{item.count}</span></button>)}
           </div>
 
-          {filtered.length ? <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filtered.length ? <div className="pdfora-stagger mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((tool) => <Link key={tool.href} href={tool.href} className="tool-directory-card group flex min-h-44 flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-teal-400">
               <div className="flex items-center justify-between gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-xl" aria-hidden="true">{tool.icon || categoryIcons[tool.category] || "🛠️"}</span><span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-600">{tool.category}</span></div>
               <h3 className="mt-4 text-sm font-extrabold text-slate-900 group-hover:text-teal-800">{tool.name}</h3>

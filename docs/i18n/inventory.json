@@ -1,0 +1,1086 @@
+{
+  "generatedFrom": "static source parse (no build)",
+  "counts": {
+    "pageRoutes": 63,
+    "apiRoutes": 6,
+    "catalogEntries": 125,
+    "categories": 10,
+    "legacyRootPdfSlugs": 49,
+    "blogSlugLiterals": {
+      "lib/blog-posts.ts": 8,
+      "lib/nepal-blog-posts.ts": 19,
+      "lib/tool-guides.ts": 0
+    }
+  },
+  "categories": {
+    "Career Tools": 3,
+    "PDF": 2,
+    "Finance": 6,
+    "Text": 25,
+    "Developer": 31,
+    "Image": 5,
+    "Math": 20,
+    "SEO": 6,
+    "Business": 8,
+    "Nepal": 19
+  },
+  "routes": [
+    {
+      "url": "/about",
+      "file": "app/about/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/add-background",
+      "file": "app/add-background/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/add-blank-pages",
+      "file": "app/add-blank-pages/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/add-bookmarks",
+      "file": "app/add-bookmarks/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/add-page-numbers",
+      "file": "app/add-page-numbers/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/api/ai-writing",
+      "file": "app/api/ai-writing/route.ts",
+      "kind": "api"
+    },
+    {
+      "url": "/api/global-news",
+      "file": "app/api/global-news/route.ts",
+      "kind": "api"
+    },
+    {
+      "url": "/api/nepal-forex",
+      "file": "app/api/nepal-forex/route.ts",
+      "kind": "api"
+    },
+    {
+      "url": "/api/nepal-market-news",
+      "file": "app/api/nepal-market-news/route.ts",
+      "kind": "api"
+    },
+    {
+      "url": "/api/nepse-market",
+      "file": "app/api/nepse-market/route.ts",
+      "kind": "api"
+    },
+    {
+      "url": "/api/nepse-research",
+      "file": "app/api/nepse-research/route.ts",
+      "kind": "api"
+    },
+    {
+      "url": "/bates-numbering",
+      "file": "app/bates-numbering/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/blog/[slug]",
+      "file": "app/blog/[slug]/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/blog",
+      "file": "app/blog/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/compare-pdf",
+      "file": "app/compare-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/compress-pdf",
+      "file": "app/compress-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/contact",
+      "file": "app/contact/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/crop-pdf",
+      "file": "app/crop-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/delete-pages",
+      "file": "app/delete-pages/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/edit-pdf-metadata",
+      "file": "app/edit-pdf-metadata/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/extract-bookmarks",
+      "file": "app/extract-bookmarks/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/extract-fonts",
+      "file": "app/extract-fonts/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/extract-images",
+      "file": "app/extract-images/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/extract-page-images",
+      "file": "app/extract-page-images/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/extract-pages",
+      "file": "app/extract-pages/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/flatten-pdf",
+      "file": "app/flatten-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/grayscale-pdf",
+      "file": "app/grayscale-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/header-footer",
+      "file": "app/header-footer/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/images-to-pdf",
+      "file": "app/images-to-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/market",
+      "file": "app/market/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/merge-pdf",
+      "file": "app/merge-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/ne",
+      "file": "app/ne/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/nepse-lab",
+      "file": "app/nepse-lab/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/ocr-pdf",
+      "file": "app/ocr-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/page-counter",
+      "file": "app/page-counter/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/",
+      "file": "app/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-information",
+      "file": "app/pdf-information/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-bmp",
+      "file": "app/pdf-to-bmp/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-csv",
+      "file": "app/pdf-to-csv/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-excel",
+      "file": "app/pdf-to-excel/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-html",
+      "file": "app/pdf-to-html/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-jpg",
+      "file": "app/pdf-to-jpg/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-json",
+      "file": "app/pdf-to-json/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-markdown",
+      "file": "app/pdf-to-markdown/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-png",
+      "file": "app/pdf-to-png/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-text",
+      "file": "app/pdf-to-text/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-tiff",
+      "file": "app/pdf-to-tiff/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-webp",
+      "file": "app/pdf-to-webp/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/pdf-to-word",
+      "file": "app/pdf-to-word/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/privacy",
+      "file": "app/privacy/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/protect-pdf",
+      "file": "app/protect-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/remove-annotations",
+      "file": "app/remove-annotations/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/remove-attachments",
+      "file": "app/remove-attachments/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/remove-blank-pages",
+      "file": "app/remove-blank-pages/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/remove-pdf-links",
+      "file": "app/remove-pdf-links/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/remove-pdf-metadata",
+      "file": "app/remove-pdf-metadata/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/reorder-pdf",
+      "file": "app/reorder-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/repair-pdf",
+      "file": "app/repair-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/resume-builder",
+      "file": "app/resume-builder/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/rotate-pdf",
+      "file": "app/rotate-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/rotate-selected-pages",
+      "file": "app/rotate-selected-pages/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/sign-pdf",
+      "file": "app/sign-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/split-by-bookmarks",
+      "file": "app/split-by-bookmarks/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/split-pdf",
+      "file": "app/split-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/terms",
+      "file": "app/terms/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/tools/[slug]",
+      "file": "app/tools/[slug]/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/tools",
+      "file": "app/tools/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/unlock-pdf",
+      "file": "app/unlock-pdf/page.tsx",
+      "kind": "page"
+    },
+    {
+      "url": "/watermark",
+      "file": "app/watermark/page.tsx",
+      "kind": "page"
+    }
+  ],
+  "tools": [
+    {
+      "slug": "resume-builder",
+      "name": "Professional Resume & CV Builder",
+      "category": "Career Tools"
+    },
+    {
+      "slug": "pdf-tools",
+      "name": "Explore 50+ PDF Tools",
+      "category": "PDF"
+    },
+    {
+      "slug": "loan-emi-calculator",
+      "name": "Loan & EMI Calculator",
+      "category": "Finance"
+    },
+    {
+      "slug": "compound-interest-sip-calculator",
+      "name": "Compound Interest & SIP Calculator",
+      "category": "Finance"
+    },
+    {
+      "slug": "discount-percentage-calculator",
+      "name": "Discount & Percentage Calculator",
+      "category": "Finance"
+    },
+    {
+      "slug": "currency-converter",
+      "name": "Currency Converter",
+      "category": "Finance"
+    },
+    {
+      "slug": "word-character-counter",
+      "name": "Word & Character Counter",
+      "category": "Text"
+    },
+    {
+      "slug": "case-converter",
+      "name": "Case Converter",
+      "category": "Text"
+    },
+    {
+      "slug": "lorem-ipsum-generator",
+      "name": "Lorem Ipsum Generator",
+      "category": "Text"
+    },
+    {
+      "slug": "text-diff-checker",
+      "name": "Text Diff Checker",
+      "category": "Text"
+    },
+    {
+      "slug": "json-formatter-validator",
+      "name": "JSON Formatter & Validator",
+      "category": "Developer"
+    },
+    {
+      "slug": "base64-encoder-decoder",
+      "name": "Base64 Encoder & Decoder",
+      "category": "Developer"
+    },
+    {
+      "slug": "url-encoder-decoder",
+      "name": "URL Encoder & Decoder",
+      "category": "Developer"
+    },
+    {
+      "slug": "hash-generator",
+      "name": "Hash Generator",
+      "category": "Developer"
+    },
+    {
+      "slug": "image-compressor",
+      "name": "Image Compressor",
+      "category": "Image"
+    },
+    {
+      "slug": "image-format-converter",
+      "name": "Image Format Converter",
+      "category": "Image"
+    },
+    {
+      "slug": "color-picker-palette",
+      "name": "Color Picker & Palette Generator",
+      "category": "Image"
+    },
+    {
+      "slug": "percentage-change-calculator",
+      "name": "Percentage Change Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "average-calculator",
+      "name": "Average Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "ratio-simplifier",
+      "name": "Ratio Simplifier",
+      "category": "Math"
+    },
+    {
+      "slug": "fraction-calculator",
+      "name": "Fraction Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "unit-converter",
+      "name": "Unit Converter",
+      "category": "Math"
+    },
+    {
+      "slug": "age-calculator",
+      "name": "Age Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "date-difference-calculator",
+      "name": "Date Difference Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "time-duration-calculator",
+      "name": "Time Duration Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "remove-duplicate-lines",
+      "name": "Remove Duplicate Lines",
+      "category": "Text"
+    },
+    {
+      "slug": "sort-lines",
+      "name": "Sort Text Lines",
+      "category": "Text"
+    },
+    {
+      "slug": "reverse-text",
+      "name": "Reverse Text Generator",
+      "category": "Text"
+    },
+    {
+      "slug": "text-to-slug",
+      "name": "Text to URL Slug Converter",
+      "category": "Text"
+    },
+    {
+      "slug": "whitespace-cleaner",
+      "name": "Whitespace Cleaner",
+      "category": "Text"
+    },
+    {
+      "slug": "character-frequency",
+      "name": "Character Frequency Counter",
+      "category": "Text"
+    },
+    {
+      "slug": "password-generator",
+      "name": "Password Generator",
+      "category": "Text"
+    },
+    {
+      "slug": "uuid-generator",
+      "name": "UUID Generator",
+      "category": "Developer"
+    },
+    {
+      "slug": "html-encoder-decoder",
+      "name": "HTML Encoder & Decoder",
+      "category": "Developer"
+    },
+    {
+      "slug": "regex-tester",
+      "name": "Regex Tester",
+      "category": "Developer"
+    },
+    {
+      "slug": "jwt-decoder",
+      "name": "JWT Decoder",
+      "category": "Developer"
+    },
+    {
+      "slug": "color-contrast-checker",
+      "name": "Color Contrast Checker",
+      "category": "Developer"
+    },
+    {
+      "slug": "css-minifier",
+      "name": "CSS Minifier",
+      "category": "Developer"
+    },
+    {
+      "slug": "json-to-csv",
+      "name": "JSON to CSV Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "meta-title-checker",
+      "name": "SEO Meta Title Checker",
+      "category": "SEO"
+    },
+    {
+      "slug": "meta-description-checker",
+      "name": "Meta Description Checker",
+      "category": "SEO"
+    },
+    {
+      "slug": "keyword-density-checker",
+      "name": "Keyword Density Checker",
+      "category": "SEO"
+    },
+    {
+      "slug": "robots-txt-generator",
+      "name": "Robots.txt Generator",
+      "category": "SEO"
+    },
+    {
+      "slug": "sitemap-generator",
+      "name": "XML Sitemap Generator",
+      "category": "SEO"
+    },
+    {
+      "slug": "open-graph-preview",
+      "name": "Open Graph Preview Tool",
+      "category": "SEO"
+    },
+    {
+      "slug": "profit-margin-calculator",
+      "name": "Profit Margin Calculator",
+      "category": "Business"
+    },
+    {
+      "slug": "markup-calculator",
+      "name": "Markup Calculator",
+      "category": "Business"
+    },
+    {
+      "slug": "break-even-calculator",
+      "name": "Break-even Calculator",
+      "category": "Business"
+    },
+    {
+      "slug": "sales-tax-calculator",
+      "name": "Sales Tax Calculator",
+      "category": "Business"
+    },
+    {
+      "slug": "salary-breakdown-calculator",
+      "name": "Salary Breakdown Calculator",
+      "category": "Business"
+    },
+    {
+      "slug": "savings-goal-calculator",
+      "name": "Savings Goal Calculator",
+      "category": "Business"
+    },
+    {
+      "slug": "url-query-parser",
+      "name": "URL Query String Parser",
+      "category": "Developer"
+    },
+    {
+      "slug": "xml-formatter-validator",
+      "name": "XML Formatter & Validator",
+      "category": "Developer"
+    },
+    {
+      "slug": "notes-to-pdf",
+      "name": "Notes to PDF",
+      "category": "PDF"
+    },
+    {
+      "slug": "word-frequency-counter",
+      "name": "Word Frequency Counter",
+      "category": "Text"
+    },
+    {
+      "slug": "reading-time-calculator",
+      "name": "Reading Time Calculator",
+      "category": "Text"
+    },
+    {
+      "slug": "line-counter",
+      "name": "Line Counter",
+      "category": "Text"
+    },
+    {
+      "slug": "sentence-counter",
+      "name": "Sentence Counter",
+      "category": "Text"
+    },
+    {
+      "slug": "email-extractor",
+      "name": "Email Extractor",
+      "category": "Text"
+    },
+    {
+      "slug": "url-extractor",
+      "name": "URL Extractor",
+      "category": "Text"
+    },
+    {
+      "slug": "phone-number-extractor",
+      "name": "Phone Number Extractor",
+      "category": "Text"
+    },
+    {
+      "slug": "number-extractor",
+      "name": "Number Extractor",
+      "category": "Text"
+    },
+    {
+      "slug": "hashtag-extractor",
+      "name": "Hashtag Extractor",
+      "category": "Text"
+    },
+    {
+      "slug": "remove-duplicate-words",
+      "name": "Remove Duplicate Words",
+      "category": "Text"
+    },
+    {
+      "slug": "find-replace-text",
+      "name": "Find and Replace Text",
+      "category": "Text"
+    },
+    {
+      "slug": "text-to-binary",
+      "name": "Text to Binary Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "binary-to-text",
+      "name": "Binary to Text Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "text-to-hex",
+      "name": "Text to Hex Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "hex-to-text",
+      "name": "Hex to Text Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "morse-code-translator",
+      "name": "Morse Code Translator",
+      "category": "Developer"
+    },
+    {
+      "slug": "palindrome-checker",
+      "name": "Palindrome Checker",
+      "category": "Text"
+    },
+    {
+      "slug": "acronym-generator",
+      "name": "Acronym Generator",
+      "category": "Text"
+    },
+    {
+      "slug": "camel-case-converter",
+      "name": "Camel Case Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "snake-case-converter",
+      "name": "Snake Case Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "kebab-case-converter",
+      "name": "Kebab Case Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "html-tag-stripper",
+      "name": "HTML Tag Stripper",
+      "category": "Developer"
+    },
+    {
+      "slug": "csv-to-json",
+      "name": "CSV to JSON Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "json-to-yaml",
+      "name": "JSON to YAML Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "json-escape-unescape",
+      "name": "JSON Escape and Unescape Tool",
+      "category": "Developer"
+    },
+    {
+      "slug": "url-validator",
+      "name": "URL Validator",
+      "category": "Developer"
+    },
+    {
+      "slug": "email-validator",
+      "name": "Email Validator",
+      "category": "Developer"
+    },
+    {
+      "slug": "password-strength-checker",
+      "name": "Password Strength Checker",
+      "category": "Developer"
+    },
+    {
+      "slug": "bmi-calculator",
+      "name": "BMI Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "bmr-calculator",
+      "name": "BMR Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "tip-calculator",
+      "name": "Tip Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "split-bill-calculator",
+      "name": "Split Bill Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "simple-interest-calculator",
+      "name": "Simple Interest Calculator",
+      "category": "Finance"
+    },
+    {
+      "slug": "commission-calculator",
+      "name": "Commission Calculator",
+      "category": "Business"
+    },
+    {
+      "slug": "hourly-to-salary-calculator",
+      "name": "Hourly to Salary Calculator",
+      "category": "Business"
+    },
+    {
+      "slug": "percentage-of-number-calculator",
+      "name": "Percentage of a Number Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "gcd-lcm-calculator",
+      "name": "GCD and LCM Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "prime-number-checker",
+      "name": "Prime Number Checker",
+      "category": "Math"
+    },
+    {
+      "slug": "random-number-generator",
+      "name": "Random Number Generator",
+      "category": "Math"
+    },
+    {
+      "slug": "dice-roller",
+      "name": "Dice Roller",
+      "category": "Math"
+    },
+    {
+      "slug": "unix-timestamp-converter",
+      "name": "Unix Timestamp Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "date-add-subtract-calculator",
+      "name": "Date Add or Subtract Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "business-days-calculator",
+      "name": "Business Days Calculator",
+      "category": "Math"
+    },
+    {
+      "slug": "px-rem-converter",
+      "name": "PX to REM Converter",
+      "category": "Developer"
+    },
+    {
+      "slug": "aspect-ratio-calculator",
+      "name": "Aspect Ratio Calculator",
+      "category": "Image"
+    },
+    {
+      "slug": "color-converter",
+      "name": "HEX RGB HSL Color Converter",
+      "category": "Image"
+    },
+    {
+      "slug": "css-gradient-generator",
+      "name": "CSS Gradient Generator",
+      "category": "Developer"
+    },
+    {
+      "slug": "roman-numeral-converter",
+      "name": "Roman Numeral Converter",
+      "category": "Math"
+    },
+    {
+      "slug": "nepali-date-converter",
+      "name": "Nepali Date Converter (BS ↔ AD)",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepali-vat-calculator",
+      "name": "Nepal VAT Calculator (13%)",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepal-land-area-converter",
+      "name": "Ropani Aana Paisa Daam Converter",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepali-number-converter",
+      "name": "Nepali Number to Words Converter",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepal-phone-validator",
+      "name": "Nepal Mobile Number Checker",
+      "category": "Nepal"
+    },
+    {
+      "slug": "gold-tola-gram-converter",
+      "name": "Tola to Gram Converter",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepali-calendar",
+      "name": "Nepali Calendar (BS Patro)",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepali-digit-converter",
+      "name": "Nepali Unicode Digit Converter",
+      "category": "Nepal"
+    },
+    {
+      "slug": "loksewa-photo-resizer",
+      "name": "Loksewa & Online Form Photo Resizer",
+      "category": "Nepal"
+    },
+    {
+      "slug": "neb-gpa-calculator",
+      "name": "NEB GPA Calculator",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepal-share-calculator",
+      "name": "NEPSE Share Buy/Sell Profit Calculator",
+      "category": "Nepal"
+    },
+    {
+      "slug": "preeti-unicode-converter",
+      "name": "Preeti ↔ Nepali Unicode Converter",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepal-forex-rates",
+      "name": "Nepal Rastra Bank Exchange Rates",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepal-salary-tax-calculator",
+      "name": "Nepal Salary Tax Calculator FY 2083/84",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepal-electricity-bill-calculator",
+      "name": "NEA Electricity Bill Calculator",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepal-public-holidays-2083",
+      "name": "Nepal Public Holidays Calendar 2083",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepali-unicode-typing",
+      "name": "Nepali Unicode Typing Tool",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepse-market-news",
+      "name": "NEPSE Market & IPO News",
+      "category": "Nepal"
+    },
+    {
+      "slug": "nepse-dividend-calculator",
+      "name": "NEPSE Dividend & Bonus Share Calculator",
+      "category": "Nepal"
+    },
+    {
+      "slug": "ai-resume-writer",
+      "name": "AI Resume & CV Writer",
+      "category": "Career Tools"
+    },
+    {
+      "slug": "ai-cover-letter-generator",
+      "name": "AI Cover Letter Generator",
+      "category": "Career Tools"
+    },
+    {
+      "slug": "ai-humanizer",
+      "name": "AI Humanizer & Text Rewriter",
+      "category": "Text"
+    },
+    {
+      "slug": "market-ai",
+      "name": "PDFora Smart Market AI",
+      "category": "Finance"
+    }
+  ],
+  "legacy": [
+    "add-background",
+    "add-blank-pages",
+    "add-bookmarks",
+    "add-page-numbers",
+    "bates-numbering",
+    "compare-pdf",
+    "compress-pdf",
+    "crop-pdf",
+    "delete-pages",
+    "edit-pdf-metadata",
+    "extract-bookmarks",
+    "extract-fonts",
+    "extract-images",
+    "extract-page-images",
+    "extract-pages",
+    "flatten-pdf",
+    "grayscale-pdf",
+    "header-footer",
+    "images-to-pdf",
+    "merge-pdf",
+    "page-counter",
+    "pdf-information",
+    "pdf-to-bmp",
+    "pdf-to-csv",
+    "pdf-to-excel",
+    "pdf-to-html",
+    "pdf-to-jpg",
+    "pdf-to-json",
+    "pdf-to-markdown",
+    "pdf-to-png",
+    "pdf-to-text",
+    "pdf-to-tiff",
+    "pdf-to-webp",
+    "pdf-to-word",
+    "protect-pdf",
+    "remove-annotations",
+    "remove-attachments",
+    "remove-blank-pages",
+    "remove-pdf-links",
+    "remove-pdf-metadata",
+    "reorder-pdf",
+    "repair-pdf",
+    "rotate-pdf",
+    "rotate-selected-pages",
+    "sign-pdf",
+    "split-by-bookmarks",
+    "split-pdf",
+    "unlock-pdf",
+    "watermark"
+  ],
+  "blog": {
+    "lib/blog-posts.ts": [
+      "compress-pdf-to-under-1mb-online",
+      "merge-multiple-pdf-files-into-one-document",
+      "convert-jpg-images-to-one-pdf-on-phone",
+      "convert-pdf-pages-to-jpg-images",
+      "split-pdf-and-extract-selected-pages",
+      "reduce-pdf-file-size-for-email-attachment",
+      "convert-pdf-table-to-excel-spreadsheet",
+      "convert-pdf-to-editable-word-document"
+    ],
+    "lib/nepal-blog-posts.ts": [
+      "nepali-date-converter-bs-to-ad-guide",
+      "nepal-vat-calculator-13-percent-guide",
+      "ropani-aana-paisa-daam-land-measurement-guide",
+      "tola-to-gram-gold-weight-conversion-nepal",
+      "nepali-number-to-words-lakh-crore-guide",
+      "nepali-calendar-bs-month-guide",
+      "neb-gpa-calculator-nepal-guide",
+      "loksewa-online-form-photo-resizer-guide",
+      "nepse-share-buy-sell-profit-calculator-guide",
+      "english-to-nepali-digits-converter-guide",
+      "preeti-to-unicode-nepali-font-converter-guide",
+      "nepal-rastra-bank-daily-exchange-rates-guide",
+      "nepal-salary-income-tax-calculator-2083-84-guide",
+      "nea-electricity-bill-calculator-nepal-guide",
+      "nepal-public-holidays-2083-calendar-guide",
+      "nepali-unicode-typing-online-guide",
+      "nepal-mobile-number-format-checker-guide",
+      "nepse-market-news-and-ipo-updates",
+      "nepse-cash-dividend-and-bonus-share-calculator-guide"
+    ],
+    "lib/tool-guides.ts": []
+  }
+}

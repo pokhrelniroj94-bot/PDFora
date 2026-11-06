@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "PDF Page Counter Online Free | PDFora",
-  description: "Count PDF pages online and get a downloadable report with total pages and file size. Fast, simple and free with PDFora.",
-  alternates: { canonical: "https://pd-fora.vercel.app/page-counter" },
-};
+export const metadata = getPdfToolMetadata("page-counter");
 
 export default function Page() {
   const description = "Count the pages in a PDF and download a simple report with the page count and file size.";

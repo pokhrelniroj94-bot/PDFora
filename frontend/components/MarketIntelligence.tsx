@@ -2,10 +2,28 @@
 
 import { useState } from "react";
 
+
+type NewsStory = { title: string; link: string; publishedAt: string; source: string };
+type NewsReview = { stories: NewsStory[]; sentiment: "Positive" | "Negative" | "Mixed / neutral"; impact: number; note: string };
+function reviewNews(payload: { market?: NewsStory[]; ipo?: NewsStory[] }, symbol: string): NewsReview {
+  const all = [...(payload.market || []), ...(payload.ipo || [])], now = Date.now(), ticker = symbol.trim().toLowerCase();
+  const relevant = all.filter(story => {
+    const age = now - Date.parse(story.publishedAt), title = story.title.toLowerCase();
+    const general = /nepse|stock market|share market|sebon|nrb|monetary policy|interest rate|liquidity|banking sector|capital market|ipo|fpo|dividend|bonus share|right share|merger|acquisition|agm|broker/.test(title);
+    return Number.isFinite(age) && age >= -300000 && age <= 30*86400000 && (ticker === "nepse" ? general : Boolean(ticker) && title.includes(ticker));
+  }).sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,12);
+  const pos=/profit|earnings growth|dividend|bonus share|right share|buyback|upgrade|approval|record high|strong demand|liquidity injection|rate cut|interest rate cut|capital increase|positive outlook|growth/;
+  const neg=/fraud|scam|penalty|fine|investigation|default|loss|decline|crash|selloff|selling pressure|rate hike|interest rate hike|liquidity crunch|suspension|regulatory action|downgrade|lawsuit|weak outlook|non.?performing loan/;
+  let score=0;
+  for(const story of relevant){const h=(now-Date.parse(story.publishedAt))/3600000, fresh=h<=24?1:h<=72?.7:h<=168?.4:.2, official=/nepse|sebon|nepal rastra bank|nrb/i.test(story.source+" "+story.title)?1.35:1; if(pos.test(story.title.toLowerCase()))score+=fresh*official;if(neg.test(story.title.toLowerCase()))score-=fresh*official;}
+  const sentiment=score>=.8?"Positive":score<=-.8?"Negative":"Mixed / neutral";
+  return {stories:relevant,sentiment,impact:Math.max(-2,Math.min(2,score)),note:relevant.length?relevant.length+" recent headlines reviewed. Headlines are only a screening signal; verify the linked announcement and full context.":"No sufficiently relevant recent headlines found. News sentiment is unavailable, not neutral."};
+}
+
 type Point = { date: string; open?: number; high?: number; low?: number; close: number; volume?: number };
 type Analysis = {
   count: number; latestDate: string; close: number; ema20: number; ema50: number; rsi: number;
-  macd: number; macdSignal: number; score: number; signal: "Potential BUY setup" | "Potential SELL / EXIT setup" | "Potential SELL / SHORT setup" | "Wait / neutral";
+  macd: number; macdSignal: number; score: number; signal: "Potential BUY setup" | "HOLD / WATCH" | "Potential SELL / EXIT setup" | "Potential SELL / SHORT setup" | "Wait / neutral";
   volatility: number; risk: "Lower" | "Moderate" | "High" | "Very high";
   support: number; resistance: number; stop: number | null; target: number | null;
   entry: string; risks: string[]; reasons: string[]; annualizer: number;
@@ -57,6 +75,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
   const change5 = closes.length > 5 ? (last.close / closes[closes.length - 6] - 1) * 100 : 0;
   const volumes = rows.slice(-21).map((p) => p.volume).filter((v): v is number => typeof v === "number" && Number.isFinite(v));
   const volumeConfirm = volumes.length >= 10 && typeof last.volume === "number" && last.volume > avg(volumes.slice(0, -1)) * 1.15;
+  const distributionRisk = volumeConfirm && last.close < rows[rows.length - 2].close;
   let score = 0;
   const reasons: string[] = [];
   if (trendUp) { score += 2; reasons.push("Price is above EMA20 and EMA20 is above EMA50 (uptrend alignment)."); }
@@ -71,7 +90,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
   else if (change5 < -2) { score -= 1; reasons.push("Five-session momentum is negative."); }
   if (volumeConfirm && last.close > rows[rows.length - 2].close) { score += 1; reasons.push("Latest volume is above its recent average while price is rising."); }
   if (volumeConfirm && last.close < rows[rows.length - 2].close) { score -= 1; reasons.push("Latest volume is above its recent average while price is falling."); }
-  const signal = score >= 3 ? "Potential BUY setup" : score <= -3 ? (asset === "nepse" ? "Potential SELL / EXIT setup" : "Potential SELL / SHORT setup") : "Wait / neutral";
+  const signal = distributionRisk && score >= 3 ? (trendUp ? "HOLD / WATCH" : "Wait / neutral") : score >= 3 ? "Potential BUY setup" : score <= -3 ? (asset === "nepse" ? "Potential SELL / EXIT setup" : "Potential SELL / SHORT setup") : score >= 1 && trendUp ? "HOLD / WATCH" : "Wait / neutral";
   const recent = rows.slice(-20);
   const lows = recent.map((p) => p.low).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
   const highs = recent.map((p) => p.high).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
@@ -80,29 +99,36 @@ function analyse(points: Point[], asset: string): Analysis | null {
   const risk = volatility > (asset === "crypto" ? 85 : asset === "forex" ? 22 : 48) ? "Very high"
     : volatility > (asset === "crypto" ? 55 : asset === "forex" ? 14 : 32) ? "High"
     : volatility > (asset === "crypto" ? 30 : asset === "forex" ? 8 : 18) ? "Moderate" : "Lower";
+  const risks: string[] = [];
+  const stale = hasStaleMarketData(last.date, asset);
+  const finalSignal = stale ? "Wait / neutral" : signal;
   let stop: number | null = null, target: number | null = null;
-  if (signal === "Potential BUY setup") {
+  if (finalSignal === "Potential BUY setup") {
     stop = lows.length ? support * 0.995 : last.close * (1 - Math.max(0.015, dailyVol * 2));
     target = last.close + 2 * (last.close - stop);
-  } else if (signal === "Potential SELL / EXIT setup" || signal === "Potential SELL / SHORT setup") {
+  } else if (finalSignal === "Potential SELL / EXIT setup" || finalSignal === "Potential SELL / SHORT setup") {
     stop = highs.length ? resistance * 1.005 : last.close * (1 + Math.max(0.015, dailyVol * 2));
     target = last.close - 2 * (stop - last.close);
   }
-  const risks: string[] = [];
-  const ageDays = Math.max(0, (Date.now() - Date.parse(last.date)) / 86400000);
-  if (Number.isFinite(ageDays) && ageDays > (asset === "crypto" ? 2 : 5)) risks.push("The latest observation is stale for this market. Refresh the file before relying on this analysis.");
+  if (stale) risks.push("The latest observation is stale for this market. New BUY/SELL signals are suppressed until fresh data is available.");
   if (risk === "High" || risk === "Very high") risks.push("Recent annualized volatility is elevated for this asset class.");
+  if (rsiValue >= 68 && rsiValue < 72) risks.push("RSI is approaching the overbought zone; momentum is strong but a fresh entry may have limited room before a pullback.");
   if (rsiValue >= 72) risks.push("RSI is overbought; a pullback can occur even while the broader trend is positive.");
+  if (distributionRisk) risks.push("Distribution warning: volume is unusually high while the latest close is lower. This weakens a bullish setup, so the engine blocks a BUY signal until price/volume behaviour improves.");
   if (rsiValue <= 28) risks.push("RSI is deeply oversold; this is not proof that a bottom has formed.");
   if (rows.length < 100) risks.push("The history is limited; longer-term trend context may be incomplete.");
   if (!volumeConfirm) risks.push("No strong volume confirmation was detected, or volume data is unavailable.");
   if (!lows.length || !highs.length) risks.push("The file/source has no full OHLC range; support, resistance and risk levels are close-based estimates.");
-  const entry = signal === "Potential BUY setup"
+  const entry = stale
+    ? `No BUY/SELL signal: the latest daily observation is ${last.date}. Refresh or wait for a new completed trading session.`
+    : finalSignal === "Potential BUY setup"
     ? `Potential long setup only after a completed candle holds above EMA20 (${e20[i].toFixed(4)}) and the next session confirms. Avoid chasing a sharp gap.`
-    : signal.includes("SELL")
+    : finalSignal.includes("SELL")
       ? (asset === "nepse" ? `Downside/exit pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). NEPSE short-selling availability is limited; treat this as an exit/risk-review condition, not an instruction to short.` : `Downside pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). A short position requires a separate risk plan and may not be suitable for every trader.`)
+      : finalSignal === "HOLD / WATCH"
+      ? `Existing holders may watch the uptrend while price remains above EMA20 (${e20[i].toFixed(4)}). This is not a fresh-entry confirmation; review position risk and invalidation levels.`
       : `Wait for a confirmed close above EMA20 (${e20[i].toFixed(4)}) with improving momentum, or a confirmed breakdown below support. Current indicators are mixed.`;
-  return { count: rows.length, latestDate: last.date, close: last.close, ema20: e20[i], ema50: e50[i], rsi: rsiValue, macd: macdLine[i], macdSignal: macdSignal[i], score, signal, volatility, risk, support, resistance, stop, target, entry, risks, reasons, annualizer };
+  return { count: rows.length, latestDate: last.date, close: last.close, ema20: e20[i], ema50: e50[i], rsi: rsiValue, macd: macdLine[i], macdSignal: macdSignal[i], score, signal: finalSignal, volatility, risk, support, resistance, stop, target, entry, risks, reasons, annualizer };
 }
 function splitCsvLine(line: string) {
   const cells: string[] = [];
@@ -177,6 +203,21 @@ function parseCsv(text: string): Point[] {
 }
 const fmt = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: 4 });
 const pct = (v: number) => v.toFixed(2) + "%";
+function hasStaleMarketData(latestDate: string, asset: string) {
+  const latest = new Date(`${latestDate}T00:00:00Z`);
+  const today = new Date();
+  const end = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+  if (!Number.isFinite(latest.getTime()) || latest > end) return false;
+  let expectedSessions = 0;
+  const cursor = new Date(latest.getTime());
+  while (cursor < end) {
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+    const day = cursor.getUTCDay();
+    const isSession = asset === "crypto" || (asset === "forex" ? day !== 0 && day !== 6 : day !== 5 && day !== 6);
+    if (isSession) expectedSessions++;
+  }
+  return expectedSessions >= 2;
+}
 
 export default function MarketIntelligence() {
   const [asset, setAsset] = useState("nepse");
@@ -188,6 +229,7 @@ export default function MarketIntelligence() {
   const [error, setError] = useState("");
   const [aiText, setAiText] = useState("");
   const [aiBusy, setAiBusy] = useState(false);
+  const [newsReview, setNewsReview] = useState<NewsReview | null>(null);
 
   async function loadNepse() {
     setBusy(true); setError(""); setAnalysis(null); setAiText("");
@@ -201,7 +243,17 @@ export default function MarketIntelligence() {
       })).filter((p: Point) => p.date && Number.isFinite(p.close) && p.close > 0);
       const result = analyse(rows, "nepse");
       if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
-      setAnalysis(result); setSource(`${data.source || "YONEPSE dataset"} · latest history ${data.latestHistoryDate || result.latestDate}`);
+      const newsResponse = await fetch(`/api/nepal-market-news?symbol=${encodeURIComponent(symbol)}`, { cache: "no-store" });
+      if (!newsResponse.ok) throw new Error("News service unavailable; a news-verified signal cannot be issued.");
+      const newsPayload = await newsResponse.json();
+      const reviewed = reviewNews(newsPayload, symbol);
+      setNewsReview(reviewed);
+      const combined: Analysis = { ...result };
+      if (reviewed.sentiment === "Negative" && combined.signal === "Potential BUY setup") { combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "Negative recent headlines block a fresh BUY until original announcements are reviewed."]; }
+      else if (reviewed.sentiment === "Positive" && combined.signal.includes("SELL")) { combined.signal = "Wait / neutral"; combined.risks = [...combined.risks, "Positive headlines conflict with technical downside; wait for confirmation."]; }
+      else if (reviewed.sentiment === "Mixed / neutral") { if (combined.signal === "Potential BUY setup") combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "News is mixed or insufficient; a fresh BUY is blocked until there is clearer news context and technical confirmation."]; }
+      combined.reasons = [...combined.reasons, `News review: ${reviewed.sentiment}. ${reviewed.note}`];
+      setAnalysis(combined); setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
     } catch (err) { setError(err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
     finally { setBusy(false); }
   }
@@ -223,14 +275,22 @@ export default function MarketIntelligence() {
     if (!analysis) return;
     setAiBusy(true); setError(""); setAiText("");
     try {
+      let research: unknown = null;
+      if (asset === "nepse" && symbol.trim().toUpperCase() !== "NEPSE") {
+        const researchResponse = await fetch("/api/nepse-research?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()), { cache: "no-store" });
+        const researchPayload = await researchResponse.json();
+        if (researchResponse.ok) research = researchPayload;
+      }
       const response = await fetch("/api/ai-writing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
         kind: "market-explain",
-        analysis: JSON.stringify({ asset, symbol: asset === "nepse" ? symbol : marketSymbol, ...analysis, reasons: analysis.reasons, risks: analysis.risks }),
+        analysis: JSON.stringify({ asset, symbol: asset === "nepse" ? symbol : marketSymbol, ...analysis, reasons: analysis.reasons, risks: analysis.risks, newsReview: asset === "nepse" ? newsReview : null }),
+        research: research ? JSON.stringify(research).slice(0, 8500) : "",
+        question: "Prepare a Nepal-focused research note for this selected symbol. Explain the evidence, data gaps, valuation/fundamentals only if provided, technical setup, catalysts and risks.",
       }) });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "Free AI explanation is unavailable.");
+      if (!response.ok) throw new Error(payload.error || "Free AI research is unavailable.");
       setAiText(String(payload.text || ""));
-    } catch (err) { setError(err instanceof Error ? err.message : "AI explanation unavailable."); }
+    } catch (err) { setError(err instanceof Error ? err.message : "AI research unavailable."); }
     finally { setAiBusy(false); }
   }
 
@@ -240,6 +300,7 @@ export default function MarketIntelligence() {
       <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Smart Market AI</p>
       <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">Market Intelligence & Risk Analyzer</h1>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Analyse NEPSE, Forex and Crypto price history with trend, momentum, volatility, support/resistance and rule-based entry/exit conditions. Optional free AI explains the calculated results.</p>
+      <a href="/nepse-lab" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">Open NEPSE Quant Strategy Lab <span aria-hidden="true">→</span></a>
     </header>
 
     <section className={card}>
@@ -275,8 +336,9 @@ export default function MarketIntelligence() {
         <div className={card}><h3 className="font-extrabold text-slate-900">Why the engine reached this view</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-slate-700">{analysis.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul></div>
       </section>
       <section className={card}><h3 className="font-extrabold text-slate-900">Risk warnings</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-amber-900">{analysis.risks.map((risk) => <li key={risk}>{risk}</li>)}</ul></section>
+      <section className={card}><h3 className="font-extrabold text-slate-900">Market news cross-check</h3><p className="mt-2 text-sm text-slate-600">News sentiment: <strong>{newsReview?.sentiment || "Not checked"}</strong> · {newsReview?.stories.length || 0} relevant headlines</p><p className="mt-2 text-sm text-slate-600">{newsReview?.note || "News checked alongside technical indicators."}</p>{newsReview?.stories.length ? <ul className="mt-3 space-y-3">{newsReview.stories.map(story=><li key={story.link} className="border-t border-slate-100 pt-3"><a href={story.link} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal-800 underline">{story.title}</a><p className="mt-1 text-xs text-slate-500">{story.source} · {new Date(story.publishedAt).toLocaleString()}</p></li>)}</ul> : <p className="mt-3 text-xs text-amber-700">No relevant recent news found; confidence is reduced.</p>}</section>
       <section className={card}>
-        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">AI explanation (optional)</h3><p className="mt-1 text-xs text-slate-500">The model explains the calculations; it does not create or override the signal.</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Explaining…" : "Explain with free AI"}</button></div>
+        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">NEPSE AI research report</h3><p className="mt-1 text-xs text-slate-500">Combines technical indicators with available company financials, profile, dividends and disclosures. Missing records are clearly marked; AI cannot override the computed signal.</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Researching…" : "Generate research report"}</button></div>
         {aiText && <p className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{aiText}</p>}
       </section>
     </div>}

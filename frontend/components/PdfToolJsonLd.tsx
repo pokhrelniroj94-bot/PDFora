@@ -1,0 +1,22 @@
+import type { ReactElement } from "react";
+
+export interface PdfToolFaq { question: string; answer: string; }
+export interface PdfToolJsonLdProps { name: string; description: string; url: string; locale: "en" | "ne"; faqs?: PdfToolFaq[]; price?: string; }
+
+function safeJsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
+/** Server component; schema must match visible content in the selected locale. */
+export default function PdfToolJsonLd({ name, description, url, locale, faqs = [], price }: PdfToolJsonLdProps): ReactElement {
+  const graph: Record<string, unknown>[] = [{
+    "@type": "SoftwareApplication", name, description, url,
+    applicationCategory: "UtilitiesApplication", operatingSystem: "Any", inLanguage: locale,
+    ...(price !== undefined ? { offers: { "@type": "Offer", price, priceCurrency: "USD" } } : {}),
+  }];
+  if (faqs.length) graph.push({
+    "@type": "FAQPage", inLanguage: locale,
+    mainEntity: faqs.map(({ question, answer }) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })),
+  });
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({ "@context": "https://schema.org", "@graph": graph }) }} />;
+}

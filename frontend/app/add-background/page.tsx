@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "Add Background to PDF Online | PDFora",
-  description: "Add a text background to every page of your PDF, with selectable preset colors.",
-  alternates: { canonical: "https://pd-fora.vercel.app/add-background" },
-};
+export const metadata = getPdfToolMetadata("add-background");
 
 export default function Page() {
   const description = "Add a subtle text background such as DRAFT to every page of a PDF.";

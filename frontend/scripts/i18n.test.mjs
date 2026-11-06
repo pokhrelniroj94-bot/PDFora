@@ -5,6 +5,8 @@ import path from "node:path";
 import test from "node:test";
 import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui.ts";
+import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne.ts";
+import { toolGuides } from "../lib/tool-guides.ts";
 
 ensureTypeStripping();
 const { config, routing, translate, format, preference, switcher, metadata } = await loadI18n();
@@ -179,4 +181,18 @@ test("PDF tool UI dictionaries cover every supported locale", () => {
     }
   }
   assert.equal(getPdfToolCopy("/unknown/merge-pdf").chooseFile, getPdfToolCopy("/merge-pdf").chooseFile);
+});
+
+
+test("Nepali PDF guide translations cover all 49 live tool slugs", () => {
+  assert.equal(toolGuides.length, 49, "catalog should contain 49 enabled PDF tools");
+  assert.equal(Object.keys(nepaliToolGuides).length, 49, "all 49 tools must have Nepali copy");
+  for (const guide of toolGuides) {
+    const translated = nepaliToolGuides[guide.slug];
+    assert.ok(translated, guide.slug + " must have a Nepali guide");
+    assert.ok(translated.purpose.trim(), guide.slug + " purpose");
+    assert.ok(translated.caution.trim(), guide.slug + " caution");
+    assert.equal(translated.steps.length, 3, guide.slug + " must have three steps");
+    assert.ok(translated.steps.every((step) => step.trim()), guide.slug + " step copy");
+  }
 });

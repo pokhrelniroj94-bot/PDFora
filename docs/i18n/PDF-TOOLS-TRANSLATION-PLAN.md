@@ -100,3 +100,14 @@ No locale should be marked published until all localized PDF pages pass the chec
 - Nepali tool names and purpose copy remain visible in the shared workspace heading area when the locale is Nepali.
 - Home/back navigation now preserves the selected locale prefix.
 - Default text examples such as DRAFT and the Bates prefix are translated only for Nepali; numeric and API enum values are left unchanged.
+
+## Step 8 — SEO copy review and build-time quality gates (2026-11-06)
+
+- Removed the unsupported claim that people search for a particular phrase; the guide introduction now explains the actual task workflow in natural language.
+- Made the related-task FAQ question tool-specific instead of repeating the same generic question on every page.
+- Extracted the PDF metadata generator into a pure helper so its title, description, canonical, robots, Open Graph and Twitter output can be unit-tested without Node module-resolution workarounds.
+- Added tests for all 49 Nepali tool display names and uniqueness/length/canonical/indexing of all 49 English metadata descriptions.
+- Added build-time gates for the 124-tool catalog verification, the 19 i18n/SEO tests, the locale completeness check and ESLint.
+- Vercel preview build for commit e07a166 passed the catalog check, all 19 tests, locale check with no blocking problems, TypeScript and optimized Next.js build; deployment reached READY. This was a preview deployment, not a production promotion.
+- Latest commit adds ESLint to the same prebuild gates; its Vercel check is still running and must be confirmed before calling the branch fully validated.
+- Non-English locales remain unpublished/noindex. The guide translations alone do not make the entire page workspace and route shells ready for indexing.

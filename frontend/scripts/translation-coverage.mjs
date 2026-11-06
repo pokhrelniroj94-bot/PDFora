@@ -2,12 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs";
-import { getSharedUiCopy } from "../lib/i18n/shared-ui.ts";
-import { toolGuides } from "../lib/tool-guides.ts";
-import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne.ts";
 
 ensureTypeStripping();
-const { config } = await loadI18n();
+const { config, "shared-ui": sharedUi, "tool-guides": guidesModule, "tool-guides-ne": nepaliGuidesModule, "nepali-pdf-routes": nepaliRoutesModule } = await loadI18n();
 
 const repoRoot = path.resolve(frontendRoot, "..");
 const appRoot = path.join(frontendRoot, "app");
@@ -49,12 +46,12 @@ const englishNamespaceFiles = fs.existsSync(path.join(messagesRoot, "en"))
   : [];
 const editorialBlogCount = (blogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepalBlogCount = (nepalBlogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
-const nepaliPdfRouteSlugs = Object.keys((await import("../lib/i18n/nepali-pdf-routes.ts")).nepaliPdfRoutes);
+const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);
 const nepaliLocalizedRouteCount = nepaliPdfRouteSlugs.length + Number(nepaliHomeExists);
-const sharedUiLeafCount = countLeaves(getSharedUiCopy("en"));
-const nepaliSharedUiLeafCount = countLeaves(getSharedUiCopy("ne"));
-const nepaliGuideCount = Object.keys(nepaliToolGuides).length;
-const englishGuideCount = toolGuides.length;
+const sharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("en"));
+const nepaliSharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("ne"));
+const nepaliGuideCount = Object.keys(nepaliGuidesModule.nepaliToolGuides).length;
+const englishGuideCount = guidesModule.toolGuides.length;
 
 const locales = Object.fromEntries(config.locales.map((locale) => {
   const published = config.isPublished(locale);

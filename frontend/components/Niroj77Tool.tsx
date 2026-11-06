@@ -41,6 +41,8 @@ export default function NirojToolsTool({
   const pathname = usePathname();
   const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
   const ui = getPdfToolCopy(pathname);
+  const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
+  const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
   const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((f) => [f.name, f.defaultValue || ""])));
@@ -422,7 +424,7 @@ export default function NirojToolsTool({
           />
         </div>
       </section>
-      <ToolSEOContent slug={currentSlug} />
+      <ToolSEOContent slug={currentSlug} locale={locale} />
     </main>
   );
 }

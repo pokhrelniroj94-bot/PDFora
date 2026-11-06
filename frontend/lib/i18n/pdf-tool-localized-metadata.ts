@@ -6,7 +6,7 @@ export interface PdfToolTranslationStatus { en: boolean; ne: boolean; }
 export interface PdfToolLocalizedMetadataInput { locale: PdfToolLocale; slug: string; title: string; description: string; translations: PdfToolTranslationStatus; }
 
 function absoluteToolUrl(locale: PdfToolLocale, slug: string): string {
-  const safeSlug = slug.replace(/^\\/+|\\/+$/g, "");
+  const safeSlug = slug.replace(/^\/+|\/+$/g, "");
   if (!safeSlug || safeSlug.includes("..") || safeSlug.includes("?") || safeSlug.includes("#")) throw new Error("Invalid PDF tool slug: " + slug);
   return SITE_URL + "/" + locale + "/" + safeSlug;
 }

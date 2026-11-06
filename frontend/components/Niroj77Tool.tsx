@@ -46,6 +46,7 @@ export default function NirojToolsTool({
   const ui = getPdfToolCopy(pathname);
   const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
   const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
+  const homeHref = locale === "en" ? "/" : `/${locale}`;
   const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
   const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;
   const localizedFormPlaceholder = locale === "ne" ? getNepaliPdfFieldText(formPlaceholder) : formPlaceholder;
@@ -209,7 +210,7 @@ export default function NirojToolsTool({
       <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 shadow-[0_8px_30px_rgba(15,23,42,.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <a
-            href="/"
+            href={homeHref}
             className="flex min-h-11 items-center gap-2"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-700 font-black text-white shadow-lg shadow-teal-900/20">

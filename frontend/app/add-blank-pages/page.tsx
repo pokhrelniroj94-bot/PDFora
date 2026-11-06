@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "Add Blank Pages to PDF Online Free | PDFora",
-  description: "Insert blank pages at the end of a PDF online. Choose how many pages to add and download your updated PDF with PDFora.",
-  alternates: { canonical: "https://pd-fora.vercel.app/add-blank-pages" },
-};
+export const metadata = getPdfToolMetadata("add-blank-pages");
 
 export default function Page() {
   const description = "Add one or more blank pages to the end of your PDF. The new pages use the dimensions of the last page in your document.";

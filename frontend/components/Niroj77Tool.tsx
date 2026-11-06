@@ -2,6 +2,10 @@
 
 import { usePathname } from "next/navigation";
 import ToolSEOContent from "./ToolSEOContent";
+import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
+import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
+import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
+import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
@@ -39,9 +43,17 @@ export default function NirojToolsTool({
 }: Props) {
   const pathname = usePathname();
   const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
+  const ui = getPdfToolCopy(pathname);
+  const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
+  const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
+  const homeHref = locale === "en" ? "/" : `/${locale}`;
+  const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
+  const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;
+  const localizedFormPlaceholder = locale === "ne" ? getNepaliPdfFieldText(formPlaceholder) : formPlaceholder;
+  const localizedExtraFields = locale === "ne" ? extraFields.map((field) => ({ ...field, label: getNepaliPdfFieldText(field.label) || field.label, placeholder: getNepaliPdfFieldText(field.placeholder) })) : extraFields;
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
-  const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((f) => [f.name, f.defaultValue || ""])));
+  const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((field) => [field.name, locale === "ne" ? getNepaliPdfFieldText(field.defaultValue) || field.defaultValue || "" : field.defaultValue || ""])));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [dragActive, setDragActive] = useState(false);
@@ -53,7 +65,7 @@ export default function NirojToolsTool({
     const oversized = selected.find((file) => file.size > 50 * 1024 * 1024);
     if (oversized) {
       setFiles([]);
-      setMessage(`${oversized.name} exceeds the 50 MB per-file limit.`);
+      setMessage(ui.maxSizeError.replace("{name}", oversized.name));
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
@@ -87,12 +99,12 @@ export default function NirojToolsTool({
 
   async function processPDF() {
     if (files.length === 0) {
-      setMessage("Please select a file.");
+      setMessage(ui.selectFile);
       return;
     }
 
     if ((formField || queryField) && !value.trim() && endpoint !== "/api/header-footer") {
-      setMessage("Please enter the required information.");
+      setMessage(ui.requiredInfo);
       return;
     }
 
@@ -136,7 +148,7 @@ export default function NirojToolsTool({
       if (!response.ok) {
         const text = await response.text();
 
-        let errorMessage = "PDF processing failed.";
+        let errorMessage = ui.processingFailed;
 
         try {
           const data = JSON.parse(text);
@@ -170,7 +182,7 @@ export default function NirojToolsTool({
 
       setFiles([]);
       if (inputRef.current) inputRef.current.value = "";
-      setMessage("Completed successfully. Download started.");
+      setMessage(ui.completed);
     } catch (error) {
       console.error(error);
 
@@ -179,10 +191,10 @@ export default function NirojToolsTool({
         (error.name === "TimeoutError" || error.name === "AbortError");
       setMessage(
         timedOut
-          ? "The processing server took too long to respond. It may be waking up or busy. Please try again."
+          ? ui.serverTimeout
           : error instanceof Error
             ? error.message
-            : "Could not process the PDF."
+            : ui.couldNotProcess
       );
     } finally {
       setLoading(false);
@@ -190,8 +202,7 @@ export default function NirojToolsTool({
   }
 
   const success =
-    message.toLowerCase().includes("successfully") ||
-    message.toLowerCase().includes("completed");
+    message === ui.completed;
 
   return (
     <main className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(20,184,166,.10),_transparent_42%),linear-gradient(180deg,#f8fafc_0%,#f1f5f9_100%)] text-slate-950">
@@ -199,7 +210,7 @@ export default function NirojToolsTool({
       <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 shadow-[0_8px_30px_rgba(15,23,42,.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <a
-            href="/"
+            href={homeHref}
             className="flex min-h-11 items-center gap-2"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-700 font-black text-white shadow-lg shadow-teal-900/20">
@@ -216,11 +227,11 @@ export default function NirojToolsTool({
             className="flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold transition hover:bg-slate-50"
           >
             <span className="hidden sm:inline">
-              ← All Tools
+              ← {ui.allTools}
             </span>
 
             <span className="sm:hidden">
-              ← Back
+              ← {ui.back}
             </span>
           </a>
         </div>
@@ -231,15 +242,15 @@ export default function NirojToolsTool({
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">
-            PDFora Tool
+            {ui.toolLabel}
           </p>
 
-          <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
-            {title}
-          </h1>
+          <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
+            {displayTitle}
+          </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
-            {description}
+            {displayDescription}
           </p>
         </div>
 
@@ -252,7 +263,7 @@ export default function NirojToolsTool({
             onDragOver={(event) => { event.preventDefault(); if (!loading) setDragActive(true); }}
             onDragLeave={(event) => { event.preventDefault(); setDragActive(false); }}
             onDrop={handleDrop}
-            aria-label="Choose or drop PDF files"
+            aria-label={ui.chooseFilesAria}
             className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] sm:min-h-64 ${dragActive ? "border-teal-500 bg-teal-50" : "border-slate-300 bg-slate-50/80 hover:border-teal-400 hover:bg-teal-50"}`}
           >
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-3xl ring-1 ring-teal-900/5">
@@ -261,20 +272,18 @@ export default function NirojToolsTool({
 
             <h2 className="mt-4 text-base font-black sm:text-lg">
               {files.length > 0
-                ? `${files.length} file${
-                    files.length > 1 ? "s" : ""
-                  } selected`
+                ? `${files.length} ${ui.filesSelected}`
                 : multiple
-                  ? "Choose or drop PDF files"
-                  : "Choose or drop a PDF file"}
+                  ? ui.chooseDropMultiple
+                  : ui.chooseDropSingle}
             </h2>
 
             <p className="mt-2 text-xs text-slate-500 sm:text-sm">
-              PDF files up to 50 MB each
+              {ui.pdfFilesLimit}
             </p>
 
             <span className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-gradient-to-r from-teal-600 to-cyan-700 px-5 text-sm font-bold text-white shadow-md shadow-teal-900/15">
-              Choose File
+              {ui.chooseFile}
             </span>
           </button>
 
@@ -293,7 +302,7 @@ export default function NirojToolsTool({
             <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
               <div className="border-b border-slate-200 px-4 py-3">
                 <p className="text-sm font-black">
-                  Selected files
+                  {ui.selectedFiles}
                 </p>
               </div>
 
@@ -321,7 +330,7 @@ export default function NirojToolsTool({
                       type="button"
                       onClick={() => removeFile(index)}
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-bold text-slate-500 hover:bg-white hover:text-red-600"
-                      aria-label={`Remove ${file.name}`}
+                      aria-label={`${ui.removeFile} ${file.name}`}
                     >
                       ×
                     </button>
@@ -336,8 +345,8 @@ export default function NirojToolsTool({
             <div className="mt-4">
               <label className="mb-2 block text-sm font-bold">
                 {queryField === "degrees"
-                  ? "Rotation angle"
-                  : formPlaceholder || "Enter value"}
+                  ? ui.rotationAngle
+                  : localizedFormPlaceholder || ui.enterValue}
               </label>
 
               <input
@@ -351,14 +360,14 @@ export default function NirojToolsTool({
                     : "text"
                 }
                 placeholder={
-                  formPlaceholder || "Enter value"
+                  formPlaceholder || ui.enterValue
                 }
                 className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-100"
               />
             </div>
           )}
 
-          {extraFields.map((field) => (
+          {localizedExtraFields.map((field) => (
             <div key={field.name} className="mt-4">
               <label className="mb-2 block text-sm font-bold" htmlFor={field.name}>{field.label}</label>
               {field.multiline ? (
@@ -379,7 +388,7 @@ export default function NirojToolsTool({
             {loading ? (
               <span className="flex items-center gap-2">
                 <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                Processing...
+                {ui.processing}
               </span>
             ) : (
               title
@@ -406,24 +415,24 @@ export default function NirojToolsTool({
         <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
           <InfoCard
             icon="⚡"
-            title="Easy"
-            description="Choose your file and process it with one tap."
+            title={ui.easy}
+            description={ui.easyDescription}
           />
 
           <InfoCard
             icon="🔒"
-            title="Private"
-            description="Files are processed by the PDFora backend."
+            title={ui.private}
+            description={ui.privateDescription}
           />
 
           <InfoCard
             icon="📱"
-            title="Mobile Ready"
-            description="Designed to work smoothly on phones and desktops."
+            title={ui.mobileReady}
+            description={ui.mobileDescription}
           />
         </div>
       </section>
-      <ToolSEOContent slug={currentSlug} />
+      <ToolSEOContent slug={currentSlug} locale={locale} />
     </main>
   );
 }

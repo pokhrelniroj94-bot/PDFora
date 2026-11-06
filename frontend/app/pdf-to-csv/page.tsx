@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "PDF to CSV Converter Online Free | PDFora",
-  description: "Extract tables from PDF files and export their cell values to CSV for Excel and spreadsheet workflows. Free PDF to CSV converter.",
-  alternates: { canonical: "https://pd-fora.vercel.app/pdf-to-csv" },
-};
+export const metadata = getPdfToolMetadata("pdf-to-csv");
 
 export default function Page() {
   const description = "Extract detected tables from a PDF into CSV format for spreadsheet workflows. Best for PDFs with selectable, clearly structured tables.";

@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "PDF Information Tool Online Free | PDFora",
-  description: "Get PDF file information including page count, size, dimensions, title, author and encryption status. Download a detailed report.",
-  alternates: { canonical: "https://pd-fora.vercel.app/pdf-information" },
-};
+export const metadata = getPdfToolMetadata("pdf-information");
 
 export default function Page() {
   const description = "View PDF details including page count, file size, page dimensions, document metadata and encryption status.";

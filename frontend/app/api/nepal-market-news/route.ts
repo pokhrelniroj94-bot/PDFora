@@ -16,7 +16,7 @@ async function readYonepse<T>(path: string): Promise<T> {
   const response = await fetch(YONEPSE + path, {
     headers: { Accept: "application/json" },
     signal: AbortSignal.timeout(9000),
-    next: { revalidate: 900 },
+    cache: "no-store",
   });
   if (!response.ok) throw new Error("YONEPSE feed unavailable");
   return response.json() as Promise<T>;
@@ -27,7 +27,7 @@ async function readOfficialStories() {
     readYonepse<Array<{ id?: number; symbol?: string; title?: string; publishedAt?: string; fileUrl?: string }>>("/data/notify/exchange_messages.json"),
     readYonepse<Array<{ company?: string; url?: string; announcement_date?: string; scraped_at?: string; date_range?: string; full_text?: string }>>("/data/ipo/upcoming.json"),
   ]);
-  const cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const market: Story[] = [];
   if (disclosuresResult.status === "fulfilled") {
     for (const item of disclosuresResult.value) {
@@ -87,31 +87,39 @@ async function readFeed(query: string): Promise<Story[]> {
   return [...unique.values()].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt)).slice(0, 10);
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const [marketResult, ipoResult, officialResult] = await Promise.allSettled([
-      readFeed("NEPSE Nepal stock market shares trading"),
-      readFeed("Nepal IPO FPO share allotment public issue"),
+    const refresh = new URL(request.url).searchParams.get("refresh") === "1";
+    const [marketToday, marketWeek, ipoToday, ipoWeek, officialResult] = await Promise.allSettled([
+      readFeed("NEPSE Nepal stock market shares trading when:1d"),
+      readFeed("NEPSE Nepal stock market shares trading when:7d"),
+      readFeed("Nepal IPO FPO share allotment public issue when:1d"),
+      readFeed("Nepal IPO FPO share allotment public issue when:7d"),
       readOfficialStories(),
     ]);
     const official = officialResult.status === "fulfilled" ? officialResult.value : { market: [], ipo: [], failed: true };
-    const market = [
-      ...(marketResult.status === "fulfilled" ? marketResult.value : []),
-      ...official.market,
-    ].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
-    const ipo = [
-      ...(ipoResult.status === "fulfilled" ? ipoResult.value : []),
-      ...official.ipo,
-    ].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
+    const mergeRecent = (...groups: (Story[] | undefined)[]) => [...new Map(groups.flat().map((story) => [story.link, story])).values()]
+      .sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
+    const market = mergeRecent(
+      marketToday.status === "fulfilled" ? marketToday.value : [],
+      marketWeek.status === "fulfilled" ? marketWeek.value : [],
+      official.market,
+    );
+    const ipo = mergeRecent(
+      ipoToday.status === "fulfilled" ? ipoToday.value : [],
+      ipoWeek.status === "fulfilled" ? ipoWeek.value : [],
+      official.ipo,
+    );
     if (market.length === 0 && ipo.length === 0) {
       throw new Error("Google News and NEPSE public news feeds are temporarily unavailable");
     }
-    const warning = marketResult.status === "rejected" || ipoResult.status === "rejected" || official.failed
-      ? "Some providers are unavailable. Headlines from the working sources are still shown."
+    const failed = [marketToday, marketWeek, ipoToday, ipoWeek].some((item) => item.status === "rejected") || official.failed;
+    const warning = failed
+      ? "Some news providers are unavailable. Available headlines are shown; try refresh later for newer updates."
       : undefined;
     return Response.json(
-      { market, ipo, updatedAt: new Date().toISOString(), maxAgeDays: 30, warning },
-      { headers: { "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800" } },
+      { market, ipo, updatedAt: new Date().toISOString(), maxAgeDays: 7, warning },
+      { headers: { "Cache-Control": "no-store, max-age=0" } },
     );
   } catch {
     return Response.json(

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query, Request
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Query, Request, Header
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.background import BackgroundTask
 from fastapi.middleware.cors import CORSMiddleware
@@ -128,7 +128,7 @@ app.add_middleware(
         "https://pd-fora-git-premium-redesign-pokhrelniroj94-7012s-projects.vercel.app",
     ],
     allow_credentials=False,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["Content-Type"],
     expose_headers=[
         "Content-Disposition",

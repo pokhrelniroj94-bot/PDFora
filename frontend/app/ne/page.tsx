@@ -56,6 +56,15 @@ export default function NepaliHomePage() {
       { "@type": "ListItem", position: 2, name: "नेपाली", item: `${site}/ne` },
     ],
   };
+  const pageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "PDFora नेपाली — PDF र दैनिक कामका उपयोगी अनलाइन टुलहरू",
+    description: "PDF मर्ज, स्प्लिट, कम्प्रेस र रूपान्तरण गर्नुहोस्। नेपाली मिति र नेपालका उपयोगी अनलाइन टुलहरू प्रयोग गर्नुहोस्।",
+    url: `${site}/ne`,
+    inLanguage: "ne-NP",
+    isPartOf: { "@id": `${site}/#website` },
+  };
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -69,6 +78,7 @@ export default function NepaliHomePage() {
   return (
     <main lang="ne" className="min-h-screen bg-slate-50 text-slate-900">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">

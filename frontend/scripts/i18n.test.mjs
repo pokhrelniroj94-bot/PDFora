@@ -239,3 +239,27 @@ test("Nepali PDF form labels and placeholders have reviewed translations", () =>
   for (const [source, translated] of samples) assert.equal(getNepaliPdfFieldText(source), translated);
   assert.equal(getNepaliPdfFieldText("Unmapped field"), "Unmapped field", "unknown fields must remain visible rather than disappear");
 });
+
+
+import { buildPdfToolLocalizedMetadata } from "../lib/i18n/pdf-tool-localized-metadata.ts";
+
+test("localized PDF metadata: self canonicals, reciprocal hreflang and indexing gate", () => {
+  const pendingEn = buildPdfToolLocalizedMetadata({ locale: "en", slug: "merge-pdf", title: "Merge PDF Online", description: "Combine PDF files online.", translations: { en: true, ne: false } });
+  assert.equal(pendingEn.alternates.canonical, "https://pd-fora.vercel.app/en/merge-pdf");
+  assert.deepEqual(pendingEn.robots, { index: true, follow: true });
+  assert.equal(pendingEn.alternates.languages, undefined, "do not advertise an incomplete translation");
+
+  const pendingNe = buildPdfToolLocalizedMetadata({ locale: "ne", slug: "merge-pdf", title: "पीडीएफ जोड्नुहोस्", description: "धेरै पीडीएफ फाइललाई एउटै फाइलमा जोड्नुहोस्।", translations: { en: true, ne: false } });
+  assert.equal(pendingNe.alternates.canonical, "https://pd-fora.vercel.app/ne/merge-pdf");
+  assert.deepEqual(pendingNe.robots, { index: false, follow: false });
+
+  const published = buildPdfToolLocalizedMetadata({ locale: "ne", slug: "merge-pdf", title: "पीडीएफ जोड्नुहोस्", description: "धेरै पीडीएफ फाइललाई एउटै फाइलमा जोड्नुहोस्।", translations: { en: true, ne: true } });
+  assert.equal(published.alternates.canonical, "https://pd-fora.vercel.app/ne/merge-pdf");
+  assert.deepEqual(published.alternates.languages, {
+    en: "https://pd-fora.vercel.app/en/merge-pdf",
+    ne: "https://pd-fora.vercel.app/ne/merge-pdf",
+    "x-default": "https://pd-fora.vercel.app/en/merge-pdf",
+  });
+  assert.deepEqual(published.robots, { index: true, follow: true });
+  assert.throws(() => buildPdfToolLocalizedMetadata({ locale: "en", slug: "../bad", title: "x", description: "y", translations: { en: true, ne: true } }));
+});

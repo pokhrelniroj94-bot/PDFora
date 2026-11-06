@@ -100,3 +100,6 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
   .pdfora-enter, .pdfora-pop-in, .pdfora-stagger > *, .pdfora-skeleton, .pdfora-spinner { animation: none !important; }
   .tool-card, .tool-directory-card, button:not(:disabled), a, input, select, textarea { transition: none !important; }
 }
+
+
+/* Use explicit .pdfora-enter and .pdfora-stagger classes for predictable page motion. */

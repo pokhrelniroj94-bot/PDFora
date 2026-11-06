@@ -29,9 +29,17 @@ if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
     throw "Python 3.12 is required. Install Python 3.12 and reopen PowerShell."
 }
 
-$nodeMajor = [int]((node -p "process.versions.node.split('.')[0]"))
-if ($nodeMajor -lt 20) {
-    throw "Node.js 20.9+ is required; Node.js 22 is recommended to match CI."
+$nodeVersion = node -p "process.versions.node"
+$nodeParts = $nodeVersion.Split(".")
+$nodeMajor = [int]$nodeParts[0]
+$nodeMinor = [int]$nodeParts[1]
+if ($nodeMajor -lt 20 -or ($nodeMajor -eq 20 -and $nodeMinor -lt 9)) {
+    throw "Node.js 20.9+ is required; Node.js 22 is recommended to match CI. Detected: $nodeVersion"
+}
+
+$pythonVersion = python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"
+if ($pythonVersion -ne "3.12") {
+    throw "Python 3.12 is required to match CI. Detected: $pythonVersion"
 }
 
 Write-Host "PDFora local validation (no GitHub Actions billing required)" -ForegroundColor Green

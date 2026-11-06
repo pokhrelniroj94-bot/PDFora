@@ -69,7 +69,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;
   const socialTitle = `${tool.name} Online | PDFora`;
-  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")}. Use PDFora online to complete this task and check the result before saving or sharing.`.slice(0, 160);
+  const categoryDescription: Record<string, string> = {
+    PDF: "Check page order, layout, text, forms and signatures in the exported document before sharing it.",
+    Finance: "Review the rate, period, fees and tax assumptions before relying on a financial estimate.",
+    Math: "Check input units and rounding, then compare a sample result with a known answer.",
+    Text: "Review punctuation, Unicode characters and line breaks before copying the processed text.",
+    Developer: "Test the output in the application that will use it; encoding and decoding do not provide encryption.",
+    Image: "Check the output format, dimensions, transparency and visual quality before downloading.",
+    SEO: "Use the result as a diagnostic and verify the rendered page, canonical and indexing status.",
+    Business: "Confirm the cost, price, margin and tax assumptions before using a figure in a quote or budget.",
+    Nepal: "Check the applicable fiscal year, date system, local units and official notices before relying on the result."
+  };
+  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")} ${categoryDescription[tool.category] ?? "Check the input and output carefully before using the result."}`.slice(0, 160);
   const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
   return {

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import AdsterraNative from "../app/components/AdsterraNative";
 import { getToolGuide } from "../lib/tool-guides";
 const seoLabels = {
@@ -15,9 +14,7 @@ const seoLabels = {
   ko: ["PDFora 실용 가이드", "의 기능은 무엇인가요", "?", "방법:", "단계별 안내", "이 PDF 작업은 언제 유용한가요?", "PDF 품질, 호환성 및 제한 사항", "안정적인 결과를 위한 팁", "개인정보 보호 및 안전한 문서 처리", "일반적인 PDF 문제 해결", "학습, 업무 및 온라인 양식용 PDF 준비", "자주 묻는 질문"]
 } as const;
 
-export default function ToolSEOContent({ slug }: { slug: string }) {
-  const pathname = usePathname();
-  const locale = pathname.split("/").filter(Boolean)[0] || "en";
+export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; locale?: string }) {
   const labels = seoLabels[locale as keyof typeof seoLabels] || seoLabels.en;
   const guide = getToolGuide(slug);
   if (!guide) return null;

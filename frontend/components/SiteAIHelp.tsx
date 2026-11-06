@@ -25,6 +25,7 @@ export default function SiteAIHelp() {
   const [pageContext, setPageContext] = useState("");
 
   useEffect(() => {
+    if (!open) return;
     const controller = new AbortController();
     async function loadPageContext() {
       setPageContext("");
@@ -47,13 +48,13 @@ export default function SiteAIHelp() {
     }
     void loadPageContext();
     return () => controller.abort();
-  }, [pathname]);
+  }, [pathname, open]);
 
 
   async function send(text: string) {
     const clean = text.trim();
     if (!clean || busy) return;
-    const next: Message[] = [...messages, { role: "user", text: clean }];
+    const next: Message[] = [...messages, { role: "user", text: clean }].slice(-39);
     setMessages(next);
     setQuestion("");
     setError("");
@@ -74,7 +75,7 @@ export default function SiteAIHelp() {
       if (!response.ok) throw new Error(payload.error || "AI help is temporarily unavailable.");
       const answer = typeof payload.text === "string" ? payload.text.trim() : "";
       if (!answer) throw new Error("AI returned an empty answer. Please try again.");
-      setMessages((old) => [...old, { role: "assistant", text: answer }]);
+      setMessages((old) => [...old, { role: "assistant", text: answer }].slice(-40));
     } catch (err) {
       setError(err instanceof Error ? err.message : "AI help is temporarily unavailable.");
     } finally {

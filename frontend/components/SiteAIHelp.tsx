@@ -27,7 +27,6 @@ export default function SiteAIHelp() {
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", text: isNepali ? "नमस्कार! म PDFora AI सहायता हुँ। टुल प्रयोग गर्न, नतिजा बुझ्न वा समस्या समाधान गर्न के सहयोग चाहिन्छ?" : "Namaste! I am PDFora AI Help. How can I help you use a tool, understand a result or solve a problem?" },
   ]);
-  useEffect(() => { setMessages([{ role: "assistant", text: isNepali ? "नमस्कार! म PDFora AI सहायता हुँ। टुल प्रयोग गर्न, नतिजा बुझ्न वा समस्या समाधान गर्न के सहयोग चाहिन्छ?" : "Namaste! I am PDFora AI Help. How can I help you use a tool, understand a result or solve a problem?" }]); }, [isNepali]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [pageContext, setPageContext] = useState("");
@@ -101,7 +100,7 @@ export default function SiteAIHelp() {
           <div className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-3" aria-live="polite">
             <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] leading-4 text-amber-900">{isNepali ? "AI का उत्तर गलत हुन सक्छन्। पासवर्ड, OTP, बैंक विवरण वा गोप्य जानकारी नदिनुहोस्। तपाईंको प्रश्न हाम्रो कन्फिगर गरिएको AI प्रदायकलाई पठाइन्छ।" : "AI answers may be wrong. Do not share passwords, OTPs, bank details or confidential information. Your question is sent to our configured AI provider."}</p>
             {messages.map((message, index) => (
-              <div key={index} className={"max-w-[90%] whitespace-pre-wrap rounded-2xl px-3 py-2.5 text-sm leading-5 " + (message.role === "user" ? "ml-auto bg-teal-700 text-white" : "mr-auto border border-slate-200 bg-white text-slate-800")}>{message.text}</div>
+              <div key={index} className={"max-w-[90%] whitespace-pre-wrap rounded-2xl px-3 py-2.5 text-sm leading-5 " + (message.role === "user" ? "ml-auto bg-teal-700 text-white" : "mr-auto border border-slate-200 bg-white text-slate-800")}>{index === 0 && message.role === "assistant" ? (isNepali ? "नमस्कार! म PDFora AI सहायता हुँ। टुल प्रयोग गर्न, नतिजा बुझ्न वा समस्या समाधान गर्न के सहयोग चाहिन्छ?" : "Namaste! I am PDFora AI Help. How can I help you use a tool, understand a result or solve a problem?") : message.text}</div>
             ))}
             {busy && <p className="mr-auto rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">{isNepali ? "PDFora AI सोच्दैछ…" : "PDFora AI is thinking…"}</p>}
             {error && <p role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-xs text-rose-800">{error}</p>}

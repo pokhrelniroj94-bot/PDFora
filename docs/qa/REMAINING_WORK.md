@@ -10,6 +10,14 @@
 5. Add localized content for calculators, Nepal utilities, NEPSE, Forex, CV and AI
    workflows rather than treating shared dictionaries as completion.
 
+## Stage B completed in this continuation
+
+- Shared footer and PDF directory copy is centralized for English and Nepali.
+- Shared UI tests verify required labels, category coverage and localized-route
+  behavior.
+- The remaining English/Nepali route surfaces still require page-specific migration,
+  especially blogs, legal pages, calculators, market tools and form/error messages.
+
 ## Required before merge
 
 1. Run backend pytest, dependency audits and representative PDF workflows.

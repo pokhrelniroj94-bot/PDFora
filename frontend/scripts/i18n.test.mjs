@@ -12,7 +12,7 @@ import { buildPdfToolMetadata } from "../lib/i18n/pdf-tool-seo-core.ts";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
 
 ensureTypeStripping();
-const { config, routing, translate, format, preference, switcher, metadata } = await loadI18n();
+const { config, routing, translate, format, preference, switcher, metadata, "shared-ui": sharedUi } = await loadI18n();
 
 test("locale table: requested 12 locales, English default, Arabic and Urdu are RTL", () => {
   assert.deepEqual([...config.locales], ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
@@ -38,6 +38,18 @@ test("publishing policy: English and reviewed Nepali routes are published", () =
   process.env.PDFORA_I18N_PREVIEW = "1";
   assert.deepEqual(config.getRoutableLocales(), ["ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
   delete process.env.PDFORA_I18N_PREVIEW;
+});
+
+test("shared UI coverage: English and Nepali copy is complete and route-aware", () => {
+  const required = ["footerNavigation", "allTools", "guides", "about", "contact", "language", "directoryLabel", "directoryTitle", "directoryDescription", "directoryLink"];
+  for (const locale of ["en", "ne"]) {
+    const copy = sharedUi.getSharedUiCopy(locale);
+    for (const key of required) assert.equal(typeof copy[key], "string", `${locale}.${key} must be translated`);
+    assert.deepEqual(Object.keys(copy.groups).sort(), ["Convert PDF", "Edit PDF", "Organize PDF", "Secure & manage"]);
+  }
+  assert.equal(sharedUi.localeFromPathname("/ne/merge-pdf"), "ne");
+  assert.equal(sharedUi.localeFromPathname("/merge-pdf"), "en");
+  assert.equal(sharedUi.getSharedUiCopy("ne").directoryTitle, "सबै PDF टुलहरू");
 });
 
 test("routing: English URLs are unchanged, others are prefixed", () => {

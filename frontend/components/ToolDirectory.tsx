@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getSharedUiCopy, localeFromPathname } from "../lib/i18n/shared-ui";
+import { hasLocalizedPage, localizePath } from "../lib/i18n/routing";
 
 const groups = [
   ["Organize PDF", "/merge-pdf", "/split-pdf", "/reorder-pdf", "/delete-pages", "/extract-pages", "/remove-blank-pages", "/add-blank-pages", "/page-counter", "/pdf-information", "/extract-bookmarks", "/add-bookmarks", "/split-by-bookmarks", "/pdf-to-json", "/pdf-to-csv", "/pdf-to-tiff", "/pdf-to-bmp", "/pdf-to-markdown", "/extract-page-images", "/extract-fonts"],
@@ -19,17 +21,20 @@ const neNames: Record<string,string> = {
   "/pdf-to-word":"PDF बाट Word","/pdf-to-excel":"PDF बाट Excel","/pdf-to-jpg":"PDF बाट JPG","/images-to-pdf":"तस्बिरबाट PDF","/pdf-to-png":"PDF बाट PNG","/pdf-to-webp":"PDF बाट WebP","/pdf-to-text":"PDF बाट Text","/pdf-to-html":"PDF बाट HTML","/extract-images":"तस्बिर निकाल्नुहोस्",
   "/compress-pdf":"PDF सानो बनाउनुहोस्","/rotate-pdf":"PDF घुमाउनुहोस्","/crop-pdf":"PDF काटछाँट गर्नुहोस्","/watermark":"Watermark थप्नुहोस्","/add-page-numbers":"पृष्ठ नम्बर थप्नुहोस्","/header-footer":"Header र Footer","/grayscale-pdf":"Grayscale PDF","/flatten-pdf":"PDF Flatten गर्नुहोस्","/repair-pdf":"PDF मर्मत गर्नुहोस्","/compare-pdf":"PDF तुलना गर्नुहोस्","/add-blank-pages":"खाली पृष्ठ थप्नुहोस्","/rotate-selected-pages":"छानिएका पृष्ठ घुमाउनुहोस्","/page-counter":"PDF पृष्ठ गणना","/pdf-information":"PDF विवरण","/extract-bookmarks":"Bookmark निकाल्नुहोस्","/add-bookmarks":"Bookmark थप्नुहोस्","/bates-numbering":"Bates नम्बरिङ","/pdf-to-tiff":"PDF बाट TIFF","/pdf-to-bmp":"PDF बाट BMP","/pdf-to-markdown":"PDF बाट Markdown","/extract-page-images":"PDF पृष्ठ PNG बनाउनुहोस्","/extract-fonts":"Font निकाल्नुहोस्","/split-by-bookmarks":"Bookmark अनुसार छुट्याउनुहोस्","/remove-attachments":"Attachment हटाउनुहोस्","/add-background":"Background थप्नुहोस्","/pdf-to-json":"PDF बाट JSON","/pdf-to-csv":"PDF बाट CSV","/remove-pdf-metadata":"PDF Metadata हटाउनुहोस्","/remove-annotations":"Annotation हटाउनुहोस्","/remove-pdf-links":"PDF Link हटाउनुहोस्","/protect-pdf":"PDF सुरक्षित गर्नुहोस्","/unlock-pdf":"PDF Unlock गर्नुहोस्","/sign-pdf":"PDF मा हस्ताक्षर","/edit-pdf-metadata":"PDF Metadata सम्पादन"
 };
-const groupNe: Record<string,string> = {"Organize PDF":"PDF मिलाउने","Convert PDF":"PDF रूपान्तरण","Edit PDF":"PDF सम्पादन","Secure & manage":"सुरक्षा र व्यवस्थापन"};
 export default function ToolDirectory() {
- const isNe = (usePathname() || "/").startsWith("/ne");
- return <section aria-label={isNe ? "PDFora का PDF टुलहरू" : "Explore PDFora PDF tools"} className="border-t border-teal-100 bg-white px-4 py-10 sm:px-6">
+ const pathname = usePathname() || "/";
+ const locale = localeFromPathname(pathname);
+ const isNe = locale === "ne";
+ const copy = getSharedUiCopy(locale);
+ const linkFor = (path: string) => locale !== "en" && hasLocalizedPage(path, locale) ? localizePath(path, locale) : path;
+ return <section aria-label={copy.directoryLabel} className="border-t border-teal-100 bg-white px-4 py-10 sm:px-6">
   <div className="mx-auto max-w-6xl">
    <div className="mb-5 flex flex-wrap items-end justify-between gap-3"><div>
     <p className="text-xs font-black uppercase tracking-widest text-teal-700">{isNe ? "PDFora टुल संग्रह" : "PDFora toolbox"}</p>
-    <h2 className="mt-1 text-xl font-black text-slate-900">{isNe ? "सबै PDF टुलहरू" : "Explore all tools"}</h2>
-    <p className="mt-1 text-sm text-slate-600">{isNe ? "PDF टुलसँगै वित्त, टेक्स्ट, डेभलपर र इमेज उपयोगिताहरू सबै टुल पृष्ठमा उपलब्ध छन्।" : "PDF tools are here, with finance, text, developer and image utilities in our all-tools hub."}</p>
-   </div><Link href={isNe ? "/tools" : "/tools"} className="text-sm font-bold text-teal-700 hover:text-orange-600">{isNe ? "वित्त, टेक्स्ट, डेभलपर र इमेज टुलहरू हेर्नुहोस् →" : "Explore finance, text, developer & image tools →"}</Link></div>
-   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{groups.map(([label,...paths])=><div key={label}><h3 className="mb-3 text-sm font-black text-slate-800">{isNe ? groupNe[label] : label}</h3><ul className="space-y-2">{paths.map(path=><li key={path}><Link href={path} className="text-sm text-slate-600 underline-offset-4 hover:text-teal-700 hover:underline">{isNe ? neNames[path] || names[path] : names[path]}</Link></li>)}</ul></div>)}</div>
+    <h2 className="mt-1 text-xl font-black text-slate-900">{copy.directoryTitle}</h2>
+    <p className="mt-1 text-sm text-slate-600">{copy.directoryDescription}</p>
+   </div><Link href="/tools" className="text-sm font-bold text-teal-700 hover:text-orange-600">{copy.directoryLink}</Link></div>
+   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{groups.map(([label,...paths])=><div key={label}><h3 className="mb-3 text-sm font-black text-slate-800">{copy.groups[label]}</h3><ul className="space-y-2">{paths.map(path=><li key={path}><Link href={linkFor(path)} className="text-sm text-slate-600 underline-offset-4 hover:text-teal-700 hover:underline">{isNe ? neNames[path] || names[path] : names[path]}</Link></li>)}</ul></div>)}</div>
   </div>
  </section>;
 }

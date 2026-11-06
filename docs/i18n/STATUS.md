@@ -32,6 +32,14 @@ Verification performed on this branch:
 - `npm run lint -- --quiet`: PASS (existing non-blocking `<img>` warning is suppressed)
 - `npm run build`: PASS (390 generated routes; locale handling uses the Next 16 `proxy.ts` convention)
 
+Stage B progress on the continuation branch:
+- Shared footer and PDF directory copy now uses a centralized typed UI copy module.
+- English and Nepali footer labels, directory headings, category labels and route links
+  are covered by executable i18n tests.
+- Nepali directory links use the localized `/ne/...` path only for the six reviewed
+  equivalents; all other links remain explicitly English rather than pretending to be
+  translated.
+
 Branch: `i18n/global-multilingual` (from `feat/pdf-ora-ai-help-market-signals` @ 8cf31b8). Not merged, not deployed.
 
 ## Historical execution limits

@@ -39,6 +39,8 @@ export default function PDForaTool({
   const pathname = usePathname();
   const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
   const ui = getPdfToolCopy(pathname);
+  const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
+  const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
   const [loading, setLoading] = useState(false);
@@ -441,7 +443,7 @@ export default function PDForaTool({
         <div className="mt-8 border-t border-slate-200 pt-2">
         </div>
       </section>
-      <ToolSEOContent slug={currentSlug} />
+      <ToolSEOContent slug={currentSlug} locale={locale} />
     </main>
   );
 }

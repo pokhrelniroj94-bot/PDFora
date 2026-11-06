@@ -1,10 +1,11 @@
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
-import { getToolGuide } from "../../lib/tool-guides";
+import { getRequiredToolGuide } from "../../lib/tool-guides";
 
-const guide = getToolGuide("split-pdf");
+const guide = getRequiredToolGuide("split-pdf");
 export const metadata = getPdfToolMetadata("split-pdf");
 
 import Niroj77Tool from "../../components/Niroj77Tool";
+import ToolGuide from "../../components/ToolGuide";
 
 export default function Page() {
   return (
@@ -320,6 +321,7 @@ export default function Page() {
           </a>
         </div>
       </section>
+      <ToolGuide guide={guide} />
     </main>
   );
 }

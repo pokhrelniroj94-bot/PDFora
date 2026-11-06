@@ -9,7 +9,7 @@ Recommended Render environment variables:
 - `APP_ENV=production` — disables FastAPI Swagger, ReDoc, and OpenAPI routes. Render also sets its own `RENDER=true` flag, which enables production behavior.
 - `CLEANUP_ADMIN_TOKEN` — optional strong random secret, kept only in Render. The maintenance endpoint `POST /api/cleanup` returns 404 unless the matching `X-Admin-Token` header is supplied. The public frontend must never receive this value.
 - `RATE_LIMIT_REDIS_URL` — optional Redis-compatible connection URL for shared rate limits across multiple backend instances. Without it, rate limits are process-local and do not coordinate between instances.
-- `PDFORA_RATE_LIMIT_ROUTE` and `PDFORA_RATE_LIMIT_PER_HOUR` — optional numeric overrides for the default per-route and per-IP request limits.
+- `PDFORA_RATE_LIMIT_PER_ROUTE` and `PDFORA_RATE_LIMIT_PER_HOUR` — optional numeric overrides for the default per-route and per-IP request limits. `PDFORA_RATE_LIMIT_ROUTE` remains accepted as a backwards-compatible alias.
 
 CORS currently uses a fixed allowlist in `backend/main.py`. If the frontend domain changes, update that list and test browser uploads before deploying.
 

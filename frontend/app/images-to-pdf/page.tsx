@@ -1,10 +1,11 @@
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
-import { getToolGuide } from "../../lib/tool-guides";
+import { getRequiredToolGuide } from "../../lib/tool-guides";
 
-const guide = getToolGuide("images-to-pdf");
+const guide = getRequiredToolGuide("images-to-pdf");
 export const metadata = getPdfToolMetadata("images-to-pdf");
 
 import Niroj77Tool from "../../components/Niroj77Tool";
+import ToolGuide from "../../components/ToolGuide";
 
 export default function Page() {
 return ( <main className="min-h-screen bg-slate-50 text-slate-950">
@@ -258,7 +259,8 @@ I </div>
       </div>
     </div>
   </section>
-</main>
+  <ToolGuide guide={guide} />
+  </main>
 
 );
 }

@@ -886,6 +886,11 @@ export const toolGuides: ToolGuide[] = [
 ];
 
 export function getToolGuide(slug:string){return toolGuides.find((tool)=>tool.slug===slug);}
+export function getRequiredToolGuide(slug:string): ToolGuide {
+  const guide = getToolGuide(slug);
+  if (!guide) throw new Error(`Missing guide for tool: ${slug}`);
+  return guide;
+}
 
 const existingBlogSlugs = new Set([
   "compress-pdf-to-under-1mb-online",

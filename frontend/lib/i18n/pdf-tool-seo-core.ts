@@ -16,7 +16,8 @@ export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string)
   if (!guide) return { title: "PDF Tool | PDFora", robots: { index: false, follow: true } };
 
   const url = `${SITE}/${slug}`;
-  const title = `${guide.name} Online | PDFora`;
+  const title = `${guide.name} Online`;
+  const brandedTitle = `${title} | PDFora`;
   const description = fitDescription(guide.purpose);
   const keywords = [
     guide.name,
@@ -31,7 +32,7 @@ export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string)
     keywords,
     alternates: { canonical: url },
     robots: { index: true, follow: true },
-    openGraph: { type: "website", title, description, url, siteName: "PDFora" },
-    twitter: { card: "summary", title, description }
+    openGraph: { type: "website", title: brandedTitle, description, url, siteName: "PDFora" },
+    twitter: { card: "summary", title: brandedTitle, description }
   };
 }

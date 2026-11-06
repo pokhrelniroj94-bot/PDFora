@@ -4,6 +4,7 @@ import io
 import os
 import sys
 import zipfile
+import pytest
 from pathlib import Path
 
 import fitz
@@ -34,6 +35,8 @@ def make_sample_pdf() -> bytes:
     windows_fonts = Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts"
     font_candidates = [
         Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        Path("/usr/share/fonts/truetype/freefont/FreeSans.ttf"),
+        Path("/usr/share/fonts/opentype/freefont/FreeSans.ttf"),
         windows_fonts / "arial.ttf",
         windows_fonts / "segoeui.ttf",
         Path("/Library/Fonts/Arial.ttf"),
@@ -67,18 +70,40 @@ def make_sample_pdf() -> bytes:
         page.draw_line((150, 250), (150, 340))
         page.draw_line((250, 250), (250, 340))
     doc.new_page(width=612, height=792)  # A real blank page exercises blank-page removal.
+    doc.set_toc([[1, "Introduction", 1], [1, "Second section", 2]])
+    doc.embfile_add("sample.txt", b"PDFora attachment regression fixture")
     result = doc.tobytes(garbage=4, deflate=True)
     doc.close()
-    reader = PdfReader(io.BytesIO(result))
-    writer = PdfWriter()
-    for page in reader.pages:
-        writer.add_page(page)
-    writer.add_outline_item("Introduction", 0)
-    writer.add_outline_item("Second section", 1)
-    writer.add_attachment("sample.txt", b"PDFora attachment regression fixture")
-    output = io.BytesIO()
-    writer.write(output)
-    return output.getvalue()
+    return result
+
+
+def make_embedded_font_pdf() -> bytes:
+    """Create a minimal PDF that retains a genuinely embedded font."""
+    doc = fitz.open()
+    windows_fonts = Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts"
+    font_candidates = [
+        Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        Path("/usr/share/fonts/truetype/freefont/FreeSans.ttf"),
+        Path("/usr/share/fonts/opentype/freefont/FreeSans.ttf"),
+        windows_fonts / "arial.ttf",
+        windows_fonts / "segoeui.ttf",
+        Path("/Library/Fonts/Arial.ttf"),
+    ]
+    font_path = next((candidate for candidate in font_candidates if candidate.is_file()), None)
+    if font_path is None:
+        doc.close()
+        pytest.skip("No TrueType font is available to embed in this test environment.")
+
+    page = doc.new_page(width=612, height=792)
+    page.insert_text(
+        (50, 70),
+        "PDFora embedded font extraction regression",
+        fontfile=str(font_path),
+        fontname="PDForaEmbeddedTestFont",
+    )
+    result = doc.tobytes(garbage=4, deflate=True)
+    doc.close()
+    return result
 
 
 def make_encrypted_pdf(pdf_bytes: bytes, password: str = "PDFora-Test-Password") -> bytes:
@@ -165,7 +190,7 @@ def test_all_available_pdf_tools_process_a_realistic_pdf():
         ("remove-attachments", lambda: post_pdf("/api/remove-attachments", pdf)),
         ("add-background", lambda: post_pdf("/api/add-background", pdf, data={"text": "DRAFT", "color": "#E5E7EB"})),
         ("extract-page-images", lambda: post_pdf("/api/extract-page-images", pdf)),
-        ("extract-fonts", lambda: post_pdf("/api/extract-fonts", pdf)),
+        ("extract-fonts", lambda: post_pdf("/api/extract-fonts", make_embedded_font_pdf())),
     ]
 
     failures = []
@@ -251,7 +276,7 @@ def test_remove_blank_pages_removes_only_the_empty_page():
 
 
 def test_extract_fonts_returns_nonempty_archive_for_embedded_fonts():
-    response = post_pdf("/api/extract-fonts", make_sample_pdf())
+    response = post_pdf("/api/extract-fonts", make_embedded_font_pdf())
     assert response.status_code == 200
     with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
         names = archive.namelist()
@@ -443,4 +468,3 @@ def test_cleanup_endpoint_is_not_public_without_admin_secret(monkeypatch):
     monkeypatch.delenv("CLEANUP_ADMIN_TOKEN", raising=False)
     response = TestClient(app).post("/api/cleanup")
     assert response.status_code == 404
-

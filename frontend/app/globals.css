@@ -12,16 +12,19 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 html { color-scheme: light; scroll-behavior: smooth; }
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
+}
+.font-nepali {
+  font-family: "Noto Sans Devanagari", "Nirmala UI", "Mangal", ui-sans-serif, system-ui, sans-serif;
 }
 ::selection { background: #99f6e4; color: #134e4a; }
 :focus-visible { outline: 3px solid #0f766e; outline-offset: 3px; }
@@ -108,11 +111,11 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
    Script-appropriate system font stacks: no web-font downloads, so no layout shift
    or extra requests. Each selector matches only its own language, so English pages
    are unaffected. */
-:lang(ar) { font-family: "Segoe UI", "Noto Sans Arabic", Tahoma, var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
-:lang(ne), :lang(hi) { font-family: "Nirmala UI", "Noto Sans Devanagari", Mangal, var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
-:lang(zh-Hans) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
-:lang(ja) { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
-:lang(ko) { font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
+:lang(ar) { font-family: "Segoe UI", "Noto Sans Arabic", Tahoma, ui-sans-serif, system-ui, sans-serif; }
+:lang(ne), :lang(hi) { font-family: "Nirmala UI", "Noto Sans Devanagari", Mangal, ui-sans-serif, system-ui, sans-serif; }
+:lang(zh-Hans) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif; }
+:lang(ja) { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif; }
+:lang(ko) { font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", ui-sans-serif, system-ui, sans-serif; }
 
 /* RTL helpers, active only inside an element with dir="rtl" (Arabic pages). */
 [dir="rtl"] .i18n-flip { transform: scaleX(-1); } /* mirror directional arrows/chevrons */

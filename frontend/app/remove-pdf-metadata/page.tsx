@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 

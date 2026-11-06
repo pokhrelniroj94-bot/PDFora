@@ -7,6 +7,7 @@ import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui.ts";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne.ts";
 import { toolGuides } from "../lib/tool-guides.ts";
+import { getPdfToolMetadata } from "../lib/i18n/pdf-tool-seo.ts";
 
 ensureTypeStripping();
 const { config, routing, translate, format, preference, switcher, metadata } = await loadI18n();
@@ -194,5 +195,16 @@ test("Nepali PDF guide translations cover all 49 live tool slugs", () => {
     assert.ok(translated.caution.trim(), guide.slug + " caution");
     assert.equal(translated.steps.length, 3, guide.slug + " must have three steps");
     assert.ok(translated.steps.every((step) => step.trim()), guide.slug + " step copy");
+  }
+});
+
+
+test("PDF SEO metadata is unique, canonical and within search description length for all tools", () => {
+  for (const guide of toolGuides) {
+    const metadata = getPdfToolMetadata(guide.slug);
+    assert.ok(String(metadata.title).includes(guide.name), guide.slug + " title must include the tool name");
+    assert.ok(typeof metadata.description === "string" && metadata.description.length >= 80 && metadata.description.length <= 160, guide.slug + " description must be useful and within 160 characters");
+    assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
+    assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
   }
 });

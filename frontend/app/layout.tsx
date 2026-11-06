@@ -6,6 +6,7 @@ import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
 import SiteAIHelp from "../components/SiteAIHelp";
 import SiteFooter from "../components/SiteFooter";
+import SiteLanguageBar from "../components/SiteLanguageBar";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <SiteLanguageBar />
         {children}
         <SiteFooter />
         <ToolDirectory />

@@ -48,8 +48,9 @@ async function readOfficialStories() {
     }
   }
   const ipo: Story[] = ipoResult.status === "fulfilled" ? ipoResult.value.map((item) => {
-    const date = new Date(item.scraped_at || item.announcement_date || "");
-    return item.company && item.url && /^https:\/\//i.test(item.url) && !Number.isNaN(date.getTime())
+    // scraped_at is ingestion time, not publication time. Do not present it as a fresh announcement.
+    const date = new Date(item.announcement_date || "");
+    return item.company && item.url && /^https:\/\//i.test(item.url) && !Number.isNaN(date.getTime()) && date.getTime() <= Date.now() && date.getTime() >= cutoff
       ? { title: item.company + (item.date_range ? " — " + item.date_range : "") + " (IPO notice)", link: item.url, publishedAt: date.toISOString(), source: "IPO notice" }
       : null;
   }).filter((item): item is Story => item !== null) : [];
@@ -87,16 +88,20 @@ async function readFeed(query: string): Promise<Story[]> {
   return [...unique.values()].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt)).slice(0, 10);
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const [marketResult, ipoResult, officialResult] = await Promise.allSettled([
+    const requestedSymbol = (new URL(request.url).searchParams.get("symbol") || "").trim().toUpperCase();
+    const safeSymbol = /^[A-Z0-9&.-]{2,16}$/.test(requestedSymbol) ? requestedSymbol : "";
+    const [marketResult, ipoResult, officialResult, companyResult] = await Promise.allSettled([
       readFeed("NEPSE Nepal stock market shares trading"),
       readFeed("Nepal IPO FPO share allotment public issue"),
       readOfficialStories(),
+      safeSymbol ? readFeed(`${safeSymbol} Nepal company shares stock NEPSE`) : Promise.resolve([] as Story[]),
     ]);
     const official = officialResult.status === "fulfilled" ? officialResult.value : { market: [], ipo: [], failed: true };
     const market = [
       ...(marketResult.status === "fulfilled" ? marketResult.value : []),
+      ...(companyResult.status === "fulfilled" ? companyResult.value : []),
       ...official.market,
     ].sort((a,b)=>Date.parse(b.publishedAt)-Date.parse(a.publishedAt)).slice(0,10);
     const ipo = [
@@ -106,7 +111,7 @@ export async function GET() {
     if (market.length === 0 && ipo.length === 0) {
       throw new Error("Google News and NEPSE public news feeds are temporarily unavailable");
     }
-    const warning = marketResult.status === "rejected" || ipoResult.status === "rejected" || official.failed
+    const warning = marketResult.status === "rejected" || ipoResult.status === "rejected" || companyResult.status === "rejected" || official.failed
       ? "Some providers are unavailable. Headlines from the working sources are still shown."
       : undefined;
     return Response.json(

@@ -292,6 +292,13 @@ const catalogGuides: BlogPost[] = toolCatalog
 
 export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides];
 
+// Catalog-wide guide pages are generated from a shared template. Keep them
+// accessible from their relevant tools, but do not expose them as indexable
+// editorial articles until each has been individually reviewed and expanded.
+export function isCatalogGeneratedGuide(slug: string): boolean {
+  return toolCatalog.some((tool) => tool.slug !== "pdf-tools" && slug === `${tool.slug}-guide`);
+}
+
 export function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug);
 }

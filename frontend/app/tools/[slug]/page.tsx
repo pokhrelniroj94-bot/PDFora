@@ -69,7 +69,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;
   const socialTitle = `${tool.name} Online | PDFora`;
-  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")}. Use PDFora online to complete this task and check the result before saving or sharing.`.slice(0, 160);
+  const categoryDescription: Record<string, string> = {
+    PDF: "Check page order, layout, text, forms and signatures in the exported document before sharing it.",
+    Finance: "Review the rate, period, fees and tax assumptions before relying on a financial estimate.",
+    Math: "Check input units and rounding, then compare a sample result with a known answer.",
+    Text: "Review punctuation, Unicode characters and line breaks before copying the processed text.",
+    Developer: "Test the output in the application that will use it; encoding and decoding do not provide encryption.",
+    Image: "Check the output format, dimensions, transparency and visual quality before downloading.",
+    SEO: "Use the result as a diagnostic and verify the rendered page, canonical and indexing status.",
+    Business: "Confirm the cost, price, margin and tax assumptions before using a figure in a quote or budget.",
+    Nepal: "Check the applicable fiscal year, date system, local units and official notices before relying on the result."
+  };
+  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")} ${categoryDescription[tool.category] ?? "Check the input and output carefully before using the result."}`.slice(0, 160);
   const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
   const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
   return {
@@ -156,6 +167,13 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: "Does the tool replace official advice or verification?", a: "No. Confirm important legal, financial, government or compliance matters with the responsible authority." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
+    "market-ai": [
+      { q: "Which markets can I analyse?", a: "You can analyse available historical daily NEPSE data or upload your own Forex and Crypto CSV. Forex and Crypto results depend on the accuracy and freshness of your file; they are not live market feeds." },
+      { q: "Which CSV columns are required?", a: "Date and Close are required. Open, High, Low and Volume are recommended. Use one daily candle per date, ISO dates (YYYY-MM-DD), at least 50 valid rows and a file no larger than 5 MB." },
+      { q: "Does a BUY signal mean the trade will be profitable?", a: "No. Signals are rule-based technical conditions, not predictions or win probabilities. Test strategies on separate historical data and include fees, spread, slippage and liquidity." },
+      { q: "Why can the tool show HOLD / WATCH instead of BUY?", a: "Mixed indicators, unusual selling volume, elevated risk or stale historical data can weaken or suppress a potential BUY setup. A stale dataset suppresses new BUY/SELL signals." },
+      { q: "What does the free AI explanation do?", a: "It explains the calculated indicators and warnings. It does not calculate a separate trading signal and must not override the rule-based result." }
+    ],
     "neb-gpa-calculator": [
       { q: "How is GPA calculated?", a: "Multiply each subject's grade point by its credit hours, add those weighted points, then divide by the total credit hours. GPA = Σ(credit × grade point) ÷ Σ(credit hours)." },
       { q: "Should I enter marks or grade points?", a: "Enter the grade point from your official grade sheet, not raw marks. Select the matching letter grade and enter the subject's credit hours." },

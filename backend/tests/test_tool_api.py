@@ -31,12 +31,19 @@ client = ApiClient(os.environ["PDFORA_API"]) if os.environ.get("PDFORA_API") els
 
 def make_sample_pdf() -> bytes:
     doc = fitz.open()
-    font_path = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+    windows_fonts = Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts"
+    font_candidates = [
+        Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        windows_fonts / "arial.ttf",
+        windows_fonts / "segoeui.ttf",
+        Path("/Library/Fonts/Arial.ttf"),
+    ]
+    font_path = next((candidate for candidate in font_candidates if candidate.is_file()), None)
     for number in range(1, 4):
         page = doc.new_page(width=612, height=792)
         text = f"PDFora regression test page {number}\nRevenue 2026\nNorth 100\nSouth 200"
-        if font_path.exists():
-            page.insert_text((50, 70), text, fontfile=str(font_path), fontname="DejaVu")
+        if font_path:
+            page.insert_text((50, 70), text, fontfile=str(font_path), fontname="PDForaTestFont")
         else:
             page.insert_text((50, 70), text)
         if number == 1:
@@ -179,9 +186,97 @@ def test_pdf_information_handles_missing_metadata():
     response = post_pdf("/api/pdf-info", make_sample_pdf())
     assert response.status_code == 200
     report = response.content.decode("utf-8")
-    assert "Page count: 4" in report
+    assert "Page count: 4\n" in report
     assert "Title: Not set" in report
     assert "Author: Not set" in report
+    assert "\\n" not in report
+
+
+def test_page_counter_report_uses_real_newlines():
+    response = post_pdf("/api/page-counter", make_sample_pdf())
+    assert response.status_code == 200
+    report = response.content.decode("utf-8")
+    assert "Total pages: 4\n" in report
+    assert "\\n" not in report
+
+
+def test_extract_bookmarks_report_uses_real_newlines():
+    response = post_pdf("/api/extract-bookmarks", make_sample_pdf())
+    assert response.status_code == 200
+    report = response.content.decode("utf-8")
+    assert "Page 1: Introduction\n" in report
+    assert "Page 2: Second section\n" in report
+    assert "\\n" not in report
+
+
+def test_extract_page_images_renders_every_page_as_png():
+    response = post_pdf("/api/extract-page-images", make_sample_pdf())
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("application/zip")
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = sorted(archive.namelist())
+        assert names == [f"page-{index:04d}.png" for index in range(1, 5)]
+        for name in names:
+            with Image.open(io.BytesIO(archive.read(name))) as rendered:
+                assert rendered.format == "PNG"
+                assert rendered.width > 0 and rendered.height > 0
+
+
+def test_split_by_bookmarks_creates_valid_sections():
+    response = post_pdf("/api/split-by-bookmarks", make_sample_pdf())
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = sorted(archive.namelist())
+        assert len(names) == 2
+        page_counts = [len(PdfReader(io.BytesIO(archive.read(name))).pages) for name in names]
+        assert page_counts == [1, 3]
+
+
+def test_extract_images_returns_embedded_image_files():
+    response = post_pdf("/api/extract-images", make_sample_pdf())
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = archive.namelist()
+        assert names
+        image_data = archive.read(names[0])
+        with Image.open(io.BytesIO(image_data)) as extracted:
+            assert extracted.width == 40 and extracted.height == 40
+
+
+def test_remove_blank_pages_removes_only_the_empty_page():
+    response = post_pdf("/api/remove-blank-pages", make_sample_pdf())
+    assert response.status_code == 200
+    result = PdfReader(io.BytesIO(response.content))
+    assert len(result.pages) == 3
+
+
+def test_extract_fonts_returns_nonempty_archive_for_embedded_fonts():
+    response = post_pdf("/api/extract-fonts", make_sample_pdf())
+    assert response.status_code == 200
+    with zipfile.ZipFile(io.BytesIO(response.content)) as archive:
+        names = archive.namelist()
+        assert names
+        assert all(archive.read(name) for name in names)
+
+
+def test_extract_fonts_rejects_non_embedded_standard_fonts():
+    doc = fitz.open()
+    page = doc.new_page()
+    page.insert_text((50, 70), "Standard Helvetica is not embedded")
+    pdf = doc.tobytes()
+    doc.close()
+    response = post_pdf("/api/extract-fonts", pdf)
+    assert response.status_code == 422
+    assert "No extractable embedded fonts" in response.json()["detail"]
+
+
+def test_pdf_to_csv_exports_detected_table_cells():
+    response = post_pdf("/api/pdf-to-csv", make_sample_pdf())
+    assert response.status_code == 200
+    csv_text = response.content.decode("utf-8-sig")
+    assert "Region" in csv_text and "Sales" in csv_text
+    assert "North" in csv_text and "South" in csv_text
+    assert "100" in csv_text and "200" in csv_text
 
 
 def test_protect_pdf_encrypts_and_preserves_pages():

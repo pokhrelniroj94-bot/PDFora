@@ -8,7 +8,7 @@ import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui.ts";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne.ts";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne.ts";
 import { toolGuides } from "../lib/tool-guides.ts";
-import { getPdfToolMetadata } from "../lib/i18n/pdf-tool-seo.ts";
+import { buildPdfToolMetadata } from "../lib/i18n/pdf-tool-seo-core.ts";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
 
 ensureTypeStripping();
@@ -213,7 +213,7 @@ test("PDF SEO metadata is unique, canonical and within search description length
   const titles = new Set();
   const descriptions = new Set();
   for (const guide of toolGuides) {
-    const metadata = getPdfToolMetadata(guide.slug);
+    const metadata = buildPdfToolMetadata(guide, guide.slug);
     assert.ok(String(metadata.title).includes(guide.name), guide.slug + " title must include the tool name");
     assert.ok(String(metadata.title).length <= 70, guide.slug + " title should remain concise");
     assert.ok(!titles.has(metadata.title), guide.slug + " title must be unique");

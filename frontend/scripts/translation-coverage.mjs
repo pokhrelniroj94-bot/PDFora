@@ -41,9 +41,6 @@ function currentCommit() {
 
 const pageSourceFiles = walk(appRoot).filter((file) => file.endsWith("/page.tsx"));
 const apiRouteSourceFiles = walk(appRoot).filter((file) => file.endsWith("/route.ts"));
-const englishNamespaceFiles = fs.existsSync(path.join(messagesRoot, "en"))
-  ? fs.readdirSync(path.join(messagesRoot, "en")).filter((file) => file.endsWith(".json"))
-  : [];
 const editorialBlogCount = (blogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepalBlogCount = (nepalBlogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);

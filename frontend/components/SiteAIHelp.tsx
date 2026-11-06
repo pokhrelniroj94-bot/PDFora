@@ -5,22 +5,29 @@ import { usePathname } from "next/navigation";
 
 type Message = { role: "user" | "assistant"; text: string };
 
-const quickQuestions = [
-  "Yo page ko tool kasari use garne?",
-  "PDF compress garda kun setting ramro?",
-  "CV lai ATS-friendly kasari banaune?",
-  "NEPSE ko RSI ra MACD kasari bujhne?",
+const quickQuestionsEn = [
+  "How do I use the tool on this page?",
+  "Which setting should I use to compress a PDF?",
+  "How can I make my CV ATS-friendly?",
+  "How do I understand NEPSE RSI and MACD?",
 ];
 
 export default function SiteAIHelp() {
   const pathname = usePathname();
   const isNepali = (pathname || "/") === "/ne" || (pathname || "/").startsWith("/ne/");
+  const quickQuestions = isNepali ? [
+    "यो पृष्ठको टुल कसरी प्रयोग गर्ने?",
+    "PDF कम्प्रेस गर्दा कुन सेटिङ राम्रो हुन्छ?",
+    "CV लाई ATS-friendly कसरी बनाउने?",
+    "NEPSE को RSI र MACD कसरी बुझ्ने?",
+  ] : quickQuestionsEn;
   const pagePath = (pathname || "/").replace(/^\/(ne|hi|es|fr|de|pt|ar|bn|id|zh|ja)(?=\/|$)/, "") || "/";
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", text: isNepali ? "नमस्कार! म PDFora AI सहायता हुँ। टुल प्रयोग गर्न, नतिजा बुझ्न वा समस्या समाधान गर्न के सहयोग चाहिन्छ?" : "Namaste! I am PDFora AI Help. How can I help you use a tool, understand a result or solve a problem?" },
   ]);
+  useEffect(() => { setMessages([{ role: "assistant", text: isNepali ? "नमस्कार! म PDFora AI सहायता हुँ। टुल प्रयोग गर्न, नतिजा बुझ्न वा समस्या समाधान गर्न के सहयोग चाहिन्छ?" : "Namaste! I am PDFora AI Help. How can I help you use a tool, understand a result or solve a problem?" }]); }, [isNepali]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [pageContext, setPageContext] = useState("");

@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
+import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import PDForaTool from "../../components/Niroj77Tool";
 
-export const metadata: Metadata = {
-  title: "Remove Attachments from PDF Online | PDFora",
-  description: "Remove embedded file attachments from a PDF document online. Download the updated PDF.",
-  alternates: { canonical: "https://pd-fora.vercel.app/remove-attachments" },
-};
+export const metadata = getPdfToolMetadata("remove-attachments");
 
 export default function Page() {
   const description = "Remove embedded file attachments from a PDF document while keeping its pages.";

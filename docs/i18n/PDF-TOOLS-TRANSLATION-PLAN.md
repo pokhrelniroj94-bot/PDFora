@@ -74,3 +74,12 @@ No locale should be marked published until all localized PDF pages pass the chec
 - Added SoftwareApplication and BreadcrumbList JSON-LD to the per-tool guide alongside the visible FAQPage schema. Schema uses the actual tool name, purpose and canonical page URL; no ratings or unsupported claims are fabricated.
 - Added automated checks for title/tool-name matching, 80–160 character descriptions, canonical URL and indexability for all 49 English tool pages.
 - The non-English locale routes remain unpublished. This metadata work does not publish translations or add hreflang for incomplete localized routes.
+
+
+## Validation status (2026-11-06)
+
+- Static source checks confirm 49 unique Nepali guide entries and exactly 49 purpose, steps and caution fields.
+- All 49 standalone PDF route files were checked to confirm they use the shared metadata helper.
+- Automated tests have been added for guide completeness and metadata shape, but they have not been executed in a project runtime in this session.
+- GitHub reports no workflow runs for the latest commits. The Vercel status check on the latest docs commit failed with a Vercel build-rate-limit/upgrade notice; this is not evidence of a source-code build failure or success.
+- Do not merge or deploy until the build-rate-limit issue is resolved and the full test, lint, build and browser QA suite passes.

@@ -92,3 +92,11 @@ No locale should be marked published until all localized PDF pages pass the chec
 - Added translations for the PDF workspace's known tool-specific labels and placeholders, including page ranges, watermark, password, rotation, Bates numbering, metadata, bookmarks, headers/footers and image quality.
 - Added tests for representative field-label translations. Unknown labels intentionally remain visible in their source language rather than disappearing.
 - The page-level wrapper headings and custom explanatory copy in some standalone route files are still English. The non-English route publishing gate remains closed until those page shells and all workspace options are translated and browser-tested.
+
+
+## Step 7 — Workspace heading hierarchy and navigation (2026-11-06)
+
+- Removed the duplicate H1 from the shared upload workspaces. Each of the 49 route pages keeps its route-level H1 as the primary page heading; the workspace title is now a subordinate heading.
+- Nepali tool names and purpose copy remain visible in the shared workspace heading area when the locale is Nepali.
+- Home/back navigation now preserves the selected locale prefix.
+- Default text examples such as DRAFT and the Bates prefix are translated only for Nepali; numeric and API enum values are left unchanged.

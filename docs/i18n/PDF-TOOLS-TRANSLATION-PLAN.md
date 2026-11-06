@@ -38,3 +38,12 @@ No locale should be marked published until all localized PDF pages pass the chec
 - The common SEO guide section headings now have locale-specific labels, and the active locale is passed from each tool workspace into the server-rendered guide component.
 - This is heading-level localization only. The guide paragraphs, per-tool title/description, field labels, FAQs and related links are not yet fully localized. Do not mark any non-English locale as published on this basis.
 - The remaining work is to create reviewed per-tool content for all 49 slugs, localize every visible control and FAQ, ensure locale-aware internal links, then run translation completeness checks, lint, build and browser tests.
+
+
+## Step 2 — Nepali guide naming and FAQ questions (2026-11-06)
+
+- Added Nepali display names for all 49 PDF tool guide headings.
+- Added Nepali versions of the six FAQ questions on each guide.
+- Related PDF-tool links now preserve the selected locale prefix when a localized route is available.
+- This step does not translate the 49 tool-specific purpose/steps/caution fields or the FAQ answers and long-form SEO paragraphs. Those remain incomplete and non-English locales must remain unpublished/noindex.
+- CI has not run for the latest commit; the Vercel status check is pending. Do not merge or deploy based on this partial work.

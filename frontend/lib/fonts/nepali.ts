@@ -7,7 +7,6 @@ export const notoSansDevanagari = Noto_Sans_Devanagari({
   style: ["normal"],
   display: "swap",
   variable: "--font-noto-sans-devanagari",
-  // Prevent preloading on every English page. Preload only the used regular weight
-  // from the Nepali layout after confirming it is the above-the-fold body font.
+  // This module is imported only by app/ne/layout.tsx, so only Nepali pages preload these two weights.
   preload: true,
 });

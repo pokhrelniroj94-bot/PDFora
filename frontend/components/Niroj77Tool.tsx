@@ -5,6 +5,7 @@ import ToolSEOContent from "./ToolSEOContent";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
+import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
@@ -47,6 +48,8 @@ export default function NirojToolsTool({
   const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
   const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;
+  const localizedFormPlaceholder = locale === "ne" ? getNepaliPdfFieldText(formPlaceholder) : formPlaceholder;
+  const localizedExtraFields = locale === "ne" ? extraFields.map((field) => ({ ...field, label: getNepaliPdfFieldText(field.label) || field.label, placeholder: getNepaliPdfFieldText(field.placeholder) })) : extraFields;
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
   const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((f) => [f.name, f.defaultValue || ""])));
@@ -342,7 +345,7 @@ export default function NirojToolsTool({
               <label className="mb-2 block text-sm font-bold">
                 {queryField === "degrees"
                   ? ui.rotationAngle
-                  : formPlaceholder || ui.enterValue}
+                  : localizedFormPlaceholder || ui.enterValue}
               </label>
 
               <input
@@ -363,7 +366,7 @@ export default function NirojToolsTool({
             </div>
           )}
 
-          {extraFields.map((field) => (
+          {localizedExtraFields.map((field) => (
             <div key={field.name} className="mt-4">
               <label className="mb-2 block text-sm font-bold" htmlFor={field.name}>{field.label}</label>
               {field.multiline ? (

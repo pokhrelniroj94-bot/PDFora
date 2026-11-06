@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs";
+import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui.ts";
 
 ensureTypeStripping();
 const { config, routing, translate, format, preference, switcher, metadata } = await loadI18n();
@@ -167,4 +168,15 @@ test("message files: English source files exist and parse as JSON", () => {
     const tree = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"));
     assert.equal(typeof tree, "object", f);
   }
+});
+
+test("PDF tool UI dictionaries cover every supported locale", () => {
+  for (const locale of config.locales) {
+    const copy = getPdfToolCopy(`/${locale}/merge-pdf`);
+    for (const [key, value] of Object.entries(copy)) {
+      assert.equal(typeof value, "string", `${locale}.${key} must be a string`);
+      assert.ok(value.trim().length > 0, `${locale}.${key} must not be empty`);
+    }
+  }
+  assert.equal(getPdfToolCopy("/unknown/merge-pdf").chooseFile, getPdfToolCopy("/merge-pdf").chooseFile);
 });

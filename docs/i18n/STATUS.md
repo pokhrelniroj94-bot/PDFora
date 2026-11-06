@@ -1,5 +1,18 @@
 # PDFora i18n rollout: status
 
+## Current continuation status
+
+Branch: `feature/complete-12-language-platform` at `c98b849`; PR #77 remains open,
+mergeable, and not merged or deployed. The translation coverage generator now runs in
+CI and reports source-language content separately from reviewed translations. Cookie
+consent is localized for English and Nepali, including the consent dialog, settings,
+accessibility label and privacy-policy link.
+
+Latest executed checks: frontend Jest 5/5, i18n 22/22 plus 2 coverage tests, TypeScript,
+ESLint, catalog validation, i18n validation, production build (390 generated routes),
+backend pytest 27 passed, npm audit and pip-audit passed. The Vercel check remains
+blocked by the provider's build-rate quota, not by the local build.
+
 ## 12-language foundation snapshot
 
 Branch: `i18n/12-language-foundation`, based on master `6cc1f06`. This branch is not

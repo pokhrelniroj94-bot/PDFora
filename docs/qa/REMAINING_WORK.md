@@ -15,6 +15,8 @@
 - Shared footer and PDF directory copy is centralized for English and Nepali.
 - Shared UI tests verify required labels, category coverage and localized-route
   behavior.
+- Cookie consent copy is now localized for English and Nepali, including dialog,
+  settings, optional categories and accessibility labels.
 - The remaining English/Nepali route surfaces still require page-specific migration,
   especially blogs, legal pages, calculators, market tools and form/error messages.
 

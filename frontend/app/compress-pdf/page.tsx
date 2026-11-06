@@ -1,7 +1,5 @@
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
-import { getToolGuide } from "../../lib/tool-guides";
 
-const guide = getToolGuide("compress-pdf");
 export const metadata = getPdfToolMetadata("compress-pdf");
 
 import Niroj77Tool from "../../components/Niroj77Tool";

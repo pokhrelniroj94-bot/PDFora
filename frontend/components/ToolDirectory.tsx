@@ -33,7 +33,7 @@ export default function ToolDirectory() {
     <p className="text-xs font-black uppercase tracking-widest text-teal-700">{isNe ? "PDFora टुल संग्रह" : "PDFora toolbox"}</p>
     <h2 className="mt-1 text-xl font-black text-slate-900">{copy.directoryTitle}</h2>
     <p className="mt-1 text-sm text-slate-600">{copy.directoryDescription}</p>
-   </div><Link href="/tools" className="text-sm font-bold text-teal-700 hover:text-orange-600">{copy.directoryLink}</Link></div>
+   </div><Link href={linkFor("/tools")} className="text-sm font-bold text-teal-700 hover:text-orange-600">{copy.directoryLink}</Link></div>
    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{groups.map(([label,...paths])=><div key={label}><h3 className="mb-3 text-sm font-black text-slate-800">{copy.groups[label]}</h3><ul className="space-y-2">{paths.map(path=><li key={path}><Link href={linkFor(path)} className="text-sm text-slate-600 underline-offset-4 hover:text-teal-700 hover:underline">{isNe ? neNames[path] || names[path] : names[path]}</Link></li>)}</ul></div>)}</div>
   </div>
  </section>;

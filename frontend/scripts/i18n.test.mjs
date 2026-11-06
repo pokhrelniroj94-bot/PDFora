@@ -52,6 +52,12 @@ test("shared UI coverage: English and Nepali copy is complete and route-aware", 
   assert.equal(sharedUi.getSharedUiCopy("ne").directoryTitle, "सबै PDF टुलहरू");
 });
 
+test("shared navigation preserves unavailable Nepali destinations", () => {
+  assert.equal(routing.localizedOrFallbackPath("/tools", "ne"), "/ne?from=%2Ftools");
+  assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne?from=%2Fblog");
+  assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
+});
+
 test("published Nepali PDF routes use localized names and guide copy", () => {
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
   assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);

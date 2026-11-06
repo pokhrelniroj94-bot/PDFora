@@ -14,11 +14,12 @@ const quickQuestions = [
 
 export default function SiteAIHelp() {
   const pathname = usePathname();
+  const isNepali = (pathname || "/") === "/ne" || (pathname || "/").startsWith("/ne/");
   const pagePath = (pathname || "/").replace(/^\/(ne|hi|es|fr|de|pt|ar|bn|id|zh|ja)(?=\/|$)/, "") || "/";
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", text: "Namaste! Ma PDFora ko AI Help ho. Kun tool use garna, result bujhna, wa problem solve garna help chahiyo?" },
+    { role: "assistant", text: isNepali ? "नमस्कार! म PDFora AI सहायता हुँ। टुल प्रयोग गर्न, नतिजा बुझ्न वा समस्या समाधान गर्न के सहयोग चाहिन्छ?" : "Namaste! I am PDFora AI Help. How can I help you use a tool, understand a result or solve a problem?" },
   ]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -85,28 +86,28 @@ export default function SiteAIHelp() {
   return (
     <div className="fixed bottom-4 right-4 z-[100] flex flex-col items-end gap-3 print:hidden">
       {open && (
-        <section aria-label="PDFora AI Help" className="flex h-[min(620px,calc(100dvh-112px))] w-[min(390px,calc(100vw-32px))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <section aria-label={isNepali ? "PDFora AI सहायता" : "PDFora AI Help"} className="flex h-[min(620px,calc(100dvh-112px))] w-[min(390px,calc(100vw-32px))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
           <header className="flex items-center justify-between bg-[#082321] px-4 py-3 text-white">
-            <div><p className="text-sm font-extrabold">PDFora AI Help</p><p className="text-[11px] text-teal-100">Help for the page you are viewing</p></div>
-            <button type="button" onClick={() => setOpen(false)} aria-label="Close AI Help" className="rounded-lg px-2 py-1 text-xl hover:bg-white/10">×</button>
+            <div><p className="text-sm font-extrabold">{isNepali ? "PDFora AI सहायता" : "PDFora AI Help"}</p><p className="text-[11px] text-teal-100">{isNepali ? "तपाईंले हेरिरहनुभएको पृष्ठका लागि सहायता" : "Help for the page you are viewing"}</p></div>
+            <button type="button" onClick={() => setOpen(false)} aria-label={isNepali ? "AI सहायता बन्द गर्नुहोस्" : "Close AI Help"} className="rounded-lg px-2 py-1 text-xl hover:bg-white/10">×</button>
           </header>
           <div className="flex-1 space-y-3 overflow-y-auto bg-slate-50 p-3" aria-live="polite">
-            <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] leading-4 text-amber-900">AI answers may be wrong. Do not share passwords, OTPs, bank details or confidential information. Your question is sent to our configured AI provider.</p>
+            <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] leading-4 text-amber-900">{isNepali ? "AI का उत्तर गलत हुन सक्छन्। पासवर्ड, OTP, बैंक विवरण वा गोप्य जानकारी नदिनुहोस्। तपाईंको प्रश्न हाम्रो कन्फिगर गरिएको AI प्रदायकलाई पठाइन्छ।" : "AI answers may be wrong. Do not share passwords, OTPs, bank details or confidential information. Your question is sent to our configured AI provider."}</p>
             {messages.map((message, index) => (
               <div key={index} className={"max-w-[90%] whitespace-pre-wrap rounded-2xl px-3 py-2.5 text-sm leading-5 " + (message.role === "user" ? "ml-auto bg-teal-700 text-white" : "mr-auto border border-slate-200 bg-white text-slate-800")}>{message.text}</div>
             ))}
-            {busy && <p className="mr-auto rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">PDFora AI is thinking…</p>}
+            {busy && <p className="mr-auto rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500">{isNepali ? "PDFora AI सोच्दैछ…" : "PDFora AI is thinking…"}</p>}
             {error && <p role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-xs text-rose-800">{error}</p>}
             {messages.length === 1 && <div className="flex flex-wrap gap-2">{quickQuestions.map((item) => <button type="button" key={item} onClick={() => void send(item)} className="rounded-full border border-teal-200 bg-white px-3 py-1.5 text-left text-[11px] font-semibold text-teal-800 hover:bg-teal-50">{item}</button>)}</div>}
           </div>
           <form onSubmit={(event) => { event.preventDefault(); void send(question); }} className="flex gap-2 border-t border-slate-200 bg-white p-3">
-            <input value={question} onChange={(event) => setQuestion(event.target.value)} maxLength={2000} disabled={busy} placeholder="Ask for help…" aria-label="Ask PDFora AI Help" className="min-w-0 flex-1 rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100" />
-            <button type="submit" disabled={busy || !question.trim()} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white disabled:opacity-50">Send</button>
+            <input value={question} onChange={(event) => setQuestion(event.target.value)} maxLength={2000} disabled={busy} placeholder={isNepali ? "सहयोगका लागि प्रश्न लेख्नुहोस्…" : "Ask for help…"} aria-label={isNepali ? "PDFora AI लाई सोध्नुहोस्" : "Ask PDFora AI Help"} className="min-w-0 flex-1 rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-100" />
+            <button type="submit" disabled={busy || !question.trim()} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white disabled:opacity-50">{isNepali ? "पठाउनुहोस्" : "Send"}</button>
           </form>
         </section>
       )}
-      <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label={open ? "Close PDFora AI Help" : "Open PDFora AI Help"} className="flex items-center gap-2 rounded-full bg-teal-700 px-5 py-3.5 text-sm font-extrabold text-white shadow-xl shadow-teal-950/25 transition hover:-translate-y-0.5 hover:bg-teal-800 focus:outline-none focus:ring-4 focus:ring-teal-200">
-        <span aria-hidden="true">✦</span><span>{open ? "Close Help" : "Ask PDFora AI"}</span>
+      <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-label={open ? (isNepali ? "PDFora AI सहायता बन्द गर्नुहोस्" : "Close PDFora AI Help") : (isNepali ? "PDFora AI सहायता खोल्नुहोस्" : "Open PDFora AI Help")} className="flex items-center gap-2 rounded-full bg-teal-700 px-5 py-3.5 text-sm font-extrabold text-white shadow-xl shadow-teal-950/25 transition hover:-translate-y-0.5 hover:bg-teal-800 focus:outline-none focus:ring-4 focus:ring-teal-200">
+        <span aria-hidden="true">✦</span><span>{open ? (isNepali ? "सहायता बन्द" : "Close Help") : (isNepali ? "PDFora AI लाई सोध्नुहोस्" : "Ask PDFora AI")}</span>
       </button>
     </div>
   );

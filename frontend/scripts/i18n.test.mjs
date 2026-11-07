@@ -395,3 +395,13 @@ test("localized PDF metadata: self canonicals, reciprocal hreflang and indexing 
   assert.deepEqual(published.robots, { index: true, follow: true });
   assert.throws(() => buildPdfToolLocalizedMetadata({ locale: "en", slug: "../bad", title: "x", description: "y", translations: { en: true, ne: true } }));
 });
+
+
+test("site language selector only advertises published locales", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteLanguageBar.tsx"), "utf8");
+  assert.ok(
+    source.includes('locales.filter((item) => localeInfo[item].status === "published")'),
+    "the rendered selector must derive options from the central publication status",
+  );
+  assert.ok(source.includes("publishedLocales.map("), "only the filtered locale list may render options");
+});

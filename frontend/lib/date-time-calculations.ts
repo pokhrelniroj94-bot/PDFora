@@ -44,6 +44,14 @@ export function calculateAge(birthDate: string, asOfDate: string): { years: numb
   return { years: Math.floor(totalMonths / 12), months: totalMonths % 12, days };
 }
 
+
+export function addCalendarDays(dateValue: string, days: number): string {
+  if (!Number.isInteger(days)) throw new Error("Enter a whole number of days.");
+  const date = toUtcDate(parseCalendarDate(dateValue));
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
 export function timeDurationMinutes(start: string, end: string): number {
   const parseTime = (value: string): number => {
     if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) {

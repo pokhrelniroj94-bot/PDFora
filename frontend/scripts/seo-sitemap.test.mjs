@@ -148,13 +148,14 @@ for (const slug of approvedNepali) {
 
 
 assert.match(read("app/layout.tsx"), /metadataBase:\s*new URL\("https:\/\/pd-fora\.vercel\.app"\)/, "The site must have one consistent metadata base");
-assert.match(read("app/about/page.tsx"), /title:\s*"About PDFora \| Free Online PDF Tools & Nepal Utilities"/, "About page title must identify the site and its actual purpose");
+assert.match(read("app/about/page.tsx"), /title:\s*\{\s*absolute:\s*"About PDFora \| Free Online PDF Tools & Nepal Utilities"/, "About page must use an absolute descriptive title without duplicating the root brand template");
 for (const [source, label] of [[englishHomeSource, "English home"], [nepaliHomeSource, "Nepali home"]]) {
   assert.match(source, /alternates:\s*\{[\s\S]*?canonical:/, `${label} must declare a self-canonical URL`);
   assert.match(source, /openGraph:\s*\{/, `${label} must provide Open Graph metadata`);
   assert.match(source, /twitter:\s*\{/, `${label} must provide social preview metadata`);
 }
 assert.match(englishToolPageSource, /alternates:\s*\{\s*canonical/, "Catalog tool pages must publish self-canonical URLs");
+assert.match(englishToolPageSource, /const title = seo\?\.title \?\? `\$\{tool\.name\} Online`/, "Fallback metadata title must rely on the root brand template exactly once");
 assert.match(englishToolPageSource, /openGraph:\s*\{/, "Catalog tool pages must publish Open Graph metadata");
 assert.match(englishToolPageSource, /twitter:\s*\{/, "Catalog tool pages must publish Twitter metadata");
 assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*slug\s*!==\s*"ocr-pdf"/, "OCR must remain excluded from indexing");

@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildLocaleMetadata({
     locale,
     path: `/${slug}`,
-    title: `${name} | PDFora`,
+    title: name,
     description: guide?.purpose ?? route.description,
   });
 }

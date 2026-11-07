@@ -128,6 +128,11 @@ for (const [, name, bs, ad] of holidayRows) {
 assert.ok(liveSource.includes("https://moha.gov.np/en/page/government-and-public-holidays-in-2083"), "Holiday list must link to the official MoHA notice");
 assert.ok(liveSource.includes("2083-07-20") && liveSource.includes("२०८३-०७-२०") && liveSource.includes("static reference"), "Holiday list must disclose the current MoHA page update date and that it is a static reference");
 assert.ok(nepaliBlogSource.includes("२०८३-०७-२०") && englishBlogSource.includes("2083-07-20"), "Both holiday guides must disclose the MoHA page update date");
+assert.ok(liveSource.includes('name: "Jitiya Parwa", bs: "2083 Asoj 15", ad: "2026-10-01"'), "Jitiya date must match the official 2083 notice");
+assert.ok(liveSource.includes('name: "Gaura Parwa"') && liveSource.includes('name: "Krishna Janmashtami"'), "Gaura Parwa must not be merged into the nationwide Janmashtami holiday");
+assert.ok(liveSource.includes('name: "Dura Mhaipru Nakuma"') && liveSource.includes('name: "Tamu Lhosar"'), "Dura Mhaipru Nakuma must remain distinct from the nationwide Tamu Lhosar holiday");
+assert.ok(liveSource.includes('name: "International Women’s Day"') && liveSource.includes('note: "National public holiday", type: "National"'), "International Women's Day must follow the nationwide day-holiday classification");
+assert.ok(liveSource.includes('name: "Siruwa Pawani"'), "Use the official gazette spelling Siruwa Pawani");
 
 const modules = await loadToolAdapter();
 for (const slug of [...newSlugs, ...liveSlugs]) {

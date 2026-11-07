@@ -101,6 +101,7 @@ jobs:
         continue-on-error: true
         env:
           PDFORA_PRODUCTION_URL: http://127.0.0.1:3000
+          PDFORA_EXPECT_CANONICAL_ORIGIN: https://pd-fora.vercel.app
         run: node scripts/production-security-smoke.mjs
       - name: Run individual Chromium E2E checks for all 173 tools
         id: browser-e2e

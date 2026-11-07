@@ -42,6 +42,8 @@ fs.writeFileSync(pngPath, Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNgAAAAAgABSK+kcQAAAABJRU5ErkJggg==",
   "base64",
 ));
+const converterPngPath = path.join(tempDir, "pdfora-converter-e2e-fixture.png");
+fs.copyFileSync(pngPath, converterPngPath);
 
 const pdf = await PDFDocument.create();
 const page = pdf.addPage([595, 842]);
@@ -505,7 +507,8 @@ async function runTool(tool, index) {
         const inputNode = await page.send("DOM.getDocument", { depth: 1 });
         const query = await page.send("DOM.querySelector", { nodeId: inputNode.root.nodeId, selector: 'input[type="file"]' });
         if (!query.nodeId) throw new Error("Image tool has no file input.");
-        await page.send("DOM.setFileInputFiles", { nodeId: query.nodeId, files: [pngPath] });
+        const imageFixture = tool.slug === "image-format-converter" ? converterPngPath : pngPath;
+        await page.send("DOM.setFileInputFiles", { nodeId: query.nodeId, files: [imageFixture] });
         const selected = await page.evaluate("document.querySelector('input[type=file]')?.files?.length || 0");
         if (!selected) throw new Error("Image fixture was not attached.");
         row.checks.push("image file selected");

@@ -244,6 +244,26 @@ async function runTool(tool, index) {
       if (/Tool configuration missing|Tool not implemented|This utility is not available yet|Nepal utility not found/i.test(finalState.body)) {
         throw new Error("Tool reported an unavailable handler/configuration.");
       }
+      const expectedOutputs = {
+        "bmi-calculator": "BMI: 22.5",
+        "bmr-calculator": "Estimated BMR: 1568 kcal/day",
+        "unit-converter": "1000",
+        "fraction-calculator": "5/6",
+        "csv-to-json": "Asha",
+        "json-to-yaml": "name: Asha",
+        "roman-numeral-converter": "MMXXVI",
+        "business-days-calculator": "Weekdays (inclusive): 21",
+        "text-to-binary": "01001000 01100101 01101100 01101100 01101111",
+        "aspect-ratio-calculator": "16:9",
+        "percentage-of-number-calculator": "37.5000",
+        "line-counter": "Total lines: 4",
+        "nepali-number-converter": "बाह्र लाख",
+      };
+      const expected = expectedOutputs[tool.slug];
+      const liveText = finalState.live.join("\\n");
+      if (expected && !liveText.includes(expected)) {
+        throw new Error("Expected output was not found: " + expected + "; actual: " + liveText.slice(0, 300));
+      }
       if (!finalState.inputs && !/calendar|market|news|resume|holiday|dashboard|typing/i.test(tool.slug)) {
         throw new Error("Tool rendered no interactive inputs.");
       }

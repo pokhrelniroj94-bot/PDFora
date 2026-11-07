@@ -370,6 +370,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
 export const nepaliLocalizedBlogPosts: BlogPost[] = [
   ...coreNepaliLocalizedBlogPosts,
   ...additionalNepaliLocalizedBlogPosts,
+  ...nepaliPdfBlogPosts,
 ];
 
 export function getNepaliLocalizedBlogPost(slug: string) {

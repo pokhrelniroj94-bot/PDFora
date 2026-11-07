@@ -111,6 +111,7 @@ const nepaliTitles: Record<string, string> = {
   "ai-resume-writer": "AI रिजुमे लेखक",
   "ai-cover-letter-generator": "AI कभर लेटर जेनेरेटर",
   "ai-humanizer": "AI पाठ परिष्कार तथा पुनर्लेखन",
+  "market-ai": "बजार विश्लेषण तथा जोखिम परीक्षक",
   "password-generator": "सुरक्षित पासवर्ड जेनेरेटर",
   "xml-formatter-validator": "XML फर्म्याट तथा जाँच",
   "regex-tester": "Regular Expression परीक्षक",
@@ -235,6 +236,7 @@ const nepaliDescriptions: Record<string, string> = {
   "ai-resume-writer": "तपाईंको वास्तविक अनुभवबाट ATS-अनुकूल रिजुमे सामग्री तयार गर्नुहोस्।",
   "ai-cover-letter-generator": "वास्तविक अनुभव र कामको विवरणबाट व्यावसायिक कभर लेटर तयार गर्नुहोस्।",
   "ai-humanizer": "अर्थ र तथ्य जोगाउँदै पाठलाई स्वाभाविक र स्पष्ट शैलीमा पुनर्लेखन गर्नुहोस्।",
+  "market-ai": "NEPSE को उपलब्ध ऐतिहासिक डेटा वा Forex/Crypto को आफ्नै दैनिक OHLCV CSV विश्लेषण गरी trend, momentum, volatility, support, resistance र जोखिम हेर्नुहोस्। AI प्रतिवेदनले गणना गरिएको संकेत परिवर्तन गर्दैन; कुनै संकेत नाफाको ग्यारेन्टी होइन।",
   "password-generator": "ब्राउजरमै सुरक्षित random number generator प्रयोग गरी अनुकूल लम्बाइका पासवर्ड बनाउनुहोस्। पासवर्ड कतै पठाइँदैन।",
   "xml-formatter-validator": "XML syntax जाँच्नुहोस् र वैध XML लाई पढ्न सजिलो indentation मा मिलाउनुहोस्।",
   "regex-tester": "JavaScript regular expression लाई आफ्नो नमुना पाठमा परीक्षण गर्नुहोस्। संवेदनशील पाठ स्थानीय रूपमा जाँच्नुहोस्।",
@@ -340,6 +342,9 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && nepaliLocalizedPublicInfoSlugs.includes(toolSlug as (typeof nepaliLocalizedPublicInfoSlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपालका आधिकारिक सेवा तथा सार्वजनिक सूचना</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepalLiveTools slug={toolSlug} locale="ne" /></section></main>;
+  }
+  if (request.locale === "ne" && toolSlug === "market-ai") {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-6xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली वित्तीय तथा बजार विश्लेषण टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 max-w-3xl text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><MarketIntelligence locale="ne" /></section></main>;
   }
   if (request.locale === "ne" && nepaliLocalizedFinancialSlugs.includes(toolSlug as (typeof nepaliLocalizedFinancialSlugs)[number])) {
     if (["loan-emi-calculator", "compound-interest-sip-calculator", "discount-percentage-calculator"].includes(toolSlug)) {

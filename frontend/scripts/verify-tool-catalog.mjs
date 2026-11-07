@@ -12,6 +12,7 @@ const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
 const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
 const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
+const pdfToolGuidesSource = read("../lib/tool-guides.ts");
 const toolPage = read("../app/tools/[slug]/page.tsx");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
@@ -23,6 +24,15 @@ const metadataEntries = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"([^"]
 assert.equal(metadataEntries.length, 124, "Every catalog tool must have a metadata source entry");
 assert.equal(new Set(metadataEntries.map((entry) => entry.name.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool names must be unique");
 assert.equal(new Set(metadataEntries.map((entry) => entry.description.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool descriptions must be unique");
+
+const pdfGuideEntries = [...pdfToolGuidesSource.matchAll(/"slug":\\s*"([^"]+)"[\\s\\S]*?"name":\\s*"([^"]+)"[\\s\\S]*?"keyword":\\s*"([^"]+)"[\\s\\S]*?"purpose":\\s*"([^"]+)"[\\s\\S]*?"steps":\\s*\\[([\\s\\S]*?)\\][\\s\\S]*?"caution":\\s*"([^"]+)"/g)]
+  .map((match) => ({ slug: match[1], name: match[2], keyword: match[3], purpose: match[4], steps: [...match[5].matchAll(/"([^"]+)"/g)].map((step) => step[1]), caution: match[6] }));
+assert.equal(pdfGuideEntries.length, 49, "All 49 established PDF routes need a dedicated guide record");
+for (const field of ["name", "keyword", "purpose"]) {
+  assert.equal(new Set(pdfGuideEntries.map((entry) => entry[field].trim().toLowerCase())).size, 49, `PDF guide ${field} values must be unique`);
+}
+assert.ok(pdfGuideEntries.every((entry) => entry.steps.length === 3 && entry.caution.length >= 60), "Every PDF guide needs three task-specific steps and a useful caution");
+
 
 const seoOverridesBlock = toolPage.match(/const seoOverrides:[\s\S]*?= \{([\s\S]*?)\n  \};/)?.[1] ?? "";
 const seoOverrides = new Map([...seoOverridesBlock.matchAll(/"([^"]+)": \{ title: "([^"]+)", description: "([^"]+)" \}/g)]

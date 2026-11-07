@@ -533,7 +533,7 @@ async function runTool(tool, index) {
       })()`);
       if (tool.slug === "word-character-counter") {
         const textState = await page.evaluate("({ value: document.querySelector('main textarea')?.value || '', content: (document.querySelector('main')?.innerText || '').replace(/\\s+/g, ' ') })");
-        if (textState.value !== "PDFora tools make everyday tasks faster." || !/Words\\s+6\\b/.test(textState.content) || !/Characters\\s+40\\b/.test(textState.content) || !/Sentences\\s+1\\b/.test(textState.content) || !/Paragraphs\\s+1\\b/.test(textState.content)) {
+        if (textState.value !== "PDFora tools make everyday tasks faster." || !/Words\s+6\b/.test(textState.content) || !/Characters\s+40\b/.test(textState.content) || !/Sentences\s+1\b/.test(textState.content) || !/Paragraphs\s+1\b/.test(textState.content)) {
           throw new Error("Word & character counter did not show the expected 6 words, 40 characters, 1 sentence and 1 paragraph.");
         }
         row.checks.push("live word, character, sentence and paragraph counts verified");

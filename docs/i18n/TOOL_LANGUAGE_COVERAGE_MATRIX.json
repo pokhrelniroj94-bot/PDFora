@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-07T10:00:00.000Z",
-  "sourceCommit": "35848a2a38e40982c95950a39a0aba32aedbd3e5",
+  "generatedAt": "2026-11-07T11:00:00.000Z",
+  "sourceCommit": "e37016e2e79af57c01e337ed1127b57d87e680fe",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     "expectedUniqueTools": 173,
@@ -17,7 +17,7 @@
       "en",
       "ne"
     ],
-    "localizedNepaliTools": 57,
+    "localizedNepaliTools": 64,
     "indexableNepaliTools": 6
   },
   "tools": [
@@ -5057,13 +5057,13 @@
       "kind": "utility",
       "route": "/tools/profit-margin-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5072,13 +5072,13 @@
       "kind": "utility",
       "route": "/tools/markup-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5087,13 +5087,13 @@
       "kind": "utility",
       "route": "/tools/break-even-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5102,13 +5102,13 @@
       "kind": "utility",
       "route": "/tools/sales-tax-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5117,13 +5117,13 @@
       "kind": "utility",
       "route": "/tools/salary-breakdown-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5687,13 +5687,13 @@
       "kind": "utility",
       "route": "/tools/commission-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5702,13 +5702,13 @@
       "kind": "utility",
       "route": "/tools/hourly-to-salary-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {

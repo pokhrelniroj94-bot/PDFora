@@ -149,7 +149,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 92);
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 99);
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -543,4 +543,15 @@ test("site language selector only advertises published locales", () => {
     "the rendered selector must derive options from the central publication status",
   );
   assert.ok(source.includes("publishedLocales.map("), "only the filtered locale list may render options");
+});
+
+
+test("Nepali business calculator pages are wired to dedicated localized logic", () => {
+  const page = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const workspace = fs.readFileSync(path.join(frontendRoot, "components", "NepaliBusinessCalculatorWorkspace.tsx"), "utf8");
+  assert.ok(page.includes("NepaliBusinessCalculatorWorkspace"));
+  for (const slug of ["profit-margin-calculator", "markup-calculator", "break-even-calculator", "sales-tax-calculator", "salary-breakdown-calculator", "commission-calculator", "hourly-to-salary-calculator"]) {
+    assert.ok(page.includes(`"${slug}"`), `${slug} must be routed to a Nepali page`);
+    assert.ok(workspace.includes(`"${slug}"`), `${slug} must have a localized workspace`);
+  }
 });

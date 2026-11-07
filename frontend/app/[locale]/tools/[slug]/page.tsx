@@ -9,6 +9,7 @@ import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-rou
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
+import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
 import NepalLiveTools from "../../../../components/NepalLiveTools";
@@ -52,6 +53,13 @@ const nepaliTitles: Record<string, string> = {
   "tip-calculator": "टिप क्याल्कुलेटर",
   "split-bill-calculator": "बिल बाँडफाँट क्याल्कुलेटर",
   "simple-interest-calculator": "साधारण ब्याज क्याल्कुलेटर",
+  "profit-margin-calculator": "नाफा मार्जिन क्याल्कुलेटर",
+  "markup-calculator": "Markup क्याल्कुलेटर",
+  "break-even-calculator": "ब्रेक-इभेन क्याल्कुलेटर",
+  "sales-tax-calculator": "बिक्री कर क्याल्कुलेटर",
+  "salary-breakdown-calculator": "तलब विवरण क्याल्कुलेटर",
+  "commission-calculator": "कमिसन क्याल्कुलेटर",
+  "hourly-to-salary-calculator": "घण्टाको ज्यालाबाट तलब क्याल्कुलेटर",
   "json-formatter-validator": "JSON फर्म्याट तथा जाँच",
   "base64-encoder-decoder": "Base64 Encode / Decode",
   "url-encoder-decoder": "URL Encode / Decode",
@@ -105,6 +113,13 @@ const nepaliDescriptions: Record<string, string> = {
   "tip-calculator": "बिल रकम, टिप प्रतिशत र व्यक्ति संख्याबाट टिप तथा प्रति व्यक्ति रकम निकाल्नुहोस्।",
   "split-bill-calculator": "कुल बिललाई व्यक्तिको संख्याले बराबर बाँडेर प्रति व्यक्ति रकम निकाल्नुहोस्।",
   "simple-interest-calculator": "मूलधन, वार्षिक ब्याजदर र अवधिबाट साधारण ब्याज तथा कुल रकम निकाल्नुहोस्।",
+  "profit-margin-calculator": "बिक्री रकम र लागतबाट नाफा वा घाटा तथा बिक्री रकममा आधारित नाफा मार्जिन निकाल्नुहोस्।",
+  "markup-calculator": "लागतमा markup प्रतिशत थपेर बिक्री मूल्य, नाफा रकम र बिक्री मार्जिन निकाल्नुहोस्।",
+  "break-even-calculator": "स्थिर लागत र प्रति एकाइ लागतका आधारमा लागत उठाउन आवश्यक बिक्री मात्रा निकाल्नुहोस्।",
+  "sales-tax-calculator": "आफूले दिएको करदर प्रयोग गरी कर रकम र करसहितको कुल मूल्य निकाल्नुहोस्।",
+  "salary-breakdown-calculator": "मासिक तलबबाट प्रयोगकर्ताले दिएको कर, सञ्चय कोष र अन्य कटौती घटाएर हातमा आउने रकम निकाल्नुहोस्।",
+  "commission-calculator": "बिक्री रकम र कमिसन दरबाट कमिसन रकम निकाल्नुहोस्।",
+  "hourly-to-salary-calculator": "प्रति घण्टा ज्याला, साप्ताहिक काम र वार्षिक कामका हप्ताबाट अनुमानित तलब निकाल्नुहोस्।",
   "json-formatter-validator": "JSON डेटा मान्य छ कि छैन जाँच्नुहोस् र पढ्न सजिलो गरी फर्म्याट गर्नुहोस्।",
   "base64-encoder-decoder": "UTF-8 पाठलाई Base64 मा बदल्नुहोस् वा Base64 बाट पाठ निकाल्नुहोस्।",
   "url-encoder-decoder": "URL मा प्रयोग हुने विशेष अक्षर encode वा decode गर्नुहोस्।",
@@ -165,6 +180,9 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && ["age-calculator", "date-difference-calculator", "time-duration-calculator"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली मिति तथा समय टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliDateTimeWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["profit-margin-calculator", "markup-calculator", "break-even-calculator", "sales-tax-calculator", "salary-breakdown-calculator", "commission-calculator", "hourly-to-salary-calculator"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली व्यवसाय तथा लेखा टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliBusinessCalculatorWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && ["percentage-change-calculator", "average-calculator", "ratio-simplifier", "fraction-calculator", "percentage-of-number-calculator", "gcd-lcm-calculator", "prime-number-checker", "unit-converter", "bmi-calculator", "bmr-calculator", "tip-calculator", "split-bill-calculator", "simple-interest-calculator"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली गणित टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliMathUtilityWorkspace slug={toolSlug} /></section></main>;

@@ -7,7 +7,7 @@ import { PDFDocument, StandardFonts } from "pdf-lib";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
-const reportPath = path.resolve("docs/qa/BROWSER_E2E_173_REPORT.json");
+const reportPath = path.resolve("../docs/qa/BROWSER_E2E_173_REPORT.json");
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
 const downloadsDir = path.join(tempDir, "downloads");
@@ -99,6 +99,15 @@ async function openPage(url) {
       if (pending.has(id)) { pending.delete(id); reject(new Error("CDP timeout: " + method)); }
     }, 15000).unref?.();
   });
+  const evaluate = async (expression) => {
+    const result = await send("Runtime.evaluate", {
+      expression, returnByValue: true, awaitPromise: true, userGesture: true,
+    });
+    if (result.exceptionDetails) {
+      throw new Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text);
+    }
+    return result.result?.value;
+  };
   await send("Page.enable");
   await send("Runtime.enable");
   await send("Network.enable");
@@ -117,15 +126,7 @@ async function openPage(url) {
   await delay(700);
   return {
     send, events,
-    evaluate: async (expression) => {
-      const result = await send("Runtime.evaluate", {
-        expression, returnByValue: true, awaitPromise: true, userGesture: true,
-      });
-      if (result.exceptionDetails) {
-        throw new Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text);
-      }
-      return result.result?.value;
-    },
+    evaluate,
     close: async () => { try { ws.close(); } catch {} try { await fetch("http://127.0.0.1:9222/json/close/" + target.id); } catch {} },
   };
 }
@@ -187,12 +188,14 @@ async function runTool(tool, index) {
         if (finalState.links.length || /download|completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body) || finalState.alerts.length) break;
         await delay(500);
       }
+      if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));
       if (!finalState || (!finalState.links.length && !/download|completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body))) {
         throw new Error("No processing result or explicit completion/error state appeared after upload.");
       }
       row.checks.push("processing response appeared");
       row.output = finalState.body.slice(-700);
       row.downloadLinks = finalState.links;
+      row.outputVerified = finalState.links.length > 0 || /completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body);
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
       if (aiTools.has(tool.slug)) {
@@ -239,6 +242,7 @@ async function runTool(tool, index) {
         throw new Error(finalState.alerts.join(" | "));
       }
       row.output = finalState.live.filter(Boolean).join(" | ").slice(0, 700) || finalState.body.slice(-700);
+      row.outputVerified = finalState.live.some((value) => value.trim().length > 0) || /result|converted|generated|calculated|valid|words:|characters:/i.test(finalState.body);
       row.checks.push("workspace output inspected");
     }
     row.status = "PASS";

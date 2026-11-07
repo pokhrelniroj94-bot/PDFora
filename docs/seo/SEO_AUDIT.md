@@ -101,6 +101,9 @@ The audit also found missing social preview metadata on the NEPSE market page, N
 
 Nepali catalogue tool routes remain default-deny for indexing. The current explicit localized utility route list is not itself an indexing approval: only the six reviewed Nepali PDF equivalents are indexable and included in hreflang/sitemap. Nepali home, blog, policy, market and resume routes use the shared locale metadata builder. Generated catalogue blog guides remain excluded from the sitemap and noindex until individually edited and reviewed.
 
+
+The generated PDF guide variants were also identified as a duplicate-content risk: 42 of the 49 PDF guide records produced templated blog articles in addition to the canonical tool pages. Those 42 variants now remain accessible but are `noindex`, excluded from the editorial blog index and XML sitemap, and no longer linked from the main PDF tool guides. The seven PDF tasks with reviewed editorial articles retain their blog links; Nepali PDF pages now link to the matching Nepali article route rather than the English route. This preserves useful editorial content while consolidating repetitive generated pages around the canonical tool URLs.
+
 ## Remaining work after source changes
 
 - Complete CI (catalog/i18n, lint, production build, backend regression tests and dependency audits) for the final branch head.

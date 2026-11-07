@@ -519,15 +519,29 @@ async function runTool(tool, index) {
         row.checks.push("reactive output/controls inspected (no submit button by design)");
 
       }
-      const finalState = await page.evaluate(`(() => ({
-        body: document.body?.innerText?.slice(0, 16000) || "",
-        alerts: [...document.querySelectorAll('[role="alert"]')].map((e) => e.innerText.trim()).filter(Boolean),
-        live: [...document.querySelectorAll('[aria-live]')].map((e) => e.innerText.trim()).filter(Boolean),
-        tables: [...document.querySelectorAll('table')].map((table) => table.innerText).join('\\n'),
-        inputs: document.querySelectorAll("input,textarea,select").length,
-        inputValues: [...document.querySelectorAll("input,textarea,select")].map((input) => ({ value: input.value || "", type: input.type || input.tagName.toLowerCase() })),
-        storyLinks: document.querySelectorAll("section ul li a").length,
-      }))()`);
+      const finalState = await page.evaluate(`(() => {
+        const scope = document.querySelector("main") || document.body;
+        return {
+          body: scope.innerText?.slice(0, 16000) || "",
+          alerts: [...scope.querySelectorAll('[role="alert"]')].map((e) => e.innerText.trim()).filter(Boolean),
+          live: [...scope.querySelectorAll('[aria-live]')].map((e) => e.innerText.trim()).filter(Boolean),
+          tables: [...scope.querySelectorAll('table')].map((table) => table.innerText).join('\\n'),
+          inputs: scope.querySelectorAll("input,textarea,select").length,
+          inputValues: [...scope.querySelectorAll("input,textarea,select")].map((input) => ({ value: input.value || "", type: input.type || input.tagName.toLowerCase() })),
+          storyLinks: scope.querySelectorAll("section ul li a").length,
+        };
+      })()`);
+      if (tool.slug === "case-converter") {
+        const converted = await page.evaluate("document.querySelector('main textarea')?.value || ''");
+        if (converted !== "PDFORA TOOLS MAKE EVERYDAY TASKS FASTER.") {
+          throw new Error(`Case converter uppercase output mismatch; actual: ${converted}`);
+        }
+        row.checks.push("uppercase conversion verified against exact textarea value");
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "exact-transformed-input-value-verified";
+        return row;
+      }
       if (tool.slug === "notes-to-pdf") {
         const capture = await page.evaluate("window.__pdforaPrintCapture");
         if (!capture?.html.includes("PDFora E2E Notes") || !capture.html.includes("PDFora E2E Notes") || !capture.html.includes("window.print") || !capture.html.includes("@page{size:A4") || !capture.printed || !capture.focused) {

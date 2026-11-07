@@ -15,6 +15,7 @@ const englishBlogArticle = read("app/blog/[slug]/page.tsx");
 const nepaliBlogIndex = read("app/[locale]/blog/page.tsx");
 const nepaliBlogArticle = read("app/[locale]/blog/[slug]/page.tsx");
 const sitemap = read("app/sitemap.ts");
+const rootLayout = read("app/layout.tsx");
 const englishPdfGuidesSource = read("lib/tool-guides.ts");
 const nepaliPdfGuidesSource = read("lib/i18n/tool-guides-ne.ts");
 const nepaliPdfNamesSource = read("lib/i18n/pdf-tool-names-ne.ts");
@@ -87,6 +88,7 @@ assert.match(englishPage, /openGraph:\s*\{[^}]*title:/s, "English tool pages mus
 assert.match(englishPage, /twitter:\s*\{[^}]*title:/s, "English tool pages must define Twitter titles");
 assert.match(englishPage, /robots:\s*\{\s*index:\s*slug !== "ocr-pdf"/, "OCR remains excluded from indexing");
 assert.match(nepaliPage, /buildLocalizedToolMetadata/, "Nepali tool pages must use the shared locale-aware metadata builder");
+assert.match(rootLayout, /template:\s*"%s \\| PDFora"/, "The root layout must append the single PDFora brand suffix to localized titles");
 assert.match(nepaliPage, /title:\s*nepaliTitles\[request\.implementation\.slug\]/, "Nepali titles must use the translated dictionary without repeating the root layout brand suffix");
 assert.doesNotMatch(nepaliPage, /title:\s*`[^`]*\\| PDFora`/, "Localized tool titles must not append PDFora twice");
 assert.match(nepaliPage, /description:\s*nepaliDescriptions\[request\.implementation\.slug\]/, "Nepali description must use its translated description dictionary");
@@ -132,7 +134,8 @@ for (const item of nepaliPdfMetadata) {
   assert.deepEqual(metadata.robots, approved ? { index: true, follow: true } : { index: false, follow: true }, "Nepali PDF indexability must use the explicit allowlist: " + item.slug);
   assert.equal(Boolean(metadata.alternates?.languages), approved, "Only approved Nepali PDF routes may publish hreflang: " + item.slug);
 }
-assert.match(nepaliPdfPage, /title:\s*`\${name} \| PDFora`/, "Nepali PDF pages must use their localized title");
+assert.match(nepaliPdfPage, /title:\s*name,/, "Nepali PDF pages must use their localized title without repeating the root layout brand suffix");
+assert.doesNotMatch(nepaliPdfPage, /title:\s*`[^`]*\| PDFora`/, "Localized PDF titles must not append PDFora twice");
 assert.match(nepaliPdfPage, /description:\s*guide\?\.purpose \?\? route\.description/, "Nepali PDF pages must use localized guide descriptions");
 assert.match(englishPdfMetadataCore, /alternates:\s*\{ canonical: url \}/, "English PDF pages must have self-referencing canonicals");
 assert.match(englishPdfMetadataCore, /robots:\s*\{ index: true, follow: true \}/, "English PDF tool metadata must be indexable");

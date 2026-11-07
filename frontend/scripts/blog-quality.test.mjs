@@ -13,6 +13,15 @@ const collections = [
   ["Nepali localized guides", "lib/nepali-localized-blog-posts.ts"],
 ];
 
+// High-impact Nepal finance, tax, market and public-information articles must cite
+// at least one primary authority, not only secondary summaries.
+const primarySourceHosts = new Set([
+  "ird.gov.np", "neb.gov.np", "www.nrb.org.np", "www.nepalstock.com", "nepalstock.com",
+  "www.sebon.gov.np", "sebon.gov.np", "cdsc.com.np", "www.cdsc.com.np", "meroshare.cdsc.com.np",
+  "www.nea.org.np", "www.erc.gov.np", "moha.gov.np",
+]);
+const requiresPrimarySource = /(?:vat|gpa|nepse|salary-income-tax|rastra-bank|electricity-bill|public-holidays)/i;
+
 function articleBlocks(source) {
   return [...source.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => {
     const start = source.lastIndexOf("{", match.index);
@@ -63,6 +72,18 @@ for (const [label, file] of collections) {
     const sections = [...body.matchAll(/\{\s*heading:\s*"/g)].length;
     const faqs = [...body.matchAll(/\{\s*question:\s*"/g)].length;
     const toolLinks = [...body.matchAll(/\{\s*label:\s*"[^"]+",\s*href:\s*"\//g)].length;
+    const sourceUrls = [...body.matchAll(/url:\\s*"([^"]+)"/g)].map((match) => match[1]);
+
+    if (requiresPrimarySource.test(slug)) {
+      const hasPrimarySource = sourceUrls.some((value) => {
+        try {
+          return primarySourceHosts.has(new URL(value).hostname.toLowerCase());
+        } catch {
+          return false;
+        }
+      });
+      assert.ok(hasPrimarySource, label + ": high-impact Nepal guidance needs a primary official source for " + slug);
+    }
 
     assert.ok(slug && !slugs.has(slug), label + ": duplicate or empty slug " + slug);
     assert.ok(title.length >= 12 && !titles.has(title), label + ": duplicate or weak title for " + slug);

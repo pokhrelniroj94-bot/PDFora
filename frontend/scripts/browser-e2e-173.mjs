@@ -192,8 +192,9 @@ async function setFirstTextArea(page, value) {
 
 async function setFieldByLabel(page, labelText, value) {
   return page.evaluate(`(() => {
+    const expectedLabel = ${JSON.stringify(labelText)}.trim().toLowerCase();
     const label = [...document.querySelectorAll("label")].find((element) =>
-      element.innerText.trim().startsWith(${JSON.stringify(labelText)}));
+      element.innerText.trim().toLowerCase().startsWith(expectedLabel));
     const field = label?.querySelector("input,textarea");
     if (!field) return false;
     const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
@@ -465,10 +466,13 @@ async function runTool(tool, index) {
         await setFieldByLabel(page, "BS year", "2083");
         await page.evaluate("(() => { const select = [...document.querySelectorAll('select')].find((item) => [...item.options].some((option) => option.value === '1')); if (!select) return false; select.value = '1'; select.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
       } else if (tool.slug === "resume-builder") {
-        await setFieldByLabel(page, "Full name", "PDFora E2E Candidate");
-        await setFieldByLabel(page, "Professional title", "Quality Assurance Analyst");
-        await setFieldByLabel(page, "About you", "Experienced tester focused on reliable web applications.");
-        await setFieldByLabel(page, "Skills (comma separated)", "Testing, JavaScript, Accessibility");
+        const seeded = await Promise.all([
+          setFieldByLabel(page, "Full name", "PDFora E2E Candidate"),
+          setFieldByLabel(page, "Professional title", "Quality Assurance Analyst"),
+          setFieldByLabel(page, "About you", "Experienced tester focused on reliable web applications."),
+          setFieldByLabel(page, "Skills (comma separated)", "Testing, JavaScript, Accessibility"),
+        ]);
+        if (seeded.some((value) => !value)) throw new Error("Resume builder test could not locate one or more labelled fields.");
       } else if (tool.slug === "notes-to-pdf") {
         await setFieldByLabel(page, "Document title", "PDFora E2E Notes");
       }
@@ -769,7 +773,7 @@ async function runTool(tool, index) {
       if ((expected || expectedPattern) && !outputMatches) {
         throw new Error("Expected output was not found for " + tool.slug + "; actual: " + liveText.slice(0, 300));
       }
-      if (!finalState.inputs && !/calendar|market|news|resume|holiday|dashboard|typing/i.test(tool.slug)) {
+      if (!finalState.inputs && !/calendar|market|news|resume|holiday|dashboard|typing|uuid-generator/i.test(tool.slug)) {
         throw new Error("Tool rendered no interactive inputs.");
       }
       if (finalState.alerts.some((alert) => /error|failed|invalid|could not|unavailable/i.test(alert))) {

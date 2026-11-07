@@ -36,3 +36,31 @@ Useful primary references:
 
 ## Important limitations
 This is research assistance, not a licensed investment advisory service. It does not access a user's TMS, Demat, broker account or private portfolio. It must not execute trades. Data rights, upstream availability, timestamp coverage, corporate-action adjustments and field definitions must be reviewed before commercial redistribution or claims of real-time accuracy.
+
+
+## Offline-first deterministic analysis (November 2026)
+
+The core NEPSE analysis must remain useful when every AI provider is disabled or unavailable. AI is an optional explanation layer only; it must never create, suppress, or rewrite a deterministic technical/fundamental result.
+
+Current offline-first behavior:
+- Technical indicators and confluence scoring are computed locally from daily price history. A failed headline/news request no longer prevents technical analysis.
+- Headline screening is shown as separate context. Headline keyword sentiment is not a reliable substitute for reading an exchange filing and must not alter the technical signal.
+- Company fundamentals are displayed from explicitly matched structured financial reports: reported EPS, P/E, profit, paid-up capital and net worth per share. Indicative P/B is calculated only when both market price and positive book value per share exist.
+- EPS/profit growth is calculated only against the same quarter in an earlier fiscal year. If no comparable report exists, growth is unavailable; missing data is never converted to zero.
+- Company financial records are preserved in a bounded structured response so the browser can render a non-AI fundamental snapshot. The dataset may be manually refreshed and is not guaranteed to be current.
+- Nepal-time freshness checks reject malformed or future-dated candles. NEPSE weekly closures are Friday and Saturday; public holidays and source outages still require explicit freshness caveats.
+- Flat-price RSI is neutral (50), not 100.
+
+## Nepal market drivers to model as separate evidence
+
+Do not treat one macro variable as a deterministic cause of a stock move. Research by Nepal Rastra Bank and Nepal-based academic studies has found relationships between market performance and broad money/liquidity, lending rates, monetary-policy changes and political conditions, but effects vary by period and methodology. These belong in a separate market-regime/context layer with source dates, not in a fabricated per-stock forecast.
+
+For company-level work, use sector-aware fundamentals only when the underlying report fields exist. For banks, relevant fields include NPL, capital adequacy, cost of funds and net interest margin; for hydropower, generation, capacity, PPA and hydrology; for insurers, claims and solvency. The currently exposed compact financial schema does not guarantee all these fields, so the engine must explicitly mark them unavailable rather than infer them.
+
+## Validation requirements before production claims
+
+- Run TypeScript, ESLint, production build and browser-level tests on the exact commit.
+- Verify the technical engine against hand-calculated indicator fixtures and synthetic edge cases (flat series, missing volume, duplicate dates, stale/future dates, splits/bonus adjustments).
+- Backtest with next-session execution, realistic brokerage/SEBON/DP fees, price bands/circuit limits, liquidity constraints and out-of-sample periods. Report sample size, benchmark, max drawdown, exposure and profit factor; never present historical win rate as a future probability.
+- Confirm upstream data timestamps and source attribution on every report. Do not label community datasets as official NEPSE APIs.
+- Keep a hard no-signal state when required price history is insufficient, stale, malformed or materially inconsistent.

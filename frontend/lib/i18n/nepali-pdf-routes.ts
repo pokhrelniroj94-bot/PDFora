@@ -5,6 +5,11 @@ export type NepaliPdfRoute = {
   description: string;
   downloadName: string;
   multiple?: boolean;
+  accept?: string;
+  fieldName?: string;
+  formField?: string;
+  formPlaceholder?: string;
+  extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string; multiline?: boolean }[];
   queryField?: string;
   queryDefault?: string;
   component: "pdfora" | "niroj";

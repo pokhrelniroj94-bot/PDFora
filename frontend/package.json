@@ -15,7 +15,7 @@
     "i18n:check": "node scripts/i18n-check.mjs",
     "i18n:coverage": "node scripts/translation-coverage.mjs",
     "i18n:matrix": "node scripts/coverage-matrix.mjs",
-    "prebuild": "npm run verify:tools && npm run tools:test && npm run i18n:test && npm run i18n:check && npm run lint",
+    "prebuild": "npm run verify:tools && npm run tools:test && npm test -- --runInBand && npm run i18n:test && npm run i18n:check && npm run lint",
     "blog:test": "node scripts/blog-quality.test.mjs"
   },
   "dependencies": {

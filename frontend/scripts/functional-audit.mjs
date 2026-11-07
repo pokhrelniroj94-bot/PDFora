@@ -73,14 +73,22 @@ const rows = [
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: "",
-    fixesApplied: "",
-    remainingBlockers: testedCatalog.has(entry.slug)
-      ? "Browser route, mobile layout and accessibility evidence remain unverified."
-      : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-    evidence: testedCatalog.has(entry.slug)
-      ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
-      : catalogEvidence,
+    defectsFound: entry.slug === "nepal-electricity-bill-calculator"
+      ? "A hard-coded tariff estimator could become inaccurate after the ERC 2083 tariff directive."
+      : "",
+    fixesApplied: entry.slug === "nepal-electricity-bill-calculator"
+      ? "Removed fixed-rate arithmetic and linked the tool to the live ERC calculator, the 2083 directive and NEA tariff information."
+      : "",
+    remainingBlockers: entry.slug === "nepal-electricity-bill-calculator"
+      ? "External ERC handoff, official calculator availability and mobile navigation still require browser verification; PDFora intentionally does not estimate tariffs."
+      : testedCatalog.has(entry.slug)
+        ? "Browser route, mobile layout and accessibility evidence remain unverified."
+        : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
+    evidence: entry.slug === "nepal-electricity-bill-calculator"
+      ? "frontend/components/NepalLiveTools.tsx; frontend/scripts/nepali-nepal-tools.test.mjs; ERC official calculator and 2083 directive"
+      : testedCatalog.has(entry.slug)
+        ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
+        : catalogEvidence,
   })),
 ];
 

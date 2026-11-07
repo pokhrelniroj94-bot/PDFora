@@ -24,7 +24,8 @@ const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
 
 const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
-const { getPdfToolMetadata } = await import("../lib/i18n/pdf-tool-seo.ts");
+const { toolGuides } = await import("../lib/tool-guides.ts");
+const { buildPdfToolMetadata } = await import("../lib/i18n/pdf-tool-seo-core.ts");
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
 const isLocalizedToolIndexable = modules["localized-verification"].isLocalizedToolIndexable;
@@ -50,7 +51,7 @@ assert.equal(legacyPdfSlugs.length, 49, "Expected all 49 established PDF routes 
 const pdfMetadataTitles = new Set();
 const pdfMetadataDescriptions = new Set();
 for (const slug of legacyPdfSlugs) {
-  const metadata = getPdfToolMetadata(slug);
+  const metadata = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === slug), slug);
   assert.equal(metadata.alternates?.canonical, `https://pd-fora.vercel.app/${slug}`, `${slug} must have a self-canonical URL`);
   assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} must remain indexable only with its dedicated guide`);
   assert.ok(metadata.openGraph?.title && metadata.openGraph?.description, `${slug} must have Open Graph metadata`);

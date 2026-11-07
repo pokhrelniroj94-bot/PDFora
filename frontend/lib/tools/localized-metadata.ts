@@ -26,7 +26,8 @@ export function buildLocalizedToolMetadata(locale: Locale, entry: ToolInfo): Met
   return {
     ...base,
     alternates: { canonical: base.alternates?.canonical },
-    robots: { index: false, follow: false },
+    // Keep links crawlable while the localized page itself remains excluded from indexing.
+    robots: { index: false, follow: true },
   };
 }
 

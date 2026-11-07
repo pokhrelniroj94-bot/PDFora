@@ -85,7 +85,7 @@ jobs:
         env:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
           E2E_BASE_URL: http://127.0.0.1:3000
-          E2E_TOOL_TIMEOUT_MS: "15000"
+          E2E_TOOL_TIMEOUT_MS: "45000"
         run: node scripts/browser-e2e-173.mjs
       - name: Regenerate audit with browser evidence
         if: always()

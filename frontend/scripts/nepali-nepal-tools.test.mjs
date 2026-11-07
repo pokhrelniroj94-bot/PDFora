@@ -49,6 +49,7 @@ for (const required of ["नेपाली नयाँ वर्ष", "हर�
   assert.ok(liveSource.includes(required) || pageSource.includes(required), `Expected Nepali holiday copy: ${required}`);
 }
 assert.ok(componentSource.includes("photo.size > 20 * 1024 * 1024"), "Photo resizer must enforce its 20 MB client-side limit");
+assert.ok(componentSource.includes("sourcePixels > 25_000_000"), "Photo resizer must reject decompression-heavy images above 25 megapixels");
 assert.ok(componentSource.includes("URL.createObjectURL(photo)") && componentSource.includes("canvas.toBlob"), "Photo resizing must be performed locally in the browser");
 assert.ok(!componentSource.includes("fetch("), "Nepali utility workspace must not upload user photos to a server");
 assert.ok(componentSource.includes("bsYear < 1975 || bsYear > 2099"), "Calendar must enforce the supported BS range");

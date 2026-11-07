@@ -12,7 +12,6 @@ const indexPage = read("app/[locale]/blog/page.tsx");
 const articlePage = read("app/[locale]/blog/[slug]/page.tsx");
 const sitemap = read("app/sitemap.ts");
 const routing = read("lib/i18n/routing.ts");
-const nepaliToolRoutes = read("lib/i18n/nepali-tool-routes.ts");
 
 const slugs = (source) => [...source.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
 const expected = [...slugs(englishEditorial), ...slugs(nepalEditorial)];

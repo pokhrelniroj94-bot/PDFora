@@ -92,7 +92,7 @@ assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO con
 assert.doesNotMatch(toolPage, /"@type": "FAQPage"/, "Do not emit FAQ rich-result markup on generic utility pages");
 assert.match(toolPage, /const description = seo\?\.description \?\? tool\.description\.trim\(\)/, "Fallback metadata must use the actual task-specific catalog description");
 assert.match(toolPage, /const title = seo\?\.title \?\? `\$\{tool\.name\} Online \| PDFora`/, "Fallback metadata title must identify the actual tool and site");
-assert.match(toolPage, /questions\.map\(\(item\) => \(\{ "@type": "Question"/, "Visible tool FAQs must remain available in page content");
+assert.match(seoContent, /uniqueFaqItems\.map/, "Visible tool FAQs must remain available in page content");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);

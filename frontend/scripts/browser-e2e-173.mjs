@@ -1167,6 +1167,44 @@ async function runTool(tool, index) {
       row.outputVerified = ((expected || expectedPattern) && outputMatches) || finalState.live.some((value) => value.trim().length > 0);
       row.evidenceLevel = (expected || expectedPattern) && outputMatches ? "expected-output-assertion" : row.outputVerified ? "live-output-observed-not-oracle-checked" : "route-and-controls-smoke-only";
       row.checks.push("workspace output inspected");
+
+      // Every tool also receives a real Nepali-route smoke check. This verifies
+      // the localized URL, document language, visible Devanagari content and
+      // absence of the explicit English-fallback notice without claiming a
+      // native-speaker review or full functional certification.
+      const nepaliPath = tool.kind === "pdf"
+        ? "/ne" + tool.url
+        : tool.slug === "resume-builder" ? "/ne/resume-builder" : "/ne/tools/" + tool.slug;
+      const localizedNavigation = await page.send("Page.navigate", { url: baseUrl + nepaliPath });
+      if (localizedNavigation.errorText) throw new Error("Nepali route navigation failed for " + tool.slug + ": " + localizedNavigation.errorText);
+      const localizedStarted = Date.now();
+      let localizedReady = "";
+      while (Date.now() - localizedStarted < 15000) {
+        localizedReady = await page.evaluate("document.readyState");
+        if (localizedReady === "interactive" || localizedReady === "complete") break;
+        await delay(200);
+      }
+      await delay(500);
+      const nepaliState = await page.evaluate(`(() => {
+        const body = document.body?.innerText || "";
+        return {
+          lang: document.documentElement.getAttribute("lang") || "",
+          title: document.title || "",
+          heading: document.querySelector("h1")?.innerText?.trim() || "",
+          headingCount: document.querySelectorAll("h1").length,
+          mainCount: document.querySelectorAll("main").length,
+          hasDevanagari: /[\\u0900-\\u097F]/.test(body),
+          englishFallbackNotice: body.includes("यस पृष्ठको टुल इन्टरफेस अझै पूर्ण रूपमा नेपालीमा अनुवाद गरिएको छैन"),
+          bodyLength: body.trim().length,
+        };
+      })()`);
+      row.nepaliLocale = { path: nepaliPath, ...nepaliState };
+      if (nepaliState.lang !== "ne" || !nepaliState.heading || nepaliState.headingCount !== 1 ||
+          nepaliState.mainCount !== 1 || !nepaliState.hasDevanagari ||
+          nepaliState.englishFallbackNotice || nepaliState.bodyLength < 80) {
+        throw new Error("Nepali localized route did not pass visible-language checks: " + JSON.stringify(row.nepaliLocale));
+      }
+      row.checks.push("Nepali route has lang=ne, one main/h1, visible Devanagari content and no English-fallback notice");
       row.status = (expected || expectedPattern) && outputMatches && row.outputVerified ? "PASS" : "PARTIAL";
     }
   } catch (error) {
@@ -1202,11 +1240,11 @@ const report = {
   generatedAt: new Date().toISOString(),
   sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
-  expected: { pdf: 49, catalog: 124, total: 173 },
+  expected: { pdf: 49, catalog: 124, total: 173, nepaliLocalizedRoutes: 173 },
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each PDF route, attach a generated one-page PDF, click the processing action and inspect completion/output state.",
-    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL.",
+    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. Every tool also checks its Nepali route for lang=ne, one main/h1, visible Devanagari content and no explicit English-fallback notice. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL.",
     ai: "AI tools are route-smoke-tested only; execution is intentionally skipped per project scope and is always PARTIAL.",
     limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 173 tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },

@@ -30,7 +30,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 
 ## Current blockers and release gates
 
-- Master had 114 Nepali tool equivalents (49 PDF, 64 catalog routes and Resume Builder). The PR #104 candidate has 172/173 (49 PDF, 122 catalog routes and Resume Builder), leaving only Market AI intentionally deferred.
+- Master had 114 Nepali tool equivalents (49 PDF, 64 catalog routes and Resume Builder). The PR #104 candidate has 173/173 (49 PDF, 123 catalog routes and Resume Builder), leaving only Market AI has a Nepali route, localized workspace copy and regression coverage; browser QA and native-speaker review remain outstanding.
 - The six index-approved Nepali PDF routes are a subset of the 172 localized interfaces. The other 166 localized tool equivalents remain excluded from indexing until their individual review and verification gates pass.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing. Shared-shell dictionaries do not count as localized tool interfaces.
 - Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers. Interface presence and guide presence do not imply runtime success or native-speaker review.

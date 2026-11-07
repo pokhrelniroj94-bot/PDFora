@@ -21,7 +21,7 @@ if (tools.length !== 173 || uniqueSlugs.size !== 173) {
 
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
 const localizedUtilitySlugs = parseSlugs(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g);
-const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs]);
+const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs, "resume-builder"]);
 const verifiedSource = read("lib/tools/localized-verification.ts");
 const indexedNepaliTools = new Set(parseSlugs(verifiedSource, /"([a-z0-9-]+)"/g));
 const guideSlugs = new Set(parseSlugs(read("lib/tool-guides.ts"), /"slug":\s*"([^"]+)"/g));

@@ -90,6 +90,8 @@ const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-la
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
 assert.doesNotMatch(toolPage, /"@type": "FAQPage"/, "Do not emit FAQ rich-result markup on generic utility pages");
+assert.doesNotMatch(seoContent, /"@type": "FAQPage"/, "PDF guide content must not emit obsolete FAQ rich-result markup");
+assert.doesNotMatch(read("../components/PdfToolJsonLd.tsx"), /"@type": "FAQPage"/, "Shared PDF schema must not emit obsolete FAQ rich-result markup");
 assert.match(toolPage, /const description = seo\?\.description \?\? tool\.description\.trim\(\)/, "Fallback metadata must use the actual task-specific catalog description");
 assert.match(toolPage, /const title = seo\?\.title \?\? `\$\{tool\.name\} Online \| PDFora`/, "Fallback metadata title must identify the actual tool and site");
 assert.match(seoContent, /uniqueFaqItems\.map/, "Visible tool FAQs must remain available in page content");

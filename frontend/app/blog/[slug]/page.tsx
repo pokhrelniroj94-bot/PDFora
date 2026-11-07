@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: post.description,
     alternates: { canonical: url, ...(languages ? { languages } : {}) },
     robots: isCatalogGeneratedGuide(post.slug) || isGeneratedPdfGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
-    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, modifiedTime: `${post.updated}T00:00:00+05:45` },
-    twitter: { card: "summary", title: post.title, description: post.description },
+    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, modifiedTime: `${post.updated}T00:00:00+05:45`, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: post.title }] },
+    twitter: { card: "summary_large_image", title: `${post.title} | PDFora`, description: post.description, images: ["/opengraph-image"] },
   };
 }
 

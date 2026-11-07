@@ -72,7 +72,7 @@ for (const [label, file] of collections) {
     const sections = [...body.matchAll(/\{\s*heading:\s*"/g)].length;
     const faqs = [...body.matchAll(/\{\s*question:\s*"/g)].length;
     const toolLinks = [...body.matchAll(/\{\s*label:\s*"[^"]+",\s*href:\s*"\//g)].length;
-    const sourceUrls = [...body.matchAll(/url:\\s*"([^"]+)"/g)].map((match) => match[1]);
+    const sourceUrls = [...body.matchAll(/url:\s*"([^"]+)"/g)].map((match) => match[1]);
 
     if (requiresPrimarySource.test(slug)) {
       const hasPrimarySource = sourceUrls.some((value) => {

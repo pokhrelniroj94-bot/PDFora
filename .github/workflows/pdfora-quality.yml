@@ -9,7 +9,7 @@ permissions:
   contents: read
 # Keep only the latest commit's full 173-tool QA run; superseded commits must not consume hours of CI.
 concurrency:
-  group: pdfora-quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  group: pdfora-quality-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 jobs:
   backend:

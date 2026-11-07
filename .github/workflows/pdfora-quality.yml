@@ -57,6 +57,8 @@ jobs:
       - name: Audit npm dependencies
         run: npm audit --omit=dev --audit-level=high
       - name: Read-only production security, privacy and SEO smoke checks
+        id: production-smoke
+        continue-on-error: true
         run: node scripts/production-security-smoke.mjs
       - name: Install headless Chrome
         id: chrome
@@ -122,6 +124,9 @@ jobs:
           if-no-files-found: warn
       - name: Fail CI when any individual E2E check fails
         if: steps.browser-e2e.outcome == 'failure'
+        run: exit 1
+      - name: Fail CI after reports when production smoke checks fail
+        if: steps.production-smoke.outcome == 'failure'
         run: exit 1
       - name: Fail CI when live Preview AI provider checks fail
         if: steps.preview-ai-smoke.outcome == 'failure'

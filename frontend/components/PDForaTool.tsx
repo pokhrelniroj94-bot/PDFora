@@ -62,8 +62,9 @@ export default function PDForaTool({
   function applyFiles(selectedFiles: File[]) {
     const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
     const invalidImage = imageUpload && selected.find((file) =>
-      !["image/jpeg", "image/png", "image/webp"].includes(file.type) &&
-      !/\.(jpe?g|png|webp)$/i.test(file.name)
+      file.type
+        ? !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+        : !/\.(jpe?g|png|webp)$/i.test(file.name)
     );
     if (invalidImage) {
       setFiles([]);

@@ -5,6 +5,7 @@ import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
 import { nepaliLocalizedBlogPosts } from "../lib/nepali-localized-blog-posts";
 import { nepaliLocalizedCareerSlugs, nepaliLocalizedFinancialSlugs, nepaliLocalizedUtilitySlugs } from "../lib/i18n/nepali-tool-routes";
 import { isLocalizedToolIndexable } from "../lib/tools/localized-verification";
+import { nepaliPdfRoutes } from "../lib/i18n/nepali-pdf-routes";
 
 const baseUrl = "https://pd-fora.vercel.app";
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
@@ -26,7 +27,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }));
 
+  // Build localized sitemap URLs from the same explicit default-deny allowlist used by
+  // page metadata. PDF routes keep their established root-level canonical paths.
   const nepaliToolSlugs = [
+    ...Object.keys(nepaliPdfRoutes),
     ...nepaliLocalizedUtilitySlugs,
     ...nepaliLocalizedFinancialSlugs,
     ...nepaliLocalizedCareerSlugs,
@@ -38,15 +42,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/ne/market`, changeFrequency: "daily", priority: 0.75 },
     { url: `${baseUrl}/ne/resume-builder`, changeFrequency: "monthly", priority: 0.65 },
     ...nepaliToolSlugs.map((slug) => ({
-      url: `${baseUrl}/ne/tools/${slug}`,
+      url: nepaliPdfRoutes[slug]
+        ? `${baseUrl}/ne/${slug}`
+        : `${baseUrl}/ne/tools/${slug}`,
       changeFrequency: "monthly" as const,
       priority: 0.65,
     })),
-    ...["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"].map((slug) => ({
-      url: `${baseUrl}/ne/${slug}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.75,
-    })),
+
     ...["privacy", "terms", "about", "contact"].map((slug) => ({
       url: `${baseUrl}/ne/${slug}`,
       changeFrequency: "yearly" as const,

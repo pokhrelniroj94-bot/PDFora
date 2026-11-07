@@ -12,7 +12,7 @@ const layoutSource = read("app/layout.tsx");
 const englishToolPageSource = read("app/tools/[slug]/page.tsx");
 const pdfToolWorkspaceSource = read("components/PDForaTool.tsx");
 const mergePdfLayoutSource = read("app/merge-pdf/layout.tsx");
-const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\\s*"([^"]+)",?$/gm)].map((match) => match[1]);
+const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
@@ -36,7 +36,7 @@ assert.match(mergePdfLayoutSource, /<ToolSEOContent slug="merge-pdf" \/>/, "The 
 assert.equal(legacyPdfSlugs.length, 49, "Expected all 49 established PDF routes in the canonical registry");
 for (const slug of legacyPdfSlugs) {
   const layout = read(`app/${slug}/layout.tsx`);
-  assert.equal((layout.match(/<ToolSEOContent\\b/g) ?? []).length, 1, `${slug} must render exactly one shared PDF SEO guide from its layout`);
+  assert.equal((layout.match(/<ToolSEOContent\b/g) ?? []).length, 1, `${slug} must render exactly one shared PDF SEO guide from its layout`);
 }
 
 assert.match(sitemapSource, /Object\.keys\(nepaliPdfRoutes\)/, "Sitemap must derive PDF URLs from the canonical route registry");

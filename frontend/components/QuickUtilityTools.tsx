@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { bmi, bmr, businessDaysInclusive, gcd } from "../lib/catalog-calculations";
 
 type Values = Record<string, string>;
 const defaults: Record<string, Values> = {
@@ -38,7 +39,6 @@ const defaults: Record<string, Values> = {
 };
 const labels: Record<string, string> = {text:"Text or input",wpm:"Reading speed (words/min)",find:"Find",replace:"Replace with",mode:"Mode",weight:"Weight (kg)",height:"Height (cm)",age:"Age (years)",sex:"Sex (male/female)",bill:"Bill amount",tip:"Tip (%)",people:"People",extra:"Extra amount",principal:"Principal",rate:"Rate (%)",years:"Years",sales:"Sales amount",wage:"Hourly wage",hours:"Hours per week",value:"Value",a:"First value / colour",b:"Second value / colour",n:"Integer",min:"Minimum",max:"Maximum",count:"Count",date:"Starting date",days:"Days to add/subtract",start:"Start date",end:"End date",root:"Root font size (px)",width:"Width (px)",angle:"Angle (degrees)"};
 const numeric = new Set(["wpm","weight","height","age","bill","tip","people","extra","principal","rate","years","sales","wage","hours","value","a","b","n","min","max","count","days","root","width","angle"]);
-const gcd=(a:number,b:number):number=>b?gcd(b,a%b):Math.abs(a);
 const words=(s:string)=>s.trim().split(/\s+/).filter(Boolean);
 const tokens=(s:string)=>s.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/([a-z0-9])([A-Z])/g,"$1 $2").toLowerCase().match(/[a-z0-9]+/g)||[];
 const morse:Record<string,string>={a:".-",b:"-...",c:"-.-.",d:"-..",e:".",f:"..-.",g:"--.",h:"....",i:"..",j:".---",k:"-.-",l:".-..",m:"--",n:"-.",o:"---",p:".--.",q:"--.-",r:".-.",s:"...",t:"-",u:"..-",v:"...-",w:".--",x:"-..-",y:"-.--",z:"--..",0:"-----",1:".----",2:"..---",3:"...--",4:"....-",5:".....",6:"-....",7:"--...",8:"---..",9:"----."," ":"/"};
@@ -78,8 +78,8 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "url-validator":{const u=new URL(t);if(!["http:","https:"].includes(u.protocol))throw Error("Only HTTP and HTTPS URLs are supported.");result="Valid URL\nProtocol: "+u.protocol+"\nHost: "+u.host+"\nPath: "+u.pathname+"\nQuery: "+u.search;break;}
  case "email-validator":result=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(t.trim())?"Basic email syntax looks valid. No email was sent.":"Invalid email syntax.";break;
  case "password-strength-checker":{const score=[t.length>=12,/[A-Z]/.test(t),/[a-z]/.test(t),/\d/.test(t),/[^A-Za-z0-9]/.test(t)].filter(Boolean).length;result="Criteria met: "+score+"/5\nAssessment: "+(score>=5?"Strong":score>=3?"Moderate":"Weak")+"\nThis local check does not test breached-password databases.";break;}
- case "bmi-calculator":{const w=n("weight"),h=n("height")/100;if(w<=0||h<=0)throw Error("Weight and height must be positive.");const bmi=w/(h*h);result="BMI: "+bmi.toFixed(1)+"\nAdult screening category: "+(bmi<18.5?"Underweight":bmi<25?"Healthy range":bmi<30?"Overweight":"Obesity range")+"\nBMI is not a diagnosis.";break;}
- case "bmr-calculator":{const w=n("weight"),h=n("height"),age=n("age");if(w<=0||h<=0||age<=0)throw Error("Enter positive weight, height and age.");result="Estimated BMR: "+Math.round(10*w+6.25*h-5*age+(get("sex").toLowerCase()==="female"?-161:5))+" kcal/day (Mifflin–St Jeor estimate).";break;}
+ case "bmi-calculator":{const value=bmi(n("weight"),n("height"));result="BMI: "+value.toFixed(1)+"\nAdult screening category: "+(value<18.5?"Underweight":value<25?"Healthy range":value<30?"Overweight":"Obesity range")+"\nBMI is not a diagnosis.";break;}
+ case "bmr-calculator":{const value=bmr(n("weight"),n("height"),n("age"),get("sex").toLowerCase()==="female");result="Estimated BMR: "+Math.round(value)+" kcal/day (Mifflin–St Jeor estimate).";break;}
  case "tip-calculator":{const b=n("bill"),r=n("tip"),p=n("people");if(b<0||r<0||p<1)throw Error("Enter non-negative bill/tip and at least one person.");result="Tip: "+(b*r/100).toFixed(2)+"\nTotal: "+(b*(1+r/100)).toFixed(2)+"\nPer person: "+(b*(1+r/100)/p).toFixed(2);break;}
  case "split-bill-calculator":{const b=n("bill")+n("extra"),p=n("people");if(b<0||p<1)throw Error("Enter a non-negative bill and at least one person.");result="Total: "+b.toFixed(2)+"\nPer person: "+(b/p).toFixed(2);break;}
  case "simple-interest-calculator":{const p=n("principal"),r=n("rate"),y=n("years");if(p<0||r<0||y<0)throw Error("Values cannot be negative.");const i=p*r*y/100;result="Simple interest: "+i.toFixed(2)+"\nTotal amount: "+(p+i).toFixed(2);break;}
@@ -92,7 +92,7 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "dice-roller":{const count=Math.max(1,Math.min(100,Math.floor(n("count")))),rolls=Array.from({length:count},()=>crypto.getRandomValues(new Uint32Array(1))[0]%6+1);result="Rolls: "+rolls.join(", ")+"\nTotal: "+rolls.reduce((a,b)=>a+b,0);break;}
  case "unix-timestamp-converter":{const x=Number(t),d=new Date(Math.abs(x)<1e12?x*1000:x);if(!Number.isFinite(x)||isNaN(+d))throw Error("Enter a valid Unix timestamp.");result="UTC: "+d.toISOString()+"\nLocal: "+d.toString();break;}
  case "date-add-subtract-calculator":{const d=new Date(get("date")+"T00:00:00");if(isNaN(+d))throw Error("Enter a valid date.");d.setDate(d.getDate()+n("days"));result=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");break;}
- case "business-days-calculator":{const d=new Date(get("start")+"T00:00:00"),end=new Date(get("end")+"T00:00:00");if(isNaN(+d)||isNaN(+end))throw Error("Enter valid dates.");const dir=d<=end?1:-1;let count=0;while(dir>0?d<=end:d>=end){if(d.getDay()!==0&&d.getDay()!==6)count+=dir;d.setDate(d.getDate()+dir);}result="Weekdays (inclusive): "+Math.abs(count)+"\nPublic holidays are not excluded.";break;}
+ case "business-days-calculator":result="Weekdays (inclusive): "+businessDaysInclusive(get("start"),get("end"))+"\nPublic holidays are not excluded.";break;
  case "px-rem-converter":{const x=n("value"),root=n("root");if(root<=0)throw Error("Root font size must be positive.");result=get("mode")==="rem-to-px"?(x*root).toFixed(4)+" px":(x/root).toFixed(4)+" rem";break;}
  case "aspect-ratio-calculator":{const w=n("width"),h=n("height");if(w<=0||h<=0)throw Error("Width and height must be positive.");const g=gcd(Math.round(w*1000),Math.round(h*1000));result="Aspect ratio: "+Math.round(w*1000)/g+":"+Math.round(h*1000)/g+"\nDecimal: "+(w/h).toFixed(5);break;}
  case "color-converter":{const m=t.trim().match(/^#?([0-9a-f]{6})$/i);if(!m)throw Error("Enter a six-digit HEX colour.");const x=parseInt(m[1],16),r=x>>16,g=(x>>8)&255,b=x&255,rr=r/255,gg=g/255,bb=b/255,mx=Math.max(rr,gg,bb),mn=Math.min(rr,gg,bb),delta=mx-mn;let h=0;if(delta){if(mx===rr)h=60*(((gg-bb)/delta)%6);else if(mx===gg)h=60*((bb-rr)/delta+2);else h=60*((rr-gg)/delta+4);}if(h<0)h+=360;const l=(mx+mn)/2,s=delta?delta/(1-Math.abs(2*l-1)):0;result="HEX: #"+m[1].toUpperCase()+"\nRGB: "+r+", "+g+", "+b+"\nHSL: "+Math.round(h)+"°, "+Math.round(s*100)+"%, "+Math.round(l*100)+"%";break;}

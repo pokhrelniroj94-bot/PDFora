@@ -18,6 +18,19 @@ const pdfEvidence =
   "backend/tests/test_tool_api.py::test_all_available_pdf_tools_process_a_realistic_pdf";
 const workerEvidence = "frontend/__tests__/pdfWorker.test.ts";
 const catalogEvidence = "frontend/scripts/verify-tool-catalog.mjs";
+const testedCatalog = new Set([
+  "loan-emi-calculator",
+  "compound-interest-sip-calculator",
+  "discount-percentage-calculator",
+  "percentage-change-calculator",
+  "average-calculator",
+  "ratio-simplifier",
+  "fraction-calculator",
+  "unit-converter",
+  "bmi-calculator",
+  "bmr-calculator",
+  "business-days-calculator",
+]);
 
 const rows = [
   ...legacyToolSlugs.map((slug) => ({
@@ -50,17 +63,20 @@ const rows = [
     routeStatus: "PASS",
     interfaceStatus: "PARTIAL",
     handlerStatus: "PASS",
-    functionalTestStatus: "NOT TESTED",
-    outputVerificationStatus: "NOT TESTED",
+    functionalTestStatus: testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
+    outputVerificationStatus: testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PASS",
     defectsFound: "",
     fixesApplied: "",
-    remainingBlockers:
-      "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-    evidence: catalogEvidence,
+    remainingBlockers: testedCatalog.has(entry.slug)
+      ? "Browser route, mobile layout and accessibility evidence remain unverified."
+      : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
+    evidence: testedCatalog.has(entry.slug)
+      ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
+      : catalogEvidence,
   })),
 ];
 

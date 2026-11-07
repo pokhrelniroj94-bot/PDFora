@@ -1,5 +1,6 @@
 "use client";
 import {useState} from "react";
+import { average, convertUnit, fractionOperation, percentageChange, simplifyRatio } from "../lib/catalog-calculations";
 type F={key:string;label:string;type?:"number"|"date"|"time"|"color";value:string};
 const config:Record<string,F[]> = {
 "percentage-change-calculator":[{key:"a",label:"Original value",type:"number",value:"100"},{key:"b",label:"New value",type:"number",value:"120"}],
@@ -37,7 +38,6 @@ const config:Record<string,F[]> = {
 "salary-breakdown-calculator":[{key:"salary",label:"Gross monthly salary",type:"number",value:"50000"},{key:"rate",label:"Estimated deduction (%)",type:"number",value:"10"}],
 "savings-goal-calculator":[{key:"target",label:"Savings target",type:"number",value:"100000"},{key:"saved",label:"Already saved",type:"number",value:"10000"},{key:"months",label:"Months to goal",type:"number",value:"12"}]
 };
-const gcd=(a:number,b:number):number=>b?gcd(b,a%b):Math.abs(a);
 const escapeHtml=(s:string)=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const lum=(h:string)=>{const x=h.slice(1).match(/.{2}/g)!.map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*x[0]+.7152*x[1]+.0722*x[2];};
 export default function ExtraTools({slug}:{slug:string}){
@@ -46,11 +46,11 @@ export default function ExtraTools({slug}:{slug:string}){
  const val=(k:string)=>v[k]??"";const num=(k:string)=>{const x=Number(val(k));if(!Number.isFinite(x))throw Error("Enter valid numbers.");return x;};
  const run=()=>{setErr("");setOut("");try{let s="";
  switch(slug){
- case "percentage-change-calculator":{const a=num("a"),b=num("b");if(!a)throw Error("Original value cannot be zero.");s=(((b-a)/Math.abs(a))*100).toFixed(2)+"% "+(b>=a?"increase":"decrease");break;}
- case "average-calculator":{const raw=val("text").trim();if(!raw)throw Error("Enter at least one number.");const tokens=raw.split(/[\s,;]+/);const a=tokens.map(Number);if(a.some(x=>!Number.isFinite(x)))throw Error("Enter only valid numbers separated by commas, semicolons or spaces.");const b=[...a].sort((x,y)=>x-y);const counts=new Map<number,number>();a.forEach(x=>counts.set(x,(counts.get(x)||0)+1));const max=Math.max(...counts.values());s="Count: "+a.length+"\nMean: "+a.reduce((x,y)=>x+y,0)/a.length+"\nMedian: "+(b.length%2?b[(b.length-1)/2]:(b[b.length/2-1]+b[b.length/2])/2)+"\nMode: "+(max===1?"No repeated value":[...counts].filter(x=>x[1]===max).map(x=>x[0]).join(", "))+"\nRange: "+(b[b.length-1]-b[0]);break;}
- case "ratio-simplifier":{const a=num("a"),b=num("b");if(!Number.isInteger(a)||!Number.isInteger(b)||!a||!b)throw Error("Use non-zero whole numbers.");const g=gcd(a,b);s=a/g+":"+b/g;break;}
- case "fraction-calculator":{const a=num("a"),b=num("b"),c=num("c"),d=num("d"),op=val("op");if(![a,b,c,d].every(Number.isInteger)||!b||!d)throw Error("Use integer numerators and non-zero denominators.");let x=0,y=0;if(op==="+"){x=a*d+c*b;y=b*d;}else if(op==="-"){x=a*d-c*b;y=b*d;}else if(op==="*"){x=a*c;y=b*d;}else if(op==="/"){if(!c)throw Error("Cannot divide by zero.");x=a*d;y=b*c;}else throw Error("Operation must be +, -, * or /.");const g=gcd(x,y);s=x/g+"/"+y/g+" = "+x/y;break;}
- case "unit-converter":{const x=num("n"),a=val("from").toLowerCase(),b=val("to").toLowerCase(),u:Record<string,[string,number]>={m:["l",1],km:["l",1000],cm:["l",.01],mm:["l",.001],in:["l",.0254],ft:["l",.3048],kg:["w",1],g:["w",.001],lb:["w",.45359237],l:["v",1],ml:["v",.001]};if(a==="c"||a==="f"){if(b!=="c"&&b!=="f")throw Error("Temperature units are c or f.");s=(a==="c"?(b==="f"?x*9/5+32:x):(b==="c"?(x-32)*5/9:x)).toFixed(4)+" °"+b.toUpperCase();}else{if(!u[a]||!u[b]||u[a][0]!==u[b][0])throw Error("Choose compatible supported units.");s=(x*u[a][1]/u[b][1]).toPrecision(8)+" "+b;}break;}
+ case "percentage-change-calculator":{const a=num("a"),b=num("b");const change=percentageChange(a,b);s=change.toFixed(2)+"% "+(b>=a?"increase":"decrease");break;}
+ case "average-calculator":{const raw=val("text").trim();const values=raw?raw.split(/[\s,;]+/).map(Number):[];const stats=average(values);s="Count: "+values.length+"\nMean: "+stats.mean+"\nMedian: "+stats.median+"\nMode: "+(stats.mode.length?stats.mode.join(", "):"No repeated value")+"\nRange: "+stats.range;break;}
+ case "ratio-simplifier":s=simplifyRatio(num("a"),num("b"));break;
+ case "fraction-calculator":{const result=fractionOperation(num("a"),num("b"),num("c"),num("d"),val("op"));s=result.numerator+"/"+result.denominator+" = "+result.value;break;}
+ case "unit-converter":{const a=val("from").toLowerCase(),b=val("to").toLowerCase();s=convertUnit(num("n"),a,b).toPrecision(8)+" "+b;if((a==="c"||a==="f")&&(b==="c"||b==="f"))s=convertUnit(num("n"),a,b).toFixed(4)+" °"+b.toUpperCase();break;}
  case "age-calculator":{const a=new Date(val("a")+"T00:00:00"),b=new Date(val("b")+"T00:00:00");if(isNaN(+a)||isNaN(+b)||b<a)throw Error("Enter valid dates in chronological order.");let y=b.getFullYear()-a.getFullYear(),m=b.getMonth()-a.getMonth(),d=b.getDate()-a.getDate();if(d<0){m--;d+=new Date(b.getFullYear(),b.getMonth(),0).getDate();}if(m<0){y--;m+=12;}s=y+" years, "+m+" months, "+d+" days";break;}
  case "date-difference-calculator":{const a=new Date(val("a")+"T00:00:00"),b=new Date(val("b")+"T00:00:00");if(isNaN(+a)||isNaN(+b))throw Error("Enter valid dates.");const d=Math.abs(Math.round((+b- +a)/86400000));s=d+" days ("+(d/7).toFixed(2)+" weeks; "+(d/30.4375).toFixed(2)+" average months)";break;}
  case "time-duration-calculator":{const t=(x:string)=>{const p=x.split(":").map(Number);return p[0]*60+p[1];};let d=t(val("b"))-t(val("a"));if(d<0)d+=1440;s=Math.floor(d/60)+" hours "+d%60+" minutes";break;}

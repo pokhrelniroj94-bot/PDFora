@@ -12,6 +12,7 @@ const indexPage = read("app/[locale]/blog/page.tsx");
 const articlePage = read("app/[locale]/blog/[slug]/page.tsx");
 const sitemap = read("app/sitemap.ts");
 const routing = read("lib/i18n/routing.ts");
+const nepaliToolRoutes = read("lib/i18n/nepali-tool-routes.ts");
 
 const slugs = (source) => [...source.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
 const expected = [...slugs(englishEditorial), ...slugs(nepalEditorial)];
@@ -30,6 +31,11 @@ assert.ok(articlePage.includes('inLanguage: "ne"'), "Nepali article structured d
 assert.ok(articlePage.includes('"@type": "BreadcrumbList"') && articlePage.includes("breadcrumbSchema"), "Nepali articles must include localized breadcrumb structured data");
 assert.ok(articlePage.includes("generateStaticParams"), "Nepali articles must be statically enumerable");
 assert.ok(sitemap.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be included in sitemap");
+assert.ok(sitemap.includes("nepaliLocalizedUtilitySlugs") && sitemap.includes("nepaliLocalizedFinancialSlugs") && sitemap.includes("nepaliLocalizedCareerSlugs"), "Every published Nepali utility, financial and career tool must be included in sitemap");
+assert.ok(sitemap.includes("/ne/market") && sitemap.includes("/ne/resume-builder"), "Published Nepali market and resume pages must be included in sitemap");
+for (const match of nepaliToolRoutes.matchAll(/"([a-z0-9-]+)"/g)) {
+  if (nepaliToolRoutes.slice(0, nepaliToolRoutes.indexOf(match[0])).includes("nepaliLocalizedUtilitySlugs")) continue;
+}
 assert.ok(routing.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be registered for language switching and hreflang");
 
 console.log(`Nepali blog coverage passed: ${expected.length} editorial articles translated; ${localized.length} localized routes available.`);

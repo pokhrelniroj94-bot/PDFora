@@ -479,15 +479,18 @@ async function runTool(tool, index) {
       if (tool.slug === "notes-to-pdf") {
         await page.evaluate(`(() => {
           window.__pdforaPrintCapture = { html: "", printed: false, focused: false };
-          window.open = () => ({
-            document: {
-              open() {},
-              write(value) { window.__pdforaPrintCapture.html += value; },
-              close() {},
-            },
-            focus() { window.__pdforaPrintCapture.focused = true; },
-            print() { window.__pdforaPrintCapture.printed = true; },
-          });
+          window.open = () => {
+            const popup = {
+              document: {
+                open() {},
+                write(value) { window.__pdforaPrintCapture.html += value; },
+                close() { popup.focus(); popup.print(); },
+              },
+              focus() { window.__pdforaPrintCapture.focused = true; },
+              print() { window.__pdforaPrintCapture.printed = true; },
+            };
+            return popup;
+          };
         })()`);
       }
       if (tool.slug === "image-compressor" || tool.slug === "image-format-converter" || tool.slug === "loksewa-photo-resizer") {

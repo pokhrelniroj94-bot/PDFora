@@ -18,7 +18,8 @@ export default function NepseAlphaLab(){
    setRows(clean);setSource(String(data.source||"Historical NEPSE data")+" · "+clean[0].date+" to "+clean[clean.length-1].date);
   }catch(e){setError(e instanceof Error?e.message:"Could not load stock history.");}finally{setBusy(false);}
  }
- const metrics=useMemo(()=>rows.length?runBacktest(rows,mode,Math.max(0,Math.min(5,Number(cost)||0))):null,[rows,mode,cost]);
+ const costRate=Math.max(0,Math.min(5,Number(cost)||0));
+ const metrics=useMemo(()=>rows.length?runBacktest(rows,mode,costRate):null,[rows,mode,costRate]);
  const largeGaps=useMemo(()=>detectLargePriceGaps(rows),[rows]);
  const historyAgeDays=rows.length?Math.floor((Date.now()-Date.parse(rows[rows.length-1].date+"T00:00:00Z"))/86400000):null;
  const historyStale=historyAgeDays!==null&&historyAgeDays>7;
@@ -35,7 +36,7 @@ export default function NepseAlphaLab(){
   {metrics&&<div className="mt-5 space-y-4">
    <section className={panel}><div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-xl font-black text-slate-900">{symbol} · Backtest results</h2><p className="mt-1 text-xs text-slate-500">{source}</p></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{mode==="sma"?"SMA crossover":mode==="rsi"?"RSI recovery":"20-day breakout"}</span></div>
     <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">{[["Strategy return",metrics.strategyReturn],["Buy & hold",metrics.benchmarkReturn],["Win rate",metrics.winRate],["Max drawdown",-metrics.maxDrawdown]].map(([k,v])=><div key={String(k)} className="rounded-xl bg-slate-50 p-3"><p className="text-xs text-slate-500">{k}</p><p className={"mt-1 text-xl font-black tabular-nums "+(Number(v)>=0?"text-slate-900":"text-rose-700")}>{fmt(Number(v))}%</p></div>)}</div>
-    <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4 text-sm"><p>Closed trades: <b>{metrics.trades.length}</b></p><p>Profit factor: <b>{Number.isFinite(metrics.profitFactor)?fmt(metrics.profitFactor):"∞"}</b></p><p>Market exposure: <b>{fmt(metrics.exposure)}%</b></p><p>Cost per side: <b>{fmt(Number(cost)||0)}%</b></p></div>
+    <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4 text-sm"><p>Closed trades: <b>{metrics.trades.length}</b></p><p>Profit factor: <b>{Number.isFinite(metrics.profitFactor)?fmt(metrics.profitFactor):"∞"}</b></p><p>Market exposure: <b>{fmt(metrics.exposure)}%</b></p><p>Cost per side: <b>{fmt(costRate)}%</b></p></div>
    </section>
    {historyStale&&<p role="status" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><b>Historical data freshness warning:</b> Latest observation is {historyAgeDays} calendar days old. The backtest still runs for research, but verify the latest NEPSE trading session and do not treat these results as current-market signals.</p>}
    {largeGaps.length>0&&<p role="status" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><b>Corporate-action / price-gap review:</b> {largeGaps.length} daily move(s) of 20% or more were detected ({largeGaps.slice(0,4).map(g=>g.date+" "+g.changePct.toFixed(1)+"%").join(", ")}). These may reflect genuine volatility, bonus/right-share/split adjustments or source errors. Verify NEPSE disclosures and adjusted-price methodology before relying on this backtest; no automatic adjustment has been applied.</p>}

@@ -63,6 +63,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/market`, changeFrequency: "daily", priority: 0.85 },
+    { url: `${baseUrl}/nepse-lab`, changeFrequency: "weekly", priority: 0.75 },
+    { url: `${baseUrl}/resume-builder`, changeFrequency: "monthly", priority: 0.75 },
     ...legacyPdfEntries,
     ...catalogEntries,
     { url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.8 },

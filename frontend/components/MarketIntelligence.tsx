@@ -50,7 +50,7 @@ function rsi(values: number[], period = 14) {
     averageGain = (averageGain * (period - 1) + Math.max(delta, 0)) / period;
     averageLoss = (averageLoss * (period - 1) + Math.max(-delta, 0)) / period;
   }
-  if (averageLoss === 0) return 100;
+  if (averageLoss === 0) return averageGain === 0 ? 50 : 100;
   const rs = averageGain / averageLoss;
   return 100 - 100 / (1 + rs);
 }
@@ -204,15 +204,21 @@ function parseCsv(text: string): Point[] {
 const fmt = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: 4 });
 const pct = (v: number) => v.toFixed(2) + "%";
 function hasStaleMarketData(latestDate: string, asset: string) {
+  // NEPSE daily bars are dated in Nepal time, not the browser's UTC calendar.
+  const todayNepal = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
   const latest = new Date(`${latestDate}T00:00:00Z`);
-  const today = new Date();
-  const end = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
-  if (!Number.isFinite(latest.getTime()) || latest > end) return false;
+  const end = new Date(`${todayNepal}T00:00:00Z`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(latestDate) || !Number.isFinite(latest.getTime())) return true;
+  // A future-dated candle is invalid and must never generate a live signal.
+  if (latest > end) return true;
   let expectedSessions = 0;
   const cursor = new Date(latest.getTime());
   while (cursor < end) {
     cursor.setUTCDate(cursor.getUTCDate() + 1);
     const day = cursor.getUTCDay();
+    // NEPSE trades Sunday–Thursday; Friday and Saturday are weekly closures.
     const isSession = asset === "crypto" || (asset === "forex" ? day !== 0 && day !== 6 : day !== 5 && day !== 6);
     if (isSession) expectedSessions++;
   }

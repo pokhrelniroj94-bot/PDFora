@@ -16,6 +16,8 @@ import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWo
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
 import AIWritingTools from "../../../../components/AIWritingTools";
+import ExtraTools from "../../../../components/ExtraTools";
+import QuickUtilityTools from "../../../../components/QuickUtilityTools";
 import { nepaliLocalizedCareerSlugs, nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -108,6 +110,32 @@ const nepaliTitles: Record<string, string> = {
   "ai-resume-writer": "AI रिजुमे लेखक",
   "ai-cover-letter-generator": "AI कभर लेटर जेनेरेटर",
   "ai-humanizer": "AI पाठ परिष्कार तथा पुनर्लेखन",
+  "password-generator": "सुरक्षित पासवर्ड जेनेरेटर",
+  "xml-formatter-validator": "XML फर्म्याट तथा जाँच",
+  "regex-tester": "Regular Expression परीक्षक",
+  "jwt-decoder": "JWT Token Decoder",
+  "color-contrast-checker": "रङ कन्ट्रास्ट जाँच",
+  "css-minifier": "CSS Minifier",
+  "json-to-csv": "JSON बाट CSV रूपान्तरण",
+  "meta-title-checker": "SEO Meta Title जाँच",
+  "meta-description-checker": "Meta Description जाँच",
+  "keyword-density-checker": "Keyword Density जाँच",
+  "robots-txt-generator": "Robots.txt Generator",
+  "sitemap-generator": "XML Sitemap Generator",
+  "open-graph-preview": "Open Graph Preview",
+  "csv-to-json": "CSV बाट JSON रूपान्तरण",
+  "json-to-yaml": "JSON बाट YAML रूपान्तरण",
+  "random-number-generator": "अनियमित संख्या जेनेरेटर",
+  "dice-roller": "पासा घुमाउने टुल",
+  "unix-timestamp-converter": "Unix Timestamp रूपान्तरण",
+  "date-add-subtract-calculator": "मितिमा दिन थप्ने वा घटाउने",
+  "business-days-calculator": "कार्यदिन गणक",
+  "px-rem-converter": "PX र REM रूपान्तरण",
+  "aspect-ratio-calculator": "Aspect Ratio गणक",
+  "color-converter": "HEX, RGB र HSL रङ रूपान्तरण",
+  "css-gradient-generator": "CSS Gradient Generator",
+  "roman-numeral-converter": "Roman Numeral रूपान्तरण",
+  "savings-goal-calculator": "बचत लक्ष्य क्याल्कुलेटर",
 };
 const nepaliDescriptions: Record<string, string> = {
   "nepali-digit-converter": "अङ्ग्रेजी अंकलाई नेपाली देवनागरी अंकमा र नेपाली अंकलाई अङ्ग्रेजी अंकमा रूपान्तरण गर्नुहोस्।",
@@ -198,6 +226,33 @@ const nepaliDescriptions: Record<string, string> = {
   "ai-resume-writer": "तपाईंको वास्तविक अनुभवबाट ATS-अनुकूल रिजुमे सामग्री तयार गर्नुहोस्।",
   "ai-cover-letter-generator": "वास्तविक अनुभव र कामको विवरणबाट व्यावसायिक कभर लेटर तयार गर्नुहोस्।",
   "ai-humanizer": "अर्थ र तथ्य जोगाउँदै पाठलाई स्वाभाविक र स्पष्ट शैलीमा पुनर्लेखन गर्नुहोस्।",
+  "password-generator": "ब्राउजरमै सुरक्षित random number generator प्रयोग गरी अनुकूल लम्बाइका पासवर्ड बनाउनुहोस्। पासवर्ड कतै पठाइँदैन।",
+  "xml-formatter-validator": "XML syntax जाँच्नुहोस् र वैध XML लाई पढ्न सजिलो indentation मा मिलाउनुहोस्।",
+  "regex-tester": "JavaScript regular expression लाई आफ्नो नमुना पाठमा परीक्षण गर्नुहोस्। संवेदनशील पाठ स्थानीय रूपमा जाँच्नुहोस्।",
+  "jwt-decoder": "JWT को header र payload decode गरी देखाउनुहोस्। यसले signature verify गर्दैन र token सुरक्षित छ भन्ने प्रमाणित गर्दैन।",
+  "color-contrast-checker": "अक्षर र पृष्ठभूमिको HEX रङबीच contrast ratio तथा WCAG AA/AAA मापदण्ड जाँच्नुहोस्।",
+  "css-minifier": "CSS comment र अनावश्यक whitespace हटाएर compact CSS बनाउनुहोस्।",
+  "json-to-csv": "JSON object को array लाई CSV ढाँचामा बदल्नुहोस्। सबै object मा मिल्दो column structure हुनुपर्छ।",
+  "meta-title-checker": "पृष्ठ शीर्षकको character length जाँच्नुहोस् र खोज परिणामको snippet preview हेर्नुहोस्।",
+  "meta-description-checker": "Meta description को लम्बाइ जाँच्नुहोस् र सम्भावित search snippet preview हेर्नुहोस्।",
+  "keyword-density-checker": "पेस्ट गरिएको सामग्रीमा लक्षित keyword कति पटक आएको छ र अनुमानित density कति छ जाँच्नुहोस्।",
+  "robots-txt-generator": "Sitemap URL र Disallow path का आधारमा robots.txt सामग्री बनाउनुहोस्। लागू गर्नु अघि नियम जाँच्नुहोस्।",
+  "sitemap-generator": "वैध absolute URL को सूचीबाट साधारण XML sitemap बनाउनुहोस्। URL हरू सही र crawl गर्न मिल्ने छन् कि आफैं जाँच्नुहोस्।",
+  "open-graph-preview": "Title, description, image र URL प्रयोग गरी Open Graph social-sharing preview बनाउनुहोस्।",
+  "csv-to-json": "CSV header र row लाई JSON object को array मा रूपान्तरण गर्नुहोस्।",
+  "json-to-yaml": "वैध JSON लाई YAML ढाँचामा बदल्नुहोस्।",
+  "random-number-generator": "दिइएको न्यूनतम र अधिकतम सीमाभित्र cryptographically secure random integer बनाउनुहोस्।",
+  "dice-roller": "१ देखि १०० वटासम्म छ-पाटे पासा घुमाएर नतिजा र जम्मा निकाल्नुहोस्।",
+  "unix-timestamp-converter": "Unix timestamp लाई UTC र स्थानीय मितिमा रूपान्तरण गर्नुहोस्।",
+  "date-add-subtract-calculator": "सुरुको मितिमा तोकिएको दिन थप्नुहोस् वा घटाउनुहोस्।",
+  "business-days-calculator": "दुई मितिबीचका सोमबारदेखि शुक्रबारसम्मका दिन गणना गर्नुहोस्। सार्वजनिक बिदा स्वतः घटाइँदैन।",
+  "px-rem-converter": "Root font size का आधारमा pixel र rem बीच रूपान्तरण गर्नुहोस्।",
+  "aspect-ratio-calculator": "चौडाइ र उचाइबाट सरल aspect ratio र दशमलव अनुपात निकाल्नुहोस्।",
+  "color-converter": "छ-अङ्कको HEX रङलाई RGB र HSL मानमा रूपान्तरण गर्नुहोस्।",
+  "css-gradient-generator": "दुई HEX रङ र कोणका आधारमा CSS linear-gradient code बनाउनुहोस्।",
+  "roman-numeral-converter": "१ देखि ३९९९ सम्मका पूर्णांकलाई Roman numeral मा वा canonical Roman numeral लाई अंकमा बदल्नुहोस्।",
+  "savings-goal-calculator": "बचत लक्ष्य, अहिलेसम्मको बचत र समयावधिबाट हरेक महिना बचत गर्नुपर्ने रकम निकाल्नुहोस्। ब्याज समावेश छैन।",
+
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -231,6 +286,14 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
+  const nepaliExtraToolSlugs = ["password-generator", "xml-formatter-validator", "regex-tester", "jwt-decoder", "color-contrast-checker", "css-minifier", "json-to-csv", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "savings-goal-calculator"];
+  const nepaliQuickUtilitySlugs = ["csv-to-json", "json-to-yaml", "random-number-generator", "dice-roller", "unix-timestamp-converter", "date-add-subtract-calculator", "business-days-calculator", "px-rem-converter", "aspect-ratio-calculator", "color-converter", "css-gradient-generator", "roman-numeral-converter"];
+  if (request.locale === "ne" && nepaliExtraToolSlugs.includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी तथा SEO टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><ExtraTools slug={toolSlug} locale="ne" /></section></main>;
+  }
+  if (request.locale === "ne" && nepaliQuickUtilitySlugs.includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली गणना तथा रूपान्तरण टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><QuickUtilityTools slug={toolSlug} locale="ne" /></main>;
+  }
   if (request.locale === "ne" && ["word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text", "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator", "line-counter", "sentence-counter"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTextUtilityWorkspace slug={toolSlug} /></section></main>;
   }

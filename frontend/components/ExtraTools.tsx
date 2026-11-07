@@ -76,7 +76,7 @@ export default function ExtraTools({slug}:{slug:string}){
  case "keyword-density-checker":{const report=calculateKeywordDensity(val("text"),val("keyword"));s="Word count: "+report.wordCount+"\\nKeyword occurrences: "+report.occurrences+"\\nApproximate density: "+report.density.toFixed(2)+"%\\nUse keywords naturally; no universal ideal density exists.";break;}
  case "robots-txt-generator":s=generateRobotsTxt(val("path"),val("site"));break;
  case "sitemap-generator":s=generateSitemapXml(val("text"));break;
- case "open-graph-preview":s=buildOpenGraphPreview({title:val("title"),description:val("description"),imageUrl:val("image"),pageUrl:val("url")});break;}
+ case "open-graph-preview":s=buildOpenGraphPreview({title:val("title"),description:val("description"),imageUrl:val("image"),pageUrl:val("url")});break;
  case "profit-margin-calculator":{const c=num("cost"),p=num("price");if(!p)throw Error("Selling price cannot be zero.");s="Gross profit: "+(p-c).toFixed(2)+"\nProfit margin: "+((p-c)/p*100).toFixed(2)+"%";break;}
  case "markup-calculator":{const c=num("cost"),r=num("rate");s="Selling price: "+(c*(1+r/100)).toFixed(2)+"\nMarkup amount: "+(c*r/100).toFixed(2);break;}
  case "break-even-calculator":{const f=num("fixed"),p=num("price"),c=num("variable");if(p<=c)throw Error("Selling price must exceed variable cost.");const q=f/(p-c);s="Break-even units: "+Math.ceil(q)+"\nBreak-even revenue: "+(q*p).toFixed(2);break;}

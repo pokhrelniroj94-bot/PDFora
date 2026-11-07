@@ -66,7 +66,7 @@ check("AI endpoint rejects untrusted browser Origin before parsing", hostileAi.s
 
 const html = await home.text();
 const canonicalTag = html.match(/<link\\b(?=[^>]*\\brel=["']canonical["'])[^>]*>/i)?.[0] || "";
-const canonicalHref = canonicalTag.match(/\\bhref=["']([^"']+)["']/i)?.[1] || "";
+const canonicalHref = canonicalTag.match(/\bhref=["']([^"']+)["']/i)?.[1] || "";
 let canonicalUrl = null;
 try { canonicalUrl = canonicalHref ? new URL(canonicalHref, base) : null; } catch { canonicalUrl = null; }
 check("homepage has a self-referencing canonical URL",

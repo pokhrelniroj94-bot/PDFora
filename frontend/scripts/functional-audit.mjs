@@ -41,7 +41,7 @@ const testedCatalog = new Set([
   "nepal-share-calculator",
   "lorem-ipsum-generator",
 ]);
-const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator", "nepali-vat-calculator", "nepali-number-converter", "gold-tola-gram-converter", "nepal-share-calculator"]);
+const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator", "csv-to-json", "nepali-vat-calculator", "nepali-number-converter", "gold-tola-gram-converter", "nepal-share-calculator"]);
 const uiRegressionCatalog = new Set([...inputTestedCatalog, "lorem-ipsum-generator"]);
 
 // Catalog route/handler/SEO statuses are PARTIAL: current evidence proves registry,

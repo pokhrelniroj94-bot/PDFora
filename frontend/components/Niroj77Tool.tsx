@@ -219,7 +219,7 @@ export default function NirojToolsTool({
     message === ui.completed;
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(20,184,166,.10),_transparent_42%),linear-gradient(180deg,#f8fafc_0%,#f1f5f9_100%)] text-slate-950">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(20,184,166,.10),_transparent_42%),linear-gradient(180deg,#f8fafc_0%,#f1f5f9_100%)] text-slate-950">
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 shadow-[0_8px_30px_rgba(15,23,42,.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -355,13 +355,14 @@ export default function NirojToolsTool({
           {/* Extra inputs */}
           {(formField || queryField) && (
             <div className="mt-4">
-              <label className="mb-2 block text-sm font-bold">
+              <label htmlFor="pdf-form-field" className="mb-2 block text-sm font-bold">
                 {queryField === "degrees"
                   ? ui.rotationAngle
                   : localizedFormPlaceholder || ui.enterValue}
               </label>
 
               <input
+                id="pdf-form-field"
                 value={value}
                 onChange={(event) =>
                   setValue(event.target.value)
@@ -445,7 +446,7 @@ export default function NirojToolsTool({
         </div>
       </section>
       <ToolSEOContent slug={currentSlug} locale={locale} />
-    </main>
+    </div>
   );
 }
 

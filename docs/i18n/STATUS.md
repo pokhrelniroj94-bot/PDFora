@@ -28,9 +28,9 @@ The continuation branch `i18n/nepali-nepal-utilities-batch-2` adds six dedicated
 - NEA domestic electricity bill estimator (editable assumptions, official ERC/NEA references)
 - Nepal public holidays 2083 searchable list (Nepali names, BS months, category labels and official MoHA source)
 
-If PR #93 merges, measured coverage becomes 70 localized tool surfaces out of 173 (6 PDF + 64 catalog) and 105 Nepali route equivalents. The remaining untranslated tool inventory will be 103. The four new catalog pages stay `noindex`, have no hreflang, and remain out of the sitemap until native-language review and explicit approval; the six existing PDF routes remain the only index-approved Nepali tool pages.
+If PR #93 merges, measured coverage becomes 70 localized tool surfaces out of 173 (6 PDF + 64 catalog) and 105 Nepali route equivalents. The remaining untranslated tool inventory will be 103. The six new catalog pages stay `noindex`, have no hreflang, and remain out of the sitemap until native-language review and explicit approval; the six existing PDF routes remain the only index-approved Nepali tool pages.
 
-The new test suite covers mobile format normalization, Devanagari digits, international prefix handling, tola/gram arithmetic, route registration and the default-deny metadata gate. The calendar and photo-resizer workflows also require browser QA before any indexing approval. This batch is not deployed.
+The new test suite covers mobile format normalization, Devanagari digits, international prefix handling, tola/gram and electricity arithmetic, route registration and the default-deny metadata gate. The BS calendar, public-holiday list and photo-resizer workflows still require browser QA and native-language review before any indexing approval. This batch is not deployed.
 
 ## Historical 12-language foundation snapshot (superseded)
 

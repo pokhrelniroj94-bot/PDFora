@@ -4,16 +4,21 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs";
-import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui.ts";
-import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne.ts";
-import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne.ts";
-import { toolGuides } from "../lib/tool-guides.ts";
-import { buildPdfToolMetadata } from "../lib/i18n/pdf-tool-seo-core.ts";
-import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
-import { createTranslator } from "../lib/i18n/translate.ts";
 
 ensureTypeStripping();
-const { config, routing, translate, format, preference, switcher, metadata, "shared-ui": sharedUi, "nepali-pdf-routes": nepaliRoutes, "pdf-tool-names-ne": nepaliNames, "tool-guides-ne": nepaliGuides } = await loadI18n();
+const {
+  config, routing, translate, format, preference, switcher, metadata,
+  "shared-ui": sharedUi, "nepali-pdf-routes": nepaliRoutes,
+  "pdf-tool-names-ne": nepaliNames, "tool-guides-ne": nepaliGuides,
+  "pdf-tool-ui": pdfToolUi, "tool-guides": toolGuidesModule,
+  "pdf-tool-seo-core": pdfToolSeoCore, "pdf-tool-fields-ne": pdfToolFields,
+} = await loadI18n();
+const { getPdfToolCopy } = pdfToolUi;
+const { nepaliToolGuides } = nepaliGuides;
+const { nepaliToolNames } = nepaliNames;
+const { toolGuides } = toolGuidesModule;
+const { buildPdfToolMetadata } = pdfToolSeoCore;
+const { getNepaliPdfFieldText } = pdfToolFields;
 
 test("AI Help resets and aborts pending conversations when the locale changes", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");

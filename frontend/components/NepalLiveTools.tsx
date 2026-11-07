@@ -65,7 +65,7 @@ const holidays = [
 ];
 
 async function fetchLatestForex(): Promise<ForexResponse> {
-  const response = await fetch("/api/nepal-forex", { cache: "no-store" });
+  const response = await fetch("/api/nepal-forex", { cache: "no-store", signal: AbortSignal.timeout(32_000) });
   const json = await response.json() as ForexResponse;
   if (!response.ok) throw new Error(json.error || "Could not load NRB rates.");
   return json;

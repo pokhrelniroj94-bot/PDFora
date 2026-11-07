@@ -33,7 +33,7 @@ assert.equal(diagnostics.adx, 0, "flat candles should have zero directional tren
 assert.equal(diagnostics.volumeRatio, 2, "latest volume should compare with prior 20 sessions");
 assert.equal(diagnostics.obvTrend, "Flat", "flat close and volume history should produce flat OBV");
 assert.equal(calculateOhlcvIndicators(candles.map((row,i)=>i===29?{...row,high:90}:row)).atr, null, "inconsistent OHLC ranges must disable ATR rather than fabricate a value");
-assert.equal(calculateOhlcvIndicators(candles.map(({volume,...row})=>row)).obvTrend, "Unavailable", "OBV must remain unavailable without complete volume data");
+assert.equal(calculateOhlcvIndicators(candles.map(row=>({date:row.date,close:row.close,high:row.high,low:row.low}))).obvTrend, "Unavailable", "OBV must remain unavailable without complete volume data");
 
 const flat = Array.from({length: 100}, (_, i) => ({date:new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10),close:100}));
 const flatResult = runBacktest(flat, "sma", 0);

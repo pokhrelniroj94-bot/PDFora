@@ -11,7 +11,7 @@ Inventory: 68 frontend page source files, 6 API route source files, 49 English P
 | Code | Language | Status | Localized route equivalents | Shared UI module | PDF guides | Blog content |
 |---|---|---|---:|---:|---:|---:|
 | en | English | Source language; translation review not assessed | Source language | 100% | 100% | 100% |
-| ne | Nepali | Partially translated; PR #104 candidate | 172 | 100% | 100% | 100% |
+| ne | Nepali | Published; Market AI deferred | 206 | 100% | 100% | 100% |
 | hi | Hindi | Not published | 0 | 100% | 0% | 0% |
 | bn | Bengali | Not published | 0 | 100% | 0% | 0% |
 | ur | Urdu | Not published | 0 | 100% | 0% | 0% |
@@ -25,6 +25,14 @@ Inventory: 68 frontend page source files, 6 API route source files, 49 English P
 
 The 100% shared UI figures cover only the typed shared-shell copy in `shared-ui.ts`; all twelve locales also have the three registered common, accessibility and SEO message namespaces. This is not full website translation and does not make the ten unpublished locales indexable.
 
-The master baseline contains 148 Nepali localized route equivalents and 113 tool interfaces (49 PDF + 64 catalog). PR #104 proposes nine additional catalog text tools, which would bring the branch candidate to 172 route equivalents and 137/173 tool interfaces (49 PDF + 73 catalog), with 36 tools still untranslated. The 88 catalog tools comprise 76 utilities, seven finance/news/calculator tools, two public-information tools and three AI-writing tools.
+The Nepali route inventory is 206 equivalents: 49 PDF routes, 107 utility routes, 10 finance routes, two public-information routes, three career routes, the homepage, market dashboard, Resume Builder, blog index, 27 curated articles and four static pages.
 
-Only six Nepali PDF tool routes are approved for indexing. On the PR #104 candidate, the other 131 localized tool routes remain noindex and excluded from sitemap/hreflang until each page's translated interface, metadata, errors, help, behavior and native-language review are complete. All ten additional locales remain unpublished and excluded from indexing. Generated catalog guides remain noindex until individually reviewed. Candidate counts must be confirmed by CI before release.
+The canonical tool matrix contains 172/173 Nepali interfaces: 49 PDF tools, 122 catalog tool routes and the dedicated Resume Builder route. Market AI is the only tool intentionally deferred under the instruction not to work on AI tools. This is route/interface coverage, not a claim that every possible input, output, browser, screen size or native-language nuance has passed manual QA.
+
+The 49/49 PDF guide entries and 27/27 curated editorial articles are translated. Generated catalog guides are excluded from this count and remain noindex until individually reviewed.
+
+Only six Nepali PDF tool routes are approved for indexing. The other 166 localized tool equivalents remain noindex and excluded from sitemap/hreflang until each page's translated main content, metadata, errors, help, behavior and native-language review are complete. The ten additional locales remain unpublished and excluded from indexing.
+
+Google Search Central requires localized pages to provide genuinely localized main content and recommends reciprocal hreflang annotations for real language equivalents. Shared-shell translation alone is not a reason to publish a localized page. See the Google Search Central [localized versions guidance](https://developers.google.com/search/docs/specialty/international/localized-versions) and [spam policies](https://developers.google.com/search/docs/essentials/spam-policies).
+
+No route count or CI result guarantees Google indexing, ranking, or native-speaker quality.

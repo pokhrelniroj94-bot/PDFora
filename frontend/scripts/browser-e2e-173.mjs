@@ -575,6 +575,33 @@ async function runTool(tool, index) {
         if (!/Could not read this image format|Image could not be opened/i.test(invalidError)) throw new Error("Invalid image input was not rejected with a visible error message.");
         row.checks.push("invalid image file rejected with a visible error message");
       }
+      if (tool.slug === "lorem-ipsum-generator") {
+        const clickedDownload = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /download text/i.test(item.innerText)); if (!button) return false; button.click(); return true; })()`);
+        if (!clickedDownload) throw new Error("Lorem Ipsum generator did not expose its text download action.");
+        const downloadStarted = Date.now();
+        let names = [];
+        while (Date.now() - downloadStarted < 5000) {
+          names = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !catalogDownloadsBefore.has(name));
+          if (names.length > 0) break;
+          await delay(200);
+        }
+        if (names.length !== 1) throw new Error("Lorem Ipsum text download did not produce exactly one file.");
+        const textFile = fs.readFileSync(path.join(downloadsDir, names[0]), "utf8");
+        if (!textFile.includes("lorem ipsum") || textFile.trim().length < 50) throw new Error("Lorem Ipsum text download content is empty or incorrect.");
+        row.downloadedFiles = [{ file: names[0], bytes: Buffer.byteLength(textFile), contentVerified: true }];
+        row.downloadCount = 1;
+        row.checks.push("downloaded text file content and non-empty bytes verified");
+      }
+      if (tool.slug === "resume-builder") {
+        const clickedPrint = await page.evaluate(`(() => { window.__pdforaResumePrintCalled = false; window.print = () => { window.__pdforaResumePrintCalled = true; }; const button = [...document.querySelectorAll("main button")].find((item) => /download CV as PDF/i.test(item.innerText)); if (!button) return false; button.click(); return true; })()`);
+        if (!clickedPrint || !(await page.evaluate("window.__pdforaResumePrintCalled === true"))) throw new Error("Resume Builder PDF export button did not invoke the browser print flow.");
+        const printed = await page.send("Page.printToPDF", { printBackground: true, preferCSSPageSize: true });
+        const pdfBytes = Buffer.from(printed.data, "base64");
+        const parsedPdf = await PDFDocument.load(pdfBytes);
+        if (parsedPdf.getPageCount() < 1 || pdfBytes.length < 500) throw new Error("Resume Builder print flow did not generate a valid non-empty PDF.");
+        row.printedPdf = { pages: parsedPdf.getPageCount(), bytes: pdfBytes.length };
+        row.checks.push("resume PDF export button, browser print flow and generated PDF bytes verified");
+      }
       if (tool.slug === "nepal-forex-rates") {
         let forexState = null;
         const forexStarted = Date.now();

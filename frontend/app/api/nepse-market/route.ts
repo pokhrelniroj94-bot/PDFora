@@ -241,7 +241,7 @@ export async function GET(request: Request) {
   const quoteTimestamp = Date.parse(sourceUpdatedAt);
   const quoteAgeHours = Number.isFinite(quoteTimestamp) ? (Date.now() - quoteTimestamp) / 3_600_000 : Number.POSITIVE_INFINITY;
   // Weekends/holidays can legitimately pause NEPSE updates; four days is a conservative stale-data warning.
-  const quoteStale = !usingLiveQuotes || !Number.isFinite(quoteTimestamp) || quoteAgeHours > 96;
+  const quoteStale = !usingLiveQuotes || !Number.isFinite(quoteTimestamp) || quoteAgeHours < -(2 / 60) || quoteAgeHours > 96;
   const response = {
     symbol,
     period,

@@ -68,7 +68,7 @@ assert.deepEqual(explicit[5].filter((slug) => !nepalWorkspace.includes('"'+slug+
 
 const liveSlugs = new Set(branchSlugs(liveWorkspace));
 const financeSlugs = new Set(branchSlugs(financeWorkspace));
-const financeHandled = new Set([...special, ...extra, ...financeSlugs, ...liveSlugs]);
+const financeHandled = new Set([...special, ...extra, ...financeSlugs, ...liveSlugs, "market-ai"]);
 assert.deepEqual(financial.filter((slug) => !financeHandled.has(slug)), [], "Every financial route must have a localized handler");
 assert.deepEqual(publicInfo.filter((slug) => !liveSlugs.has(slug)), [], "Every public-information route must have a localized handler");
 assert.ok(page.includes("nepaliLocalizedCareerSlugs.includes(toolSlug"), "Career route group must dispatch to the localized AI-writing workspace");

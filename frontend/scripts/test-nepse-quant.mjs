@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { calculateMarketRegime, calculateOhlcvIndicators, detectLargePriceGaps, normalizeDailyBars, rsi, runBacktest } from "../lib/nepse-quant.mjs";
+import { calculateMarketRegime, calculateOhlcvIndicators, detectLargePriceGaps, normalizeDailyBars, normalizeOhlcvBars, rsi, runBacktest } from "../lib/nepse-quant.mjs";
 
 assert.equal(rsi(Array(20).fill(100), 19), 50, "flat market RSI must be neutral");
 assert.equal(rsi(Array.from({length: 20}, (_, i) => 100 + i), 19), 100, "all-up RSI must be 100");
@@ -18,6 +18,10 @@ const normalized = normalizeDailyBars([
 ]);
 assert.equal(normalized.length, 2, "invalid rows must be dropped and duplicate dates deduplicated");
 assert.equal(normalized[1].close, 102, "latest duplicate observation wins");
+const normalizedOhlcv = normalizeOhlcvBars([{date:"2026-01-01",close:100,high:105,low:95,volume:10},{date:"2026-01-02",close:101,high:90,low:95,volume:null}]);
+assert.equal(normalizedOhlcv[0].high, 105);
+assert.equal(normalizedOhlcv[1].high, undefined, "inconsistent OHLC range must be discarded without dropping valid close");
+assert.equal(normalizedOhlcv[1].volume, undefined, "null volume must remain unavailable");
 assert.equal(detectLargePriceGaps([{date:"a",close:100},{date:"b",close:125}])[0].changePct, 25);
 
 const trend51 = Array.from({length: 51}, (_, i) => ({date:new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10),close:100+i}));

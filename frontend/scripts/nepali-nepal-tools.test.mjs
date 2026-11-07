@@ -40,7 +40,7 @@ for (const slug of newSlugs) {
   const request = modules["localized-route"].resolveLocalizedToolRequest("ne", slug);
   assert.equal(request.status, "ok", `${slug} must resolve through the localized route`);
   const metadata = modules["localized-metadata"].buildLocalizedToolMetadata("ne", request.implementation.entry);
-  assert.deepEqual(metadata.robots, { index: false, follow: false }, `${slug} stays noindex until native review and explicit approval`);
+  assert.deepEqual(metadata.robots, { index: false, follow: true }, `${slug} stays noindex, but followable, until native review and explicit approval`);
   assert.equal(metadata.alternates?.languages, undefined, `${slug} must not publish hreflang before approval`);
 }
 

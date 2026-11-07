@@ -12,8 +12,31 @@ const collections = [
 ];
 
 function articleBlocks(source) {
-  return [...source.matchAll(/\{\s*slug:\s*"([^"]+)"([\s\S]*?)\n  \},/g)]
-    .map((match) => ({ slug: match[1], body: match[2] }));
+  return [...source.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => {
+    const start = source.lastIndexOf("{", match.index);
+    let depth = 0;
+    let quote = null;
+    let escaped = false;
+    for (let index = start; index < source.length; index += 1) {
+      const character = source[index];
+      if (quote) {
+        if (escaped) escaped = false;
+        else if (character === "\\\\") escaped = true;
+        else if (character === quote) quote = null;
+        continue;
+      }
+      if (character === '"' || character === "'" || character === "`") {
+        quote = character;
+        continue;
+      }
+      if (character === "{") depth += 1;
+      if (character === "}") {
+        depth -= 1;
+        if (depth === 0) return { slug: match[1], body: source.slice(start, index + 1) };
+      }
+    }
+    throw new Error("Unclosed article object for " + match[1]);
+  });
 }
 
 function field(body, name) {

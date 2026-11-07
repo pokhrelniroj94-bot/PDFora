@@ -208,6 +208,11 @@ def test_all_available_pdf_tools_process_a_realistic_pdf():
                 reader = PdfReader(io.BytesIO(payload))
                 if not reader.pages:
                     raise AssertionError("PDF contains no pages")
+                if reader.is_encrypted:
+                    if name != "protect" or not reader.decrypt("PDFora-Test-Password"):
+                        raise AssertionError("Encrypted PDF output could not be decrypted with the expected test password")
+                    if not reader.pages:
+                        raise AssertionError("Decrypted PDF contains no pages")
             elif zipfile.is_zipfile(io.BytesIO(payload)):
                 with zipfile.ZipFile(io.BytesIO(payload)) as archive:
                     bad_member = archive.testzip()

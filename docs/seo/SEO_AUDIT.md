@@ -115,8 +115,10 @@ The generated PDF guide variants were also identified as a duplicate-content ris
 
 ## Remaining work after source changes
 
-- Complete CI (catalog/i18n, lint, production build, backend regression tests and dependency audits) for the final branch head.
-- Run an HTTP crawl of all 173 tool URLs and the rest of the sitemap against the deployed release; compare rendered title, description, canonical, robots, hreflang, JSON-LD, response status and page content.
+- **CI passed for branch head `484dc7e5243b211c8528b70105fae17e5c54c831`** in workflow run `42388335300`; frontend and backend jobs succeeded and the live-production job was skipped.
+- A fresh Vercel Preview deployment could not be created because the Vercel API deployment quota reported more than 100 deployments in the rolling day and a 24-hour retry window. No Production deployment or protection change was attempted. The Preview build and deployed HTTP crawl therefore remain unverified.
+- Run an HTTP crawl of all 173 tool URLs and the rest of the sitemap against a new Preview; compare rendered title, description, canonical, robots, hreflang, JSON-LD, response status and page content.
 - Verify every tool's actual rendered instructions and output against its implementation, including edge cases and mobile behavior. Source-level advice coverage is not proof that a tool works.
-- Reconcile sitemap URLs with Search Console indexed/not-indexed reports after deployment. Do not claim indexing or traffic improvement before Google recrawls the pages.
+- Reconcile sitemap URLs with Search Console indexed/not-indexed reports after an approved deployment. Do not claim indexing or traffic improvement before Google recrawls the pages.
+- Review the remaining 38 standalone PDF routes for overlapping legacy copy and compare rendered pages after the shared-guide consolidation. Eleven legacy pages were cleaned; the other routes still require individual checks.
 - Review all non-generated editorial articles for first-hand value, accurate references, dates and non-overlapping search intent.

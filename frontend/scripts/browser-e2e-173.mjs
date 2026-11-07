@@ -37,6 +37,8 @@ if (pdfRoutes.length !== 49 || catalogTools.length !== 124 || tools.length !== 1
 const pngPath = path.join(tempDir, "pdfora-e2e-fixture.png");
 const invalidImagePath = path.join(tempDir, "pdfora-invalid-image.png");
 fs.writeFileSync(invalidImagePath, "PDFora E2E invalid image fixture");
+const invalidPdfPath = path.join(tempDir, "pdfora-invalid-input.pdf");
+fs.writeFileSync(invalidPdfPath, "This is intentionally not a valid PDF document.");
 // Valid 1x1 PNG used by image and PDF-image conversion tests.
 fs.writeFileSync(pngPath, Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNgAAAAAgABSK+kcQAAAABJRU5ErkJggg==",
@@ -353,6 +355,23 @@ async function runTool(tool, index) {
       row.downloadedFiles = validatedDownloads;
       const statusText = finalState?.statuses?.map((status) => status.text).join(" | ") ?? "";
       const statusClass = finalState?.statuses?.map((status) => status.className).join(" ") ?? "";
+      const invalidPdfNode = await page.send("DOM.getDocument", { depth: 1 });
+      const invalidPdfInput = await page.send("DOM.querySelector", { nodeId: invalidPdfNode.root.nodeId, selector: 'input[type="file"]' });
+      if (!invalidPdfInput.nodeId) throw new Error("PDF tool lost its file input before invalid-file testing.");
+      await page.send("DOM.setFileInputFiles", { nodeId: invalidPdfInput.nodeId, files: [invalidPdfPath] });
+      if (tool.slug !== "images-to-pdf") {
+        const invalidPdfAction = await page.evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((item) => item.innerText.trim() === ${JSON.stringify(action)} && !item.disabled); if (!button) return false; button.click(); return true; })()`);
+        if (!invalidPdfAction) throw new Error("PDF tool did not expose its processing action for invalid-file testing.");
+      }
+      let invalidPdfStatus = null;
+      const invalidPdfStarted = Date.now();
+      while (Date.now() - invalidPdfStarted < 10000) {
+        invalidPdfStatus = await page.evaluate(`(() => { const status = document.querySelector('[role="status"]'); return status ? { text: status.innerText.trim(), className: typeof status.className === "string" ? status.className : "" } : null; })()`);
+        if (invalidPdfStatus && /text-red-700|border-red-200/.test(invalidPdfStatus.className)) break;
+        await delay(250);
+      }
+      if (!invalidPdfStatus || !/text-red-700|border-red-200/.test(invalidPdfStatus.className)) throw new Error("Invalid PDF input was not rejected with a visible error status.");
+      row.checks.push("invalid PDF input rejected with a visible error status");
       if (tool.slug === "extract-fonts" && /No extractable embedded fonts were found/i.test(statusText)) {
         row.checks.push("expected negative path: fixture uses standard non-embedded fonts; tool reports that no embedded fonts can be extracted");
         row.output = statusText;
@@ -601,6 +620,22 @@ async function runTool(tool, index) {
         if (parsedPdf.getPageCount() < 1 || pdfBytes.length < 500) throw new Error("Resume Builder print flow did not generate a valid non-empty PDF.");
         row.printedPdf = { pages: parsedPdf.getPageCount(), bytes: pdfBytes.length };
         row.checks.push("resume PDF export button, browser print flow and generated PDF bytes verified");
+      }
+      const editableInputCheck = await page.evaluate(`(() => {
+        const field = [...document.querySelectorAll("main input:not([type=file]), main textarea")].find((item) => !item.disabled && !item.readOnly && !["checkbox", "radio", "button", "submit", "reset"].includes(item.type));
+        if (!field) return { tested: false };
+        const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+        const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+        setter?.call(field, "");
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+        field.dispatchEvent(new Event("change", { bubbles: true }));
+        return { tested: true };
+      })()`);
+      if (editableInputCheck.tested) {
+        await delay(150);
+        const emptyInputText = await page.evaluate("document.querySelector('main')?.innerText || ''");
+        if (/\bNaN\b|\bInfinity\b|\[object Object\]/.test(emptyInputText)) throw new Error("Clearing an editable input produced an invalid numeric or object output.");
+        row.checks.push("empty-input edge case did not render NaN, Infinity or object output");
       }
       if (tool.slug === "nepal-forex-rates") {
         let forexState = null;

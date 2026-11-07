@@ -17,6 +17,7 @@ const quickWorkspace = read("../components/QuickUtilityTools.tsx");
 const liveWorkspace = read("../components/NepalLiveTools.tsx");
 const financeWorkspace = read("../components/NepaliFinanceCalculatorWorkspace.tsx");
 const careerWorkspace = read("../components/AIWritingTools.tsx");
+const marketWorkspace = read("../components/MarketIntelligence.tsx");
 const resumeRoute = read("../app/[locale]/[slug]/page.tsx");
 
 function exportedSlugs(name) {
@@ -82,6 +83,9 @@ const descriptions = new Set([...page.slice(descriptionStart, metadataStart).mat
 assert.deepEqual(all.filter((slug) => !titles.has(slug)), [], "Nepali tool titles are missing");
 assert.deepEqual(all.filter((slug) => !descriptions.has(slug)), [], "Nepali tool descriptions are missing");
 assert.ok(resumeRoute.includes('slug === "resume-builder"') && resumeRoute.includes('<ResumeBuilder locale="ne" />'), "Resume Builder must retain its dedicated Nepali route");
-assert.ok(!all.includes("market-ai"), "Market AI must remain deferred until AI-tool work is authorized");
+assert.ok(financial.includes("market-ai"), "Market AI must be registered for Nepali localization");
+assert.ok(page.includes('toolSlug === "market-ai"') && page.includes('<MarketIntelligence locale="ne" />'), "Market AI must dispatch to its Nepali workspace");
+assert.ok(marketWorkspace.includes('locale = "en"') && marketWorkspace.includes('बजार विश्लेषण तथा जोखिम परीक्षक'), "Market AI must expose its localized workspace and title");
+assert.ok(marketWorkspace.includes('यो शैक्षिक प्रयोजनको प्राविधिक विश्लेषण सहायता हो'), "Market AI must translate the financial-risk disclosure");
 
 console.log("Nepali route dispatch, metadata and workspace coverage passed for " + all.length + " registered catalog routes.");

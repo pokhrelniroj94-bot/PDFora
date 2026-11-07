@@ -47,6 +47,11 @@ const nepaliTitles: Record<string, string> = {
   "age-calculator": "उमेर क्याल्कुलेटर",
   "date-difference-calculator": "मिति अन्तर क्याल्कुलेटर",
   "time-duration-calculator": "समय अवधि क्याल्कुलेटर",
+  "bmi-calculator": "BMI क्याल्कुलेटर",
+  "bmr-calculator": "BMR क्याल्कुलेटर",
+  "tip-calculator": "टिप क्याल्कुलेटर",
+  "split-bill-calculator": "बिल बाँडफाँट क्याल्कुलेटर",
+  "simple-interest-calculator": "साधारण ब्याज क्याल्कुलेटर",
   "json-formatter-validator": "JSON फर्म्याट तथा जाँच",
   "base64-encoder-decoder": "Base64 Encode / Decode",
   "url-encoder-decoder": "URL Encode / Decode",
@@ -95,6 +100,11 @@ const nepaliDescriptions: Record<string, string> = {
   "age-calculator": "जन्म मिति र गणना मितिका आधारमा वर्ष, महिना, दिन र कुल दिन निकाल्नुहोस्।",
   "date-difference-calculator": "दुई मितिबीचको दिन, हप्ता र औसत महिनाको अन्तर निकाल्नुहोस्।",
   "time-duration-calculator": "दुई समयबीचको घण्टा र मिनेट निकाल्नुहोस्; राति पार हुने समय पनि समर्थन गर्छ।",
+  "bmi-calculator": "तौल र उचाइबाट वयस्कको BMI र सामान्य screening वर्ग निकाल्नुहोस्; यो चिकित्सकीय निदान होइन।",
+  "bmr-calculator": "उमेर, उचाइ, तौल र Mifflin–St Jeor सूत्रबाट आधारभूत दैनिक ऊर्जा खर्च अनुमान गर्नुहोस्।",
+  "tip-calculator": "बिल रकम, टिप प्रतिशत र व्यक्ति संख्याबाट टिप तथा प्रति व्यक्ति रकम निकाल्नुहोस्।",
+  "split-bill-calculator": "कुल बिललाई व्यक्तिको संख्याले बराबर बाँडेर प्रति व्यक्ति रकम निकाल्नुहोस्।",
+  "simple-interest-calculator": "मूलधन, वार्षिक ब्याजदर र अवधिबाट साधारण ब्याज तथा कुल रकम निकाल्नुहोस्।",
   "json-formatter-validator": "JSON डेटा मान्य छ कि छैन जाँच्नुहोस् र पढ्न सजिलो गरी फर्म्याट गर्नुहोस्।",
   "base64-encoder-decoder": "UTF-8 पाठलाई Base64 मा बदल्नुहोस् वा Base64 बाट पाठ निकाल्नुहोस्।",
   "url-encoder-decoder": "URL मा प्रयोग हुने विशेष अक्षर encode वा decode गर्नुहोस्।",
@@ -156,7 +166,7 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.locale === "ne" && ["age-calculator", "date-difference-calculator", "time-duration-calculator"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली मिति तथा समय टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliDateTimeWorkspace slug={toolSlug} /></section></main>;
   }
-  if (request.locale === "ne" && ["percentage-change-calculator", "average-calculator", "ratio-simplifier", "fraction-calculator", "percentage-of-number-calculator", "gcd-lcm-calculator", "prime-number-checker", "unit-converter"].includes(toolSlug)) {
+  if (request.locale === "ne" && ["percentage-change-calculator", "average-calculator", "ratio-simplifier", "fraction-calculator", "percentage-of-number-calculator", "gcd-lcm-calculator", "prime-number-checker", "unit-converter", "bmi-calculator", "bmr-calculator", "tip-calculator", "split-bill-calculator", "simple-interest-calculator"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली गणित टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliMathUtilityWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {

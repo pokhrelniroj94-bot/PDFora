@@ -19,4 +19,15 @@ assert.match(runNepaliMathTool("gcd-lcm-calculator", { a: "9007199254740991", b:
 assert.match(runNepaliMathTool("unit-converter", { amount: "1", fromUnit: "km", toUnit: "m" }), /1 km = 1,000 m/);
 assert.match(runNepaliMathTool("unit-converter", { amount: "1", fromUnit: "kg", toUnit: "g" }), /1 kg = 1,000 g/);
 assert.match(runNepaliMathTool("unit-converter", { amount: "1", fromUnit: "kg", toUnit: "m" }), /एउटै प्रकारका एकाइ/);
-console.log("Nepali math utility functional tests passed (17 assertions).");
+
+assert.match(runNepaliMathTool("bmi-calculator", { weight: "65", height: "170" }), /BMI: 22.49134948/);
+assert.match(runNepaliMathTool("bmi-calculator", { weight: "0", height: "170" }), /१०–३०० kg/);
+assert.match(runNepaliMathTool("bmr-calculator", { weight: "65", height: "170", age: "25", sex: "male" }), /अनुमानित BMR: 1,592.5 kcal\/day/);
+assert.match(runNepaliMathTool("bmr-calculator", { weight: "65", height: "170", age: "17", sex: "female" }), /१८–१०० वर्ष/);
+assert.match(runNepaliMathTool("tip-calculator", { bill: "1000", tip: "10", people: "2" }), /प्रति व्यक्ति: NPR 550/);
+assert.match(runNepaliMathTool("tip-calculator", { bill: "1000", tip: "120", people: "2" }), /०–१००%/);
+assert.match(runNepaliMathTool("split-bill-calculator", { total: "2400", people: "3" }), /प्रति व्यक्ति तिर्नुपर्ने: NPR 800/);
+assert.match(runNepaliMathTool("split-bill-calculator", { total: "2400", people: "0" }), /१–१०००/);
+assert.match(runNepaliMathTool("simple-interest-calculator", { principal: "100000", rate: "10", years: "2" }), /साधारण ब्याज: NPR 20,000/);
+assert.match(runNepaliMathTool("simple-interest-calculator", { principal: "-1", rate: "10", years: "2" }), /मूलधन सकारात्मक/);
+console.log("Nepali math utility functional tests passed (27 assertions).");

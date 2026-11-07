@@ -147,7 +147,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools", "ne"), "/ne?from=%2Ftools");
   assert.equal(routing.localizedOrFallbackPath("/tools/loan-emi-calculator", "ne"), "/ne/tools/loan-emi-calculator");
   assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
-  assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne?from=%2Ftools%2Fjson-formatter-validator");
+  assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
   assert.equal(routing.nepaliLocalizedRoutePaths.size, 87);
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
@@ -257,7 +257,8 @@ test("Nepali developer and text tools have localized routes and interfaces", () 
   for (const slug of ["json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator", "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug"]) {
     assert.ok(route.includes(`"${slug}"`), `${slug} must have a localized route`);
     assert.ok(component.includes(`"${slug}"`), `${slug} must have localized UI copy`);
-    assert.ok(logic.includes(`slug === "${slug}"`), `${slug} must have processing logic`);
+    if (slug === "hash-generator") assert.ok(logic.includes("runNepaliHashTool"), `${slug} must have processing logic`);
+    else assert.ok(logic.includes(`slug === "${slug}"`), `${slug} must have processing logic`);
   }
   for (const phrase of ["JSON फर्म्याट तथा जाँच", "Base64 Encode / Decode", "Text Diff Checker", "नेपाली Unicode अक्षर सुरक्षित"]) {
     assert.ok(component.includes(phrase) || route.includes(phrase), `Nepali developer UI must include ${phrase}`);

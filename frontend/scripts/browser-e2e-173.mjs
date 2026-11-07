@@ -571,7 +571,7 @@ async function runTool(tool, index) {
       };
       const expected = expectedOutputs[tool.slug];
       const expectedPattern = expectedPatterns[tool.slug];
-      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette"].includes(tool.slug) ? "\n" + finalState.body : "") + (tool.slug === "case-converter" ? "\n" + finalState.inputValues.map((input) => input.value).join("\n") : "");
+      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette", "nepal-land-area-converter"].includes(tool.slug) ? "\n" + finalState.body : "") + (tool.slug === "case-converter" ? "\n" + finalState.inputValues.map((input) => input.value).join("\n") : "");
       const normalizedLiveText = liveText.replace(/\s+/g, " ").trim();
       let outputMatches = expected ? normalizedLiveText.includes(expected.replace(/\s+/g, " ").trim()) : expectedPattern ? expectedPattern.test(liveText) : false;
       if (tool.slug === "password-generator") {

@@ -494,6 +494,7 @@ async function runTool(tool, index) {
         tables: [...document.querySelectorAll('table')].map((table) => table.innerText).join('\\n'),
         inputs: document.querySelectorAll("input,textarea,select").length,
         inputValues: [...document.querySelectorAll("input,textarea,select")].map((input) => ({ value: input.value || "", type: input.type || input.tagName.toLowerCase() })),
+        storyLinks: document.querySelectorAll("section ul li a").length,
       }))()`);
       if (/Tool configuration missing|Tool not implemented|This utility is not available yet|Nepal utility not found/i.test(finalState.body)) {
         throw new Error("Tool reported an unavailable handler/configuration.");
@@ -619,10 +620,12 @@ async function runTool(tool, index) {
       };
       const expected = expectedOutputs[tool.slug];
       const expectedPattern = expectedPatterns[tool.slug];
-      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette", "nepal-land-area-converter"].includes(tool.slug) ? "\n" + finalState.body : "") + (["case-converter", "nepali-unicode-typing"].includes(tool.slug) ? "\n" + finalState.inputValues.map((input) => input.value).join("\n") : "");
+      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette", "nepal-land-area-converter"].includes(tool.slug) ? "\n" + finalState.body : "") + (["case-converter", "nepali-unicode-typing", "preeti-unicode-converter"].includes(tool.slug) ? "\n" + finalState.inputValues.map((input) => input.value).join("\n") : "");
       const normalizedLiveText = liveText.replace(/\s+/g, " ").trim();
       let outputMatches = expected ? normalizedLiveText.includes(expected.replace(/\s+/g, " ").trim()) : expectedPattern ? expectedPattern.test(liveText) : false;
-      if (tool.slug === "password-generator") {
+      if (tool.slug === "nepse-market-news") {
+        outputMatches = finalState.storyLinks > 0 || /No recent stories were returned by the feed/i.test(finalState.body);
+      } else if (tool.slug === "password-generator") {
         const generated = liveText.split(/\r?\n/).map((line) => line.trim()).filter((line) => /^[\x21-\x7e]{20}$/.test(line));
         outputMatches = generated.length >= 3;
       } else if (tool.slug === "random-number-generator") {

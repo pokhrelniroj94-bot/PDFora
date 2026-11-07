@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-07T09:39:08.310Z",
-  "sourceCommit": "4eb52b6e2a31a964b0416fcffecd45023593b8d7",
+  "generatedAt": "2026-11-07T13:08:17.477Z",
+  "sourceCommit": "07d4402e7700d3f7e03f8854c3aa88375407a553",
   "methodology": {
     "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
     "routeCoverage": "Dynamic route handlers serve multiple slugs; localized route equivalents are reported as counts only, not percentages of page source files.",
@@ -16,16 +16,16 @@
     "nepaliPdfGuides": 49,
     "editorialBlogArticles": 8,
     "nepalBlogArticles": 19,
-    "publishedNepaliPdfRoutes": 6,
-    "publishedNepaliUtilityRoutes": 52,
-    "publishedNepaliFinancialRoutes": 9,
+    "publishedNepaliPdfRoutes": 49,
+    "publishedNepaliUtilityRoutes": 61,
+    "publishedNepaliFinancialRoutes": 7,
     "publishedNepaliCareerRoutes": 3,
     "publishedNepaliMarketDashboardRoute": true,
     "publishedNepaliResumeBuilderRoute": true,
     "publishedNepaliBlogRoutes": 28,
     "publishedNepaliStaticRoutes": 4,
     "publishedNepaliHomeRoute": true,
-    "publishedNepaliRouteEquivalents": 105
+    "publishedNepaliRouteEquivalents": 157
   },
   "locales": {
     "en": {
@@ -53,7 +53,7 @@
       "status": "Partially translated",
       "published": true,
       "sourceRouteFiles": 68,
-      "translatedRoutes": 105,
+      "translatedRoutes": 157,
       "routeCoveragePercent": null,
       "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
@@ -68,7 +68,7 @@
         "note": "All 27 curated editorial articles are translated into Nepali; generated catalog guides remain noindex and are not counted."
       },
       "namespaceFiles": 3,
-      "reviewStatus": "Existing Nepali routes and PDF guide copy; complete site-wide native review not assessed"
+      "reviewStatus": "Nepali route interfaces and curated content are present; site-wide native-speaker review is not assessed"
     },
     "hi": {
       "status": "Not published",
@@ -76,7 +76,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -87,8 +87,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     },
     "bn": {
       "status": "Not published",
@@ -96,7 +96,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -107,8 +107,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     },
     "ur": {
       "status": "Not published",
@@ -116,7 +116,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -127,8 +127,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     },
     "ar": {
       "status": "Not published",
@@ -136,7 +136,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -147,8 +147,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     },
     "es": {
       "status": "Not published",
@@ -156,7 +156,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -167,8 +167,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     },
     "fr": {
       "status": "Not published",
@@ -176,7 +176,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -187,8 +187,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     },
     "de": {
       "status": "Not published",
@@ -196,7 +196,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -207,8 +207,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     },
     "pt": {
       "status": "Not published",
@@ -216,7 +216,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -227,8 +227,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     },
     "zh": {
       "status": "Not published",
@@ -236,7 +236,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -247,8 +247,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     },
     "ja": {
       "status": "Not published",
@@ -256,7 +256,7 @@
       "sourceRouteFiles": 68,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
-      "sharedUiModuleCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 0,
         "total": 49,
@@ -267,8 +267,8 @@
         "total": 27,
         "percent": 0
       },
-      "namespaceFiles": 0,
-      "reviewStatus": "No published localized page content"
+      "namespaceFiles": 3,
+      "reviewStatus": "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed"
     }
   }
 }

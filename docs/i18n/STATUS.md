@@ -1,20 +1,20 @@
 # PDFora i18n rollout: status
 
-## Current continuation status — 2026-11-07
+## Current continuation status — 2026-11-07 (refreshed after PR #90)
 
-Production branch: `master`, latest merged multilingual commit:
-`e37016e2e79af57c01e337ed1127b57d87e680fe`.
+Production branch: `master`, latest merged commit:
+`2cfbcffc6c1f41a488bd349be58518aa75faee95` (PR #90: seven Nepali business and salary calculators).
 
-- PR #77: merged; established the 12-locale routing and shared multilingual foundation.
-- PR #78: closed without merge; its work was superseded by the clean master-based PR #79.
-- PR #79: merged after GitHub Actions passed backend regression tests, frontend catalog checks, i18n runtime/content checks, lint, production build, npm dependency audit and Python dependency audit.
-- 12 locales are registered: English, Nepali, Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese.
-- English and Nepali are published. Nepali has 27 curated localized editorial articles (19 Nepal-focused guides and 8 PDF workflow tutorials), a localized blog index and a limited set of reviewed tool/page equivalents.
-- The evidence report measures 99 Nepali route equivalents and 64 localized tool surfaces. Only six legacy PDF tools are currently index-eligible; generated catalogue tool guides remain noindex until reviewed.
-- Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished/noindex. Shared shell translations do not count as complete translations of pages or tools. Native-language review and RTL visual QA are still required.
-- The multilingual changes have been merged to GitHub. This status file does not claim a successful Vercel production deployment or Google indexing.
+- PR #90 is merged. Its GitHub Actions run #1510 passed both required jobs: backend syntax, functional regression tests and Python dependency audit; frontend catalog verification, i18n runtime/content checks, lint, production build and npm dependency audit.
+- The Vercel production deployment automatically triggered by the merge was canceled to preserve the requested single consolidated release after the remaining work is complete. No claim is made that this commit is live.
+- 12 locales are registered: English, Nepali, Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese. Only English and Nepali are published. The other ten remain unpublished and excluded from indexing; Arabic and Urdu require RTL visual QA before publication.
+- Current generated translation-coverage report: 68 frontend page source files, 57 Nepali localized route equivalents, 49/49 Nepali PDF guide entries, and 27 curated Nepali editorial articles (19 Nepal-focused guides and 8 PDF workflow tutorials). The route percentage is a source-file proxy, not full UI-string coverage.
+- The current Nepali tool registry contains 64 localized tool surfaces across the six PDF routes, utility, finance and AI-writing routes. Only six PDF routes are approved by the explicit default-deny indexability allowlist. Other localized tool pages remain noindex and excluded from sitemap/hreflang until their interfaces, messages, errors, help content and locale-specific behavior are fully reviewed and tested.
+- Generated catalogue guides remain noindex until individually reviewed. Automated coverage does not certify native-speaker review or prove every tool's runtime behavior.
+- The translation report and tool-language matrix are generated artifacts. The matrix JSON still records source commit `e37016e2e79af57c01e337ed1127b57d87e680fe`; regenerate both coverage artifacts from the current master before the final release and confirm their counts match the source registries.
+- Production deployment and Google indexing are separate gates. Search Console validation, sitemap resubmission and URL inspection must happen after the final production deployment; indexing cannot be guaranteed.
 
-Next content-quality work is tracked separately in `docs/blog/EDITORIAL_STANDARDS.md` and the `seo/blog-editorial-quality-hardening` branch. The blog release gate checks original, useful content; complete sections; FAQs for readers; working internal links; source URL safety; localized article parity; and no arbitrary word-count target.
+Next work: complete and independently review remaining Nepali tool interfaces and editorial pages, then assess additional locales one at a time. Do not publish or index a locale merely because its code, route shell or dictionary exists.
 
 The authoritative tool-language matrix is `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json` (2,076 rows: 12 locales × 173 tools). It records route, handler, visible UI, guide, functional test, human review and indexing eligibility independently.
 

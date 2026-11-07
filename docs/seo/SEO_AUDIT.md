@@ -32,11 +32,11 @@ No ranking, indexing, traffic or Search Console submission is claimed by this au
 
 ## Live crawl findings — 2026-11-07
 
-A live crawl of `/merge-pdf` exposed the same PDF practical guide twice in the rendered page. Source inspection confirmed that the guide was rendered both by the route layout and again inside the shared `PDForaTool` client component. This duplicated the full guide and its FAQ/schema output on standalone PDF tool pages that use both layers.
+A live crawl of `/merge-pdf` exposed the same PDF practical guide twice in the rendered page. Source inspection confirmed that the guide was rendered both by the route layout and again inside the shared `PDForaTool` and `Niroj77Tool` client components. This duplicated the full guide and its FAQ/schema output on standalone PDF tool pages that use both layers.
 
-The release branch `seo/duplicate-content-audit-fix-2026-11-07` removes the second render from `PDForaTool`, leaving the route layout as the single owner of the English PDF SEO guide. A regression assertion now guards this ownership. The Nepali dynamic PDF route continues to render its dedicated `ToolGuide` separately.
+The release branch `seo/duplicate-content-audit-fix-2026-11-07` removes the second render from both shared workspaces, leaving each route layout as the single owner of the English PDF SEO guide. A regression assertion now guards this ownership. The Nepali dynamic PDF route continues to render its dedicated `ToolGuide` separately.
 
-The same live crawl also found older, page-specific how-to and FAQ blocks on `/merge-pdf` that overlap with the shared guide. These are being removed from that route so the tool page has one clear guide structure. Other standalone PDF routes still require an individual rendered-page comparison before their legacy copy can safely be consolidated.
+The same live crawl also found older, page-specific how-to and FAQ blocks on `/merge-pdf` and `/delete-pages` that overlap with the shared guide. These are being removed from those routes so the tool page has one clear guide structure. Other standalone PDF routes still require an individual rendered-page comparison before their legacy copy can safely be consolidated.
 
 ## Metadata inventory checks — 2026-11-07
 

@@ -1184,12 +1184,9 @@ async function runTool(tool, index) {
         ? "/ne" + tool.url
         : tool.slug === "resume-builder" ? "/ne/resume-builder" : "/ne/tools/" + tool.slug;
       const nepaliUrl = new URL(nepaliPath, baseUrl).toString();
-      const localizedNavigation = await page.send("Page.navigate", { url: nepaliUrl });
-      if (localizedNavigation.errorText) {
-        // Chromium can reject a second Page.navigate on a reused tab after a tool action;
-        // retry through the page location API and verify the final pathname below.
-        await page.evaluate("location.assign(" + JSON.stringify(nepaliUrl) + ")");
-      }
+      // Navigate the already-open tab through its own location API. This avoids
+      // a Chromium CDP Page.navigate edge case after file-download interactions.
+      try { await page.evaluate("location.href = " + JSON.stringify(nepaliUrl)); } catch { /* navigation may destroy the old execution context */ }
       const localizedStarted = Date.now();
       let localizedReady = { state: "", path: "" };
       while (Date.now() - localizedStarted < 15000) {

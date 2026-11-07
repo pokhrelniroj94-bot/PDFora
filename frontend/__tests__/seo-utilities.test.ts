@@ -26,6 +26,7 @@ describe("shared SEO utility functions", () => {
       wordCount: 3,
       occurrences: 2,
     });
+    expect(calculateKeywordDensity("नेपालमा नेपालमा", "नेपालमा")).toMatchObject({ wordCount: 2, occurrences: 2 });
     expect(calculateKeywordDensity("", "target")).toEqual({
       wordCount: 0,
       occurrences: 0,

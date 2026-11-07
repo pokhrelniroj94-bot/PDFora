@@ -132,6 +132,24 @@ describe("POST /api/ai-writing", () => {
     expect(JSON.stringify(cloudflareCall)).not.toContain("test-token");
   });
 
+  it("bounds large market research payloads and still generates a response", async () => {
+    const fetchMock = mockSuccessfulProviders();
+    const response = await POST(request({
+      kind: "market-explain",
+      analysis: "A".repeat(4200),
+      research: "R".repeat(8500),
+      question: "Explain the supplied market data.",
+    }));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ text: "Generated safely." });
+    const cloudflareCall = fetchMock.mock.calls.find(([url]) => String(url).includes("api.cloudflare.com"));
+    const requestBody = JSON.parse(String(cloudflareCall?.[1]?.body));
+    const prompt = requestBody.messages[1].content;
+    expect(prompt.length).toBeLessThanOrEqual(14000);
+    expect(prompt).toContain("R".repeat(6000));
+    expect(prompt).not.toContain("R".repeat(6001));
+  });
+
   it("stops at the shared eight-request limit and returns Retry-After", async () => {
     const fetchMock = jest.spyOn(global, "fetch").mockResolvedValue(Response.json({ result: 9 }));
     const response = await POST(request({ kind: "site-help", question: "Help" }));

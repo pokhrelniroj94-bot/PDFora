@@ -1,4 +1,4 @@
-import { localeInfo, type Locale } from "./config";
+import { isLocale, type Locale } from "./config";
 
 export type SharedUiCopy = {
   footerNavigation: string;
@@ -126,5 +126,5 @@ export function getSharedUiCopy(locale: Locale): SharedUiCopy {
 
 export function localeFromPathname(pathname: string): Locale {
   const first = pathname.split("/").filter(Boolean)[0];
-  return first && first in localeInfo ? (first as Locale) : "en";
+  return first && isLocale(first) ? first : "en";
 }

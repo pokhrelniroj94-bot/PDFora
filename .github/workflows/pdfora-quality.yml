@@ -66,6 +66,17 @@ jobs:
           done
           cat /tmp/pdfora-next.log
           exit 1
+      - name: Warm the Render PDF backend before browser processing tests
+        run: |
+          for attempt in {1..45}; do
+            if curl --fail --silent https://pdfora-493r.onrender.com/ > /dev/null; then
+              echo "Render backend is responding."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Render backend did not respond within 90 seconds."
+          exit 1
       - name: Check browser E2E runner syntax
         run: node --check scripts/browser-e2e-173.mjs
       - name: Run individual Chromium E2E checks for all 173 tools

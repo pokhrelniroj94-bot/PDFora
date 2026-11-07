@@ -113,7 +113,15 @@ async function openPage(url) {
       expression, returnByValue: true, awaitPromise: true, userGesture: true,
     });
     if (result.exceptionDetails) {
-      throw new Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text);
+      const detail = result.exceptionDetails;
+      const stack = detail.exception?.details?.stackTrace?.callFrames
+        ?.map((frame) => `${frame.url || "<anonymous>"}:${frame.lineNumber + 1}:${frame.columnNumber + 1}`)
+        .join(" <- ");
+      throw new Error([
+        detail.exception?.description || detail.text,
+        stack ? "stack: " + stack : "",
+        detail.text ? "text: " + detail.text : "",
+      ].filter(Boolean).join(" | "));
     }
     return result.result?.value;
   };
@@ -542,6 +550,10 @@ async function runTool(tool, index) {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     row.errors.push(message);
+    row.browserExceptions = page?.events
+      ?.filter((event) => event.method === "Runtime.exceptionThrown" || event.method === "Log.entryAdded")
+      .slice(-8)
+      .map((event) => ({ method: event.method, details: event.params?.exceptionDetails?.exception?.description || event.params?.entry?.text || event.params?.exceptionDetails?.text || "" })) || [];
     row.status = "FAIL";
     browserFailures += 1;
     if (message.includes("DevTools WebSocket connection timed out")) fatalBrowserError = true;

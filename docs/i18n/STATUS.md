@@ -18,6 +18,18 @@ Next work: complete and independently review remaining Nepali tool interfaces an
 
 The authoritative tool-language matrix is `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json` (2,076 rows: 12 locales × 173 tools). It records route, handler, visible UI, guide, functional test, human review and indexing eligibility independently.
 
+## Nepali Nepal utility batch 2 — PR #93 pending
+
+The continuation branch `i18n/nepali-nepal-utilities-batch-2` adds four dedicated Nepali tool workspaces:
+- Nepal mobile-number format checker (supports ASCII and Devanagari digits, with +977 formatting)
+- Tola/gram weight converter
+- Nepali BS calendar (1975–2099 supported range; does not claim holiday or tithi coverage)
+- Loksewa/online-form photo resizer (local browser processing, 20 MB input cap, 50/100/200 KB targets)
+
+If PR #93 merges, measured coverage becomes 68 localized tool surfaces out of 173 (6 PDF + 62 catalog) and 103 Nepali route equivalents. The remaining untranslated tool inventory will be 105. The four new catalog pages stay `noindex`, have no hreflang, and remain out of the sitemap until native-language review and explicit approval; the six existing PDF routes remain the only index-approved Nepali tool pages.
+
+The new test suite covers mobile format normalization, Devanagari digits, international prefix handling, tola/gram arithmetic, route registration and the default-deny metadata gate. The calendar and photo-resizer workflows also require browser QA before any indexing approval. This batch is not deployed.
+
 ## Historical 12-language foundation snapshot (superseded)
 
 Branch: `i18n/12-language-foundation`, based on master `6cc1f06`. This branch is not

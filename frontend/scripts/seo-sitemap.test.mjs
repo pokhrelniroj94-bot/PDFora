@@ -216,6 +216,15 @@ assert.match(nepaliBlogArticleSource, /buildLocaleMetadata\(/, "Nepali articles 
 assert.match(localeMetadataSource, /alternates:\s*\{\s*canonical,/, "Localized pages must self-canonicalize");
 assert.match(localeMetadataSource, /openGraph:\s*\{/, "Localized pages must publish locale-aware Open Graph metadata");
 assert.match(localeMetadataSource, /twitter:\s*\{/, "Localized pages must publish locale-aware Twitter metadata");
+
+assert.match(localeMetadataSource, /openGraph:\s*\{[\s\S]*?images:/, "Localized pages must publish Open Graph images");
+assert.match(localeMetadataSource, /twitter:\s*\{[\s\S]*?images:/, "Localized pages must publish Twitter images");
+for (const relativePath of ["app/tools/page.tsx", "app/market/page.tsx", "app/nepse-lab/page.tsx", "app/resume-builder/page.tsx"]) {
+  const source = read(relativePath);
+  assert.match(source, /openGraph:\s*\{[\s\S]*?images:/, `${relativePath} must provide an Open Graph image`);
+  assert.match(source, /twitter:\s*\{[\s\S]*?images:/, `${relativePath} must provide a Twitter image`);
+}
+
 for (const relativePath of ["app/about/page.tsx", "app/contact/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx"]) {
   const source = read(relativePath);
   assert.match(source, /openGraph:\s*\{[\s\S]*?images:/, `${relativePath} must provide an Open Graph image`);

@@ -151,6 +151,9 @@ async function runTool(tool, index) {
       throw new Error("Page did not render a usable tool workspace.");
     }
     row.heading = initial.heading;
+    row.inputCount = initial.inputs;
+    row.fileInputCount = initial.fileInputs;
+    row.buttonCount = initial.buttons.length;
     row.checks.push("route rendered");
     if (/Tool configuration missing|Tool not implemented|not configured\./i.test(initial.body)) {
       throw new Error("Tool rendered a missing/unimplemented configuration message.");
@@ -242,7 +245,7 @@ async function runTool(tool, index) {
         throw new Error(finalState.alerts.join(" | "));
       }
       row.output = finalState.live.filter(Boolean).join(" | ").slice(0, 700) || finalState.body.slice(-700);
-      row.outputVerified = finalState.live.some((value) => value.trim().length > 0) || /result|converted|generated|calculated|valid|words:|characters:/i.test(finalState.body);
+      row.outputVerified = finalState.live.some((value) => value.trim().length > 0);
       row.checks.push("workspace output inspected");
     }
     row.status = "PASS";

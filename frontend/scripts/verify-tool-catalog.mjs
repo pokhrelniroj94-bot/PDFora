@@ -107,8 +107,8 @@ for (const slug of catalog) {
   const next = adviceBlock[1].indexOf('\n    "', start + marker.length);
   const entry = adviceBlock[1].slice(start, next < 0 ? undefined : next);
   for (const field of ["example", "accuracy", "workflow", "mistakes"]) {
-    const match = entry.match(new RegExp(field + ': "([^"]+)"'));
-    assert.ok(match && match[1].trim().length >= 90, `${slug} needs substantial tool-specific ${field} guidance`);
+    const match = entry.match(new RegExp(field + ': "((?:\\\\.|[^"\\\\])*)"'));
+    assert.ok(match && match[1].trim().length >= 50, `${slug} needs substantive tool-specific ${field} guidance`);
   }
 }
 

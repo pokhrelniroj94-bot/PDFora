@@ -563,7 +563,7 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "nepali-unicode-typing") {
         const output = await page.evaluate("document.querySelectorAll('textarea')[1]?.value || ''");
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing did not convert romanized input into Devanagari output.");
+        if (!/[\u0900-\u097F]/.test(output)) throw new Error("Nepali typing did not convert romanized input into Devanagari output.");
         row.checks.push("Romanized input converted to Devanagari output textarea");
         row.outputVerified = true;
         row.status = "PASS";

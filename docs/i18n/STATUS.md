@@ -3,7 +3,7 @@
 ## Current continuation status — 2026-11-07
 
 Production branch: `master`, latest merged multilingual commit:
-`469722f107b241ae5d095a9985d33f5ea8773606`.
+`35848a2a38e40982c95950a39a0aba32aedbd3e5`.
 
 - PR #77: merged; established the 12-locale routing and shared multilingual foundation.
 - PR #78: closed without merge; its work was superseded by the clean master-based PR #79.

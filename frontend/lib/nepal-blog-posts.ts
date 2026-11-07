@@ -21,7 +21,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "Can I convert AD to BS on my phone?", answer: "Yes. The converter is designed to work in a modern mobile browser as well as on a computer." },
       { question: "Is subtracting 56 years enough?", answer: "No. BS and AD year boundaries and month lengths differ. Use a calendar-data-based converter for the exact date." }
     ],
-    toolLinks: [{ label: "Nepali Date Converter", href: "/tools/nepali-date-converter" }, { label: "Date Difference Calculator", href: "/tools/date-difference-calculator" }, { label: "Age Calculator", href: "/tools/age-calculator" }]
+    toolLinks: [{ label: "Nepali Date Converter", href: "/tools/nepali-date-converter" }, { label: "Date Difference Calculator", href: "/tools/date-difference-calculator" }, { label: "Age Calculator", href: "/tools/age-calculator" }],
+    sources: [{ label: "Nepal Panchanga Nirnayak Development Committee", url: "https://www.npns.gov.np/" }, { label: "Kathmandu Metropolitan City: BS / AD calendar", url: "https://kathmandu.gov.np/en/calendar" }]
   },
   {
     slug: "nepal-vat-calculator-13-percent-guide",
@@ -85,7 +86,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "How do I convert grams to tola?", answer: "Divide the gram weight by 11.6638038." },
       { question: "Does the converter show today's gold price?", answer: "No. It converts weight only and does not fetch live gold prices." }
     ],
-    toolLinks: [{ label: "Tola to Gram Converter", href: "/tools/gold-tola-gram-converter" }]
+    toolLinks: [{ label: "Tola to Gram Converter", href: "/tools/gold-tola-gram-converter" }],
+    sources: [{ label: "Department of Industry: Standard Measurement and Weight Act schedule", url: "https://doind.gov.np/uploads/notices/Notices-2023101619250565.pdf" }]
   },
   {
     slug: "nepali-number-to-words-lakh-crore-guide",
@@ -118,7 +120,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { heading: "Check dates before official use", paragraphs: ["Use the date printed on your certificate or official record. A calendar is a conversion aid, not proof of a person's date of birth or document issue date."] }
     ],
     faqs: [{ question: "Does it show public holidays?", answer: "The current month view shows BS dates, AD dates and weekdays, not holidays or festivals." }, { question: "Can I view 2083 BS?", answer: "Yes, within the supported calendar range." }],
-    toolLinks: [{ label: "Nepali Calendar", href: "/tools/nepali-calendar" }, { label: "BS to AD Date Converter", href: "/tools/nepali-date-converter" }]
+    toolLinks: [{ label: "Nepali Calendar", href: "/tools/nepali-calendar" }, { label: "BS to AD Date Converter", href: "/tools/nepali-date-converter" }],
+    sources: [{ label: "Nepal Panchanga Nirnayak Development Committee", url: "https://www.npns.gov.np/" }, { label: "Ministry of Home Affairs: Government and public holidays in 2083", url: "https://moha.gov.np/en/page/government-and-public-holidays-in-2083" }]
   },
   {
     slug: "neb-gpa-calculator-nepal-guide", title: "NEB GPA Calculator Nepal: Credit Hours and Grade Points Explained",

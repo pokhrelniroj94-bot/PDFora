@@ -4,7 +4,7 @@ import { hreflangMap } from "../../lib/i18n/routing";
 const localizedAlternates = hreflangMap("/terms");
 
 export const metadata: Metadata = {
-  title: "Terms of Service | PDFora Online Tools",
+  title: "Terms of Service for Online Tools",
   description: "Read the terms for using PDFora online PDF, document, calculator and other browser-based tools, including user responsibilities and service limitations.",
   alternates: { canonical: "https://pd-fora.vercel.app/terms", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
   openGraph: { type: "website", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms for using PDFora online tools, including user responsibilities and service limitations." },

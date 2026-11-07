@@ -1231,7 +1231,7 @@ async function runNepaliRoute(tool, index) {
     if (state.htmlLang !== "ne" || state.mainLang !== "ne" || state.mainCount !== 1 || state.h1Count !== 1) {
       throw new Error("Nepali route did not render one main landmark with lang=ne: " + JSON.stringify(state));
     }
-    if (!/[\\u0900-\\u097F]{2,}/.test(state.heading) || !state.hasNepaliBody || state.englishFallback) {
+    if (!/[\u0900-\u097F]{2,}/.test(state.heading) || !state.hasNepaliBody || state.englishFallback) {
       throw new Error("Nepali page heading/body is missing localized Nepali content: " + JSON.stringify(state));
     }
     row.checks.push("route renders a Nepali main landmark, heading and visible Nepali content");

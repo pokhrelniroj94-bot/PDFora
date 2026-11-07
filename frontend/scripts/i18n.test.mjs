@@ -110,6 +110,12 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
+test("Nepali PDF tool back navigation stays in the active locale", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "PDForaTool.tsx"), "utf8");
+  assert.ok(source.includes("href={homeHref}"), "the tool back link must use the locale-aware home destination");
+  assert.ok(source.includes('const homeHref = locale === "en" ? "/" : `/${locale}`;'));
+});
+
 test("Nepali homepage renders reviewed content and honest fallback links", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "NepaliHomePage.tsx"), "utf8");
   for (const phrase of ["नेपालीमा उपलब्ध PDF टुलहरू", "सोधिने प्रश्नहरू", "सबै टुलहरू", "PDFora बारेमा"]) {

@@ -47,7 +47,7 @@ export default function SiteAIHelp() {
     }
     void loadPageContext();
     return () => controller.abort();
-  }, [pathname]);
+  }, [pagePath]);
 
 
   async function send(text: string) {

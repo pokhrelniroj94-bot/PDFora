@@ -41,6 +41,14 @@ test("RTL and script font support covers Urdu, Arabic and Bengali", () => {
   assert.ok(css.includes(".i18n-ltr { direction: ltr; unicode-bidi: isolate; }"), "URLs, filenames and code need LTR isolation in RTL text");
 });
 
+test("localized route layout applies the configured language and text direction", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "layout.tsx"), "utf8");
+  assert.ok(source.includes("const info = localeInfo[locale]"), "layout must use the central locale registry");
+  assert.ok(source.includes("lang={info.htmlLang}"), "layout must expose the locale-specific HTML language");
+  assert.ok(source.includes("dir={info.dir}"), "layout must apply RTL for Arabic and Urdu");
+  assert.ok(source.includes("data-locale={locale}"), "layout must expose the active locale for styling and diagnostics");
+});
+
 test("locale table: requested 12 locales, English default, Arabic and Urdu are RTL", () => {
   assert.deepEqual([...config.locales], ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
   assert.equal(config.defaultLocale, "en");

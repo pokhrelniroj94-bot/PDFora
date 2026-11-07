@@ -43,6 +43,11 @@ const testedCatalog = new Set([
 ]);
 const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator", "csv-to-json", "nepali-vat-calculator", "nepali-number-converter", "gold-tola-gram-converter", "nepal-share-calculator"]);
 const uiRegressionCatalog = new Set([...inputTestedCatalog, "lorem-ipsum-generator"]);
+const browserReportPath = path.join(frontendRoot, "..", "docs", "qa", "BROWSER_E2E_173_REPORT.json");
+const browserReport = fs.existsSync(browserReportPath)
+  ? JSON.parse(fs.readFileSync(browserReportPath, "utf8"))
+  : null;
+const browserResults = new Map((browserReport?.results ?? []).map((row) => [row.slug, row]));
 
 // Catalog route/handler/SEO statuses are PARTIAL: current evidence proves registry,
 // adapter and metadata contracts only, not an HTTP-rendered page or complete SEO validation.
@@ -53,11 +58,11 @@ const rows = [
     slug,
     category: "PDF",
     kind: "pdf",
-    routeStatus: "PARTIAL",
-    interfaceStatus: "PARTIAL",
-    handlerStatus: "PASS",
-    functionalTestStatus: "PARTIAL",
-    outputVerificationStatus: "PARTIAL",
+    routeStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    interfaceStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    handlerStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    functionalTestStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    outputVerificationStatus: browserResults.get(slug)?.outputVerified ? "PASS" : "PARTIAL",
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
@@ -76,11 +81,13 @@ const rows = [
     slug: entry.slug,
     category: entry.category,
     kind: "catalog",
-    routeStatus: "PARTIAL",
-    interfaceStatus: "PARTIAL",
-    handlerStatus: "PARTIAL",
-    functionalTestStatus: testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
-    outputVerificationStatus: testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
+    routeStatus: browserResults.get(entry.slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    interfaceStatus: browserResults.get(entry.slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    handlerStatus: browserResults.get(entry.slug)?.status === "PASS" && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped")) ? "PASS" : "PARTIAL",
+    functionalTestStatus: browserResults.get(entry.slug)?.status === "PASS" && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped"))
+      ? "PASS"
+      : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
+    outputVerificationStatus: browserResults.get(entry.slug)?.outputVerified ? "PASS" : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
@@ -132,6 +139,8 @@ const report = {
     functionalPass: rows.filter((row) => row.functionalTestStatus === "PASS").length,
     functionalPartial: rows.filter((row) => row.functionalTestStatus === "PARTIAL").length,
     functionalNotTested: rows.filter((row) => row.functionalTestStatus === "NOT TESTED").length,
+    browserE2ePass: browserReport?.counts?.pass ?? 0,
+    browserE2eFail: browserReport?.counts?.fail ?? 0,
   },
   tools: rows,
 };

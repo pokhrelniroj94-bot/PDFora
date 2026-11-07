@@ -222,6 +222,20 @@ test("all localized Nepali catalog tools have localized metadata", () => {
   }
 });
 
+test("Nepali math utilities have dedicated localized route and interface", () => {
+  const route = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const component = fs.readFileSync(path.join(frontendRoot, "components", "NepaliMathUtilityWorkspace.tsx"), "utf8");
+  const logic = fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "nepali-math-tools.ts"), "utf8");
+  for (const slug of ["percentage-change-calculator", "average-calculator", "ratio-simplifier", "fraction-calculator", "percentage-of-number-calculator", "gcd-lcm-calculator", "prime-number-checker", "unit-converter"]) {
+    assert.ok(route.includes(`"${slug}"`), `${slug} must have a localized route`);
+    assert.ok(component.includes(`"${slug}"`), `${slug} must have localized UI copy`);
+    assert.ok(logic.includes(`slug === "${slug}"`), `${slug} must have calculation logic`);
+  }
+  for (const phrase of ["प्रतिशत परिवर्तन क्याल्कुलेटर", "औसत क्याल्कुलेटर", "भिन्न क्याल्कुलेटर", "एकाइ रूपान्तरण"]) {
+    assert.ok(component.includes(phrase), `Nepali math UI must include ${phrase}`);
+  }
+});
+
 test("Nepali Resume Builder preserves all templates and print-safe Devanagari output", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "ResumeBuilder.tsx"), "utf8");
   const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "[slug]", "page.tsx"), "utf8");

@@ -1225,6 +1225,33 @@ async function runNepaliRoute(tool, index) {
       throw new Error("Nepali page heading/body is missing localized Nepali content: " + JSON.stringify(state));
     }
     row.checks.push("route renders a Nepali main landmark, heading and visible Nepali content");
+    if (tool.slug === "loan-emi-calculator") {
+      const invalidEmi = await page.evaluate(`() => {
+        const fields = [...document.querySelectorAll("main input:not([type=file])")];
+        const field = fields[2];
+        const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+        setter?.call(field, "60.5");
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+        field.dispatchEvent(new Event("change", { bubbles: true }));
+        return { count: fields.length, alert: document.querySelector("main [role=alert]")?.innerText || "" };
+      }`);
+      if (invalidEmi.count !== 3 || !/पूर्ण महिनाको अवधि/.test(invalidEmi.alert)) {
+        throw new Error("Nepali EMI must retain all fields and reject fractional months.");
+      }
+      await page.evaluate(`() => {
+        const field = document.querySelectorAll("main input:not([type=file])")[2];
+        const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+        setter?.call(field, "60");
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+        field.dispatchEvent(new Event("change", { bubbles: true }));
+      }`);
+      await delay(150);
+      const recovered = await page.evaluate("document.querySelector('main')?.innerText || ''");
+      if (!recovered.includes("मासिक EMI:") || !recovered.includes("21,247.04")) {
+        throw new Error("Nepali EMI did not recover after correcting the loan term.");
+      }
+      row.checks.push("Nepali EMI rejected fractional months and recovered with the expected result");
+    }
     if (state.controlCoverage < 0.6) {
       row.status = "PARTIAL";
       row.note = "Visible control labels need translation review: " + state.nepaliControls + "/" + state.controls;

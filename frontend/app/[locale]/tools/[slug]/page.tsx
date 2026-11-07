@@ -16,8 +16,7 @@ import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWo
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
 import AIWritingTools from "../../../../components/AIWritingTools";
-import { nepaliLocalizedFinancialSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
-import { nepaliLocalizedCareerSlugs, nepaliLocalizedPublicInfoSlugs } from "../../../../lib/i18n/nepali-tool-routes";
+import { nepaliLocalizedCareerSlugs, nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const nepaliTitles: Record<string, string> = {

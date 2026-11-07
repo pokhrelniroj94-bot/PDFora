@@ -1,6 +1,7 @@
 "use client";
 import {useState} from "react";
 import { average, convertUnit, fractionOperation, percentageChange, simplifyRatio } from "../lib/catalog-calculations";
+import { analyzeMetaTitle, analyzeMetaDescription, calculateKeywordDensity, generateRobotsTxt, generateSitemapXml, buildOpenGraphPreview } from "../lib/seo-utilities";
 type F={key:string;label:string;type?:"number"|"date"|"time"|"color";value:string};
 const config:Record<string,F[]> = {
 "percentage-change-calculator":[{key:"a",label:"Original value",type:"number",value:"100"},{key:"b",label:"New value",type:"number",value:"120"}],
@@ -70,12 +71,12 @@ export default function ExtraTools({slug}:{slug:string}){
  case "color-contrast-checker":{const a=lum(val("fg")),b=lum(val("bg")),r=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);s="Contrast ratio: "+r.toFixed(2)+":1\nWCAG AA normal text (4.5:1): "+(r>=4.5?"PASS":"FAIL")+"\nWCAG AA large text (3:1): "+(r>=3?"PASS":"FAIL")+"\nWCAG AAA normal text (7:1): "+(r>=7?"PASS":"FAIL");break;}
  case "css-minifier":s=val("text").replace(/\/\*[\s\S]*?\*\//g,"").replace(/\s+/g," ").replace(/\s*([{}:;,])\s*/g,"$1").replace(/;}/g,"}").trim();break;
  case "json-to-csv":{const a=JSON.parse(val("text"));if(!Array.isArray(a)||!a.every(x=>x&&typeof x==="object"&&!Array.isArray(x)))throw Error("Input must be an array of JSON objects.");const keys=[...new Set(a.flatMap(x=>Object.keys(x)))];const cell=(x:unknown)=>{const z=String(x??"");return /[",\n]/.test(z)?'"'+z.replace(/"/g,'""')+'"':z;};s=[keys.map(cell).join(","),...a.map(row=>keys.map(k=>cell(typeof row[k]==="object"?JSON.stringify(row[k]):row[k])).join(","))].join("\n");break;}
- case "meta-title-checker":{const x=val("text").trim();s="Characters: "+x.length+"\n"+(x.length>=30&&x.length<=60?"Within a common guideline of 30–60 characters.":"Review the length; this is a guideline, not a Google ranking rule.")+"\nPreview: "+x;break;}
- case "meta-description-checker":{const x=val("text").trim();s="Characters: "+x.length+"\n"+(x.length>=120&&x.length<=160?"Within a practical 120–160 character range.":"Review length; this is a guideline, not a ranking rule.")+"\nPreview: "+x;break;}
- case "keyword-density-checker":{const x=val("text").toLowerCase(),k=val("keyword").toLowerCase().trim();if(!k)throw Error("Enter a target keyword.");const words=x.match(/[\p{L}\p{N}]+/gu)||[],re=new RegExp(k.replace(/[.*+?^$()|[\]\\]/g,"\\$&"),"g"),hits=(x.match(re)||[]).length;s="Word count: "+words.length+"\nKeyword occurrences: "+hits+"\nApproximate density: "+(words.length?(hits/words.length*100).toFixed(2):"0")+"%\nUse keywords naturally; no universal ideal density exists.";break;}
- case "robots-txt-generator":s="User-agent: *\nAllow: /\n"+(val("path").trim()?"Disallow: "+val("path").trim()+"\n":"")+(val("site").trim()?"Sitemap: "+val("site").trim():"");break;
- case "sitemap-generator":{const a=val("text").split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(a.some(x=>!/^https?:\/\//i.test(x)))throw Error("Every URL must start with http:// or https://.");s='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+a.map(x=>" <url><loc>"+escapeHtml(x)+"</loc></url>").join("\n")+"\n</urlset>";break;}
- case "open-graph-preview":s="og:title: "+val("title")+"\nog:description: "+val("description")+"\nog:image: "+val("image")+"\nog:url: "+val("url")+"\n\n<meta property=\"og:title\" content=\""+escapeHtml(val("title"))+"\">\n<meta property=\"og:description\" content=\""+escapeHtml(val("description"))+"\">\n<meta property=\"og:image\" content=\""+escapeHtml(val("image"))+"\">\n<meta property=\"og:url\" content=\""+escapeHtml(val("url"))+"\">";break;
+ case "meta-title-checker":{const report=analyzeMetaTitle(val("text"));s="Characters: "+report.characters+"\\n"+report.guidance+"\\nPreview: "+report.preview;break;}
+ case "meta-description-checker":{const report=analyzeMetaDescription(val("text"));s="Characters: "+report.characters+"\\n"+report.guidance+"\\nPreview: "+report.preview;break;}
+ case "keyword-density-checker":{const report=calculateKeywordDensity(val("text"),val("keyword"));s="Word count: "+report.wordCount+"\\nKeyword occurrences: "+report.occurrences+"\\nApproximate density: "+report.density.toFixed(2)+"%\\nUse keywords naturally; no universal ideal density exists.";break;}
+ case "robots-txt-generator":s=generateRobotsTxt(val("path"),val("site"));break;
+ case "sitemap-generator":s=generateSitemapXml(val("text"));break;
+ case "open-graph-preview":s=buildOpenGraphPreview({title:val("title"),description:val("description"),imageUrl:val("image"),pageUrl:val("url")});break;}
  case "profit-margin-calculator":{const c=num("cost"),p=num("price");if(!p)throw Error("Selling price cannot be zero.");s="Gross profit: "+(p-c).toFixed(2)+"\nProfit margin: "+((p-c)/p*100).toFixed(2)+"%";break;}
  case "markup-calculator":{const c=num("cost"),r=num("rate");s="Selling price: "+(c*(1+r/100)).toFixed(2)+"\nMarkup amount: "+(c*r/100).toFixed(2);break;}
  case "break-even-calculator":{const f=num("fixed"),p=num("price"),c=num("variable");if(p<=c)throw Error("Selling price must exceed variable cost.");const q=f/(p-c);s="Break-even units: "+Math.ceil(q)+"\nBreak-even revenue: "+(q*p).toFixed(2);break;}

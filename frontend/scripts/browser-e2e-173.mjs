@@ -190,23 +190,34 @@ async function runTool(tool, index) {
         finalState = await page.evaluate(`(() => ({
           body: document.body?.innerText?.slice(-6000) || "",
           alerts: [...document.querySelectorAll('[role="alert"]')].map((e) => e.innerText.trim()).filter(Boolean),
+          statuses: [...document.querySelectorAll('[role="status"]')].map((e) => ({
+            text: e.innerText.trim(),
+            className: typeof e.className === "string" ? e.className : "",
+          })).filter((e) => e.text),
           links: [...document.querySelectorAll('a[download]')].map((a) => a.download),
           busy: !!document.querySelector('button[disabled]'),
         }))()`);
         const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")).length;
-        if (downloadCount > downloadsBefore || finalState.links.length || /download|completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body) || finalState.alerts.length) break;
+        const statusText = finalState.statuses.map((status) => status.text).join(" | ");
+        const statusClass = finalState.statuses.map((status) => status.className).join(" ");
+        if (downloadCount > downloadsBefore || finalState.links.length || (statusText && !/processing|please wait/i.test(statusText)) || finalState.alerts.length) break;
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));
-      if (!finalState || (!finalState.links.length && !/download|completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body))) {
-        throw new Error("No processing result or explicit completion/error state appeared after upload.");
-      }
-      row.checks.push("processing response appeared");
-      row.output = finalState.body.slice(-700);
-      row.downloadLinks = finalState.links;
       const downloadsAfter = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")).length;
       row.downloadCount = Math.max(0, downloadsAfter - downloadsBefore);
-      row.outputVerified = finalState.links.length > 0 || row.downloadCount > 0 || /completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body);
+      const statusText = finalState?.statuses?.map((status) => status.text).join(" | ") ?? "";
+      const statusClass = finalState?.statuses?.map((status) => status.className).join(" ") ?? "";
+      if (/red-\d{2,3}|text-red/i.test(statusClass) || /error|failed|invalid|could not|unavailable/i.test(statusText)) {
+        throw new Error(statusText || "PDF tool reported a processing error.");
+      }
+      if (!finalState || (!finalState.links.length && row.downloadCount === 0 && !statusText)) {
+        throw new Error("No processing status or downloaded output appeared after upload.");
+      }
+      row.checks.push("processing response appeared");
+      row.output = statusText || finalState.body.slice(-700);
+      row.downloadLinks = finalState.links;
+      row.outputVerified = finalState.links.length > 0 || row.downloadCount > 0 || (/green-\d{2,3}|text-green/i.test(statusClass) && !!statusText);
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
       if (aiTools.has(tool.slug)) {

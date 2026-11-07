@@ -633,7 +633,7 @@ async function runTool(tool, index) {
       } else if (tool.slug === "nepali-unicode-typing") {
         await setFirstTextArea(page, "Namaste Nepal");
       } else if (tool.slug === "preeti-unicode-converter") {
-        await setFirstTextArea(page, "g]kfn ;/sf/sf");
+        await setFirstTextArea(page, "pzfprq");
       } else if (tool.slug === "nepali-date-converter") {
         await setFieldByLabel(page, "English date", "2026-11-07");
       } else if (tool.slug === "nepal-phone-validator") {
@@ -925,7 +925,7 @@ async function runTool(tool, index) {
         if (!preetiClicked) throw new Error("Preeti converter did not become ready or expose its forward conversion action.");
         await delay(250);
         const output = await page.evaluate("document.querySelector('main [aria-live]')?.innerText || ''");
-        if (!output.includes("नेपाल सरकारका")) throw new Error("Preeti converter did not correctly convert the known sample to नेपाल सरकारका.");
+        if (!output.includes("प्रीति")) throw new Error("Preeti converter did not correctly convert the documented sample to प्रीति.");
         const switched = await page.evaluate("(() => { const select = document.querySelector('main select'); if (!select) return false; select.value = 'to-preeti'; select.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
         if (!switched) throw new Error("Preeti converter is missing its reverse-conversion selector.");
         await setFirstTextArea(page, output);
@@ -1182,7 +1182,11 @@ async function runTool(tool, index) {
         : tool.slug === "resume-builder" ? "/ne/resume-builder" : "/ne/tools/" + tool.slug;
       const nepaliUrl = new URL(nepaliPath, baseUrl).toString();
       const localizedNavigation = await page.send("Page.navigate", { url: nepaliUrl });
-      if (localizedNavigation.errorText) throw new Error("Nepali route navigation failed for " + tool.slug + ": " + localizedNavigation.errorText);
+      if (localizedNavigation.errorText) {
+        // Chromium can reject a second Page.navigate on a reused tab after a tool action;
+        // retry through the page location API and verify the final pathname below.
+        await page.evaluate("location.assign(" + JSON.stringify(nepaliUrl) + ")");
+      }
       const localizedStarted = Date.now();
       let localizedReady = { state: "", path: "" };
       while (Date.now() - localizedStarted < 15000) {

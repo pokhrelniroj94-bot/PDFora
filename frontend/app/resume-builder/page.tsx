@@ -10,5 +10,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://pd-fora.vercel.app/resume-builder", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
   keywords: ["free resume builder", "CV maker", "resume templates", "professional CV", "download resume PDF", "ATS friendly resume", "Europass CV"],
   openGraph: { title: "Free Resume Builder – Professional CV Templates | PDFora", description: "Build a polished CV with live preview and free PDF export.", url: "https://pd-fora.vercel.app/resume-builder", siteName: "PDFora", type: "website" },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Resume Builder – Professional CV Templates | PDFora",
+    description: "Build a polished CV with 20 templates, live A4 preview and free PDF export.",
+    images: ["/opengraph-image"],
+  },
 };
 export default function Page() { return <ResumeBuilder />; }

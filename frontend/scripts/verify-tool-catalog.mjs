@@ -135,5 +135,8 @@ assert.ok(marketContext.includes('/^\\d{4}-\\d{2}-\\d{2}$/'), "NEPSE market regi
 assert.ok(marketContext.includes("Math.sqrt(252)") && marketContext.includes("ret50"), "NEPSE market regime must calculate 20/50-session returns and annualized volatility");
 assert.ok(marketContext.includes("advancers") || marketContext.includes("let up=0,down=0,flat=0"), "NEPSE breadth calculation is missing");
 assert.ok(advancedIndicators.includes("ATR (14)") && advancedIndicators.includes("ADX (14)") && advancedIndicators.includes("OBV"), "Advanced deterministic OHLCV diagnostics are incomplete");
+const strategyLab = read("../components/NepseAlphaLab.tsx");
+assert.ok(strategyLab.includes("gain===0?50:100"), "Flat-price RSI must remain neutral in the NEPSE backtester");
+assert.ok(strategyLab.includes("benchmarkStart=rows[50].close*(1+cost)") && strategyLab.includes("units*p*(1-cost)"), "Backtest benchmark and open-position drawdown must include transaction costs");
 assert.ok(marketIntelligence.includes("NepseMarketContext") && marketIntelligence.includes("NepseAdvancedIndicators"), "NEPSE dashboard must render the deterministic market context and advanced indicators");
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

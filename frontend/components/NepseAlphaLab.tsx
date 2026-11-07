@@ -10,7 +10,7 @@ const input = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 te
 export default function NepseAlphaLab(){
  const [symbol,setSymbol]=useState("NABIL"),[mode,setMode]=useState("sma"),[cost,setCost]=useState("0.45"),[rows,setRows]=useState<Bar[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(""),[source,setSource]=useState(""),[historyAgeDays,setHistoryAgeDays]=useState<number|null>(null);
  async function load(){
-  setBusy(true);setError("");setHistoryAgeDays(null);
+  setBusy(true);setError("");setRows([]);setSource("");setHistoryAgeDays(null);
   try{const res=await fetch("/api/nepse-market?symbol="+encodeURIComponent(symbol.trim().toUpperCase())+"&period=1Y",{cache:"no-store"});const data=await res.json();if(!res.ok)throw new Error(data.error||"Historical prices unavailable.");
    const clean=normalizeDailyBars(data.points||[]);
    if(clean.length<80)throw new Error("At least 80 daily price observations are required. This symbol has "+clean.length+".");

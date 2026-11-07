@@ -544,6 +544,30 @@ export const nepaliPdfRoutes: Record<string, NepaliPdfRoute> = {
     "downloadName": "PDFora-Attachments-Removed.pdf",
     "component": "niroj"
   },
+  "remove-pdf-links": {
+    "slug": "remove-pdf-links",
+    "endpoint": "/api/remove-links",
+    "title": "Remove PDF Links",
+    "description": "Remove clickable hyperlinks from PDF pages while keeping the visible page content intact.",
+    "downloadName": "PDFora-Links-Removed.pdf",
+    "component": "niroj"
+  },
+  "remove-pdf-metadata": {
+    "slug": "remove-pdf-metadata",
+    "endpoint": "/api/remove-metadata",
+    "title": "Remove PDF Metadata",
+    "description": "Remove document properties such as title, author, subject, creator and keywords from a PDF file to help protect document privacy.",
+    "downloadName": "PDFora-Metadata-Removed.pdf",
+    "component": "niroj"
+  },
+  "split-by-bookmarks": {
+    "slug": "split-by-bookmarks",
+    "endpoint": "/api/split-by-bookmarks",
+    "title": "Split PDF by Bookmarks",
+    "description": "Split a bookmarked PDF into separate PDF files using its existing bookmark destinations. Download the sections in a ZIP archive.",
+    "downloadName": "PDFora-Bookmark-Sections.zip",
+    "component": "niroj"
+  },
 };
 
 export function getNepaliPdfRoute(slug: string): NepaliPdfRoute | undefined {

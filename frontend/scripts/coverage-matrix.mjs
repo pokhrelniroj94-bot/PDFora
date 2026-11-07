@@ -48,7 +48,7 @@ for (const locale of locales) {
       routeExists: true,
       handler: english ? handlerEvidence : localized ? "localized-route-handler" : "not-published",
       interface: english ? "source-language" : localized ? "nepali-interface-present" : "not-implemented",
-      content: guide ? (english ? "source-guide" : "reviewed-nepali-guide") : "not-verified",
+      content: guide ? (english ? "source-guide" : "nepali-guide-present") : "not-verified",
       functionalTest: locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
       humanReview: english ? "source-content-review-not-assessed" : localized ? "native-review-not-assessed" : "not-reviewed",
       indexing: indexable ? "eligible" : "excluded",

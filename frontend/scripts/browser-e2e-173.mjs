@@ -199,7 +199,6 @@ async function runTool(tool, index) {
         }))()`);
         const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")).length;
         const statusText = finalState.statuses.map((status) => status.text).join(" | ");
-        const statusClass = finalState.statuses.map((status) => status.className).join(" ");
         if (downloadCount > downloadsBefore || finalState.links.length || (statusText && !/processing|please wait/i.test(statusText)) || finalState.alerts.length) break;
         await delay(500);
       }

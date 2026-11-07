@@ -161,13 +161,15 @@ async function runTool(tool, index) {
 
     if (tool.kind === "pdf") {
       const inputNode = await page.send("DOM.getDocument", { depth: 1 });
-      const query = await page.send("DOM.querySelector", {
+      const queries = await page.send("DOM.querySelectorAll", {
         nodeId: inputNode.root.nodeId, selector: 'input[type="file"]',
       });
-      if (!query.nodeId) throw new Error("PDF page has no file upload input.");
-      await page.send("DOM.setFileInputFiles", { nodeId: query.nodeId, files: [fixturePath] });
-      const attached = await page.evaluate("document.querySelector('input[type=file]')?.files?.length || 0");
-      if (!attached) throw new Error("PDF fixture was not attached.");
+      if (!queries.nodeIds?.length) throw new Error("PDF page has no file upload input.");
+      for (const nodeId of queries.nodeIds) {
+        await page.send("DOM.setFileInputFiles", { nodeId, files: [fixturePath] });
+      }
+      const attached = await page.evaluate("[...document.querySelectorAll('input[type=file]')].filter((input) => input.files?.length).length");
+      if (attached !== queries.nodeIds.length) throw new Error("PDF fixture was not attached to every upload field.");
       row.checks.push("PDF file selected");
       const action = await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
@@ -180,6 +182,7 @@ async function runTool(tool, index) {
       row.action = action;
       row.checks.push("processing action clicked");
       const start = Date.now();
+      const downloadsBefore = fs.readdirSync(downloadsDir).length;
       let finalState = null;
       while (Date.now() - start < timeoutMs) {
         finalState = await page.evaluate(`(() => ({
@@ -188,7 +191,8 @@ async function runTool(tool, index) {
           links: [...document.querySelectorAll('a[download]')].map((a) => a.download),
           busy: !!document.querySelector('button[disabled]'),
         }))()`);
-        if (finalState.links.length || /download|completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body) || finalState.alerts.length) break;
+        const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")).length;
+        if (downloadCount > downloadsBefore || finalState.links.length || /download|completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body) || finalState.alerts.length) break;
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));
@@ -198,7 +202,7 @@ async function runTool(tool, index) {
       row.checks.push("processing response appeared");
       row.output = finalState.body.slice(-700);
       row.downloadLinks = finalState.links;
-      row.outputVerified = finalState.links.length > 0 || /completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body);
+      row.outputVerified = finalState.links.length > 0 || fs.readdirSync(downloadsDir).some((name) => !name.endsWith(".crdownload")) || /completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body);
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
       if (aiTools.has(tool.slug)) {

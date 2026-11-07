@@ -19,17 +19,9 @@ export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string)
   const title = `${guide.name} Online`;
   const brandedTitle = `${title} | PDFora`;
   const description = fitDescription(guide.purpose);
-  const keywords = [
-    guide.name,
-    guide.keyword,
-    `${guide.name.toLowerCase()} online`,
-    "PDFora PDF tool"
-  ];
-
   return {
     title,
     description,
-    keywords,
     alternates: { canonical: url },
     robots: { index: true, follow: true },
     openGraph: { type: "website", title: brandedTitle, description, url, siteName: "PDFora" },

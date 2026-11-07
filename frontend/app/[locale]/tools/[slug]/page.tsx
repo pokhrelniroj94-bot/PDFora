@@ -16,6 +16,7 @@ import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWo
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
 import AIWritingTools from "../../../../components/AIWritingTools";
+import MarketIntelligence from "../../../../components/MarketIntelligence";
 import ExtraTools from "../../../../components/ExtraTools";
 import QuickUtilityTools from "../../../../components/QuickUtilityTools";
 import NepaliSpecialCatalogWorkspace from "../../../../components/NepaliSpecialCatalogWorkspace";

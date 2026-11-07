@@ -1,4 +1,4 @@
-# PDFora NEPSE Research AI — methodology and source policy
+# PDFora NEPSE Quant Research Engine — methodology and source policy
 
 ## What the report does
 The NEPSE Market Intelligence tool combines deterministic price/volume indicators with a grounded AI explanation. For an individual listed company, the report endpoint attempts to retrieve matching records from the YONEPSE public dataset:
@@ -84,3 +84,16 @@ NEPSE itself operates the primary exchange data service at https://www.nepalstoc
 - Sector rotation: rank sector index daily changes; this is relative performance, not evidence of actual fund flows.
 - Relative strength: compare the selected symbol and NEPSE over overlapping dated observations.
 - Advanced diagnostics: ATR(14), ADX(14), latest volume versus prior 20-session average and OBV direction. ATR/ADX require OHLC data; volume/OBV require complete volume data. Missing inputs are explicitly unavailable.
+
+## Deterministic calculation and validation notes (November 2026)
+
+- Daily history is normalized to valid ISO calendar dates, positive closes and one observation per date (last source row wins). Invalid dates, non-positive closes and malformed observations are dropped before analysis.
+- RSI(14) uses Wilder's initial arithmetic averages and subsequent Wilder smoothing. A completely flat sequence returns neutral RSI 50.
+- The index regime requires at least 51 valid dated closes to calculate a true 50-session return. Realized volatility is the population standard deviation of the latest 20 daily returns annualized by √252.
+- ATR(14) and directional movement use Wilder smoothing. ADX is a trend-strength measure, not a direction forecast. OHLC fields must be present and valid; missing OHLC does not get reconstructed from close prices.
+- Volume ratio compares the latest volume with the prior 20 available sessions (at least 10 valid observations). OBV is shown only when the full series has valid volume.
+- Backtest signals are evaluated from the previous completed close and filled at the next available daily close. The user-entered cost estimate is applied on both entry and exit. The buy-and-hold benchmark starts on the same first test session as the strategy. Open positions are marked at estimated net liquidation value; holding exposure counts entry and exit sessions.
+- Large daily price changes (20% or more) are flagged for manual corporate-action/source review. They may be real market moves, bonus/right-share/split effects or data errors. No automatic adjustment is made because an unverified adjustment factor could distort results.
+- Deterministic numerical fixtures cover Wilder RSI, invalid/duplicate date handling, 20/50-session market regime, Wilder ATR/ADX, volume ratio, OBV, price-gap flags, flat-price backtests, trend crossover, benchmark alignment and round-trip costs.
+
+Still not validated with provider credentials or exchange-adjusted source data: licensed ShareHub response schemas, corporate-action adjustment factors, circuit-limit fills, liquidity/market impact, taxes and out-of-sample performance. Those are production validation gates, not assumptions.

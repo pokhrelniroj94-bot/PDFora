@@ -633,7 +633,7 @@ async function runTool(tool, index) {
       } else if (tool.slug === "nepali-unicode-typing") {
         await setFirstTextArea(page, "Namaste Nepal");
       } else if (tool.slug === "preeti-unicode-converter") {
-        await setFirstTextArea(page, "pzfprq");
+        await setFirstTextArea(page, "k\\/Llt");
       } else if (tool.slug === "nepali-date-converter") {
         await setFieldByLabel(page, "English date", "2026-11-07");
       } else if (tool.slug === "nepal-phone-validator") {

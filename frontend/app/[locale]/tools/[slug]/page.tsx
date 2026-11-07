@@ -7,6 +7,7 @@ import { getTranslator } from "../../../../lib/i18n/messages";
 import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../../../../lib/tools/localized-metadata";
 import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-route";
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
+import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
 import AIWritingTools from "../../../../components/AIWritingTools";
@@ -21,6 +22,17 @@ const nepaliTitles: Record<string, string> = {
   "nepal-land-area-converter": "रोपनी आना क्षेत्रफल रूपान्तरण",
   "nepali-vat-calculator": "नेपाल VAT क्याल्कुलेटर",
   "neb-gpa-calculator": "NEB GPA क्याल्कुलेटर",
+  "word-character-counter": "शब्द तथा अक्षर गणक",
+  "case-converter": "अक्षर शैली रूपान्तरण",
+  "remove-duplicate-lines": "दोहोरो लाइन हटाउने",
+  "sort-lines": "लाइन क्रम मिलाउने",
+  "reverse-text": "पाठ उल्ट्याउने",
+  "whitespace-cleaner": "खाली स्थान सफा गर्ने",
+  "character-frequency": "अक्षर आवृत्ति गणक",
+  "word-frequency-counter": "शब्द आवृत्ति गणक",
+  "reading-time-calculator": "पढ्ने समय गणक",
+  "line-counter": "लाइन गणक",
+  "sentence-counter": "वाक्य गणक",
   "nepal-forex-rates": "नेपाल राष्ट्र बैंक विनिमय दर",
   "nepal-salary-tax-calculator": "नेपाल तलब तथा आयकर क्याल्कुलेटर",
   "nepse-dividend-calculator": "NEPSE लाभांश तथा बोनस शेयर क्याल्कुलेटर",
@@ -39,6 +51,17 @@ const nepaliDescriptions: Record<string, string> = {
   "nepal-land-area-converter": "रोपनी, आना, पैसा र दामलाई वर्गफुट तथा वर्गमिटरमा रूपान्तरण गर्नुहोस्।",
   "nepali-vat-calculator": "नेपालको १३ प्रतिशत VAT थप्नुहोस् वा VAT सहितको रकमबाट आधार मूल्य र कर छुट्याउनुहोस्।",
   "neb-gpa-calculator": "विषयको credit hour र grade point प्रयोग गरेर credit-weighted NEB GPA अनुमान गर्नुहोस्।",
+  "word-character-counter": "शब्द, अक्षर, खाली स्थान र अनुच्छेदको संख्या गणना गर्नुहोस्।",
+  "case-converter": "अङ्ग्रेजी पाठलाई uppercase, lowercase वा title case मा बदल्नुहोस्।",
+  "remove-duplicate-lines": "दोहोरिएका लाइन हटाएर पहिलो आएको क्रम सुरक्षित राख्नुहोस्।",
+  "sort-lines": "पाठका लाइनलाई वर्णक्रममा मिलाउनुहोस्।",
+  "reverse-text": "पाठको अक्षर क्रम उल्ट्याउनुहोस्।",
+  "whitespace-cleaner": "अतिरिक्त space, tab र खाली लाइन व्यवस्थित गर्नुहोस्।",
+  "character-frequency": "पाठमा प्रत्येक अक्षर कति पटक आएको छ गणना गर्नुहोस्।",
+  "word-frequency-counter": "पाठमा प्रत्येक शब्दको आवृत्ति गणना गर्नुहोस्।",
+  "reading-time-calculator": "शब्द संख्या र पढ्ने गतिका आधारमा अनुमानित समय निकाल्नुहोस्।",
+  "line-counter": "कुल, खाली र सामग्री भएका लाइन छुट्याउनुहोस्।",
+  "sentence-counter": "विरामचिह्नका आधारमा वाक्य संख्या अनुमान गर्नुहोस्।",
   "nepal-forex-rates": "नेपाल राष्ट्र बैंकबाट उपलब्ध खरिद तथा बिक्री विनिमय दर हेर्नुहोस् र NPR रूपान्तरणको अनुमान जाँच्नुहोस्।",
   "nepal-salary-tax-calculator": "नेपालको लागू कर-ब्यान्ड र प्रविष्ट गरिएको आम्दानीका आधारमा तलब करको अनुमान निकाल्नुहोस्।",
   "nepse-dividend-calculator": "शेयर संख्याबाट नगद लाभांश, withholding tax र बोनस शेयरको अनुमान निकाल्नुहोस्।",
@@ -83,6 +106,9 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
+  if (request.locale === "ne" && ["word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text", "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator", "line-counter", "sentence-counter"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTextUtilityWorkspace slug={toolSlug} /></section></main>;
+  }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;
   }

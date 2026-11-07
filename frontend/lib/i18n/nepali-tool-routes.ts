@@ -5,6 +5,17 @@ export const nepaliLocalizedUtilitySlugs = [
   "nepal-land-area-converter",
   "nepali-vat-calculator",
   "neb-gpa-calculator",
+  "word-character-counter",
+  "case-converter",
+  "remove-duplicate-lines",
+  "sort-lines",
+  "reverse-text",
+  "whitespace-cleaner",
+  "character-frequency",
+  "word-frequency-counter",
+  "reading-time-calculator",
+  "line-counter",
+  "sentence-counter",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

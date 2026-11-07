@@ -1,0 +1,17 @@
+import assert from "node:assert/strict";
+import { runNepaliTextTool } from "../lib/i18n/nepali-text-tools.ts";
+
+assert.equal(runNepaliTextTool("word-character-counter", "नमस्ते world"), "शब्द: 2\nअक्षर (space सहित): 12\nअक्षर (space बाहेक): 11\nअनुच्छेद: 1");
+assert.equal(runNepaliTextTool("case-converter", "Hello World", { caseMode: "lower" }), "hello world");
+assert.equal(runNepaliTextTool("case-converter", "hello world", { caseMode: "title" }), "Hello World");
+assert.equal(runNepaliTextTool("remove-duplicate-lines", "क\nख\nक\n"), "क\nख\n");
+assert.equal(runNepaliTextTool("sort-lines", "ख\nक\n"), "क\nख\n");
+assert.equal(runNepaliTextTool("reverse-text", "नेपाल"), "लापेन");
+assert.equal(runNepaliTextTool("whitespace-cleaner", "  hello   world  \n\n  नमस्ते  "), "hello world\nनमस्ते");
+assert.equal(runNepaliTextTool("character-frequency", "aba"), "a — 2\nb — 1");
+assert.equal(runNepaliTextTool("word-frequency-counter", "Hello hello नमस्ते"), "hello — 2\nनमस्ते — 1");
+assert.match(runNepaliTextTool("reading-time-calculator", "one two three", { wordsPerMinute: 60 }), /60 शब्द\/मिनेट/);
+assert.equal(runNepaliTextTool("line-counter", "a\n\nb"), "कुल लाइन: 3\nखाली लाइन: 1\nसामग्री भएका लाइन: 2");
+assert.equal(runNepaliTextTool("sentence-counter", "पहिलो वाक्य। दोस्रो वाक्य!"), "अनुमानित वाक्य: 2\nशब्द: 4");
+assert.equal(runNepaliTextTool("word-character-counter", ""), "शब्द: 0\nअक्षर (space सहित): 0\nअक्षर (space बाहेक): 0\nअनुच्छेद: 0");
+console.log("Nepali text utility functional tests passed (13 assertions).");

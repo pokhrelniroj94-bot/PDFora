@@ -74,30 +74,30 @@ export function runNepaliTextTool(slug: NepaliTextToolSlug, input: string, optio
     return `अनुमानित वाक्य: ${input.trim() ? sentences.length : 0}\nशब्द: ${words.length}`;
   }
   if (slug === "email-extractor") {
-    const matches = input.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/giu) ?? [];
-    return [...new Set(matches)].join("\\n") || "कुनै इमेल ठेगाना भेटिएन।";
+    const matches = input.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/giu) ?? [];
+    return [...new Set(matches)].join("\n") || "कुनै इमेल ठेगाना भेटिएन।";
   }
   if (slug === "url-extractor") {
-    const matches = (input.match(/(?:https?:\\/\\/|www\\.)[^\\s<>"']+/giu) ?? [])
+    const matches = (input.match(/(?:https?:\/\/|www\.)[^\s<>"']+/giu) ?? [])
       .map((value) => value.replace(/[),.;!?]+$/u, ""));
-    return [...new Set(matches)].join("\\n") || "कुनै URL भेटिएन।";
+    return [...new Set(matches)].join("\n") || "कुनै URL भेटिएन।";
   }
   if (slug === "phone-number-extractor") {
-    const matches = (input.match(/\\+?[\\p{N}][\\p{N}\\s().-]{5,}[\\p{N}]/gu) ?? [])
+    const matches = (input.match(/\+?[\p{N}][\p{N}\s().-]{5,}[\p{N}]/gu) ?? [])
       .map((value) => value.trim())
       .filter((value) => {
-        const digits = value.replace(/\\D/gu, "");
+        const digits = value.replace(/\D/gu, "");
         return digits.length >= 7 && digits.length <= 15;
       });
-    return [...new Set(matches)].join("\\n") || "कुनै सम्भावित फोन नम्बर भेटिएन।";
+    return [...new Set(matches)].join("\n") || "कुनै सम्भावित फोन नम्बर भेटिएन।";
   }
   if (slug === "number-extractor") {
-    const matches = input.match(/-?[\\p{N}]+(?:[.,][\\p{N}]+)*/gu) ?? [];
-    return matches.join("\\n") || "कुनै संख्या भेटिएन।";
+    const matches = input.match(/-?[\p{N}]+(?:[.,][\p{N}]+)*/gu) ?? [];
+    return matches.join("\n") || "कुनै संख्या भेटिएन।";
   }
   if (slug === "hashtag-extractor") {
-    const matches = input.match(/#[\\p{L}\\p{M}\\p{N}_]+/gu) ?? [];
-    return [...new Set(matches)].join("\\n") || "कुनै hashtag भेटिएन।";
+    const matches = input.match(/#[\p{L}\p{M}\p{N}_]+/gu) ?? [];
+    return [...new Set(matches)].join("\n") || "कुनै hashtag भेटिएन।";
   }
   if (slug === "remove-duplicate-words") {
     const seen = new Set<string>();
@@ -114,7 +114,7 @@ export function runNepaliTextTool(slug: NepaliTextToolSlug, input: string, optio
     return input.replaceAll(findText, options.replaceText ?? "");
   }
   if (slug === "palindrome-checker") {
-    const normalized = [...input.toLocaleLowerCase()].filter((character) => /[\\p{L}\\p{M}\\p{N}]/u.test(character));
+    const normalized = [...input.toLocaleLowerCase()].filter((character) => /[\p{L}\p{M}\p{N}]/u.test(character));
     if (!normalized.length) return "जाँच गर्न अक्षर वा अंक भएको पाठ प्रविष्ट गर्नुहोस्।";
     return normalized.join("") === [...normalized].reverse().join("")
       ? "यो पाठ पालिन्ड्रोम हो।"

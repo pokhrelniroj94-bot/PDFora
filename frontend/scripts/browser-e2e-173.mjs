@@ -76,8 +76,15 @@ async function openPage(url) {
   const target = await targetResponse.json();
   const ws = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((resolve, reject) => {
-    ws.addEventListener("open", resolve, { once: true });
-    ws.addEventListener("error", reject, { once: true });
+    const timeout = setTimeout(() => {
+      ws.close();
+      reject(new Error("Chrome DevTools WebSocket connection timed out."));
+    }, 10000);
+    ws.addEventListener("open", () => { clearTimeout(timeout); resolve(); }, { once: true });
+    ws.addEventListener("error", (event) => {
+      clearTimeout(timeout);
+      reject(event.error || new Error("Chrome DevTools WebSocket connection failed."));
+    }, { once: true });
   });
   const pending = new Map();
   const events = [];
@@ -135,6 +142,7 @@ async function openPage(url) {
 
 const results = [];
 let browserFailures = 0;
+let fatalBrowserError = false;
 async function runTool(tool, index) {
   const row = { index: index + 1, kind: tool.kind, slug: tool.slug, status: "FAIL", checks: [], errors: [] };
   let page;
@@ -332,9 +340,11 @@ async function runTool(tool, index) {
       row.status = expected && row.outputVerified ? "PASS" : "PARTIAL";
     }
   } catch (error) {
-    row.errors.push(error instanceof Error ? error.message : String(error));
+    const message = error instanceof Error ? error.message : String(error);
+    row.errors.push(message);
     row.status = "FAIL";
     browserFailures += 1;
+    if (message.includes("DevTools WebSocket connection timed out")) fatalBrowserError = true;
   } finally {
     if (page) await page.close();
   }
@@ -348,6 +358,7 @@ try {
     console.log((result.status === "PASS" ? "PASS " : result.status === "PARTIAL" ? "PARTIAL " : "FAIL ") +
       result.index + "/173 " + result.slug + " — " +
       (result.errors[0] || result.checks.join(", ")));
+    if (fatalBrowserError) break;
   }
 } finally {
   chrome.kill("SIGTERM");

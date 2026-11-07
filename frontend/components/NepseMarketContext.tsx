@@ -39,10 +39,10 @@ export default function NepseMarketContext({symbol,selectedPoints}:{symbol:strin
   const regime=useMemo(()=>marketRegime(payload?.points||[]),[payload]);
   const breadth=useMemo(()=>{
     const stocks=(payload?.stocks||[]).filter(row=>!["NEPSE","SENSIND","FLOATIND","SENSFLTIND"].includes(pickText(row,["symbol"]).toUpperCase()));
-    let up=0,down=0,flat=0,turnover=0,volume=0,validTurnover=0;
-    for(const row of stocks){const change=pickNumber(row,["percent_change","changePercent","percentageChange"]);if(change===null)continue;if(change>0.05)up++;else if(change<-.05)down++;else flat++;const t=pickNumber(row,["turnover","totalTradeValue","amount"]);if(t!==null&&t>=0){turnover+=t;validTurnover++;}const v=pickNumber(row,["volume","totalTradeQuantity","tradedShares"]);if(v!==null&&v>=0)volume+=v;}
+    let up=0,down=0,flat=0,turnover=0,volume=0,validTurnover=0,validVolume=0;
+    for(const row of stocks){const change=pickNumber(row,["percent_change","changePercent","percentageChange"]);if(change===null)continue;if(change>0.05)up++;else if(change<-.05)down++;else flat++;const t=pickNumber(row,["turnover","totalTradeValue","amount"]);if(t!==null&&t>=0){turnover+=t;validTurnover++;}const v=pickNumber(row,["volume","totalTradeQuantity","tradedShares"]);if(v!==null&&v>=0){volume+=v;validVolume++;}}
     const total=up+down+flat;
-    return {up,down,flat,total,ratio:total?(up-down)/total*100:null,turnover:validTurnover?turnover:null,volume:validTurnover?volume:null};
+    return {up,down,flat,total,ratio:total?(up-down)/total*100:null,turnover:validTurnover?turnover:null,volume:validVolume?volume:null};
   },[payload]);
   const sectors=useMemo(()=> (payload?.sectors||[]).map(row=>({name:pickText(row,["indexName","name","sectorName","index"]),change:pickNumber(row,["perChange","changePercent","percentageChange","change"]),turnover:pickNumber(row,["turnover","totalTradeValue"]),breadth:pickNumber(row,["advances","advanced"])})).filter(x=>x.name&&x.change!==null).sort((a,b)=>(b.change||0)-(a.change||0)).slice(0,6),[payload]);
   const relative=useMemo(()=>{

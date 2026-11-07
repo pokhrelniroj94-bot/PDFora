@@ -219,7 +219,41 @@ function hasStaleMarketData(latestDate: string, asset: string) {
   return expectedSessions >= 2;
 }
 
-export default function MarketIntelligence() {
+const neCopy: Record<string,string> = {
+"PDFora Smart Market AI":"PDFora स्मार्ट बजार AI",
+"Market Intelligence & Risk Analyzer":"बजार विश्लेषण तथा जोखिम परीक्षक",
+"Analyse NEPSE, Forex and Crypto price history with trend, momentum, volatility, support/resistance and rule-based entry/exit conditions. Optional free AI explains the calculated results.":"NEPSE, Forex र Crypto को ऐतिहासिक मूल्यबाट trend, momentum, volatility, support/resistance र नियममा आधारित entry/exit अवस्था विश्लेषण गर्नुहोस्। वैकल्पिक निःशुल्क AI ले गणना गरिएको नतिजा व्याख्या गर्छ।",
+"Open NEPSE Quant Strategy Lab":"NEPSE Quant Strategy Lab खोल्नुहोस्",
+"NEPSE symbol / index":"NEPSE कम्पनी संकेत / सूचक",
+"Analysing…":"विश्लेषण हुँदैछ…","Analyse NEPSE":"NEPSE विश्लेषण गर्नुहोस्",
+"Forex pair":"Forex जोडी","Crypto pair":"Crypto जोडी",
+"Download CSV format":"CSV ढाँचा डाउनलोड गर्नुहोस्",
+"Computed technical setup":"गणना गरिएको प्राविधिक अवस्था","Confluence score":"संकेतहरूको संयुक्त स्कोर","Not a win probability":"यो जित्ने सम्भाव्यता होइन",
+"Latest close":"पछिल्लो बन्द मूल्य","Annualized volatility":"वार्षिकीकरण गरिएको उतारचढाव",
+"Risk & key levels":"जोखिम तथा मुख्य स्तर","Volatility-based risk:":"उतारचढावमा आधारित जोखिम:",
+"20-session support":"२० सत्रको support","20-session resistance":"२० सत्रको resistance",
+"Illustrative risk / invalidation level":"अनुमानित जोखिम / अमान्य हुने स्तर",
+"Illustrative downside level":"अनुमानित घट्ने स्तर","Illustrative 2R target":"अनुमानित 2R लक्ष्य",
+"Levels are estimates from the last 20 observations. Gaps, fees, slippage and liquidity can change actual outcomes.":"यी स्तर पछिल्ला २० अवलोकनका अनुमान हुन्। मूल्य अन्तर, शुल्क, slippage र liquidity ले वास्तविक नतिजा बदल्न सक्छ।",
+"Why the engine reached this view":"यो निष्कर्षका कारण","Risk warnings":"जोखिमसम्बन्धी चेतावनी",
+"Market news cross-check":"बजार समाचारसँग तुलना","News sentiment:":"समाचारको धारणा:",
+"Not checked":"जाँचिएको छैन","News checked alongside technical indicators.":"प्राविधिक सूचकसँगै समाचार पनि जाँचिन्छ।",
+"No relevant recent news found; confidence is reduced.":"सम्बन्धित नयाँ समाचार भेटिएन; निष्कर्षमा भरोसा कम राख्नुहोस्।",
+"NEPSE AI research report":"NEPSE AI अनुसन्धान प्रतिवेदन",
+"Combines technical indicators with available company financials, profile, dividends and disclosures. Missing records are clearly marked; AI cannot override the computed signal.":"उपलब्ध प्राविधिक सूचकलाई कम्पनीको वित्तीय विवरण, प्रोफाइल, लाभांश र सूचनासँग जोड्छ। नभेटिएका विवरण स्पष्ट देखाइन्छन्; AI ले गणना गरिएको संकेत परिवर्तन गर्न सक्दैन।",
+"Researching…":"अनुसन्धान हुँदैछ…","Generate research report":"अनुसन्धान प्रतिवेदन तयार गर्नुहोस्",
+"Important:":"महत्त्वपूर्ण:",
+"This is an educational technical-analysis aid. It does not know your financial situation, cannot forecast prices with certainty, and is not investment advice. Never trade only from one indicator. Test a strategy on out-of-sample historical data, include fees/slippage, and define your maximum loss before entering a trade.":"यो शैक्षिक प्रयोजनको प्राविधिक विश्लेषण सहायता हो। यसले तपाईंको आर्थिक अवस्था जान्दैन, मूल्य निश्चित रूपमा भविष्यवाणी गर्न सक्दैन र लगानी सल्लाह होइन। एउटै सूचकका आधारमा कारोबार नगर्नुहोस्। छुट्टै ऐतिहासिक डेटामा रणनीति परीक्षण गर्नुहोस्, शुल्क/slippage समावेश गर्नुहोस् र कारोबारअघि अधिकतम सम्भावित घाटा तय गर्नुहोस्।",
+"Potential BUY setup":"सम्भावित खरिद अवस्था","HOLD / WATCH":"होल्ड / निगरानी",
+"Potential SELL / EXIT setup":"सम्भावित बिक्री / बाहिरिने अवस्था",
+"Potential SELL / SHORT setup":"सम्भावित बिक्री / short अवस्था","Wait / neutral":"पर्खनुहोस् / तटस्थ",
+"Lower":"कम","Moderate":"मध्यम","High":"उच्च","Very high":"धेरै उच्च",
+"Positive":"सकारात्मक","Negative":"नकारात्मक","Mixed / neutral":"मिश्रित / तटस्थ"
+};
+function marketText(value: string, locale: string) { return locale === "ne" ? (neCopy[value] ?? value) : value; }
+
+export default function MarketIntelligence({ locale = "en" }: { locale?: "en" | "ne" }) {
+  const tr = (value: string) => marketText(value, locale);
   const [asset, setAsset] = useState("nepse");
   const [symbol, setSymbol] = useState("NEPSE");
   const [marketSymbol, setMarketSymbol] = useState("EUR/USD");
@@ -297,9 +331,9 @@ export default function MarketIntelligence() {
   const scoreTone = analysis?.signal.includes("BUY") ? "text-emerald-700" : analysis?.signal.includes("SELL") ? "text-rose-700" : "text-amber-700";
   return <div className="space-y-6">
     <header>
-      <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Smart Market AI</p>
-      <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">Market Intelligence & Risk Analyzer</h1>
-      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Analyse NEPSE, Forex and Crypto price history with trend, momentum, volatility, support/resistance and rule-based entry/exit conditions. Optional free AI explains the calculated results.</p>
+      <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">{tr("PDFora Smart Market AI"}</p>
+      <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">{tr("Market Intelligence & Risk Analyzer"}</h1>
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{tr("Analyse NEPSE, Forex and Crypto price history with trend, momentum, volatility, support/resistance and rule-based entry/exit conditions. Optional free AI explains the calculated results."}</p>
       <a href="/nepse-lab" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">Open NEPSE Quant Strategy Lab <span aria-hidden="true">→</span></a>
     </header>
 
@@ -308,43 +342,43 @@ export default function MarketIntelligence() {
         {([["nepse","NEPSE"],["forex","Forex"],["crypto","Crypto"]] as const).map(([key,label]) => <button type="button" key={key} onClick={() => { setAsset(key); if (key === "crypto") setMarketSymbol("BTC/USD"); else if (key === "forex") setMarketSymbol("EUR/USD"); setAnalysis(null); setError(""); setAiText(""); }} className={"rounded-full px-4 py-2 text-sm font-bold " + (asset === key ? "bg-teal-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-teal-50")}>{label}</button>)}
       </div>
       {asset === "nepse" ? <div className="flex flex-col gap-3 sm:flex-row">
-        <label className="flex-1"><span className="mb-1.5 block text-sm font-semibold text-slate-700">NEPSE symbol / index</span><input className={cls} value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} placeholder="NEPSE, NABIL, NICA…" /></label>
-        <button type="button" onClick={() => void loadNepse()} disabled={busy || !symbol.trim()} className="self-end rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white disabled:opacity-50">{busy ? "Analysing…" : "Analyse NEPSE"}</button>
+        <label className="flex-1"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{tr("NEPSE symbol / index"}</span><input className={cls} value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} placeholder="NEPSE, NABIL, NICA…" /></label>
+        <button type="button" onClick={() => void loadNepse()} disabled={busy || !symbol.trim()} className="self-end rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white disabled:opacity-50">{busy ? tr("Analysing…") : tr("Analyse NEPSE")}</button>
       </div> : <div className="space-y-3">
-        <label className="block max-w-sm"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{asset === "forex" ? "Forex pair" : "Crypto pair"}</span><input className={cls} value={marketSymbol} onChange={(e) => setMarketSymbol(e.target.value)} placeholder={asset === "forex" ? "EUR/USD" : "BTC/USD"} /></label>
+        <label className="block max-w-sm"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{tr(asset === "forex" ? "Forex pair" : "Crypto pair")}</span><input className={cls} value={marketSymbol} onChange={(e) => setMarketSymbol(e.target.value)} placeholder={asset === "forex" ? "EUR/USD" : "BTC/USD"} /></label>
         <p className="text-sm text-slate-700">Upload a CSV exported from your broker or exchange. Required columns: <code>Date, Close</code>. Recommended: <code>Date, Open, High, Low, Close, Volume</code>. At least 50 daily rows are needed.</p>
         <input className={cls} type="file" accept=".csv,text/csv" onChange={(e) => void loadCsv(e.target.files?.[0])} /><button type="button" onClick={() => { const sample = "Date,Open,High,Low,Close,Volume\n2026-01-01,100,102,99,101,1200\n"; const url = URL.createObjectURL(new Blob([sample], { type: "text/csv" })); const a = document.createElement("a"); a.href = url; a.download = "pdfora-market-sample.csv"; a.click(); URL.revokeObjectURL(url); }} className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Download CSV format</button>
         <p className="text-xs leading-5 text-slate-500">PDFora does not scrape third-party Forex/Crypto feeds without display and analysis rights. CSV analysis runs on the uploaded historical data. Do not upload account credentials or private keys.</p>
       </div>}
     </section>
 
-    {error && <div role="alert" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">{error}</div>}
+    {error && <div role="alert" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">{tr(error)}</div>}
     {analysis && <div className="space-y-5">
       <section className={card}>
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div><p className="text-xs font-bold uppercase tracking-widest text-slate-500">Computed technical setup</p><h2 className={"mt-2 text-2xl font-black " + scoreTone}>{analysis.signal}</h2><p className="mt-1 text-sm text-slate-500">{asset.toUpperCase()} · {asset === "nepse" ? symbol : marketSymbol} · {analysis.latestDate}</p></div>
-          <div className="rounded-xl bg-slate-100 px-4 py-3 text-center"><p className="text-xs text-slate-500">Confluence score</p><p className="text-2xl font-black tabular-nums">{analysis.score > 0 ? "+" : ""}{analysis.score}</p><p className="text-[10px] text-slate-500">Not a win probability</p></div>
+          <div><p className="text-xs font-bold uppercase tracking-widest text-slate-500">{tr("Computed technical setup"}</p><h2 className={"mt-2 text-2xl font-black " + scoreTone}>{tr(analysis.signal)}</h2><p className="mt-1 text-sm text-slate-500">{asset.toUpperCase()} · {asset === "nepse" ? symbol : marketSymbol} · {analysis.latestDate}</p></div>
+          <div className="rounded-xl bg-slate-100 px-4 py-3 text-center"><p className="text-xs text-slate-500">{tr("Confluence score"}</p><p className="text-2xl font-black tabular-nums">{analysis.score > 0 ? "+" : ""}{analysis.score}</p><p className="text-[10px] text-slate-500">{tr("Not a win probability"}</p></div>
         </div>
-        <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{analysis.entry}</p>
+        <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{tr(analysis.entry)}</p>
         <p className="mt-3 text-xs text-slate-500">Data: {source} · {analysis.count} daily observations. Signals are rule-based technical conditions, not a prediction or a personal trade recommendation.</p>
       </section>
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {([["Latest close",fmt(analysis.close)],["RSI (14)",analysis.rsi.toFixed(1)],["EMA 20 / 50",fmt(analysis.ema20)+" / "+fmt(analysis.ema50)],["Annualized volatility",pct(analysis.volatility)]]).map(([label,value]) => <div className={card} key={label}><p className="text-xs font-semibold text-slate-500">{label}</p><p className="mt-2 text-lg font-black tabular-nums text-slate-900">{value}</p></div>)}
+        {([["Latest close",fmt(analysis.close)],["RSI (14)",analysis.rsi.toFixed(1)],["EMA 20 / 50",fmt(analysis.ema20)+" / "+fmt(analysis.ema50)],["Annualized volatility",pct(analysis.volatility)]]).map(([label,value]) => <div className={card} key={label}><p className="text-xs font-semibold text-slate-500">{tr(label)}</p><p className="mt-2 text-lg font-black tabular-nums text-slate-900">{value}</p></div>)}
       </section>
       <section className="grid gap-4 lg:grid-cols-2">
-        <div className={card}><h3 className="font-extrabold text-slate-900">Risk & key levels</h3><p className="mt-2 text-sm">Volatility-based risk: <strong>{analysis.risk}</strong></p><dl className="mt-4 grid grid-cols-2 gap-3 text-sm"><div><dt className="text-slate-500">20-session support</dt><dd className="mt-1 font-bold">{fmt(analysis.support)}</dd></div><div><dt className="text-slate-500">20-session resistance</dt><dd className="mt-1 font-bold">{fmt(analysis.resistance)}</dd></div><div><dt className="text-slate-500">Illustrative risk / invalidation level</dt><dd className="mt-1 font-bold">{analysis.stop === null ? "—" : fmt(analysis.stop)}</dd></div><div><dt className="text-slate-500">{asset === "nepse" && analysis.signal.includes("SELL") ? "Illustrative downside level" : "Illustrative 2R target"}</dt><dd className="mt-1 font-bold">{analysis.target === null ? "—" : fmt(analysis.target)}</dd></div></dl><p className="mt-3 text-xs text-slate-500">Levels are estimates from the last 20 observations. Gaps, fees, slippage and liquidity can change actual outcomes.</p></div>
-        <div className={card}><h3 className="font-extrabold text-slate-900">Why the engine reached this view</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-slate-700">{analysis.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul></div>
+        <div className={card}><h3 className="font-extrabold text-slate-900">{tr("Risk & key levels"}</h3><p className="mt-2 text-sm">Volatility-based risk: <strong>{tr(analysis.risk)}</strong></p><dl className="mt-4 grid grid-cols-2 gap-3 text-sm"><div><dt className="text-slate-500">{tr("20-session support"}</dt><dd className="mt-1 font-bold">{fmt(analysis.support)}</dd></div><div><dt className="text-slate-500">{tr("20-session resistance"}</dt><dd className="mt-1 font-bold">{fmt(analysis.resistance)}</dd></div><div><dt className="text-slate-500">{tr("Illustrative risk / invalidation level"}</dt><dd className="mt-1 font-bold">{analysis.stop === null ? "—" : fmt(analysis.stop)}</dd></div><div><dt className="text-slate-500">{asset === "nepse" && analysis.signal.includes("SELL") ? "Illustrative downside level" : "Illustrative 2R target"}</dt><dd className="mt-1 font-bold">{analysis.target === null ? "—" : fmt(analysis.target)}</dd></div></dl><p className="mt-3 text-xs text-slate-500">{tr("Levels are estimates from the last 20 observations. Gaps, fees, slippage and liquidity can change actual outcomes."}</p></div>
+        <div className={card}><h3 className="font-extrabold text-slate-900">{tr("Why the engine reached this view"}</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-slate-700">{analysis.reasons.map((reason) => <li key={reason}>{tr(reason)}</li>)}</ul></div>
       </section>
-      <section className={card}><h3 className="font-extrabold text-slate-900">Risk warnings</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-amber-900">{analysis.risks.map((risk) => <li key={risk}>{risk}</li>)}</ul></section>
-      <section className={card}><h3 className="font-extrabold text-slate-900">Market news cross-check</h3><p className="mt-2 text-sm text-slate-600">News sentiment: <strong>{newsReview?.sentiment || "Not checked"}</strong> · {newsReview?.stories.length || 0} relevant headlines</p><p className="mt-2 text-sm text-slate-600">{newsReview?.note || "News checked alongside technical indicators."}</p>{newsReview?.stories.length ? <ul className="mt-3 space-y-3">{newsReview.stories.map(story=><li key={story.link} className="border-t border-slate-100 pt-3"><a href={story.link} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal-800 underline">{story.title}</a><p className="mt-1 text-xs text-slate-500">{story.source} · {new Date(story.publishedAt).toLocaleString()}</p></li>)}</ul> : <p className="mt-3 text-xs text-amber-700">No relevant recent news found; confidence is reduced.</p>}</section>
+      <section className={card}><h3 className="font-extrabold text-slate-900">{tr("Risk warnings"}</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-amber-900">{analysis.risks.map((risk) => <li key={risk}>{tr(risk)}</li>)}</ul></section>
+      <section className={card}><h3 className="font-extrabold text-slate-900">{tr("Market news cross-check"}</h3><p className="mt-2 text-sm text-slate-600">News sentiment: <strong>{tr(newsReview?.sentiment || "Not checked")}</strong> · {newsReview?.stories.length || 0} relevant headlines</p><p className="mt-2 text-sm text-slate-600">{tr(newsReview?.note || "News checked alongside technical indicators.")}</p>{newsReview?.stories.length ? <ul className="mt-3 space-y-3">{newsReview.stories.map(story=><li key={story.link} className="border-t border-slate-100 pt-3"><a href={story.link} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal-800 underline">{story.title}</a><p className="mt-1 text-xs text-slate-500">{story.source} · {new Date(story.publishedAt).toLocaleString()}</p></li>)}</ul> : <p className="mt-3 text-xs text-amber-700">{tr("No relevant recent news found; confidence is reduced."}</p>}</section>
       <section className={card}>
-        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">NEPSE AI research report</h3><p className="mt-1 text-xs text-slate-500">Combines technical indicators with available company financials, profile, dividends and disclosures. Missing records are clearly marked; AI cannot override the computed signal.</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Researching…" : "Generate research report"}</button></div>
+        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">{tr("NEPSE AI research report"}</h3><p className="mt-1 text-xs text-slate-500">{tr("Combines technical indicators with available company financials, profile, dividends and disclosures. Missing records are clearly marked; AI cannot override the computed signal."}</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? tr("Researching…") : tr("Generate research report")}</button></div>
         {aiText && <p className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{aiText}</p>}
       </section>
     </div>}
 
     <aside className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">
-      <strong className="text-slate-800">Important:</strong> This is an educational technical-analysis aid. It does not know your financial situation, cannot forecast prices with certainty, and is not investment advice. Never trade only from one indicator. Test a strategy on out-of-sample historical data, include fees/slippage, and define your maximum loss before entering a trade.
+      <strong className="text-slate-800">{tr("Important:"}</strong> This is an educational technical-analysis aid. It does not know your financial situation, cannot forecast prices with certainty, and is not investment advice. Never trade only from one indicator. Test a strategy on out-of-sample historical data, include fees/slippage, and define your maximum loss before entering a trade.
     </aside>
   </div>;
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import NepseFundamentalReview from "./NepseFundamentalReview";
+import NepseMarketContext from "./NepseMarketContext";
 
 
 type NewsStory = { title: string; link: string; publishedAt: string; source: string };
@@ -237,6 +238,7 @@ export default function MarketIntelligence() {
   const [aiText, setAiText] = useState("");
   const [aiBusy, setAiBusy] = useState(false);
   const [newsReview, setNewsReview] = useState<NewsReview | null>(null);
+  const [selectedPoints, setSelectedPoints] = useState<Point[]>([]);
 
   async function loadNepse() {
     setBusy(true); setError(""); setAnalysis(null); setAiText(""); setNewsReview(null);
@@ -248,6 +250,7 @@ export default function MarketIntelligence() {
         date: String(p.date || ""), open: Number(p.open) || undefined, high: Number(p.high) || undefined,
         low: Number(p.low) || undefined, close: Number(p.close), volume: Number(p.volume) || undefined,
       })).filter((p: Point) => p.date && Number.isFinite(p.close) && p.close > 0);
+      setSelectedPoints(rows);
       const result = analyse(rows, "nepse");
       if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
 
@@ -350,6 +353,7 @@ export default function MarketIntelligence() {
       </section>
       <section className={card}><h3 className="font-extrabold text-slate-900">Risk warnings</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-amber-900">{analysis.risks.map((risk) => <li key={risk}>{risk}</li>)}</ul></section>
       <section className={card}><h3 className="font-extrabold text-slate-900">News & disclosure context (separate from signal)</h3><p className="mt-2 text-sm text-slate-600">Headline screening: <strong>{newsReview?.sentiment || "Unavailable"}</strong> · {newsReview?.stories.length || 0} relevant headlines</p><p className="mt-2 text-sm text-slate-600">{newsReview?.note || "News checked alongside technical indicators."}</p>{newsReview?.stories.length ? <ul className="mt-3 space-y-3">{newsReview.stories.map(story=><li key={story.link} className="border-t border-slate-100 pt-3"><a href={story.link} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal-800 underline">{story.title}</a><p className="mt-1 text-xs text-slate-500">{story.source} · {new Date(story.publishedAt).toLocaleString()}</p></li>)}</ul> : <p className="mt-3 text-xs text-amber-700">No relevant headlines were returned. This does not change the technical signal; verify official disclosures separately.</p>}</section>
+      {asset === "nepse" && <NepseMarketContext symbol={symbol.trim().toUpperCase()} selectedPoints={selectedPoints} />}
       {asset === "nepse" && symbol.trim().toUpperCase() !== "NEPSE" && <NepseFundamentalReview symbol={symbol.trim().toUpperCase()} price={analysis.close} />}
       <section className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">Optional AI research explanation</h3><p className="mt-1 text-xs text-slate-500">Optional AI-generated explanation of the already-computed report. The deterministic technical and fundamental snapshots above work without AI; AI cannot change their calculated values or signals.</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Researching…" : "Generate research report"}</button></div>

@@ -314,6 +314,7 @@ const holidayNotesNe: Record<string, string> = {
   "National public holiday": "राष्ट्रिय सार्वजनिक बिदा",
   "Kathmandu Valley and Newar community": "काठमाडौं उपत्यका र नेवार समुदाय",
   "Women only": "महिलाका लागि मात्र",
+  "Women employees only": "महिला कर्मचारीका लागि मात्र",
   "Kathmandu Valley only": "काठमाडौं उपत्यकामा मात्र",
   "Women celebrating Jitiya Parwa": "जितिया पर्व मनाउने महिलाका लागि",
   "Seven-day Dashain holiday: 17–23 October": "सात दिनको दशैं बिदा: १७–२३ अक्टोबर",

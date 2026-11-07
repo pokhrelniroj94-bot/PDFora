@@ -21,7 +21,7 @@
   behavior.
 - Cookie consent copy is now localized for English and Nepali, including dialog,
   settings, optional categories and accessibility labels.
-- Nepali now has a localized homepage, six reviewed PDF route pages, six reviewed utility route pages, seven financial/news/calculator route pages, a market dashboard, three reviewed articles and four reviewed legal/static pages.
+- Nepali now has a localized homepage, six reviewed PDF route pages, six reviewed utility route pages, seven financial/news/calculator route pages, three career/AI routes, a market dashboard, a blog index, three reviewed articles and four reviewed legal/static pages. The 33-route count is derived from the shared route registry.
 - The remaining English/Nepali route surfaces still require page-specific migration,
   especially the remaining blogs, guides, utilities and form/error messages.
 - The new tool-language matrix accounts for all 12 locales and 173 unique tools;

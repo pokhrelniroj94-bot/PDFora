@@ -4,6 +4,7 @@ import {
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedUtilitySlugs,
 } from "./nepali-tool-routes";
+import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 
 /**
  * URL scheme: English keeps its existing unprefixed URLs (/merge-pdf, /tools/x, /blog/y).
@@ -47,14 +48,9 @@ export function absoluteUrl(path: string, locale: Locale): string {
  * the language switcher and hreflang both read it, so users are never sent to a page
  * that does not exist.
  */
-const localizedPaths: ReadonlySet<string> = new Set([
+export const nepaliLocalizedNonToolPaths = [
   "/",
-  "/merge-pdf",
-  "/split-pdf",
-  "/compress-pdf",
-  "/rotate-pdf",
-  "/pdf-to-word",
-  "/pdf-to-jpg",
+  "/market",
   "/resume-builder",
   "/blog",
   "/blog/nepali-date-converter-bs-to-ad-guide",
@@ -64,20 +60,26 @@ const localizedPaths: ReadonlySet<string> = new Set([
   "/terms",
   "/about",
   "/contact",
+] as const;
+
+export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
+  ...nepaliLocalizedNonToolPaths,
+  ...Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`),
+  ...[
+    ...nepaliLocalizedUtilitySlugs,
+    ...nepaliLocalizedFinancialSlugs,
+    ...nepaliLocalizedCareerSlugs,
+  ].map((slug) => `/tools/${slug}`),
 ]);
+
+const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
 
 export function hasLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
   const normalized = normalizePath(path);
   if (locale !== "ne") return false;
   if (localizedPaths.has(normalized)) return true;
-  const localizedToolSlugs: ReadonlySet<string> = new Set([
-    ...nepaliLocalizedUtilitySlugs,
-    ...nepaliLocalizedFinancialSlugs,
-    ...nepaliLocalizedCareerSlugs,
-  ]);
-  const match = normalized.match(/^\/tools\/([^/]+)$/);
-  return match ? localizedToolSlugs.has(match[1]) : false;
+  return false;
 }
 
 /**

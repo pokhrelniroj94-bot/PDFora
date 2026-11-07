@@ -59,6 +59,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne?from=%2Ftools%2Fjson-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 33);
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -110,6 +111,18 @@ test("Nepali AI writing routes contain localized rendered UI", () => {
   }
   for (const slug of ["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer"]) {
     assert.ok(routeSource.includes(`"${slug}"`), `${slug} must retain its localized route`);
+  }
+});
+
+test("all localized Nepali catalog tools have localized metadata", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const registry = fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "nepali-tool-routes.ts"), "utf8");
+  const slugs = [...registry.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]);
+  const descriptionBlock = source.match(/const nepaliDescriptions:[\s\S]*?\n\};/)?.[0] ?? "";
+  const titleBlock = source.match(/const nepaliTitles:[\s\S]*?\n\};/)?.[0] ?? "";
+  for (const slug of slugs) {
+    assert.ok(titleBlock.includes(`"${slug}"`), `${slug} needs a Nepali title`);
+    assert.ok(descriptionBlock.includes(`"${slug}"`), `${slug} needs a Nepali metadata description`);
   }
 });
 

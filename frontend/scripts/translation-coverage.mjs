@@ -4,11 +4,11 @@ import { execFileSync } from "node:child_process";
 import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs";
 
 ensureTypeStripping();
-const { config, "shared-ui": sharedUi, "tool-guides": guidesModule, "tool-guides-ne": nepaliGuidesModule, "nepali-pdf-routes": nepaliRoutesModule } = await loadI18n();
+const { config, routing, "shared-ui": sharedUi, "tool-guides": guidesModule, "tool-guides-ne": nepaliGuidesModule, "nepali-pdf-routes": nepaliRoutesModule } = await loadI18n();
 const nepaliUtilityRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedUtilitySlugs;
 const nepaliFinancialRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedFinancialSlugs;
 const nepaliCareerRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedCareerSlugs;
-const nepaliBlogRoutes = 3;
+const nepaliBlogArticleCount = (fs.readFileSync(path.join(frontendRoot, "lib", "nepali-localized-blog-posts.ts"), "utf8").match(/^\s*slug:\s*"/gm) ?? []).length;
 
 const repoRoot = path.resolve(frontendRoot, "..");
 const appRoot = path.join(frontendRoot, "app");
@@ -47,10 +47,10 @@ const pageSourceFiles = walk(appRoot).filter((file) => file.endsWith("/page.tsx"
 const apiRouteSourceFiles = walk(appRoot).filter((file) => file.endsWith("/route.ts"));
 const editorialBlogCount = (blogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepalBlogCount = (nepalBlogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
-const nepaliLocalizedBlogCount = 3;
-const nepaliLocalizedStaticCount = 4;
+const nepaliLocalizedBlogCount = nepaliBlogArticleCount;
+const nepaliLocalizedStaticCount = routing.nepaliLocalizedNonToolPaths.filter((route) => ["/privacy", "/terms", "/about", "/contact"].includes(route)).length;
 const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);
-const nepaliLocalizedRouteCount = nepaliPdfRouteSlugs.length + nepaliUtilityRoutes.length + nepaliFinancialRoutes.length + nepaliCareerRoutes.length + nepaliBlogRoutes + nepaliLocalizedStaticCount + 2 + Number(nepaliHomeExists);
+const nepaliLocalizedRouteCount = routing.nepaliLocalizedRoutePaths.size;
 const sharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("en"));
 const nepaliSharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("ne"));
 const nepaliGuideCount = Object.keys(nepaliGuidesModule.nepaliToolGuides).length;
@@ -98,7 +98,7 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
         translated: nepaliLocalizedBlogCount,
         total: editorialBlogCount + nepalBlogCount,
         percent: editorialBlogCount + nepalBlogCount ? Math.round((nepaliLocalizedBlogCount / (editorialBlogCount + nepalBlogCount)) * 10000) / 100 : 0,
-        note: "Three fully translated Nepali articles are published; the remaining blog corpus is not localized.",
+        note: `${nepaliLocalizedBlogCount} fully translated Nepali articles are published; the remaining blog corpus is not localized.`,
       },
       namespaceFiles: namespaceFiles.length,
       reviewStatus: "Existing Nepali routes and PDF guide copy; complete site-wide native review not assessed",
@@ -143,7 +143,7 @@ const report = {
     publishedNepaliCareerRoutes: nepaliCareerRoutes.length,
     publishedNepaliMarketDashboardRoute: true,
     publishedNepaliResumeBuilderRoute: true,
-    publishedNepaliBlogRoutes: nepaliBlogRoutes,
+    publishedNepaliBlogRoutes: nepaliLocalizedBlogCount + 1,
     publishedNepaliStaticRoutes: nepaliLocalizedStaticCount,
     publishedNepaliHomeRoute: nepaliHomeExists,
     publishedNepaliRouteEquivalents: nepaliLocalizedRouteCount,
@@ -175,7 +175,7 @@ Inventory: ${pageSourceFiles.length} frontend page source files, ${apiRouteSourc
 |---|---|---|---:|---:|---:|---:|---:|
 ${rows.join("\n")}
 
-Nepali currently has the homepage, six localized PDF routes, six localized utility routes, seven localized financial/news/calculator routes, three localized AI writing routes, the localized NEPSE market dashboard, a localized Resume Builder, three fully translated Nepali articles, and four localized legal/static pages. The remaining blog corpus and other editorial guides are not translated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has the homepage, six localized PDF routes, six localized utility routes, seven localized financial/news/calculator routes, three localized AI writing routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, ${nepaliLocalizedBlogCount} fully translated Nepali articles, and four localized legal/static pages. The remaining blog corpus and other editorial guides are not translated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
 `;
 fs.writeFileSync(path.join(outputDir, "TRANSLATION_COVERAGE.md"), markdown);
 console.log(markdown);

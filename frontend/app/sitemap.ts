@@ -37,6 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.35,
     })),
     ...[
+      "blog",
       "nepali-date-converter-bs-to-ad-guide",
       "nepal-vat-calculator-13-percent-guide",
       "ropani-aana-paisa-daam-land-measurement-guide",

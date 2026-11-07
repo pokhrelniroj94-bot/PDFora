@@ -36,6 +36,9 @@ test("translation coverage report is conservative and tied to the current commit
     assert.equal(report.locales[locale].published, false, `${locale} must remain unpublished`);
     assert.equal(report.locales[locale].translatedRoutes, 0);
     assert.equal(report.locales[locale].routeCoveragePercent, 0);
+    assert.equal(report.locales[locale].sharedUiModuleCoveragePercent, 100, `${locale} shared shell copy must be counted`);
+    assert.equal(report.locales[locale].namespaceFiles, 3, `${locale} common, accessibility and SEO namespaces must be counted`);
+    assert.match(report.locales[locale].reviewStatus, /Shared shell copy is translated/);
   }
 
   assert.match(report.methodology.routeCoverage, /reported as counts only/i);

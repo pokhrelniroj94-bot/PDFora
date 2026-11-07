@@ -512,16 +512,16 @@ async function runTool(tool, index) {
       const expected = expectedOutputs[tool.slug];
       const expectedPattern = expectedPatterns[tool.slug];
       const liveText = finalState.live.join("\n") + "\n" + finalState.tables;
-      const normalizedLiveText = liveText.replace(/\\s+/g, " ").trim();
-      let outputMatches = expected ? normalizedLiveText.includes(expected.replace(/\\s+/g, " ").trim()) : expectedPattern ? expectedPattern.test(liveText) : false;
+      const normalizedLiveText = liveText.replace(/\s+/g, " ").trim();
+      let outputMatches = expected ? normalizedLiveText.includes(expected.replace(/\s+/g, " ").trim()) : expectedPattern ? expectedPattern.test(liveText) : false;
       if (tool.slug === "password-generator") {
-        const generated = liveText.split(/\\r?\\n/).map((line) => line.trim()).filter((line) => /^[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};':"\\\\|,.<>/?~`]{20}$/.test(line));
+        const generated = liveText.split(/\r?\n/).map((line) => line.trim()).filter((line) => /^[\x21-\x7e]{20}$/.test(line));
         outputMatches = generated.length >= 3;
       } else if (tool.slug === "random-number-generator") {
-        const generated = liveText.split(/\\r?\\n/).map((line) => line.trim()).filter((line) => /^\\d+$/.test(line)).map(Number);
+        const generated = liveText.split(/\\r?\\n/).map((line) => line.trim()).filter((line) => /^\d+$/.test(line)).map(Number);
         outputMatches = generated.length >= 5 && generated.slice(0, 5).every((value) => Number.isInteger(value) && value >= 1 && value <= 100);
       } else if (tool.slug === "dice-roller") {
-        const match = liveText.match(/Rolls:\\s*(\\d+)\\s*,\\s*(\\d+)[\\s\\S]*?Total:\\s*(\\d+)/);
+        const match = liveText.match(/Rolls:\s*(\d+)\s*,\s*(\d+)[\s\S]*?Total:\s*(\d+)/);
         outputMatches = !!match && Number(match[1]) >= 1 && Number(match[1]) <= 6 && Number(match[2]) >= 1 && Number(match[2]) <= 6 && Number(match[3]) === Number(match[1]) + Number(match[2]);
       }
       if ((expected || expectedPattern) && !outputMatches) {

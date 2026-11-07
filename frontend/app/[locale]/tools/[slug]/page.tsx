@@ -173,11 +173,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * unprefixed /tools/<slug> and is not touched.
  *
  * Only slugs accepted by the tool adapter render; everything else is a 404 (no fallback tool).
- * The tool itself is the existing ToolWorkspace, unchanged, so calculations, uploads and APIs
- * behave exactly as in English. Its interface is not translated yet, so it is declared as
- * English (lang="en", dir="ltr"), a notice says so, and the page stays noindex until the tool is
- * listed in lib/tools/localized-verification.ts. No JSON-LD is emitted (the English structured
- * data must not be attached to a localized URL).
+ * Explicitly localized routes render their dedicated locale-specific workspaces and copy below.
+ * Remaining registered routes use the English ToolWorkspace with an honest language notice.
+ * Tool routes stay noindex until native-language review and functional verification are complete.
+ * No English JSON-LD is attached to localized URLs.
  */
 export default async function LocalizedToolPage({ params }: Props) {
   const { locale, slug } = await params;

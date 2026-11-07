@@ -560,7 +560,7 @@ async function runTool(tool, index) {
           await delay(500);
         }
         if (forexState?.hasUsd && forexState.hasNpr && /Nepal Rastra Bank/i.test(forexState.body)) {
-          row.output = forexState.live.slice(0, 700);
+          row.output = forexState.conversion.slice(0, 700);
           row.checks.push("official USD row and live NPR conversion rendered; stale-rate notice remains visible when applicable");
           row.outputVerified = true;
           row.status = "PASS";

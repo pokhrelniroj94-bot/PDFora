@@ -272,7 +272,6 @@ const neCopy: Record<string,string> = {
 "Upload a CSV exported from your broker or exchange. Required columns:":"आफ्नो broker वा exchange बाट export गरिएको CSV अपलोड गर्नुहोस्। अनिवार्य column:",
 "Recommended:":"सिफारिस गरिएका column:","At least 50 daily rows are needed.":"कम्तीमा ५० दैनिक पङ्क्ति आवश्यक छन्।",
 "PDFora does not scrape third-party Forex/Crypto feeds without display and analysis rights. CSV analysis runs on the uploaded historical data. Do not upload account credentials or private keys.":"प्रदर्शन तथा विश्लेषण अनुमति नभई PDFora ले तेस्रो पक्षको Forex/Crypto feed scrape गर्दैन। CSV विश्लेषण अपलोड गरिएको ऐतिहासिक डेटामै चल्छ। खाता login वा private key अपलोड नगर्नुहोस्।",
-"Volatility-based risk:":"उतारचढावमा आधारित जोखिम:","News sentiment:":"समाचारको धारणा:"
 };
 function marketText(value: string, locale: string) { return locale === "ne" ? (neCopy[value] ?? value) : value; }
 

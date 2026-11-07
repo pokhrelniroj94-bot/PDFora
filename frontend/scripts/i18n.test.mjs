@@ -250,6 +250,20 @@ test("Nepali date and time calculators have localized routes and visible copy", 
   assert.ok(logic.includes("Date.UTC"));
 });
 
+test("Nepali developer and text tools have localized routes and interfaces", () => {
+  const route = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const component = fs.readFileSync(path.join(frontendRoot, "components", "NepaliDeveloperTextWorkspace.tsx"), "utf8");
+  const logic = fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "nepali-developer-text-tools.ts"), "utf8");
+  for (const slug of ["json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator", "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug"]) {
+    assert.ok(route.includes(`"${slug}"`), `${slug} must have a localized route`);
+    assert.ok(component.includes(`"${slug}"`), `${slug} must have localized UI copy`);
+    assert.ok(logic.includes(`slug === "${slug}"`), `${slug} must have processing logic`);
+  }
+  for (const phrase of ["JSON फर्म्याट तथा जाँच", "Base64 Encode / Decode", "Text Diff Checker", "नेपाली Unicode अक्षर सुरक्षित"]) {
+    assert.ok(component.includes(phrase) || route.includes(phrase), `Nepali developer UI must include ${phrase}`);
+  }
+});
+
 test("Nepali Resume Builder preserves all templates and print-safe Devanagari output", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "ResumeBuilder.tsx"), "utf8");
   const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "[slug]", "page.tsx"), "utf8");

@@ -304,6 +304,25 @@ async function runTool(tool, index) {
         row.status = "PASS";
         return row;
       }
+      if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
+        await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
+      } else if (tool.slug === "base64-encoder-decoder") {
+        await setFirstTextArea(page, "PDFora E2E test");
+      } else if (tool.slug === "url-encoder-decoder") {
+        await setFirstTextArea(page, "https://example.com/a path?q=hello world");
+      } else if (tool.slug === "notes-to-pdf") {
+        await setFirstTextArea(page, "PDFora E2E Notes\\nThis is a browser-generated test document.");
+      } else if (tool.slug === "jwt-decoder") {
+        await setFirstTextArea(page, "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
+      } else if (tool.slug === "nepali-unicode-typing") {
+        await setFirstTextArea(page, "Namaste Nepal");
+      } else if (tool.slug === "nepali-date-converter") {
+        await setFieldByLabel(page, "English date", "2026-11-07");
+      } else if (tool.slug === "nepal-phone-validator") {
+        await setFieldByLabel(page, "Phone number", "9800000000");
+      } else if (tool.slug === "nepal-land-area-converter") {
+        await setFieldByLabel(page, "Ropani", "1");
+      }
       if (tool.slug === "image-compressor" || tool.slug === "image-format-converter" || tool.slug === "loksewa-photo-resizer") {
         const inputNode = await page.send("DOM.getDocument", { depth: 1 });
         const query = await page.send("DOM.querySelector", { nodeId: inputNode.root.nodeId, selector: 'input[type="file"]' });
@@ -315,7 +334,7 @@ async function runTool(tool, index) {
       }
       const clicked = await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
-        const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*)$/i;
+        const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*|show calendar)$/i;
         const button = buttons.find((b) => patterns.test(b.innerText.trim()));
         if (button) { button.click(); return button.innerText.trim(); }
         return "";
@@ -323,7 +342,7 @@ async function runTool(tool, index) {
       if (clicked) {
         row.action = clicked;
         row.checks.push("primary action clicked");
-        await delay(tool.slug === "currency-converter" || tool.slug === "nepal-forex-rates" ? 5000 : 500);
+        await delay(["currency-converter", "nepal-forex-rates", "nepse-market-news", "preeti-unicode-converter"].includes(tool.slug) ? 5000 : 800);
       } else {
         row.checks.push("reactive output/controls inspected (no submit button by design)");
       }

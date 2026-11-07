@@ -53,7 +53,7 @@ export function runNepaliDeveloperTool(slug: NepaliDeveloperToolSlug, values: Va
   }
   if (slug === "text-to-slug") {
     const slugged = text.normalize("NFKC").toLocaleLowerCase().trim()
-      .replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "");
+      .replace(/[^\p{L}\p{M}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "");
     return slugged || "पाठबाट slug बनाउन अक्षर वा अंक प्रविष्ट गर्नुहोस्।";
   }
   if (slug === "lorem-ipsum-generator") {

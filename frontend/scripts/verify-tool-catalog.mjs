@@ -39,7 +39,7 @@ const seoOverrides = new Map([...seoOverridesBlock.matchAll(/"([^"]+)": \{ title
   .map((match) => [match[1], { title: match[2], description: match[3] }]));
 const generatedMetadata = metadataEntries.map((entry) => ({
   slug: entry.slug,
-  title: seoOverrides.get(entry.slug)?.title ?? `${entry.name} Online`,
+  title: seoOverrides.get(entry.slug)?.title ?? `Free ${entry.name} Online`,
   description: seoOverrides.get(entry.slug)?.description ?? entry.description.trim(),
 }));
 assert.equal(new Set(generatedMetadata.map((entry) => entry.title.trim().toLowerCase())).size, generatedMetadata.length, "Generated English tool SEO titles must be unique");

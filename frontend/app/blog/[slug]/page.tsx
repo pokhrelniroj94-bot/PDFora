@@ -20,8 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: post.description,
     alternates: { canonical: url },
     robots: isCatalogGeneratedGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
-    keywords: [post.keyword, "free online tools", "tool tutorial", "how-to guide", "PDFora"],
-    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, publishedTime: post.updated, modifiedTime: post.updated },
+    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, modifiedTime: `${post.updated}T00:00:00+05:45` },
     twitter: { card: "summary", title: post.title, description: post.description },
   };
 }
@@ -33,13 +32,13 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
-    datePublished: post.updated,
-    dateModified: post.updated,
+    dateModified: `${post.updated}T00:00:00+05:45`,
+    inLanguage: "en",
     mainEntityOfPage: `${baseUrl}/blog/${post.slug}`,
-    author: { "@type": "Organization", name: "PDFora", url: baseUrl },
+    author: { "@type": "Organization", name: "PDFora Editorial Team", url: `${baseUrl}/about` },
     publisher: { "@type": "Organization", name: "PDFora", url: baseUrl },
   };
   const breadcrumbSchema = {
@@ -67,13 +66,13 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
           <Link href="/" className="hover:text-teal-700">Home</Link><span className="mx-2">/</span>
           <Link href="/blog" className="hover:text-teal-700">Blog</Link><span className="mx-2">/</span>
-          <span className="text-slate-700">Guide</span>
+          <span aria-current="page" className="text-slate-700">{post.title}</span>
         </nav>
         <header className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 sm:p-9">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora Guide · {post.readTime}</p>
           <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
-          <p className="mt-5 text-xs text-slate-500">Updated {new Date(post.updated + "T00:00:00Z").toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</p>
+          <p className="mt-5 text-xs text-slate-500">By PDFora Editorial Team · Last updated {new Date(post.updated + "T00:00:00Z").toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</p>
         </header>
 
         <div className="mt-6 space-y-6">

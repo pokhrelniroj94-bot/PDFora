@@ -216,7 +216,6 @@ async function seedPdfFields(page, slug) {
     "    const label = [...(control.labels || [])].map((item) => item.innerText).join(' ');",
     "    const key = [label, control.getAttribute('aria-label'), control.placeholder, control.name, control.id].filter(Boolean).join(' ').toLowerCase();",
     "    let value = '1';",
-    "    if (slug === 'reorder-pdf' && /order/.test(key)) value = '1,2';",
     "    else if (/password|passphrase|owner key|user key/.test(key)) value = 'PDFora-E2E-123!';",
     "    else if (/watermark|header|footer|text|signature|name|reason|title/.test(key)) value = 'PDFora E2E';",
     "    else if (/degree|rotation|angle/.test(key)) value = '90';",
@@ -415,6 +414,9 @@ async function runTool(tool, index) {
         row.outputVerified = true;
         row.status = "PASS";
         return row;
+      }
+      if (tool.slug === "case-converter") {
+        await page.evaluate("(() => { const button = [...document.querySelectorAll('button')].find((item) => item.innerText.trim().toUpperCase() === 'UPPERCASE' && !item.disabled); button?.click(); return !!button; })()");
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
@@ -620,7 +622,7 @@ async function runTool(tool, index) {
       };
       const expected = expectedOutputs[tool.slug];
       const expectedPattern = expectedPatterns[tool.slug];
-      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette", "nepal-land-area-converter"].includes(tool.slug) ? "\n" + finalState.body : "") + (["case-converter", "nepali-unicode-typing", "preeti-unicode-converter"].includes(tool.slug) ? "\n" + finalState.inputValues.map((input) => input.value).join("\n") : "");
+      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette", "nepal-land-area-converter", "preeti-unicode-converter"].includes(tool.slug) ? "\n" + finalState.body : "") + (["case-converter", "nepali-unicode-typing", "preeti-unicode-converter"].includes(tool.slug) ? "\n" + finalState.inputValues.map((input) => input.value).join("\n") : "");
       const normalizedLiveText = liveText.replace(/\s+/g, " ").trim();
       let outputMatches = expected ? normalizedLiveText.includes(expected.replace(/\s+/g, " ").trim()) : expectedPattern ? expectedPattern.test(liveText) : false;
       if (tool.slug === "nepse-market-news") {

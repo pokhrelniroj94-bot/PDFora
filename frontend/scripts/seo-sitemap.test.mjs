@@ -9,6 +9,8 @@ const read = (relative) => fs.readFileSync(path.join(frontendRoot, relative), "u
 const sitemapSource = read("app/sitemap.ts");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
+const englishToolPageSource = read("app/tools/[slug]/page.tsx");
+const { hreflangMap } = await import("../lib/i18n/routing.ts");
 const modules = await loadToolAdapter();
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
 const pdfRoutes = Object.keys(modules["nepali-pdf-routes"].nepaliPdfRoutes);
@@ -34,6 +36,39 @@ assert.match(robotsSource, /disallow:\s*\["\/api\/"\]/, "API endpoints should st
 assert.match(layoutSource, /inLanguage:\s*htmlLang/, "Structured data must reflect the server-rendered page language");
 assert.match(layoutSource, /publisher:\s*\{\s*"@id":\s*"https:\/\/pd-fora\.vercel\.app\/#organization"\s*\}/, "WebSite structured data should reference the canonical publisher entity");
 assert.doesNotMatch(robotsSource, /disallow:[^\]]*noindex|disallow:[^\]]*\/ne\//, "Do not block crawlers from reading noindex directives on localized pages");
+
+const reciprocalEnglishPages = [
+  ["app/about/page.tsx", "/about"],
+  ["app/privacy/page.tsx", "/privacy"],
+  ["app/terms/page.tsx", "/terms"],
+  ["app/contact/page.tsx", "/contact"],
+  ["app/blog/page.tsx", "/blog"],
+  ["app/market/page.tsx", "/market"],
+  ["app/resume-builder/page.tsx", "/resume-builder"],
+];
+for (const [relativePath, localeFreePath] of reciprocalEnglishPages) {
+  const source = read(relativePath);
+  assert.match(source, /hreflangMap\\(/, `${relativePath} must publish alternates for its reviewed Nepali equivalent`);
+  assert.match(source, /languages:\\s*localizedAlternates/, `${relativePath} must emit the shared hreflang map`);
+  const alternates = hreflangMap(localeFreePath);
+  assert.equal(alternates?.en, `https://pd-fora.vercel.app${localeFreePath}`);
+  assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne${localeFreePath}`);
+  assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
+}
+
+assert.match(englishToolPageSource, /isLocalizedToolIndexable\\("ne", slug\\)/, "English tool pages must gate Nepali hreflang on explicit indexing approval");
+assert.match(englishToolPageSource, /languages:\\s*languages/, "Approved English PDF pages must emit the reciprocal hreflang map");
+for (const slug of approvedNepali) {
+  const localeFreePath = `/${slug}`;
+  const alternates = hreflangMap(localeFreePath);
+  assert.equal(alternates?.en, `https://pd-fora.vercel.app${localeFreePath}`);
+  assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne${localeFreePath}`);
+  assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
+}
+for (const slug of toolRoutes) {
+  assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), false, `${slug} must not enter English hreflang before explicit approval`);
+}
+
 
 for (const slug of toolRoutes) {
   const request = modules["localized-route"].resolveLocalizedToolRequest("ne", slug);

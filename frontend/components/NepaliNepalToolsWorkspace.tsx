@@ -6,6 +6,8 @@ import { convertTolaGrams, validateNepalMobileNumber } from "../lib/i18n/nepali-
 
 const months = ["बैशाख", "जेठ", "असार", "साउन", "भदौ", "असोज", "कात्तिक", "मंसिर", "पुस", "माघ", "फागुन", "चैत"];
 const weekdays = ["आइतबार", "सोमबार", "मङ्गलबार", "बुधबार", "बिहीबार", "शुक्रबार", "शनिबार"];
+const toAsciiDigits = (value: string) => value.replace(/[०-९]/g, (digit) => String("०१२३४५६७८९".indexOf(digit)));
+const toNepaliDigits = (value: string) => value.replace(/\\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]);
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const button = "rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50";
@@ -15,14 +17,14 @@ function Output({ children }: { children: React.ReactNode }) {
 }
 
 function NepaliCalendar() {
-  const [year, setYear] = useState("2083");
+  const [year, setYear] = useState("२०८३");
   const [month, setMonth] = useState("1");
   const [rows, setRows] = useState<{ day: number; ad: string; weekday: string }[]>([]);
   const [error, setError] = useState("");
 
   function buildCalendar() {
     try {
-      const bsYear = Number(year);
+      const bsYear = Number(toAsciiDigits(year));
       const bsMonth = Number(month);
       if (!Number.isInteger(bsYear) || bsYear < 1975 || bsYear > 2099 || !Number.isInteger(bsMonth) || bsMonth < 1 || bsMonth > 12) {
         throw new Error("कृपया १९७५ देखि २०९९ सम्मको BS वर्ष र १ देखि १२ सम्मको महिना छान्नुहोस्।");
@@ -53,12 +55,12 @@ function NepaliCalendar() {
         <p className="mt-1 text-sm text-slate-600">BS वर्ष र महिना छानेर सम्बन्धित AD मिति र बार हेर्नुहोस्। समर्थित दायरा: १९७५–२०९९ BS।</p>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <label><span className={label}>BS वर्ष</span><input className={field} type="number" min="1975" max="2099" value={year} onChange={(event) => setYear(event.target.value)} /></label>
+        <label><span className={label}>BS वर्ष</span><input className={field} type="text" inputMode="numeric" maxLength={4} value={year} onChange={(event) => setYear(event.target.value)} /></label>
         <label><span className={label}>महिना</span><select className={field} value={month} onChange={(event) => setMonth(event.target.value)}>{months.map((name, index) => <option key={name} value={index + 1}>{name}</option>)}</select></label>
       </div>
       <button className={button} onClick={buildCalendar}>पात्रो देखाउनुहोस्</button>
       {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
-      {rows.length > 0 && <div className="overflow-x-auto rounded-xl border border-slate-200"><table className="w-full min-w-[360px] text-left text-sm"><thead className="bg-slate-100"><tr><th className="p-3">BS गते</th><th className="p-3">AD मिति</th><th className="p-3">बार</th></tr></thead><tbody>{rows.map((row) => <tr key={row.day} className="border-t border-slate-100"><td className="p-3 font-semibold">{row.day}</td><td className="p-3">{row.ad}</td><td className="p-3">{row.weekday}</td></tr>)}</tbody></table></div>}
+      {rows.length > 0 && <div className="overflow-x-auto rounded-xl border border-slate-200"><table className="w-full min-w-[360px] text-left text-sm"><thead className="bg-slate-100"><tr><th className="p-3">BS गते</th><th className="p-3">AD मिति</th><th className="p-3">बार</th></tr></thead><tbody>{rows.map((row) => <tr key={row.day} className="border-t border-slate-100"><td className="p-3 font-semibold">{toNepaliDigits(String(row.day))}</td><td className="p-3">{toNepaliDigits(row.ad)}</td><td className="p-3">{row.weekday}</td></tr>)}</tbody></table></div>}
       <p className="text-xs leading-5 text-slate-500">यस पात्रोमा सार्वजनिक बिदा, तिथि वा चाडपर्वको आधिकारिक सूची समावेश छैन। सरकारी कामका लागि सम्बन्धित निकायको सूचना जाँच्नुहोस्।</p>
     </div>
   );

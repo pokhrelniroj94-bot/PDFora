@@ -42,11 +42,11 @@ export default function PDForaTool({
   const pathname = usePathname();
   const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
   const ui = getPdfToolCopy(pathname);
+  const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
+  const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const imageUpload = accept.includes("image/");
   const chooseDropLabel = imageUpload ? (locale === "ne" ? "तस्बिर फाइल छान्नुहोस् वा यहाँ छोड्नुहोस्" : "Choose or drop image files") : (multiple ? ui.chooseDropMultiple : ui.chooseDropSingle);
   const uploadLimitLabel = imageUpload ? (locale === "ne" ? "प्रत्येक तस्बिर अधिकतम ५० MB" : "Image files up to 50 MB each") : ui.pdfFilesLimit;
-  const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
-  const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const homeHref = locale === "en" ? "/" : `/${locale}`;
   const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
   const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;

@@ -4,6 +4,10 @@ describe("Nepali number words", () => {
   test("converts the complete 0–99 range", () => {
     expect(nepaliNumberWords(0)).toBe("शून्य");
     expect(nepaliNumberWords(51)).toBe("एकाउन्न");
+    expect(nepaliNumberWords(54)).toBe("चवन्न");
+    expect(nepaliNumberWords(59)).toBe("उनसट्ठी");
+    expect(nepaliNumberWords(64)).toBe("चौसट्ठी");
+    expect(nepaliNumberWords(92)).toBe("बयान्नब्बे");
     expect(nepaliNumberWords(75)).toBe("पचहत्तर");
     expect(nepaliNumberWords(99)).toBe("उनान्सय");
   });

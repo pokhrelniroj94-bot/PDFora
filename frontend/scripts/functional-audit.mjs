@@ -91,21 +91,27 @@ const rows = [
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: [entry.slug === "unit-converter" ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families." : uiRegressionCatalog.has(entry.slug) ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction." : "", ...(browserResults.get(entry.slug)?.errors ?? [])].filter(Boolean).join("; "),
-    fixesApplied: entry.slug === "unit-converter"
-      ? "Rejects negative physical quantities and incompatible temperature/physical unit conversions; allows negative temperatures."
-      : uiRegressionCatalog.has(entry.slug)
+    defectsFound: [entry.slug === "nepal-electricity-bill-calculator" ? "A hard-coded tariff estimator could become inaccurate after the ERC 2083 tariff directive." : entry.slug === "unit-converter" ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families." : uiRegressionCatalog.has(entry.slug) ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction." : "", ...(browserResults.get(entry.slug)?.errors ?? [])].filter(Boolean).join("; "),
+    fixesApplied: entry.slug === "nepal-electricity-bill-calculator"
+      ? "Removed fixed-rate arithmetic and linked the tool to the live ERC calculator, the 2083 directive and NEA tariff information."
+      : entry.slug === "unit-converter"
+        ? "Rejects negative physical quantities and incompatible temperature/physical unit conversions; allows negative temperatures."
+        : uiRegressionCatalog.has(entry.slug)
         ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
         : "",
-    remainingBlockers: browserResults.get(entry.slug)?.status === "FAIL"
-      ? "Browser E2E failure: " + (browserResults.get(entry.slug)?.errors ?? []).join("; ") + ". Fix and rerun. Mobile and accessibility remain untested."
-      : browserResults.get(entry.slug)?.status === "PASS"
+    remainingBlockers: entry.slug === "nepal-electricity-bill-calculator"
+      ? "External ERC handoff, official calculator availability and mobile navigation still require browser verification; PDFora intentionally does not estimate tariffs."
+      : browserResults.get(entry.slug)?.status === "FAIL"
+        ? "Browser E2E failure: " + (browserResults.get(entry.slug)?.errors ?? []).join("; ") + ". Fix and rerun. Mobile and accessibility remain untested."
+        : browserResults.get(entry.slug)?.status === "PASS"
         ? "Mobile layout, accessibility, exhaustive boundary tests and independent download-byte verification remain untested."
         : testedCatalog.has(entry.slug)
           ? "Browser route, mobile layout and accessibility evidence remain unverified."
           : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-    evidence: `${inputTestedCatalog.has(entry.slug)
-      ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
+    evidence: `${entry.slug === "nepal-electricity-bill-calculator"
+      ? "frontend/components/NepalLiveTools.tsx; frontend/scripts/nepali-nepal-tools.test.mjs; ERC official calculator and 2083 directive"
+      : inputTestedCatalog.has(entry.slug)
+        ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
       : uiRegressionCatalog.has(entry.slug)
         ? "frontend/scripts/tool-ui-regression.test.mjs; frontend/components/AllTools.tsx"
         : testedCatalog.has(entry.slug)

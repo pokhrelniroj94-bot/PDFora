@@ -100,6 +100,12 @@ export const nepaliLocalizedUtilitySlugs = [
   "color-converter",
   "css-gradient-generator",
   "roman-numeral-converter",
+  "image-compressor",
+  "image-format-converter",
+  "color-picker-palette",
+  "notes-to-pdf",
+  "preeti-unicode-converter",
+  "nepali-unicode-typing",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];
@@ -113,6 +119,8 @@ export const nepaliLocalizedFinancialSlugs = [
   "compound-interest-sip-calculator",
   "discount-percentage-calculator",
   "savings-goal-calculator",
+  "currency-converter",
+  "nepal-share-calculator",
 ] as const;
 
 export const nepaliLocalizedPublicInfoSlugs = [

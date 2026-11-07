@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { spawn } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 
@@ -252,6 +252,21 @@ async function validateDownloadedFile(filePath) {
     if (document.getPageCount() < 1) throw new Error("Downloaded PDF has no pages: " + path.basename(filePath));
   } else if ([".zip", ".docx", ".xlsx", ".pptx", ".odt", ".ods"].includes(extension)) {
     if (!hasPrefix(0x50, 0x4b)) throw new Error("Downloaded archive/Office file has no ZIP signature: " + path.basename(filePath));
+    const archiveCheck = execFileSync("python3", ["-c", [
+      "import json, os, sys, zipfile",
+      "p = sys.argv[1]",
+      "with zipfile.ZipFile(p) as z:",
+      "  infos = z.infolist()",
+      "  if not infos: raise SystemExit('Archive contains no entries')",
+      "  bad = z.testzip()",
+      "  if bad: raise SystemExit('CRC failure: ' + bad)",
+      "  names = set(z.namelist())",
+      "  ext = os.path.splitext(p)[1].lower()",
+      "  required = {'.docx': 'word/document.xml', '.xlsx': 'xl/workbook.xml', '.pptx': 'ppt/presentation.xml', '.odt': 'mimetype', '.ods': 'mimetype'}.get(ext)",
+      "  if required and required not in names: raise SystemExit('Missing required Office document part: ' + required)",
+      "  print(json.dumps({'entries': len(infos), 'uncompressedBytes': sum(x.file_size for x in infos), 'crc': 'ok', 'requiredPart': required}))",
+    ].join("\\n"), filePath], { encoding: "utf8", timeout: 15000 }).trim();
+    return { file: path.basename(filePath), bytes: bytes.length, extension, valid: true, archiveCheck: JSON.parse(archiveCheck) };
   } else if (extension === ".png") {
     if (!hasPrefix(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) throw new Error("Downloaded PNG signature is invalid: " + path.basename(filePath));
   } else if ([".jpg", ".jpeg"].includes(extension)) {

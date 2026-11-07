@@ -25,7 +25,7 @@ assert.equal(metadataEntries.length, 124, "Every catalog tool must have a metada
 assert.equal(new Set(metadataEntries.map((entry) => entry.name.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool names must be unique");
 assert.equal(new Set(metadataEntries.map((entry) => entry.description.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool descriptions must be unique");
 
-const pdfGuideEntries = [...pdfToolGuidesSource.matchAll(/"slug":\\s*"([^"]+)"[\\s\\S]*?"name":\\s*"([^"]+)"[\\s\\S]*?"keyword":\\s*"([^"]+)"[\\s\\S]*?"purpose":\\s*"([^"]+)"[\\s\\S]*?"steps":\\s*\\[([\\s\\S]*?)\\][\\s\\S]*?"caution":\\s*"([^"]+)"/g)]
+const pdfGuideEntries = [...pdfToolGuidesSource.matchAll(/"slug":\s*"([^"]+)"[\s\S]*?"name":\s*"([^"]+)"[\s\S]*?"keyword":\s*"([^"]+)"[\s\S]*?"purpose":\s*"([^"]+)"[\s\S]*?"steps":\s*\[([\s\S]*?)\][\s\S]*?"caution":\s*"([^"]+)"/g)]
   .map((match) => ({ slug: match[1], name: match[2], keyword: match[3], purpose: match[4], steps: [...match[5].matchAll(/"([^"]+)"/g)].map((step) => step[1]), caution: match[6] }));
 assert.equal(pdfGuideEntries.length, 49, "All 49 established PDF routes need a dedicated guide record");
 for (const field of ["name", "keyword", "purpose"]) {

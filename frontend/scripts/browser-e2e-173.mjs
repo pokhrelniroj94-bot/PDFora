@@ -1185,6 +1185,63 @@ async function runTool(tool, index) {
   return row;
 }
 
+async function runNepaliRoute(tool, index) {
+  const row = { index: index + 1, slug: tool.slug, route: tool.kind === "pdf" ? "/ne/" + tool.slug : "/ne/tools/" + tool.slug, status: "FAIL", checks: [], errors: [] };
+  let page;
+  try {
+    page = await openPage(new URL(row.route, baseUrl).toString());
+    const state = await page.evaluate(`() => {
+      const main = document.querySelector("main");
+      const visible = (element) => {
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+      };
+      const controls = [...document.querySelectorAll("main label, main button, main [role=button], main input[aria-label], main textarea[aria-label], main select[aria-label]")]
+        .filter(visible)
+        .map((element) => (element.innerText || element.getAttribute("aria-label") || element.getAttribute("title") || "").trim())
+        .filter(Boolean);
+      const nepaliControls = controls.filter((value) => /[\\u0900-\\u097F]{2,}/.test(value));
+      const body = main?.innerText || "";
+      return {
+        htmlLang: document.documentElement.lang || "",
+        mainLang: main?.getAttribute("lang") || "",
+        mainCount: document.querySelectorAll("main").length,
+        h1Count: document.querySelectorAll("h1").length,
+        heading: main?.querySelector("h1")?.innerText?.trim() || "",
+        hasNepaliBody: /[\\u0900-\\u097F]{2,}/.test(body),
+        englishFallback: /tool interface (?:is )?shown in english|view english tool/i.test(body),
+        controls: controls.length,
+        nepaliControls: nepaliControls.length,
+        controlCoverage: controls.length ? nepaliControls.length / controls.length : 1,
+        bodySample: body.slice(0, 900),
+      };
+    }`);
+    row.evidence = state;
+    if (state.htmlLang !== "ne" || state.mainLang !== "ne" || state.mainCount !== 1 || state.h1Count !== 1) {
+      throw new Error("Nepali route did not render one main landmark with lang=ne: " + JSON.stringify(state));
+    }
+    if (!/[\\u0900-\\u097F]{2,}/.test(state.heading) || !state.hasNepaliBody || state.englishFallback) {
+      throw new Error("Nepali page heading/body is missing localized Nepali content: " + JSON.stringify(state));
+    }
+    row.checks.push("route renders a Nepali main landmark, heading and visible Nepali content");
+    if (state.controlCoverage < 0.6) {
+      row.status = "PARTIAL";
+      row.note = "Visible control labels need translation review: " + state.nepaliControls + "/" + state.controls;
+    } else {
+      row.status = "PASS";
+    }
+  } catch (error) {
+    row.errors.push(error instanceof Error ? error.message : String(error));
+    row.status = "FAIL";
+  } finally {
+    if (page) await page.close();
+  }
+  return row;
+}
+
+const nepaliResults = [];
+
 try {
   for (let index = 0; index < tools.length; index += 1) {
     const result = await runTool(tools[index], index);
@@ -1193,6 +1250,14 @@ try {
       result.index + "/173 " + result.slug + " — " +
       (result.errors[0] || result.checks.join(", ")));
     if (fatalBrowserError) break;
+  }
+  if (!fatalBrowserError) {
+    for (let index = 0; index < tools.length; index += 1) {
+      const result = await runNepaliRoute(tools[index], index);
+      nepaliResults.push(result);
+      console.log((result.status === "PASS" ? "NE " : result.status === "PARTIAL" ? "NE PARTIAL " : "NE FAIL ") +
+        result.index + "/173 " + result.slug + " — " + (result.errors[0] || result.note || result.checks.join(", ")));
+    }
   }
 } finally {
   chrome.kill("SIGTERM");
@@ -1218,8 +1283,13 @@ const report = {
     pdf: results.filter((row) => row.kind === "pdf").length,
     catalog: results.filter((row) => row.kind === "catalog").length,
     aiExecutionSkipped: results.filter((row) => aiTools.has(row.slug)).length,
+    nepaliTotal: nepaliResults.length,
+    nepaliPass: nepaliResults.filter((row) => row.status === "PASS").length,
+    nepaliPartial: nepaliResults.filter((row) => row.status === "PARTIAL").length,
+    nepaliFail: nepaliResults.filter((row) => row.status === "FAIL").length,
   },
   results,
+  nepaliResults,
 };
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");

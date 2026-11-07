@@ -47,11 +47,15 @@ assert.equal(new Set(generatedMetadata.map((entry) => entry.description.trim().t
 assert.ok(generatedMetadata.every((entry) => entry.title.length >= 20 && entry.description.length >= 40), "Tool metadata must be descriptive rather than empty or placeholder copy");
 assert.ok(generatedMetadata.every((entry) => !/\|\s*PDFora$/i.test(entry.title)), "Page titles must not duplicate the root PDFora title template");
 
-const all173ToolTitles = [...generatedMetadata.map((entry) => entry.title), ...pdfGuideEntries.map((entry) => `${entry.name} Online`)];
-const all173ToolDescriptions = [...generatedMetadata.map((entry) => entry.description), ...pdfGuideEntries.map((entry) => entry.purpose)];
-assert.equal(all173ToolTitles.length, 173, "Expected metadata titles for all 173 tools");
-assert.equal(new Set(all173ToolTitles.map((value) => value.trim().toLowerCase())).size, 173, "All 173 tool page titles must be unique across both route systems");
-assert.equal(new Set(all173ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 173, "All 173 tool meta descriptions must be unique across both route systems");
+const resumeBuilderPage = read("../app/resume-builder/page.tsx");
+const resumeBuilderTitle = resumeBuilderPage.match(/title:\\s*"([^"]+)"/)?.[1] ?? "";
+const resumeBuilderDescription = resumeBuilderPage.match(/description:\\s*"([^"]+)"/)?.[1] ?? "";
+const canonicalCatalogMetadata = generatedMetadata.filter((entry) => entry.slug !== "resume-builder");
+const all173ToolTitles = [...canonicalCatalogMetadata.map((entry) => entry.title), resumeBuilderTitle, ...pdfGuideEntries.map((entry) => `${entry.name} Online`)];
+const all173ToolDescriptions = [...canonicalCatalogMetadata.map((entry) => entry.description), resumeBuilderDescription, ...pdfGuideEntries.map((entry) => entry.purpose)];
+assert.equal(all173ToolTitles.length, 173, "Expected metadata titles for all 173 canonical tools");
+assert.equal(new Set(all173ToolTitles.map((value) => value.trim().toLowerCase())).size, 173, "All 173 canonical tool page titles must be unique across both route systems");
+assert.equal(new Set(all173ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 173, "All 173 canonical tool meta descriptions must be unique across both route systems");
 
 
 const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);

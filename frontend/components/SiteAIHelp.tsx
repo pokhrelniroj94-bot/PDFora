@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { localeFromPathname } from "../lib/i18n/shared-ui";
 
@@ -34,6 +34,18 @@ export default function SiteAIHelp() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [pageContext, setPageContext] = useState("");
+  const requestController = useRef<AbortController | null>(null);
+
+  // A client-side language switch starts a fresh conversation in the new language.
+  // Abort any in-flight answer so it cannot leak into the new locale's chat.
+  useEffect(() => {
+    requestController.current?.abort();
+    requestController.current = null;
+    setBusy(false);
+    setQuestion("");
+    setError("");
+    setMessages([{ role: "assistant", text: isNepali ? "नमस्कार! म PDFora AI सहायता हुँ। टुल प्रयोग गर्न, नतिजा बुझ्न वा समस्या समाधान गर्न के सहयोग चाहिन्छ?" : "Namaste! I am PDFora AI Help. How can I help you use a tool, understand a result or solve a problem?" }]);
+  }, [locale, isNepali]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -69,10 +81,14 @@ export default function SiteAIHelp() {
     setQuestion("");
     setError("");
     setBusy(true);
+    const controller = new AbortController();
+    requestController.current?.abort();
+    requestController.current = controller;
     try {
       const response = await fetch("/api/ai-writing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           kind: "site-help",
           page: pathname || "/",
@@ -87,9 +103,12 @@ export default function SiteAIHelp() {
       if (!answer) throw new Error("AI returned an empty answer. Please try again.");
       setMessages((old) => [...old, { role: "assistant", text: answer }]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "AI help is temporarily unavailable.");
+      if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "AI help is temporarily unavailable.");
     } finally {
-      setBusy(false);
+      if (requestController.current === controller) {
+        requestController.current = null;
+        setBusy(false);
+      }
     }
   }
 

@@ -13,8 +13,10 @@ assert.match(runNepaliMathTool("fraction-calculator", { a: "1", b: "2", c: "0", 
 assert.match(runNepaliMathTool("percentage-of-number-calculator", { number: "200", percentage: "15" }), /= 30/);
 assert.equal(runNepaliMathTool("gcd-lcm-calculator", { a: "12", b: "18" }), "महत्तम समापवर्तक (GCD): 6\nलघुत्तम समापवर्त्य (LCM): 36");
 assert.match(runNepaliMathTool("prime-number-checker", { number: "17" }), /अभाज्य संख्या हो/);
-assert.match(runNepaliMathTool("prime-number-checker", { number: "21" }), /अभाज्य संख्या होइन/);\nassert.match(runNepaliMathTool("prime-number-checker", { number: "1000000000001" }), /भन्दा सानो हुनुपर्छ/);\nassert.match(runNepaliMathTool("gcd-lcm-calculator", { a: "9007199254740991", b: "9007199254740990" }), /LCM सुरक्षित पूर्णांक/);
+assert.match(runNepaliMathTool("prime-number-checker", { number: "21" }), /अभाज्य संख्या होइन/);
+assert.match(runNepaliMathTool("prime-number-checker", { number: "1000000000001" }), /भन्दा सानो हुनुपर्छ/);
+assert.match(runNepaliMathTool("gcd-lcm-calculator", { a: "9007199254740991", b: "9007199254740990" }), /LCM सुरक्षित पूर्णांक/);
 assert.match(runNepaliMathTool("unit-converter", { amount: "1", fromUnit: "km", toUnit: "m" }), /1 km = 1,000 m/);
 assert.match(runNepaliMathTool("unit-converter", { amount: "1", fromUnit: "kg", toUnit: "g" }), /1 kg = 1,000 g/);
 assert.match(runNepaliMathTool("unit-converter", { amount: "1", fromUnit: "kg", toUnit: "m" }), /एउटै प्रकारका एकाइ/);
-console.log("Nepali math utility functional tests passed (15 assertions).");
+console.log("Nepali math utility functional tests passed (17 assertions).");

@@ -379,7 +379,7 @@ async function runTool(tool, index) {
         isBody: active === document.body,
         advanced: active !== window.__pdforaFocusStart,
       };
-    }`);
+    })()`);
     row.keyboardNavigation = { start: focusStart, afterTab: keyboardState };
     if (!keyboardState.tag || keyboardState.isBody || !keyboardState.advanced) {
       throw new Error("Tab key did not advance focus from the first visible interactive control.");

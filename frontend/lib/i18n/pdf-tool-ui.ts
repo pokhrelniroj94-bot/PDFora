@@ -1,4 +1,4 @@
-import type { Locale } from "./config";
+import { isLocale, type Locale } from "./config";
 
 export type PdfToolCopy = {
   allTools: string; back: string; toolLabel: string; chooseDropMultiple: string;
@@ -91,10 +91,81 @@ const dictionaries: Record<Locale, PdfToolCopy> = {
     privacyAnswer:"अनुरोधित कार्रवाई पूरी करने के लिए फ़ाइलें सुरक्षित रूप से PDFora प्रोसेसिंग सेवा को भेजी जाती हैं। ऐसी संवेदनशील जानकारी वाले दस्तावेज़ अपलोड न करें जिन्हें आप ऑनलाइन प्रोसेस नहीं करवाना चाहते।",
     maxSizeError:"{name} प्रति फ़ाइल 50 MB की सीमा से बड़ी है।"
   },
-  // These locales remain unpublished until reviewed dictionaries are added.
-  bn: en,
-  ur: en,
-  pt: en,
+  bn: {
+    allTools:"সব টুল", back:"ফিরে যান", toolLabel:"PDFora টুল",
+    chooseDropMultiple:"PDF ফাইল বেছে নিন বা এখানে ছেড়ে দিন", chooseDropSingle:"PDF ফাইল বেছে নিন বা এখানে ছেড়ে দিন",
+    chooseFilesAria:"PDF ফাইল বেছে নিন বা এখানে ছেড়ে দিন", filesSelected:"টি ফাইল নির্বাচিত",
+    pdfFilesLimit:"প্রতিটি PDF ফাইল সর্বোচ্চ 50 MB", chooseFile:"ফাইল বেছে নিন", selectedFiles:"নির্বাচিত ফাইল",
+    removeFile:"সরান", rotationAngle:"ঘোরানোর কোণ", enterValue:"মান লিখুন", processing:"প্রক্রিয়াকরণ চলছে…",
+    selectFile:"অনুগ্রহ করে একটি ফাইল বেছে নিন।", requiredInfo:"প্রয়োজনীয় তথ্য লিখুন।",
+    processingFailed:"PDF প্রক্রিয়াকরণ ব্যর্থ হয়েছে।", completed:"সফলভাবে সম্পন্ন হয়েছে। ডাউনলোড শুরু হয়েছে।",
+    serverTimeout:"প্রক্রিয়াকরণ সার্ভার উত্তর দিতে বেশি সময় নিয়েছে। সার্ভার চালু হচ্ছে বা ব্যস্ত থাকতে পারে। আবার চেষ্টা করুন।",
+    connectionFailed:"প্রক্রিয়াকরণ সার্ভারে সংযোগ করা যায়নি। সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।",
+    couldNotProcess:"PDF প্রক্রিয়াকরণ করা যায়নি।",
+    connectingServer:"PDFora প্রক্রিয়াকরণ সার্ভারে সংযোগ করা হচ্ছে। সার্ভার নিষ্ক্রিয় থাকলে প্রথম অনুরোধে এক মিনিট পর্যন্ত লাগতে পারে।",
+    easy:"সহজ", easyDescription:"ফাইল বেছে নিয়ে এক ট্যাপেই প্রক্রিয়া করুন।",
+    private:"গোপনীয়", privateDescription:"ফাইল PDFora ব্যাকএন্ডে প্রক্রিয়াকরণ করা হয়।",
+    mobileReady:"মোবাইল উপযোগী", mobileDescription:"ফোন ও ডেস্কটপে সহজে ব্যবহারের জন্য তৈরি।",
+    howToUse:"ব্যবহারের নিয়ম", stepSelect:"আপলোড এলাকায় PDF ফাইল বেছে নিন বা টেনে এনে ছেড়ে দিন।",
+    stepOptions:"এই টুলে দেখানো প্রয়োজনীয় বিকল্পগুলো লিখুন।",
+    stepProcess:"প্রক্রিয়াকরণ বোতামে চাপ দিন এবং PDFora ফাইল প্রস্তুত করা পর্যন্ত অপেক্ষা করুন।",
+    stepDownload:"প্রক্রিয়াকরণ শেষ হলে ফলাফলের ফাইল স্বয়ংক্রিয়ভাবে ডাউনলোড হবে।",
+    freeQuestion:"এই PDF টুল কি বিনামূল্যে ব্যবহার করা যায়?",
+    freeAnswer:"ডেস্কটপ সফটওয়্যার ইনস্টল না করেই অনলাইনে এই PDFora টুল ব্যবহার করতে পারেন। ফাইল বেছে নিন, কাজটি চালান এবং ফলাফল ডাউনলোড করুন।",
+    privacyQuestion:"আমার ফাইল কি ব্যক্তিগত থাকে?",
+    privacyAnswer:"অনুরোধ করা কাজ সম্পন্ন করতে ফাইল নিরাপদে PDFora প্রক্রিয়াকরণ পরিষেবায় পাঠানো হয়। অনলাইনে প্রক্রিয়া করতে চান না এমন সংবেদনশীল তথ্যযুক্ত নথি আপলোড করবেন না।",
+    maxSizeError:"{name} প্রতি ফাইলে 50 MB সীমা অতিক্রম করেছে।"
+  },
+  ur: {
+    allTools:"تمام ٹولز", back:"واپس", toolLabel:"PDFora ٹول",
+    chooseDropMultiple:"PDF فائلیں منتخب کریں یا یہاں چھوڑیں", chooseDropSingle:"PDF فائل منتخب کریں یا یہاں چھوڑیں",
+    chooseFilesAria:"PDF فائلیں منتخب کریں یا یہاں چھوڑیں", filesSelected:"فائلیں منتخب ہوئیں",
+    pdfFilesLimit:"ہر PDF فائل زیادہ سے زیادہ 50 MB", chooseFile:"فائل منتخب کریں", selectedFiles:"منتخب فائلیں",
+    removeFile:"ہٹائیں", rotationAngle:"گھماؤ کا زاویہ", enterValue:"قدر درج کریں", processing:"پروسیسنگ جاری ہے…",
+    selectFile:"براہ کرم فائل منتخب کریں۔", requiredInfo:"براہ کرم مطلوبہ معلومات درج کریں۔",
+    processingFailed:"PDF کی پروسیسنگ ناکام ہو گئی۔", completed:"کامیابی سے مکمل ہوا۔ ڈاؤن لوڈ شروع ہو گیا۔",
+    serverTimeout:"پروسیسنگ سرور نے جواب دینے میں بہت وقت لیا۔ ممکن ہے وہ شروع ہو رہا ہو یا مصروف ہو۔ دوبارہ کوشش کریں۔",
+    connectionFailed:"پروسیسنگ سرور سے رابطہ نہیں ہو سکا۔ اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
+    couldNotProcess:"PDF پر کارروائی نہیں ہو سکی۔",
+    connectingServer:"PDFora کے پروسیسنگ سرور سے رابطہ ہو رہا ہے۔ اگر سرور غیر فعال تھا تو پہلی درخواست میں ایک منٹ لگ سکتا ہے۔",
+    easy:"آسان", easyDescription:"فائل منتخب کریں اور ایک ٹچ سے پروسیس کریں۔",
+    private:"نجی", privateDescription:"فائلیں PDFora کے بیک اینڈ پر پروسیس ہوتی ہیں۔",
+    mobileReady:"موبائل کے لیے موزوں", mobileDescription:"فون اور ڈیسک ٹاپ پر آسان استعمال کے لیے تیار کیا گیا ہے۔",
+    howToUse:"استعمال کا طریقہ", stepSelect:"اپ لوڈ والے حصے میں PDF فائل منتخب کریں یا گھسیٹ کر چھوڑیں۔",
+    stepOptions:"اس ٹول کے لیے دکھائے گئے ضروری اختیارات درج کریں۔",
+    stepProcess:"پروسیس بٹن دبائیں اور PDFora کے فائل تیار کرنے تک انتظار کریں۔",
+    stepDownload:"پروسیسنگ مکمل ہونے پر نتیجے کی فائل خود بخود ڈاؤن لوڈ ہو جائے گی۔",
+    freeQuestion:"کیا یہ PDF ٹول مفت ہے؟",
+    freeAnswer:"آپ ڈیسک ٹاپ سافٹ ویئر انسٹال کیے بغیر یہ PDFora ٹول آن لائن استعمال کر سکتے ہیں۔ فائل منتخب کریں، کارروائی چلائیں اور نتیجہ ڈاؤن لوڈ کریں۔",
+    privacyQuestion:"کیا میری فائلیں نجی رہتی ہیں؟",
+    privacyAnswer:"درخواست کردہ کارروائی مکمل کرنے کے لیے فائلیں محفوظ طریقے سے PDFora پروسیسنگ سروس کو بھیجی جاتی ہیں۔ ایسی حساس معلومات والی دستاویزات اپ لوڈ نہ کریں جنہیں آپ آن لائن پروسیس نہیں کروانا چاہتے۔",
+    maxSizeError:"{name} فی فائل 50 MB کی حد سے بڑی ہے۔"
+  },
+  pt: {
+    allTools:"Todas as ferramentas", back:"Voltar", toolLabel:"Ferramenta PDFora",
+    chooseDropMultiple:"Selecione ou arraste arquivos PDF", chooseDropSingle:"Selecione ou arraste um arquivo PDF",
+    chooseFilesAria:"Selecione ou arraste arquivos PDF", filesSelected:"arquivos selecionados",
+    pdfFilesLimit:"Arquivos PDF de até 50 MB cada", chooseFile:"Escolher arquivo", selectedFiles:"Arquivos selecionados",
+    removeFile:"Remover", rotationAngle:"Ângulo de rotação", enterValue:"Digite um valor", processing:"Processando…",
+    selectFile:"Selecione um arquivo.", requiredInfo:"Digite as informações necessárias.",
+    processingFailed:"Falha ao processar o PDF.", completed:"Concluído com sucesso. O download foi iniciado.",
+    serverTimeout:"O servidor de processamento demorou demais para responder. Ele pode estar iniciando ou ocupado. Tente novamente.",
+    connectionFailed:"Não foi possível conectar ao servidor de processamento. Verifique sua conexão e tente novamente.",
+    couldNotProcess:"Não foi possível processar o PDF.",
+    connectingServer:"Conectando ao servidor de processamento do PDFora. Se estava inativo, a primeira solicitação pode levar até um minuto.",
+    easy:"Fácil", easyDescription:"Escolha seu arquivo e processe com um toque.",
+    private:"Privado", privateDescription:"Os arquivos são processados pelo back-end do PDFora.",
+    mobileReady:"Pronto para celular", mobileDescription:"Projetado para funcionar bem em celulares e computadores.",
+    howToUse:"Como usar", stepSelect:"Selecione ou arraste seu PDF para a área de envio.",
+    stepOptions:"Preencha as opções necessárias exibidas por esta ferramenta.",
+    stepProcess:"Clique em processar e aguarde enquanto o PDFora prepara seu arquivo.",
+    stepDownload:"Quando o processamento terminar, o arquivo de saída será baixado automaticamente.",
+    freeQuestion:"Esta ferramenta PDF é gratuita?",
+    freeAnswer:"Você pode usar esta ferramenta PDFora on-line sem instalar programas no computador. Escolha o arquivo, execute a operação e baixe o resultado.",
+    privacyQuestion:"Meus arquivos permanecem privados?",
+    privacyAnswer:"Os arquivos são enviados com segurança ao serviço de processamento do PDFora para concluir a operação solicitada. Evite enviar documentos com informações que não deseja processar on-line.",
+    maxSizeError:"{name} excede o limite de 50 MB por arquivo."
+  },
   es: {
     allTools:"Todas las herramientas", back:"Volver", toolLabel:"Herramienta de PDFora",
     chooseDropMultiple:"Selecciona o arrastra archivos PDF", chooseDropSingle:"Selecciona o arrastra un archivo PDF",
@@ -248,6 +319,7 @@ const dictionaries: Record<Locale, PdfToolCopy> = {
 };
 
 export function getPdfToolCopy(pathname: string): PdfToolCopy {
-  const firstSegment = pathname.split("/").filter(Boolean)[0] as Locale | undefined;
-  return dictionaries[firstSegment && firstSegment in dictionaries ? firstSegment : "en"];
+  const firstSegment = pathname.split("/").filter(Boolean)[0];
+  const locale: Locale = isLocale(firstSegment) ? firstSegment : "en";
+  return dictionaries[locale];
 }

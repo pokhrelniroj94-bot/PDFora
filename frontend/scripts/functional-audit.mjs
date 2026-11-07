@@ -9,7 +9,7 @@ const { toolCatalog } = mods.toolCatalog;
 const { legacyToolSlugs } = mods["legacy-tool-slugs"];
 const reserved = mods.adapter.RESERVED_CATALOG_SLUGS;
 const catalog = toolCatalog.filter((entry) => !reserved.has(entry.slug));
-const commit = execFileSync("git", ["rev-parse", "HEAD"], {
+const commit = process.env.GITHUB_SHA || execFileSync("git", ["rev-parse", "HEAD"], {
   cwd: path.join(frontendRoot, ".."),
   encoding: "utf8",
 }).trim();
@@ -75,8 +75,11 @@ const rows = [
     handlerStatus: functionalStatusFor(slug, "pdf"),
     functionalTestStatus: functionalStatusFor(slug, "pdf"),
     outputVerificationStatus: browserResults.get(slug)?.outputVerified ? "PASS" : browserResults.get(slug)?.status === "FAIL" ? "FAIL" : "PARTIAL",
-    mobileStatus: "NOT TESTED",
-    accessibilityStatus: "NOT TESTED",
+    mobileStatus: browserResults.get(slug)?.mobileViewport
+      ? (browserResults.get(slug).mobileViewport.documentWidth <= browserResults.get(slug).mobileViewport.viewportWidth + 2 &&
+         browserResults.get(slug).mobileViewport.mainWidth <= browserResults.get(slug).mobileViewport.mainClientWidth + 2 ? "PASS" : "FAIL")
+      : "NOT TESTED",
+    accessibilityStatus: browserResults.get(slug)?.accessibility?.status ?? "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
     defectsFound: [slug === "reorder-pdf" || slug === "delete-pages" ? "Shared browser worker previously accepted unsafe page selections." : "", ...(browserResults.get(slug)?.errors ?? [])].filter(Boolean).join("; "),
@@ -97,8 +100,11 @@ const rows = [
     handlerStatus: functionalStatusFor(entry.slug, "catalog"),
     functionalTestStatus: functionalStatusFor(entry.slug, "catalog"),
     outputVerificationStatus: browserResults.get(entry.slug)?.outputVerified ? "PASS" : browserResults.get(entry.slug)?.status === "FAIL" ? "FAIL" : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
-    mobileStatus: "NOT TESTED",
-    accessibilityStatus: "NOT TESTED",
+    mobileStatus: browserResults.get(entry.slug)?.mobileViewport
+      ? (browserResults.get(entry.slug).mobileViewport.documentWidth <= browserResults.get(entry.slug).mobileViewport.viewportWidth + 2 &&
+         browserResults.get(entry.slug).mobileViewport.mainWidth <= browserResults.get(entry.slug).mobileViewport.mainClientWidth + 2 ? "PASS" : "FAIL")
+      : "NOT TESTED",
+    accessibilityStatus: browserResults.get(entry.slug)?.accessibility?.status ?? "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
     defectsFound: [entry.slug === "nepal-electricity-bill-calculator" ? "A hard-coded tariff estimator could become inaccurate after the ERC 2083 tariff directive." : entry.slug === "unit-converter" ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families." : uiRegressionCatalog.has(entry.slug) ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction." : "", ...(browserResults.get(entry.slug)?.errors ?? [])].filter(Boolean).join("; "),
@@ -138,7 +144,8 @@ const report = {
     sourceOfTruth: "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     statusRule: "Only executed tests produce PASS; source inspection produces PARTIAL or NOT TESTED.",
     limitations:
-      browserReport ? "Browser route and tool-action checks are included where the per-tool report records them. Mobile, accessibility, visual comparison and independent parsing of downloaded bytes remain separate." : "No browser E2E report is present. Mobile, accessibility and individual catalog-tool runtime verification are not claimed.",
+      browserReport ? "Browser route and tool-action checks are included where the per-tool report records them. Mobile overflow, Tab reachability and basic document/control semantics are recorded per route. This does not replace visual comparison, WCAG contrast measurement, screen-reader testing or exhaustive input validation." : "No browser E2E report is present. Mobile, accessibility and individual catalog-tool runtime verification are not claimed.",
+
   },
   evidence: {
     backendPdfSweep: pdfEvidence,
@@ -157,6 +164,13 @@ const report = {
     functionalNotTested: rows.filter((row) => row.functionalTestStatus === "NOT TESTED").length,
     browserE2ePass: browserReport?.counts?.pass ?? 0,
     browserE2eFail: browserReport?.counts?.fail ?? 0,
+    mobilePass: rows.filter((row) => row.mobileStatus === "PASS").length,
+    mobileNotTested: rows.filter((row) => row.mobileStatus === "NOT TESTED").length,
+    accessibilityPass: rows.filter((row) => row.accessibilityStatus === "PASS").length,
+    accessibilityPartial: rows.filter((row) => row.accessibilityStatus === "PARTIAL").length,
+    accessibilityNotTested: rows.filter((row) => row.accessibilityStatus === "NOT TESTED").length,
+    browserReportSourceCommit: browserReport?.sourceCommit ?? "unknown",
+    sourceCommitMatchesBrowserReport: Boolean(browserReport?.sourceCommit && browserReport.sourceCommit === commit),
   },
   tools: rows,
 };

@@ -9,14 +9,14 @@ This matrix contains one row for every combination of **12 configured locales ×
 - PDF tools: 49
 - Catalog utilities: 124
 - Unique tools: 173
-- Matrix rows: 2076
+- Matrix rows: 2,076
 - Published locales: en, ne
 - RTL locales: ur, ar
 
 | Locale | Published tool rows | Interface-present rows | Content-present rows | Index-eligible rows |
 |---|---:|---:|---:|---:|
-| en | 173 | 173 | 49 | 173 |
-| ne | 70 | 70 | 49 | 6 |
+| en | 173 | 173 | 49 | 172 |
+| ne | 173 | 173 | 49 | 6 |
 | hi | 0 | 0 | 0 | 0 |
 | bn | 0 | 0 | 0 | 0 |
 | ur | 0 | 0 | 0 | 0 |
@@ -28,9 +28,13 @@ This matrix contains one row for every combination of **12 configured locales ×
 | zh | 0 | 0 | 0 | 0 |
 | ja | 0 | 0 | 0 | 0 |
 
-## Current blockers
+## Current blockers and release gates
 
-- English is the source language. Nepali has 70 route-specific tool interfaces, but native-language review is not independently established.
-- Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
-- Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers.
+- Master had 114 Nepali tool equivalents (49 PDF, 64 catalog routes and Resume Builder). The PR #104 candidate has 173/173 (49 PDF, 123 catalog routes and Resume Builder), leaving only Market AI has a Nepali route, localized workspace copy and regression coverage; browser QA and native-speaker review remain outstanding.
+- The six index-approved Nepali PDF routes are a subset of the 173 localized interfaces. The other 167 localized tool equivalents remain excluded from indexing until their individual review and verification gates pass.
+- Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing. Shared-shell dictionaries do not count as localized tool interfaces.
+- Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers. Interface presence and guide presence do not imply runtime success or native-speaker review.
 - OCR is not counted among the 173 available tools because it remains excluded from the canonical PDF inventory.
+- Market AI remains not localized under the earlier instruction to defer AI-tool work.
+
+A tool is not eligible for indexing solely because a Nepali route or title exists. Its main visible content, forms, validation, results, errors, help and metadata must be localized and reviewed. Keep unreviewed pages noindex and out of sitemap/hreflang. Google Search Central: [localized versions](https://developers.google.com/search/docs/specialty/international/localized-versions) and [spam policies](https://developers.google.com/search/docs/essentials/spam-policies).

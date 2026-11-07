@@ -5,6 +5,7 @@ import { bmi, bmr, businessDaysInclusive, gcd } from "../lib/catalog-calculation
 import { addCalendarDays } from "../lib/date-time-calculations";
 import { jsonToYaml, parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
 import { csvToJson } from "../lib/catalog-text";
+import { localizeNepaliToolError, localizeNepaliToolOutput, nepaliQuickFieldLabel } from "../lib/i18n/nepali-catalog-tool-copy";
 
 type Values = Record<string, string>;
 const defaults: Record<string, Values> = {
@@ -48,7 +49,7 @@ const morse:Record<string,string>={a:".-",b:"-...",c:"-.-.",d:"-..",e:".",f:"..-
 const romanPairs:[number,string][]=[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
 function toRoman(value:number){let n=value,out="";for(const [v,s] of romanPairs)while(n>=v){out+=s;n-=v;}return out;}
 function fromRoman(s:string){const map:Record<string,number>={I:1,V:5,X:10,L:50,C:100,D:500,M:1000};let n=0;for(let i=0;i<s.length;i++){const v=map[s[i]],next=map[s[i+1]]||0;if(!v)throw Error("Invalid Roman numeral.");n+=v<next?-v:v;}if(n<1||n>3999||toRoman(n)!==s)throw Error("Use a canonical Roman numeral from I to MMMCMXCIX.");return n;}
-export default function QuickUtilityTools({slug}:{slug:string}) {
+export default function QuickUtilityTools({slug,locale="en"}:{slug:string;locale?:"en"|"ne"}) {
  const initial=defaults[slug]||{text:""};const [v,setV]=useState<Values>(initial);const [out,setOut]=useState("");const [error,setError]=useState("");
  const get=(k:string)=>v[k]??"";const n=(k:string)=>parseRequiredNumber(get(k));
  const randomBelow=(max:number)=>randomIntegerBelow(max,()=>crypto.getRandomValues(new Uint32Array(1))[0]);
@@ -104,14 +105,14 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "roman-numeral-converter":{const x=t.trim();if(/^\d+$/.test(x)){const value=Number(x);if(value<1||value>3999)throw Error("Enter an integer from 1 to 3999.");result=toRoman(value);}else result=String(fromRoman(x.toUpperCase()));break;}
  default:throw Error("This utility is not available yet. Please use the directory to find another tool.");
  }
- setOut(result);
- }catch(e){setError(e instanceof Error?e.message:"Could not process this input.");}};
+ setOut(locale === "ne" ? localizeNepaliToolOutput(slug, result) : result);
+ }catch(e){const message=e instanceof Error?e.message:"Could not process this input.";setError(locale === "ne" ? localizeNepaliToolError(message) : message);}};
  if(!initial)return <p className="text-sm text-slate-600">This tool is not configured.</p>;
  return <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
-  <div className="grid gap-4 sm:grid-cols-2">{Object.entries(v).map(([key,value])=><label key={key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{labels[key]||key}</span><input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={key==="date"||key==="start"||key==="end"?"date":slug==="css-gradient-generator"&&(key==="a"||key==="b")?"color":"text"} inputMode={numeric.has(key)?"decimal":"text"} value={value} onChange={e=>setV(p=>({...p,[key]:e.target.value}))}/></label>)}</div>
-  <div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">Run tool</button><button onClick={()=>{setV(initial);setOut("");setError("");}} className="rounded-xl border px-4 py-2.5 text-sm">Reset</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">Copy result</button>}</div>
+  <div className="grid gap-4 sm:grid-cols-2">{Object.entries(v).map(([key,value])=><label key={key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{locale === "ne" ? nepaliQuickFieldLabel(key, labels[key]||key) : labels[key]||key}</span><input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={key==="date"||key==="start"||key==="end"?"date":slug==="css-gradient-generator"&&(key==="a"||key==="b")?"color":"text"} inputMode={numeric.has(key)?"decimal":"text"} value={value} onChange={e=>setV(p=>({...p,[key]:e.target.value}))}/></label>)}</div>
+  <div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">{locale === "ne" ? "टुल चलाउनुहोस्" : "Run tool"}</button><button onClick={()=>{setV(initial);setOut("");setError("");}} className="rounded-xl border px-4 py-2.5 text-sm">{locale === "ne" ? "रिसेट" : "Reset"}</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">{locale === "ne" ? "नतिजा कपी गर्नुहोस्" : "Copy result"}</button>}</div>
   {error&&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{error}</p>}
   {out&&<div aria-live="polite" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5"><pre className="whitespace-pre-wrap break-words font-sans text-base leading-7">{out}</pre></div>}
-  <p className="text-xs leading-5 text-slate-500">Runs in your browser. Check important results independently. This tool does not send your input to a server.</p>
+  <p className="text-xs leading-5 text-slate-500">{locale === "ne" ? "यो टुल तपाईंको ब्राउजरमै चल्छ। महत्त्वपूर्ण नतिजा आफैं जाँच्नुहोस्। तपाईंको इनपुट सर्भरमा पठाइँदैन।" : "Runs in your browser. Check important results independently. This tool does not send your input to a server."}</p>
  </div>;
 }

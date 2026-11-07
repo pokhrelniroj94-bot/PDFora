@@ -20,7 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Every catalog tool gets exactly one sitemap URL. Existing PDF routes retain
   // their established root URLs; all other tools use /tools/<slug>.
   const catalogEntries: MetadataRoute.Sitemap = toolCatalog
-    .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf" && !legacyToolSlugSet.has(tool.slug))
+    .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf" && tool.slug !== "resume-builder" && !legacyToolSlugSet.has(tool.slug))
     .map((tool) => ({
       url: `${baseUrl}/tools/${tool.slug}`,
       changeFrequency: "monthly" as const,
@@ -63,6 +63,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/market`, changeFrequency: "daily", priority: 0.85 },
+    { url: `${baseUrl}/resume-builder`, changeFrequency: "monthly", priority: 0.65 },
     ...legacyPdfEntries,
     ...catalogEntries,
     { url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.8 },

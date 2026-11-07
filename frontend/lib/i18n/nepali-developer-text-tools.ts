@@ -1,7 +1,11 @@
 export type NepaliDeveloperToolSlug =
   | "json-formatter-validator" | "base64-encoder-decoder" | "url-encoder-decoder"
   | "hash-generator" | "text-diff-checker" | "lorem-ipsum-generator"
-  | "html-encoder-decoder" | "text-to-slug";
+  | "html-encoder-decoder" | "text-to-slug"
+  | "text-to-binary" | "binary-to-text" | "text-to-hex" | "hex-to-text" | "morse-code-translator"
+  | "camel-case-converter" | "snake-case-converter" | "kebab-case-converter" | "html-tag-stripper"
+  | "json-escape-unescape" | "url-query-parser" | "url-validator" | "email-validator"
+  | "password-strength-checker" | "uuid-generator";
 type Values = Record<string, string>;
 
 export function runNepaliDeveloperTool(slug: NepaliDeveloperToolSlug, values: Values): string {
@@ -78,6 +82,106 @@ export function runNepaliDeveloperTool(slug: NepaliDeveloperToolSlug, values: Va
       else { output.push(`- ${left[i++]}`); }
     }
     return output.join("\n");
+  }
+  if (slug === "text-to-binary") {
+    return Array.from(new TextEncoder().encode(text), (byte) => byte.toString(2).padStart(8, "0")).join(" ")
+      || "रूपान्तरण गर्न पाठ प्रविष्ट गर्नुहोस्।";
+  }
+  if (slug === "binary-to-text") {
+    const normalized = text.replace(/\s+/g, "");
+    if (!normalized || !/^[01]+$/.test(normalized) || normalized.length % 8 !== 0) return "बाइनरी पाठ ८-बिट समूहमा ० र १ मात्र हुनुपर्छ।";
+    try {
+      const bytes = Uint8Array.from(normalized.match(/.{8}/g) ?? [], (part) => Number.parseInt(part, 2));
+      return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    } catch { return "बाइनरी डेटा मान्य UTF-8 पाठ होइन।"; }
+  }
+  if (slug === "text-to-hex") {
+    return Array.from(new TextEncoder().encode(text), (byte) => byte.toString(16).padStart(2, "0")).join(" ")
+      || "रूपान्तरण गर्न पाठ प्रविष्ट गर्नुहोस्।";
+  }
+  if (slug === "hex-to-text") {
+    const normalized = text.replace(/^0x/i, "").replace(/[\s:-]/g, "");
+    if (!normalized || !/^(?:[0-9a-f]{2})+$/i.test(normalized)) return "Hex डेटा दुई-दुई अंकको वैध hexadecimal समूहमा हुनुपर्छ।";
+    try {
+      const bytes = Uint8Array.from(normalized.match(/.{2}/g) ?? [], (part) => Number.parseInt(part, 16));
+      return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    } catch { return "Hex डेटा मान्य UTF-8 पाठ होइन।"; }
+  }
+  if (slug === "morse-code-translator") {
+    const alphabet: Record<string, string> = {
+      A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.", G: "--.", H: "....",
+      I: "..", J: ".---", K: "-.-", L: ".-..", M: "--", N: "-.", O: "---", P: ".--.",
+      Q: "--.-", R: ".-.", S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-",
+      Y: "-.--", Z: "--..", "0": "-----", "1": ".----", "2": "..---", "3": "...--",
+      "4": "....-", "5": ".....", "6": "-....", "7": "--...", "8": "---..", "9": "----."
+    };
+    const reverse = Object.fromEntries(Object.entries(alphabet).map(([letter, code]) => [code, letter]));
+    if (values.mode === "decode") {
+      const decoded = text.trim().split(/\s*\/\s*/).map((word) => word.trim().split(/\s+/).map((code) => reverse[code] ?? "?").join("")).join(" ");
+      return decoded.includes("?") ? "Morse code मा नचिनिएको संकेत भेटियो।" : decoded;
+    }
+    const normalized = text.toUpperCase();
+    if (!/^[A-Z0-9\s]+$/.test(normalized)) return "Morse रूपान्तरणका लागि A–Z, 0–9 र खाली स्थान मात्र प्रयोग गर्नुहोस्।";
+    return normalized.split(/\s+/).map((word) => [...word].map((letter) => alphabet[letter]).join(" ")).join(" / ");
+  }
+  if (slug === "camel-case-converter" || slug === "snake-case-converter" || slug === "kebab-case-converter") {
+    const parts = text.normalize("NFKC").match(/[\p{L}\p{M}\p{N}]+/gu) ?? [];
+    if (!parts.length) return "रूपान्तरण गर्न शब्द प्रविष्ट गर्नुहोस्।";
+    const lower = parts.map((part) => part.toLocaleLowerCase());
+    if (slug === "snake-case-converter") return lower.join("_");
+    if (slug === "kebab-case-converter") return lower.join("-");
+    return lower[0] + lower.slice(1).map((part) => part[0].toLocaleUpperCase() + part.slice(1)).join("");
+  }
+  if (slug === "html-tag-stripper") {
+    return text.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, " ")
+      .replace(/<[^>]*>/g, " ")
+      .replace(/&nbsp;/gi, " ").replace(/&amp;/gi, "&").replace(/&lt;/gi, "<")
+      .replace(/&gt;/gi, ">").replace(/&quot;/gi, '"').replace(/&#39;/gi, "'")
+      .replace(/\s+/g, " ").trim();
+  }
+  if (slug === "json-escape-unescape") {
+    try {
+      return values.mode === "decode" ? JSON.parse('"' + text + '"') as string : JSON.stringify(text).slice(1, -1);
+    } catch { return "JSON escape sequence मान्य छैन।"; }
+  }
+  if (slug === "url-query-parser") {
+    try {
+      const parsed = new URL(text);
+      const params: Record<string, string | string[]> = {};
+      for (const [key, value] of parsed.searchParams.entries()) {
+        const current = params[key];
+        params[key] = current === undefined ? value : Array.isArray(current) ? [...current, value] : [current, value];
+      }
+      return Object.keys(params).length ? JSON.stringify(params, null, 2) : "URL मा query parameter भेटिएन।";
+    } catch { return "पूर्ण URL प्रविष्ट गर्नुहोस्, उदाहरण: https://example.com/?q=nepal"; }
+  }
+  if (slug === "url-validator") {
+    try {
+      const parsed = new URL(text);
+      if (!["http:", "https:"].includes(parsed.protocol) || !parsed.hostname.includes(".")) return "URL को ढाँचा मान्य छैन। HTTP वा HTTPS ठेगाना प्रयोग गर्नुहोस्।";
+      return "URL को ढाँचा मान्य छ। वेबसाइट पहुँचयोग्य छ भन्ने यसले प्रमाणित गर्दैन।";
+    } catch { return "URL को ढाँचा मान्य छैन। पूर्ण https:// ठेगाना प्रविष्ट गर्नुहोस्।"; }
+  }
+  if (slug === "email-validator") {
+    const valid = text.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(text);
+    return valid ? "इमेलको सामान्य ढाँचा मान्य छ; मेलबक्स अस्तित्वमा छ भन्ने पुष्टि होइन।" : "इमेल ठेगानाको सामान्य ढाँचा मान्य छैन।";
+  }
+  if (slug === "password-strength-checker") {
+    if (text.length > 128) return "पासवर्ड जाँचका लागि अधिकतम १२८ अक्षर प्रयोग गर्नुहोस्।";
+    const checks = [
+      text.length >= 12,
+      /[a-z]/.test(text),
+      /[A-Z]/.test(text),
+      /\d/.test(text),
+      /[^A-Za-z0-9]/.test(text)
+    ];
+    const score = checks.filter(Boolean).length;
+    const rating = score >= 4 ? "बलियो" : score >= 3 ? "मध्यम" : "कमजोर";
+    return "अनुमानित बल: " + rating + "\nपूरा भएका मापदण्ड: " + score + "/5\n" +
+      "लम्बाइ १२+, सानो अक्षर, ठूलो अक्षर, अंक र विशेष चिन्हमध्ये पूरा भएका मापदण्ड गनिएका छन्। यो सुरक्षा प्रमाणीकरण होइन।";
+  }
+  if (slug === "uuid-generator") {
+    return globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : "यो ब्राउजरमा सुरक्षित UUID सुविधा उपलब्ध छैन।";
   }
   return "";
 }

@@ -109,7 +109,7 @@ export function bmi(weightKg: number, heightCm: number): number {
 }
 
 export function bmr(weightKg: number, heightCm: number, age: number, female: boolean): number {
-  if (![weightKg, heightCm, age].every(Number.isFinite) || weightKg <= 0 || heightCm <= 0 || age <= 0) {
+  if (![weightKg, heightCm, age].every(Number.isFinite) || weightKg <= 0 || heightCm <= 0 || !Number.isSafeInteger(age) || age <= 0) {
     throw new Error("Enter positive weight, height and age.");
   }
   return 10 * weightKg + 6.25 * heightCm - 5 * age + (female ? -161 : 5);

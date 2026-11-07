@@ -4,6 +4,8 @@ import { calculateMarketRegime, calculateOhlcvIndicators, detectLargePriceGaps, 
 assert.equal(rsi(Array(20).fill(100), 19), 50, "flat market RSI must be neutral");
 assert.equal(rsi(Array.from({length: 20}, (_, i) => 100 + i), 19), 100, "all-up RSI must be 100");
 assert.equal(rsi(Array.from({length: 20}, (_, i) => 120 - i), 19), 0, "all-down RSI must be 0");
+const wilderSequence = [...Array.from({length: 15}, (_, i) => 100 + i), 113];
+assert.ok(Math.abs(rsi(wilderSequence, 15) - (100 - 100 / 14)) < 1e-9, "RSI must use Wilder smoothing after the initial period");
 
 const normalized = normalizeDailyBars([
   { date: "2026-01-01", close: 100, volume: 10 },

@@ -68,10 +68,11 @@ const html = await home.text();
 const canonicalTag = html.match(/<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/i)?.[0] || "";
 const canonicalHref = canonicalTag.match(/\bhref=["']([^"']+)["']/i)?.[1] || "";
 let canonicalUrl = null;
+const expectedCanonicalOrigin = process.env.PDFORA_EXPECT_CANONICAL_ORIGIN || new URL(base).origin;
 try { canonicalUrl = canonicalHref ? new URL(canonicalHref, base) : null; } catch { canonicalUrl = null; }
 check("homepage has a self-referencing canonical URL",
-  Boolean(canonicalUrl && canonicalUrl.origin === new URL(base).origin && canonicalUrl.pathname === "/"),
-  canonicalHref || "missing");
+  Boolean(canonicalUrl && canonicalUrl.origin === expectedCanonicalOrigin && canonicalUrl.pathname === "/"),
+  JSON.stringify({ base, expectedCanonicalOrigin, canonicalHref, canonicalOrigin: canonicalUrl?.origin, canonicalPath: canonicalUrl?.pathname }));
 check("homepage has document language", /<html[^>]+lang=["'](?:en|ne)["']/i.test(html));
 const report = { generatedAt: new Date().toISOString(), base, checks, counts: { pass: checks.filter((x) => x.status === "PASS").length, fail: failures.length } };
 console.log(JSON.stringify(report, null, 2));

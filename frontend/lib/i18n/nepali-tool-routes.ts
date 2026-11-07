@@ -75,6 +75,31 @@ export const nepaliLocalizedUtilitySlugs = [
   "gold-tola-gram-converter",
   "nepali-calendar",
   "loksewa-photo-resizer",
+  "password-generator",
+  "xml-formatter-validator",
+  "regex-tester",
+  "jwt-decoder",
+  "color-contrast-checker",
+  "css-minifier",
+  "json-to-csv",
+  "meta-title-checker",
+  "meta-description-checker",
+  "keyword-density-checker",
+  "robots-txt-generator",
+  "sitemap-generator",
+  "open-graph-preview",
+  "csv-to-json",
+  "json-to-yaml",
+  "random-number-generator",
+  "dice-roller",
+  "unix-timestamp-converter",
+  "date-add-subtract-calculator",
+  "business-days-calculator",
+  "px-rem-converter",
+  "aspect-ratio-calculator",
+  "color-converter",
+  "css-gradient-generator",
+  "roman-numeral-converter",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];
@@ -87,6 +112,9 @@ export const nepaliLocalizedFinancialSlugs = [
   "loan-emi-calculator",
   "compound-interest-sip-calculator",
   "discount-percentage-calculator",
+  "currency-converter",
+  "savings-goal-calculator",
+  "nepal-share-calculator",
 ] as const;
 
 export const nepaliLocalizedPublicInfoSlugs = [

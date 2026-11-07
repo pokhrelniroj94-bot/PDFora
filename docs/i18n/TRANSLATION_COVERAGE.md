@@ -11,7 +11,7 @@ Inventory: 68 frontend page source files, 6 API route source files, 49 English P
 | Code | Language | Status | Localized route equivalents | Shared UI module | PDF guides | Blog content |
 |---|---|---|---:|---:|---:|---:|
 | en | English | Source language; translation review not assessed | Source language | 100% | 100% | 100% |
-| ne | Nepali | Published; Market AI deferred | 206 | 100% | 100% | 100% |
+| ne | Nepali | Published; Market AI workspace added | 207 | 100% | 100% | 100% |
 | hi | Hindi | Not published | 0 | 100% | 0% | 0% |
 | bn | Bengali | Not published | 0 | 100% | 0% | 0% |
 | ur | Urdu | Not published | 0 | 100% | 0% | 0% |
@@ -25,7 +25,7 @@ Inventory: 68 frontend page source files, 6 API route source files, 49 English P
 
 The 100% shared UI figures cover only the typed shared-shell copy in `shared-ui.ts`; all twelve locales also have the three registered common, accessibility and SEO message namespaces. This is not full website translation and does not make the ten unpublished locales indexable.
 
-The Nepali route inventory is 206 equivalents: 49 PDF routes, 107 utility routes, 10 finance routes, two public-information routes, three career routes, the homepage, market dashboard, Resume Builder, blog index, 27 curated articles and four static pages.
+The Nepali route inventory is 207 equivalents: 49 PDF routes, 107 utility routes, 11 finance routes, two public-information routes, three career routes, the homepage, market dashboard, Resume Builder, blog index, 27 curated articles and four static pages.
 
 The canonical tool matrix contains 173/173 Nepali interfaces: 49 PDF tools, 122 catalog tool routes and the dedicated Resume Builder route. Market AI has a Nepali route, localized workspace copy and regression coverage; browser QA and native-speaker review remain outstanding.
 

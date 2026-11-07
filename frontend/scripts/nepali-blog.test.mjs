@@ -33,9 +33,6 @@ assert.ok(articlePage.includes("generateStaticParams"), "Nepali articles must be
 assert.ok(sitemap.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be included in sitemap");
 assert.ok(sitemap.includes("nepaliLocalizedUtilitySlugs") && sitemap.includes("nepaliLocalizedFinancialSlugs") && sitemap.includes("nepaliLocalizedCareerSlugs"), "Every published Nepali utility, financial and career tool must be included in sitemap");
 assert.ok(sitemap.includes("/ne/market") && sitemap.includes("/ne/resume-builder"), "Published Nepali market and resume pages must be included in sitemap");
-for (const match of nepaliToolRoutes.matchAll(/"([a-z0-9-]+)"/g)) {
-  if (nepaliToolRoutes.slice(0, nepaliToolRoutes.indexOf(match[0])).includes("nepaliLocalizedUtilitySlugs")) continue;
-}
 assert.ok(routing.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be registered for language switching and hreflang");
 
 console.log(`Nepali blog coverage passed: ${expected.length} editorial articles translated; ${localized.length} localized routes available.`);

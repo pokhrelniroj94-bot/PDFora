@@ -19,20 +19,18 @@ function fyStart(value: string) { const match = value.match(/(20\d{2})/); return
 export default function NepseFundamentalReview({ symbol, price }: { symbol: string; price: number }) {
   const [payload, setPayload] = useState<Payload | null>(null);
   const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [loadedSymbol, setLoadedSymbol] = useState("");
 
   useEffect(() => {
     let active = true;
-    setBusy(true); setError(""); setPayload(null);
     fetch("/api/nepse-research?symbol=" + encodeURIComponent(symbol), { cache: "no-store" })
       .then(async response => {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Company financial data is unavailable.");
         return data as Payload;
       })
-      .then(data => { if (active) setPayload(data); })
-      .catch(reason => { if (active) setError(reason instanceof Error ? reason.message : "Could not load company fundamentals."); })
-      .finally(() => { if (active) setBusy(false); });
+      .then(data => { if (active) { setPayload(data); setError(""); setLoadedSymbol(symbol); } })
+      .catch(reason => { if (active) { setError(reason instanceof Error ? reason.message : "Could not load company fundamentals."); setLoadedSymbol(symbol); } });
     return () => { active = false; };
   }, [symbol]);
 
@@ -55,7 +53,7 @@ export default function NepseFundamentalReview({ symbol, price }: { symbol: stri
     return { latest, epsGrowth: previous ? growth(latest.eps, previous.eps) : null, profitGrowth: previous ? growth(latest.profit, previous.profit) : null, reports: reports.length };
   }, [payload]);
 
-  if (busy) return <section className="rounded-2xl border border-slate-200 bg-white p-5"><h3 className="font-extrabold text-slate-900">Fundamental snapshot · {symbol}</h3><p className="mt-2 text-sm text-slate-500">Loading available company financial reports…</p></section>;
+  if (loadedSymbol !== symbol) return <section className="rounded-2xl border border-slate-200 bg-white p-5"><h3 className="font-extrabold text-slate-900">Fundamental snapshot · {symbol}</h3><p className="mt-2 text-sm text-slate-500">Loading available company financial reports…</p></section>;
   if (error) return <section className="rounded-2xl border border-slate-200 bg-white p-5"><h3 className="font-extrabold text-slate-900">Fundamental snapshot · {symbol}</h3><p className="mt-2 text-sm text-amber-800">{error} Technical analysis remains available without this optional dataset.</p></section>;
   const report = review.latest;
   if (!report) return <section className="rounded-2xl border border-slate-200 bg-white p-5"><h3 className="font-extrabold text-slate-900">Fundamental snapshot · {symbol}</h3><p className="mt-2 text-sm text-slate-600">{payload?.notice || "No structured company financial report was matched. Missing data is unavailable, not zero."}</p><p className="mt-2 text-xs text-slate-500">Provider: YONEPSE community dataset · not an official NEPSE API</p></section>;

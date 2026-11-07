@@ -2,7 +2,7 @@ import Link from "next/link";
 import AdsterraNative from "../../components/AdsterraNative";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
+import { blogPosts, getBlogPost, isCatalogGeneratedGuide, isGeneratedPdfGuide } from "../../../lib/blog-posts";
 import { hreflangMap } from "../../../lib/i18n/routing";
 
 const baseUrl = "https://pd-fora.vercel.app";

@@ -21,6 +21,9 @@ test("tool-language matrix accounts for every configured locale and unique tool"
     assert.equal(row?.functionalTest, "targeted-unit-tests", `${slug} should record only its executed targeted tests`);
   }
   assert.ok(report.rows.filter((row) => row.locale === "ne" && row.interface !== "not-implemented").every((row) => row.interface === "nepali-interface-present"), "Interface presence must not imply native-language review");
+  const nepaliGuides = report.rows.filter((row) => row.locale === "ne" && row.content !== "not-verified");
+  assert.equal(nepaliGuides.length, 49);
+  assert.ok(nepaliGuides.every((row) => row.content === "nepali-guide-present"), "Guide presence must not imply native-language review");
 });
 
 test("tool-language matrix keeps unpublished locales and unverified workflows out of indexing", () => {

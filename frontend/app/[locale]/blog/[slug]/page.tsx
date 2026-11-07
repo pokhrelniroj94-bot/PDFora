@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const post = getNepaliLocalizedBlogPost(slug);
   if (locale !== "ne" || !post) return { title: "Article not found", robots: { index: false, follow: true } };
-  return buildLocaleMetadata({ locale, path: `/blog/${post.slug}`, title: `${post.title} | PDFora`, description: post.description });
+  return buildLocaleMetadata({ locale, path: `/blog/${post.slug}`, title: post.title, description: post.description });
 }
 
 export default async function NepaliBlogArticle({ params }: Props) {

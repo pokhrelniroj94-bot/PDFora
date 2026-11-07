@@ -2,11 +2,11 @@
 
 ## Current continuation status — 2026-11-07 (refreshed after PR #90)
 
-Production branch: `master`, latest merged commit:
-`2cfbcffc6c1f41a488bd349be58518aa75faee95` (PR #90: seven Nepali business and salary calculators).
+Production branch: `master`, latest merged work includes PRs #90, #92, #94, #95 and #96. PR #95 added catalog input validation, CSV parsing, YAML serialization and unbiased random-number handling; PR #96 corrected fraction/date calculation behavior.
 
-- PR #90 is merged. Its GitHub Actions run #1510 passed both required jobs: backend syntax, functional regression tests and Python dependency audit; frontend catalog verification, i18n runtime/content checks, lint, production build and npm dependency audit.
-- The Vercel production deployment automatically triggered by the merge was canceled to preserve the requested single consolidated release after the remaining work is complete. No claim is made that this commit is live.
+- PR #95 merged and its production workflow run #1570 completed successfully.
+- PR #96 merged; its subsequent master workflow run #1575 completed the live-production job, but the frontend test job failed because one regression assertion expected `1/2 + 1/(-3) = -1/6`. The calculation correctly returns `+1/6`; the test expectation is wrong. A one-line correction is tracked in PR #98 and must pass full CI before the next consolidated release.
+- Do not treat a successful live-production smoke job as evidence that the full frontend test suite passed.
 - 12 locales are registered: English, Nepali, Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese. Only English and Nepali are published. The other ten remain unpublished and excluded from indexing; Arabic and Urdu require RTL visual QA before publication.
 - Current generated translation-coverage report (pending latest CI regeneration): 68 frontend page source files, 105 Nepali localized route equivalents, 49/49 Nepali PDF guide entries, and 27 curated Nepali editorial articles (19 Nepal-focused guides and 8 PDF workflow tutorials). The route percentage is a source-file proxy, not full UI-string coverage.
 - The current Nepali tool registry contains 70 of 173 localized tool interfaces (103 tool pages still need Nepali implementation) across the six PDF routes, utility, finance and AI-writing routes. Only six PDF routes are approved by the explicit default-deny indexability allowlist. Other localized tool pages remain noindex and excluded from sitemap/hreflang until their interfaces, messages, errors, help content and locale-specific behavior are fully reviewed and tested.

@@ -13,7 +13,7 @@ function fitDescription(value: string, max = 160): string {
 
 /** Pure metadata builder shared by the route helper and unit tests. */
 export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string): Metadata {
-  if (!guide) return { title: "PDF Tool | PDFora", robots: { index: false, follow: true } };
+  if (!guide) return { title: "PDF Tool", robots: { index: false, follow: true } };
 
   const url = `${SITE}/${slug}`;
   const title = `${guide.name} Online`;

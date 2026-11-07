@@ -31,8 +31,10 @@ export function discountedPrice(price: number, discount: number): { final: numbe
   if (!Number.isFinite(price) || !Number.isFinite(discount) || price < 0 || discount < 0 || discount > 100) {
     throw new Error("Enter a non-negative price and a discount from 0–100%.");
   }
-  const saved = price * discount / 100;
-  return { final: price - saved, saved };
+  const saved = price * (discount / 100);
+  const final = price - saved;
+  if (!Number.isFinite(saved) || !Number.isFinite(final)) throw new Error("Discount result exceeds the supported numeric range.");
+  return { final, saved };
 }
 
 export function percentageChange(original: number, next: number): number {

@@ -415,9 +415,6 @@ async function runTool(tool, index) {
         row.status = "PASS";
         return row;
       }
-      if (tool.slug === "case-converter") {
-        await page.evaluate("(() => { const button = [...document.querySelectorAll('button')].find((item) => item.innerText.trim().toUpperCase() === 'UPPERCASE' && !item.disabled); button?.click(); return !!button; })()");
-      }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
       } else if (tool.slug === "base64-encoder-decoder") {
@@ -462,6 +459,10 @@ async function runTool(tool, index) {
         await setFieldByLabel(page, "Phone number", "9800000000");
       } else if (tool.slug === "nepal-land-area-converter") {
         await setFieldByLabel(page, "Ropani", "1");
+      }
+      if (tool.slug === "case-converter") {
+        const buttonClicked = await page.evaluate("(() => { const button = [...document.querySelectorAll('button')].find((item) => item.innerText.trim().toUpperCase() === 'UPPERCASE' && !item.disabled); button?.click(); return !!button; })()");
+        if (!buttonClicked) throw new Error("Case converter uppercase action is missing.");
       }
       if (tool.slug === "image-compressor" || tool.slug === "image-format-converter" || tool.slug === "loksewa-photo-resizer") {
         const inputNode = await page.send("DOM.getDocument", { depth: 1 });

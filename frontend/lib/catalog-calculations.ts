@@ -63,7 +63,9 @@ export function simplifyRatio(a: number, b: number): string {
 }
 
 export function fractionOperation(a: number, b: number, c: number, d: number, operation: string): { numerator: number; denominator: number; value: number } {
-  if (![a, b, c, d].every(Number.isInteger) || !b || !d) throw new Error("Use integer numerators and non-zero denominators.");
+  if (![a, b, c, d].every(Number.isSafeInteger) || !b || !d) {
+    throw new Error("Use safe whole-number numerators and non-zero whole-number denominators.");
+  }
   let numerator: number;
   let denominator: number;
   if (operation === "+") { numerator = a * d + c * b; denominator = b * d; }
@@ -73,6 +75,10 @@ export function fractionOperation(a: number, b: number, c: number, d: number, op
     if (!c) throw new Error("Cannot divide by zero.");
     numerator = a * d; denominator = b * c;
   } else throw new Error("Operation must be +, -, * or /.");
+  if (!Number.isSafeInteger(numerator) || !Number.isSafeInteger(denominator) || denominator === 0) {
+    throw new Error("Fraction result exceeds the safe integer range.");
+  }
+  if (denominator < 0) { numerator = -numerator; denominator = -denominator; }
   const divisor = gcd(numerator, denominator);
   return { numerator: numerator / divisor, denominator: denominator / divisor, value: numerator / denominator };
 }
@@ -107,14 +113,23 @@ export function bmr(weightKg: number, heightCm: number, age: number, female: boo
 }
 
 export function businessDaysInclusive(start: string, end: string): number {
-  const current = new Date(`${start}T00:00:00`);
-  const target = new Date(`${end}T00:00:00`);
-  if (Number.isNaN(+current) || Number.isNaN(+target)) throw new Error("Enter valid dates.");
+  const parseDate = (value: string): Date => {
+    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) throw new Error("Enter dates in YYYY-MM-DD format.");
+    const [year, month, day] = value.split("-").map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+      throw new Error("Enter valid calendar dates.");
+    }
+    return date;
+  };
+  const current = parseDate(start);
+  const target = parseDate(end);
   const direction = current <= target ? 1 : -1;
   let count = 0;
   while (direction > 0 ? current <= target : current >= target) {
-    if (current.getDay() !== 0 && current.getDay() !== 6) count += direction;
-    current.setDate(current.getDate() + direction);
+    const weekday = current.getUTCDay();
+    if (weekday !== 0 && weekday !== 6) count += 1;
+    current.setUTCDate(current.getUTCDate() + direction);
   }
-  return Math.abs(count);
+  return count;
 }

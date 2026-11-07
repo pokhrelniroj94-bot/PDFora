@@ -621,11 +621,19 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "preeti-unicode-converter") {
         const output = await page.evaluate("document.querySelector('main [aria-live]')?.innerText || ''");
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Preeti converter did not return Devanagari output for the built-in Preeti sample.");
-        row.checks.push("Preeti sample converted to Devanagari Unicode");
+        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Preeti converter did not return Devanagari output for the known Preeti sample.");
+        const switched = await page.evaluate("(() => { const select = document.querySelector('main select'); if (!select) return false; select.value = 'to-preeti'; select.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
+        if (!switched) throw new Error("Preeti converter is missing its reverse-conversion selector.");
+        await setFirstTextArea(page, output);
+        const reverseClicked = await page.evaluate("(() => { const button = [...document.querySelectorAll('main button')].find((item) => item.innerText.trim() === 'Convert text' && !item.disabled); if (!button) return false; button.click(); return true; })()");
+        if (!reverseClicked) throw new Error("Preeti converter reverse action is unavailable.");
+        await delay(200);
+        const reversed = await page.evaluate("document.querySelector('main [aria-live]')?.innerText || ''");
+        if (!reversed || !/[A-Za-z]/.test(reversed)) throw new Error("Unicode-to-Preeti reverse conversion did not return encoded text.");
+        row.checks.push("Preeti → Unicode and Unicode → Preeti conversions verified");
         row.outputVerified = true;
         row.status = "PASS";
-        row.evidenceLevel = "preeti-unicode-output-verified";
+        row.evidenceLevel = "bidirectional-preeti-unicode-output-verified";
         return row;
       }
       if (tool.slug === "uuid-generator") {

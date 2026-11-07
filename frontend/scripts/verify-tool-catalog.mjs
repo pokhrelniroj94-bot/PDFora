@@ -131,6 +131,7 @@ assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must s
 const marketContext = read("../components/NepseMarketContext.tsx");
 const advancedIndicators = read("../components/NepseAdvancedIndicators.tsx");
 const marketIntelligence = read("../components/MarketIntelligence.tsx");
+const macroDrivers = read("../components/NepseMacroDrivers.tsx");
 const quantEngine = read("../lib/nepse-quant.mjs");
 const strategyLab = read("../components/NepseAlphaLab.tsx");
 assert.ok(quantEngine.includes(String.raw`/^\d{4}-\d{2}-\d{2}$/`), "NEPSE quant engine must validate real ISO dates");
@@ -145,4 +146,5 @@ assert.ok(strategyLab.includes("runBacktest") && quantEngine.includes("rows[51].
 assert.ok(strategyLab.includes("const costRate=Math.max") && strategyLab.includes("fmt(costRate)") && strategyLab.includes("historyStale") && strategyLab.includes("largeGaps"), "Backtest must show effective fees and flag stale/corporate-action data");
 assert.ok(quantEngine.includes("validTradingDate") && quantEngine.includes("nepalToday"), "NEPSE input must reject future-dated observations using Nepal local date");
 assert.ok(marketIntelligence.includes("NepseMarketContext") && marketIntelligence.includes("NepseAdvancedIndicators"), "NEPSE dashboard must render the deterministic market context and advanced indicators");
+assert.ok(marketIntelligence.includes("NepseMacroDrivers") && macroDrivers.includes("https://www.nrb.org.np/nsdp/") && macroDrivers.includes("Not scored live"), "NEPSE macro driver panel must link primary sources and disclose non-live scoring");
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

@@ -43,6 +43,8 @@ jobs:
       - run: npm ci
       - name: Verify every catalog tool has one implementation
         run: npm run verify:tools
+      - name: Run NEPSE deterministic numerical fixtures
+        run: npm run test:quant
       - run: npm run lint
       - run: npm run build
       - name: Audit npm dependencies

@@ -180,7 +180,41 @@ export function CatalogToolBody({slug,locale="en"}:{slug:string;locale?:"en"|"ne
     );
   }
  if(slug==="hash-generator"){return <><Field title="Text to hash"><textarea className={box+" min-h-32"} value={v("text")} onChange={e=>set("text",e.target.value)}/></Field>{action("Generate SHA-256 & SHA-1",()=>{setBusy(true);void (async()=>{const data=new TextEncoder().encode(v("text"));const rows=[];for(const alg of ["SHA-256","SHA-1"]){const digest=await crypto.subtle.digest(alg,data);rows.push(alg+": "+Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,"0")).join(""));}result(rows.join("\n"));setBusy(false);})();})}{busy&&<p className="mt-3 text-sm">Generating…</p>}{output&&<Result><pre className="whitespace-pre-wrap break-all">{output}</pre><div className="mt-2"><CopyButton value={output}/></div></Result>}<p className="mt-3 text-xs text-slate-500">MD5 is intentionally not provided; SHA-256 is recommended for integrity checks.</p></>;}
- if(imageTool)return <><Field title={locale==="ne"?"तस्बिर छान्नुहोस्":"Choose image"}><input className={box} type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" onChange={e=>setFile(e.target.files?.[0]??null)}/></Field>{file&&<p className="mt-2 text-sm text-slate-600">{file.name} · {(file.size/1024).toFixed(1)} KB</p>}{slug==="image-compressor"?<Field title={locale==="ne"?"गुणस्तर (०.१–१.०)":"Quality (0.1–1.0")}><input className={box} type="number" min="0.1" max="1" step="0.1" value={quality} onChange={e=>setQuality(e.target.value)}/></Field>:<Field title={locale==="ne"?"नतिजाको फाइल ढाँचा":"Output format"}><select className={box} value={format} onChange={e=>setFormat(e.target.value)}><option value="image/webp">WebP</option><option value="image/jpeg">JPEG</option><option value="image/png">PNG</option></select></Field>}<button disabled={busy} onClick={()=>void processImage()} className="mt-4 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">{busy?(locale==="ne"?"प्रक्रिया हुँदैछ…":"Processing…"):slug==="image-compressor"?(locale==="ne"?"तस्बिरको आकार घटाउनुहोस्":"Compress image"):(locale==="ne"?"तस्बिरको ढाँचा बदल्नुहोस्":"Convert image")}</button>{output&&<Result>{output}</Result>}<p className="mt-3 text-xs text-slate-500">{locale==="ne"?"तस्बिर तपाईंको ब्राउजरमै प्रक्रिया हुन्छ। PNG, JPEG, WebP, GIF वा BMP प्रयोग गर्नुहोस्। HEIC समर्थित छैन।":"Processing happens locally in your browser. Use PNG, JPEG, WebP, GIF or BMP images. HEIC is not supported by this tool."}</p></>;
+  if (imageTool) {
+    const chooseLabel = locale === "ne" ? "तस्बिर छान्नुहोस्" : "Choose image";
+    const outputLabel = locale === "ne" ? "नतिजाको फाइल ढाँचा" : "Output format";
+    const qualityLabel = locale === "ne" ? "गुणस्तर (०.१–१.०)" : "Quality (0.1–1.0)";
+    const processLabel = busy ? (locale === "ne" ? "प्रक्रिया हुँदैछ…" : "Processing…") :
+      slug === "image-compressor" ? (locale === "ne" ? "तस्बिरको आकार घटाउनुहोस्" : "Compress image") :
+      (locale === "ne" ? "तस्बिरको ढाँचा बदल्नुहोस्" : "Convert image");
+    const privacyNote = locale === "ne"
+      ? "तस्बिर तपाईंको ब्राउजरमै प्रक्रिया हुन्छ। PNG, JPEG, WebP, GIF वा BMP प्रयोग गर्नुहोस्। HEIC समर्थित छैन। JPEG मा पारदर्शी भाग सेतो हुन्छ। ४० मेगापिक्सेलभन्दा ठूलो तस्बिर अस्वीकार हुन्छ।"
+      : "Processing happens locally in your browser. Use PNG, JPEG, WebP, GIF or BMP images. HEIC is not supported. Transparency is flattened to white for JPEG. Images above 40 megapixels are rejected.";
+    return (
+      <>
+        <Field title={chooseLabel}>
+          <input className={box} type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+        </Field>
+        {file && <p className="mt-2 text-sm text-slate-600">{file.name} · {(file.size / 1024).toFixed(1)} KB</p>}
+        {slug === "image-compressor" ? (
+          <Field title={qualityLabel}>
+            <input className={box} type="number" min="0.1" max="1" step="0.1" value={quality} onChange={(e) => setQuality(e.target.value)} />
+          </Field>
+        ) : (
+          <Field title={outputLabel}>
+            <select className={box} value={format} onChange={(e) => setFormat(e.target.value)}>
+              <option value="image/webp">WebP</option>
+              <option value="image/jpeg">JPEG</option>
+              <option value="image/png">PNG</option>
+            </select>
+          </Field>
+        )}
+        <button disabled={busy} onClick={() => void processImage()} className="mt-4 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">{processLabel}</button>
+        {output && <Result>{output}</Result>}
+        <p className="mt-3 text-xs text-slate-500">{privacyNote}</p>
+      </>
+    );
+  }
  if(slug==="color-picker-palette"){const color=v("color","#0f766e");const rgb=(()=>{const n=parseInt(color.slice(1),16);return {r:(n>>16)&255,g:(n>>8)&255,b:n&255};})();const palette=[color,...[0.2,0.4,0.6,0.8].map(f=>"#"+[rgb.r,rgb.g,rgb.b].map(c=>Math.round(c+(255-c)*f).toString(16).padStart(2,"0")).join(""))];return <><Field title={locale==="ne"?"रङ छान्नुहोस्":"Pick a color"}><input className="h-16 w-full cursor-pointer rounded-xl border p-1" type="color" value={color} onChange={e=>set("color",e.target.value)}/></Field><div className="mt-4 grid gap-3 sm:grid-cols-2"><div className="rounded-xl p-5 text-white" style={{backgroundColor:color}}><p className="text-xs opacity-80">{locale==="ne"?"छानिएको रङ":"Selected color"}</p><p className="mt-2 text-2xl font-black">{color.toUpperCase()}</p></div><div className="rounded-xl bg-slate-50 p-5"><p>{locale==="ne"?"RGB मान":"RGB"}: <b>{rgb.r}, {rgb.g}, {rgb.b}</b></p><p className="mt-2">HEX: <b>{color.toUpperCase()}</b></p><CopyButton value={color.toUpperCase()}/></div></div><p className="mb-2 mt-5 text-sm font-bold">{locale==="ne"?"बनाइएको रङ समूह":"Generated palette"}</p><div className="grid grid-cols-5 gap-2">{palette.map(c=><button key={c} onClick={()=>set("color",c)} title={c} className="h-16 rounded-lg border" style={{backgroundColor:c}}/>)}</div></>;}
  if(quickUtilitySlugs.includes(slug)) return <QuickUtilityTools slug={slug}/>;
  return <ExtraTools slug={slug}/>;

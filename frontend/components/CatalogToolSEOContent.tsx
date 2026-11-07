@@ -281,7 +281,7 @@ export default function CatalogToolSEOContent({
       intro: "Browse the 2083 BS holiday calendar and check each listed holiday's corresponding Gregorian date and any national, regional or community-specific note supplied with the calendar.",
       steps: ["Browse or search the holiday list by name or date.", "Check the BS date and its corresponding AD date.", "Read whether the notice applies nationally or only to a specified region or community.", "Confirm any work, school or bank closure with the latest official notice."],
       example: "A holiday listed with both BS and AD dates lets you match a Nepali calendar date to the Gregorian date used by many digital calendars.",
-      note: "Government holiday lists can be amended and local closures may differ. Confirm the latest notice from the Government of Nepal or the relevant provincial or local authority before making travel or work plans."
+      note: "This transcription follows the Ministry of Home Affairs 2083 notice; its source page shows last updated 2083-04-22. It is not a live feed. Government amendments and local closures may differ, so confirm the latest notice from the Government of Nepal or the relevant provincial or local authority before making travel or work plans."
     },
     "nepali-unicode-typing": {
       heading: "Type Nepali Unicode using a Roman English keyboard",

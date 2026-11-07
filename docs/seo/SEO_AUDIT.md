@@ -24,8 +24,9 @@ ranking, indexing, traffic or Search Console claim.
   from the six approved localized tool pages.
 - `robots.txt` allows crawling of page HTML so Google can read noindex directives
   and disallows API routes. It advertises the root sitemap.
-- Global structured data declares WebSite, Organization and SoftwareApplication
-  entities and uses the request's rendered language.
+- Global layout structured data declares WebSite and Organization. The
+  SoftwareApplication entity is emitted only on the homepage, where the site is
+  described as an application; WebSite inLanguage follows the rendered language.
 - SEO regression tests check the default-deny localized indexability gate,
   canonical and reciprocal hreflang mappings, generated-guide sitemap exclusion,
   robots access to noindex pages and structured-data language.

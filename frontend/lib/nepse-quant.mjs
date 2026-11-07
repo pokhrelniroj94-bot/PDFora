@@ -95,3 +95,69 @@ export function runBacktest(rows, mode, costPct) {
     equity,
   };
 }
+
+export function calculateMarketRegime(input) {
+  const rows = normalizeDailyBars(input);
+  if (rows.length < 51) return { label: "Insufficient history", ret20: null, ret50: null, vol: null, close: null, ema20: null, ema50: null, asOf: rows.at(-1)?.date ?? "Unavailable" };
+  const closes = rows.map(row => row.close);
+  const ema = period => {
+    const k = 2 / (period + 1);
+    return closes.reduce((values, value, index) => { values.push(index ? value * k + values[index - 1] * (1 - k) : value); return values; }, []);
+  };
+  const e20 = ema(20), e50 = ema(50), last = closes.length - 1;
+  const ret20 = (closes[last] / closes[last - 20] - 1) * 100;
+  const ret50 = (closes[last] / closes[last - 50] - 1) * 100;
+  const dailyReturns = closes.slice(-21).slice(1).map((value, index) => value / closes.slice(-21)[index] - 1);
+  const mean = average(dailyReturns);
+  const variance = average(dailyReturns.map(value => (value - mean) ** 2));
+  const vol = Math.sqrt(variance) * Math.sqrt(252) * 100;
+  const bullish = closes[last] > e20[last] && e20[last] > e50[last] && ret20 > 0;
+  const bearish = closes[last] < e20[last] && e20[last] < e50[last] && ret20 < 0;
+  return { label: bullish ? "Bullish trend" : bearish ? "Bearish trend" : "Sideways / mixed", ret20, ret50, vol, close: closes[last], ema20: e20[last], ema50: e50[last], asOf: rows[last].date };
+}
+export function calculateOhlcvIndicators(input) {
+  const rows = normalizeDailyBars(input).map(row => {
+    const original = (Array.isArray(input) ? input : []).find(item => item?.date === row.date) ?? {};
+    return { ...row, high: Number(original.high), low: Number(original.low), volume: Number.isFinite(Number(original.volume)) && Number(original.volume) >= 0 ? Number(original.volume) : undefined };
+  });
+  const last = rows.at(-1);
+  if (!last) return null;
+  const candles = rows.slice(-30), full = candles.length >= 28 && candles.every(row => Number.isFinite(row.high) && Number.isFinite(row.low) && row.high >= row.low);
+  let atr = null, adx = null;
+  if (full) {
+    const tr = [], plus = [], minus = [];
+    for (let i = 1; i < candles.length; i++) {
+      const current = candles[i], previous = candles[i - 1];
+      const up = current.high - previous.high, down = previous.low - current.low;
+      tr.push(Math.max(current.high - current.low, Math.abs(current.high - previous.close), Math.abs(current.low - previous.close)));
+      plus.push(up > down && up > 0 ? up : 0);
+      minus.push(down > up && down > 0 ? down : 0);
+    }
+    const n = 14;
+    if (tr.length >= n) {
+      let smoothTr = average(tr.slice(0, n)), smoothPlus = average(plus.slice(0, n)), smoothMinus = average(minus.slice(0, n));
+      const dx = [];
+      const push = () => { const p = smoothTr ? 100 * smoothPlus / smoothTr : 0, m = smoothTr ? 100 * smoothMinus / smoothTr : 0; dx.push(p + m ? 100 * Math.abs(p - m) / (p + m) : 0); };
+      push();
+      for (let i = n; i < tr.length; i++) {
+        smoothTr = smoothTr - smoothTr / n + tr[i] / n;
+        smoothPlus = smoothPlus - smoothPlus / n + plus[i] / n;
+        smoothMinus = smoothMinus - smoothMinus / n + minus[i] / n;
+        push();
+      }
+      atr = smoothTr;
+      if (dx.length >= n) adx = average(dx.slice(-n));
+    }
+  }
+  const priorVolumes = rows.slice(-21, -1).map(row => row.volume).filter(value => Number.isFinite(value) && value >= 0);
+  const avgVolume = priorVolumes.length >= 10 ? average(priorVolumes) : null;
+  const volumeRatio = avgVolume !== null && avgVolume > 0 && Number.isFinite(last.volume) ? last.volume / avgVolume : null;
+  const obvAvailable = rows.every(row => Number.isFinite(row.volume));
+  let obvTrend = "Unavailable";
+  if (obvAvailable && rows.length >= 21) {
+    const obv = rows.map((row, index) => index ? 0 : 0);
+    for (let i = 1; i < rows.length; i++) obv[i] = obv[i - 1] + (rows[i].close > rows[i - 1].close ? 1 : rows[i].close < rows[i - 1].close ? -1 : 0) * rows[i].volume;
+    obvTrend = obv.at(-1) > obv[obv.length - 21] ? "Rising" : obv.at(-1) < obv[obv.length - 21] ? "Falling" : "Flat";
+  }
+  return { atr, adx, volumeRatio, obvTrend, atrPct: atr === null ? null : atr / last.close * 100 };
+}

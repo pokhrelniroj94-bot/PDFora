@@ -1,0 +1,21 @@
+import assert from "node:assert/strict";
+import { runNepaliDeveloperTool, runNepaliHashTool } from "../lib/i18n/nepali-developer-text-tools.ts";
+
+assert.equal(runNepaliDeveloperTool("json-formatter-validator", { text: '{"a":1}' }), '{\n  "a": 1\n}');
+assert.match(runNepaliDeveloperTool("json-formatter-validator", { text: "{" }), /JSON मान्य छैन/);
+assert.equal(runNepaliDeveloperTool("base64-encoder-decoder", { text: "नमस्ते" }), "4KSo4KSu4KWH4KSC");
+assert.equal(runNepaliDeveloperTool("base64-encoder-decoder", { text: "4KSo4KSu4KWH4KSC", mode: "decode" }), "नमस्ते");
+assert.match(runNepaliDeveloperTool("base64-encoder-decoder", { text: "%%%" , mode: "decode" }), /Base64 मान्य छैन/);
+assert.equal(runNepaliDeveloperTool("url-encoder-decoder", { text: "hello world/नेपाली" }), "hello%20world%2F%E0%A4%A8%E0%A5%87%E0%A4%AA%E0%A4%BE%E0%A4%B2%E0%A5%80");
+assert.equal(runNepaliDeveloperTool("url-encoder-decoder", { text: "hello%20world", mode: "decode" }), "hello world");
+assert.match(runNepaliDeveloperTool("url-encoder-decoder", { text: "%ZZ", mode: "decode" }), /encoding मान्य छैन/);
+assert.equal(runNepaliDeveloperTool("html-encoder-decoder", { text: '<a x="1">&' }), "&lt;a x=&quot;1&quot;&gt;&amp;");
+assert.equal(runNepaliDeveloperTool("html-encoder-decoder", { text: "&lt; नमस्ते &#33;", mode: "decode" }), "< नमस्ते !");
+assert.equal(runNepaliDeveloperTool("text-to-slug", { text: "नेपाली Tools २०२६" }), "नेपाली-tools-२०२६");
+assert.match(runNepaliDeveloperTool("lorem-ipsum-generator", { count: "2" }), /\n\n/);
+assert.match(runNepaliDeveloperTool("lorem-ipsum-generator", { count: "21" }), /१ देखि २०/);
+assert.equal(runNepaliDeveloperTool("text-diff-checker", { original: "a\nb", modified: "a\nc" }), "  a\n- b\n+ c");
+assert.match(runNepaliDeveloperTool("text-diff-checker", { original: "x\n".repeat(501), modified: "y" }), /अधिकतम ५००/);
+assert.equal(await runNepaliHashTool("abc", "SHA-256"), "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+assert.match(await runNepaliHashTool("abc", "MD5"), /SHA-256/);
+console.log("Nepali developer/text utility functional tests passed (17 assertions).");

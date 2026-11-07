@@ -116,6 +116,10 @@ function LoksewaPhotoResizer() {
         image.onerror = () => reject(new Error("फोटो खोल्न सकिएन। अर्को फाइल प्रयास गर्नुहोस्।"));
         image.src = sourceUrl;
       });
+      const sourcePixels = image.naturalWidth * image.naturalHeight;
+      if (!image.naturalWidth || !image.naturalHeight || !Number.isSafeInteger(sourcePixels) || sourcePixels > 25_000_000) {
+        throw new Error("फोटोको रिजोल्युसन धेरै ठूलो छ। २५ मेगापिक्सेलभन्दा कम भएको फोटो छान्नुहोस्।");
+      }
       const max = Number(dimension);
       const scale = Math.min(1, max / image.width, max / image.height);
       const width = Math.max(1, Math.round(image.width * scale));

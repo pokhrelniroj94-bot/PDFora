@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 
 type Bar = { date: string; close: number; volume?: number };
-type Trade = { buyDate: string; sellDate: string; buy: number; sell: number; returnPct: number; days: number };
+type Trade = { buyDate: string; sellDate: string; buy: number; sell: number; returnPct: number; pnl: number; days: number };
 type Result = { trades: Trade[]; strategyReturn: number; benchmarkReturn: number; winRate: number; maxDrawdown: number; profitFactor: number; exposure: number; equity: number[] };
 
 const panel = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5";
@@ -18,28 +18,46 @@ function rsi(v:number[], i:number, n=14) {
   return 100-100/(1+(gain/n)/(loss/n));
 }
 function runBacktest(rows:Bar[], mode:string, costPct:number):Result {
-  const trades:Trade[]=[]; let cash=1, units=0, entry=0, entryDate="", entryIndex=0;
+  const trades:Trade[]=[];
+  const closes=rows.map(x=>x.close);
+  let cash=1, units=0, entry=0, entryCapital=0, entryDate="", entryIndex=0;
   const equity:number[]=[];
+  const cost=costPct/100;
   for(let i=51;i<rows.length;i++){
-    const closes=rows.map(x=>x.close), p=closes[i], signalIndex=i-1, signalPrice=closes[signalIndex];
+    const p=closes[i], signalIndex=i-1, signalPrice=closes[signalIndex];
     const s20=sma(closes,20,signalIndex), s50=sma(closes,50,signalIndex), p20=sma(closes,20,signalIndex-1), p50=sma(closes,50,signalIndex-1);
     const r=rsi(closes,signalIndex), priorR=rsi(closes,signalIndex-1);
     let buy=false, sell=false;
-    if(mode==="sma"){buy=!!(s20&&s50&&p20&&p50&&s20>s50&&p20<=p50);sell=!!(s20&&s50&&p20&&p50&&s20<s50&&p20>=p50);}
+    if(mode==="sma"){buy=!!(s20!==null&&s50!==null&&p20!==null&&p50!==null&&s20>s50&&p20<=p50);sell=!!(s20!==null&&s50!==null&&p20!==null&&p50!==null&&s20<s50&&p20>=p50);}
     else if(mode==="rsi"){buy=!!(r!==null&&priorR!==null&&priorR<30&&r>=30);sell=!!(r!==null&&r>=70);}
-    else {const high=Math.max(...closes.slice(signalIndex-20,signalIndex));buy=signalPrice>high&&signalPrice>closes[signalIndex-1];sell=signalPrice<sma(closes,20,signalIndex)!;}
-    if(units===0&&buy){entry=p*(1+costPct/100);units=cash/entry;cash=0;entryDate=rows[i].date;entryIndex=i;}
-    else if(units>0&&(sell||i===rows.length-1)){
-      const exit=p*(1-costPct/100), value=units*exit, ret=(exit/entry-1)*100;
-      trades.push({buyDate:entryDate,sellDate:rows[i].date,buy:entry,sell:exit,returnPct:ret,days:i-entryIndex});
-      cash=value;units=0;
+    else {const high=Math.max(...closes.slice(signalIndex-20,signalIndex));buy=signalPrice>high&&signalPrice>closes[signalIndex-1];sell=signalPrice<(sma(closes,20,signalIndex)??Number.POSITIVE_INFINITY);}
+    // Signals use the previous completed close; fills occur at the next session's close.
+    if(units===0&&buy){
+      entry=p*(1+cost); entryCapital=cash; units=cash/entry; cash=0; entryDate=rows[i].date; entryIndex=i;
+    } else if(units>0&&(sell||i===rows.length-1)){
+      const exit=p*(1-cost), proceeds=units*exit, pnl=proceeds-entryCapital, ret=entryCapital>0?pnl/entryCapital*100:0;
+      trades.push({buyDate:entryDate,sellDate:rows[i].date,buy:entry,sell:exit,returnPct:ret,pnl,days:i-entryIndex});
+      cash=proceeds; units=0; entryCapital=0;
     }
-    equity.push(cash+units*p);
+    // Mark open positions at estimated net liquidation value, including exit-side costs.
+    equity.push(cash+units*p*(1-cost));
   }
-  const final=equity[equity.length-1]??1, peakSeries:number[]=[];let peak=1,maxDD=0;
-  for(const x of equity){peak=Math.max(peak,x);peakSeries.push(x);maxDD=Math.max(maxDD,(peak-x)/peak*100);}
-  const wins=trades.filter(t=>t.returnPct>0), grossWin=wins.reduce((a,t)=>a+t.returnPct,0), grossLoss=Math.abs(trades.filter(t=>t.returnPct<0).reduce((a,t)=>a+t.returnPct,0));
-  return {trades,strategyReturn:(final-1)*100,benchmarkReturn:(rows[rows.length-1].close/rows[50].close-1)*100,winRate:trades.length?wins.length/trades.length*100:0,maxDrawdown:maxDD,profitFactor:grossLoss?grossWin/grossLoss:grossWin?Infinity:0,exposure:equity.length?trades.reduce((a,t)=>a+t.days,0)/equity.length*100:0,equity:peakSeries};
+  const final=equity[equity.length-1]??1;
+  let peak=1,maxDD=0;
+  for(const value of equity){peak=Math.max(peak,value);maxDD=Math.max(maxDD,(peak-value)/peak*100);}
+  const wins=trades.filter(t=>t.pnl>0), losses=trades.filter(t=>t.pnl<0);
+  const grossWin=wins.reduce((a,t)=>a+t.pnl,0), grossLoss=Math.abs(losses.reduce((a,t)=>a+t.pnl,0));
+  const benchmarkStart=rows[50].close*(1+cost), benchmarkEnd=rows[rows.length-1].close*(1-cost);
+  return {
+    trades,
+    strategyReturn:(final-1)*100,
+    benchmarkReturn:(benchmarkEnd/benchmarkStart-1)*100,
+    winRate:trades.length?wins.length/trades.length*100:0,
+    maxDrawdown:maxDD,
+    profitFactor:grossLoss?grossWin/grossLoss:grossWin?Infinity:0,
+    exposure:equity.length?trades.reduce((a,t)=>a+t.days,0)/equity.length*100:0,
+    equity,
+  };
 }
 
 export default function NepseAlphaLab(){

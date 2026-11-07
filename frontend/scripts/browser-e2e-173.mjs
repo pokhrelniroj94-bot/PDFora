@@ -438,6 +438,8 @@ async function runTool(tool, index) {
         if (!selected) throw new Error("Image fixture was not attached.");
         row.checks.push("image file selected");
       }
+      if (tool.slug === "nepal-forex-rates") await delay(20000);
+      else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug)) await delay(5000);
       const clicked = await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
         const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*|show calendar)$/i;
@@ -448,11 +450,10 @@ async function runTool(tool, index) {
       if (clicked) {
         row.action = clicked;
         row.checks.push("primary action clicked");
-        await delay(["nepal-forex-rates"].includes(tool.slug) ? 20000 : ["currency-converter", "nepse-market-news", "preeti-unicode-converter"].includes(tool.slug) ? 5000 : 800);
+        await delay(["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug) ? 1500 : 800);
       } else {
         row.checks.push("reactive output/controls inspected (no submit button by design)");
-        if (tool.slug === "nepal-forex-rates") await delay(20000);
-        else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter"].includes(tool.slug)) await delay(5000);
+
       }
       const finalState = await page.evaluate(`(() => ({
         body: document.body?.innerText?.slice(-8000) || "",
@@ -471,6 +472,16 @@ async function runTool(tool, index) {
         "discount-percentage-calculator": "Price after discount: 800",
         "lorem-ipsum-generator": "lorem ipsum dolor sit amet",
         "text-diff-checker": "No differences found.",
+        "base64-encoder-decoder": "UERGb3JhIEUyRSB0ZXN0",
+        "url-encoder-decoder": "https%3A%2F%2Fexample.com%2Fa%20path%3Fq%3Dhello%20world",
+        "fraction-calculator": "5/6",
+        "unit-converter": "1000.000000 m",
+        "jwt-decoder": "\"sub\": \"e2e\"",
+        "line-counter": "Total lines: 4",
+        "text-to-binary": "01001000 01100101 01101100 01101100 01101111",
+        "bmi-calculator": "BMI: 22.5",
+        "bmr-calculator": "Estimated BMR: 1593 kcal/day",
+        "unix-timestamp-converter": "UTC: 2026-11-01T00:00:00.000Z",
         "json-formatter-validator": '"name": "PDFora"',
         "hash-generator": "SHA-256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "percentage-change-calculator": "20.00% increase",
@@ -557,6 +568,11 @@ async function runTool(tool, index) {
       };
       const expectedPatterns = {
         "age-calculator": /\d+ years, \d+ months, \d+ days/,
+        "word-character-counter": /Words\s*6/,
+        "case-converter": /PDFORA TOOLS MAKE EVERYDAY TASKS FASTER\./,
+        "color-picker-palette": /#0F766E/,
+        "nepali-unicode-typing": /[\u0900-\u097F]/,
+        "preeti-unicode-converter": /[\u0900-\u097F]/,
         "currency-converter": /1 USD = [\d,.]+ NPR/,
         "password-generator": /^[^\n]{20}\n[^\n]{20}\n[^\n]{20}$/,
         "uuid-generator": /^(?:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\n?){5}$/i,
@@ -571,7 +587,7 @@ async function runTool(tool, index) {
       };
       const expected = expectedOutputs[tool.slug];
       const expectedPattern = expectedPatterns[tool.slug];
-      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette", "nepal-land-area-converter"].includes(tool.slug) ? "\n" + finalState.body : "") + (tool.slug === "case-converter" ? "\n" + finalState.inputValues.map((input) => input.value).join("\n") : "");
+      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette", "nepal-land-area-converter"].includes(tool.slug) ? "\n" + finalState.body : "") + (["case-converter", "nepali-unicode-typing"].includes(tool.slug) ? "\n" + finalState.inputValues.map((input) => input.value).join("\n") : "");
       const normalizedLiveText = liveText.replace(/\s+/g, " ").trim();
       let outputMatches = expected ? normalizedLiveText.includes(expected.replace(/\s+/g, " ").trim()) : expectedPattern ? expectedPattern.test(liveText) : false;
       if (tool.slug === "password-generator") {

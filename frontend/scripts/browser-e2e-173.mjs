@@ -526,7 +526,7 @@ async function runTool(tool, index) {
         const generated = liveText.split(/\r?\n/).map((line) => line.trim()).filter((line) => /^[\x21-\x7e]{20}$/.test(line));
         outputMatches = generated.length >= 3;
       } else if (tool.slug === "random-number-generator") {
-        const generated = liveText.split(/\\r?\\n/).map((line) => line.trim()).filter((line) => /^\d+$/.test(line)).map(Number);
+        const generated = liveText.split(/\r?\n/).map((line) => line.trim()).filter((line) => /^\d+$/.test(line)).map(Number);
         outputMatches = generated.length >= 5 && generated.slice(0, 5).every((value) => Number.isInteger(value) && value >= 1 && value <= 100);
       } else if (tool.slug === "dice-roller") {
         const match = liveText.match(/Rolls:\s*(\d+)\s*,\s*(\d+)[\s\S]*?Total:\s*(\d+)/);

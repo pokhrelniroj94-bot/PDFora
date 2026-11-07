@@ -396,9 +396,69 @@ async function runTool(tool, index) {
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
       if (aiTools.has(tool.slug)) {
-        row.checks.push("AI page route rendered; execution intentionally skipped");
-        row.status = "PARTIAL";
-        row.evidenceLevel = "route-smoke-only";
+        if (tool.slug === "market-ai") {
+          row.checks.push("Market AI page route rendered; live model execution requires the protected Preview deployment");
+          row.status = "PARTIAL";
+          row.evidenceLevel = "route-smoke-only-live-provider-not-called";
+          return row;
+        }
+        const setup = await page.evaluate(`(() => {
+          const humanizer = location.pathname.endsWith("/ai-humanizer");
+          const field = humanizer
+            ? document.querySelector("main textarea")
+            : document.querySelector('main input[placeholder="e.g. Finance Assistant"]');
+          const consent = document.querySelector('main input[type="checkbox"]');
+          if (!field || !consent) return { ready: false };
+          const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+          const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+          setter?.call(field, humanizer ? "The report is due on 15 November 2026." : "Finance Assistant");
+          field.dispatchEvent(new Event("input", { bubbles: true }));
+          field.dispatchEvent(new Event("change", { bubbles: true }));
+          consent.click();
+          window.__pdforaAiSmoke = null;
+          const nativeFetch = window.fetch.bind(window);
+          window.fetch = async (input, init) => {
+            if (String(input).includes("/api/ai-writing")) {
+              window.__pdforaAiSmoke = { url: String(input), body: JSON.parse(String(init?.body || "{}")) };
+              return new Response(JSON.stringify({ text: "Synthetic AI response for UI verification." }), {
+                status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" }
+              });
+            }
+            return nativeFetch(input, init);
+          };
+          return { ready: true };
+        })()`);
+        if (!setup.ready) throw new Error("AI form is missing its required input or privacy consent control.");
+        const buttonText = tool.slug === "ai-humanizer" ? "Humanize text"
+          : tool.slug === "ai-cover-letter-generator" ? "Generate cover letter" : "Generate resume content";
+        const clicked = await page.evaluate(`(() => {
+          const button = [...document.querySelectorAll("main button")].find((item) => item.innerText.trim() === ${JSON.stringify(buttonText)});
+          if (!button || button.disabled) return false;
+          button.click();
+          return true;
+        })()`);
+        if (!clicked) throw new Error("AI generate button did not enable after valid input and privacy consent.");
+        let aiState = null;
+        for (let attempt = 0; attempt < 20; attempt += 1) {
+          await delay(100);
+          aiState = await page.evaluate(`(() => ({
+            request: window.__pdforaAiSmoke || null,
+            output: document.querySelector('main textarea[aria-label="Generated result"]')?.value || "",
+            busy: [...document.querySelectorAll("main button")].some((button) => button.disabled && /generating/i.test(button.innerText))
+          }))()`);
+          if (aiState.output) break;
+        }
+        if (!aiState?.request || aiState.request.body?.kind !== tool.slug) {
+          throw new Error("AI form did not send the expected task to /api/ai-writing.");
+        }
+        if (!aiState.output.includes("Synthetic AI response")) {
+          throw new Error("AI UI did not render the successful API response.");
+        }
+        row.checks.push("privacy consent enabled generation; correct task payload sent; generated response displayed (provider mocked)");
+        row.output = aiState.output;
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "ai-ui-flow-verified-with-mocked-api";
         return row;
       }
       if (tool.slug === "nepal-electricity-bill-calculator") {

@@ -18,6 +18,7 @@ const englishHomeSource = read("app/page.tsx");
 const nepaliHomeSource = read("app/ne/page.tsx");
 const blogArticleSource = read("app/blog/[slug]/page.tsx");
 const englishBlogIndexSource = read("app/blog/page.tsx");
+const toolsIndexSource = read("app/tools/page.tsx");
 const blogPostSource = read("lib/blog-posts.ts");
 const nepaliBlogArticleSource = read("app/[locale]/blog/[slug]/page.tsx");
 const localeMetadataSource = read("lib/i18n/metadata.ts");
@@ -162,6 +163,10 @@ assert.match(blogArticleSource, /robots:\s*(?:isCatalogGeneratedGuide\(post\.slu
 assert.match(blogPostSource, /generatedPdfGuideSlugs = new Set\(additionalToolBlogPosts\.map/, "Generated PDF blog guide variants must be explicitly classified");
 assert.match(blogArticleSource, /isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide articles must remain noindex");
 assert.match(englishBlogIndexSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must not appear as editorial blog cards");
+assert.match(englishBlogIndexSource, /twitter:\s*\{/, "Editorial blog index must provide Twitter preview metadata");
+assert.match(toolsIndexSource, /openGraph:\s*\{[\s\S]*?images:/, "All-tools directory must provide an Open Graph image");
+assert.match(toolsIndexSource, /twitter:\s*\{[\s\S]*?images:/, "All-tools directory must provide a Twitter preview image");
+for (const slug of approvedNepali) assert.ok(nepaliHomeSource.includes(`href: "/ne/${slug}"`), `Nepali homepage must link to its reviewed localized PDF tool: ${slug}`);
 assert.match(sitemapSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must be excluded from the sitemap");
 assert.match(toolSeoContentSource, /!isGeneratedPdfGuide\(guide\.blogSlug\)/, "PDF tool pages must link only to reviewed editorial guides");
 assert.match(catalogToolSeoContentSource, /guideSlug && !isCatalogGeneratedGuide\(guideSlug\)/, "Utility pages must not link to generated noindex catalog guide duplicates");

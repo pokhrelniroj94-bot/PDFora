@@ -4,6 +4,7 @@ import { useState } from "react";
 import { runNepaliDateTimeTool, type NepaliDateTimeSlug } from "../lib/i18n/nepali-date-time-tools";
 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
+const localToday = () => { const now = new Date(); return new Date(now.getTime() - now.getTimezoneOffset() * 60_000).toISOString().slice(0, 10); };
 const configs: Record<NepaliDateTimeSlug, { title: string; description: string }> = {
   "age-calculator": { title: "उमेर क्याल्कुलेटर", description: "जन्म मिति र गणना मितिका आधारमा वर्ष, महिना, दिन र कुल दिन निकाल्नुहोस्।" },
   "date-difference-calculator": { title: "मिति अन्तर क्याल्कुलेटर", description: "दुई मितिबीचको दिन, हप्ता र औसत महिनाको अन्तर निकाल्नुहोस्।" },
@@ -13,7 +14,7 @@ const configs: Record<NepaliDateTimeSlug, { title: string; description: string }
 export default function NepaliDateTimeWorkspace({ slug }: { slug: string }) {
   const toolSlug = slug as NepaliDateTimeSlug;
   const [values, setValues] = useState<Record<string, string>>({
-    birth: "2000-01-15", asOf: new Date().toISOString().slice(0, 10),
+    birth: "2000-01-15", asOf: localToday(),
     start: toolSlug === "time-duration-calculator" ? "09:00" : "2026-01-01",
     end: toolSlug === "time-duration-calculator" ? "17:00" : "2026-11-07",
   });

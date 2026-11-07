@@ -98,6 +98,8 @@ export function CatalogToolBody({slug,locale="en"}:{slug:string;locale?:"en"|"ne
  if(slug==="notes-to-pdf") return <NotesToPDF locale={locale} />;
  const processImage=async()=>{
   if(!file){result(locale==="ne"?"पहिले तस्बिर छान्नुहोस्।":"Choose an image first.");return;}
+  if(!["image/png","image/jpeg","image/webp","image/bmp"].includes(file.type)){result(locale==="ne"?"PNG, JPEG, WebP वा BMP फाइल मात्र प्रयोग गर्नुहोस्। Animated GIF र HEIC समर्थित छैनन्।":"Use PNG, JPEG, WebP or BMP files only. Animated GIF and HEIC are not supported.");return;}
+  if(slug==="image-compressor"&&(!Number.isFinite(Number(quality))||Number(quality)<0.1||Number(quality)>1)){result(locale==="ne"?"गुणस्तर ०.१ देखि १.० बीच राख्नुहोस्।":"Quality must be between 0.1 and 1.0.");return;}
   if(file.size>50*1024*1024){result(locale==="ne"?"५० MB भन्दा सानो तस्बिर छान्नुहोस्।":"Choose an image smaller than 50 MB.");return;}
   setBusy(true);
   let sourceUrl="";
@@ -188,12 +190,12 @@ export function CatalogToolBody({slug,locale="en"}:{slug:string;locale?:"en"|"ne
       slug === "image-compressor" ? (locale === "ne" ? "तस्बिरको आकार घटाउनुहोस्" : "Compress image") :
       (locale === "ne" ? "तस्बिरको ढाँचा बदल्नुहोस्" : "Convert image");
     const privacyNote = locale === "ne"
-      ? "तस्बिर तपाईंको ब्राउजरमै प्रक्रिया हुन्छ। PNG, JPEG, WebP, GIF वा BMP प्रयोग गर्नुहोस्। HEIC समर्थित छैन। JPEG मा पारदर्शी भाग सेतो हुन्छ। ४० मेगापिक्सेलभन्दा ठूलो तस्बिर अस्वीकार हुन्छ।"
-      : "Processing happens locally in your browser. Use PNG, JPEG, WebP, GIF or BMP images. HEIC is not supported. Transparency is flattened to white for JPEG. Images above 40 megapixels are rejected.";
+      ? "तस्बिर तपाईंको ब्राउजरमै प्रक्रिया हुन्छ। PNG, JPEG, WebP वा BMP प्रयोग गर्नुहोस्। Animated GIF र HEIC समर्थित छैनन्। JPEG मा पारदर्शी भाग सेतो हुन्छ। ४० मेगापिक्सेलभन्दा ठूलो तस्बिर अस्वीकार हुन्छ।"
+      : "Processing happens locally in your browser. Use PNG, JPEG, WebP or BMP images. Animated GIF and HEIC are not supported. Transparency is flattened to white for JPEG. Images above 40 megapixels are rejected.";
     return (
       <>
         <Field title={chooseLabel}>
-          <input className={box} type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+          <input className={box} type="file" accept="image/png,image/jpeg,image/webp,image/bmp" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
         </Field>
         {file && <p className="mt-2 text-sm text-slate-600">{file.name} · {(file.size / 1024).toFixed(1)} KB</p>}
         {slug === "image-compressor" ? (

@@ -1294,4 +1294,8 @@ const report = {
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
 console.log("BROWSER E2E SUMMARY " + JSON.stringify(report.counts));
-if (browserFailures) process.exitCode = 1;
+if (browserFailures || nepaliResults.some((row) => row.status !== "PASS")) {
+  const nepaliIncomplete = nepaliResults.filter((row) => row.status !== "PASS").length;
+  console.error("Browser QA release gate failed: " + browserFailures + " English tool failures; " + nepaliIncomplete + " Nepali routes partial or failed.");
+  process.exitCode = 1;
+}

@@ -31,7 +31,7 @@ function marketRegime(rows: Candle[]) {
 export default function NepseMarketContext({symbol,selectedPoints}:{symbol:string;selectedPoints:Candle[]}) {
   const [payload,setPayload]=useState<Payload|null>(null),[busy,setBusy]=useState(true),[error,setError]=useState("");
   useEffect(()=>{
-    let active=true; setBusy(true);setError("");
+    let active=true;
     fetch("/api/nepse-market?symbol=NEPSE&period=1Y",{cache:"no-store"}).then(async r=>{const d=await r.json();if(!r.ok)throw new Error(d.error||"Market context unavailable");return d as Payload;})
       .then(d=>{if(active)setPayload(d);}).catch(e=>{if(active)setError(e instanceof Error?e.message:"Market context unavailable");}).finally(()=>{if(active)setBusy(false);});
     return ()=>{active=false;};

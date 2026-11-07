@@ -1235,7 +1235,7 @@ async function runNepaliRoute(tool, index) {
         field.dispatchEvent(new Event("change", { bubbles: true }));
         return { count: fields.length, alert: document.querySelector("main [role=alert]")?.innerText || "" };
       }`);
-      if (invalidEmi.count !== 3 || !/पूर्ण महिनाको अवधि/.test(invalidEmi.alert)) {
+      if (invalidEmi.count !== 3 || !/पूर्ण महिनामा/.test(invalidEmi.alert)) {
         throw new Error("Nepali EMI must retain all fields and reject fractional months.");
       }
       await page.evaluate(`() => {

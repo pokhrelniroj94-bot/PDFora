@@ -16,6 +16,30 @@ const toolPage = read("../app/tools/[slug]/page.tsx");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
+
+const metadataEntries = [...catalogSource.matchAll(/\\{slug:"([^"]+)",name:"([^"]+)",category:"([^"]+)",description:"([^"]+)",keywords:"([^"]+)"\\}/g)]
+  .map((match) => ({ slug: match[1], name: match[2], category: match[3], description: match[4] }))
+  .filter((entry) => entry.slug !== "pdf-tools");
+assert.equal(metadataEntries.length, 124, "Every catalog tool must have a metadata source entry");
+assert.equal(new Set(metadataEntries.map((entry) => entry.name.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool names must be unique");
+assert.equal(new Set(metadataEntries.map((entry) => entry.description.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool descriptions must be unique");
+
+const seoOverridesBlock = toolPage.match(/const seoOverrides:[\\s\\S]*?= \\{([\\s\\S]*?)\\n  \\};/)?.[1] ?? "";
+const seoOverrides = new Map([...seoOverridesBlock.matchAll(/"([^"]+)": \\{ title: "([^"]+)", description: "([^"]+)" \\}/g)]
+  .map((match) => [match[1], { title: match[2], description: match[3] }]));
+const categoryDescriptionsBlock = toolPage.match(/const categoryDescription:[\\s\\S]*?= \\{([\\s\\S]*?)\\n  \\};/)?.[1] ?? "";
+const categoryDescriptions = new Map([...categoryDescriptionsBlock.matchAll(/([A-Za-z]+): "([^"]+)"/g)]
+  .map((match) => [match[1], match[2]]));
+const generatedMetadata = metadataEntries.map((entry) => ({
+  slug: entry.slug,
+  title: seoOverrides.get(entry.slug)?.title ?? `Free ${entry.name} Online`,
+  description: (seoOverrides.get(entry.slug)?.description
+    ?? `${entry.description.replace(/[.!?]$/, "")} ${categoryDescriptions.get(entry.category) ?? "Check the input and output carefully before using the result."}`).slice(0, 160),
+}));
+assert.equal(new Set(generatedMetadata.map((entry) => entry.title.trim().toLowerCase())).size, generatedMetadata.length, "Generated English tool SEO titles must be unique");
+assert.equal(new Set(generatedMetadata.map((entry) => entry.description.trim().toLowerCase())).size, generatedMetadata.length, "Generated English tool meta descriptions must be unique");
+assert.ok(generatedMetadata.every((entry) => entry.title.length >= 20 && entry.description.length >= 70), "Tool metadata must be descriptive rather than empty or placeholder copy");
+
 const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);
 assert.ok(quickBlock, "Quick utility dispatch list is missing");
 const quickSlugs = [...quickBlock[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);

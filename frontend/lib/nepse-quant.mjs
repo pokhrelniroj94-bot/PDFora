@@ -27,17 +27,23 @@ export function rsi(values, index, period = 14) {
   const relativeStrength = averageGain / averageLoss;
   return 100 - 100 / (1 + relativeStrength);
 }
-export function normalizeDailyBars(input) {
+export function normalizeOhlcvBars(input) {
   const byDate = new Map();
   for (const row of Array.isArray(input) ? input : []) {
-    const date = String(row?.date ?? "").slice(0, 10);
-    const close = Number(row?.close);
+    const date = String(row?.date ?? "").slice(0, 10), close = Number(row?.close);
     if (!validTradingDate(date) || !Number.isFinite(close) || close <= 0) continue;
-    const rawVolume = row?.volume;
-    const volume = rawVolume === null || rawVolume === undefined ? Number.NaN : Number(rawVolume);
-    byDate.set(date, { date, close, ...(Number.isFinite(volume) && volume >= 0 ? { volume } : {}) });
+    const rawOpen = row.open, rawHigh = row.high, rawLow = row.low, rawVolume = row.volume;
+    const open = rawOpen !== null && rawOpen !== undefined && Number.isFinite(Number(rawOpen)) && Number(rawOpen) > 0 ? Number(rawOpen) : undefined;
+    let high = rawHigh !== null && rawHigh !== undefined && Number.isFinite(Number(rawHigh)) ? Number(rawHigh) : undefined;
+    let low = rawLow !== null && rawLow !== undefined && Number.isFinite(Number(rawLow)) ? Number(rawLow) : undefined;
+    if (high === undefined || low === undefined || high < low || high < close || low > close) { high = undefined; low = undefined; }
+    const volume = rawVolume !== null && rawVolume !== undefined && Number.isFinite(Number(rawVolume)) && Number(rawVolume) >= 0 ? Number(rawVolume) : undefined;
+    byDate.set(date, { date, close, ...(open === undefined ? {} : { open }), ...(high === undefined ? {} : { high }), ...(low === undefined ? {} : { low }), ...(volume === undefined ? {} : { volume }) });
   }
   return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+export function normalizeDailyBars(input) {
+  return normalizeOhlcvBars(input).map(({ date, close, volume }) => ({ date, close, ...(volume === undefined ? {} : { volume }) }));
 }
 export function detectLargePriceGaps(rows, thresholdPct = 20) {
   const gaps = [];
@@ -131,14 +137,7 @@ export function calculateMarketRegime(input) {
   return { label: bullish ? "Bullish trend" : bearish ? "Bearish trend" : "Sideways / mixed", ret20, ret50, vol, close: closes[last], ema20: e20[last], ema50: e50[last], asOf: rows[last].date };
 }
 export function calculateOhlcvIndicators(input) {
-  const byDate = new Map();
-  for (const row of Array.isArray(input) ? input : []) {
-    const date = String(row?.date ?? "").slice(0, 10), close = Number(row?.close);
-    if (!validTradingDate(date) || !Number.isFinite(close) || close <= 0) continue;
-    const high = Number(row.high), low = Number(row.low), rawVolume = row.volume;
-    byDate.set(date, { date, close, high, low, volume: rawVolume !== null && rawVolume !== undefined && Number.isFinite(Number(rawVolume)) && Number(rawVolume) >= 0 ? Number(rawVolume) : undefined });
-  }
-  const rows = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+  const rows = normalizeOhlcvBars(input);
   const last = rows.at(-1);
   if (!last) return null;
   const candles = rows.slice(-30), full = candles.length >= 15 && candles.every(row => Number.isFinite(row.high) && Number.isFinite(row.low) && row.high >= row.low && row.high >= row.close && row.low <= row.close);

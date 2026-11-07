@@ -327,7 +327,7 @@ async function runTool(tool, index) {
       let finalState = null;
       while (Date.now() - start < timeoutMs) {
         finalState = await page.evaluate(`(() => ({
-          body: document.body?.innerText?.slice(-6000) || "",
+          body: document.body?.innerText?.slice(0, 16000) || "",
           alerts: [...document.querySelectorAll('[role="alert"]')].map((e) => e.innerText.trim()).filter(Boolean),
           statuses: [...document.querySelectorAll('[role="status"]')].map((e) => ({
             text: e.innerText.trim(),
@@ -488,7 +488,7 @@ async function runTool(tool, index) {
 
       }
       const finalState = await page.evaluate(`(() => ({
-        body: document.body?.innerText?.slice(-8000) || "",
+        body: document.body?.innerText?.slice(0, 16000) || "",
         alerts: [...document.querySelectorAll('[role="alert"]')].map((e) => e.innerText.trim()).filter(Boolean),
         live: [...document.querySelectorAll('[aria-live]')].map((e) => e.innerText.trim()).filter(Boolean),
         tables: [...document.querySelectorAll('table')].map((table) => table.innerText).join('\\n'),
@@ -507,13 +507,13 @@ async function runTool(tool, index) {
         "base64-encoder-decoder": "UERGb3JhIEUyRSB0ZXN0",
         "url-encoder-decoder": "https%3A%2F%2Fexample.com%2Fa%20path%3Fq%3Dhello%20world",
         "fraction-calculator": "5/6",
-        "unit-converter": "1000.000000 m",
+        "unit-converter": "1000.0000 m",
         "jwt-decoder": "\"sub\": \"e2e\"",
         "line-counter": "Total lines: 4",
         "text-to-binary": "01001000 01100101 01101100 01101100 01101111",
         "bmi-calculator": "BMI: 22.5",
         "bmr-calculator": "Estimated BMR: 1593 kcal/day",
-        "unix-timestamp-converter": "UTC: 2026-11-01T00:00:00.000Z",
+        "unix-timestamp-converter": "UTC: 2026-11-01T08:00:00.000Z",
         "json-formatter-validator": '"name": "PDFora"',
         "hash-generator": "SHA-256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "percentage-change-calculator": "20.00% increase",

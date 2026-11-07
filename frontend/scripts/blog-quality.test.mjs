@@ -5,8 +5,8 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
-const catalogSlugs = new Set([...read("components/toolCatalog.ts").matchAll(/slug:\\s*"([^"]+)"/g)].map((match) => match[1]));
-const legacySlugs = new Set([...read("lib/legacy-tool-slugs.ts").matchAll(/^\\s*"([^"]+)",?$/gm)].map((match) => match[1]));
+const catalogSlugs = new Set([...read("components/toolCatalog.ts").matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]));
+const legacySlugs = new Set([...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]));
 const collections = [
   ["English PDF guides", "lib/blog-posts.ts"],
   ["English Nepal guides", "lib/nepal-blog-posts.ts"],
@@ -72,7 +72,7 @@ for (const [label, file] of collections) {
     assert.ok(sections >= 3, label + ": needs at least three meaningful sections for " + slug);
     assert.ok(faqs >= 2, label + ": add useful reader questions for " + slug);
     assert.ok(toolLinks >= 1, label + ": add at least one relevant internal tool link for " + slug);
-    for (const match of body.matchAll(/href:\\s*"([^"]+)"/g)) {
+    for (const match of body.matchAll(/href:\s*"([^"]+)"/g)) {
       const href = match[1];
       if (href.startsWith("/tools/")) {
         assert.ok(catalogSlugs.has(href.slice("/tools/".length)), label + ": tool link does not exist in catalog: " + href);

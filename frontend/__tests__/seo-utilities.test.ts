@@ -10,7 +10,7 @@ import {
 describe("shared SEO utility functions", () => {
   test("meta title and description count Unicode code points and avoid ranking guarantees", () => {
     expect(analyzeMetaTitle("  A useful page title 😀  ")).toMatchObject({
-      characters: 24,
+      characters: 21,
       preview: "A useful page title 😀",
     });
     expect(analyzeMetaTitle("A".repeat(40)).guidance).toContain("common 30–60");
@@ -38,9 +38,9 @@ describe("shared SEO utility functions", () => {
 
   test("robots.txt generator validates paths and prevents line injection", () => {
     expect(generateRobotsTxt("/private/", "https://example.com/sitemap.xml")).toBe(
-      "User-agent: *\\nAllow: /\\nDisallow: /private/\\nSitemap: https://example.com/sitemap.xml",
+      "User-agent: *\nAllow: /\nDisallow: /private/\nSitemap: https://example.com/sitemap.xml",
     );
-    expect(() => generateRobotsTxt("/ok\\nAllow: /secret", "")).toThrow("line breaks");
+    expect(() => generateRobotsTxt("/ok\nAllow: /secret", "")).toThrow("line breaks");
     expect(() => generateRobotsTxt("//evil.example", "")).toThrow("single slash");
     expect(() => generateRobotsTxt("", "javascript:alert(1)")).toThrow("HTTP or HTTPS");
     expect(() => generateRobotsTxt("", "https://user:pass@example.com/sitemap.xml")).toThrow("without credentials");
@@ -48,7 +48,7 @@ describe("shared SEO utility functions", () => {
 
   test("sitemap validates absolute HTTP URLs, deduplicates and escapes XML", () => {
     const xml = generateSitemapXml(
-      "https://example.com/\\nhttps://example.com/search?q=a&x=b\\nhttps://example.com/",
+      "https://example.com/\nhttps://example.com/search?q=a&x=b\nhttps://example.com/",
     );
     expect(xml.match(/<url>/g)).toHaveLength(2);
     expect(xml).toContain("q=a&amp;x=b");
@@ -56,7 +56,7 @@ describe("shared SEO utility functions", () => {
     expect(() => generateSitemapXml("")).toThrow("at least one URL");
     expect(() => generateSitemapXml("ftp://example.com/file")).toThrow("HTTP or HTTPS");
     expect(() => generateSitemapXml("https://example.com/#section")).toThrow("fragments");
-    expect(() => generateSitemapXml("https://example.com/\\nnot-a-url")).toThrow("HTTP or HTTPS");
+    expect(() => generateSitemapXml("https://example.com/\nnot-a-url")).toThrow("HTTP or HTTPS");
   });
 
   test("Open Graph preview validates URLs and escapes HTML attributes", () => {

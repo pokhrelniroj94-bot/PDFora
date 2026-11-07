@@ -8,6 +8,7 @@ const { config, "shared-ui": sharedUi, "tool-guides": guidesModule, "tool-guides
 const nepaliUtilityRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedUtilitySlugs;
 const nepaliFinancialRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedFinancialSlugs;
 const nepaliCareerRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedCareerSlugs;
+const nepaliBlogRoutes = 3;
 
 const repoRoot = path.resolve(frontendRoot, "..");
 const appRoot = path.join(frontendRoot, "app");
@@ -46,8 +47,9 @@ const pageSourceFiles = walk(appRoot).filter((file) => file.endsWith("/page.tsx"
 const apiRouteSourceFiles = walk(appRoot).filter((file) => file.endsWith("/route.ts"));
 const editorialBlogCount = (blogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepalBlogCount = (nepalBlogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
+const nepaliLocalizedBlogCount = 3;
 const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);
-const nepaliLocalizedRouteCount = nepaliPdfRouteSlugs.length + nepaliUtilityRoutes.length + nepaliFinancialRoutes.length + nepaliCareerRoutes.length + 2 + Number(nepaliHomeExists);
+const nepaliLocalizedRouteCount = nepaliPdfRouteSlugs.length + nepaliUtilityRoutes.length + nepaliFinancialRoutes.length + nepaliCareerRoutes.length + nepaliBlogRoutes + 2 + Number(nepaliHomeExists);
 const sharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("en"));
 const nepaliSharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("ne"));
 const nepaliGuideCount = Object.keys(nepaliGuidesModule.nepaliToolGuides).length;
@@ -92,10 +94,10 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
         percent: englishGuideCount ? Math.round((nepaliGuideCount / englishGuideCount) * 10000) / 100 : 0,
       },
       blogCoverage: {
-        translated: 0,
+        translated: nepaliLocalizedBlogCount,
         total: editorialBlogCount + nepalBlogCount,
-        percent: 0,
-        note: "No localized Nepali editorial or Nepal blog corpus is registered.",
+        percent: editorialBlogCount + nepalBlogCount ? Math.round((nepaliLocalizedBlogCount / (editorialBlogCount + nepalBlogCount)) * 10000) / 100 : 0,
+        note: "Three fully translated Nepali articles are published; the remaining blog corpus is not localized.",
       },
       namespaceFiles: namespaceFiles.length,
       reviewStatus: "Existing Nepali routes and PDF guide copy; complete site-wide native review not assessed",
@@ -140,6 +142,7 @@ const report = {
     publishedNepaliCareerRoutes: nepaliCareerRoutes.length,
     publishedNepaliMarketDashboardRoute: true,
     publishedNepaliResumeBuilderRoute: true,
+    publishedNepaliBlogRoutes: nepaliBlogRoutes,
     publishedNepaliHomeRoute: nepaliHomeExists,
     publishedNepaliRouteEquivalents: nepaliLocalizedRouteCount,
   },
@@ -170,7 +173,7 @@ Inventory: ${pageSourceFiles.length} frontend page source files, ${apiRouteSourc
 |---|---|---|---:|---:|---:|---:|---:|
 ${rows.join("\n")}
 
-Nepali currently has the homepage, six localized PDF routes, six localized utility routes, seven localized financial/news/calculator routes, three localized AI writing routes, the localized NEPSE market dashboard, and a localized Resume Builder. Its 49 Nepali PDF guide records are measured separately; the blog corpus remains untranslated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has the homepage, six localized PDF routes, six localized utility routes, seven localized financial/news/calculator routes, three localized AI writing routes, the localized NEPSE market dashboard, a localized Resume Builder, and three fully translated Nepali articles. The remaining blog corpus and other editorial guides are not translated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
 `;
 fs.writeFileSync(path.join(outputDir, "TRANSLATION_COVERAGE.md"), markdown);
 console.log(markdown);

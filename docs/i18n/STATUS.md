@@ -18,10 +18,10 @@ validation, i18n validation and production build (390 generated routes). Backend
 was unavailable in this shell. The Vercel check remains blocked by the provider's
 build-rate quota, not by the local build.
 
-The current evidence report measures 25 Nepali route equivalents, including three AI
-writing routes and the localized Resume Builder. Blogs, guides outside the reviewed PDF
-set, legal/static pages and remaining utilities remain incomplete and are not counted as
-localized.
+The current evidence report measures 28 Nepali route equivalents, including three AI
+writing routes, the localized Resume Builder and three fully translated articles. The
+remaining blog corpus, guides outside the reviewed PDF set, legal/static pages and
+remaining utilities remain incomplete and are not counted as localized.
 
 ## 12-language foundation snapshot
 

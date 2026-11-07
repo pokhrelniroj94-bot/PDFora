@@ -55,7 +55,7 @@ test("shared UI coverage: English and Nepali copy is complete and route-aware", 
 
 test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools", "ne"), "/ne?from=%2Ftools");
-  assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne?from=%2Fblog");
+  assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -122,6 +122,17 @@ test("Nepali Resume Builder preserves all templates and print-safe Devanagari ou
   assert.ok(routeSource.includes('<ResumeBuilder locale="ne" />'));
   assert.ok(source.includes('@page { size: A4; margin: 0; }'));
   assert.ok(source.includes('id="resume-paper" lang={ne ? "ne" : "en"}'));
+});
+
+test("Nepali blog routes contain complete reviewed article content", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "lib", "nepali-localized-blog-posts.ts"), "utf8");
+  const page = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "blog", "[slug]", "page.tsx"), "utf8");
+  for (const phrase of ["नेपाली मिति कन्भर्टर", "नेपालमा १३% VAT", "रोपनी, आना, पैसा र दाम", "बारम्बार सोधिने प्रश्न"]) {
+    assert.ok(source.includes(phrase) || page.includes(phrase), `Nepali blog content must include: ${phrase}`);
+  }
+  assert.equal((source.match(/slug: "/g) ?? []).length, 3);
+  assert.ok(page.includes('inLanguage: "ne"'));
+  assert.ok(page.includes('href="/ne/blog"'));
 });
 
 test("published Nepali PDF routes use localized names and guide copy", () => {

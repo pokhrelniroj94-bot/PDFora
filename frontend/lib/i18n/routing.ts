@@ -51,6 +51,10 @@ const localizedPaths: ReadonlySet<string> = new Set([
   "/pdf-to-word",
   "/pdf-to-jpg",
   "/resume-builder",
+  "/blog",
+  "/blog/nepali-date-converter-bs-to-ad-guide",
+  "/blog/nepal-vat-calculator-13-percent-guide",
+  "/blog/ropani-aana-paisa-daam-land-measurement-guide",
 ]);
 
 export function hasLocalizedPage(path: string, locale: Locale): boolean {

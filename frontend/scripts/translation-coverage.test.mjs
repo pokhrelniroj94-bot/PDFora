@@ -21,11 +21,11 @@ test("translation coverage report is conservative and tied to the current commit
   assert.equal(report.locales.en.status, "Source language; translation review not assessed");
   assert.equal(report.locales.en.routeCoveragePercent, null, "source language must not be misreported as translated/reviewed");
   assert.equal(report.locales.ne.status, "Partially translated");
-  assert.equal(report.locales.ne.translatedRoutes, 25, "Nepali homepage, six PDF routes, six utility routes, seven financial/calculator routes, three AI writing routes, the market dashboard, and Resume Builder");
+  assert.equal(report.locales.ne.translatedRoutes, 28, "Nepali homepage, six PDF routes, six utility routes, seven financial/calculator routes, three AI writing routes, the market dashboard, Resume Builder, and three articles");
   assert.equal(report.locales.ne.pdfGuideCoverage.translated, 49);
   assert.equal(report.locales.ne.pdfGuideCoverage.total, 49);
-  assert.equal(report.locales.ne.blogCoverage.translated, 0, "English blog records are not Nepali translations");
-  assert.equal(report.locales.ne.blogCoverage.percent, 0);
+  assert.equal(report.locales.ne.blogCoverage.translated, 3, "Only the three reviewed Nepali article routes count as translated");
+  assert.ok(report.locales.ne.blogCoverage.percent > 0);
 
   for (const locale of ["hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]) {
     assert.equal(report.locales[locale].published, false, `${locale} must remain unpublished`);

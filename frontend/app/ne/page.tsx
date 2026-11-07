@@ -29,7 +29,7 @@ const tools = [
   { href: "/ne/compress-pdf", title: "PDF सानो बनाउनुहोस्", description: "अपलोड वा इमेलका लागि PDF फाइलको आकार घटाउनुहोस्।" },
   { href: "/ne/pdf-to-word", title: "PDF बाट Word", description: "समर्थित PDF बाट सम्पादन गर्न मिल्ने Word फाइल बनाउनुहोस्।" },
   { href: "/ne/pdf-to-jpg", title: "PDF बाट JPG", description: "PDF का पृष्ठलाई JPG image मा बदल्नुहोस्।" },
-  { href: "/images-to-pdf", title: "Image बाट PDF", description: "JPG, PNG र WebP तस्बिरलाई PDF मा राख्नुहोस्।" },
+  { href: "/ne/rotate-pdf", title: "PDF पृष्ठ घुमाउनुहोस्", description: "गलत दिशामा भएका PDF पृष्ठलाई सही दिशामा घुमाउनुहोस्।" },
 ];
 
 const nepalTools = [

@@ -35,7 +35,7 @@ const testedCatalog = new Set([
   "dice-roller",
   "password-generator",
 ]);
-const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator"]);
+const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator", "nepali-vat-calculator", "nepali-number-converter", "gold-tola-gram-converter", "nepal-share-calculator"]);
 
 // Catalog route/handler/SEO statuses are PARTIAL: current evidence proves registry,
 // adapter and metadata contracts only, not an HTTP-rendered page or complete SEO validation.
@@ -79,10 +79,10 @@ const rows = [
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
     defectsFound: inputTestedCatalog.has(entry.slug)
-      ? "Blank numeric fields were silently coerced to zero; YAML escaping and random modulo bias needed correction."
+      ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
       : "",
     fixesApplied: inputTestedCatalog.has(entry.slug)
-      ? "Added required-number validation, JSON-safe YAML serialization, and rejection-sampled random integers with unit/regression tests."
+      ? "Added required-number validation, Nepal form blank-field checks, JSON-safe YAML serialization, and rejection-sampled random integers with unit/regression tests."
       : "",
     remainingBlockers: testedCatalog.has(entry.slug)
       ? "Browser route, mobile layout and accessibility evidence remain unverified."

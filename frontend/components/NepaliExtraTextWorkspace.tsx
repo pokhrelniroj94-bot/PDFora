@@ -16,10 +16,7 @@ export default function NepaliExtraTextWorkspace({ slug }: { slug: string }) {
   const toolSlug = slug as NepaliExtraTextToolSlug;
   const copy = getNepaliExtraTextToolCopy(toolSlug);
   const run = () => {
-    const output = toolSlug === "find-replace-text"
-      ? runNepaliExtraTextTool(toolSlug, input, find + "\\u0000" + replace)
-      : runNepaliExtraTextTool(toolSlug, input);
-    setResult(output);
+    setResult(runNepaliExtraTextTool(toolSlug, input, find, replace));
     setStatus("");
   };
   const copyResult = async () => {

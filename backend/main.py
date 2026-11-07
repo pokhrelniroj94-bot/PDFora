@@ -129,7 +129,7 @@ app.add_middleware(
     ],
     # Allow only this project's Vercel preview hostnames, including per-deployment URLs.
     # The exact team suffix and full HTTPS origin are anchored to avoid lookalike domains.
-    allow_origin_regex=r"^https://pd-fora-[a-z0-9-]+-pokhrelniroj94-7012s-projects\\.vercel\\.app$",
+    allow_origin_regex=r"^https://pd-fora-[a-z0-9-]+-pokhrelniroj94-7012s-projects\.vercel\.app$",
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],

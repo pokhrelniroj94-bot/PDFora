@@ -26,7 +26,7 @@ export default function NepalTools({slug}:{slug:string}) {
  const [bigha,setBigha]=useState("0"),[kattha,setKattha]=useState("0"),[dhur,setDhur]=useState("0");
  const [number,setNumber]=useState("1234567"),[phone,setPhone]=useState("98XXXXXXXX"),[weight,setWeight]=useState("1"),[weightMode,setWeightMode]=useState("tola");
  const [digitsText,setDigitsText]=useState("नेपाल 2083 साल");
- const [preetiText,setPreetiText]=useState("g]kfn ;/sf/sf"),[preetiMode,setPreetiMode]=useState("to-unicode"),[preetiReady,setPreetiReady]=useState(false);
+ const [preetiText,setPreetiText]=useState("k\\/Llt"),[preetiMode,setPreetiMode]=useState("to-unicode"),[preetiReady,setPreetiReady]=useState(false);
  const [calendarYear,setCalendarYear]=useState("2083"),[calendarMonth,setCalendarMonth]=useState("1"),[calendarRows,setCalendarRows]=useState<{day:number;ad:string;weekday:string}[]>([]);
  const [photo,setPhoto]=useState<File|null>(null),[photoLimit,setPhotoLimit]=useState("200"),[photoSize,setPhotoSize]=useState("600");
  const [subjects,setSubjects]=useState(Array.from({length:6},(_,i)=>({name:"Subject "+(i+1),credit:"3",grade:"3.2"})));

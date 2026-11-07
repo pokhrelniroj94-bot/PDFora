@@ -5,6 +5,7 @@ import { calculateAge, dateDifferenceDays, timeDurationMinutes } from "../lib/da
 import { analyzeMetaTitle, analyzeMetaDescription, calculateKeywordDensity, generateRobotsTxt, generateSitemapXml, buildOpenGraphPreview } from "../lib/seo-utilities";
 import { jsonObjectsToCsv } from "../lib/catalog-text";
 import { parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
+import { localizeNepaliToolError, localizeNepaliToolOutput, nepaliExtraFieldLabel } from "../lib/i18n/nepali-catalog-tool-copy";
 type F={key:string;label:string;type?:"number"|"date"|"time"|"color";multiline?:boolean;value:string};
 const config:Record<string,F[]> = {
 "percentage-change-calculator":[{key:"a",label:"Original value",type:"number",value:"100"},{key:"b",label:"New value",type:"number",value:"120"}],
@@ -44,7 +45,7 @@ const config:Record<string,F[]> = {
 };
 const escapeHtml=(s:string)=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const lum=(h:string)=>{const x=h.slice(1).match(/.{2}/g)!.map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*x[0]+.7152*x[1]+.0722*x[2];};
-export default function ExtraTools({slug}:{slug:string}){
+export default function ExtraTools({slug,locale="en"}:{slug:string;locale?:"en"|"ne"}){
  const fields=config[slug];const [v,setV]=useState<Record<string,string>>(()=>Object.fromEntries((fields??[]).map(f=>[f.key,f.value])));
  const [out,setOut]=useState("");const [err,setErr]=useState("");
  const val=(k:string)=>v[k]??"";const num=(k:string)=>parseRequiredNumber(val(k));
@@ -89,8 +90,8 @@ export default function ExtraTools({slug}:{slug:string}){
  case "savings-goal-calculator":{const t=num("target"),a=num("saved"),m=num("months");if(t<0||a<0||m<=0)throw Error("Target and saved amounts must be non-negative; months must be positive.");s="Remaining amount: "+Math.max(0,t-a).toFixed(2)+"\nMonthly savings needed: "+(Math.max(0,t-a)/m).toFixed(2);break;}
  default:throw Error("Tool not implemented.");
  }
- setOut(s);
- }catch(e){setErr(e instanceof Error?e.message:"Unable to process input.");}};
- if(!fields)return <p className="text-sm text-slate-600">Tool configuration missing.</p>;
- return <div className="space-y-4"><div className="grid gap-4 sm:grid-cols-2">{fields.map(f=><label key={f.key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{f.label}</span>{f.multiline?<textarea className="min-h-32 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" rows={5} value={v[f.key]??""} onChange={e=>setV(p=>({...p,[f.key]:e.target.value}))}/>:<input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={f.type||"text"} value={v[f.key]??""} onChange={e=>setV(p=>({...p,[f.key]:e.target.value}))}/>}</label>)}</div><div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">Run tool</button><button onClick={()=>{setV(Object.fromEntries(fields.map(f=>[f.key,f.value])));setOut("");setErr("");}} className="rounded-xl border px-4 py-2.5 text-sm">Reset</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">Copy result</button>}</div>{err&&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{err}</p>}{out&&<div aria-live="polite" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5"><pre className="whitespace-pre-wrap break-words font-sans text-base leading-7">{out}</pre></div>}</div>;
+ setOut(locale === "ne" ? localizeNepaliToolOutput(slug, s) : s);
+ }catch(e){const message=e instanceof Error?e.message:"Unable to process input.";setErr(locale === "ne" ? localizeNepaliToolError(message) : message);}};
+ if(!fields)return <p className="text-sm text-slate-600">{locale === "ne" ? "टुलको configuration भेटिएन।" : "Tool configuration missing."}</p>;
+ return <div className="space-y-4"><div className="grid gap-4 sm:grid-cols-2">{fields.map(f=><label key={f.key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{locale === "ne" ? nepaliExtraFieldLabel(slug, f.key, f.label) : f.label}</span>{f.multiline?<textarea className="min-h-32 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" rows={5} value={v[f.key]??""} onChange={e=>setV(p=>({...p,[f.key]:e.target.value}))}/>:<input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={f.type||"text"} value={v[f.key]??""} onChange={e=>setV(p=>({...p,[f.key]:e.target.value}))}/>}</label>)}</div><div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">{locale === "ne" ? "टुल चलाउनुहोस्" : "Run tool"}</button><button onClick={()=>{setV(Object.fromEntries(fields.map(f=>[f.key,f.value])));setOut("");setErr("");}} className="rounded-xl border px-4 py-2.5 text-sm">{locale === "ne" ? "रिसेट" : "Reset"}</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">{locale === "ne" ? "नतिजा कपी गर्नुहोस्" : "Copy result"}</button>}</div>{err&&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{err}</p>}{out&&<div aria-live="polite" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5"><pre className="whitespace-pre-wrap break-words font-sans text-base leading-7">{out}</pre></div>}</div>;
 }

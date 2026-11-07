@@ -15,9 +15,14 @@ const checks = [];
 const failures = [];
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function call(testCase) {
+  const headers = { "Content-Type": "application/json", Accept: "application/json" };
+  // Optional Vercel Automation Bypass secret; never print or persist its value.
+  if (process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+    headers["x-vercel-protection-bypass"] = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  }
   return fetch(new URL("/api/ai-writing", base), {
     method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    headers,
     body: JSON.stringify({ kind: testCase.kind, ...testCase.payload }),
     cache: "no-store",
     signal: AbortSignal.timeout(40000),

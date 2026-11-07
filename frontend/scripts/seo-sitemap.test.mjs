@@ -158,7 +158,7 @@ assert.match(englishToolPageSource, /openGraph:\s*\{/, "Catalog tool pages must 
 assert.match(englishToolPageSource, /twitter:\s*\{/, "Catalog tool pages must publish Twitter metadata");
 assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*slug\s*!==\s*"ocr-pdf"/, "OCR must remain excluded from indexing");
 assert.match(blogArticleSource, /alternates:\s*\{\s*canonical:\s*url/, "English articles must publish self-canonicals");
-assert.match(blogArticleSource, /robots:\s*isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false/, "Generated thin blog guides must remain noindex");
+assert.match(blogArticleSource, /robots:\s*(?:isCatalogGeneratedGuide\(post\.slug\)\s*\|\|\s*isGeneratedPdfGuide\(post\.slug\))\s*\?\s*\{\s*index:\s*false/, "All generated thin blog guides must remain noindex");
 assert.match(blogPostSource, /generatedPdfGuideSlugs = new Set\(additionalToolBlogPosts\.map/, "Generated PDF blog guide variants must be explicitly classified");
 assert.match(blogArticleSource, /isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide articles must remain noindex");
 assert.match(englishBlogIndexSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must not appear as editorial blog cards");

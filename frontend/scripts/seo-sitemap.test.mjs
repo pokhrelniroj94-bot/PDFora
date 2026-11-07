@@ -164,7 +164,7 @@ for (const [source, label] of [[englishHomeSource, "English home"], [nepaliHomeS
   assert.match(source, /twitter:\s*\{/, `${label} must provide social preview metadata`);
 }
 assert.match(englishToolPageSource, /alternates:\s*\{\s*canonical/, "Catalog tool pages must publish self-canonical URLs");
-assert.match(englishToolPageSource, /const title = seo\?\.title \?\? `\$\{tool\.name\} Online`/, "Fallback metadata title must rely on the root brand template exactly once");
+assert.match(englishToolPageSource, /const title = seo\?\.title \?\? `Free \$\{tool\.name\} Online`/, "Fallback metadata title must rely on the root brand template exactly once");
 assert.match(englishToolPageSource, /openGraph:\s*\{/, "Catalog tool pages must publish Open Graph metadata");
 assert.match(englishToolPageSource, /twitter:\s*\{/, "Catalog tool pages must publish Twitter metadata");
 assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*slug\s*!==\s*"ocr-pdf"/, "OCR must remain excluded from indexing");

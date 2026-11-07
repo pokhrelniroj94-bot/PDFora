@@ -19,7 +19,7 @@ function average(values: number[]) { return values.length ? values.reduce((a,b)=
 function ema(values: number[], period: number) { const k=2/(period+1); return values.reduce((acc,v,i)=>{acc.push(i? v*k+acc[i-1]*(1-k):v);return acc;},[] as number[]); }
 function marketRegime(rows: Candle[]) {
   const clean=rows.filter(x=>x && /^\d{4}-\d{2}-\d{2}$/.test(x.date) && Number.isFinite(x.close) && x.close>0).sort((a,b)=>a.date.localeCompare(b.date));
-  if(clean.length<50) return {label:"Insufficient history",tone:"amber",ret20:null as number|null,ret50:null as number|null,vol:null as number|null,close:null as number|null,ema20:null as number|null,ema50:null as number|null,asOf:clean.at(-1)?.date||"Unavailable"};
+  if(clean.length<51) return {label:"Insufficient history",tone:"amber",ret20:null as number|null,ret50:null as number|null,vol:null as number|null,close:null as number|null,ema20:null as number|null,ema50:null as number|null,asOf:clean.at(-1)?.date||"Unavailable"};
   const closes=clean.map(x=>x.close), e20=ema(closes,20),e50=ema(closes,50),last=closes.length-1;
   const ret20=(closes[last]/closes[last-20]-1)*100,ret50=(closes[last]/closes[last-50]-1)*100;
   const returns=closes.slice(-21).slice(1).map((v,i)=>v/closes.slice(-21)[i]-1);

@@ -10,7 +10,6 @@ assert.throws(() => convertTolaGrams(Number.NaN, "tola"), RangeError);
 
 for (const value of ["9812345678", "+977 9812345678", "977-9812345678", "९८१२३४५६७८"]) {
   const result = validateNepalMobileNumber(value);
-  if (value.includes("९")) continue; // This format checker intentionally expects ASCII digits.
   assert.equal(result.valid, true, value);
   assert.equal(result.local, "9812345678");
   assert.equal(result.international, "+977 9812345678");

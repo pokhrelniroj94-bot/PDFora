@@ -14,7 +14,7 @@ function rsi(v:number[], i:number, n=14) {
   if(i<n) return null;
   let gain=0,loss=0;
   for(let j=i-n+1;j<=i;j++){const d=v[j]-v[j-1];gain+=Math.max(d,0);loss+=Math.max(-d,0);}
-  if(loss===0) return 100;
+  if(loss===0) return gain===0?50:100;
   return 100-100/(1+(gain/n)/(loss/n));
 }
 function runBacktest(rows:Bar[], mode:string, costPct:number):Result {

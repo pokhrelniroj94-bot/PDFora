@@ -44,6 +44,7 @@ assert.ok(liveSource.includes("https://www.erc.gov.np/detail/314"), "Electricity
 assert.ok(!liveSource.includes("estimateNepalDomesticElectricityBill"), "Electricity tool must not use unverified hard-coded tariff assumptions");
 assert.ok(liveSource.includes('function HolidayTool({ locale = "en" }'), "Holiday tool must expose a localized interface");
 assert.ok(pageSource.includes("nepaliLocalizedPublicInfoSlugs.includes"), "Public information tools must have their own route category, not appear as finance tools");
+assert.ok(pageSource.includes("nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug"), "Public information pages must receive their Nepali title and description metadata");
 assert.ok(pageSource.includes("नेपालका आधिकारिक सेवा तथा सार्वजनिक सूचना"), "Public information pages must use an accurate localized category heading");
 assert.ok(liveSource.includes('return <ElectricityTool locale={locale}/>'), "Electricity tool must receive the selected locale");
 assert.ok(liveSource.includes('return <HolidayTool locale={locale}/>'), "Holiday tool must receive the selected locale");

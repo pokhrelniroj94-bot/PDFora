@@ -11,12 +11,13 @@ import { isLocalizedToolIndexable } from "../../../lib/tools/localized-verificat
 
 const site = "https://pd-fora.vercel.app";
 export function generateStaticParams() {
-  return toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ slug: tool.slug }));
+  return toolCatalog.filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "resume-builder").map((tool) => ({ slug: tool.slug }));
 }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
+  if (slug === "resume-builder") return { title: "Resume Builder | PDFora", description: "Create a professional CV with 20 templates, live A4 preview and free PDF export.", alternates: { canonical: `${site}/resume-builder` }, robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
@@ -101,6 +102,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") notFound();
+  if (slug === "resume-builder") permanentRedirect("/resume-builder");
   if (legacyToolSlugSet.has(slug)) permanentRedirect(`/${slug}`);
   const related = toolCatalog.filter((item) => item.category === tool.category && item.slug !== slug && item.slug !== "pdf-tools").slice(0, 4);
   const guide = blogPosts.find((post) => post.toolLinks.some((link) => link.href === `/tools/${slug}`));

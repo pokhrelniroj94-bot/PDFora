@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-07T05:19:18.489Z",
-  "sourceCommit": "5a623851fede3365f807b7444dff137203914e0a",
+  "generatedAt": "2026-11-07T05:19:38.413Z",
+  "sourceCommit": "c637c70037993567daed2579ce5f1c56163e1ce2",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     "statusRule": "Only executed tests produce PASS; source inspection produces PARTIAL or NOT TESTED.",

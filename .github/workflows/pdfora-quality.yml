@@ -51,6 +51,34 @@ jobs:
       - run: npm run build
       - name: Audit npm dependencies
         run: npm audit --omit=dev --audit-level=high
+      - name: Install headless Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Start production server for browser tests
+        run: |
+          npm start -- --hostname 127.0.0.1 > /tmp/pdfora-next.log 2>&1 &
+          for attempt in {1..90}; do
+            if curl --fail --silent http://127.0.0.1:3000/ > /dev/null; then
+              echo "Next.js production server is ready."
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/pdfora-next.log
+          exit 1
+      - name: Run individual Chromium E2E checks for all 173 tools
+        env:
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
+          E2E_BASE_URL: http://127.0.0.1:3000
+          E2E_TOOL_TIMEOUT_MS: "90000"
+        run: node scripts/browser-e2e-173.mjs
+      - name: Upload individual tool E2E report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfora-browser-e2e-173-report
+          path: docs/qa/BROWSER_E2E_173_REPORT.json
+          if-no-files-found: warn
 
   live-production:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'

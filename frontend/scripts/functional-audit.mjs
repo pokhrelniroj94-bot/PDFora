@@ -43,6 +43,11 @@ const testedCatalog = new Set([
 ]);
 const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator", "csv-to-json", "nepali-vat-calculator", "nepali-number-converter", "gold-tola-gram-converter", "nepal-share-calculator"]);
 const uiRegressionCatalog = new Set([...inputTestedCatalog, "lorem-ipsum-generator"]);
+const browserReportPath = path.join(frontendRoot, "..", "docs", "qa", "BROWSER_E2E_173_REPORT.json");
+const browserReport = fs.existsSync(browserReportPath)
+  ? JSON.parse(fs.readFileSync(browserReportPath, "utf8"))
+  : null;
+const browserResults = new Map((browserReport?.results ?? []).map((row) => [row.slug, row]));
 
 // Catalog route/handler/SEO statuses are PARTIAL: current evidence proves registry,
 // adapter and metadata contracts only, not an HTTP-rendered page or complete SEO validation.
@@ -53,66 +58,59 @@ const rows = [
     slug,
     category: "PDF",
     kind: "pdf",
-    routeStatus: "PARTIAL",
-    interfaceStatus: "PARTIAL",
-    handlerStatus: "PASS",
-    functionalTestStatus: "PARTIAL",
-    outputVerificationStatus: "PARTIAL",
+    routeStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    interfaceStatus: browserResults.get(slug)?.status === "PASS" && browserResults.get(slug)?.fileInputCount > 0 ? "PASS" : "PARTIAL",
+    handlerStatus: browserResults.get(slug)?.status === "PASS" && (browserResults.get(slug)?.action || browserResults.get(slug)?.outputVerified) ? "PASS" : "PARTIAL",
+    functionalTestStatus: browserResults.get(slug)?.status === "PASS" && (browserResults.get(slug)?.action || browserResults.get(slug)?.outputVerified) ? "PASS" : "PARTIAL",
+    outputVerificationStatus: browserResults.get(slug)?.outputVerified ? "PASS" : "PARTIAL",
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: slug === "reorder-pdf" || slug === "delete-pages"
-      ? "Shared browser worker previously accepted unsafe page selections."
-      : "",
+    defectsFound: [slug === "reorder-pdf" || slug === "delete-pages" ? "Shared browser worker previously accepted unsafe page selections." : "", ...(browserResults.get(slug)?.errors ?? [])].filter(Boolean).join("; "),
     fixesApplied: slug === "reorder-pdf" || slug === "delete-pages"
       ? "Worker now rejects incomplete, duplicate, malformed reorder input and deleting every page."
       : "",
-    remainingBlockers:
-      "Browser workflow, mobile layout, accessibility and download integrity require browser evidence.",
-    evidence: `${pdfEvidence}; ${workerEvidence}`,
+    remainingBlockers: browserResults.get(slug)?.status === "FAIL"
+      ? "Browser E2E failure: " + (browserResults.get(slug)?.errors ?? []).join("; ") + ". Fix and rerun. Mobile and accessibility remain untested."
+      : "Mobile layout, accessibility and independent download-byte verification require separate evidence.",
+    evidence: `${pdfEvidence}; ${workerEvidence}${browserReport ? "; docs/qa/BROWSER_E2E_173_REPORT.json" : ""}`,
   })),
   ...catalog.map((entry) => ({
     slug: entry.slug,
     category: entry.category,
     kind: "catalog",
-    routeStatus: "PARTIAL",
-    interfaceStatus: "PARTIAL",
-    handlerStatus: "PARTIAL",
-    functionalTestStatus: testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
-    outputVerificationStatus: testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
+    routeStatus: browserResults.get(entry.slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    interfaceStatus: browserResults.get(entry.slug)?.status === "PASS" && browserResults.get(entry.slug)?.inputCount > 0 ? "PASS" : "PARTIAL",
+    handlerStatus: browserResults.get(entry.slug)?.status === "PASS" && (browserResults.get(entry.slug)?.action || browserResults.get(entry.slug)?.outputVerified) && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped")) ? "PASS" : "PARTIAL",
+    functionalTestStatus: browserResults.get(entry.slug)?.status === "PASS" && (browserResults.get(entry.slug)?.action || browserResults.get(entry.slug)?.outputVerified) && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped"))
+      ? "PASS"
+      : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
+    outputVerificationStatus: browserResults.get(entry.slug)?.outputVerified ? "PASS" : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: entry.slug === "nepal-electricity-bill-calculator"
-      ? "A hard-coded tariff estimator could become inaccurate after the ERC 2083 tariff directive."
-      : entry.slug === "unit-converter"
-        ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families."
-        : uiRegressionCatalog.has(entry.slug)
-          ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
-          : "",
-    fixesApplied: entry.slug === "nepal-electricity-bill-calculator"
-      ? "Removed fixed-rate arithmetic and linked the tool to the live ERC calculator, the 2083 directive and NEA tariff information."
-      : entry.slug === "unit-converter"
-        ? "Rejects negative physical quantities and incompatible temperature/physical unit conversions; allows negative temperatures."
-        : uiRegressionCatalog.has(entry.slug)
-          ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
-          : "",
-    remainingBlockers: entry.slug === "nepal-electricity-bill-calculator"
-      ? "External ERC handoff, official calculator availability and mobile navigation still require browser verification; PDFora intentionally does not estimate tariffs."
-      : testedCatalog.has(entry.slug)
-        ? "Browser route, mobile layout and accessibility evidence remain unverified."
-        : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-    evidence: entry.slug === "nepal-electricity-bill-calculator"
-      ? "frontend/components/NepalLiveTools.tsx; frontend/scripts/nepali-nepal-tools.test.mjs; ERC official calculator and 2083 directive"
-      : inputTestedCatalog.has(entry.slug)
-        ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
-        : uiRegressionCatalog.has(entry.slug)
-          ? "frontend/scripts/tool-ui-regression.test.mjs; frontend/components/AllTools.tsx"
-          : testedCatalog.has(entry.slug)
-            ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
-            : catalogEvidence,
+    defectsFound: [entry.slug === "unit-converter" ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families." : uiRegressionCatalog.has(entry.slug) ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction." : "", ...(browserResults.get(entry.slug)?.errors ?? [])].filter(Boolean).join("; "),
+    fixesApplied: entry.slug === "unit-converter"
+      ? "Rejects negative physical quantities and incompatible temperature/physical unit conversions; allows negative temperatures."
+      : uiRegressionCatalog.has(entry.slug)
+        ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
+        : "",
+    remainingBlockers: browserResults.get(entry.slug)?.status === "FAIL"
+      ? "Browser E2E failure: " + (browserResults.get(entry.slug)?.errors ?? []).join("; ") + ". Fix and rerun. Mobile and accessibility remain untested."
+      : browserResults.get(entry.slug)?.status === "PASS"
+        ? "Mobile layout, accessibility, exhaustive boundary tests and independent download-byte verification remain untested."
+        : testedCatalog.has(entry.slug)
+          ? "Browser route, mobile layout and accessibility evidence remain unverified."
+          : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
+    evidence: `${inputTestedCatalog.has(entry.slug)
+      ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
+      : uiRegressionCatalog.has(entry.slug)
+        ? "frontend/scripts/tool-ui-regression.test.mjs; frontend/components/AllTools.tsx"
+        : testedCatalog.has(entry.slug)
+          ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
+          : catalogEvidence}${browserResults.has(entry.slug) ? "; docs/qa/BROWSER_E2E_173_REPORT.json" : ""}`,
   })),
 ];
 
@@ -124,7 +122,7 @@ const report = {
     sourceOfTruth: "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     statusRule: "Only executed tests produce PASS; source inspection produces PARTIAL or NOT TESTED.",
     limitations:
-      "This report does not claim browser, mobile, accessibility or individual catalog-tool runtime verification.",
+      browserReport ? "Browser route and tool-action checks are included where the per-tool report records them. Mobile, accessibility, visual comparison and independent parsing of downloaded bytes remain separate." : "No browser E2E report is present. Mobile, accessibility and individual catalog-tool runtime verification are not claimed.",
   },
   evidence: {
     backendPdfSweep: pdfEvidence,
@@ -140,6 +138,8 @@ const report = {
     functionalPass: rows.filter((row) => row.functionalTestStatus === "PASS").length,
     functionalPartial: rows.filter((row) => row.functionalTestStatus === "PARTIAL").length,
     functionalNotTested: rows.filter((row) => row.functionalTestStatus === "NOT TESTED").length,
+    browserE2ePass: browserReport?.counts?.pass ?? 0,
+    browserE2eFail: browserReport?.counts?.fail ?? 0,
   },
   tools: rows,
 };
@@ -173,7 +173,7 @@ const lines = [
   "",
   "This report records executed evidence only. It does not treat route existence or static handler references as proof that a tool works.",
   "",
-  `Summary: **${legacyToolSlugs.length} PDF tools** and **${catalog.length} catalog utilities** (${rows.length} total). Functional status: **${report.counts.functionalPartial} partial**, **${report.counts.functionalNotTested} not tested**, **0 full PASS**.`,
+  `Summary: **${legacyToolSlugs.length} PDF tools** and **${catalog.length} catalog utilities** (${rows.length} total). Functional status: **${report.counts.functionalPass} PASS**, **${report.counts.functionalPartial} partial**, **${report.counts.functionalNotTested} not tested**. Browser sweep: **${report.counts.browserE2ePass} passed**, **${report.counts.browserE2eFail} failed**.`,
   "",
   `Evidence: backend PDF sweep \`${pdfEvidence}\`; frontend worker tests \`${workerEvidence}\`; catalog static verification \`${catalogEvidence}\`.`,
   "",

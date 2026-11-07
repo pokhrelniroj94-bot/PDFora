@@ -174,7 +174,7 @@ for (const [source, label] of [[englishHomeSource, "English home"], [nepaliHomeS
   assert.match(source, /twitter:\s*\{/, `${label} must provide social preview metadata`);
 }
 assert.match(englishToolPageSource, /alternates:\s*\{\s*canonical/, "Catalog tool pages must publish self-canonical URLs");
-assert.match(englishToolPageSource, /const title = seo\?\.title \?\? `\$\{tool\.name\} Online`/, "Fallback metadata title must rely on the root brand template exactly once");
+assert.ok(englishToolPageSource.includes("const title = seo?.title ?? `${tool.name} Online`"), "Fallback metadata title must rely on the root brand template exactly once");
 assert.doesNotMatch(englishToolPageSource, /keywords\s*[:,]/, "Utility pages must not emit ignored meta-keywords");
 assert.doesNotMatch(read("app/tools/page.tsx"), /keywords\s*:/, "The tools directory must not emit ignored meta-keywords");
 assert.doesNotMatch(read("app/resume-builder/page.tsx"), /keywords\s*:/, "Resume builder must not emit ignored meta-keywords");

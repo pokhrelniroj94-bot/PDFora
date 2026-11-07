@@ -628,6 +628,18 @@ async function runTool(tool, index) {
         row.evidenceLevel = "preeti-unicode-output-verified";
         return row;
       }
+      if (tool.slug === "uuid-generator") {
+        const generated = finalState.live.join("\n").trim().split(/\r?\n/).filter(Boolean);
+        const uuidV4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        if (generated.length !== 5 || generated.some((value) => !uuidV4.test(value))) {
+          throw new Error("UUID generator must return exactly five valid RFC 4122 version 4 UUIDs.");
+        }
+        row.checks.push("five generated UUID v4 values validated");
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "five-uuid-v4-values-validated";
+        return row;
+      }
       if (tool.slug === "color-picker-palette") {
         const colorState = await page.evaluate("({ value: document.querySelector('main input[type=color]')?.value, body: document.querySelector('main')?.innerText || '', swatches: [...document.querySelectorAll('main button[title]')].map(b => b.title) })");
         if (colorState.value !== "#0f766e" || !colorState.body.includes("#0F766E") || !colorState.body.includes("15, 118, 110") || colorState.swatches.length < 5) throw new Error("Color picker did not show the selected HEX/RGB values and five palette swatches.");

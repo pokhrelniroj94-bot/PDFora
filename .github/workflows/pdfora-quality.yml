@@ -7,6 +7,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+# Avoid running the expensive 173-tool browser sweep multiple times for every
+# successive QA commit on the same PR. Only the newest revision should consume CI.
+concurrency:
+  group: pdfora-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   backend:
     runs-on: ubuntu-latest

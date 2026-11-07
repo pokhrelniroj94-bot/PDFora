@@ -69,7 +69,7 @@ jobs:
       - name: Warm the Render PDF backend before browser processing tests
         run: |
           for attempt in {1..45}; do
-            if curl --fail --silent https://pdfora-493r.onrender.com/ > /dev/null; then
+            if curl --max-time 8 --fail --silent https://pdfora-493r.onrender.com/ > /dev/null; then
               echo "Render backend is responding."
               exit 0
             fi

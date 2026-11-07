@@ -250,6 +250,8 @@ async function runTool(tool, index) {
         await delay(150);
         const searched = await page.evaluate('({ rows: document.querySelectorAll("tbody tr").length, body: document.querySelector("tbody")?.innerText || "" })');
         if (!searched.rows || !/Tihar/i.test(searched.body)) throw new Error("Holiday search did not filter to the requested Tihar entry.");
+        await page.evaluate(`(() => { const input = document.querySelector("input"); const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set; setter.call(input, ""); input.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "deleteContentBackward" })); })()`);
+        await delay(150);
         const community = await page.evaluate(`(() => {
           const button = [...document.querySelectorAll("button")].find((item) => item.innerText.trim() === "Community");
           if (!button) return false;

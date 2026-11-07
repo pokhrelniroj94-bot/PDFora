@@ -164,7 +164,8 @@ export const nepalBlogPosts: BlogPost[] = [
     intro: "Nepali documents and messages often use Devanagari digits, while websites, spreadsheets and international forms may use English digits. A digit converter makes it easy to switch the number characters.",
     sections: [
       { heading: "Nepali and English digit mapping", paragraphs: ["The digits map one-to-one: 0 = ०, 1 = १, 2 = २, 3 = ३, 4 = ४, 5 = ५, 6 = ६, 7 = ७, 8 = ८ and 9 = ९.", "Only digits change. Letters, spaces, punctuation and other text remain unchanged."] },
-      { heading: "Convert digits in a sentence", paragraphs: [], bullets: ["Paste a number or sentence into the Nepali Unicode Digit Converter.", "Copy the Nepali-digit output for a Nepali document.", "Switch back to English digits when a system requires ASCII numerals."] }
+      { heading: "Convert digits in a sentence", paragraphs: [], bullets: ["Paste a number or sentence into the Nepali Unicode Digit Converter.", "Copy the Nepali-digit output for a Nepali document.", "Switch back to English digits when a system requires ASCII numerals."] },
+      { heading: "Where should you use Nepali digits?", paragraphs: ["Devanagari digits can make Nepali-language notices, letters and local records easier to read. However, online forms, bank systems, spreadsheets and international services may require standard ASCII digits (0–9). Follow the receiving system’s instructions instead of assuming one format works everywhere."] }
     ],
     faqs: [{ question: "Does this translate English words into Nepali?", answer: "No. It converts digit characters only." }, { question: "Will punctuation and text be preserved?", answer: "Yes. Only digit characters are replaced." }],
     toolLinks: [{ label: "Nepali Digit Converter", href: "/tools/nepali-digit-converter" }, { label: "Nepali Number to Words", href: "/tools/nepali-number-converter" }]

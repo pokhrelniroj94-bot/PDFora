@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import NepalMarketNews from "./NepalMarketNews";
-import { estimateNepalDomesticElectricityBill } from "../lib/i18n/nepali-nepal-tools";
 
 type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
 type ForexResponse = { source: string; requestedDate: string; rateDate: string; publishedOn: string | null; updatedAt?: string; isStale?: boolean; notice?: string; rates: ForexRate[]; error?: string };
@@ -253,22 +252,35 @@ function SalaryTaxTool({ locale = "en" }: { locale?: "en" | "ne" }) {
 
 function ElectricityTool({ locale = "en" }: { locale?: "en" | "ne" }) {
   const ne = locale === "ne";
-  const [units, setUnits] = useState("100");
-  const [meter, setMeter] = useState<"5A" | "15A" | "30A" | "60A">("5A");
-  const [rebate, setRebate] = useState(true);
-  const u = Number(units);
-  const valid = units.trim() !== "" && Number.isFinite(u) && u >= 0 && u <= 100000;
-  const estimate = valid ? estimateNepalDomesticElectricityBill(u, meter, rebate) : null;
-  return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">{ne ? "NEA घरायसी विद्युत् बिल अनुमान" : "NEA Domestic Electricity Bill Estimator"}</h2><p className="mt-1 text-sm text-slate-600">{ne ? "मासिक खपत र मिटर क्षमताका आधारमा एकल-फेज घरायसी बिलको अनुमान गर्नुहोस्।" : "Estimate a single-phase domestic bill from monthly units and meter capacity."}</p></div>
-    <div className="grid gap-3 sm:grid-cols-2"><Field title={ne ? "मासिक खपत (युनिट / kWh)" : "Monthly consumption (units / kWh)"} value={units} onChange={setUnits}/><label><span className={label}>{ne ? "मिटर क्षमता" : "Meter capacity"}</span><select className={field} value={meter} onChange={(e) => setMeter(e.target.value as "5A" | "15A" | "30A" | "60A")}>{["5A","15A","30A","60A"].map((m) => <option key={m}>{m}</option>)}</select></label></div>
-    <label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={rebate} onChange={(e) => setRebate(e.target.checked)}/>{ne ? "७ दिनभित्र भुक्तानी गर्दा २% छुट लागू भएको मान्नुहोस्" : "Assume 2% early-payment rebate (within 7 days)"}</label>
-    {estimate ? <><Result>{ne
-      ? `ऊर्जा शुल्क: ${npr(estimate.energyCharge)}\nमासिक न्यूनतम शुल्क: ${npr(estimate.minimumCharge)}\nछिटो भुक्तानी छुट: −${npr(estimate.earlyPaymentRebate)}\nVAT अनुमान (५० युनिटभन्दा माथिको ऊर्जा शुल्कमा ५%): ${npr(estimate.vatEstimate)}\nअनुमानित बिल: ${npr(estimate.estimatedTotal)}`
-      : `Energy charge: ${npr(estimate.energyCharge)}\nMonthly minimum charge: ${npr(estimate.minimumCharge)}\nEarly-payment rebate: −${npr(estimate.earlyPaymentRebate)}\nVAT estimate (5% on energy above 50 units): ${npr(estimate.vatEstimate)}\nEstimated bill: ${npr(estimate.estimatedTotal)}`}</Result><p className="text-xs text-slate-500">{ne ? "ऊर्जा शुल्क खपतका क्रमिक तहअनुसार गणना हुन्छ। न्यूनतम शुल्क कुल खपतको तह र मिटर क्षमतामा निर्भर हुन्छ।" : "Energy is calculated progressively by consumption block. Minimum charge depends on the total-use band and meter capacity."}</p></> : <p role="alert" className="text-sm text-red-700">{ne ? "० देखि १,००,००० सम्मको मान्य मासिक युनिट लेख्नुहोस्।" : "Enter monthly units from 0 to 100,000."}</p>}
-    <p className="text-xs leading-5 text-slate-500">{ne ? "यो घरायसी एकल-फेज बिलको अनुमान मात्र हो। बक्यौता, मिटर भाडा वा खाताअनुसारका अन्य समायोजन समावेश छैनन्। महसुल, VAT र छुट परिवर्तन हुन सक्छन्; NEA को वास्तविक बिल नै अन्तिम हुन्छ। व्यावसायिक वा तीन-फेज बिलका लागि ERC को आधिकारिक क्याल्कुलेटर प्रयोग गर्नुहोस्।" : "Domestic single-phase estimate only. Excludes arrears, meter rent or other account-specific adjustments. Tariffs, VAT treatment and rebates may change; your NEA bill is final. For commercial, three-phase or official bill calculations, use the ERC calculator."}</p>
-    <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/electricity-calculator" target="_blank" rel="noreferrer">{ne ? "आधिकारिक ERC विद्युत् क्याल्कुलेटर" : "Official ERC electricity calculator"}</a><a className="font-semibold text-teal-700 underline" href="https://www.nea.org.np/en/pages/consumer-tariff-rates" target="_blank" rel="noreferrer">{ne ? "NEA उपभोक्ता महसुल दर" : "NEA consumer tariff rates"}</a></div>
-  </div>;
+  return <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+    <header>
+      <p className="text-xs font-bold uppercase tracking-wide text-teal-700">{ne ? "नेपाल · आधिकारिक विद्युत् महसुल" : "Nepal · Official electricity tariff"}</p>
+      <h2 className="mt-1 text-xl font-bold text-slate-950">{ne ? "आधिकारिक विद्युत् बिल क्याल्कुलेटर" : "Official Electricity Bill Calculator"}</h2>
+      <p className="mt-2 text-sm leading-6 text-slate-600">{ne
+        ? "विद्युत् नियमन आयोग (ERC) को आधिकारिक क्याल्कुलेटर प्रयोग गरेर आफ्नो जडानअनुसार मासिक बिल निकाल्नुहोस्।"
+        : "Calculate your monthly bill with the Electricity Regulatory Commission (ERC) calculator using your actual connection details."}</p>
+    </header>
+    <div className="rounded-xl border border-teal-100 bg-teal-50/60 p-4">
+      <h3 className="font-semibold text-slate-900">{ne ? "घरायसी बिल निकाल्ने तरिका" : "How to calculate a household bill"}</h3>
+      <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-700">
+        <li>{ne ? "जडान प्रकारमा ‘घरायसी’ छान्नुहोस्।" : "Choose “Domestic / Household” as the connection type."}</li>
+        <li>{ne ? "आफ्नो मिटरको फ्युज क्षमता छान्नुहोस्।" : "Select the fuse capacity shown for your meter."}</li>
+        <li>{ne ? "लागू हुने मौसम छान्नुहोस्।" : "Select the applicable season."}</li>
+        <li>{ne ? "बिलमा देखिएको अवधिको वास्तविक खपत (kWh) लेख्नुहोस्।" : "Enter the actual consumption in kWh for the billing period."}</li>
+        <li>{ne ? "बिल गणना गरी नतिजा र हाल लागू हुने महसुल आयोगको साइटमै जाँच्नुहोस्।" : "Calculate the bill and review the result and current tariff on the Commission’s site."}</li>
+      </ol>
+    </div>
+    <a href="https://www.erc.gov.np/electricity-calculator" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white hover:bg-teal-800">
+      {ne ? "ERC को आधिकारिक बिल क्याल्कुलेटर खोल्नुहोस् ↗" : "Open the official ERC bill calculator ↗"}
+    </a>
+    <div className="space-y-2 text-xs leading-5 text-slate-500">
+      <p>{ne ? "PDFora ले यहाँ पुरानो वा स्थिर महसुल दरबाट रकम अनुमान गर्दैन। ERC ले २०८३ सालमा नयाँ विद्युत् उपभोक्ता महसुल निर्धारण निर्देशिका जारी गरेको छ; त्यसैले अद्यावधिक आधिकारिक क्याल्कुलेटर प्रयोग गर्नुहोस्।" : "PDFora does not estimate a bill using potentially outdated hard-coded tariff rates. ERC issued a new Electricity Consumer Tariff Determination Directive in 2083, so use its current official calculator."}</p>
+      <div className="flex flex-wrap gap-4">
+        <a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/detail/314" target="_blank" rel="noopener noreferrer">{ne ? "ERC को २०८३ महसुल निर्देशिका ↗" : "ERC 2083 tariff directive ↗"}</a>
+        <a className="font-semibold text-teal-700 underline" href="https://www.nea.org.np/en/pages/consumer-tariff-rates" target="_blank" rel="noopener noreferrer">{ne ? "NEA उपभोक्ता महसुल जानकारी ↗" : "NEA consumer tariff information ↗"}</a>
+      </div>
+    </div>
+  </section>;
 }
 
 const holidayNamesNe: Record<string, string> = {

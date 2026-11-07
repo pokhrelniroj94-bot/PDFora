@@ -57,7 +57,7 @@ for (const [relativePath, localeFreePath] of reciprocalEnglishPages) {
 }
 
 assert.match(englishToolPageSource, /isLocalizedToolIndexable\("ne", slug\)/, "English tool pages must gate Nepali hreflang on explicit indexing approval");
-assert.match(englishToolPageSource, /languages:\s*languages/, "Approved English PDF pages must emit the reciprocal hreflang map");
+assert.match(englishToolPageSource, /languages\s*\?\s*\{\s*languages\s*\}/, "Approved English PDF pages must emit the reciprocal hreflang map");
 for (const slug of approvedNepali) {
   const localeFreePath = `/${slug}`;
   const alternates = hreflangMap(localeFreePath);

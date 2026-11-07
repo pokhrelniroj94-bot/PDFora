@@ -541,6 +541,21 @@ async function runTool(tool, index) {
         row.downloadedFiles = [await validateDownloadedFile(path.join(downloadsDir, downloadedNames[0]))];
         row.downloadCount = row.downloadedFiles.length;
         row.checks.push("downloaded image bytes and file signature validated");
+
+      }
+      const finalState = await page.evaluate(`(() => {
+        const scope = document.querySelector("main") || document.body;
+        return {
+          body: scope.innerText?.slice(0, 16000) || "",
+          alerts: [...scope.querySelectorAll('[role="alert"]')].map((e) => e.innerText.trim()).filter(Boolean),
+          live: [...scope.querySelectorAll('[aria-live]')].map((e) => e.innerText.trim()).filter(Boolean),
+          tables: [...scope.querySelectorAll('table')].map((table) => table.innerText).join('\\n'),
+          inputs: scope.querySelectorAll("input,textarea,select").length,
+          inputValues: [...scope.querySelectorAll("input,textarea,select")].map((input) => ({ value: input.value || "", type: input.type || input.tagName.toLowerCase() })),
+          storyLinks: scope.querySelectorAll("section ul li a").length,
+        };
+      })()`);
+      if (["image-compressor", "image-format-converter", "loksewa-photo-resizer"].includes(tool.slug)) {
         const invalidInputNode = await page.send("DOM.getDocument", { depth: 1 });
         const invalidInput = await page.send("DOM.querySelector", { nodeId: invalidInputNode.root.nodeId, selector: 'input[type="file"]' });
         if (!invalidInput.nodeId) throw new Error("Image tool lost its file input before invalid-file testing.");
@@ -557,18 +572,6 @@ async function runTool(tool, index) {
         if (!/Could not read this image format|Image could not be opened/i.test(invalidError)) throw new Error("Invalid image input was not rejected with a visible error message.");
         row.checks.push("invalid image file rejected with a visible error message");
       }
-      const finalState = await page.evaluate(`(() => {
-        const scope = document.querySelector("main") || document.body;
-        return {
-          body: scope.innerText?.slice(0, 16000) || "",
-          alerts: [...scope.querySelectorAll('[role="alert"]')].map((e) => e.innerText.trim()).filter(Boolean),
-          live: [...scope.querySelectorAll('[aria-live]')].map((e) => e.innerText.trim()).filter(Boolean),
-          tables: [...scope.querySelectorAll('table')].map((table) => table.innerText).join('\\n'),
-          inputs: scope.querySelectorAll("input,textarea,select").length,
-          inputValues: [...scope.querySelectorAll("input,textarea,select")].map((input) => ({ value: input.value || "", type: input.type || input.tagName.toLowerCase() })),
-          storyLinks: scope.querySelectorAll("section ul li a").length,
-        };
-      })()`);
       if (tool.slug === "nepal-forex-rates") {
         let forexState = null;
         const forexStarted = Date.now();

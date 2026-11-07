@@ -18,6 +18,7 @@ import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinan
 import AIWritingTools from "../../../../components/AIWritingTools";
 import ExtraTools from "../../../../components/ExtraTools";
 import QuickUtilityTools from "../../../../components/QuickUtilityTools";
+import NepaliSpecialCatalogWorkspace from "../../../../components/NepaliSpecialCatalogWorkspace";
 import { nepaliLocalizedCareerSlugs, nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -136,6 +137,14 @@ const nepaliTitles: Record<string, string> = {
   "css-gradient-generator": "CSS Gradient Generator",
   "roman-numeral-converter": "Roman Numeral रूपान्तरण",
   "savings-goal-calculator": "बचत लक्ष्य क्याल्कुलेटर",
+  "currency-converter": "मुद्रा विनिमय क्याल्कुलेटर",
+  "image-compressor": "तस्बिरको आकार घटाउने टुल",
+  "image-format-converter": "तस्बिर ढाँचा रूपान्तरण",
+  "color-picker-palette": "रङ छनोट तथा Palette Generator",
+  "notes-to-pdf": "नोटबाट PDF बनाउनुहोस्",
+  "nepal-share-calculator": "NEPSE शेयर खरिद/बिक्री क्याल्कुलेटर",
+  "preeti-unicode-converter": "Preeti ↔ नेपाली Unicode रूपान्तरण",
+  "nepali-unicode-typing": "नेपाली Unicode टाइपिङ",
 };
 const nepaliDescriptions: Record<string, string> = {
   "nepali-digit-converter": "अङ्ग्रेजी अंकलाई नेपाली देवनागरी अंकमा र नेपाली अंकलाई अङ्ग्रेजी अंकमा रूपान्तरण गर्नुहोस्।",
@@ -252,7 +261,14 @@ const nepaliDescriptions: Record<string, string> = {
   "css-gradient-generator": "दुई HEX रङ र कोणका आधारमा CSS linear-gradient code बनाउनुहोस्।",
   "roman-numeral-converter": "१ देखि ३९९९ सम्मका पूर्णांकलाई Roman numeral मा वा canonical Roman numeral लाई अंकमा बदल्नुहोस्।",
   "savings-goal-calculator": "बचत लक्ष्य, अहिलेसम्मको बचत र समयावधिबाट हरेक महिना बचत गर्नुपर्ने रकम निकाल्नुहोस्। ब्याज समावेश छैन।",
-
+  "currency-converter": "सार्वजनिक विनिमय दरबाट USD, NPR, INR र अन्य समर्थित मुद्राबीच रूपान्तरणको अनुमान निकाल्नुहोस्। बैंकको कारोबार दर फरक हुन सक्छ।",
+  "image-compressor": "JPEG, PNG र WebP तस्बिरको आकार ब्राउजरमै घटाउनुहोस्। फाइल ५० MB भन्दा सानो हुनुपर्छ; GIF र BMP पुनः encoding हुँदा animation वा metadata हराउन सक्छ।",
+  "image-format-converter": "समर्थित तस्बिरलाई WebP, JPEG वा PNG मा ब्राउजरमै रूपान्तरण गर्नुहोस्। पारदर्शिता र metadata सम्बन्धी फरक बुझेर format छान्नुहोस्।",
+  "color-picker-palette": "HEX र RGB मानसहित रङ छान्नुहोस् र त्यसबाट हल्का shade भएको palette बनाउनुहोस्।",
+  "notes-to-pdf": "नोट लेखेर browser print संवादबाट PDF मा सुरक्षित गर्नुहोस्। Unicode को देखावट उपकरणमा उपलब्ध font मा निर्भर हुन्छ।",
+  "nepal-share-calculator": "शेयर संख्या, खरिद/बिक्री मूल्य र सम्पादन गर्न मिल्ने brokerage, SEBON, DP तथा CGT दरबाट नाफा अनुमान गर्नुहोस्। शुल्क र करका हालका नियम पुष्टि गर्नुहोस्।",
+  "preeti-unicode-converter": "Preeti font मा लेखिएको पाठलाई नेपाली Unicode मा वा Unicode पाठलाई Preeti encoding मा बदल्नुहोस्। मूल पाठ सुरक्षित राखेर नतिजा जाँच्नुहोस्।",
+  "nepali-unicode-typing": "Romanized नेपाली टाइप गरेर देवनागरी Unicode मा लिप्यन्तरण गर्नुहोस्। यो अनुवाद होइन; नाम र औपचारिक पाठ जाँच्नुहोस्।",
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -286,6 +302,10 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
+  const nepaliSpecialToolSlugs = ["currency-converter", "image-compressor", "image-format-converter", "color-picker-palette", "notes-to-pdf", "nepal-share-calculator", "preeti-unicode-converter", "nepali-unicode-typing"];
+  if (request.locale === "ne" && nepaliSpecialToolSlugs.includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली विशेष उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliSpecialCatalogWorkspace slug={toolSlug} /></section></main>;
+  }
   const nepaliExtraToolSlugs = ["password-generator", "xml-formatter-validator", "regex-tester", "jwt-decoder", "color-contrast-checker", "css-minifier", "json-to-csv", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "savings-goal-calculator"];
   const nepaliQuickUtilitySlugs = ["csv-to-json", "json-to-yaml", "random-number-generator", "dice-roller", "unix-timestamp-converter", "date-add-subtract-calculator", "business-days-calculator", "px-rem-converter", "aspect-ratio-calculator", "color-converter", "css-gradient-generator", "roman-numeral-converter"];
   if (request.locale === "ne" && nepaliExtraToolSlugs.includes(toolSlug)) {

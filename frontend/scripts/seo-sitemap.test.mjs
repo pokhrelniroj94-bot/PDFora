@@ -14,6 +14,7 @@ const pdfRoutes = Object.keys(modules["nepali-pdf-routes"].nepaliPdfRoutes);
 const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedUtilitySlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedFinancialSlugs,
+  ...modules["nepali-tool-routes"].nepaliLocalizedPublicInfoSlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedCareerSlugs,
 ];
 

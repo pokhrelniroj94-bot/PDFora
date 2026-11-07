@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { ensureTypeStripping, loadToolAdapter } from "./lib/load-i18n.mjs";
 ensureTypeStripping();
 const { convertTolaGrams, GRAMS_PER_TOLA, validateNepalMobileNumber } = await import("../lib/i18n/nepali-nepal-tools.ts");
+const DateConverter = (await import("../lib/nepali-date-converter/index.ts")).default;
 
 assert.equal(GRAMS_PER_TOLA, 11.6638038);
 assert.equal(convertTolaGrams(1, "tola"), 11.6638038);
@@ -23,6 +24,14 @@ for (const value of ["9812345678", "+977 9812345678", "977-9812345678", "९८�
 assert.equal(validateNepalMobileNumber("981234567").valid, false);
 assert.equal(validateNepalMobileNumber("8812345678").valid, false);
 assert.equal(validateNepalMobileNumber("+1 9812345678").valid, false);
+
+assert.equal(validateNepalMobileNumber("+1 9812345678").valid, false);
+
+const bsNewYear = new DateConverter("2026-04-14").toBs();
+assert.deepEqual({ year: bsNewYear.year, month: bsNewYear.month, date: bsNewYear.date }, { year: 2083, month: 1, date: 1 });
+const adNewYear = new DateConverter("2083-01-01").toAd();
+assert.deepEqual({ year: adNewYear.year, month: adNewYear.month, date: adNewYear.date }, { year: 2026, month: 4, date: 14 });
+assert.throws(() => new DateConverter("2099-13-01").toAd());
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const routeSource = fs.readFileSync(path.join(root, "lib/i18n/nepali-tool-routes.ts"), "utf8");
@@ -48,6 +57,29 @@ assert.ok(liveSource.includes('return <HolidayTool locale={locale}/>'), "Holiday
 for (const required of ["नेपाली नयाँ वर्ष", "हरितालिका तीज", "शहीद दिवस", "महिला कर्मचारीका लागि मात्र", "आधिकारिक गृह मन्त्रालय"]) {
   assert.ok(liveSource.includes(required) || pageSource.includes(required), `Expected Nepali holiday copy: ${required}`);
 }
+assert.ok(componentSource.includes("photo.size > 20 * 1024 * 1024"), "Photo resizer must enforce its 20 MB client-side limit");
+assert.ok(componentSource.includes("URL.createObjectURL(photo)") && componentSource.includes("canvas.toBlob"), "Photo resizing must be performed locally in the browser");
+assert.ok(!componentSource.includes("fetch("), "Nepali utility workspace must not upload user photos to a server");
+assert.ok(componentSource.includes("bsYear < 1975 || bsYear > 2099"), "Calendar must enforce the supported BS range");
+assert.ok(componentSource.includes("does not include public holidays") || componentSource.includes("सार्वजनिक बिदा, तिथि वा चाडपर्वको आधिकारिक सूची समावेश छैन"), "Calendar must not imply unimplemented holiday/tithi data");
+
+const holidayBlock = liveSource.slice(liveSource.indexOf("const holidays = ["), liveSource.indexOf("const holidayNamesNe:"));
+const holidayRows = [...holidayBlock.matchAll(/\{ name: "([^"]+)", bs: "([^"]+)", ad: "([^"]*)", note: "([^"]+)", type: "([^"]+)" \}/g)];
+assert.ok(holidayRows.length >= 30, "The 2083 list must retain its full holiday/observance dataset");
+assert.equal(new Set(holidayRows.map((row) => row[1])).size, holidayRows.length, "Holiday names must be unique");
+for (const [, name, bs, ad] of holidayRows) {
+  if (!ad) {
+    assert.equal(bs, "Date to be announced", `${name} should explain why its date is not confirmed`);
+    continue;
+  }
+  const [bsYear, bsMonth, bsDay] = bs.split(" ");
+  const converted = new DateConverter(ad).toBs();
+  const monthNames = ["", "Baisakh", "Jestha", "Asar", "Shrawan", "Bhadra", "Asoj", "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"];
+  assert.equal(converted.year, Number(bsYear), `${name} BS year must match its AD date`);
+  assert.equal(converted.month, monthNames.indexOf(bsMonth), `${name} BS month must match its AD date`);
+  assert.equal(converted.date, Number(bsDay), `${name} BS day must match its AD date`);
+}
+assert.ok(liveSource.includes("https://moha.gov.np/en/page/government-and-public-holidays-in-2083"), "Holiday list must link to the official MoHA notice");
 
 const modules = await loadToolAdapter();
 for (const slug of [...newSlugs, ...liveSlugs]) {

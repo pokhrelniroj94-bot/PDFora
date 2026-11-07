@@ -537,6 +537,34 @@ async function runTool(tool, index) {
           storyLinks: scope.querySelectorAll("section ul li a").length,
         };
       })()`);
+      if (tool.slug === "nepal-forex-rates") {
+        const forexState = await page.evaluate(`new Promise((resolve) => {
+          const started = Date.now();
+          const poll = () => {
+            const scope = document.querySelector("main") || document.body;
+            const rows = [...scope.querySelectorAll("table tbody tr")].map((row) => row.innerText.trim());
+            const alert = scope.querySelector('[role="alert"]')?.innerText?.trim() || "";
+            const live = [...scope.querySelectorAll('[aria-live]')].map((item) => item.innerText.trim()).filter(Boolean).join("\\n");
+            const hasUsd = rows.some((row) => /\\bUSD\\b/.test(row));
+            if ((hasUsd && /\\bNPR\\b/.test(live)) || (alert && rows.length === 0) || Date.now() - started > 35000) {
+              resolve({ rows: rows.length, hasUsd, live, alert, body: scope.innerText?.slice(0, 1200) || "", timedOut: Date.now() - started > 35000 });
+              return;
+            }
+            setTimeout(poll, 250);
+          };
+          poll();
+        })`);
+        if (forexState.hasUsd && /\\bNPR\\b/.test(forexState.live) && /Nepal Rastra Bank/i.test(forexState.body)) {
+          row.output = forexState.live.slice(0, 700);
+          row.checks.push("official USD row and live NPR conversion rendered; stale-rate notice remains visible when applicable");
+          row.outputVerified = true;
+          row.status = "PASS";
+          row.evidenceLevel = "official-usd-row-and-npr-conversion-verified";
+          return row;
+        }
+        if (forexState.alert) throw new Error("NRB forex source returned an error: " + forexState.alert);
+        throw new Error(`NRB forex data did not render a verifiable USD/NPR conversion within 35 seconds (rows=${forexState.rows}, timedOut=${forexState.timedOut}, body=${forexState.body}).`);
+      }
       if (tool.slug === "word-character-counter") {
         const textState = await page.evaluate("({ value: document.querySelector('main textarea')?.value || '', content: (document.querySelector('main')?.innerText || '').replace(/\\s+/g, ' ') })");
         if (textState.value !== "PDFora tools make everyday tasks faster." || !/Words\s+6\b/.test(textState.content) || !/Characters\s+40\b/.test(textState.content) || !/Sentences\s+1\b/.test(textState.content) || !/Paragraphs\s+1\b/.test(textState.content)) {

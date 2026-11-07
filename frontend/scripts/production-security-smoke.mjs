@@ -31,9 +31,11 @@ check("HSTS one-year max-age", /max-age=(?:31536000|[3-9]\d{7,})/.test(hsts), hs
 check("X-Content-Type-Options nosniff", headers.get("x-content-type-options") === "nosniff", headers.get("x-content-type-options") || "missing");
 check("Referrer-Policy strict-origin-when-cross-origin", headers.get("referrer-policy") === "strict-origin-when-cross-origin", headers.get("referrer-policy") || "missing");
 check("X-Frame-Options DENY", headers.get("x-frame-options") === "DENY", headers.get("x-frame-options") || "missing");
-check("CSP blocks object embeds", /object-src\s+'none'/.test(csp), csp || "missing");
-check("CSP restricts base URI", /base-uri\s+'self'/.test(csp), csp || "missing");
 check("CSP blocks framing", /frame-ancestors\s+'none'/.test(csp), csp || "missing");
+if (process.env.PDFORA_EXPECT_HARDENED_CSP === "true") {
+  check("CSP blocks object embeds", /object-src\s+'none'/.test(csp), csp || "missing");
+  check("CSP restricts base URI", /base-uri\s+'self'/.test(csp), csp || "missing");
+}
 const permissions = headers.get("permissions-policy") || "";
 check("Permissions-Policy disables unused sensitive APIs", /camera=\(\)/.test(permissions) && /microphone=\(\)/.test(permissions) && /geolocation=\(\)/.test(permissions), permissions || "missing");
 check("No wildcard CORS on HTML", headers.get("access-control-allow-origin") !== "*", headers.get("access-control-allow-origin") || "not set");

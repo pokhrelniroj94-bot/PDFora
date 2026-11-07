@@ -12,6 +12,7 @@ const normalized = normalizeDailyBars([
   { date: "2026-01-02", close: 101, volume: 11 },
   { date: "2026-01-02", close: 102, volume: 12 },
   { date: "2026-02-30", close: 103 },
+  { date: "2099-01-01", close: 104 },
   { date: "2026-01-03", close: -1 },
   { date: "bad-date", close: 100 },
 ]);

@@ -104,7 +104,7 @@ assert.ok(["emi", "calculator"].every((token) => loanSearchText.includes(token))
 const notesToolLine = catalogSource.split("\n").find((line) => line.includes('slug:"notes-to-pdf"'));
 assert.ok(notesToolLine, "Notes to PDF is missing from the catalog");
 assert.ok(notesToolLine.includes('category:"PDF"'), "Notes to PDF must be grouped under the PDF category");
-assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesToPDF />'), "Notes to PDF handler is missing");
+assert.ok(/if\(slug==="notes-to-pdf"\) return <NotesToPDF(?: locale=\{locale\})? \/>/.test(directoryComponent), "Notes to PDF handler is missing");
 
 const marketApi = read("../app/api/nepse-market/route.ts");
 const marketDashboard = read("../components/NepseMarketDashboard.tsx");

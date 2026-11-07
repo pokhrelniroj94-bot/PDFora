@@ -13,10 +13,10 @@ export function jsonToYaml(value: unknown): string {
       if (!item.length) return pad + "[]";
       return item.map((entry) => {
         if (Array.isArray(entry) && entry.length || entry && typeof entry === "object" && Object.keys(entry as object).length) {
-          return pad + "-\\n" + emit(entry, indent + 2);
+          return pad + "-\n" + emit(entry, indent + 2);
         }
         return pad + "- " + scalar(entry);
-      }).join("\\n");
+      }).join("\n");
     }
     if (item && typeof item === "object") {
       const entries = Object.entries(item as Record<string, unknown>);
@@ -24,10 +24,10 @@ export function jsonToYaml(value: unknown): string {
       return entries.map(([key, entry]) => {
         const safeKey = scalar(key);
         if (Array.isArray(entry) && entry.length || entry && typeof entry === "object" && Object.keys(entry as object).length) {
-          return pad + safeKey + ":\\n" + emit(entry, indent + 2);
+          return pad + safeKey + ":\n" + emit(entry, indent + 2);
         }
         return pad + safeKey + ": " + scalar(entry);
-      }).join("\\n");
+      }).join("\n");
     }
     return pad + scalar(item);
   };

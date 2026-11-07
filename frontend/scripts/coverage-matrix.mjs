@@ -30,6 +30,7 @@ const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh
 const rtlLocales = new Set(["ur", "ar"]);
 const publishedLocales = new Set(["en", "ne"]);
 const handlerEvidence = "catalog-handler-check";
+const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter", "nepal-electricity-bill-calculator"]);
 
 const matrix = [];
 for (const locale of locales) {
@@ -46,9 +47,9 @@ for (const locale of locales) {
       route: tool.kind === "pdf" ? `/${tool.slug}` : `/tools/${tool.slug}`,
       routeExists: true,
       handler: english ? handlerEvidence : localized ? "localized-route-handler" : "not-published",
-      interface: english ? "source-language" : localized ? "reviewed-nepali-surface" : "not-implemented",
+      interface: english ? "source-language" : localized ? "nepali-interface-present" : "not-implemented",
       content: guide ? (english ? "source-guide" : "reviewed-nepali-guide") : "not-verified",
-      functionalTest: "not-individually-verified",
+      functionalTest: locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
       humanReview: english ? "source-content-review-not-assessed" : localized ? "native-review-not-assessed" : "not-reviewed",
       indexing: indexable ? "eligible" : "excluded",
       published: publishedLocales.has(locale) && localized,

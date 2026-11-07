@@ -10,5 +10,9 @@ assert.equal(runNepaliExtraTextTool("remove-duplicate-words", "नेपाल �
 assert.equal(runNepaliExtraTextTool("find-replace-text", "नेपाली भाषा", "भाषा", "भाषा राम्रो"), "नेपाली भाषा राम्रो");
 assert.match(runNepaliExtraTextTool("palindrome-checker", "नमन"), /एउटै पढिन्छ/);
 assert.equal(runNepaliExtraTextTool("acronym-generator", "World Health Organization"), "WHO");
+
 for (const slug of ["email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"]) {
-  const copy = getNepaliExtraTextToolCopy(slug);\n  assert.ok(copy.purpose.length > 40 && copy.steps.length >= 3 && copy.limitation.length > 40 && copy.example.length > 10, slug + " must include useful localized guidance");\n}\nconsole.log("Nepali extra text tool tests passed (9 tools, functionality and guidance).");
+  const copy = getNepaliExtraTextToolCopy(slug);
+  assert.ok(copy.purpose.length > 40 && copy.steps.length >= 3 && copy.limitation.length > 40 && copy.example.length > 10, slug + " must include useful localized guidance");
+}
+console.log("Nepali extra text tool tests passed (9 tools, functionality and guidance).");

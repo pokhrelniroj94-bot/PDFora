@@ -313,7 +313,7 @@ async function runTool(tool, index) {
       width: 390, height: 844, deviceScaleFactor: 1, mobile: true,
     });
     await delay(120);
-    const mobileState = await page.evaluate(`() => {
+    const mobileState = await page.evaluate(`(() => {
       const root = document.documentElement;
       const main = document.querySelector("main");
       const visible = (element) => {
@@ -343,7 +343,7 @@ async function runTool(tool, index) {
         unnamedLinks: unnamedLinks.length,
         unnamedFields: unnamedFields.length,
       };
-    }`);
+    })()`);
     row.mobileViewport = mobileState;
     if (mobileState.viewport.width > 400) {
       throw new Error("Mobile emulation did not apply a device-width viewport: " + JSON.stringify(mobileState.viewport));

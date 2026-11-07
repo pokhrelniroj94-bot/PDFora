@@ -82,6 +82,12 @@ assert.equal(new Set(holidayRows.map((row) => row[1])).size, holidayRows.length,
 const holidayNameMap = liveSource.slice(liveSource.indexOf("const holidayNamesNe:"), liveSource.indexOf("const holidayNotesNe:"));
 const holidayNoteMap = liveSource.slice(liveSource.indexOf("const holidayNotesNe:"), liveSource.indexOf("const holidayTypeNe:"));
 const holidayTypeMap = liveSource.slice(liveSource.indexOf("const holidayTypeNe:"), liveSource.indexOf("function HolidayTool"));
+const holidayMonthMap = liveSource.slice(liveSource.indexOf("const holidayMonthNe:"), liveSource.indexOf("const nepaliNumberText"));
+for (const [, , bs] of holidayRows) {
+  if (bs === "Date to be announced") continue;
+  const [, month] = bs.split(" ");
+  assert.ok(holidayMonthMap.includes(`${month}:`), `Missing Nepali BS month translation: ${month}`);
+}
 for (const [, name, , , note, type] of holidayRows) {
   assert.ok(holidayNameMap.includes(`"${name}"`), `Missing Nepali holiday name translation: ${name}`);
   assert.ok(holidayNoteMap.includes(`"${note}"`), `Missing Nepali holiday note translation: ${note}`);

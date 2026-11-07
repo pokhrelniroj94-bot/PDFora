@@ -149,7 +149,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne?from=%2Ftools%2Fjson-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 76);
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 79);
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -246,7 +246,7 @@ test("Nepali date and time calculators have localized routes and visible copy", 
     assert.ok(logic.includes(`slug === "${slug}"`), `${slug} must have calculation logic`);
   }
   assert.ok(component.includes("नेपाली मिति तथा समय टुल"));
-  assert.ok(logic.includes("UTC date arithmetic"));
+  assert.ok(logic.includes("Date.UTC"));
 });
 
 test("Nepali Resume Builder preserves all templates and print-safe Devanagari output", () => {

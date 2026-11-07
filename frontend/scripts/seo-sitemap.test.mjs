@@ -48,16 +48,16 @@ const reciprocalEnglishPages = [
 ];
 for (const [relativePath, localeFreePath] of reciprocalEnglishPages) {
   const source = read(relativePath);
-  assert.match(source, /hreflangMap\\(/, `${relativePath} must publish alternates for its reviewed Nepali equivalent`);
-  assert.match(source, /languages:\\s*localizedAlternates/, `${relativePath} must emit the shared hreflang map`);
+  assert.match(source, /hreflangMap\(/, `${relativePath} must publish alternates for its reviewed Nepali equivalent`);
+  assert.match(source, /languages:\s*localizedAlternates/, `${relativePath} must emit the shared hreflang map`);
   const alternates = hreflangMap(localeFreePath);
   assert.equal(alternates?.en, `https://pd-fora.vercel.app${localeFreePath}`);
   assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne${localeFreePath}`);
   assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
 }
 
-assert.match(englishToolPageSource, /isLocalizedToolIndexable\\("ne", slug\\)/, "English tool pages must gate Nepali hreflang on explicit indexing approval");
-assert.match(englishToolPageSource, /languages:\\s*languages/, "Approved English PDF pages must emit the reciprocal hreflang map");
+assert.match(englishToolPageSource, /isLocalizedToolIndexable\("ne", slug\)/, "English tool pages must gate Nepali hreflang on explicit indexing approval");
+assert.match(englishToolPageSource, /languages:\s*languages/, "Approved English PDF pages must emit the reciprocal hreflang map");
 for (const slug of approvedNepali) {
   const localeFreePath = `/${slug}`;
   const alternates = hreflangMap(localeFreePath);

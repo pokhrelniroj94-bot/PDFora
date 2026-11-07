@@ -325,7 +325,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "+977 लाई १० अङ्कभित्र गनिन्छ?", answer: "गनिँदैन। +977 देश कोड हो; त्यसपछि राष्ट्रिय नम्बर आउँछ।" },
       { question: "के उपकरणले SIM सक्रिय छ कि छैन बताउँछ?", answer: "बताउँदैन। यसले नम्बरको ढाँचा मात्र जाँच्न सक्छ।" }
     ],
-    toolLinks: [{ label: "नेपाल मोबाइल नम्बर जाँचक", href: "/tools/nepal-phone-validator" }]
+    toolLinks: [{ label: "नेपाल मोबाइल नम्बर जाँचक", href: "/tools/nepse-market-news" }]
   },
   {
     slug: "nepse-market-news-and-ipo-updates",

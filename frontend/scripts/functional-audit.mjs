@@ -105,7 +105,7 @@ const rows = [
           ? "Browser route, mobile layout and accessibility evidence remain unverified."
           : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
     evidence: `${inputTestedCatalog.has(entry.slug)
-      ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"`
+      ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
       : uiRegressionCatalog.has(entry.slug)
         ? "frontend/scripts/tool-ui-regression.test.mjs; frontend/components/AllTools.tsx"
         : testedCatalog.has(entry.slug)

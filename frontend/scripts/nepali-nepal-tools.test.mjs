@@ -52,6 +52,7 @@ assert.ok(componentSource.includes("photo.size > 20 * 1024 * 1024"), "Photo resi
 assert.ok(componentSource.includes("URL.createObjectURL(photo)") && componentSource.includes("canvas.toBlob"), "Photo resizing must be performed locally in the browser");
 assert.ok(!componentSource.includes("fetch("), "Nepali utility workspace must not upload user photos to a server");
 assert.ok(componentSource.includes("bsYear < 1975 || bsYear > 2099"), "Calendar must enforce the supported BS range");
+assert.ok(componentSource.includes("toAsciiDigits(year)") && componentSource.includes("toNepaliDigits(row.ad)"), "Calendar must accept Devanagari year digits and render dates in Nepali numerals");
 assert.ok(componentSource.includes('<main lang="ne" dir="ltr"') || pageSource.includes('<main lang="ne" dir="ltr"'), "Localized tool pages must expose Nepali language and LTR direction to assistive technology and crawlers");
 assert.ok(componentSource.includes("does not include public holidays") || componentSource.includes("सार्वजनिक बिदा, तिथि वा चाडपर्वको आधिकारिक सूची समावेश छैन"), "Calendar must not imply unimplemented holiday/tithi data");
 

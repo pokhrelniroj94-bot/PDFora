@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T09:30:00.000Z",
+  "generatedAt": "2026-11-07T10:00:00.000Z",
   "sourceCommit": "35848a2a38e40982c95950a39a0aba32aedbd3e5",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
@@ -17,7 +17,7 @@
       "en",
       "ne"
     ],
-    "localizedNepaliTools": 52,
+    "localizedNepaliTools": 57,
     "indexableNepaliTools": 6
   },
   "tools": [
@@ -5612,13 +5612,13 @@
       "kind": "utility",
       "route": "/tools/bmi-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5627,13 +5627,13 @@
       "kind": "utility",
       "route": "/tools/bmr-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5642,13 +5642,13 @@
       "kind": "utility",
       "route": "/tools/tip-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5657,13 +5657,13 @@
       "kind": "utility",
       "route": "/tools/split-bill-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -5672,13 +5672,13 @@
       "kind": "utility",
       "route": "/tools/simple-interest-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "reviewed-nepali-surface",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
       "humanReview": "not-reviewed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {

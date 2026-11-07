@@ -351,7 +351,20 @@ async function runTool(tool, index) {
     }
     row.checks.push("390px mobile viewport has no document/main horizontal overflow");
 
-    await page.evaluate("document.activeElement?.blur?.(); document.body?.focus?.();");
+    const focusStart = await page.evaluate(`() => {
+      const visible = (element) => {
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+      };
+      const candidate = [...document.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )].find(visible);
+      if (!candidate) return null;
+      candidate.focus();
+      return { tag: candidate.tagName, id: candidate.id, name: candidate.getAttribute("name"), text: (candidate.innerText || candidate.getAttribute("aria-label") || candidate.getAttribute("title") || "").trim().slice(0, 100) };
+    }`);
+    if (!focusStart) throw new Error("No visible keyboard-focusable control exists.");
     await page.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
     await page.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
     const keyboardState = await page.evaluate(`() => {
@@ -362,9 +375,10 @@ async function runTool(tool, index) {
         isBody: active === document.body,
       };
     }`);
-    row.keyboardNavigation = keyboardState;
-    if (!keyboardState.tag || keyboardState.isBody) {
-      throw new Error("Tab key did not move focus to an interactive element.");
+    row.keyboardNavigation = { start: focusStart, afterTab: keyboardState };
+    if (!keyboardState.tag || keyboardState.isBody ||
+        (keyboardState.tag === focusStart.tag && keyboardState.text === focusStart.text)) {
+      throw new Error("Tab key did not advance focus from the first visible interactive control.");
     }
     row.checks.push("keyboard Tab reaches a focusable element");
 

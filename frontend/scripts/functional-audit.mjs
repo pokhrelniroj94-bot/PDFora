@@ -59,7 +59,7 @@ const rows = [
     category: "PDF",
     kind: "pdf",
     routeStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
-    interfaceStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    interfaceStatus: browserResults.get(slug)?.status === "PASS" && browserResults.get(slug)?.fileInputCount > 0 ? "PASS" : "PARTIAL",
     handlerStatus: browserResults.get(slug)?.status === "PASS" && (browserResults.get(slug)?.action || browserResults.get(slug)?.outputVerified) ? "PASS" : "PARTIAL",
     functionalTestStatus: browserResults.get(slug)?.status === "PASS" && (browserResults.get(slug)?.action || browserResults.get(slug)?.outputVerified) ? "PASS" : "PARTIAL",
     outputVerificationStatus: browserResults.get(slug)?.outputVerified ? "PASS" : "PARTIAL",
@@ -67,14 +67,13 @@ const rows = [
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: slug === "reorder-pdf" || slug === "delete-pages"
-      ? "Shared browser worker previously accepted unsafe page selections."
-      : "",
+    defectsFound: [slug === "reorder-pdf" || slug === "delete-pages" ? "Shared browser worker previously accepted unsafe page selections." : "", ...(browserResults.get(slug)?.errors ?? [])].filter(Boolean).join("; "),
     fixesApplied: slug === "reorder-pdf" || slug === "delete-pages"
       ? "Worker now rejects incomplete, duplicate, malformed reorder input and deleting every page."
       : "",
-    remainingBlockers:
-      "Browser workflow, mobile layout, accessibility and download integrity require browser evidence.",
+    remainingBlockers: browserResults.get(slug)?.status === "FAIL"
+      ? "Browser E2E failure: " + (browserResults.get(slug)?.errors ?? []).join("; ") + ". Fix and rerun. Mobile and accessibility remain untested."
+      : "Mobile layout, accessibility and independent download-byte verification require separate evidence.",
     evidence: `${pdfEvidence}; ${workerEvidence}`,
   })),
   ...catalog.map((entry) => ({
@@ -92,19 +91,19 @@ const rows = [
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: entry.slug === "unit-converter"
-      ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families."
-      : uiRegressionCatalog.has(entry.slug)
-        ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
-        : "",
+    defectsFound: [entry.slug === "unit-converter" ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families." : uiRegressionCatalog.has(entry.slug) ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction." : "", ...(browserResults.get(entry.slug)?.errors ?? [])].filter(Boolean).join("; "),
     fixesApplied: entry.slug === "unit-converter"
       ? "Rejects negative physical quantities and incompatible temperature/physical unit conversions; allows negative temperatures."
       : uiRegressionCatalog.has(entry.slug)
         ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
         : "",
-    remainingBlockers: testedCatalog.has(entry.slug)
-      ? "Browser route, mobile layout and accessibility evidence remain unverified."
-      : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
+    remainingBlockers: browserResults.get(entry.slug)?.status === "FAIL"
+      ? "Browser E2E failure: " + (browserResults.get(entry.slug)?.errors ?? []).join("; ") + ". Fix and rerun. Mobile and accessibility remain untested."
+      : browserResults.get(entry.slug)?.status === "PASS"
+        ? "Mobile layout, accessibility, exhaustive boundary tests and independent download-byte verification remain untested."
+        : testedCatalog.has(entry.slug)
+          ? "Browser route, mobile layout and accessibility evidence remain unverified."
+          : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
     evidence: inputTestedCatalog.has(entry.slug)
       ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
       : uiRegressionCatalog.has(entry.slug)

@@ -1186,7 +1186,8 @@ async function runTool(tool, index) {
 }
 
 async function runNepaliRoute(tool, index) {
-  const row = { index: index + 1, slug: tool.slug, route: tool.kind === "pdf" ? "/ne/" + tool.slug : "/ne/tools/" + tool.slug, status: "FAIL", checks: [], errors: [] };
+  const route = tool.slug === "resume-builder" ? "/ne/resume-builder" : tool.kind === "pdf" ? "/ne/" + tool.slug : "/ne/tools/" + tool.slug;
+  const row = { index: index + 1, slug: tool.slug, route, status: "FAIL", checks: [], errors: [] };
   let page;
   try {
     page = await openPage(new URL(row.route, baseUrl).toString());

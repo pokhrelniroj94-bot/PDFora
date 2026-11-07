@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ensureTypeStripping, loadToolAdapter } from "./lib/load-i18n.mjs";
 ensureTypeStripping();
-const { convertTolaGrams, GRAMS_PER_TOLA, validateNepalMobileNumber, estimateNepalDomesticElectricityBill } = await import("../lib/i18n/nepali-nepal-tools.ts");
+const { convertTolaGrams, GRAMS_PER_TOLA, validateNepalMobileNumber } = await import("../lib/i18n/nepali-nepal-tools.ts");
 
 assert.equal(GRAMS_PER_TOLA, 11.6638038);
 assert.equal(convertTolaGrams(1, "tola"), 11.6638038);
@@ -13,19 +13,6 @@ assert.equal(convertTolaGrams(0, "tola"), 0);
 assert.throws(() => convertTolaGrams(-1, "gram"), RangeError);
 assert.throws(() => convertTolaGrams(Number.NaN, "tola"), RangeError);
 
-const fiveAmp = estimateNepalDomesticElectricityBill(100, "5A", true);
-assert.equal(fiveAmp.energyCharge, 760);
-assert.equal(fiveAmp.minimumCharge, 75);
-assert.equal(fiveAmp.earlyPaymentRebate, 16.7);
-assert.equal(fiveAmp.vatEstimate, 23.75);
-assert.ok(Math.abs(fiveAmp.estimatedTotal - 842.05) < 1e-9);
-const fifteenAmp = estimateNepalDomesticElectricityBill(100, "15A", false);
-assert.equal(fifteenAmp.energyCharge, 780);
-assert.equal(fifteenAmp.minimumCharge, 100);
-assert.equal(fifteenAmp.earlyPaymentRebate, 0);
-assert.ok(Math.abs(fifteenAmp.estimatedTotal - 903.75) < 1e-9);
-assert.throws(() => estimateNepalDomesticElectricityBill(-1, "5A", true), RangeError);
-assert.throws(() => estimateNepalDomesticElectricityBill(100001, "5A", true), RangeError);
 
 for (const value of ["9812345678", "+977 9812345678", "977-9812345678", "९८१२३४५६७८"]) {
   const result = validateNepalMobileNumber(value);
@@ -52,6 +39,9 @@ for (const slug of newSlugs) {
 }
 
 assert.ok(liveSource.includes('function ElectricityTool({ locale = "en" }'), "Electricity tool must expose a localized interface");
+assert.ok(liveSource.includes("https://www.erc.gov.np/electricity-calculator"), "Electricity tool must link to the live official ERC calculator");
+assert.ok(liveSource.includes("https://www.erc.gov.np/detail/314"), "Electricity tool must disclose the current 2083 ERC tariff directive");
+assert.ok(!liveSource.includes("estimateNepalDomesticElectricityBill"), "Electricity tool must not use unverified hard-coded tariff assumptions");
 assert.ok(liveSource.includes('function HolidayTool({ locale = "en" }'), "Holiday tool must expose a localized interface");
 assert.ok(liveSource.includes('return <ElectricityTool locale={locale}/>'), "Electricity tool must receive the selected locale");
 assert.ok(liveSource.includes('return <HolidayTool locale={locale}/>'), "Holiday tool must receive the selected locale");
@@ -69,4 +59,4 @@ for (const slug of [...newSlugs, ...liveSlugs]) {
   assert.equal(metadata.alternates?.languages, undefined, `${slug} must not publish hreflang before approval`);
 }
 
-console.log("Nepali Nepal-tool regression checks passed: 6 localized routes, mobile validation, weight/electricity calculations and safe noindex metadata.");
+console.log("Nepali Nepal-tool regression checks passed: 6 localized routes, mobile validation, weight conversion, official electricity-source links and safe noindex metadata.");

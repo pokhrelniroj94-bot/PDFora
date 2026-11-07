@@ -19,6 +19,7 @@ const nepaliHomeSource = read("app/ne/page.tsx");
 const blogArticleSource = read("app/blog/[slug]/page.tsx");
 const englishBlogIndexSource = read("app/blog/page.tsx");
 const toolsIndexSource = read("app/tools/page.tsx");
+const toolDirectorySource = read("lib/tool-directory.ts");
 const blogPostSource = read("lib/blog-posts.ts");
 const nepaliBlogArticleSource = read("app/[locale]/blog/[slug]/page.tsx");
 const localeMetadataSource = read("lib/i18n/metadata.ts");
@@ -180,6 +181,14 @@ for (const slug of approvedNepali) assert.ok(nepaliHomeSource.includes(`href: "/
 assert.match(sitemapSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must be excluded from the sitemap");
 assert.match(sitemapSource, /baseUrl\}\/nepse-lab/, "NEPSE strategy lab must be included in the sitemap");
 assert.match(sitemapSource, /baseUrl\}\/resume-builder/, "Resume builder must be included in the sitemap");
+
+assert.match(sitemapSource, /tool\.slug !== "resume-builder"/, "Duplicate /tools/resume-builder must be excluded from the sitemap");
+assert.match(englishToolPageSource, /slug === "resume-builder"\) permanentRedirect\("\/resume-builder"\)/, "The duplicate utility route must permanently redirect to the dedicated resume builder");
+assert.match(englishToolPageSource, /tool\.slug !== "resume-builder"/, "The duplicate utility route must not be generated as a static catalog page");
+assert.match(toolDirectorySource, /tool\.slug === "resume-builder" \? "\/resume-builder"/, "Tool directory links must use the canonical resume builder URL");
+assert.match(catalogToolSeoContentSource, /item\.slug === "resume-builder" \? "\/resume-builder"/, "Related-tool links must use the canonical resume builder URL");
+assert.match(blogPostSource, /catalogToolHref = \(slug: string\) => slug === "resume-builder" \? "\/resume-builder"/, "Generated guide references must use the canonical resume builder URL");
+
 assert.match(toolSeoContentSource, /!isGeneratedPdfGuide\(guide\.blogSlug\)/, "PDF tool pages must link only to reviewed editorial guides");
 assert.match(catalogToolSeoContentSource, /guideSlug && !isCatalogGeneratedGuide\(guideSlug\)/, "Utility pages must not link to generated noindex catalog guide duplicates");
 assert.match(blogArticleSource, /openGraph:\s*\{\s*type:\s*"article"/, "English articles must publish article Open Graph metadata");

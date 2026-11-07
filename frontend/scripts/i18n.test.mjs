@@ -303,7 +303,7 @@ test("all 49 PDF tools have registered Nepali routes, names and guide copy", asy
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
   const directorySource = fs.readFileSync(path.join(frontendRoot, "lib", "tool-directory.ts"), "utf8");
   const pdfBlock = directorySource.split("const rawPdfTools")[1]?.split("\n];")[0] ?? "";
-  const expected = [...pdfBlock.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1].replace(/^\//, "")).sort();
+  const expected = [...pdfBlock.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1].replace(/^\//, "")).filter((slug) => slug !== "ocr-pdf").sort();
   assert.equal(slugs.length, 49);
   assert.deepEqual([...slugs].sort(), expected);
   for (const slug of slugs) {

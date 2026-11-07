@@ -22,7 +22,7 @@ assert.match(runNepaliMathTool("unit-converter", { amount: "1", fromUnit: "kg", 
 
 assert.match(runNepaliMathTool("bmi-calculator", { weight: "65", height: "170" }), /BMI: 22.49134948/);
 assert.match(runNepaliMathTool("bmi-calculator", { weight: "0", height: "170" }), /१०–३०० kg/);
-assert.match(runNepaliMathTool("bmr-calculator", { weight: "65", height: "170", age: "25", sex: "male" }), /अनुमानित BMR: 1,611.25 kcal\/day/);
+assert.match(runNepaliMathTool("bmr-calculator", { weight: "65", height: "170", age: "25", sex: "male" }), /अनुमानित BMR: 1,592.5 kcal\/day/);
 assert.match(runNepaliMathTool("bmr-calculator", { weight: "65", height: "170", age: "17", sex: "female" }), /१८–१०० वर्ष/);
 assert.match(runNepaliMathTool("tip-calculator", { bill: "1000", tip: "10", people: "2" }), /प्रति व्यक्ति: NPR 550/);
 assert.match(runNepaliMathTool("tip-calculator", { bill: "1000", tip: "120", people: "2" }), /०–१००%/);

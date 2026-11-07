@@ -2,7 +2,7 @@
 import {useState} from "react";
 import { average, convertUnit, fractionOperation, percentageChange, simplifyRatio } from "../lib/catalog-calculations";
 import { analyzeMetaTitle, analyzeMetaDescription, calculateKeywordDensity, generateRobotsTxt, generateSitemapXml, buildOpenGraphPreview } from "../lib/seo-utilities";
-type F={key:string;label:string;type?:"number"|"date"|"time"|"color";value:string};
+type F={key:string;label:string;type?:"number"|"date"|"time"|"color";multiline?:boolean;value:string};
 const config:Record<string,F[]> = {
 "percentage-change-calculator":[{key:"a",label:"Original value",type:"number",value:"100"},{key:"b",label:"New value",type:"number",value:"120"}],
 "average-calculator":[{key:"text",label:"Numbers separated by commas or spaces",value:"10, 20, 30, 40"}],
@@ -28,9 +28,9 @@ const config:Record<string,F[]> = {
 "json-to-csv":[{key:"text",label:"JSON array",value:'[{"name":"Asha","age":22},{"name":"Ravi","age":25}]'}],
 "meta-title-checker":[{key:"text",label:"Page title",value:"Free Online PDF Tools - PDFora"}],
 "meta-description-checker":[{key:"text",label:"Meta description",value:"Use free online tools to convert, calculate, format and manage files quickly in your browser."}],
-"keyword-density-checker":[{key:"text",label:"Content",value:"Paste your page content here with the main keyword."},{key:"keyword",label:"Target keyword",value:"main keyword"}],
+"keyword-density-checker":[{key:"text",label:"Content",multiline:true,value:"Paste your page content here with the main keyword."},{key:"keyword",label:"Target keyword",value:"main keyword"}],
 "robots-txt-generator":[{key:"site",label:"Sitemap URL (optional)",value:"https://example.com/sitemap.xml"},{key:"path",label:"Disallow path (optional)",value:"/admin/"}],
-"sitemap-generator":[{key:"text",label:"One absolute URL per line",value:"https://example.com/\nhttps://example.com/about"}],
+"sitemap-generator":[{key:"text",label:"One absolute URL per line",multiline:true,value:"https://example.com/\nhttps://example.com/about"}],
 "open-graph-preview":[{key:"title",label:"Page title",value:"Your page title"},{key:"description",label:"Description",value:"A short summary."},{key:"image",label:"Image URL",value:"https://example.com/image.jpg"},{key:"url",label:"Page URL",value:"https://example.com/"}],
 "profit-margin-calculator":[{key:"cost",label:"Cost",type:"number",value:"60"},{key:"price",label:"Selling price",type:"number",value:"100"}],
 "markup-calculator":[{key:"cost",label:"Cost",type:"number",value:"60"},{key:"rate",label:"Markup (%)",type:"number",value:"40"}],
@@ -88,5 +88,5 @@ export default function ExtraTools({slug}:{slug:string}){
  setOut(s);
  }catch(e){setErr(e instanceof Error?e.message:"Unable to process input.");}};
  if(!fields)return <p className="text-sm text-slate-600">Tool configuration missing.</p>;
- return <div className="space-y-4"><div className="grid gap-4 sm:grid-cols-2">{fields.map(f=><label key={f.key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{f.label}</span><input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={f.type||"text"} value={v[f.key]??""} onChange={e=>setV(p=>({...p,[f.key]:e.target.value}))}/></label>)}</div><div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">Run tool</button><button onClick={()=>{setV(Object.fromEntries(fields.map(f=>[f.key,f.value])));setOut("");setErr("");}} className="rounded-xl border px-4 py-2.5 text-sm">Reset</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">Copy result</button>}</div>{err&&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{err}</p>}{out&&<div aria-live="polite" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5"><pre className="whitespace-pre-wrap break-words font-sans text-base leading-7">{out}</pre></div>}</div>;
+ return <div className="space-y-4"><div className="grid gap-4 sm:grid-cols-2">{fields.map(f=><label key={f.key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{f.label}</span>{f.multiline?<textarea className="min-h-32 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" rows={5} value={v[f.key]??""} onChange={e=>setV(p=>({...p,[f.key]:e.target.value}))}/>:<input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={f.type||"text"} value={v[f.key]??""} onChange={e=>setV(p=>({...p,[f.key]:e.target.value}))}/>}</label>)}</div><div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">Run tool</button><button onClick={()=>{setV(Object.fromEntries(fields.map(f=>[f.key,f.value])));setOut("");setErr("");}} className="rounded-xl border px-4 py-2.5 text-sm">Reset</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">Copy result</button>}</div>{err&&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{err}</p>}{out&&<div aria-live="polite" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5"><pre className="whitespace-pre-wrap break-words font-sans text-base leading-7">{out}</pre></div>}</div>;
 }

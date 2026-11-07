@@ -21,6 +21,7 @@ const coreNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "५६ वर्ष घटाउँदा पुग्छ?", answer: "पुग्दैन। BS र AD को वर्ष सुरु हुने समय तथा महिनाको दिन संख्या फरक हुन्छ।" },
     ],
     toolLinks: [{ label: "नेपाली मिति कन्भर्टर", href: "/tools/nepali-date-converter" }],
+    sources: [{ label: "नेपाल पञ्चाङ्ग निर्णायक विकास समिति", url: "https://www.npns.gov.np/" }, { label: "काठमाडौँ महानगरपालिका: BS / AD पात्रो", url: "https://kathmandu.gov.np/en/calendar" }],
   },
   {
     slug: "nepal-vat-calculator-13-percent-guide",
@@ -42,6 +43,7 @@ const coreNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "नेपालका सबै वस्तुमा १३% VAT लाग्छ?", answer: "लाग्दैन। वस्तु, सेवा र हालको कानूनअनुसार कर व्यवहार फरक हुन सक्छ।" },
     ],
     toolLinks: [{ label: "नेपाल VAT क्याल्कुलेटर", href: "/tools/nepali-vat-calculator" }],
+    sources: [{ label: "आन्तरिक राजस्व विभाग: VAT गणना सम्बन्धी FAQ", url: "https://ird.gov.np/faq/?gid=98" }, { label: "आन्तरिक राजस्व विभाग: ऐन तथा कर कानून", url: "https://ird.gov.np/category/acts/" }],
   },
   {
     slug: "ropani-aana-paisa-daam-land-measurement-guide",
@@ -84,7 +86,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "ग्रामलाई तोलामा कसरी बदल्ने?", answer: "ग्रामको तौललाई ११.६६३८ ले भाग गर्नुहोस्।" },
       { question: "के यसले आजको सुनको मूल्य देखाउँछ?", answer: "देखाउँदैन। यसले तौलको एकाइ मात्र रूपान्तरण गर्छ।" }
     ],
-    toolLinks: [{ label: "तोला–ग्राम कन्भर्टर", href: "/tools/gold-tola-gram-converter" }]
+    toolLinks: [{ label: "तोला–ग्राम कन्भर्टर", href: "/tools/gold-tola-gram-converter" }],
+    sources: [{ label: "उद्योग विभाग: नापतौलको मानक सम्बन्धी ऐनको अनुसूची", url: "https://doind.gov.np/uploads/notices/Notices-2023101619250565.pdf" }]
   },
   {
     slug: "nepali-number-to-words-lakh-crore-guide",
@@ -121,7 +124,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के पात्रोमा सार्वजनिक बिदा पनि देखिन्छ?", answer: "हालको पात्रोले BS मिति, AD मिति र बार देखाउँछ; सबै बिदा वा चाडपर्व होइन।" },
       { question: "के २०८३ साल हेर्न मिल्छ?", answer: "उपकरणको समर्थित वर्ष दायराभित्र भए हेर्न मिल्छ।" }
     ],
-    toolLinks: [{ label: "नेपाली पात्रो", href: "/tools/nepali-calendar" }, { label: "BS–AD मिति कन्भर्टर", href: "/tools/nepali-date-converter" }]
+    toolLinks: [{ label: "नेपाली पात्रो", href: "/tools/nepali-calendar" }, { label: "BS–AD मिति कन्भर्टर", href: "/tools/nepali-date-converter" }],
+    sources: [{ label: "नेपाल पञ्चाङ्ग निर्णायक विकास समिति", url: "https://www.npns.gov.np/" }, { label: "गृह मन्त्रालय: २०८३ सालको सरकारी तथा सार्वजनिक बिदा", url: "https://moha.gov.np/en/page/government-and-public-holidays-in-2083" }]
   },
   {
     slug: "neb-gpa-calculator-nepal-guide",
@@ -139,7 +143,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "GPA कसरी निकालिन्छ?", answer: "हरेक विषयको ग्रेड पोइन्टलाई क्रेडिट आवरले गुणा गरी सबै गुणनफल जोड्नुहोस् र कुल क्रेडिट आवरले भाग गर्नुहोस्।" },
       { question: "के यही सूत्र TU BBA मा पनि लागू हुन्छ?", answer: "सबै विश्वविद्यालयका नियम समान हुँदैनन्। TU को सम्बन्धित संकायको मूल्याङ्कन नियम हेर्नुहोस्।" }
     ],
-    toolLinks: [{ label: "NEB GPA क्याल्कुलेटर", href: "/tools/neb-gpa-calculator" }]
+    toolLinks: [{ label: "NEB GPA क्याल्कुलेटर", href: "/tools/neb-gpa-calculator" }],
+    sources: [{ label: "राष्ट्रिय परीक्षा बोर्ड: अक्षराङ्कन तथा मूल्याङ्कन सम्बन्धी सूचना", url: "https://neb.gov.np/neb-notice-file/Notices-202509271000503094.pdf" }]
   },
   {
     slug: "loksewa-online-form-photo-resizer-guide",
@@ -175,7 +180,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के यसले live NEPSE मूल्य देखाउँछ?", answer: "यो गणना उपकरण हो; live मूल्यको पुष्टि गर्न आधिकारिक बजार स्रोत हेर्नुहोस्।" },
       { question: "के CGT सबैका लागि एउटै हुन्छ?", answer: "करको दर र लागू हुने अवस्था लगानीकर्ताको प्रकार तथा हालको नियमअनुसार फरक हुन सक्छ।" }
     ],
-    toolLinks: [{ label: "NEPSE सेयर क्याल्कुलेटर", href: "/tools/nepal-share-calculator" }]
+    toolLinks: [{ label: "NEPSE सेयर क्याल्कुलेटर", href: "/tools/nepal-share-calculator" }],
+    sources: [{ label: "नेपाल स्टक एक्सचेन्ज: आधिकारिक सेयर मूल्य", url: "https://www.nepalstock.com/stockWisePrices" }]
   },
   {
     slug: "english-to-nepali-digits-converter-guide",
@@ -186,7 +192,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
     intro: "नेपाली कागजात र सन्देशमा देवनागरी अङ्क प्रयोग हुन सक्छ, जबकि वेबसाइट, spreadsheet र अन्तर्राष्ट्रिय फाराममा अङ्ग्रेजी अङ्क मागिन्छ। अङ्क कन्भर्टरले दुवै ढाँचाबीच परिवर्तन गर्न मद्दत गर्छ।",
     sections: [
       { heading: "नेपाली र अङ्ग्रेजी अङ्कको सम्बन्ध", paragraphs: ["अङ्ग्रेजी 0–9 का नेपाली देवनागरी रूप ०–९ हुन्। उदाहरणका लागि 123 लाई १२३ लेखिन्छ। यो अङ्कको रूपान्तरण हो, शब्दको अनुवाद होइन।"] },
-      { heading: "वाक्यभित्रका अङ्क बदल्ने तरिका", paragraphs: [], bullets: ["अङ्क कन्भर्टर खोल्नुहोस्।", "अङ्ग्रेजीबाट नेपाली वा नेपालीबाट अङ्ग्रेजी विकल्प छान्नुहोस्।", "अङ्क भएको वाक्य टाँस्नुहोस्।", "नतिजामा अङ्क, विरामचिह्न र बाँकी पाठ ठीक छ कि छैन जाँच्नुहोस्।"] }
+      { heading: "वाक्यभित्रका अङ्क बदल्ने तरिका", paragraphs: [], bullets: ["अङ्क कन्भर्टर खोल्नुहोस्।", "अङ्ग्रेजीबाट नेपाली वा नेपालीबाट अङ्ग्रेजी विकल्प छान्नुहोस्।", "अङ्क भएको वाक्य टाँस्नुहोस्।", "नतिजामा अङ्क, विरामचिह्न र बाँकी पाठ ठीक छ कि छैन जाँच्नुहोस्।"] },
+      { heading: "नेपाली अङ्क कहाँ प्रयोग गर्ने?", paragraphs: ["नेपाली सूचना, पत्र र स्थानीय अभिलेखमा देवनागरी अङ्क पढ्न सजिलो हुन सक्छ। तर अनलाइन फाराम, बैंकिङ प्रणाली, spreadsheet र अन्तर्राष्ट्रिय सेवाले 0–9 जस्ता ASCII अङ्क माग्न सक्छन्। अङ्क बदल्नुअघि सम्बन्धित फाराम वा संस्थाको निर्देशन पालना गर्नुहोस्।"] }
     ],
     faqs: [
       { question: "के यसले अङ्ग्रेजी शब्दलाई नेपालीमा अनुवाद गर्छ?", answer: "गर्दैन। यसले अङ्कका अक्षर मात्र बदल्छ।" },
@@ -230,7 +237,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "INR मा १०० एकाइ किन देखिन्छ?", answer: "केही मुद्रा दर १०० एकाइका आधारमा प्रकाशित हुन्छन्; गणना गर्दा प्रकाशित एकाइ जाँच्नुहोस्।" },
       { question: "के उपकरणले सधैँ live दर देखाउँछ?", answer: "उपलब्ध स्रोत र पछिल्लो प्रकाशित मितिमा निर्भर हुन्छ। नतिजामा देखाइएको मिति जाँच्नुहोस्।" }
     ],
-    toolLinks: [{ label: "नेपाल विदेशी मुद्रा दर", href: "/tools/nepal-forex-rates" }]
+    toolLinks: [{ label: "नेपाल विदेशी मुद्रा दर", href: "/tools/nepal-forex-rates" }],
+    sources: [{ label: "नेपाल राष्ट्र बैंक: आधिकारिक विदेशी विनिमय दर", url: "https://www.nrb.org.np/forex/" }, { label: "नेपाल राष्ट्र बैंक: विदेशी विनिमय दर API कागजात", url: "https://www.nrb.org.np/api-docs-v1/" }]
   },
   {
     slug: "nepal-salary-income-tax-calculator-2083-84-guide",
@@ -249,7 +257,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के पहिलो स्ल्याबको कर सबैलाई लाग्छ?", answer: "लागू हुने कर स्थिति र छुटअनुसार फरक हुन सक्छ। आफ्नो श्रेणीको हालको नियम जाँच्नुहोस्।" },
       { question: "के नतिजा हातमा आउने ठ्याक्कै तलब हो?", answer: "होइन। अन्य कटौती, सुविधा र payroll नियमका कारण वास्तविक take-home pay फरक हुन सक्छ।" }
     ],
-    toolLinks: [{ label: "नेपाल तलब कर क्याल्कुलेटर", href: "/tools/nepal-salary-tax-calculator" }]
+    toolLinks: [{ label: "नेपाल तलब कर क्याल्कुलेटर", href: "/tools/nepal-salary-tax-calculator" }],
+    sources: [{ label: "आन्तरिक राजस्व विभाग: आ.व. २०८३/८४ का लागि व्यक्तिगत आयकर दर", url: "https://ird.gov.np/content/13609/" }]
   },
   {
     slug: "nea-electricity-bill-calculator-nepal-guide",
@@ -268,7 +277,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "मेरो NEA बिल किन फरक आयो?", answer: "मिटर क्षमता, खपत अवधि, न्यूनतम शुल्क, बक्यौता, कर र हालको दरका कारण फरक हुन सक्छ।" },
       { question: "के यो आधिकारिक बिल हो?", answer: "होइन। यो अनुमान मात्र हो; आधिकारिक रकम NEA को बिलमा हुन्छ।" }
     ],
-    toolLinks: [{ label: "नेपाल विद्युत् बिल क्याल्कुलेटर", href: "/tools/nepal-electricity-bill-calculator" }]
+    toolLinks: [{ label: "नेपाल विद्युत् बिल क्याल्कुलेटर", href: "/tools/nepal-electricity-bill-calculator" }],
+    sources: [{ label: "नेपाल विद्युत् प्राधिकरण: उपभोक्ता महसुल दर", url: "https://www.nea.org.np/en/pages/consumer-tariff-rates" }]
   },
   {
     slug: "nepal-public-holidays-2083-calendar-guide",
@@ -287,7 +297,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "केही मितिमा TBA किन लेखिएको हुन्छ?", answer: "त्यो मिति वा विवरण अन्तिम रूपमा पुष्टि नभएको हुन सक्छ; आधिकारिक सूचना जाँच्नुहोस्।" },
       { question: "आधिकारिक सूची कहाँ पुष्टि गर्ने?", answer: "नेपाल सरकारको राजपत्र, गृह मन्त्रालय वा सम्बन्धित सरकारी निकायको पछिल्लो सूचना हेर्नुहोस्।" }
     ],
-    toolLinks: [{ label: "नेपाल सार्वजनिक बिदा पात्रो", href: "/tools/nepal-public-holidays-2083" }]
+    toolLinks: [{ label: "नेपाल सार्वजनिक बिदा पात्रो", href: "/tools/nepal-public-holidays-2083" }],
+    sources: [{ label: "गृह मन्त्रालय: २०८३ सालको सरकारी तथा सार्वजनिक बिदा", url: "https://moha.gov.np/en/page/government-and-public-holidays-in-2083" }]
   },
   {
     slug: "nepali-unicode-typing-online-guide",
@@ -344,7 +355,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के IPO मिति र नतिजा सधैँ अद्यावधिक हुन्छ?", answer: "प्रकाशन ढिलाइ हुन सक्छ। कम्पनी, SEBON वा CDSC को आधिकारिक सूचना जाँच्नुहोस्।" },
       { question: "एउटै समाचार किन दोहोरिन्छ?", answer: "विभिन्न समाचार संस्थाले एउटै घटना प्रकाशित गर्दा स्वचालित सङ्कलनमा दोहोरिन सक्छ।" }
     ],
-    toolLinks: [{ label: "NEPSE बजार समाचार", href: "/tools/nepse-market-news" }]
+    toolLinks: [{ label: "NEPSE बजार समाचार", href: "/tools/nepse-market-news" }],
+    sources: [{ label: "नेपाल स्टक एक्सचेन्ज: आधिकारिक बजार जानकारी", url: "https://www.nepalstock.com/stockWisePrices" }, { label: "सीडीएस एण्ड क्लियरिङ: IPO आवेदन FAQ", url: "https://cdsc.com.np/faq/FAQ.pdf" }]
   },
   {
     slug: "nepse-cash-dividend-and-bonus-share-calculator-guide",
@@ -363,7 +375,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के सबै लगानीकर्ताले अनुमानित बोनस सेयर पाउँछन्?", answer: "योग्यता, book closure मिति र कम्पनीको आधिकारिक विवरणअनुसार फरक हुन सक्छ।" },
       { question: "के क्याल्कुलेटरले लाभांश कर पुष्टि गर्छ?", answer: "गर्दैन। लागू हुने कर नियम र वास्तविक कट्टी सम्बन्धित आधिकारिक स्रोतबाट जाँच्नुहोस्।" }
     ],
-    toolLinks: [{ label: "NEPSE लाभांश क्याल्कुलेटर", href: "/tools/nepse-dividend-calculator" }]
+    toolLinks: [{ label: "NEPSE लाभांश क्याल्कुलेटर", href: "/tools/nepse-dividend-calculator" }],
+    sources: [{ label: "नेपाल स्टक एक्सचेन्ज: आधिकारिक बजार जानकारी", url: "https://www.nepalstock.com/stockWisePrices" }, { label: "सीडीएस एण्ड क्लियरिङ: लगानीकर्ता तथा धितोपत्र राफसाफ जानकारी", url: "https://cdsc.com.np/" }]
   }
 ];
 

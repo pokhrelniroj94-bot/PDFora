@@ -21,7 +21,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "Can I convert AD to BS on my phone?", answer: "Yes. The converter is designed to work in a modern mobile browser as well as on a computer." },
       { question: "Is subtracting 56 years enough?", answer: "No. BS and AD year boundaries and month lengths differ. Use a calendar-data-based converter for the exact date." }
     ],
-    toolLinks: [{ label: "Nepali Date Converter", href: "/tools/nepali-date-converter" }, { label: "Date Difference Calculator", href: "/tools/date-difference-calculator" }, { label: "Age Calculator", href: "/tools/age-calculator" }]
+    toolLinks: [{ label: "Nepali Date Converter", href: "/tools/nepali-date-converter" }, { label: "Date Difference Calculator", href: "/tools/date-difference-calculator" }, { label: "Age Calculator", href: "/tools/age-calculator" }],
+    sources: [{ label: "Nepal Panchanga Nirnayak Development Committee", url: "https://www.npns.gov.np/" }, { label: "Kathmandu Metropolitan City: BS / AD calendar", url: "https://kathmandu.gov.np/en/calendar" }]
   },
   {
     slug: "nepal-vat-calculator-13-percent-guide",
@@ -42,7 +43,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "How do I remove 13% VAT from a total?", answer: "Divide the VAT-inclusive total by 1.13 to estimate the base amount. Subtract the base amount from the total to find the VAT portion." },
       { question: "Does every product in Nepal have 13% VAT?", answer: "No. Tax treatment can vary by goods, services and applicable law. Check current official guidance." }
     ],
-    toolLinks: [{ label: "Nepal VAT Calculator", href: "/tools/nepali-vat-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }, { label: "Discount Calculator", href: "/tools/discount-percentage-calculator" }]
+    toolLinks: [{ label: "Nepal VAT Calculator", href: "/tools/nepali-vat-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }, { label: "Discount Calculator", href: "/tools/discount-percentage-calculator" }],
+    sources: [{ label: "Inland Revenue Department: VAT calculation FAQ", url: "https://ird.gov.np/faq/?gid=98" }, { label: "Inland Revenue Department: Acts and tax laws", url: "https://ird.gov.np/category/acts/" }]
   },
   {
     slug: "ropani-aana-paisa-daam-land-measurement-guide",
@@ -84,7 +86,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { question: "How do I convert grams to tola?", answer: "Divide the gram weight by 11.6638038." },
       { question: "Does the converter show today's gold price?", answer: "No. It converts weight only and does not fetch live gold prices." }
     ],
-    toolLinks: [{ label: "Tola to Gram Converter", href: "/tools/gold-tola-gram-converter" }]
+    toolLinks: [{ label: "Tola to Gram Converter", href: "/tools/gold-tola-gram-converter" }],
+    sources: [{ label: "Department of Industry: Standard Measurement and Weight Act schedule", url: "https://doind.gov.np/uploads/notices/Notices-2023101619250565.pdf" }]
   },
   {
     slug: "nepali-number-to-words-lakh-crore-guide",
@@ -117,7 +120,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { heading: "Check dates before official use", paragraphs: ["Use the date printed on your certificate or official record. A calendar is a conversion aid, not proof of a person's date of birth or document issue date."] }
     ],
     faqs: [{ question: "Does it show public holidays?", answer: "The current month view shows BS dates, AD dates and weekdays, not holidays or festivals." }, { question: "Can I view 2083 BS?", answer: "Yes, within the supported calendar range." }],
-    toolLinks: [{ label: "Nepali Calendar", href: "/tools/nepali-calendar" }, { label: "BS to AD Date Converter", href: "/tools/nepali-date-converter" }]
+    toolLinks: [{ label: "Nepali Calendar", href: "/tools/nepali-calendar" }, { label: "BS to AD Date Converter", href: "/tools/nepali-date-converter" }],
+    sources: [{ label: "Nepal Panchanga Nirnayak Development Committee", url: "https://www.npns.gov.np/" }, { label: "Ministry of Home Affairs: Government and public holidays in 2083", url: "https://moha.gov.np/en/page/government-and-public-holidays-in-2083" }]
   },
   {
     slug: "neb-gpa-calculator-nepal-guide", title: "NEB GPA Calculator Nepal: Credit Hours and Grade Points Explained",
@@ -129,7 +133,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { heading: "Important limitations", paragraphs: ["The calculator uses a commonly used letter-grade scale as a helper. It cannot decide eligibility, pass status, practical/theory weighting or special grading rules. Check the current NEB directive and your school/college."] }
     ],
     faqs: [{ question: "How is GPA calculated?", answer: "Multiply each subject's grade point by its credit hours, add the products, then divide by total credit hours." }, { question: "Can I use this for TU BBA GPA?", answer: "TU programmes may use different rules. Check your faculty's grading regulation." }],
-    toolLinks: [{ label: "NEB GPA Calculator", href: "/tools/neb-gpa-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }]
+    toolLinks: [{ label: "NEB GPA Calculator", href: "/tools/neb-gpa-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }],
+    sources: [{ label: "National Examinations Board: Letter grading and assessment notice", url: "https://neb.gov.np/neb-notice-file/Notices-202509271000503094.pdf" }]
   },
   {
     slug: "loksewa-online-form-photo-resizer-guide", title: "How to Resize a Photo to 50KB or 200KB for Loksewa and Online Forms",
@@ -153,7 +158,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { heading: "Verify current charges", paragraphs: ["Brokerage schedules and tax rules can change. The tool keeps rates editable and does not claim to fetch live broker tariffs. Confirm rates with your broker, CDSC, SEBON and tax authority before trading."] }
     ],
     faqs: [{ question: "Does it show live NEPSE prices?", answer: "No. Enter your own buy and sell prices." }, { question: "Is CGT fixed for everyone?", answer: "No. Tax can depend on holding period and investor category. Confirm current rules." }],
-    toolLinks: [{ label: "NEPSE Share Calculator", href: "/tools/nepal-share-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }]
+    toolLinks: [{ label: "NEPSE Share Calculator", href: "/tools/nepal-share-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }],
+    sources: [{ label: "Nepal Stock Exchange: Official stock-wise prices", url: "https://www.nepalstock.com/stockWisePrices" }]
   },
   {
     slug: "english-to-nepali-digits-converter-guide", title: "English to Nepali Numbers: Convert 123 into १२३",
@@ -161,7 +167,8 @@ export const nepalBlogPosts: BlogPost[] = [
     intro: "Nepali documents and messages often use Devanagari digits, while websites, spreadsheets and international forms may use English digits. A digit converter makes it easy to switch the number characters.",
     sections: [
       { heading: "Nepali and English digit mapping", paragraphs: ["The digits map one-to-one: 0 = ०, 1 = १, 2 = २, 3 = ३, 4 = ४, 5 = ५, 6 = ६, 7 = ७, 8 = ८ and 9 = ९.", "Only digits change. Letters, spaces, punctuation and other text remain unchanged."] },
-      { heading: "Convert digits in a sentence", paragraphs: [], bullets: ["Paste a number or sentence into the Nepali Unicode Digit Converter.", "Copy the Nepali-digit output for a Nepali document.", "Switch back to English digits when a system requires ASCII numerals."] }
+      { heading: "Convert digits in a sentence", paragraphs: [], bullets: ["Paste a number or sentence into the Nepali Unicode Digit Converter.", "Copy the Nepali-digit output for a Nepali document.", "Switch back to English digits when a system requires ASCII numerals."] },
+      { heading: "Where should you use Nepali digits?", paragraphs: ["Devanagari digits can make Nepali-language notices, letters and local records easier to read. However, online forms, bank systems, spreadsheets and international services may require standard ASCII digits (0–9). Follow the receiving system’s instructions instead of assuming one format works everywhere."] }
     ],
     faqs: [{ question: "Does this translate English words into Nepali?", answer: "No. It converts digit characters only." }, { question: "Will punctuation and text be preserved?", answer: "Yes. Only digit characters are replaced." }],
     toolLinks: [{ label: "Nepali Digit Converter", href: "/tools/nepali-digit-converter" }, { label: "Nepali Number to Words", href: "/tools/nepali-number-converter" }]

@@ -7,7 +7,7 @@ assert.equal(runNepaliExtraTextTool("phone-number-extractor", "Call +977 980-123
 assert.equal(runNepaliExtraTextTool("number-extractor", "कुल १२ र 25.5"), "१२\n25.5");
 assert.equal(runNepaliExtraTextTool("hashtag-extractor", "#नेपाल #PDFora #नेपाल"), "#नेपाल\n#PDFora");
 assert.equal(runNepaliExtraTextTool("remove-duplicate-words", "नेपाल नेपाल राम्रो देश"), "नेपाल राम्रो देश");
-assert.equal(runNepaliExtraTextTool("find-replace-text", "नेपाली भाषा", "भाषा", "भाषा"), "नेपाली भाषा");
+assert.equal(runNepaliExtraTextTool("find-replace-text", "नेपाली भाषा", "भाषा", "भाषा राम्रो"), "नेपाली भाषा राम्रो");
 assert.match(runNepaliExtraTextTool("palindrome-checker", "नमन"), /एउटै पढिन्छ/);
 assert.equal(runNepaliExtraTextTool("acronym-generator", "World Health Organization"), "WHO");
 console.log("Nepali extra text tool tests passed (9 assertions).");

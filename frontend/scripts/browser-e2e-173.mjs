@@ -1167,6 +1167,7 @@ try {
 
 const report = {
   generatedAt: new Date().toISOString(),
+  sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
   expected: { pdf: 49, catalog: 124, total: 173 },
   methodology: {
@@ -1174,7 +1175,7 @@ const report = {
     pdf: "Open each PDF route, attach a generated one-page PDF, click the processing action and inspect completion/output state.",
     catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL.",
     ai: "AI tools are route-smoke-tested only; execution is intentionally skipped per project scope and is always PARTIAL.",
-    limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 173 tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. PDF download bytes are not yet independently parsed; mobile visual QA, exhaustive input boundaries and manual assistive-technology testing remain separate.",
+    limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 173 tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },
   counts: {
     total: results.length,

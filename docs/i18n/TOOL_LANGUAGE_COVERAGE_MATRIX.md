@@ -16,7 +16,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 | Locale | Published tool rows | Interface-present rows | Content-present rows | Index-eligible rows |
 |---|---:|---:|---:|---:|
 | en | 173 | 173 | 49 | 172 |
-| ne | 137 | 137 | 49 | 6 |
+| ne | 172 | 172 | 49 | 6 |
 | hi | 0 | 0 | 0 | 0 |
 | bn | 0 | 0 | 0 | 0 |
 | ur | 0 | 0 | 0 | 0 |
@@ -28,12 +28,13 @@ This matrix contains one row for every combination of **12 configured locales ×
 | zh | 0 | 0 | 0 | 0 |
 | ja | 0 | 0 | 0 | 0 |
 
-## Current blockers
+## Current blockers and release gates
 
-- Master has 113 Nepali localized tool interfaces (49 PDF + 64 catalog). PR #104 adds nine text tools; its candidate count is 122 (49 PDF + 88 catalog), leaving 36 of 173 tools without Nepali interfaces.
-- The six index-approved Nepali PDF routes are a subset of the 137 candidate localized interfaces. The other 131 candidate tool routes remain excluded from indexing until their individual review and verification gates pass.
+- Master had 114 Nepali tool equivalents (49 PDF, 64 catalog routes and Resume Builder). The PR #104 candidate has 172/173 (49 PDF, 122 catalog routes and Resume Builder), leaving only Market AI intentionally deferred.
+- The six index-approved Nepali PDF routes are a subset of the 172 localized interfaces. The other 166 localized tool equivalents remain excluded from indexing until their individual review and verification gates pass.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing. Shared-shell dictionaries do not count as localized tool interfaces.
 - Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers. Interface presence and guide presence do not imply runtime success or native-speaker review.
 - OCR is not counted among the 173 available tools because it remains excluded from the canonical PDF inventory.
-- The 122-tool figure is a PR candidate until GitHub Actions regenerates and validates the matrix.
+- Market AI remains not localized under the earlier instruction to defer AI-tool work.
 
+A tool is not eligible for indexing solely because a Nepali route or title exists. Its main visible content, forms, validation, results, errors, help and metadata must be localized and reviewed. Keep unreviewed pages noindex and out of sitemap/hreflang. Google Search Central: [localized versions](https://developers.google.com/search/docs/specialty/international/localized-versions) and [spam policies](https://developers.google.com/search/docs/essentials/spam-policies).

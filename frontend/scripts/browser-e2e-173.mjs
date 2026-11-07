@@ -222,7 +222,8 @@ async function runTool(tool, index) {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
       if (aiTools.has(tool.slug)) {
         row.checks.push("AI page route rendered; execution intentionally skipped");
-        row.status = "PASS";
+        row.status = "PARTIAL";
+        row.evidenceLevel = "route-smoke-only";
         return row;
       }
       if (tool.slug === "nepal-electricity-bill-calculator") {
@@ -302,7 +303,9 @@ async function runTool(tool, index) {
       }
       row.output = finalState.live.filter(Boolean).join(" | ").slice(0, 700) || finalState.body.slice(-700);
       row.outputVerified = finalState.live.some((value) => value.trim().length > 0);
+      row.evidenceLevel = expected ? "expected-output-assertion" : row.outputVerified ? "live-output-observed-not-oracle-checked" : "route-and-controls-smoke-only";
       row.checks.push("workspace output inspected");
+      row.status = expected && row.outputVerified ? "PASS" : "PARTIAL";
     }
     row.status = "PASS";
   } catch (error) {
@@ -319,7 +322,7 @@ try {
   for (let index = 0; index < tools.length; index += 1) {
     const result = await runTool(tools[index], index);
     results.push(result);
-    console.log((result.status === "PASS" ? "PASS " : "FAIL ") +
+    console.log((result.status === "PASS" ? "PASS " : result.status === "PARTIAL" ? "PARTIAL " : "FAIL ") +
       result.index + "/173 " + result.slug + " — " +
       (result.errors[0] || result.checks.join(", ")));
   }
@@ -334,13 +337,14 @@ const report = {
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each PDF route, attach a generated one-page PDF, click the processing action and inspect completion/output state.",
-    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state.",
-    ai: "AI tools are route-smoke-tested only; execution is intentionally skipped per project scope.",
-    limitations: "This is a browser smoke/E2E pass, not visual pixel comparison, exhaustive input-boundary coverage or manual assistive-technology testing. PDF downloads are recorded when exposed as download links; browser download bytes are not yet independently parsed.",
+    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL.",
+    ai: "AI tools are route-smoke-tested only; execution is intentionally skipped per project scope and is always PARTIAL.",
+    limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 173 tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. PDF download bytes are not yet independently parsed; mobile visual QA, exhaustive input boundaries and manual assistive-technology testing remain separate.",
   },
   counts: {
     total: results.length,
     pass: results.filter((row) => row.status === "PASS").length,
+    partial: results.filter((row) => row.status === "PARTIAL").length,
     fail: results.filter((row) => row.status === "FAIL").length,
     pdf: results.filter((row) => row.kind === "pdf").length,
     catalog: results.filter((row) => row.kind === "catalog").length,

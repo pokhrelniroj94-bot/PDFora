@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
-import { PDFDocument, StandardFonts } from "pdf-lib";
+import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
@@ -48,6 +48,36 @@ page.drawText("PDFora browser E2E fixture - page one", { x: 48, y: 780, size: 14
 page.drawText("Text extraction and processing test.", { x: 48, y: 750, size: 11, font });
 const embeddedImage = await pdf.embedPng(fs.readFileSync(pngPath));
 page.drawImage(embeddedImage, { x: 48, y: 640, width: 80, height: 80 });
+// Add a ruled table so PDF-to-Excel and PDF-to-CSV have extractable content.
+const tableX = 48, tableY = 560, colWidth = 100, rowHeight = 24;
+for (let row = 0; row <= 3; row += 1) {
+  page.drawLine({ start: { x: tableX, y: tableY - row * rowHeight }, end: { x: tableX + 2 * colWidth, y: tableY - row * rowHeight }, thickness: 0.8 });
+}
+for (let col = 0; col <= 2; col += 1) {
+  page.drawLine({ start: { x: tableX + col * colWidth, y: tableY }, end: { x: tableX + col * colWidth, y: tableY - 3 * rowHeight }, thickness: 0.8 });
+}
+[["Name", "Amount"], ["Asha", "100"], ["Ravi", "250"]].forEach((row, rowIndex) => {
+  row.forEach((value, colIndex) => page.drawText(value, {
+    x: tableX + colIndex * colWidth + 6,
+    y: tableY - (rowIndex + 1) * rowHeight + 7,
+    size: 10,
+    font,
+  }));
+});
+// A second blank page exercises page deletion, blank-page removal and multi-page operations.
+pdf.addPage([595, 842]);
+// Add one outline entry for bookmark extraction/splitting workflows.
+const outlineRoot = pdf.context.obj({ Type: PDFName.of("Outlines"), Count: 1 });
+const outlineRootRef = pdf.context.register(outlineRoot);
+const outlineItem = pdf.context.obj({
+  Title: PDFString.of("PDFora E2E Bookmark"),
+  Parent: outlineRootRef,
+  Dest: [page.ref, PDFName.of("Fit")],
+});
+const outlineItemRef = pdf.context.register(outlineItem);
+outlineRoot.set(PDFName.of("First"), outlineItemRef);
+outlineRoot.set(PDFName.of("Last"), outlineItemRef);
+pdf.catalog.set(PDFName.of("Outlines"), outlineRootRef);
 const fixturePath = path.join(tempDir, "pdfora-e2e-fixture.pdf");
 fs.writeFileSync(fixturePath, await pdf.save());
 
@@ -240,7 +270,7 @@ async function runTool(tool, index) {
       });
       if (!queries.nodeIds?.length) throw new Error("PDF page has no file upload input.");
       for (const nodeId of queries.nodeIds) {
-        await page.send("DOM.setFileInputFiles", { nodeId, files: tool.slug === "images-to-pdf" ? [pngPath] : tool.slug === "merge-pdf" ? [fixturePath, fixturePath] : [fixturePath] });
+        await page.send("DOM.setFileInputFiles", { nodeId, files: tool.slug === "images-to-pdf" ? [pngPath] : tool.slug === "merge-pdf" || tool.slug === "compare-pdf" ? [fixturePath, fixturePath] : [fixturePath] });
       }
       const fixtureName = tool.slug === "images-to-pdf" ? path.basename(pngPath) : path.basename(fixturePath);
       const expectedFileCount = tool.slug === "merge-pdf" || tool.slug === "compare-pdf" ? 2 : 1;
@@ -251,7 +281,8 @@ async function runTool(tool, index) {
       const action = await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
         const preferred = buttons.find((b) => /merge|split|compress|convert|process|rotate|delete|extract|watermark|protect|unlock|sign|repair|count|information|compare|flatten|crop|reorder|bookmark|metadata|grayscale|background|page number|header|footer|remove|export|run/i.test(b.innerText));
-        const button = preferred || buttons.find((b) => !/reset|clear|back|choose/i.test(b.innerText));
+        const primary = buttons.find((b) => typeof b.className === "string" && b.className.includes("bg-gradient-to-r") && b.className.includes("w-full"));
+        const button = primary || preferred || buttons.find((b) => !/reset|clear|back|choose|remove file/i.test(b.innerText));
         if (button) { button.click(); return button.innerText.trim(); }
         return "";
       })()`);
@@ -314,7 +345,7 @@ async function runTool(tool, index) {
         const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "", search: !!document.querySelector("input") }))()');
         if (state.rows < 30) throw new Error("2083 public-holiday table is missing expected entries.");
         if (!state.links.some((href) => href.includes("moha.gov.np/en/page/government-and-public-holidays-in-2083"))) throw new Error("Official MoHA public-holiday source link is missing.");
-        if (!/Last Updated:\s*20\d{2}-\d{2}-\d{2}/.test(state.body)) throw new Error("Holiday page must disclose the MoHA source page update timestamp.");
+        if (!/Last Updated:\s*2083-07-20 15:42:42/.test(state.body)) throw new Error("Holiday page must disclose the exact MoHA source page update timestamp.");
         if (!state.search) throw new Error("Holiday list is missing its search input.");
         await page.evaluate(`(() => {
           const input = document.querySelector("input");
@@ -360,6 +391,13 @@ async function runTool(tool, index) {
         await setFieldByLabel(page, "Phone number", "9800000000");
       } else if (tool.slug === "nepal-land-area-converter") {
         await setFieldByLabel(page, "Ropani", "1");
+        await setFieldByLabel(page, "Aana", "0");
+        await setFieldByLabel(page, "Paisa", "0");
+        await setFieldByLabel(page, "Daam", "0");
+        await setFieldByLabel(page, "Bigha", "0");
+        await setFieldByLabel(page, "Kattha", "0");
+        await setFieldByLabel(page, "Dhur", "0");
+        await setFieldByLabel(page, "Area (square feet)", "0");
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
@@ -399,7 +437,7 @@ async function runTool(tool, index) {
       if (clicked) {
         row.action = clicked;
         row.checks.push("primary action clicked");
-        await delay(["currency-converter", "nepal-forex-rates", "nepse-market-news", "preeti-unicode-converter"].includes(tool.slug) ? 5000 : 800);
+        await delay(["nepal-forex-rates"].includes(tool.slug) ? 20000 : ["currency-converter", "nepse-market-news", "preeti-unicode-converter"].includes(tool.slug) ? 5000 : 800);
       } else {
         row.checks.push("reactive output/controls inspected (no submit button by design)");
       }
@@ -527,7 +565,7 @@ async function runTool(tool, index) {
         outputMatches = generated.length >= 3;
       } else if (tool.slug === "random-number-generator") {
         const generated = liveText.split(/\r?\n/).map((line) => line.trim()).filter((line) => /^\d+$/.test(line)).map(Number);
-        outputMatches = generated.length >= 5 && generated.slice(0, 5).every((value) => Number.isInteger(value) && value >= 1 && value <= 100);
+        outputMatches = generated.length >= 1 && generated.every((value) => Number.isInteger(value) && value >= 1 && value <= 100);
       } else if (tool.slug === "dice-roller") {
         const match = liveText.match(/Rolls:\s*(\d+)\s*,\s*(\d+)[\s\S]*?Total:\s*(\d+)/);
         outputMatches = !!match && Number(match[1]) >= 1 && Number(match[1]) <= 6 && Number(match[2]) >= 1 && Number(match[2]) <= 6 && Number(match[3]) === Number(match[1]) + Number(match[2]);

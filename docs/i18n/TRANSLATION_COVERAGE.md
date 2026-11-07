@@ -27,7 +27,7 @@ The 100% shared UI figures cover only the typed shared-shell copy in `shared-ui.
 
 The Nepali route inventory is 206 equivalents: 49 PDF routes, 107 utility routes, 10 finance routes, two public-information routes, three career routes, the homepage, market dashboard, Resume Builder, blog index, 27 curated articles and four static pages.
 
-The canonical tool matrix contains 172/173 Nepali interfaces: 49 PDF tools, 122 catalog tool routes and the dedicated Resume Builder route. Market AI is the only tool intentionally deferred under the instruction not to work on AI tools. This is route/interface coverage, not a claim that every possible input, output, browser, screen size or native-language nuance has passed manual QA.
+The canonical tool matrix contains 173/173 Nepali interfaces: 49 PDF tools, 122 catalog tool routes and the dedicated Resume Builder route. Market AI has a Nepali route, localized workspace copy and regression coverage; browser QA and native-speaker review remain outstanding.
 
 The 49/49 PDF guide entries and 27/27 curated editorial articles are translated. Generated catalog guides are excluded from this count and remain noindex until individually reviewed.
 

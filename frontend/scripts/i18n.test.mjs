@@ -149,7 +149,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 99);
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 148, "All localized routes must be represented in the route registry");
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -299,13 +299,25 @@ test("Nepali legal and static routes contain complete localized copy", () => {
   for (const slug of ["privacy", "terms", "about", "contact"]) assert.ok(routeSource.includes(`"${slug}"`), `${slug} must have a localized route`);
 });
 
-test("published Nepali PDF routes use localized names and guide copy", () => {
+test("all 49 PDF tools have registered Nepali routes, names and guide copy", async () => {
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
-  assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);
+  const directorySource = fs.readFileSync(path.join(frontendRoot, "lib", "tool-directory.ts"), "utf8");
+  const pdfBlock = directorySource.split("const rawPdfTools")[1]?.split("\n];")[0] ?? "";
+  const expected = [...pdfBlock.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1].replace(/^\//, "")).filter((slug) => slug !== "ocr-pdf").sort();
+  assert.equal(slugs.length, 49);
+  assert.deepEqual([...slugs].sort(), expected);
   for (const slug of slugs) {
-    assert.ok(nepaliNames.nepaliToolNames[slug], `${slug} needs a Nepali tool name`);
+    const route = nepaliRoutes.nepaliPdfRoutes[slug];
+    assert.equal(route.slug, slug);
+    assert.ok(route.endpoint.startsWith("/api/"), slug + " needs its original backend endpoint");
+    assert.ok(route.downloadName, slug + " needs a download filename");
+    assert.ok(["pdfora", "niroj"].includes(route.component), slug + " needs the correct PDF processor");
+    assert.ok(nepaliNames.nepaliToolNames[slug], slug + " needs a Nepali tool name");
     const guide = nepaliGuides.nepaliToolGuides[slug];
-    assert.ok(guide?.purpose && guide.steps.length > 0 && guide.caution, `${slug} needs reviewed Nepali guide copy`);
+    assert.ok(guide?.purpose && guide.steps.length > 0 && guide.caution, slug + " needs Nepali guide copy");
+    for (const field of route.extraFields ?? []) {
+      assert.notEqual(getNepaliPdfFieldText(field.label), field.label, slug + " field label needs Nepali translation: " + field.label);
+    }
   }
 });
 
@@ -355,6 +367,27 @@ test("switcher: never offers an unavailable page", () => {
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"]);
   assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne"], "only reviewed static pages offer Nepali");
   delete process.env.PDFORA_I18N_PREVIEW;
+});
+
+test("metadata: unreviewed Nepali PDF routes remain crawlable but noindex", () => {
+  const approved = metadata.buildLocaleMetadata({
+    locale: "ne",
+    path: "/merge-pdf",
+    title: "पीडीएफ जोड्नुहोस्",
+    description: "धेरै पीडीएफ फाइललाई एउटै फाइलमा जोड्नुहोस्।",
+  });
+  assert.deepEqual(approved.robots, { index: true, follow: true });
+  assert.ok(approved.alternates.languages?.ne);
+
+  const pending = metadata.buildLocaleMetadata({
+    locale: "ne",
+    path: "/images-to-pdf",
+    title: "तस्बिरबाट PDF",
+    description: "धेरै तस्बिरलाई एउटै PDF मा रूपान्तरण गर्नुहोस्।",
+  });
+  assert.deepEqual(pending.robots, { index: false, follow: true });
+  assert.equal(pending.alternates.languages, undefined);
+  assert.equal(pending.alternates.canonical, "https://pd-fora.vercel.app/ne/images-to-pdf");
 });
 
 test("metadata: unpublished locales are noindex with no hreflang; canonical is self-referencing", () => {

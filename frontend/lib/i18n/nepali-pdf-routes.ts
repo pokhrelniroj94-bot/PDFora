@@ -5,6 +5,11 @@ export type NepaliPdfRoute = {
   description: string;
   downloadName: string;
   multiple?: boolean;
+  accept?: string;
+  fieldName?: string;
+  formField?: string;
+  formPlaceholder?: string;
+  extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string; multiline?: boolean }[];
   queryField?: string;
   queryDefault?: string;
   component: "pdfora" | "niroj";
@@ -61,6 +66,507 @@ export const nepaliPdfRoutes: Record<string, NepaliPdfRoute> = {
     description: "Convert PDF pages into JPG images for easy sharing and viewing.",
     downloadName: "PDFora-JPG.zip",
     component: "niroj",
+  },
+  "images-to-pdf": {
+    "slug": "images-to-pdf",
+    "endpoint": "/api/images-to-pdf",
+    "title": "Images to PDF",
+    "description": "Convert JPG, PNG and WebP images into a single PDF document.",
+    "downloadName": "PDFora-Images.pdf",
+    "component": "niroj",
+    "accept": "image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+  },
+  "pdf-to-excel": {
+    "slug": "pdf-to-excel",
+    "endpoint": "/api/pdf-to-excel",
+    "title": "PDF to Excel",
+    "description": "Extract available PDF table data into an editable Excel workbook.",
+    "downloadName": "PDFora-Converted.xlsx",
+    "component": "niroj",
+    "accept": "application/pdf,.pdf",
+    "fieldName": "file"
+  },
+  "delete-pages": {
+    "slug": "delete-pages",
+    "endpoint": "/api/delete-pages",
+    "title": "Delete PDF Pages",
+    "description": "Remove unwanted pages from a PDF document.",
+    "downloadName": "PDFora-Deleted-Pages.pdf",
+    "component": "niroj",
+    "accept": "application/pdf,.pdf",
+    "formField": "pages",
+    "formPlaceholder": "Enter page numbers, e.g. 2,4,6"
+  },
+  "extract-pages": {
+    "slug": "extract-pages",
+    "endpoint": "/api/extract-pages",
+    "title": "Extract PDF Pages",
+    "description": "Extract selected pages and create a new PDF file.",
+    "downloadName": "PDFora-Extracted-Pages.pdf",
+    "component": "niroj",
+    "accept": "application/pdf,.pdf",
+    "formField": "pages",
+    "formPlaceholder": "Enter page numbers or range, e.g. 1,3,5-8"
+  },
+  "watermark": {
+    "slug": "watermark",
+    "endpoint": "/api/watermark",
+    "title": "Watermark PDF",
+    "description": "Add a custom text watermark to a PDF document.",
+    "downloadName": "PDFora-Watermarked.pdf",
+    "component": "niroj",
+    "accept": "application/pdf,.pdf",
+    "formField": "text",
+    "formPlaceholder": "Enter watermark text"
+  },
+  "reorder-pdf": {
+    "slug": "reorder-pdf",
+    "endpoint": "/api/reorder",
+    "title": "Reorder PDF Pages",
+    "description": "Rearrange PDF pages by entering their new order, such as 3,1,2.",
+    "downloadName": "PDFora-reorder-pdf.pdf",
+    "component": "niroj",
+    "formField": "order",
+    "formPlaceholder": "Page order (example: 3,1,2)"
+  },
+  "add-page-numbers": {
+    "slug": "add-page-numbers",
+    "endpoint": "/api/page-numbers",
+    "title": "Add Page Numbers",
+    "description": "Add page numbers to every page of your PDF.",
+    "downloadName": "PDFora-add-page-numbers.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "position",
+        "label": "Position",
+        "defaultValue": "bottom-center"
+      },
+      {
+        "name": "start_number",
+        "label": "Starting number",
+        "defaultValue": "1"
+      },
+      {
+        "name": "skip_first",
+        "label": "Skip first page (true/false)",
+        "defaultValue": "false"
+      },
+      {
+        "name": "font_size",
+        "label": "Font size",
+        "defaultValue": "11"
+      }
+    ]
+  },
+  "crop-pdf": {
+    "slug": "crop-pdf",
+    "endpoint": "/api/crop",
+    "title": "Crop PDF",
+    "description": "Crop page margins from your PDF. Enter margin in points (36 points = half an inch).",
+    "downloadName": "PDFora-crop-pdf.pdf",
+    "component": "niroj",
+    "formField": "margin",
+    "formPlaceholder": "Margin in points (default 36)",
+    "extraFields": [
+      {
+        "name": "pages",
+        "label": "Pages (all or e.g. 1,3,5)",
+        "defaultValue": "all"
+      }
+    ]
+  },
+  "header-footer": {
+    "slug": "header-footer",
+    "endpoint": "/api/header-footer",
+    "title": "Add Header or Footer",
+    "description": "Add a text header to each page of your PDF.",
+    "downloadName": "PDFora-header-footer.pdf",
+    "component": "niroj",
+    "formField": "header",
+    "formPlaceholder": "Header text",
+    "extraFields": [
+      {
+        "name": "footer",
+        "label": "Footer text"
+      },
+      {
+        "name": "font_size",
+        "label": "Font size",
+        "defaultValue": "10"
+      }
+    ]
+  },
+  "protect-pdf": {
+    "slug": "protect-pdf",
+    "endpoint": "/api/protect",
+    "title": "Protect PDF",
+    "description": "Encrypt your PDF with a password. Use at least 6 characters.",
+    "downloadName": "PDFora-protect-pdf.pdf",
+    "component": "niroj",
+    "formField": "password",
+    "formPlaceholder": "Password (minimum 6 characters)"
+  },
+  "unlock-pdf": {
+    "slug": "unlock-pdf",
+    "endpoint": "/api/unlock",
+    "title": "Unlock PDF",
+    "description": "Remove PDF password protection when you know the correct password.",
+    "downloadName": "PDFora-unlock-pdf.pdf",
+    "component": "niroj",
+    "formField": "password",
+    "formPlaceholder": "Existing PDF password"
+  },
+  "sign-pdf": {
+    "slug": "sign-pdf",
+    "endpoint": "/api/sign",
+    "title": "Sign PDF",
+    "description": "Add a visible typed signature to the final page. This is not a certificate-based digital signature.",
+    "downloadName": "PDFora-sign-pdf.pdf",
+    "component": "niroj",
+    "formField": "signature_text",
+    "formPlaceholder": "Name to display as signature"
+  },
+  "pdf-to-png": {
+    "slug": "pdf-to-png",
+    "endpoint": "/api/pdf-to-png",
+    "title": "PDF to PNG",
+    "description": "Convert each PDF page into a high-resolution PNG image. Download all pages as a ZIP file.",
+    "downloadName": "PDFora-PNG.zip",
+    "component": "niroj"
+  },
+  "pdf-to-webp": {
+    "slug": "pdf-to-webp",
+    "endpoint": "/api/pdf-to-webp",
+    "title": "PDF to WebP",
+    "description": "Convert PDF pages into WebP images and download them together as a ZIP file.",
+    "downloadName": "PDFora-WebP.zip",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "quality",
+        "label": "Image quality (1–100)",
+        "defaultValue": "85"
+      }
+    ]
+  },
+  "pdf-to-text": {
+    "slug": "pdf-to-text",
+    "endpoint": "/api/pdf-to-text",
+    "title": "PDF to Text",
+    "description": "Extract selectable text from each PDF page into a downloadable TXT file. Scanned pages require OCR.",
+    "downloadName": "PDFora-Extracted-Text.txt",
+    "component": "niroj"
+  },
+  "grayscale-pdf": {
+    "slug": "grayscale-pdf",
+    "endpoint": "/api/grayscale",
+    "title": "Grayscale PDF",
+    "description": "Convert PDF pages to grayscale. Pages are rasterized, so selectable text may not be preserved.",
+    "downloadName": "PDFora-grayscale-pdf.pdf",
+    "component": "niroj"
+  },
+  "flatten-pdf": {
+    "slug": "flatten-pdf",
+    "endpoint": "/api/flatten",
+    "title": "Flatten PDF",
+    "description": "Attempt to apply form widgets and remove annotations. Results can vary by PDF type.",
+    "downloadName": "PDFora-flatten-pdf.pdf",
+    "component": "niroj"
+  },
+  "edit-pdf-metadata": {
+    "slug": "edit-pdf-metadata",
+    "endpoint": "/api/metadata",
+    "title": "Edit PDF Metadata",
+    "description": "Update document title, author, subject and keywords.",
+    "downloadName": "PDFora-edit-pdf-metadata.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "title",
+        "label": "Document title"
+      },
+      {
+        "name": "author",
+        "label": "Author"
+      },
+      {
+        "name": "subject",
+        "label": "Subject"
+      },
+      {
+        "name": "keywords",
+        "label": "Keywords (comma-separated)"
+      }
+    ]
+  },
+  "repair-pdf": {
+    "slug": "repair-pdf",
+    "endpoint": "/api/repair",
+    "title": "Repair PDF",
+    "description": "Attempt to rewrite a damaged PDF. Repair is best-effort and cannot recover every corrupted file.",
+    "downloadName": "PDFora-repair-pdf.pdf",
+    "component": "niroj"
+  },
+  "pdf-to-html": {
+    "slug": "pdf-to-html",
+    "endpoint": "/api/pdf-to-html",
+    "title": "PDF to HTML",
+    "description": "Extract selectable PDF text into a simple HTML document. Scanned pages require OCR.",
+    "downloadName": "PDFora-PDF-to-HTML.html",
+    "component": "niroj"
+  },
+  "extract-images": {
+    "slug": "extract-images",
+    "endpoint": "/api/extract-images",
+    "title": "Extract Images from PDF",
+    "description": "Extract embedded images from a PDF into a ZIP archive.",
+    "downloadName": "PDFora-Extracted-Images.zip",
+    "component": "niroj"
+  },
+  "remove-blank-pages": {
+    "slug": "remove-blank-pages",
+    "endpoint": "/api/remove-blank-pages",
+    "title": "Remove Blank PDF Pages",
+    "description": "Detect and remove pages that contain no selectable text, images or vector drawings.",
+    "downloadName": "PDFora-Without-Blank-Pages.pdf",
+    "component": "niroj"
+  },
+  "compare-pdf": {
+    "slug": "compare-pdf",
+    "endpoint": "/api/compare",
+    "title": "Compare PDF",
+    "description": "Compare selectable text from two PDF files and download a difference report.",
+    "downloadName": "PDFora-PDF-Comparison.txt",
+    "component": "niroj",
+    "multiple": true,
+    "accept": "application/pdf,.pdf",
+    "fieldName": "files"
+  },
+  "add-blank-pages": {
+    "slug": "add-blank-pages",
+    "endpoint": "/api/add-blank-pages",
+    "title": "Add Blank Pages",
+    "description": "Add one or more blank pages to the end of your PDF. The new pages use the dimensions of the last page in your document.",
+    "downloadName": "PDFora-Blank-Pages-Added.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "count",
+        "label": "Number of blank pages to add",
+        "placeholder": "1",
+        "defaultValue": "1"
+      }
+    ]
+  },
+  "rotate-selected-pages": {
+    "slug": "rotate-selected-pages",
+    "endpoint": "/api/rotate-selected-pages",
+    "title": "Rotate Selected Pages",
+    "description": "Rotate only the pages you choose. Enter page numbers separated by commas, such as 1,3,5, or enter all to rotate every page.",
+    "downloadName": "PDFora-Rotated-Selected-Pages.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "pages",
+        "label": "Pages to rotate (e.g. 1,3,5 or all)",
+        "placeholder": "1,3,5",
+        "defaultValue": "all"
+      },
+      {
+        "name": "degrees",
+        "label": "Rotation degrees (90, 180 or 270)",
+        "placeholder": "90",
+        "defaultValue": "90"
+      }
+    ]
+  },
+  "add-background": {
+    "slug": "add-background",
+    "endpoint": "/api/add-background",
+    "title": "Add PDF Background",
+    "description": "Add a subtle text background such as DRAFT to every page of a PDF.",
+    "downloadName": "PDFora-Background.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "text",
+        "label": "Background text",
+        "placeholder": "DRAFT",
+        "defaultValue": "DRAFT"
+      },
+      {
+        "name": "color",
+        "label": "Background color (preset)",
+        "placeholder": "#E5E7EB",
+        "defaultValue": "#E5E7EB"
+      }
+    ]
+  },
+  "add-bookmarks": {
+    "slug": "add-bookmarks",
+    "endpoint": "/api/add-bookmarks",
+    "title": "Add Bookmarks to PDF",
+    "description": "Add a clickable table of contents to a PDF. Enter one page number and bookmark title per line in page:title format.",
+    "downloadName": "PDFora-Bookmarks-Added.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "bookmarks",
+        "label": "Bookmarks (one per line: page:title)",
+        "placeholder": "1:Introduction\n5:Chapter One\n12:Conclusion",
+        "defaultValue": "1:Introduction",
+        "multiline": true
+      }
+    ]
+  },
+  "bates-numbering": {
+    "slug": "bates-numbering",
+    "endpoint": "/api/bates-numbering",
+    "title": "Bates Numbering PDF",
+    "description": "Add sequential Bates numbers to every page of a PDF, with a custom prefix, starting number and digit length.",
+    "downloadName": "PDFora-Bates-Numbered.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "prefix",
+        "label": "Prefix (optional)",
+        "placeholder": "CASE-",
+        "defaultValue": "CASE-"
+      },
+      {
+        "name": "start",
+        "label": "Starting number",
+        "placeholder": "1",
+        "defaultValue": "1"
+      },
+      {
+        "name": "digits",
+        "label": "Number of digits",
+        "placeholder": "6",
+        "defaultValue": "6"
+      }
+    ]
+  },
+  "extract-bookmarks": {
+    "slug": "extract-bookmarks",
+    "endpoint": "/api/extract-bookmarks",
+    "title": "Extract PDF Bookmarks",
+    "description": "Extract the table of contents and bookmarks from a PDF into a downloadable text file, including bookmark titles and page numbers.",
+    "downloadName": "PDFora-Bookmarks.txt",
+    "component": "niroj"
+  },
+  "extract-fonts": {
+    "slug": "extract-fonts",
+    "endpoint": "/api/extract-fonts",
+    "title": "Extract Fonts from PDF",
+    "description": "Extract embedded font files from a PDF when the document contains extractable embedded fonts.",
+    "downloadName": "PDFora-Fonts.zip",
+    "component": "niroj"
+  },
+  "extract-page-images": {
+    "slug": "extract-page-images",
+    "endpoint": "/api/extract-page-images",
+    "title": "Render PDF Pages to PNG",
+    "description": "Render every PDF page as a PNG image and download all pages together in a ZIP archive.",
+    "downloadName": "PDFora-Page-Images.zip",
+    "component": "niroj"
+  },
+  "page-counter": {
+    "slug": "page-counter",
+    "endpoint": "/api/page-counter",
+    "title": "PDF Page Counter",
+    "description": "Count the pages in a PDF and download a simple report with the page count and file size.",
+    "downloadName": "PDFora-Page-Count.txt",
+    "component": "niroj"
+  },
+  "pdf-information": {
+    "slug": "pdf-information",
+    "endpoint": "/api/pdf-info",
+    "title": "PDF Information",
+    "description": "View PDF details including page count, file size, page dimensions, document metadata and encryption status.",
+    "downloadName": "PDFora-Information.txt",
+    "component": "niroj"
+  },
+  "pdf-to-bmp": {
+    "slug": "pdf-to-bmp",
+    "endpoint": "/api/pdf-to-bmp",
+    "title": "PDF to BMP",
+    "description": "Convert each PDF page into a BMP image and download all pages in a ZIP archive.",
+    "downloadName": "PDFora-BMP-Pages.zip",
+    "component": "niroj"
+  },
+  "pdf-to-csv": {
+    "slug": "pdf-to-csv",
+    "endpoint": "/api/pdf-to-csv",
+    "title": "PDF to CSV",
+    "description": "Extract detected tables from a PDF into CSV format for spreadsheet workflows. Best for PDFs with selectable, clearly structured tables.",
+    "downloadName": "PDFora-Tables.csv",
+    "component": "niroj"
+  },
+  "pdf-to-json": {
+    "slug": "pdf-to-json",
+    "endpoint": "/api/pdf-to-json",
+    "title": "PDF to JSON",
+    "description": "Extract text blocks, page numbers, page dimensions and text positions from a PDF into structured JSON data.",
+    "downloadName": "PDFora-Text.json",
+    "component": "niroj"
+  },
+  "pdf-to-markdown": {
+    "slug": "pdf-to-markdown",
+    "endpoint": "/api/pdf-to-markdown",
+    "title": "PDF to Markdown",
+    "description": "Extract selectable text from PDF pages into a Markdown document with page headings.",
+    "downloadName": "PDFora-Text.md",
+    "component": "niroj"
+  },
+  "pdf-to-tiff": {
+    "slug": "pdf-to-tiff",
+    "endpoint": "/api/pdf-to-tiff",
+    "title": "PDF to TIFF",
+    "description": "Convert every page of a PDF into a TIFF image. Download all converted page images together in a ZIP archive.",
+    "downloadName": "PDFora-TIFF-Pages.zip",
+    "component": "niroj"
+  },
+  "remove-annotations": {
+    "slug": "remove-annotations",
+    "endpoint": "/api/remove-annotations",
+    "title": "Remove PDF Annotations",
+    "description": "Remove comments, highlights, sticky notes and other PDF annotations while keeping the page content.",
+    "downloadName": "PDFora-Annotations-Removed.pdf",
+    "component": "niroj"
+  },
+  "remove-attachments": {
+    "slug": "remove-attachments",
+    "endpoint": "/api/remove-attachments",
+    "title": "Remove PDF Attachments",
+    "description": "Remove embedded file attachments from a PDF document while keeping its pages.",
+    "downloadName": "PDFora-Attachments-Removed.pdf",
+    "component": "niroj"
+  },
+  "remove-pdf-links": {
+    "slug": "remove-pdf-links",
+    "endpoint": "/api/remove-links",
+    "title": "Remove PDF Links",
+    "description": "Remove clickable hyperlinks from PDF pages while keeping the visible page content intact.",
+    "downloadName": "PDFora-Links-Removed.pdf",
+    "component": "niroj"
+  },
+  "remove-pdf-metadata": {
+    "slug": "remove-pdf-metadata",
+    "endpoint": "/api/remove-metadata",
+    "title": "Remove PDF Metadata",
+    "description": "Remove document properties such as title, author, subject, creator and keywords from a PDF file to help protect document privacy.",
+    "downloadName": "PDFora-Metadata-Removed.pdf",
+    "component": "niroj"
+  },
+  "split-by-bookmarks": {
+    "slug": "split-by-bookmarks",
+    "endpoint": "/api/split-by-bookmarks",
+    "title": "Split PDF by Bookmarks",
+    "description": "Split a bookmarked PDF into separate PDF files using its existing bookmark destinations. Download the sections in a ZIP archive.",
+    "downloadName": "PDFora-Bookmark-Sections.zip",
+    "component": "niroj"
   },
 };
 

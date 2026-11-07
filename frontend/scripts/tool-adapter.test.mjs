@@ -127,7 +127,7 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
     for (const entry of toolCatalog.filter((t) => !RESERVED_CATALOG_SLUGS.has(t.slug))) {
       const m = buildLocalizedToolMetadata(l, entry);
       const expectIndex = isPublished(l) && isLocalizedToolIndexable(l, entry.slug);
-      assert.deepEqual(m.robots, expectIndex ? { index: true, follow: true } : { index: false, follow: false }, `${l}/${entry.slug}`);
+      assert.deepEqual(m.robots, expectIndex ? { index: true, follow: true } : { index: false, follow: isPublished(l) }, `${l}/${entry.slug}`);
       assert.equal(m.alternates.canonical, absoluteUrl(`/tools/${entry.slug}`, l), "canonical must be the localized URL itself");
       assert.ok(m.alternates.canonical.startsWith("https://pd-fora.vercel.app/"));
       assert.notEqual(m.alternates.canonical, absoluteUrl(`/tools/${entry.slug}`, "en"), "must not canonicalize to English");
@@ -141,7 +141,7 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
   const nepaliCatalogTool = toolCatalog.find((entry) => entry.slug === "loan-emi-calculator");
   assert.ok(nepaliCatalogTool);
   const nepaliMetadata = buildLocalizedToolMetadata("ne", nepaliCatalogTool);
-  assert.deepEqual(nepaliMetadata.robots, { index: false, follow: false });
+  assert.deepEqual(nepaliMetadata.robots, { index: false, follow: true });
   assert.equal(nepaliMetadata.alternates.languages, undefined, "noindex Nepali tools must not emit hreflang");
 });
 
@@ -171,8 +171,11 @@ test("route file contract: validates through the resolver, 404s, no JSON-LD, Eng
   assert.match(meta, /isPublished\(locale\) && isLocalizedToolIndexable/);
 });
 
-test("scope guards: English tool route, sitemap and robots are not wired to the localized route", () => {
-  assert.doesNotMatch(read("app/tools/[slug]/page.tsx"), /lib\/tools\/|localized-/, "English route must stay independent");
+test("scope guards: English tool execution stays independent while approved hreflang is reciprocal", () => {
+  const englishToolPage = read("app/tools/[slug]/page.tsx");
+  assert.doesNotMatch(englishToolPage, /resolveLocalizedToolRequest|buildLocalizedToolMetadata|NepaliNepalToolsWorkspace/, "English tool execution must not be routed through localized workspace handlers");
+  assert.match(englishToolPage, /isLocalizedToolIndexable\("ne", slug\)/, "Only explicitly approved Nepali tool equivalents may appear in English hreflang");
+  assert.match(englishToolPage, /hreflangMap\(canonicalPath\)/, "Approved translations must receive reciprocal alternate URLs");
   const sitemap = read("app/sitemap.ts");
   assert.match(sitemap, /nepaliLocalizedUtilitySlugs/);
   assert.match(sitemap, /nepaliLocalizedFinancialSlugs/);

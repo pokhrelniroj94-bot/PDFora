@@ -48,8 +48,8 @@ assert.ok(generatedMetadata.every((entry) => entry.title.length >= 20 && entry.d
 assert.ok(generatedMetadata.every((entry) => !/\|\s*PDFora$/i.test(entry.title)), "Page titles must not duplicate the root PDFora title template");
 
 const resumeBuilderPage = read("../app/resume-builder/page.tsx");
-const resumeBuilderTitle = resumeBuilderPage.match(/title:\\s*"([^"]+)"/)?.[1] ?? "";
-const resumeBuilderDescription = resumeBuilderPage.match(/description:\\s*"([^"]+)"/)?.[1] ?? "";
+const resumeBuilderTitle = resumeBuilderPage.match(/title:\s*"([^"]+)"/)?.[1] ?? "";
+const resumeBuilderDescription = resumeBuilderPage.match(/description:\s*"([^"]+)"/)?.[1] ?? "";
 const canonicalCatalogMetadata = generatedMetadata.filter((entry) => entry.slug !== "resume-builder");
 const all173ToolTitles = [...canonicalCatalogMetadata.map((entry) => entry.title), resumeBuilderTitle, ...pdfGuideEntries.map((entry) => `${entry.name} Online`)];
 const all173ToolDescriptions = [...canonicalCatalogMetadata.map((entry) => entry.description), resumeBuilderDescription, ...pdfGuideEntries.map((entry) => entry.purpose)];

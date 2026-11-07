@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-07T09:38:01.740Z",
-  "sourceCommit": "bb168997f4d634fc6724000aabb80e5f35751780",
+  "generatedAt": "2026-11-07T09:38:34.322Z",
+  "sourceCommit": "d268c805360474591f6374403fccbbde9c8ea09a",
   "methodology": {
     "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
-    "routeCoverage": "Published locale route equivalents divided by frontend page source files; a conservative source-file proxy, not interface-string coverage.",
+    "routeCoverage": "Dynamic route handlers serve multiple slugs; localized route equivalents are reported as counts only, not percentages of page source files.",
     "sharedUiModuleCoverage": "Leaf strings in lib/i18n/shared-ui.ts only; does not measure every component or form.",
     "pdfGuideCoverage": "Nepali guide entries compared with the English tool guide registry.",
     "blogCoverage": "Registered localized article records compared with English editorial and Nepal article records.",
@@ -54,7 +54,7 @@
       "published": true,
       "sourceRouteFiles": 68,
       "translatedRoutes": 105,
-      "routeCoveragePercent": 154.41,
+      "routeCoveragePercent": null,
       "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 49,

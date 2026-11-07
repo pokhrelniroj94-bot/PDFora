@@ -157,7 +157,8 @@ export default function PrivacyPage() {
             <h2 className="mb-2 text-2xl font-semibold">10. Contact</h2>
             <p>
               If you have questions about this Privacy Policy or PDFora&apos;s
-              privacy practices, email us at{" "}\n              <a className="underline" href="mailto:pokhrelniroj94@gmail.com">pokhrelniroj94@gmail.com</a>.
+              privacy practices, email us at{" "}
+              <a className="underline" href="mailto:pokhrelniroj94@gmail.com">pokhrelniroj94@gmail.com</a>.
             </p>
           </div>
         </section>

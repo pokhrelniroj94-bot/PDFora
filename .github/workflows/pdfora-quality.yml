@@ -97,6 +97,12 @@ jobs:
         env:
           E2E_BASE_URL: http://127.0.0.1:3000
         run: node scripts/live-data-smoke.mjs
+      - name: Verify local build security, privacy and SEO controls
+        id: local-security-smoke
+        continue-on-error: true
+        env:
+          PDFORA_PRODUCTION_URL: http://127.0.0.1:3000
+        run: node scripts/production-security-smoke.mjs
       - name: Run individual Chromium E2E checks for all 173 tools
         id: browser-e2e
         continue-on-error: true
@@ -135,6 +141,9 @@ jobs:
         run: exit 1
       - name: Fail CI after all reports when live-data checks fail
         if: always() && steps.live-data-smoke.outcome == 'failure'
+        run: exit 1
+      - name: Fail CI after all reports when local security checks fail
+        if: always() && steps.local-security-smoke.outcome == 'failure'
         run: exit 1
 
   live-production:

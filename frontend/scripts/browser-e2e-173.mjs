@@ -621,22 +621,7 @@ async function runTool(tool, index) {
         row.printedPdf = { pages: parsedPdf.getPageCount(), bytes: pdfBytes.length };
         row.checks.push("resume PDF export button, browser print flow and generated PDF bytes verified");
       }
-      const editableInputCheck = await page.evaluate(`(() => {
-        const field = [...document.querySelectorAll("main input:not([type=file]), main textarea")].find((item) => !item.disabled && !item.readOnly && !["checkbox", "radio", "button", "submit", "reset"].includes(item.type));
-        if (!field) return { tested: false };
-        const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
-        const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
-        setter?.call(field, "");
-        field.dispatchEvent(new Event("input", { bubbles: true }));
-        field.dispatchEvent(new Event("change", { bubbles: true }));
-        return { tested: true };
-      })()`);
-      if (editableInputCheck.tested) {
-        await delay(150);
-        const emptyInputText = await page.evaluate("document.querySelector('main')?.innerText || ''");
-        if (/\bNaN\b|\bInfinity\b|\[object Object\]/.test(emptyInputText)) throw new Error("Clearing an editable input produced an invalid numeric or object output.");
-        row.checks.push("empty-input edge case did not render NaN, Infinity or object output");
-      }
+
       if (tool.slug === "nepal-forex-rates") {
         let forexState = null;
         const forexStarted = Date.now();
@@ -933,6 +918,22 @@ async function runTool(tool, index) {
       }
       if (!finalState.inputs && !/calendar|market|news|resume|holiday|dashboard|typing|uuid-generator/i.test(tool.slug)) {
         throw new Error("Tool rendered no interactive inputs.");
+      }
+      const editableInputCheck = await page.evaluate(`(() => {
+        const field = [...document.querySelectorAll("main input:not([type=file]), main textarea")].find((item) => !item.disabled && !item.readOnly && !["checkbox", "radio", "button", "submit", "reset"].includes(item.type));
+        if (!field) return { tested: false };
+        const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+        const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+        setter?.call(field, "");
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+        field.dispatchEvent(new Event("change", { bubbles: true }));
+        return { tested: true };
+      })()`);
+      if (editableInputCheck.tested) {
+        await delay(150);
+        const emptyInputText = await page.evaluate("document.querySelector('main')?.innerText || ''");
+        if (/\bNaN\b|\bInfinity\b|\[object Object\]/.test(emptyInputText)) throw new Error("Clearing an editable input produced an invalid numeric or object output.");
+        row.checks.push("empty-input edge case did not render NaN, Infinity or object output");
       }
       if (finalState.alerts.some((alert) => /error|failed|invalid|could not|unavailable/i.test(alert))) {
         throw new Error(finalState.alerts.join(" | "));

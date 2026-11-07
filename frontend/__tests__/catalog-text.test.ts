@@ -1,4 +1,4 @@
-import { jsonObjectsToCsv } from "../lib/catalog-text";
+import { csvToJson, jsonObjectsToCsv } from "../lib/catalog-text";
 
 describe("spreadsheet-safe JSON to CSV", () => {
   test("exports object arrays with a stable union of columns and RFC-style quoting", () => {
@@ -34,5 +34,29 @@ describe("spreadsheet-safe JSON to CSV", () => {
     expect(() => jsonObjectsToCsv('[1,2]')).toThrow("array of JSON objects");
     expect(() => jsonObjectsToCsv('{"name":"Asha"}')).toThrow("array of JSON objects");
     expect(() => jsonObjectsToCsv(" ".repeat(1_000_001))).toThrow("1 MB");
+  });
+});
+
+describe("CSV to JSON parser", () => {
+  test("handles quoted commas, escaped quotes, CRLF and embedded newlines", () => {
+    expect(JSON.parse(csvToJson('name,note\r\n"Asha, Rai","said ""hello""\nand bye"\r\nRavi,ok'))).toEqual([
+      { name: "Asha, Rai", note: 'said "hello"\nand bye' },
+      { name: "Ravi", note: "ok" },
+    ]);
+  });
+
+  test("rejects malformed quotes, duplicate headers, ragged rows and missing data", () => {
+    expect(() => csvToJson('name,note\n"Asha,ok')).toThrow("unclosed quoted");
+    expect(() => csvToJson('name,name\na,b')).toThrow("unique");
+    expect(() => csvToJson('name,note\na')).toThrow("expected 2");
+    expect(() => csvToJson('name,note\n')).toThrow("at least one data row");
+    expect(() => csvToJson('name,note\n"bad"x,ok')).toThrow("after a quoted");
+  });
+
+  test("supports empty cells and quoted line breaks without treating them as row delimiters", () => {
+    expect(JSON.parse(csvToJson('name,age\nAsha,\n"Ravi\nKumar",20'))).toEqual([
+      { name: "Asha", age: "" },
+      { name: "Ravi\nKumar", age: "20" },
+    ]);
   });
 });

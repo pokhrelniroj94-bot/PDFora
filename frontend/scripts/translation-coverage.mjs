@@ -175,7 +175,7 @@ Inventory: ${pageSourceFiles.length} frontend page source files, ${apiRouteSourc
 |---|---|---|---:|---:|---:|---:|---:|
 ${rows.join("\n")}
 
-Nepali currently has the homepage, six localized PDF routes, 52 localized utility routes, nine localized financial/news/calculator routes, three localized AI writing routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, ${nepaliLocalizedBlogCount} fully translated Nepali articles, and four localized legal/static pages. The remaining blog corpus and other editorial guides are not translated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has the homepage, six localized PDF routes, 52 localized utility routes, seven finance/news routes, two public-information routes, three AI-writing routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, ${nepaliLocalizedBlogCount} curated editorial articles and four localized legal/static pages. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
 `;
 fs.writeFileSync(path.join(outputDir, "TRANSLATION_COVERAGE.md"), markdown);
 console.log(markdown);

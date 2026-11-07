@@ -85,8 +85,10 @@ test("shared UI coverage: all twelve locales have complete translated site chrom
     assert.deepEqual(nestedKeys(copy.groups), nestedKeys(english.groups), `${locale} group keys must match English`);
     assert.deepEqual(nestedKeys(copy.cookie), nestedKeys(english.cookie), `${locale} cookie keys must match English`);
     for (const [key, value] of Object.entries(copy.cookie)) assert.ok(value.trim(), `${locale}.cookie.${key} must not be empty`);
-    assert.notEqual(copy.allTools, english.allTools, `${locale}.allTools must not silently fall back to English`);
-    assert.notEqual(copy.directoryTitle, english.directoryTitle, `${locale}.directoryTitle must be translated`);
+    if (locale !== "en") {
+      assert.notEqual(copy.allTools, english.allTools, `${locale}.allTools must not silently fall back to English`);
+      assert.notEqual(copy.directoryTitle, english.directoryTitle, `${locale}.directoryTitle must be translated`);
+    }
   }
   assert.equal(sharedUi.localeFromPathname("/ne/merge-pdf"), "ne");
   assert.equal(sharedUi.localeFromPathname("/merge-pdf"), "en");

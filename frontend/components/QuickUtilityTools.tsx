@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { bmi, bmr, businessDaysInclusive, gcd } from "../lib/catalog-calculations";
+import { addCalendarDays } from "../lib/date-time-calculations";
 
 type Values = Record<string, string>;
 const defaults: Record<string, Values> = {
@@ -51,8 +52,8 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  const run=()=>{setError("");setOut("");try{const t=get("text");let result="";
  switch(slug){
  case "word-frequency-counter":{const m=new Map<string,number>();words(t.toLowerCase().replace(/[^\p{L}\p{N}'-]+/gu," ")).forEach(w=>m.set(w,(m.get(w)||0)+1));result=[...m].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).map(([w,c])=>w+" — "+c).join("\n")||"No words found.";break;}
- case "reading-time-calculator":{const count=words(t).length,wpm=Math.max(1,n("wpm"));result=count+" words\nEstimated reading time: "+(count/wpm<1?Math.max(1,Math.ceil(count/wpm*60))+" seconds":(count/wpm).toFixed(1)+" minutes");break;}
- case "line-counter":{const a=t.split(/\r?\n/);result="Total lines: "+a.length+"\nNon-empty: "+a.filter(x=>x.trim()).length+"\nUnique: "+new Set(a).size;break;}
+ case "reading-time-calculator":{const count=words(t).length,wpm=Math.max(1,n("wpm"));result=count+" words\nEstimated reading time: "+(count===0?"0 seconds":count/wpm<1?Math.max(1,Math.ceil(count/wpm*60))+" seconds":(count/wpm).toFixed(1)+" minutes");break;}
+ case "line-counter":{const a=t.length?t.split(/\r?\n/):[];result="Total lines: "+a.length+"\nNon-empty: "+a.filter(x=>x.trim()).length+"\nUnique: "+new Set(a).size;break;}
  case "sentence-counter":{const a=t.trim().split(/[.!?]+(?=\s|$)/).filter(x=>x.trim()),w=words(t).length;result="Sentences: "+a.length+"\nWords: "+w+"\nAverage words per sentence: "+(a.length?(w/a.length).toFixed(1):"0");break;}
  case "email-extractor":result=[...new Set(t.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)||[])].join("\n")||"No email addresses found.";break;
  case "url-extractor":result=[...new Set(t.match(/https?:\/\/[^\s<>()\[\]{}"']+/gi)||[])].join("\n")||"No URLs found.";break;
@@ -91,7 +92,7 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "random-number-generator":{const min=Math.ceil(n("min")),max=Math.floor(n("max")),count=Math.max(1,Math.min(100,Math.floor(n("count"))));if(max<min||max-min+1>4294967296)throw Error("Enter a valid integer range up to 2^32 values.");const range=max-min+1,limit=Math.floor(4294967296/range)*range;const pick=()=>{let x=0;do{x=crypto.getRandomValues(new Uint32Array(1))[0];}while(x>=limit);return min+x%range;};result=Array.from({length:count},pick).join("\n");break;}
  case "dice-roller":{const count=Math.max(1,Math.min(100,Math.floor(n("count")))),rolls=Array.from({length:count},()=>crypto.getRandomValues(new Uint32Array(1))[0]%6+1);result="Rolls: "+rolls.join(", ")+"\nTotal: "+rolls.reduce((a,b)=>a+b,0);break;}
  case "unix-timestamp-converter":{const x=Number(t),d=new Date(Math.abs(x)<1e12?x*1000:x);if(!Number.isFinite(x)||isNaN(+d))throw Error("Enter a valid Unix timestamp.");result="UTC: "+d.toISOString()+"\nLocal: "+d.toString();break;}
- case "date-add-subtract-calculator":{const d=new Date(get("date")+"T00:00:00");if(isNaN(+d))throw Error("Enter a valid date.");d.setDate(d.getDate()+n("days"));result=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");break;}
+ case "date-add-subtract-calculator":{result=addCalendarDays(get("date"),n("days"));break;}
  case "business-days-calculator":result="Weekdays (inclusive): "+businessDaysInclusive(get("start"),get("end"))+"\nPublic holidays are not excluded.";break;
  case "px-rem-converter":{const x=n("value"),root=n("root");if(root<=0)throw Error("Root font size must be positive.");result=get("mode")==="rem-to-px"?(x*root).toFixed(4)+" px":(x/root).toFixed(4)+" rem";break;}
  case "aspect-ratio-calculator":{const w=n("width"),h=n("height");if(w<=0||h<=0)throw Error("Width and height must be positive.");const g=gcd(Math.round(w*1000),Math.round(h*1000));result="Aspect ratio: "+Math.round(w*1000)/g+":"+Math.round(h*1000)/g+"\nDecimal: "+(w/h).toFixed(5);break;}

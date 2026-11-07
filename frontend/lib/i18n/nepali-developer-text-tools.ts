@@ -74,7 +74,7 @@ export function runNepaliDeveloperTool(slug: NepaliDeveloperToolSlug, values: Va
     let i = 0, j = 0;
     while (i < left.length || j < right.length) {
       if (i < left.length && j < right.length && left[i] === right[j]) { output.push(`  ${left[i]}`); i++; j++; }
-      else if (j < right.length && (i === left.length || rows[i][j + 1] >= rows[i + 1][j])) { output.push(`+ ${right[j++]}`); }
+      else if (j < right.length && (i === left.length || rows[i][j + 1] > rows[i + 1][j])) { output.push(`+ ${right[j++]}`); }
       else { output.push(`- ${left[i++]}`); }
     }
     return output.join("\n");

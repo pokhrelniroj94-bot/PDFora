@@ -21,4 +21,15 @@ assert.ok(utilities.includes("if(file.size>50*1024*1024)"), "Image tools must re
 assert.ok(!homepage.includes("upload the required file"), "Homepage utility cards must not give generic PDF-upload instructions");
 assert.ok(homepage.includes("review the result before using or downloading it"), "Homepage cards must show neutral, tool-appropriate guidance");
 
+
+const quickUtilities = read("../components/QuickUtilityTools.tsx");
+const extraTools = read("../components/ExtraTools.tsx");
+const inputHelpers = read("../lib/catalog-inputs.ts");
+assert.ok(quickUtilities.includes("parseRequiredNumber(get(k))"), "QuickUtilityTools must reject blank numeric fields");
+assert.ok(extraTools.includes("parseRequiredNumber(val(k))"), "ExtraTools must reject blank numeric fields");
+assert.ok(quickUtilities.includes("jsonToYaml(obj)"), "JSON-to-YAML must use the tested serializer");
+assert.ok(quickUtilities.includes("randomBelow(6)+1"), "Dice rolls must use unbiased random integers");
+assert.ok(extraTools.includes("chars[randomBelow(chars.length)]"), "Password characters must use unbiased random integers");
+assert.ok(inputHelpers.includes("value >= limit"), "Random helper must reject the incomplete modulo bucket");
+
 console.log("Tool UI regression checks passed: image upload copy, validation, object URL lifecycle and homepage guidance.");

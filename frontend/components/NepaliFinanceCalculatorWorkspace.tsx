@@ -26,7 +26,14 @@ export default function NepaliFinanceCalculatorWorkspace({ slug }: { slug: strin
   try {
     if (emiValid) emi = loanEmi(p, annual, term);
   } catch (error) {
-    emiError = error instanceof Error ? error.message : "मान्य ऋण विवरण लेख्नुहोस्।";
+    const message = error instanceof Error ? error.message : "";
+    emiError = /whole number/i.test(message)
+      ? "ऋण अवधि पूर्ण महिनामा लेख्नुहोस्।"
+      : /loan amount|principal/i.test(message)
+        ? "सकारात्मक ऋण रकम लेख्नुहोस्।"
+        : /interest rate/i.test(message)
+          ? "शून्य वा सोभन्दा बढी मान्य ब्याज दर लेख्नुहोस्।"
+          : "मान्य ऋण विवरण लेख्नुहोस्।";
   }
   const sipMonthly = Number(monthly), sipYears = Number(years), starting = Number(initial);
   const sipValid = Number.isFinite(sipMonthly) && Number.isFinite(sipYears) && Number.isFinite(annual) && Number.isFinite(starting) &&

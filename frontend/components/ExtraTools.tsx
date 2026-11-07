@@ -1,6 +1,7 @@
 "use client";
 import {useState} from "react";
 import { average, convertUnit, fractionOperation, percentageChange, simplifyRatio } from "../lib/catalog-calculations";
+import { calculateAge, dateDifferenceDays, timeDurationMinutes } from "../lib/date-time-calculations";
 import { analyzeMetaTitle, analyzeMetaDescription, calculateKeywordDensity, generateRobotsTxt, generateSitemapXml, buildOpenGraphPreview } from "../lib/seo-utilities";
 import { jsonObjectsToCsv } from "../lib/catalog-text";
 type F={key:string;label:string;type?:"number"|"date"|"time"|"color";multiline?:boolean;value:string};
@@ -53,9 +54,9 @@ export default function ExtraTools({slug}:{slug:string}){
  case "ratio-simplifier":s=simplifyRatio(num("a"),num("b"));break;
  case "fraction-calculator":{const result=fractionOperation(num("a"),num("b"),num("c"),num("d"),val("op"));s=result.numerator+"/"+result.denominator+" = "+result.value;break;}
  case "unit-converter":{const a=val("from").toLowerCase(),b=val("to").toLowerCase();s=convertUnit(num("n"),a,b).toPrecision(8)+" "+b;if((a==="c"||a==="f")&&(b==="c"||b==="f"))s=convertUnit(num("n"),a,b).toFixed(4)+" °"+b.toUpperCase();break;}
- case "age-calculator":{const a=new Date(val("a")+"T00:00:00"),b=new Date(val("b")+"T00:00:00");if(isNaN(+a)||isNaN(+b)||b<a)throw Error("Enter valid dates in chronological order.");let y=b.getFullYear()-a.getFullYear(),m=b.getMonth()-a.getMonth(),d=b.getDate()-a.getDate();if(d<0){m--;d+=new Date(b.getFullYear(),b.getMonth(),0).getDate();}if(m<0){y--;m+=12;}s=y+" years, "+m+" months, "+d+" days";break;}
- case "date-difference-calculator":{const a=new Date(val("a")+"T00:00:00"),b=new Date(val("b")+"T00:00:00");if(isNaN(+a)||isNaN(+b))throw Error("Enter valid dates.");const d=Math.abs(Math.round((+b- +a)/86400000));s=d+" days ("+(d/7).toFixed(2)+" weeks; "+(d/30.4375).toFixed(2)+" average months)";break;}
- case "time-duration-calculator":{const t=(x:string)=>{const p=x.split(":").map(Number);return p[0]*60+p[1];};let d=t(val("b"))-t(val("a"));if(d<0)d+=1440;s=Math.floor(d/60)+" hours "+d%60+" minutes";break;}
+ case "age-calculator":{const age=calculateAge(val("a"),val("b"));s=age.years+" years, "+age.months+" months, "+age.days+" days";break;}
+ case "date-difference-calculator":{const d=dateDifferenceDays(val("a"),val("b"));s=d+" days ("+(d/7).toFixed(2)+" weeks; "+(d/30.4375).toFixed(2)+" average months)";break;}
+ case "time-duration-calculator":{const d=timeDurationMinutes(val("a"),val("b"));s=Math.floor(d/60)+" hours "+d%60+" minutes";break;}
  case "remove-duplicate-lines":{const seen=new Set<string>();s=val("text").split(/\r?\n/).filter(x=>{if(seen.has(x))return false;seen.add(x);return true;}).join("\n");break;}
  case "sort-lines":{const a=val("text").split(/\r?\n/).sort((x,y)=>x.localeCompare(y,undefined,{sensitivity:"base"}));s=(val("order")==="desc"?a.reverse():a).join("\n");break;}
  case "reverse-text":s=val("mode")==="words"?val("text").trim().split(/\s+/).reverse().join(" "):[...val("text")].reverse().join("");break;

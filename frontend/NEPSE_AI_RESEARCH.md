@@ -107,3 +107,6 @@ For future macro-regime coverage, prefer primary NRB/IMF-distributed datasets ov
 - NRB homepage indicators: https://www.nrb.org.np/ — headline deposit/credit, interbank rate, inflation, broad-money and private-credit figures are displayed with reporting dates.
 
 The official sources reviewed expose macro data through a mix of monthly publications, SDMX downloads and a dedicated forex API. A stable, documented, unauthenticated JSON endpoint for the complete monthly macro series was not established in this implementation. Therefore the deterministic NEPSE engine does not fabricate or silently scrape macro values. Until a schema-stable source is verified, show macro indicators as unavailable or source-linked context; preserve the publication date, fiscal period, unit, revision status and source URL for every imported observation.
+
+
+The NEPSE dashboard also includes a non-scored macro evidence checklist linking to NRB and SEBON primary sources. It deliberately does not show stale/static macro figures as live data or blend unverified macro values into the deterministic price/volume score.

@@ -149,7 +149,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne?from=%2Ftools%2Fjson-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 68);
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 76);
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -219,6 +219,20 @@ test("all localized Nepali catalog tools have localized metadata", () => {
   for (const slug of slugs) {
     assert.ok(titleBlock.includes(`"${slug}"`), `${slug} needs a Nepali title`);
     assert.ok(descriptionBlock.includes(`"${slug}"`), `${slug} needs a Nepali metadata description`);
+  }
+});
+
+test("Nepali math utilities have dedicated localized route and interface", () => {
+  const route = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const component = fs.readFileSync(path.join(frontendRoot, "components", "NepaliMathUtilityWorkspace.tsx"), "utf8");
+  const logic = fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "nepali-math-tools.ts"), "utf8");
+  for (const slug of ["percentage-change-calculator", "average-calculator", "ratio-simplifier", "fraction-calculator", "percentage-of-number-calculator", "gcd-lcm-calculator", "prime-number-checker", "unit-converter"]) {
+    assert.ok(route.includes(`"${slug}"`), `${slug} must have a localized route`);
+    assert.ok(component.includes(`"${slug}"`), `${slug} must have localized UI copy`);
+    assert.ok(logic.includes(`slug === "${slug}"`), `${slug} must have calculation logic`);
+  }
+  for (const phrase of ["प्रतिशत परिवर्तन क्याल्कुलेटर", "औसत क्याल्कुलेटर", "भिन्न क्याल्कुलेटर", "एकाइ रूपान्तरण"]) {
+    assert.ok(component.includes(phrase), `Nepali math UI must include ${phrase}`);
   }
 });
 

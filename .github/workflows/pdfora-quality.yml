@@ -1,7 +1,7 @@
 name: PDFora quality and security checks
 on:
   pull_request:
-    branches: [main, master, feat/free-market-data-fallbacks]
+    branches: [main, master, feat/free-market-data-fallbacks, feat/pdf-ora-ai-help-market-signals]
   push:
     branches: [master, niroj77-seo-ux-security]
   workflow_dispatch:
@@ -43,6 +43,8 @@ jobs:
       - run: npm ci
       - name: Verify every catalog tool has one implementation
         run: npm run verify:tools
+      - name: Run NEPSE deterministic numerical fixtures
+        run: npm run test:quant
       - run: npm run lint
       - run: npm run build
       - name: Audit npm dependencies

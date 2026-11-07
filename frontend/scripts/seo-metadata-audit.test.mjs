@@ -6,7 +6,7 @@ import { ensureTypeStripping, frontendRoot, loadToolAdapter } from "./lib/load-i
 ensureTypeStripping();
 const read = (relative) => fs.readFileSync(path.join(frontendRoot, relative), "utf8");
 const modules = await loadToolAdapter();
-const catalog = modules.toolCatalog.toolCatalog.filter((tool) => tool.slug !== "pdf-tools");
+const catalog = modules.toolCatalog.toolCatalog.filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "resume-builder");
 const englishPage = read("app/tools/[slug]/page.tsx");
 const nepaliPage = read("app/[locale]/tools/[slug]/page.tsx");
 const localizedMetadata = read("lib/tools/localized-metadata.ts");
@@ -34,7 +34,7 @@ const nepaliTitles = parseDictionary(nepaliTitleSource);
 const nepaliDescriptions = parseDictionary(nepaliDescriptionSource);
 const categoryAdvice = Object.fromEntries([...categorySource.matchAll(/^\s*(PDF|Finance|Math|Text|Developer|Image|SEO|Business|Nepal):\s*"([^"]+)"/gm)].map((match) => [match[1], match[2]]));
 
-assert.equal(catalog.length, 124, "Update the audit when the canonical catalog size changes");
+assert.equal(catalog.length, 123, "Update the audit when the canonical /tools route count changes");
 const slugs = new Set(catalog.map((tool) => tool.slug));
 for (const slug of overrides.keys()) assert.ok(slugs.has(slug), "Unknown English SEO override: " + slug);
 
@@ -140,8 +140,11 @@ assert.match(sitemap, /legacyToolSlugs\.map/, "English PDF tool routes must be p
 assert.match(englishPage, /tool\.slug !== "resume-builder"/, "The duplicate /tools/resume-builder URL must not be statically generated");
 assert.match(englishPage, /slug === "resume-builder"\) permanentRedirect\("\/resume-builder"\)/, "The duplicate catalog Resume Builder route must permanently redirect to its canonical page");
 assert.match(englishResumeBuilder, /canonical:\s*"https:\/\/pd-fora\.vercel\.app\/resume-builder"/, "English Resume Builder must self-canonicalize to its dedicated route");
+assert.match(englishResumeBuilder, /title:\s*"Free Resume Builder/, "English Resume Builder needs a dedicated title");
+assert.match(englishResumeBuilder, /description:\s*"Create a professional resume online/, "English Resume Builder needs a dedicated description");
+assert.match(englishResumeBuilder, /openGraph:\s*\{[^}]*title:/s, "English Resume Builder needs Open Graph metadata");
 assert.match(nepaliStaticRoutePage, /path:\s*"\/resume-builder"/, "Nepali Resume Builder must use its dedicated localized canonical route");
 assert.match(sitemap, /tool\.slug !== "resume-builder"/, "Sitemap must exclude the duplicate catalog Resume Builder URL");
 assert.match(sitemap, /url:\s*`\$\{baseUrl\}\/resume-builder`/, "Sitemap must include the canonical English Resume Builder URL");
 
-console.log(`SEO metadata audit passed: ${englishMetadata.length} unique English tool titles/descriptions and ${nepaliMetadata.length} unique Nepali tool titles/descriptions.`);
+console.log(`SEO metadata audit passed: ${englishMetadata.length} English catalog, ${englishPdfGuides.length} English PDF, dedicated English Resume Builder, ${nepaliMetadata.length} Nepali catalog, ${nepaliPdfMetadata.length} Nepali PDF, and dedicated Nepali Resume Builder metadata entries.`);

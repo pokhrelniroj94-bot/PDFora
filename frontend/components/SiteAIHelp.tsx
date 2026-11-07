@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { localeFromPathname } from "../lib/i18n/shared-ui";
 
 type Message = { role: "user" | "assistant"; text: string };
 
@@ -13,15 +14,28 @@ const quickQuestionsEn = [
 ];
 
 export default function SiteAIHelp() {
-  const pathname = usePathname();
-  const isNepali = (pathname || "/") === "/ne" || (pathname || "/").startsWith("/ne/");
+  const pathname = usePathname() || "/";
+  const locale = localeFromPathname(pathname);
+  return <SiteAIHelpConversation key={locale} pathname={pathname} locale={locale} />;
+}
+
+function SiteAIHelpConversation({
+  pathname,
+  locale,
+}: {
+  pathname: string;
+  locale: ReturnType<typeof localeFromPathname>;
+}) {
+  const isNepali = locale === "ne";
   const quickQuestions = isNepali ? [
     "यो पृष्ठको टुल कसरी प्रयोग गर्ने?",
     "PDF कम्प्रेस गर्दा कुन सेटिङ राम्रो हुन्छ?",
     "CV लाई ATS-friendly कसरी बनाउने?",
     "NEPSE को RSI र MACD कसरी बुझ्ने?",
   ] : quickQuestionsEn;
-  const pagePath = (pathname || "/").replace(/^\/(ne|hi|es|fr|de|pt|ar|bn|id|zh|ja)(?=\/|$)/, "") || "/";
+  // Strip the active configured locale prefix, including Urdu, without maintaining a
+  // second, potentially stale locale list in this component.
+  const pagePath = locale === "en" ? pathname : pathname.replace(new RegExp(`^/${locale}(?=/|$)`), "") || "/";
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([
@@ -30,6 +44,14 @@ export default function SiteAIHelp() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [pageContext, setPageContext] = useState("");
+  const requestController = useRef<AbortController | null>(null);
+
+  // Locale-keyed remounts start a fresh conversation. Abort any pending answer
+  // when this conversation instance unmounts so it cannot leak into another language.
+  useEffect(() => () => {
+    requestController.current?.abort();
+    requestController.current = null;
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -65,10 +87,14 @@ export default function SiteAIHelp() {
     setQuestion("");
     setError("");
     setBusy(true);
+    const controller = new AbortController();
+    requestController.current?.abort();
+    requestController.current = controller;
     try {
       const response = await fetch("/api/ai-writing", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           kind: "site-help",
           page: pathname || "/",
@@ -83,9 +109,12 @@ export default function SiteAIHelp() {
       if (!answer) throw new Error("AI returned an empty answer. Please try again.");
       setMessages((old) => [...old, { role: "assistant", text: answer }]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "AI help is temporarily unavailable.");
+      if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "AI help is temporarily unavailable.");
     } finally {
-      setBusy(false);
+      if (requestController.current === controller) {
+        requestController.current = null;
+        setBusy(false);
+      }
     }
   }
 

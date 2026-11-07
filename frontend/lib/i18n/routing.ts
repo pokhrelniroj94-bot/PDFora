@@ -5,6 +5,7 @@ import {
   nepaliLocalizedUtilitySlugs,
 } from "./nepali-tool-routes";
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
+import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 
 /**
  * URL scheme: English keeps its existing unprefixed URLs (/merge-pdf, /tools/x, /blog/y).
@@ -53,9 +54,7 @@ export const nepaliLocalizedNonToolPaths = [
   "/market",
   "/resume-builder",
   "/blog",
-  "/blog/nepali-date-converter-bs-to-ad-guide",
-  "/blog/nepal-vat-calculator-13-percent-guide",
-  "/blog/ropani-aana-paisa-daam-land-measurement-guide",
+  ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),
   "/privacy",
   "/terms",
   "/about",

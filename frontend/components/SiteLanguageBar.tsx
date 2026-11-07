@@ -2,10 +2,9 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { localeInfo, locales, type Locale } from "../lib/i18n/config";
+import { defaultLocale, localeInfo, locales, type Locale } from "../lib/i18n/config";
 import { storeLocalePreference } from "../lib/i18n/preference";
-import { localizePath, stripLocale } from "../lib/i18n/routing";
-import { hasLocalizedPage } from "../lib/i18n/routing";
+import { hasLocalizedPage, localizePath, stripLocale } from "../lib/i18n/routing";
 import { getSharedUiCopy } from "../lib/i18n/shared-ui";
 
 export default function SiteLanguageBar() {
@@ -14,8 +13,11 @@ export default function SiteLanguageBar() {
   const { locale, path } = stripLocale(pathname);
   const selectedLocale = localeInfo[locale];
   const copy = getSharedUiCopy(locale);
+  // Only advertise locales that are actually published. Preview-only locales remain
+  // reachable by direct URL during review but must not appear as supported languages.
+  const publishedLocales = locales.filter((item) => localeInfo[item].status === "published");
   const targetFor = (target: Locale) => {
-    if (target !== "en" && !hasLocalizedPage(path, target)) return `/${target}?from=${encodeURIComponent(path)}`;
+    if (target !== defaultLocale && !hasLocalizedPage(path, target)) return `/${target}?from=${encodeURIComponent(path)}`;
     return localizePath(path, target);
   };
 
@@ -42,7 +44,7 @@ export default function SiteLanguageBar() {
           onChange={(event) => choose(event.target.value as Locale)}
           className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
         >
-          {locales.map((item) => <option key={item} value={item}>{localeInfo[item].nativeName}</option>)}
+          {publishedLocales.map((item) => <option key={item} value={item}>{localeInfo[item].nativeName}</option>)}
         </select>
         <span className="text-xs text-slate-500">
           {copy.languageHint}

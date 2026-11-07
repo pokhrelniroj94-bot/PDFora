@@ -19,11 +19,11 @@ build (399 generated routes). Backend pytest passed 27 tests in an isolated
 environment; Python dependency audit and npm production audit passed. The Vercel
 check remains blocked by the provider's build-rate quota, not by the local build.
 
-The current evidence report measures 33 Nepali route equivalents, including three AI
-writing routes, the localized Resume Builder, three fully translated articles and
-the localized blog index and four localized legal/static pages. The remaining blog
-corpus, guides outside the reviewed PDF set and remaining utilities remain incomplete
-and are not counted as localized. The 22 localized Nepali tool surfaces comprise 16
+The current evidence report measures 57 Nepali route equivalents, including three AI
+writing routes, the localized Resume Builder, all 27 curated editorial articles (19
+Nepal-focused guides and 8 PDF workflow tutorials), the localized blog index and four
+localized legal/static pages. Generated catalog-tool guides remain noindex and are not
+counted as editorial blog articles. The 22 localized Nepali tool surfaces comprise 16
 catalog-tool routes and six legacy PDF routes; only six PDF routes are index-eligible.
 
 The authoritative tool-language matrix is `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json`

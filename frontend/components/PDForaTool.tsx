@@ -221,7 +221,7 @@ export default function PDForaTool({
           </a>
 
           <a
-            href="/"
+            href={homeHref}
             className="flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold transition hover:bg-slate-50"
           >
             <span className="hidden sm:inline">

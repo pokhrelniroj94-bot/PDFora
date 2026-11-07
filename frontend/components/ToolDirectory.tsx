@@ -30,7 +30,7 @@ export default function ToolDirectory() {
  return <section aria-label={copy.directoryLabel} className="border-t border-teal-100 bg-white px-4 py-10 sm:px-6">
   <div className="mx-auto max-w-6xl">
    <div className="mb-5 flex flex-wrap items-end justify-between gap-3"><div>
-    <p className="text-xs font-black uppercase tracking-widest text-teal-700">{isNe ? "PDFora टुल संग्रह" : "PDFora toolbox"}</p>
+    <p className="text-xs font-black uppercase tracking-widest text-teal-700">{copy.directoryEyebrow}</p>
     <h2 className="mt-1 text-xl font-black text-slate-900">{copy.directoryTitle}</h2>
     <p className="mt-1 text-sm text-slate-600">{copy.directoryDescription}</p>
    </div><Link href={linkFor("/tools")} className="text-sm font-bold text-teal-700 hover:text-orange-600">{copy.directoryLink}</Link></div>

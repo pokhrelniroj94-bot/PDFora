@@ -25,6 +25,14 @@ assert.equal(metadataEntries.length, 124, "Every catalog tool must have a metada
 assert.equal(new Set(metadataEntries.map((entry) => entry.name.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool names must be unique");
 assert.equal(new Set(metadataEntries.map((entry) => entry.description.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool descriptions must be unique");
 
+const seoOverrideBlock = toolPage.match(/const seoOverrides:[\\s\\S]*?=\\s*\\{([\\s\\S]*?)\\n  \\};/)?.[1] ?? "";
+const seoOverrides = new Map([...seoOverrideBlock.matchAll(/^\\s{4}"([^"]+)": \\{ title: "([^"]+)", description: "([^"]+)" \\},?$/gm)].map((match) => [match[1], { title: match[2], description: match[3] }]));
+const finalToolTitles = metadataEntries.map((entry) => seoOverrides.get(entry.slug)?.title ?? `${entry.name} Online | PDFora`);
+const finalToolDescriptions = metadataEntries.map((entry) => seoOverrides.get(entry.slug)?.description ?? entry.description.trim());
+assert.equal(new Set(finalToolTitles).size, metadataEntries.length, "All 124 generated catalogue metadata titles must be unique");
+assert.equal(new Set(finalToolDescriptions).size, metadataEntries.length, "All 124 generated catalogue meta descriptions must be unique");
+
+
 const pdfGuideEntries = [...pdfToolGuidesSource.matchAll(/"slug":\s*"([^"]+)"[\s\S]*?"name":\s*"([^"]+)"[\s\S]*?"keyword":\s*"([^"]+)"[\s\S]*?"purpose":\s*"([^"]+)"[\s\S]*?"steps":\s*\[([\s\S]*?)\][\s\S]*?"caution":\s*"([^"]+)"/g)]
   .map((match) => ({ slug: match[1], name: match[2], keyword: match[3], purpose: match[4], steps: [...match[5].matchAll(/"([^"]+)"/g)].map((step) => step[1]), caution: match[6] }));
 assert.equal(pdfGuideEntries.length, 49, "All 49 established PDF routes need a dedicated guide record");
@@ -103,6 +111,7 @@ const advisedSlugs = [...adviceBlock[1].matchAll(/^\s{4}"([^"]+)":\s*\{/gm)].map
 const missingToolAdvice = catalog.filter((slug) => !advisedSlugs.includes(slug));
 assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO guidance: " + missingToolAdvice.join(", "));
 assert.equal(advisedSlugs.length, catalog.length, "Every catalog tool must have one and only one dedicated SEO advice record");
+const uniqueAdviceFields = new Map(["example", "accuracy", "workflow", "mistakes"].map((field) => [field, new Set()]));
 for (const slug of catalog) {
   const marker = `"${slug}": {`;
   const start = adviceBlock[1].indexOf(marker);
@@ -111,6 +120,9 @@ for (const slug of catalog) {
   for (const field of ["example", "accuracy", "workflow", "mistakes"]) {
     const match = entry.match(new RegExp(field + ': "((?:\\\\.|[^"\\\\])*)"'));
     assert.ok(match && match[1].trim().length >= 50, `${slug} needs substantive tool-specific ${field} guidance`);
+    const seen = uniqueAdviceFields.get(field);
+    assert.ok(!seen.has(match[1]), `${slug} repeats another tool's ${field} guidance`);
+    seen.add(match[1]);
   }
 }
 

@@ -26,6 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }));
 
+  const nepaliToolSlugs = [
+    ...nepaliLocalizedUtilitySlugs,
+    ...nepaliLocalizedFinancialSlugs,
+    ...nepaliLocalizedCareerSlugs,
+  ].filter((slug) => isLocalizedToolIndexable("ne", slug));
+
   return [
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
     { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8 },

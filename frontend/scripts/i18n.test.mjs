@@ -299,13 +299,24 @@ test("Nepali legal and static routes contain complete localized copy", () => {
   for (const slug of ["privacy", "terms", "about", "contact"]) assert.ok(routeSource.includes(`"${slug}"`), `${slug} must have a localized route`);
 });
 
-test("published Nepali PDF routes use localized names and guide copy", () => {
+test("all 49 PDF tools have registered Nepali routes, names and guide copy", async () => {
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
-  assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);
+  const { pdfTools } = await import("../lib/tool-directory.ts");
+  const expected = pdfTools.map((tool) => tool.href.replace(/^\\//, "")).sort();
+  assert.equal(slugs.length, 49);
+  assert.deepEqual([...slugs].sort(), expected);
   for (const slug of slugs) {
-    assert.ok(nepaliNames.nepaliToolNames[slug], `${slug} needs a Nepali tool name`);
+    const route = nepaliRoutes.nepaliPdfRoutes[slug];
+    assert.equal(route.slug, slug);
+    assert.ok(route.endpoint.startsWith("/api/"), slug + " needs its original backend endpoint");
+    assert.ok(route.downloadName, slug + " needs a download filename");
+    assert.ok(["pdfora", "niroj"].includes(route.component), slug + " needs the correct PDF processor");
+    assert.ok(nepaliNames.nepaliToolNames[slug], slug + " needs a Nepali tool name");
     const guide = nepaliGuides.nepaliToolGuides[slug];
-    assert.ok(guide?.purpose && guide.steps.length > 0 && guide.caution, `${slug} needs reviewed Nepali guide copy`);
+    assert.ok(guide?.purpose && guide.steps.length > 0 && guide.caution, slug + " needs Nepali guide copy");
+    for (const field of route.extraFields ?? []) {
+      assert.notEqual(getNepaliPdfFieldText(field.label), field.label, slug + " field label needs Nepali translation: " + field.label);
+    }
   }
 });
 

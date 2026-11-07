@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "loksewa-photo-resizer": { title: "Loksewa Photo Resizer – Compress to 50KB, 100KB or 200KB", description: "Resize and compress a photo for Nepal online forms with 50KB, 100KB or 200KB targets. Check official photo rules before uploading." },
     "preeti-unicode-converter": { title: "Preeti to Unicode Converter – Nepali Text", description: "Convert legacy Preeti-encoded Nepali text to Unicode Devanagari and convert Unicode Nepali text back to Preeti." },
     "nepal-salary-tax-calculator": { title: "Nepal Salary Tax Calculator FY 2083/84", description: "Estimate Nepal resident individual income tax for FY 2083/84 using progressive tax bands. Review annual and monthly tax estimates." },
-    "nepal-electricity-bill-calculator": { title: "NEA Electricity Bill Calculator – Nepal Domestic", description: "Estimate a Nepal single-phase domestic electricity bill from monthly units and meter capacity, including energy blocks and VAT assumptions." },
+    "nepal-electricity-bill-calculator": { title: "Official ERC Electricity Bill Calculator – Nepal", description: "Use the Electricity Regulatory Commission’s live calculator and current 2083 tariff directive. PDFora does not estimate bills from outdated fixed rates." },
     "nepse-dividend-calculator": { title: "NEPSE Dividend Calculator – Cash Dividend & Bonus", description: "Estimate NEPSE cash dividend after editable withholding tax and calculate bonus shares from your eligible share quantity." },
     "nepal-public-holidays-2083": { title: "Nepal Public Holidays 2083 – BS and AD Calendar", description: "Browse Nepal public holidays for 2083 BS with Gregorian dates and notes for national, regional and community-specific holidays." },
     "nepal-forex-rates": { title: "Nepal Rastra Bank Forex Rates – NPR Exchange Rates", description: "View Nepal Rastra Bank currency buying and selling rates and estimate NPR conversions using the published currency units." },
@@ -276,9 +276,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Is the result my final payroll tax?", a: "No. Allowances, deductions, rebates, employment category and personal circumstances can change the liability. Confirm with IRD or payroll." }
     ],
     "nepal-electricity-bill-calculator": [
-      { q: "Which meter capacities are supported?", a: "The estimator supports single-phase domestic 5A, 15A, 30A and 60A connections as labelled in the tool." },
-      { q: "Can I use it for commercial electricity bills?", a: "No. It is intended for the supported single-phase domestic tariff assumptions, not commercial or industrial tariffs." },
-      { q: "Will the estimate exactly match my NEA bill?", a: "Not necessarily. Check the current tariff, meter category, minimum charge, VAT and any adjustments on your actual bill." }
+      { q: "Does PDFora calculate the bill?", a: "No. It opens the Electricity Regulatory Commission's live calculator and does not estimate a bill from fixed tariff assumptions." },
+      { q: "Which details should I prepare?", a: "Use the consumer category, connection or fuse capacity and kWh consumption shown on your latest NEA bill." },
+      { q: "Will the ERC result always equal my NEA bill?", a: "Not necessarily. The billing period, meter reading, arrears, account adjustments or tariff changes can affect the issued bill." },
+      { q: "Where can I verify the current rates?", a: "Check the ERC calculator and its 2083 tariff directive, then compare your account details with NEA's consumer tariff information." }
     ],
     "nepal-public-holidays-2083": [
       { q: "Which year does this holiday calendar cover?", a: "It lists Nepal public holidays for Bikram Sambat 2083." },

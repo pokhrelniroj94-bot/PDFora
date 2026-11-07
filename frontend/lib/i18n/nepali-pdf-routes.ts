@@ -207,6 +207,115 @@ export const nepaliPdfRoutes: Record<string, NepaliPdfRoute> = {
     "formField": "password",
     "formPlaceholder": "Password (minimum 6 characters)"
   },
+  "unlock-pdf": {
+    "slug": "unlock-pdf",
+    "endpoint": "/api/unlock",
+    "title": "Unlock PDF",
+    "description": "Remove PDF password protection when you know the correct password.",
+    "downloadName": "PDFora-unlock-pdf.pdf",
+    "component": "niroj",
+    "formField": "password",
+    "formPlaceholder": "Existing PDF password"
+  },
+  "sign-pdf": {
+    "slug": "sign-pdf",
+    "endpoint": "/api/sign",
+    "title": "Sign PDF",
+    "description": "Add a visible typed signature to the final page. This is not a certificate-based digital signature.",
+    "downloadName": "PDFora-sign-pdf.pdf",
+    "component": "niroj",
+    "formField": "signature_text",
+    "formPlaceholder": "Name to display as signature"
+  },
+  "pdf-to-png": {
+    "slug": "pdf-to-png",
+    "endpoint": "/api/pdf-to-png",
+    "title": "PDF to PNG",
+    "description": "Convert each PDF page into a high-resolution PNG image. Download all pages as a ZIP file.",
+    "downloadName": "PDFora-PNG.zip",
+    "component": "niroj"
+  },
+  "pdf-to-webp": {
+    "slug": "pdf-to-webp",
+    "endpoint": "/api/pdf-to-webp",
+    "title": "PDF to WebP",
+    "description": "Convert PDF pages into WebP images and download them together as a ZIP file.",
+    "downloadName": "PDFora-WebP.zip",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "quality",
+        "label": "Image quality (1–100)",
+        "defaultValue": "85"
+      }
+    ]
+  },
+  "pdf-to-text": {
+    "slug": "pdf-to-text",
+    "endpoint": "/api/pdf-to-text",
+    "title": "PDF to Text",
+    "description": "Extract selectable text from each PDF page into a downloadable TXT file. Scanned pages require OCR.",
+    "downloadName": "PDFora-Extracted-Text.txt",
+    "component": "niroj"
+  },
+  "grayscale-pdf": {
+    "slug": "grayscale-pdf",
+    "endpoint": "/api/grayscale",
+    "title": "Grayscale PDF",
+    "description": "Convert PDF pages to grayscale. Pages are rasterized, so selectable text may not be preserved.",
+    "downloadName": "PDFora-grayscale-pdf.pdf",
+    "component": "niroj"
+  },
+  "flatten-pdf": {
+    "slug": "flatten-pdf",
+    "endpoint": "/api/flatten",
+    "title": "Flatten PDF",
+    "description": "Attempt to apply form widgets and remove annotations. Results can vary by PDF type.",
+    "downloadName": "PDFora-flatten-pdf.pdf",
+    "component": "niroj"
+  },
+  "edit-pdf-metadata": {
+    "slug": "edit-pdf-metadata",
+    "endpoint": "/api/metadata",
+    "title": "Edit PDF Metadata",
+    "description": "Update document title, author, subject and keywords.",
+    "downloadName": "PDFora-edit-pdf-metadata.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "title",
+        "label": "Document title"
+      },
+      {
+        "name": "author",
+        "label": "Author"
+      },
+      {
+        "name": "subject",
+        "label": "Subject"
+      },
+      {
+        "name": "keywords",
+        "label": "Keywords (comma-separated)"
+      }
+    ]
+  },
+  "repair-pdf": {
+    "slug": "repair-pdf",
+    "endpoint": "/api/repair",
+    "title": "Repair PDF",
+    "description": "Attempt to rewrite a damaged PDF. Repair is best-effort and cannot recover every corrupted file.",
+    "downloadName": "PDFora-repair-pdf.pdf",
+    "component": "niroj"
+  },
+  "pdf-to-html": {
+    "slug": "pdf-to-html",
+    "endpoint": "/api/pdf-to-html",
+    "title": "PDF to HTML",
+    "description": "Extract selectable PDF text into a simple HTML document. Scanned pages require OCR.",
+    "downloadName": "PDFora-PDF-to-HTML.html",
+    "component": "niroj"
+  },
 };
 
 export function getNepaliPdfRoute(slug: string): NepaliPdfRoute | undefined {

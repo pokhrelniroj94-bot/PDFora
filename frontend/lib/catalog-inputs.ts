@@ -6,7 +6,7 @@ export function parseRequiredNumber(value: string): number {
 }
 
 export function jsonToYaml(value: unknown): string {
-  const scalar = (item: unknown): string => JSON.stringify(item);
+  const scalar = (item: unknown): string => JSON.stringify(item) ?? "null";
   const emit = (item: unknown, indent: number): string => {
     const pad = " ".repeat(indent);
     if (Array.isArray(item)) {

@@ -21,6 +21,7 @@ const coreNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "५६ वर्ष घटाउँदा पुग्छ?", answer: "पुग्दैन। BS र AD को वर्ष सुरु हुने समय तथा महिनाको दिन संख्या फरक हुन्छ।" },
     ],
     toolLinks: [{ label: "नेपाली मिति कन्भर्टर", href: "/tools/nepali-date-converter" }],
+    sources: [{ label: "नेपाल पञ्चाङ्ग निर्णायक विकास समिति", url: "https://www.npns.gov.np/" }, { label: "काठमाडौँ महानगरपालिका: BS / AD पात्रो", url: "https://kathmandu.gov.np/en/calendar" }],
   },
   {
     slug: "nepal-vat-calculator-13-percent-guide",
@@ -85,7 +86,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "ग्रामलाई तोलामा कसरी बदल्ने?", answer: "ग्रामको तौललाई ११.६६३८ ले भाग गर्नुहोस्।" },
       { question: "के यसले आजको सुनको मूल्य देखाउँछ?", answer: "देखाउँदैन। यसले तौलको एकाइ मात्र रूपान्तरण गर्छ।" }
     ],
-    toolLinks: [{ label: "तोला–ग्राम कन्भर्टर", href: "/tools/gold-tola-gram-converter" }]
+    toolLinks: [{ label: "तोला–ग्राम कन्भर्टर", href: "/tools/gold-tola-gram-converter" }],
+    sources: [{ label: "उद्योग विभाग: नापतौलको मानक सम्बन्धी ऐनको अनुसूची", url: "https://doind.gov.np/uploads/notices/Notices-2023101619250565.pdf" }]
   },
   {
     slug: "nepali-number-to-words-lakh-crore-guide",
@@ -122,7 +124,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के पात्रोमा सार्वजनिक बिदा पनि देखिन्छ?", answer: "हालको पात्रोले BS मिति, AD मिति र बार देखाउँछ; सबै बिदा वा चाडपर्व होइन।" },
       { question: "के २०८३ साल हेर्न मिल्छ?", answer: "उपकरणको समर्थित वर्ष दायराभित्र भए हेर्न मिल्छ।" }
     ],
-    toolLinks: [{ label: "नेपाली पात्रो", href: "/tools/nepali-calendar" }, { label: "BS–AD मिति कन्भर्टर", href: "/tools/nepali-date-converter" }]
+    toolLinks: [{ label: "नेपाली पात्रो", href: "/tools/nepali-calendar" }, { label: "BS–AD मिति कन्भर्टर", href: "/tools/nepali-date-converter" }],
+    sources: [{ label: "नेपाल पञ्चाङ्ग निर्णायक विकास समिति", url: "https://www.npns.gov.np/" }, { label: "गृह मन्त्रालय: २०८३ सालको सरकारी तथा सार्वजनिक बिदा", url: "https://moha.gov.np/en/page/government-and-public-holidays-in-2083" }]
   },
   {
     slug: "neb-gpa-calculator-nepal-guide",

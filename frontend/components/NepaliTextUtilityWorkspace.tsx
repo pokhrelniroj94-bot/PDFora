@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { runNepaliTextTool } from "../lib/i18n/nepali-text-tools";
 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const button = "rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800";
@@ -23,64 +24,9 @@ const labels: Record<string, { title: string; description: string }> = {
 export default function NepaliTextUtilityWorkspace({ slug }: { slug: string }) {
   const [input, setInput] = useState("");
   const [mode, setMode] = useState("upper");
-  const [speed, setSpeed] = useState("200");
-  const config = labels[slug];
-  const lines = input.replace(/\r\n?/g, "\n").split("\n");
-  const words = input.trim() ? input.trim().split(/\s+/u) : [];
-  const result = useMemo(() => {
-    if (slug === "word-character-counter") {
-      const characters = [...input].length;
-      const noSpaces = [...input.replace(/\s/gu, "")].length;
-      const paragraphs = input.trim() ? input.trim().split(/\n\s*\n/u).length : 0;
-      return `शब्द: ${words.length}\nअक्षर (space सहित): ${characters}\nअक्षर (space बाहेक): ${noSpaces}\nअनुच्छेद: ${paragraphs}`;
-    }
-    if (slug === "case-converter") {
-      if (mode === "lower") return input.toLowerCase();
-      if (mode === "title") return input.toLowerCase().replace(/(^|[\s-])([a-z])/g, (_, gap, letter) => gap + letter.toUpperCase());
-      if (mode === "sentence") return input.toLowerCase().replace(/(^\s*[a-z]|[.!?]\s+[a-z])/g, (match) => match.toUpperCase());
-      return input.toUpperCase();
-    }
-    if (slug === "remove-duplicate-lines") {
-      const seen = new Set<string>();
-      return lines.filter((line) => {
-        const key = line.trim();
-        if (!key || seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      }).join("\n");
-    }
-    if (slug === "sort-lines") return [...lines].sort((a, b) => a.localeCompare(b, "ne")).join("\n");
-    if (slug === "reverse-text") return [...input].reverse().join("");
-    if (slug === "whitespace-cleaner") return input.split("\n").map((line) => line.replace(/[\t ]+/g, " ").trim()).filter((line, index, all) => line || all[index - 1] !== "").join("\n").trim();
-    if (slug === "character-frequency") {
-      const counts = new Map<string, number>();
-      for (const character of [...input.replace(/\s/gu, "")]) counts.set(character, (counts.get(character) ?? 0) + 1);
-      return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ne")).map(([character, count]) => `${character} — ${count}`).join("\n") || "गणना गर्न पाठ लेख्नुहोस्।";
-    }
-    if (slug === "word-frequency-counter") {
-      const counts = new Map<string, number>();
-      for (const word of words) {
-        const key = word.toLocaleLowerCase();
-        counts.set(key, (counts.get(key) ?? 0) + 1);
-      }
-      return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ne")).map(([word, count]) => `${word} — ${count}`).join("\n") || "गणना गर्न पाठ लेख्नुहोस्।";
-    }
-    if (slug === "reading-time-calculator") {
-      const minutes = words.length / Math.max(1, Number(speed));
-      return `शब्द संख्या: ${words.length}\nअनुमानित पढ्ने समय: ${minutes < 1 ? Math.max(1, Math.ceil(minutes * 60)) + " सेकेन्ड" : minutes.toFixed(1) + " मिनेट"}\nपढ्ने गति: ${speed} शब्द/मिनेट`;
-    }
-    if (slug === "line-counter") {
-      const nonEmpty = lines.filter((line) => line.trim()).length;
-      return `कुल लाइन: ${input ? lines.length : 0}\nखाली लाइन: ${input ? lines.length - nonEmpty : 0}\nसामग्री भएका लाइन: ${nonEmpty}`;
-    }
-    if (slug === "sentence-counter") {
-      const sentences = input.trim().split(/[.!?]+(?:\s+|$)/u).filter((part) => part.trim());
-      return `अनुमानित वाक्य: ${input.trim() ? sentences.length : 0}\nशब्द: ${words.length}`;
-    }
-    return "";
-  }, [input, mode, speed, slug, words.length, lines.length]);
+  const [speed, se  const result = runNepaliTextTool(slug as Parameters<typeof runNepaliTextTool>[0], input, { caseMode: mode as "upper" | "lower" | "title" | "sentence", wordsPerMinute: Number(speed) });
 
-  if (!config) return null;
+    if (!config) return null;
   return (
     <section className="space-y-4">
       <div><h2 className="text-xl font-black text-slate-950">{config.title}</h2><p className="mt-1 text-sm leading-6 text-slate-600">{config.description}</p></div>

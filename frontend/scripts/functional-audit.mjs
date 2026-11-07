@@ -56,10 +56,11 @@ const browserResults = new Map((browserReport?.results ?? []).map((row) => [row.
 const functionalStatusFor = (slug, kind) => {
   const result = browserResults.get(slug);
   const skipped = result?.checks?.some((check) => check.includes("execution intentionally skipped"));
-  if (result?.status === "FAIL") return "FAIL";
-  if (result?.status === "PASS" && (result.action || result.outputVerified) && !skipped) return "PASS";
-  if (result?.status === "PARTIAL") return "PARTIAL";
+  // Explicitly skipped AI execution is NOT TESTED, not a partial functional test.
   if (skipped) return "NOT TESTED";
+  if (result?.status === "FAIL") return "FAIL";
+  if (result?.status === "PASS" && (result.action || result.outputVerified)) return "PASS";
+  if (result?.status === "PARTIAL") return "PARTIAL";
   if (kind === "pdf") return "PARTIAL"; // real-PDF API sweep exists, but browser evidence is absent
   return testedCatalog.has(slug) ? "PARTIAL" : "NOT TESTED";
 };

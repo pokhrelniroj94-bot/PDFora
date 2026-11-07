@@ -70,7 +70,7 @@ for (const [label, file] of collections) {
     assert.ok(sections >= 3, label + ": needs at least three meaningful sections for " + slug);
     assert.ok(faqs >= 2, label + ": add useful reader questions for " + slug);
     assert.ok(toolLinks >= 1, label + ": add at least one relevant working internal tool link for " + slug);
-    assert.doesNotMatch(body, /lorem ipsum|\\bTBD\\b|insert text here|coming soon/i, label + ": placeholder content in " + slug);
+    assert.doesNotMatch(body, /lorem ipsum|\bTBD\b|insert text here|coming soon/i, label + ": placeholder content in " + slug);
 
     for (const match of body.matchAll(/url:\s*"([^"]+)"/g)) {
       const value = match[1];

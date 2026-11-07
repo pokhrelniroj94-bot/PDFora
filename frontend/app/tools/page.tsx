@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "https://pd-fora.vercel.app/tools" },
   openGraph: {
     type: "website",
-    title: "Smart Tool Center – Find the Right Tool | PDFora",
+    title: "Smart Tool Center – Find the Right Tool",
     description: "Search and discover PDF, image, finance, Nepal, text and developer tools by the task you want to complete.",
     url: "https://pd-fora.vercel.app/tools",
     siteName: "PDFora",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Smart Tool Center | PDFora",
+    title: "Smart Tool Center",
     description: "Find the right tool by task across PDF, image, finance, Nepal and productivity utilities.",
     images: ["/opengraph-image"],
   },

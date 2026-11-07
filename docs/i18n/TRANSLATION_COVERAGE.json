@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-07T05:12:24.025Z",
-  "sourceCommit": "d65f3d21b3b39cd9c8e7d3358a4f197cd6bf3a15",
+  "generatedAt": "2026-11-07T05:12:40.564Z",
+  "sourceCommit": "912c3743698dd89163f203de31056861ca0ffdfc",
   "methodology": {
     "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
     "routeCoverage": "Published locale route equivalents divided by frontend page source files; a conservative source-file proxy, not interface-string coverage.",

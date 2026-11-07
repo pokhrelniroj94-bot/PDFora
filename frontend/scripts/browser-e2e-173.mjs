@@ -345,6 +345,9 @@ async function runTool(tool, index) {
       };
     }`);
     row.mobileViewport = mobileState;
+    if (mobileState.viewport.width > 400) {
+      throw new Error("Mobile emulation did not apply a device-width viewport: " + JSON.stringify(mobileState.viewport));
+    }
     if (mobileState.documentWidth > mobileState.viewportWidth + 2 ||
         mobileState.mainWidth > mobileState.mainClientWidth + 2) {
       throw new Error("Mobile horizontal overflow at 390px: " + JSON.stringify(mobileState));
@@ -362,6 +365,7 @@ async function runTool(tool, index) {
       )].find(visible);
       if (!candidate) return null;
       candidate.focus();
+      window.__pdforaFocusStart = candidate;
       return { tag: candidate.tagName, id: candidate.id, name: candidate.getAttribute("name"), text: (candidate.innerText || candidate.getAttribute("aria-label") || candidate.getAttribute("title") || "").trim().slice(0, 100) };
     }`);
     if (!focusStart) throw new Error("No visible keyboard-focusable control exists.");
@@ -373,11 +377,11 @@ async function runTool(tool, index) {
         tag: active?.tagName || "",
         text: (active?.innerText || active?.getAttribute("aria-label") || active?.getAttribute("title") || "").trim().slice(0, 100),
         isBody: active === document.body,
+        advanced: active !== window.__pdforaFocusStart,
       };
     }`);
     row.keyboardNavigation = { start: focusStart, afterTab: keyboardState };
-    if (!keyboardState.tag || keyboardState.isBody ||
-        (keyboardState.tag === focusStart.tag && keyboardState.text === focusStart.text)) {
+    if (!keyboardState.tag || keyboardState.isBody || !keyboardState.advanced) {
       throw new Error("Tab key did not advance focus from the first visible interactive control.");
     }
     row.checks.push("keyboard Tab reaches a focusable element");

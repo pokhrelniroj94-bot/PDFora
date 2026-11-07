@@ -90,11 +90,14 @@ export function convertUnit(value: number, from: string, to: string): number {
     in: ["length", 0.0254], ft: ["length", 0.3048], kg: ["weight", 1], g: ["weight", 0.001],
     lb: ["weight", 0.45359237], l: ["volume", 1], ml: ["volume", 0.001],
   };
-  if (from === "c" || from === "f") {
-    if (to !== "c" && to !== "f") throw new Error("Temperature units are c or f.");
+  if (from === "c" || from === "f" || to === "c" || to === "f") {
+    if ((from !== "c" && from !== "f") || (to !== "c" && to !== "f")) {
+      throw new Error("Temperature units cannot be mixed with length, weight or volume units.");
+    }
     return from === to ? value : from === "c" ? value * 9 / 5 + 32 : (value - 32) * 5 / 9;
   }
   if (!units[from] || !units[to] || units[from][0] !== units[to][0]) throw new Error("Choose compatible supported units.");
+  if (value < 0) throw new Error("Length, weight and volume values cannot be negative.");
   return value * units[from][1] / units[to][1];
 }
 

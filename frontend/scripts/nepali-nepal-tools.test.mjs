@@ -91,7 +91,7 @@ for (const [, , bs] of holidayRows) {
 for (const [, name, , , note, type] of holidayRows) {
   assert.ok(holidayNameMap.includes(`"${name}"`), `Missing Nepali holiday name translation: ${name}`);
   assert.ok(holidayNoteMap.includes(`"${note}"`), `Missing Nepali holiday note translation: ${note}`);
-  assert.ok(holidayTypeMap.includes(`"${type}"`), `Missing Nepali holiday category translation: ${type}`);
+  assert.ok(holidayTypeMap.includes(`${type}:`) || holidayTypeMap.includes(`"${type}":`), `Missing Nepali holiday category translation: ${type}`);
 }
 
 // Independently cross-check every displayed BS/AD pair against the repository's calendar data.

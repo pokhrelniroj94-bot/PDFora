@@ -549,7 +549,7 @@ async function runTool(tool, index) {
             const conversion = scope.querySelector(".pdfora-pop-in")?.innerText?.trim() || "";
             return {
               rows: rows.length,
-              hasUsd: rows.some((row) => /\\bUSD\\b/.test(row)),
+              hasUsd: rows.some((row) => /\\bUSD/.test(row)),
               hasNpr: /\\bNPR\\b/.test(conversion) && /\\b100\\s+USD\\b/.test(conversion),
               conversion,
               alert,

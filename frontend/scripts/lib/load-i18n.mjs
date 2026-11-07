@@ -57,6 +57,8 @@ export async function loadToolAdapter() {
   return loadTsFiles([
     "lib/i18n/config.ts",
     "lib/i18n/routing.ts",
+    "lib/i18n/nepali-tool-routes.ts",
+    "lib/i18n/nepali-pdf-routes.ts",
     "lib/i18n/metadata.ts",
     "components/toolCatalog.ts",
     "lib/legacy-tool-slugs.ts",

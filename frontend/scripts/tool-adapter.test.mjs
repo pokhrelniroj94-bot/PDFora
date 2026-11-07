@@ -138,10 +138,15 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
     }
   }
   assert.deepEqual(localizedToolNotFoundMetadata.robots, { index: false, follow: true });
+  const nepaliCatalogTool = toolCatalog.find((entry) => entry.slug === "loan-emi-calculator");
+  assert.ok(nepaliCatalogTool);
+  const nepaliMetadata = buildLocalizedToolMetadata("ne", nepaliCatalogTool);
+  assert.deepEqual(nepaliMetadata.robots, { index: false, follow: false });
+  assert.equal(nepaliMetadata.alternates.languages, undefined, "noindex Nepali tools must not emit hreflang");
 });
 
 test("verification registry: only published locales and adaptable tools may ever be listed", () => {
-  const adaptable = new Set(listAdaptableSlugs());
+  const adaptable = new Set([...listAdaptableSlugs(), ...legacyToolSlugs]);
   for (const [locale, slugs] of Object.entries(verifiedLocalizedTools)) {
     assert.ok(locales.includes(locale) && locale !== "en", `unknown locale ${locale}`);
     assert.equal(isPublished(locale), true, `${locale} lists verified tools but is not published`);

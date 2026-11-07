@@ -7,6 +7,7 @@ ensureTypeStripping();
 const { config, routing, "shared-ui": sharedUi, "tool-guides": guidesModule, "tool-guides-ne": nepaliGuidesModule, "nepali-pdf-routes": nepaliRoutesModule } = await loadI18n();
 const nepaliUtilityRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedUtilitySlugs;
 const nepaliFinancialRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedFinancialSlugs;
+const nepaliPublicInfoRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedPublicInfoSlugs;
 const nepaliCareerRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedCareerSlugs;
 const nepaliBlogArticleCount = (fs.readFileSync(path.join(frontendRoot, "lib", "nepali-localized-blog-posts.ts"), "utf8").match(/^\s*slug:\s*"/gm) ?? []).length;
 
@@ -139,6 +140,7 @@ const report = {
     publishedNepaliPdfRoutes: nepaliPdfRouteSlugs.length,
     publishedNepaliUtilityRoutes: nepaliUtilityRoutes.length,
     publishedNepaliFinancialRoutes: nepaliFinancialRoutes.length,
+    publishedNepaliPublicInfoRoutes: nepaliPublicInfoRoutes.length,
     publishedNepaliCareerRoutes: nepaliCareerRoutes.length,
     publishedNepaliMarketDashboardRoute: true,
     publishedNepaliResumeBuilderRoute: true,

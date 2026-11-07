@@ -14,6 +14,7 @@ const pdfRoutes = Object.keys(modules["nepali-pdf-routes"].nepaliPdfRoutes);
 const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedUtilitySlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedFinancialSlugs,
+  ...modules["nepali-tool-routes"].nepaliLocalizedPublicInfoSlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedCareerSlugs,
 ];
 
@@ -35,7 +36,7 @@ for (const slug of toolRoutes) {
   const request = modules["localized-route"].resolveLocalizedToolRequest("ne", slug);
   assert.equal(request.status, "ok", `Expected registered Nepali route: ${slug}`);
   const metadata = modules["localized-metadata"].buildLocalizedToolMetadata("ne", request.implementation.entry);
-  assert.deepEqual(metadata.robots, { index: false, follow: false }, `${slug} must remain noindex until explicitly approved`);
+  assert.deepEqual(metadata.robots, { index: false, follow: true }, `${slug} must remain noindex while preserving link discovery until approved`);
   assert.equal(metadata.alternates?.languages, undefined, `${slug} must not advertise hreflang before indexing approval`);
 }
 

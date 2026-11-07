@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T13:52:00.000Z",
+  "generatedAt": "2026-11-07T13:52:30.000Z",
   "sourceCommit": "c6edb777480b24241f56b6f9e1fbd1bd8ed4d677",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
@@ -6242,13 +6242,13 @@
       "kind": "utility",
       "route": "/tools/market-ai",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "nepali-interface-present",
       "content": "not-verified",
-      "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "functionalTest": "targeted-unit-tests",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {

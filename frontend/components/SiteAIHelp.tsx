@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { localeFromPathname } from "../lib/i18n/shared-ui";
 
 type Message = { role: "user" | "assistant"; text: string };
 
@@ -13,15 +14,18 @@ const quickQuestionsEn = [
 ];
 
 export default function SiteAIHelp() {
-  const pathname = usePathname();
-  const isNepali = (pathname || "/") === "/ne" || (pathname || "/").startsWith("/ne/");
+  const pathname = usePathname() || "/";
+  const locale = localeFromPathname(pathname);
+  const isNepali = locale === "ne";
   const quickQuestions = isNepali ? [
     "यो पृष्ठको टुल कसरी प्रयोग गर्ने?",
     "PDF कम्प्रेस गर्दा कुन सेटिङ राम्रो हुन्छ?",
     "CV लाई ATS-friendly कसरी बनाउने?",
     "NEPSE को RSI र MACD कसरी बुझ्ने?",
   ] : quickQuestionsEn;
-  const pagePath = (pathname || "/").replace(/^\/(ne|hi|es|fr|de|pt|ar|bn|id|zh|ja)(?=\/|$)/, "") || "/";
+  // Strip the active configured locale prefix, including Urdu, without maintaining a
+  // second, potentially stale locale list in this component.
+  const pagePath = locale === "en" ? pathname : pathname.replace(new RegExp(`^/${locale}(?=/|$)`), "") || "/";
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([

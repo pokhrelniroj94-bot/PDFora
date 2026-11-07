@@ -11,6 +11,7 @@ const nepali = read("lib/nepali-localized-blog-posts.ts");
 const indexPage = read("app/[locale]/blog/page.tsx");
 const articlePage = read("app/[locale]/blog/[slug]/page.tsx");
 const sitemap = read("app/sitemap.ts");
+const routing = read("lib/i18n/routing.ts");
 
 const slugs = (source) => [...source.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
 const expected = [...slugs(englishEditorial), ...slugs(nepalEditorial)];
@@ -29,5 +30,6 @@ assert.ok(articlePage.includes('inLanguage: "ne"'), "Nepali article structured d
 assert.ok(articlePage.includes('@type: "BreadcrumbList"') && articlePage.includes("breadcrumbSchema"), "Nepali articles must include localized breadcrumb structured data");
 assert.ok(articlePage.includes("generateStaticParams"), "Nepali articles must be statically enumerable");
 assert.ok(sitemap.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be included in sitemap");
+assert.ok(routing.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be registered for language switching and hreflang");
 
 console.log(`Nepali blog coverage passed: ${expected.length} editorial articles translated; ${localized.length} localized routes available.`);

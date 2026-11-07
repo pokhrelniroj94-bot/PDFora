@@ -307,7 +307,6 @@ async function runTool(tool, index) {
       row.checks.push("workspace output inspected");
       row.status = expected && row.outputVerified ? "PASS" : "PARTIAL";
     }
-    row.status = "PASS";
   } catch (error) {
     row.errors.push(error instanceof Error ? error.message : String(error));
     row.status = "FAIL";

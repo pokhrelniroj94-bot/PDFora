@@ -510,20 +510,21 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "nepal-forex-rates") await delay(20000);
       else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug)) await delay(5000);
-      const clicked = await page.evaluate(`(() => {
+      const clicked = tool.slug === "nepal-forex-rates" ? "" : await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
         const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*|show calendar)$/i;
         const button = buttons.find((b) => patterns.test(b.innerText.trim()));
         if (button) { button.click(); return button.innerText.trim(); }
         return "";
       })()`);
-      if (clicked) {
+      if (tool.slug === "nepal-forex-rates") {
+        row.checks.push("initial official-rate fetch inspected without triggering a redundant refresh");
+      } else if (clicked) {
         row.action = clicked;
         row.checks.push("primary action clicked");
         await delay(["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug) ? 1500 : 800);
       } else {
         row.checks.push("reactive output/controls inspected (no submit button by design)");
-
       }
       const finalState = await page.evaluate(`(() => {
         const scope = document.querySelector("main") || document.body;
@@ -545,12 +546,12 @@ async function runTool(tool, index) {
             const scope = document.querySelector("main") || document.body;
             const rows = [...scope.querySelectorAll("table tbody tr")].map((row) => row.innerText.trim());
             const alert = scope.querySelector('[role="alert"]')?.innerText?.trim() || "";
-            const live = [...scope.querySelectorAll('[aria-live]')].map((item) => item.innerText.trim()).filter(Boolean).join("\\n");
+            const conversion = scope.querySelector(".pdfora-pop-in")?.innerText?.trim() || "";
             return {
               rows: rows.length,
               hasUsd: rows.some((row) => /\\bUSD\\b/.test(row)),
-              hasNpr: /\\bNPR\\b/.test(live),
-              live,
+              hasNpr: /\\bNPR\\b/.test(conversion) && /\\b100\\s+USD\\b/.test(conversion),
+              conversion,
               alert,
               body: scope.innerText?.slice(0, 1200) || "",
             };
@@ -567,7 +568,7 @@ async function runTool(tool, index) {
           return row;
         }
         if (forexState?.alert) throw new Error("NRB forex source returned an error: " + forexState.alert);
-        throw new Error(`NRB forex data did not render a verifiable USD/NPR conversion within 35 seconds (rows=${forexState?.rows ?? 0}, body=${forexState?.body ?? ""}).`);
+        throw new Error(`NRB forex data did not render a verifiable USD/NPR conversion within 35 seconds (rows=${forexState?.rows ?? 0}, conversion=${forexState?.conversion ?? ""}, body=${forexState?.body ?? ""}).`);
       }
       if (tool.slug === "word-character-counter") {
         const textState = await page.evaluate("({ value: document.querySelector('main textarea')?.value || '', content: (document.querySelector('main')?.innerText || '').replace(/\\s+/g, ' ') })");

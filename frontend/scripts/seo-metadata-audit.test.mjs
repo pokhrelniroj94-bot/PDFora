@@ -88,9 +88,9 @@ assert.match(englishPage, /openGraph:\s*\{[^}]*title:/s, "English tool pages mus
 assert.match(englishPage, /twitter:\s*\{[^}]*title:/s, "English tool pages must define Twitter titles");
 assert.match(englishPage, /robots:\s*\{\s*index:\s*slug !== "ocr-pdf"/, "OCR remains excluded from indexing");
 assert.match(nepaliPage, /buildLocalizedToolMetadata/, "Nepali tool pages must use the shared locale-aware metadata builder");
-assert.match(rootLayout, /template:\s*"%s \\| PDFora"/, "The root layout must append the single PDFora brand suffix to localized titles");
+assert.match(rootLayout, /template:\s*"%s \| PDFora"/, "The root layout must append the single PDFora brand suffix to localized titles");
 assert.match(nepaliPage, /title:\s*nepaliTitles\[request\.implementation\.slug\]/, "Nepali titles must use the translated dictionary without repeating the root layout brand suffix");
-assert.doesNotMatch(nepaliPage, /title:\s*`[^`]*\\| PDFora`/, "Localized tool titles must not append PDFora twice");
+assert.doesNotMatch(nepaliPage, /title:\s*`[^`]*\| PDFora`/, "Localized tool titles must not append PDFora twice");
 assert.match(nepaliPage, /description:\s*nepaliDescriptions\[request\.implementation\.slug\]/, "Nepali description must use its translated description dictionary");
 assert.match(localizedMetadata, /robots:\s*\{ index: false, follow: isPublished\(locale\) \}/, "Unverified Nepali tools must stay noindex until the release gate is satisfied");
 assert.match(englishBlogIndex, /title:\s*"Practical PDF & Nepal Guides/, "English blog index needs a descriptive title");
@@ -107,7 +107,7 @@ assert.match(nepaliBlogIndex, /path:\s*"\/blog"/, "Nepali blog index must canoni
 assert.match(nepaliBlogArticle, /buildLocaleMetadata/, "Nepali articles must use shared locale metadata");
 assert.match(nepaliBlogArticle, /post\.title/, "Nepali articles need localized titles");
 assert.match(nepaliBlogArticle, /post\.description/, "Nepali articles need localized descriptions");
-assert.doesNotMatch(nepaliBlogArticle, /title:\s*`\$\{post\.title\} \\| PDFora`/, "Localized article titles must rely on the root metadata template for a single brand suffix");
+assert.doesNotMatch(nepaliBlogArticle, /title:\s*`\$\{post\.title\} \| PDFora`/, "Localized article titles must rely on the root metadata template for a single brand suffix");
 assert.match(sitemap, /nepaliLocalizedBlogPosts\.map/, "Nepali editorial articles must be represented in the sitemap");
 assert.match(sitemap, /blogPosts\.filter\(\(post\) => !isCatalogGeneratedGuide\(post\.slug\)\)/, "Only curated English editorial articles should enter the sitemap");
 

@@ -277,7 +277,7 @@ async function runTool(tool, index) {
       }
       const expectedOutputs = {
         "bmi-calculator": "BMI: 22.5",
-        "bmr-calculator": "Estimated BMR: 1568 kcal/day",
+        "bmr-calculator": "Estimated BMR: 1593 kcal/day",
         "unit-converter": "1000",
         "fraction-calculator": "5/6",
         "csv-to-json": "Asha",

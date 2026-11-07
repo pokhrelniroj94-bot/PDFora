@@ -79,6 +79,14 @@ const holidayBlock = liveSource.slice(liveSource.indexOf("const holidays = ["), 
 const holidayRows = [...holidayBlock.matchAll(/\{ name: "([^"]+)", bs: "([^"]+)", ad: "([^"]*)", note: "([^"]+)", type: "([^"]+)" \}/g)];
 assert.ok(holidayRows.length >= 30, "The 2083 list must retain its full holiday/observance dataset");
 assert.equal(new Set(holidayRows.map((row) => row[1])).size, holidayRows.length, "Holiday names must be unique");
+const holidayNameMap = liveSource.slice(liveSource.indexOf("const holidayNamesNe:"), liveSource.indexOf("const holidayNotesNe:"));
+const holidayNoteMap = liveSource.slice(liveSource.indexOf("const holidayNotesNe:"), liveSource.indexOf("const holidayTypeNe:"));
+const holidayTypeMap = liveSource.slice(liveSource.indexOf("const holidayTypeNe:"), liveSource.indexOf("function HolidayTool"));
+for (const [, name, , , note, type] of holidayRows) {
+  assert.ok(holidayNameMap.includes(`"${name}"`), `Missing Nepali holiday name translation: ${name}`);
+  assert.ok(holidayNoteMap.includes(`"${note}"`), `Missing Nepali holiday note translation: ${note}`);
+  assert.ok(holidayTypeMap.includes(`"${type}"`), `Missing Nepali holiday category translation: ${type}`);
+}
 
 // Independently cross-check every displayed BS/AD pair against the repository's calendar data.
 const yearSource = fs.readFileSync(path.join(root, "lib/nepali-date-converter/years.ts"), "utf8");

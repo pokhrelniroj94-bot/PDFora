@@ -34,6 +34,7 @@ const testedCatalog = new Set([
   "random-number-generator",
   "dice-roller",
   "password-generator",
+  "csv-to-json",
   "nepali-vat-calculator",
   "nepali-number-converter",
   "gold-tola-gram-converter",
@@ -88,7 +89,7 @@ const rows = [
       ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
       : "",
     fixesApplied: uiRegressionCatalog.has(entry.slug)
-      ? "Added required-number validation, Nepal form blank-field checks, JSON-safe YAML serialization, and rejection-sampled random integers with unit/regression tests."
+      ? "Added required-number validation, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
       : "",
     remainingBlockers: testedCatalog.has(entry.slug)
       ? "Browser route, mobile layout and accessibility evidence remain unverified."

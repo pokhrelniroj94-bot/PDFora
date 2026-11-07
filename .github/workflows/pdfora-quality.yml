@@ -56,6 +56,8 @@ jobs:
       - run: npm run build
       - name: Audit npm dependencies
         run: npm audit --omit=dev --audit-level=high
+      - name: Read-only production security, privacy and SEO smoke checks
+        run: node scripts/production-security-smoke.mjs
       - name: Install headless Chrome
         id: chrome
         uses: browser-actions/setup-chrome@v1
@@ -82,8 +84,15 @@ jobs:
           done
           echo "Render backend did not respond within 90 seconds."
           exit 1
-      - name: Check browser E2E runner syntax
-        run: node --check scripts/browser-e2e-173.mjs
+      - name: Check browser and live-data smoke runner syntax
+        run: |
+          node --check scripts/browser-e2e-173.mjs
+          node --check scripts/live-data-smoke.mjs
+          node --check scripts/production-security-smoke.mjs
+      - name: Verify live NRB, NEPSE and Nepal news freshness/fallback
+        env:
+          E2E_BASE_URL: http://127.0.0.1:3000
+        run: node scripts/live-data-smoke.mjs
       - name: Run individual Chromium E2E checks for all 173 tools
         id: browser-e2e
         continue-on-error: true
@@ -92,6 +101,12 @@ jobs:
           E2E_BASE_URL: http://127.0.0.1:3000
           E2E_TOOL_TIMEOUT_MS: "45000"
         run: node scripts/browser-e2e-173.mjs
+      - name: Run real Cloudflare Workers AI and Upstash checks on protected Preview
+        id: preview-ai-smoke
+        continue-on-error: true
+        env:
+          PDFORA_AI_PREVIEW_URL: https://pd-fora-git-qa-173-tool-br-168b6d-pokhrelniroj94-7012s-projects.vercel.app
+        run: node scripts/preview-ai-smoke.mjs
       - name: Regenerate audit with browser evidence
         if: always()
         run: npm run audit:functional
@@ -107,6 +122,9 @@ jobs:
           if-no-files-found: warn
       - name: Fail CI when any individual E2E check fails
         if: steps.browser-e2e.outcome == 'failure'
+        run: exit 1
+      - name: Fail CI when live Preview AI provider checks fail
+        if: steps.preview-ai-smoke.outcome == 'failure'
         run: exit 1
 
   live-production:

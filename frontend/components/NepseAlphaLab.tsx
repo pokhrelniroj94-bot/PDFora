@@ -2,63 +2,10 @@
 
 import { useMemo, useState } from "react";
 
-type Bar = { date: string; close: number; volume?: number };
-type Trade = { buyDate: string; sellDate: string; buy: number; sell: number; returnPct: number; pnl: number; days: number };
-type Result = { trades: Trade[]; strategyReturn: number; benchmarkReturn: number; winRate: number; maxDrawdown: number; profitFactor: number; exposure: number; equity: number[] };
+import { detectLargePriceGaps, normalizeDailyBars, runBacktest, type QuantBar as Bar, type QuantResult as Result } from "../lib/nepse-quant.mjs";
 
 const panel = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5";
 const input = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
-const average = (v: number[]) => v.length ? v.reduce((a,b)=>a+b,0)/v.length : 0;
-function sma(v:number[], n:number, i:number) { return i+1<n ? null : average(v.slice(i-n+1,i+1)); }
-function rsi(v:number[], i:number, n=14) {
-  if(i<n) return null;
-  let gain=0,loss=0;
-  for(let j=i-n+1;j<=i;j++){const d=v[j]-v[j-1];gain+=Math.max(d,0);loss+=Math.max(-d,0);}
-  if(loss===0) return gain===0?50:100;
-  return 100-100/(1+(gain/n)/(loss/n));
-}
-function runBacktest(rows:Bar[], mode:string, costPct:number):Result {
-  const trades:Trade[]=[];
-  const closes=rows.map(x=>x.close);
-  let cash=1, units=0, entry=0, entryCapital=0, entryDate="", entryIndex=0;
-  const equity:number[]=[];
-  const cost=costPct/100;
-  for(let i=51;i<rows.length;i++){
-    const p=closes[i], signalIndex=i-1, signalPrice=closes[signalIndex];
-    const s20=sma(closes,20,signalIndex), s50=sma(closes,50,signalIndex), p20=sma(closes,20,signalIndex-1), p50=sma(closes,50,signalIndex-1);
-    const r=rsi(closes,signalIndex), priorR=rsi(closes,signalIndex-1);
-    let buy=false, sell=false;
-    if(mode==="sma"){buy=!!(s20!==null&&s50!==null&&p20!==null&&p50!==null&&s20>s50&&p20<=p50);sell=!!(s20!==null&&s50!==null&&p20!==null&&p50!==null&&s20<s50&&p20>=p50);}
-    else if(mode==="rsi"){buy=!!(r!==null&&priorR!==null&&priorR<30&&r>=30);sell=!!(r!==null&&r>=70);}
-    else {const high=Math.max(...closes.slice(signalIndex-20,signalIndex));buy=signalPrice>high&&signalPrice>closes[signalIndex-1];sell=signalPrice<(sma(closes,20,signalIndex)??Number.POSITIVE_INFINITY);}
-    // Signals use the previous completed close; fills occur at the next session's close.
-    if(units===0&&buy){
-      entry=p*(1+cost); entryCapital=cash; units=cash/entry; cash=0; entryDate=rows[i].date; entryIndex=i;
-    } else if(units>0&&(sell||i===rows.length-1)){
-      const exit=p*(1-cost), proceeds=units*exit, pnl=proceeds-entryCapital, ret=entryCapital>0?pnl/entryCapital*100:0;
-      trades.push({buyDate:entryDate,sellDate:rows[i].date,buy:entry,sell:exit,returnPct:ret,pnl,days:i-entryIndex});
-      cash=proceeds; units=0; entryCapital=0;
-    }
-    // Mark open positions at estimated net liquidation value, including exit-side costs.
-    equity.push(cash+units*p*(1-cost));
-  }
-  const final=equity[equity.length-1]??1;
-  let peak=1,maxDD=0;
-  for(const value of equity){peak=Math.max(peak,value);maxDD=Math.max(maxDD,(peak-value)/peak*100);}
-  const wins=trades.filter(t=>t.pnl>0), losses=trades.filter(t=>t.pnl<0);
-  const grossWin=wins.reduce((a,t)=>a+t.pnl,0), grossLoss=Math.abs(losses.reduce((a,t)=>a+t.pnl,0));
-  const benchmarkStart=rows[50].close*(1+cost), benchmarkEnd=rows[rows.length-1].close*(1-cost);
-  return {
-    trades,
-    strategyReturn:(final-1)*100,
-    benchmarkReturn:(benchmarkEnd/benchmarkStart-1)*100,
-    winRate:trades.length?wins.length/trades.length*100:0,
-    maxDrawdown:maxDD,
-    profitFactor:grossLoss?grossWin/grossLoss:grossWin?Infinity:0,
-    exposure:equity.length?trades.reduce((a,t)=>a+t.days,0)/equity.length*100:0,
-    equity,
-  };
-}
 
 export default function NepseAlphaLab(){
  const [symbol,setSymbol]=useState("NABIL"),[mode,setMode]=useState("sma"),[cost,setCost]=useState("0.45"),[rows,setRows]=useState<Bar[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(""),[source,setSource]=useState("");
@@ -66,12 +13,13 @@ export default function NepseAlphaLab(){
  async function load(){
   setBusy(true);setError("");setResult(null);
   try{const res=await fetch("/api/nepse-market?symbol="+encodeURIComponent(symbol.trim().toUpperCase())+"&period=1Y",{cache:"no-store"});const data=await res.json();if(!res.ok)throw new Error(data.error||"Historical prices unavailable.");
-   const clean=(data.points||[]).map((p:Record<string,unknown>)=>({date:String(p.date||""),close:Number(p.close),volume:Number(p.volume)||undefined})).filter((p:Bar)=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a:Bar,b:Bar)=>a.date.localeCompare(b.date));
+   const clean=normalizeDailyBars(data.points||[]);
    if(clean.length<80)throw new Error("At least 80 daily price observations are required. This symbol has "+clean.length+".");
    setRows(clean);setSource(String(data.source||"Historical NEPSE data")+" · "+clean[0].date+" to "+clean[clean.length-1].date);
   }catch(e){setError(e instanceof Error?e.message:"Could not load stock history.");}finally{setBusy(false);}
  }
  const metrics=useMemo(()=>rows.length?runBacktest(rows,mode,Math.max(0,Math.min(5,Number(cost)||0))):null,[rows,mode,cost]);
+ const largeGaps=useMemo(()=>detectLargePriceGaps(rows),[rows]);
  const fmt=(n:number)=>n.toLocaleString(undefined,{maximumFractionDigits:2});
  return <main className="mx-auto min-h-screen max-w-7xl px-4 py-10 sm:px-6">
   <header className="mb-7"><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora · NEPSE Quant Lab</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Strategy Backtester</h1><p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">Test rule-based NEPSE strategies on historical daily prices, include estimated transaction costs and compare results with a buy-and-hold benchmark. No future data is used to trigger a past trade.</p></header>
@@ -87,6 +35,7 @@ export default function NepseAlphaLab(){
     <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">{[["Strategy return",metrics.strategyReturn],["Buy & hold",metrics.benchmarkReturn],["Win rate",metrics.winRate],["Max drawdown",-metrics.maxDrawdown]].map(([k,v])=><div key={String(k)} className="rounded-xl bg-slate-50 p-3"><p className="text-xs text-slate-500">{k}</p><p className={"mt-1 text-xl font-black tabular-nums "+(Number(v)>=0?"text-slate-900":"text-rose-700")}>{fmt(Number(v))}%</p></div>)}</div>
     <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4 text-sm"><p>Closed trades: <b>{metrics.trades.length}</b></p><p>Profit factor: <b>{Number.isFinite(metrics.profitFactor)?fmt(metrics.profitFactor):"∞"}</b></p><p>Market exposure: <b>{fmt(metrics.exposure)}%</b></p><p>Cost per side: <b>{fmt(Number(cost)||0)}%</b></p></div>
    </section>
+   {largeGaps.length>0&&<p role="status" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><b>Corporate-action / price-gap review:</b> {largeGaps.length} daily move(s) of 20% or more were detected ({largeGaps.slice(0,4).map(g=>g.date+" "+g.changePct.toFixed(1)+"%").join(", ")}). These may reflect genuine volatility, bonus/right-share/split adjustments or source errors. Verify NEPSE disclosures and adjusted-price methodology before relying on this backtest; no automatic adjustment has been applied.</p>}
    <section className={panel}><h3 className="font-extrabold text-slate-900">Trade history</h3>{metrics.trades.length?<div className="mt-3 overflow-x-auto"><table className="w-full min-w-[650px] text-left text-sm"><thead className="text-xs text-slate-500"><tr>{["Entry date","Exit date","Entry price","Exit price","Net return","Sessions"].map(x=><th key={x} className="border-b p-2">{x}</th>)}</tr></thead><tbody>{metrics.trades.slice().reverse().map((t,i)=><tr key={t.buyDate+"-"+t.sellDate+i}><td className="border-b p-2">{t.buyDate}</td><td className="border-b p-2">{t.sellDate}</td><td className="border-b p-2">{fmt(t.buy)}</td><td className="border-b p-2">{fmt(t.sell)}</td><td className={"border-b p-2 font-bold "+(t.returnPct>=0?"text-emerald-700":"text-rose-700")}>{fmt(t.returnPct)}%</td><td className="border-b p-2">{t.days}</td></tr>)}</tbody></table></div>:<p className="mt-3 text-sm text-slate-600">No trades triggered in this historical period. Try another strategy or symbol.</p>}</section>
   </div>}
   <aside className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><b>Research-only disclaimer:</b> This is a simplified educational backtest on available daily close data. Signals are evaluated after a completed daily close and filled at the next available daily close to reduce look-ahead bias. It does not model intraday fills, circuit limits, partial fills, liquidity, corporate-action adjustments, taxes in every case or survivorship bias. Historical returns do not predict future results. Verify source data before using it.</aside>

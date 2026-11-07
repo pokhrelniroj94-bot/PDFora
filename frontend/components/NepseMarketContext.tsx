@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { calculateMarketRegime } from "../lib/nepse-quant.mjs";
 
 type Candle = { date: string; close: number; volume?: number };
 type Stock = Record<string, unknown>;
@@ -15,19 +16,6 @@ const pickText = (row: Record<string, unknown>, keys: string[]) => {
   return "";
 };
 const pct = (n: number | null) => n === null ? "Unavailable" : (n > 0 ? "+" : "") + n.toFixed(2) + "%";
-function average(values: number[]) { return values.length ? values.reduce((a,b)=>a+b,0)/values.length : null; }
-function ema(values: number[], period: number) { const k=2/(period+1); return values.reduce((acc,v,i)=>{acc.push(i? v*k+acc[i-1]*(1-k):v);return acc;},[] as number[]); }
-function marketRegime(rows: Candle[]) {
-  const clean=rows.filter(x=>x && /^\d{4}-\d{2}-\d{2}$/.test(x.date) && Number.isFinite(x.close) && x.close>0).sort((a,b)=>a.date.localeCompare(b.date));
-  if(clean.length<51) return {label:"Insufficient history",tone:"amber",ret20:null as number|null,ret50:null as number|null,vol:null as number|null,close:null as number|null,ema20:null as number|null,ema50:null as number|null,asOf:clean.at(-1)?.date||"Unavailable"};
-  const closes=clean.map(x=>x.close), e20=ema(closes,20),e50=ema(closes,50),last=closes.length-1;
-  const ret20=(closes[last]/closes[last-20]-1)*100,ret50=(closes[last]/closes[last-50]-1)*100;
-  const returns=closes.slice(-21).slice(1).map((v,i)=>v/closes.slice(-21)[i]-1);
-  const mean=average(returns)||0, vol=Math.sqrt(average(returns.map(x=>(x-mean)**2))||0)*Math.sqrt(252)*100;
-  const up=closes[last]>e20[last]&&e20[last]>e50[last]&&ret20>0;
-  const down=closes[last]<e20[last]&&e20[last]<e50[last]&&ret20<0;
-  return {label:up?"Bullish trend":down?"Bearish trend":"Sideways / mixed",tone:up?"green":down?"rose":"amber",ret20,ret50,vol,close:closes[last],ema20:e20[last],ema50:e50[last],asOf:clean[last].date};
-}
 export default function NepseMarketContext({symbol,selectedPoints}:{symbol:string;selectedPoints:Candle[]}) {
   const [payload,setPayload]=useState<Payload|null>(null),[busy,setBusy]=useState(true),[error,setError]=useState("");
   useEffect(()=>{
@@ -36,7 +24,7 @@ export default function NepseMarketContext({symbol,selectedPoints}:{symbol:strin
       .then(d=>{if(active)setPayload(d);}).catch(e=>{if(active)setError(e instanceof Error?e.message:"Market context unavailable");}).finally(()=>{if(active)setBusy(false);});
     return ()=>{active=false;};
   },[]);
-  const regime=useMemo(()=>marketRegime(payload?.points||[]),[payload]);
+  const regime=useMemo(()=>calculateMarketRegime(payload?.points||[]),[payload]);
   const breadth=useMemo(()=>{
     const stocks=(payload?.stocks||[]).filter(row=>!["NEPSE","SENSIND","FLOATIND","SENSFLTIND"].includes(pickText(row,["symbol"]).toUpperCase()));
     let up=0,down=0,flat=0,turnover=0,volume=0,validTurnover=0,validVolume=0;

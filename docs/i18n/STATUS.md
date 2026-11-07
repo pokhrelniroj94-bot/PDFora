@@ -1,37 +1,32 @@
 # PDFora i18n rollout: status
 
-## Current continuation status — 2026-11-07 (master `defdd43`)
+## Current continuation status — 2026-11-07 (master `defdd43`; PR #104 continuation)
 
-The latest master commit is `defdd43ee53ecfc7e4341a95329ade6a02f2c2ec`, which merges PR #102. The multilingual implementation must be assessed from the current registries and generated checks, not from older checked-in coverage snapshots.
+Master baseline `defdd43ee53ecfc7e4341a95329ade6a02f2c2ec` merges PR #102. The continuation branch for PR #104 adds nine Nepali text utilities and corrects coverage reporting. Expanded counts below are **candidate counts until PR #104 CI passes**.
 
-- **12 locales are registered.** English and Nepali are published. Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain intentionally unpublished and excluded from indexing. Urdu and Arabic require RTL visual QA before any publication.
-- **Shared-shell translation exists for all 12 locales.** The typed `shared-ui.ts` module supplies the footer, directory, cookie and language-selector copy; the `common`, `accessibility` and `seo` message namespaces also have locale files and static loaders for all 12. Automated tests check required labels, key parity and placeholder interpolation. This is shared chrome only; it does not mean the full site or all tools are translated.
-- **Nepali has 148 localized route equivalents:** 113 tool routes (49 PDF + 64 catalog tools), the homepage, market dashboard, Resume Builder, blog index, 27 curated editorial articles and four legal/static pages. This is a route count, not a percentage of source files.
-- **Nepali tool-interface coverage is 113/173 (65.3%); 60 tools remain untranslated.** The 64 catalog routes comprise 52 utilities, seven financial/news/calculator tools, two public-information tools and three AI-writing tools. The 49 PDF routes have Nepali tool names and shared PDF processing UI copy.
-- **Nepali content coverage:** 49/49 PDF guide entries and 27/27 curated editorial articles (19 Nepal-focused guides and eight PDF workflow tutorials). Generated catalog guides are not included in this editorial count and remain noindex until individually reviewed.
-- **Indexing remains deliberately conservative.** Only six Nepali PDF tool routes are explicitly approved by the default-deny localized-tool indexing allowlist. The other 107 localized tool routes remain noindex and excluded from sitemap/hreflang until their interfaces, errors, help, metadata, functional behavior and native-language review are complete. The other ten locales have no published localized tool routes.
+- **12 locales are registered.** English and Nepali are published. Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain intentionally unpublished and excluded from indexing. Urdu and Arabic require RTL visual QA before publication.
+- **Shared-shell translation exists for all 12 locales.** The typed `shared-ui.ts` module supplies footer, directory, cookie and language-selector copy; the `common`, `accessibility` and `seo` message namespaces have locale files and static loaders for all 12. Automated tests check required labels, key parity and placeholder interpolation. This is shared chrome only, not full-site translation.
+- **Master Nepali baseline:** 148 localized route equivalents and 113 tool interfaces (49 PDF + 64 catalog), leaving 60 of 173 tools without a Nepali tool interface.
+- **PR #104 candidate:** nine additional Nepali text tools—email, URL, phone-number, number and hashtag extraction; duplicate-word removal; find/replace; palindrome checking; and acronym generation. If its registry, metadata and functional tests pass, coverage becomes **157 localized route equivalents and 122/173 tool interfaces (70.5%)**, leaving 51 tools.
+- **Nepali editorial coverage:** 49/49 PDF guide entries and 27/27 curated editorial articles (19 Nepal-focused guides and eight PDF workflow tutorials). Generated catalog guides are excluded from this count and remain noindex until individually reviewed.
+- **Indexing remains default-deny.** Six Nepali PDF tool routes are currently allowlisted. On the PR #104 candidate, 116 of 122 localized tool routes remain noindex and excluded from sitemap/hreflang pending individual review, functional verification and explicit approval.
+- **The ten additional locales remain unpublished.** Their shared-shell and generic PDF-processing UI dictionaries do not establish complete localized routes, tool-specific labels, forms, errors, help content or editorial content.
 - **Human review is not certified by automation.** Translation dictionaries, unit tests and route counts do not prove native-speaker quality. Native-language review and RTL browser QA remain release gates.
-- **Google Search safeguards:** language versions use distinct URLs; language switching is user-controlled rather than automatic language-based redirection; canonicals are self-referencing; hreflang is emitted only for real, published equivalents; unreviewed tool pages remain excluded from indexing. Google indexing is not guaranteed.
-- **Coverage-report correction in progress:** the previous report incorrectly showed 0% shared-shell coverage for the ten unpublished locales and stale Nepali route/tool counts. The current continuation branch corrects the coverage generator and adds regression assertions. Regenerated artifacts must pass CI before being treated as final.
-- Production deployment and Google indexing are separate gates. Search Console validation, sitemap resubmission and URL inspection must happen only after an approved production release; indexing cannot be guaranteed.
+- **Google Search safeguards:** distinct locale URLs, user-controlled language switching, self-referencing canonicals, hreflang only for real published equivalents, and noindex/default-deny for unreviewed localized tool pages. Google indexing is not guaranteed.
+- **Coverage-report correction:** the previous report incorrectly showed 0% shared-shell coverage for the ten unpublished locales and stale Nepali route/tool counts. PR #104 corrects the generator and adds regression assertions. Regenerated artifacts must pass CI before release.
+- Production deployment and Google indexing are separate gates. Search Console validation, sitemap resubmission and URL inspection must happen only after an approved production release.
 
-Next work: complete the remaining 60 Nepali tool interfaces and their functional/localized QA; then translate and review complete page groups in additional locales one at a time. Do not publish a locale merely because its code, route shell or dictionary exists.
+Next work: finish the remaining Nepali tools with real localized UI, accurate metadata, working handlers, tests and native-language review; then complete and publish additional locales one at a time. Do not publish a locale merely because its code, route shell or dictionary exists.
 
-The authoritative tool-language matrix is `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json` (2,076 rows: 12 locales × 173 tools). It separately records route, handler, visible UI, guide, functional test, human review and indexing eligibility.
+The authoritative tool-language matrix contains 2,076 rows (12 locales × 173 tools) and separately records route, handler, visible UI, guide, functional test, human review and indexing eligibility.
 
-## Nepali Nepal utility batch 2 — PR #102 release candidate
+## Nepali Nepal utility batch 2 — merged in PR #102
 
-The release branch `release/nepali-batch2-quality` adds six dedicated Nepali tool workspaces:
-- Nepal mobile-number format checker (supports ASCII and Devanagari digits, with +977 formatting)
-- Tola/gram weight converter
-- Nepali BS calendar (1975–2099 supported range; does not claim holiday or tithi coverage)
-- Loksewa/online-form photo resizer (local browser processing, 20 MB input cap, 50/100/200 KB targets)
-- Official ERC electricity calculator handoff with Nepali instructions and current 2083 tariff-directive link; no stale fixed-rate bill estimate is presented
-- Nepal public holidays 2083 searchable list (Nepali names, BS months, category labels and official MoHA source)
+PR #102 was merged into `master` on 2026-11-07 with merge commit `defdd43ee53ecfc7e4341a95329ade6a02f2c2ec`. It adds six Nepali workspaces for Nepal mobile-number validation, tola/gram conversion, BS calendar, Loksewa photo resizing, public-holiday search and official electricity-bill guidance.
 
-The release candidate records 70 localized tool interfaces out of 173 (6 PDF + 64 catalog) and 105 Nepali route equivalents: 52 utilities, 7 finance/news tools, 2 public-information tools and 3 AI-writing tools. The remaining untranslated tool inventory is 103. The six new catalog pages stay `noindex`, have no hreflang, and remain out of the sitemap until native-language review and explicit approval; the six existing PDF routes remain the only index-approved Nepali tool pages.
+The six routes remain noindex and excluded from sitemap/hreflang pending native-language review and explicit indexing approval. The calendar's supported range and exclusion of tithi/holiday calculations are disclosed. The photo resizer processes locally in the browser, restricts supported file types, and enforces file/pixel limits. Electricity content links to the official ERC calculator and tariff directive instead of presenting stale fixed-rate estimates. The public-holiday list is a dated static reference, not a live feed.
 
-The new test suite covers mobile format normalization, Devanagari digits, international prefix handling, tola/gram arithmetic, route registration and the default-deny metadata gate. The BS calendar, public-holiday list and photo-resizer workflows still require individual browser QA and native-language review before any indexing approval. The electricity page hands users to the official ERC calculator instead of estimating from potentially outdated rates. PR #102 full CI run #1610 passed before this documentation correction; a fresh run is required for the latest commit. PR #101 separately adds a Chromium sweep over all 173 routes; that browser run is still pending. Neither branch is deployed.
+PR #102's stated validation was GitHub Actions run #1639, which passed backend and frontend CI. The separate 173-tool Chromium sweep in PR #101 is not implied by that CI result.
 
 ## Historical 12-language foundation snapshot (superseded)
 

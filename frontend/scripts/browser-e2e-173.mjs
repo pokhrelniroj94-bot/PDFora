@@ -35,6 +35,8 @@ if (pdfRoutes.length !== 49 || catalogTools.length !== 124 || tools.length !== 1
 }
 
 const pngPath = path.join(tempDir, "pdfora-e2e-fixture.png");
+const invalidImagePath = path.join(tempDir, "pdfora-invalid-image.png");
+fs.writeFileSync(invalidImagePath, "PDFora E2E invalid image fixture");
 // Valid 1x1 PNG used by image and PDF-image conversion tests.
 fs.writeFileSync(pngPath, Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNgAAAAAgABSK+kcQAAAABJRU5ErkJggg==",
@@ -539,6 +541,21 @@ async function runTool(tool, index) {
         row.downloadedFiles = [await validateDownloadedFile(path.join(downloadsDir, downloadedNames[0]))];
         row.downloadCount = row.downloadedFiles.length;
         row.checks.push("downloaded image bytes and file signature validated");
+        const invalidInputNode = await page.send("DOM.getDocument", { depth: 1 });
+        const invalidInput = await page.send("DOM.querySelector", { nodeId: invalidInputNode.root.nodeId, selector: 'input[type="file"]' });
+        if (!invalidInput.nodeId) throw new Error("Image tool lost its file input before invalid-file testing.");
+        await page.send("DOM.setFileInputFiles", { nodeId: invalidInput.nodeId, files: [invalidImagePath] });
+        const errorAction = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /compress image|convert image|resize and download/i.test(item.innerText) && !item.disabled); if (!button) return false; button.click(); return true; })()`);
+        if (!errorAction) throw new Error("Image tool did not expose its processing action for invalid-file testing.");
+        let invalidError = "";
+        const invalidStarted = Date.now();
+        while (Date.now() - invalidStarted < 5000) {
+          invalidError = await page.evaluate("document.querySelector('main')?.innerText || ''");
+          if (/Could not read this image format|Image could not be opened/i.test(invalidError)) break;
+          await delay(200);
+        }
+        if (!/Could not read this image format|Image could not be opened/i.test(invalidError)) throw new Error("Invalid image input was not rejected with a visible error message.");
+        row.checks.push("invalid image file rejected with a visible error message");
       }
       const finalState = await page.evaluate(`(() => {
         const scope = document.querySelector("main") || document.body;

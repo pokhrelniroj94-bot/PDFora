@@ -53,9 +53,11 @@ test("all twelve locales load translated common, accessibility and SEO namespace
     assert.ok(t("common.language").trim(), locale + " language label must not be empty");
     assert.ok(t("accessibility.languageSwitcher").trim(), locale + " switcher label must not be empty");
     assert.ok(t("seo.home.title").trim(), locale + " homepage SEO title must not be empty");
-    assert.notEqual(t("common.language"), source.common.language, locale + " language label must be translated");
-    assert.notEqual(t("accessibility.languageSwitcher"), source.accessibility.languageSwitcher, locale + " accessibility label must be translated");
-    assert.notEqual(t("seo.home.title"), source.seo.home.title, locale + " SEO title must be translated");
+    if (locale !== "en") {
+      assert.notEqual(t("common.language"), source.common.language, locale + " language label must be translated");
+      assert.notEqual(t("accessibility.languageSwitcher"), source.accessibility.languageSwitcher, locale + " accessibility label must be translated");
+      assert.notEqual(t("seo.home.title"), source.seo.home.title, locale + " SEO title must be translated");
+    }
     assert.ok(t("accessibility.currentLanguage", { name: "PDFora test" }).includes("PDFora test"), locale + " placeholder must interpolate");
   }
 });

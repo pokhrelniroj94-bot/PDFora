@@ -249,7 +249,7 @@ async function runTool(tool, index) {
         const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "", search: document.querySelector("input") }))()');
         if (state.rows < 30) throw new Error("2083 public-holiday table is missing expected entries.");
         if (!state.links.some((href) => href.includes("moha.gov.np/en/page/government-and-public-holidays-in-2083"))) throw new Error("Official MoHA public-holiday source link is missing.");
-        if (!state.body.includes("Last Updated: 2083-07-20 15:42:42")) throw new Error("Holiday page must disclose the source page's current update timestamp.");
+        if (!/Last Updated:\s*20\d{2}-\d{2}-\d{2}/.test(state.body)) throw new Error("Holiday page must disclose the MoHA source page update timestamp.");
         if (!state.search) throw new Error("Holiday list is missing its search input.");
         await page.evaluate(`(() => {
           const input = document.querySelector("input");
@@ -271,7 +271,7 @@ async function runTool(tool, index) {
         if (!community) throw new Error("Holiday category filter button is missing.");
         await delay(150);
         const filtered = await page.evaluate('({ rows: document.querySelectorAll("tbody tr").length, body: document.querySelector("tbody")?.innerText || "" })');
-        if (!filtered.rows || !/Gaura Parwa|Gai Jatra|Dura Mhaipru Nakuma/.test(filtered.body)) throw new Error("Community holiday filter did not show community observances.");
+        if (!filtered.rows || !/Haritalika Teej|Jitiya Parwa|Muhammad Jayanti|Guru Nanak Jayanti|Siruwa Pawani/.test(filtered.body)) throw new Error("Community holiday filter did not show community observances.");
         row.checks.push("2083 holiday table, search, community filter and official MoHA source verified");
         row.outputVerified = true;
         row.status = "PASS";

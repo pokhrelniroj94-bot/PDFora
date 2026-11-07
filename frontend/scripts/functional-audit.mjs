@@ -40,6 +40,7 @@ const testedCatalog = new Set([
   "gold-tola-gram-converter",
   "nepal-share-calculator",
   "lorem-ipsum-generator",
+  "roman-numeral-converter",
 ]);
 const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator", "csv-to-json", "nepali-vat-calculator", "nepali-number-converter", "gold-tola-gram-converter", "nepal-share-calculator"]);
 const uiRegressionCatalog = new Set([...inputTestedCatalog, "lorem-ipsum-generator"]);
@@ -85,17 +86,23 @@ const rows = [
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: uiRegressionCatalog.has(entry.slug)
-      ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
-      : "",
-    fixesApplied: uiRegressionCatalog.has(entry.slug)
-      ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
-      : "",
+    defectsFound: entry.slug === "roman-numeral-converter"
+      ? "Blank input was treated as zero; conversion logic lacked isolated boundary and canonical-form tests."
+      : uiRegressionCatalog.has(entry.slug)
+        ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
+        : "",
+    fixesApplied: entry.slug === "roman-numeral-converter"
+      ? "Extracted conversion logic; reject empty input, non-canonical Roman forms and values outside 1–3999."
+      : uiRegressionCatalog.has(entry.slug)
+        ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
+        : "",
     remainingBlockers: testedCatalog.has(entry.slug)
       ? "Browser route, mobile layout and accessibility evidence remain unverified."
       : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-    evidence: inputTestedCatalog.has(entry.slug)
-      ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
+    evidence: entry.slug === "roman-numeral-converter"
+      ? "frontend/__tests__/roman-numerals.test.ts; frontend/lib/roman-numerals.ts; frontend/components/QuickUtilityTools.tsx"
+      : inputTestedCatalog.has(entry.slug)
+        ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
       : uiRegressionCatalog.has(entry.slug)
         ? "frontend/scripts/tool-ui-regression.test.mjs; frontend/components/AllTools.tsx"
         : testedCatalog.has(entry.slug)

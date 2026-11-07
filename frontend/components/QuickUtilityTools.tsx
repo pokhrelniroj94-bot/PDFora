@@ -5,6 +5,7 @@ import { bmi, bmr, businessDaysInclusive, gcd } from "../lib/catalog-calculation
 import { addCalendarDays } from "../lib/date-time-calculations";
 import { jsonToYaml, parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
 import { csvToJson } from "../lib/catalog-text";
+import { convertRomanNumeral } from "../lib/roman-numerals";
 
 type Values = Record<string, string>;
 const defaults: Record<string, Values> = {
@@ -45,9 +46,6 @@ const numeric = new Set(["wpm","weight","height","age","bill","tip","people","ex
 const words=(s:string)=>s.trim().split(/\s+/).filter(Boolean);
 const tokens=(s:string)=>s.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/([a-z0-9])([A-Z])/g,"$1 $2").toLowerCase().match(/[a-z0-9]+/g)||[];
 const morse:Record<string,string>={a:".-",b:"-...",c:"-.-.",d:"-..",e:".",f:"..-.",g:"--.",h:"....",i:"..",j:".---",k:"-.-",l:".-..",m:"--",n:"-.",o:"---",p:".--.",q:"--.-",r:".-.",s:"...",t:"-",u:"..-",v:"...-",w:".--",x:"-..-",y:"-.--",z:"--..",0:"-----",1:".----",2:"..---",3:"...--",4:"....-",5:".....",6:"-....",7:"--...",8:"---..",9:"----."," ":"/"};
-const romanPairs:[number,string][]=[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
-function toRoman(value:number){let n=value,out="";for(const [v,s] of romanPairs)while(n>=v){out+=s;n-=v;}return out;}
-function fromRoman(s:string){const map:Record<string,number>={I:1,V:5,X:10,L:50,C:100,D:500,M:1000};let n=0;for(let i=0;i<s.length;i++){const v=map[s[i]],next=map[s[i+1]]||0;if(!v)throw Error("Invalid Roman numeral.");n+=v<next?-v:v;}if(n<1||n>3999||toRoman(n)!==s)throw Error("Use a canonical Roman numeral from I to MMMCMXCIX.");return n;}
 export default function QuickUtilityTools({slug}:{slug:string}) {
  const initial=defaults[slug]||{text:""};const [v,setV]=useState<Values>(initial);const [out,setOut]=useState("");const [error,setError]=useState("");
  const get=(k:string)=>v[k]??"";const n=(k:string)=>parseRequiredNumber(get(k));
@@ -101,7 +99,7 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "aspect-ratio-calculator":{const w=n("width"),h=n("height");if(w<=0||h<=0)throw Error("Width and height must be positive.");const g=gcd(Math.round(w*1000),Math.round(h*1000));result="Aspect ratio: "+Math.round(w*1000)/g+":"+Math.round(h*1000)/g+"\nDecimal: "+(w/h).toFixed(5);break;}
  case "color-converter":{const m=t.trim().match(/^#?([0-9a-f]{6})$/i);if(!m)throw Error("Enter a six-digit HEX colour.");const x=parseInt(m[1],16),r=x>>16,g=(x>>8)&255,b=x&255,rr=r/255,gg=g/255,bb=b/255,mx=Math.max(rr,gg,bb),mn=Math.min(rr,gg,bb),delta=mx-mn;let h=0;if(delta){if(mx===rr)h=60*(((gg-bb)/delta)%6);else if(mx===gg)h=60*((bb-rr)/delta+2);else h=60*((rr-gg)/delta+4);}if(h<0)h+=360;const l=(mx+mn)/2,s=delta?delta/(1-Math.abs(2*l-1)):0;result="HEX: #"+m[1].toUpperCase()+"\nRGB: "+r+", "+g+", "+b+"\nHSL: "+Math.round(h)+"°, "+Math.round(s*100)+"%, "+Math.round(l*100)+"%";break;}
  case "css-gradient-generator":if(!/^#[0-9a-f]{6}$/i.test(get("a"))||!/^#[0-9a-f]{6}$/i.test(get("b")))throw Error("Choose valid six-digit HEX colours.");result="background: linear-gradient("+n("angle")+"deg, "+get("a")+", "+get("b")+");";break;
- case "roman-numeral-converter":{const x=t.trim();if(/^\d+$/.test(x)){const value=Number(x);if(value<1||value>3999)throw Error("Enter an integer from 1 to 3999.");result=toRoman(value);}else result=String(fromRoman(x.toUpperCase()));break;}
+ case "roman-numeral-converter":{result=convertRomanNumeral(t);break;}
  default:throw Error("This utility is not available yet. Please use the directory to find another tool.");
  }
  setOut(result);

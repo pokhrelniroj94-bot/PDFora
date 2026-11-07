@@ -27,6 +27,14 @@ export const nepaliLocalizedUtilitySlugs = [
   "age-calculator",
   "date-difference-calculator",
   "time-duration-calculator",
+  "json-formatter-validator",
+  "base64-encoder-decoder",
+  "url-encoder-decoder",
+  "hash-generator",
+  "text-diff-checker",
+  "lorem-ipsum-generator",
+  "html-encoder-decoder",
+  "text-to-slug",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

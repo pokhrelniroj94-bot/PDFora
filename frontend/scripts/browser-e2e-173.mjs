@@ -37,7 +37,7 @@ if (pdfRoutes.length !== 49 || catalogTools.length !== 124 || tools.length !== 1
 const pngPath = path.join(tempDir, "pdfora-e2e-fixture.png");
 // Valid 1x1 PNG used by image and PDF-image conversion tests.
 fs.writeFileSync(pngPath, Buffer.from(
-  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j9S8AAAAASUVORK5CYII=",
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNgAAAAAgABSK+kcQAAAABJRU5ErkJggg==",
   "base64",
 ));
 

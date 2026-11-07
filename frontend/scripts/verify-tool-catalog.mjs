@@ -39,12 +39,13 @@ const seoOverrides = new Map([...seoOverridesBlock.matchAll(/"([^"]+)": \{ title
   .map((match) => [match[1], { title: match[2], description: match[3] }]));
 const generatedMetadata = metadataEntries.map((entry) => ({
   slug: entry.slug,
-  title: seoOverrides.get(entry.slug)?.title ?? `${entry.name} Online | PDFora`,
+  title: seoOverrides.get(entry.slug)?.title ?? `${entry.name} Online`,
   description: seoOverrides.get(entry.slug)?.description ?? entry.description.trim(),
 }));
 assert.equal(new Set(generatedMetadata.map((entry) => entry.title.trim().toLowerCase())).size, generatedMetadata.length, "Generated English tool SEO titles must be unique");
 assert.equal(new Set(generatedMetadata.map((entry) => entry.description.trim().toLowerCase())).size, generatedMetadata.length, "Generated English tool meta descriptions must be unique");
 assert.ok(generatedMetadata.every((entry) => entry.title.length >= 20 && entry.description.length >= 40), "Tool metadata must be descriptive rather than empty or placeholder copy");
+assert.ok(generatedMetadata.every((entry) => !/\\|\\s*PDFora$/i.test(entry.title)), "Page titles must not duplicate the root PDFora title template");
 
 const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);
 assert.ok(quickBlock, "Quick utility dispatch list is missing");

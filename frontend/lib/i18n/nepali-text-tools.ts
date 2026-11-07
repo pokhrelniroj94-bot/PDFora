@@ -5,7 +5,7 @@ export type NepaliTextToolSlug =
 
 export type NepaliTextToolOptions = { caseMode?: "upper" | "lower" | "title" | "sentence"; wordsPerMinute?: number };
 
-const wordsIn = (input: string) => input.match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) ?? [];
+const wordsIn = (input: string) => input.match(/[\p{L}\p{M}\p{N}]+(?:['’][\p{L}\p{M}\p{N}]+)*/gu) ?? [];
 const linesIn = (input: string) => input.replace(/\r\n?/g, "\n").split("\n");
 
 export function runNepaliTextTool(slug: NepaliTextToolSlug, input: string, options: NepaliTextToolOptions = {}): string {
@@ -31,7 +31,12 @@ export function runNepaliTextTool(slug: NepaliTextToolSlug, input: string, optio
       return true;
     }).join("\n");
   }
-  if (slug === "sort-lines") return [...lines].sort((a, b) => a.localeCompare(b, "ne")).join("\n");
+  if (slug === "sort-lines") {
+    const trailingNewline = input.endsWith("\n");
+    const sortable = trailingNewline ? lines.slice(0, -1) : lines;
+    const sorted = [...sortable].sort((a, b) => a.localeCompare(b, "ne"));
+    return sorted.join("\n") + (trailingNewline ? "\n" : "");
+  }
   if (slug === "reverse-text") return [...input].reverse().join("");
   if (slug === "whitespace-cleaner") return input.split("\n").map((line) => line.replace(/[\t ]+/g, " ").trim()).filter((line, index, all) => line || all[index - 1] !== "").join("\n").trim();
   if (slug === "character-frequency") {

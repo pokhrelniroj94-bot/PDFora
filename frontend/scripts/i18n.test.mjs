@@ -67,13 +67,18 @@ test("publishing policy: English and reviewed Nepali routes are published", () =
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 
-test("shared UI coverage: English and Nepali copy is complete and route-aware", () => {
-  const required = ["footerNavigation", "allTools", "guides", "about", "contact", "language", "languageHint", "directoryLabel", "directoryTitle", "directoryDescription", "directoryLink"];
-  for (const locale of ["en", "ne"]) {
+test("shared UI coverage: all twelve locales have complete translated site chrome", () => {
+  const required = ["footerNavigation", "allTools", "guides", "about", "contact", "language", "languageHint", "directoryLabel", "directoryEyebrow", "directoryTitle", "directoryDescription", "directoryLink"];
+  const nestedKeys = (value) => Object.keys(value).sort();
+  const english = sharedUi.getSharedUiCopy("en");
+  for (const locale of config.locales) {
     const copy = sharedUi.getSharedUiCopy(locale);
     for (const key of required) assert.equal(typeof copy[key], "string", `${locale}.${key} must be translated`);
-    assert.deepEqual(Object.keys(copy.groups).sort(), ["Convert PDF", "Edit PDF", "Organize PDF", "Secure & manage"]);
-    assert.ok(copy.cookie.settings && copy.cookie.privacyPolicy, `${locale}.cookie must be localized`);
+    assert.deepEqual(nestedKeys(copy.groups), nestedKeys(english.groups), `${locale} group keys must match English`);
+    assert.deepEqual(nestedKeys(copy.cookie), nestedKeys(english.cookie), `${locale} cookie keys must match English`);
+    for (const [key, value] of Object.entries(copy.cookie)) assert.ok(value.trim(), `${locale}.cookie.${key} must not be empty`);
+    assert.notEqual(copy.allTools, english.allTools, `${locale}.allTools must not silently fall back to English`);
+    assert.notEqual(copy.directoryTitle, english.directoryTitle, `${locale}.directoryTitle must be translated`);
   }
   assert.equal(sharedUi.localeFromPathname("/ne/merge-pdf"), "ne");
   assert.equal(sharedUi.localeFromPathname("/merge-pdf"), "en");

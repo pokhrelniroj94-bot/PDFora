@@ -92,6 +92,8 @@ jobs:
           node --check scripts/live-data-smoke.mjs
           node --check scripts/production-security-smoke.mjs
       - name: Verify live NRB, NEPSE and Nepal news freshness/fallback
+        id: live-data-smoke
+        continue-on-error: true
         env:
           E2E_BASE_URL: http://127.0.0.1:3000
         run: node scripts/live-data-smoke.mjs
@@ -123,13 +125,16 @@ jobs:
             docs/qa/FUNCTIONAL_TOOL_AUDIT.md
           if-no-files-found: warn
       - name: Fail CI when any individual E2E check fails
-        if: steps.browser-e2e.outcome == 'failure'
+        if: always() && steps.browser-e2e.outcome == 'failure'
         run: exit 1
       - name: Fail CI after reports when production smoke checks fail
-        if: steps.production-smoke.outcome == 'failure'
+        if: always() && steps.production-smoke.outcome == 'failure'
         run: exit 1
       - name: Fail CI when live Preview AI provider checks fail
-        if: steps.preview-ai-smoke.outcome == 'failure'
+        if: always() && steps.preview-ai-smoke.outcome == 'failure'
+        run: exit 1
+      - name: Fail CI after all reports when live-data checks fail
+        if: always() && steps.live-data-smoke.outcome == 'failure'
         run: exit 1
 
   live-production:

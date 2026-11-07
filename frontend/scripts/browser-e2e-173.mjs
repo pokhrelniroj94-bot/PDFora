@@ -234,9 +234,10 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepal-public-holidays-2083") {
-        const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href) }))()');
+        const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "" }))()');
         if (state.rows < 30) throw new Error("2083 public-holiday table is missing expected entries.");
         if (!state.links.some((href) => href.includes("moha.gov.np/en/page/government-and-public-holidays-in-2083"))) throw new Error("Official MoHA public-holiday source link is missing.");
+        if (!state.body.includes("2083-04-22")) throw new Error("MoHA notice update date and static-reference disclosure are missing.");
         row.checks.push("2083 holiday table and official MoHA source verified");
         row.outputVerified = true;
         row.status = "PASS";

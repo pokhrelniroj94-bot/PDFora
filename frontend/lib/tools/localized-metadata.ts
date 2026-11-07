@@ -7,11 +7,10 @@ import { isLocalizedToolIndexable } from "./localized-verification";
 /**
  * Metadata for /[locale]/tools/[slug].
  *
- * Title and description come only from the catalog entry (the English source text), because no
- * reviewed localized tool copy exists yet; nothing is machine-written here. The canonical is
- * self-referencing (never English, never the homepage). hreflang is only emitted by
- * buildLocaleMetadata when a genuine published translation is registered, which is not the case
- * for tool pages today. Robots is default-deny: index only when the locale is published AND the
+ * This helper provides catalog-sourced fallback metadata. A route may override its title and
+ * description only when explicit locale-specific copy is registered. Canonical URLs are
+ * self-referencing. Tool pages do not emit hreflang until equivalent translated destinations are
+ * genuinely available. Robots is default-deny: index only when the locale is published AND the
  * tool is explicitly verified for that locale.
  */
 export function buildLocalizedToolMetadata(locale: Locale, entry: ToolInfo): Metadata {

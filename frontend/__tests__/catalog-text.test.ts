@@ -16,7 +16,7 @@ describe("spreadsheet-safe JSON to CSV", () => {
     ]));
     expect(csv).toContain('"\'=1+1"');
     expect(csv).toContain('"\'=HYPERLINK(""https://evil.example"",""click"")"');
-    expect(csv).toContain('"\' +SUM(1,2)"'.replace("' +", "'+"));
+    expect(csv).toContain(`"'+SUM(1,2)"`);
     expect(csv).toContain('"\'-1+2"');
     expect(csv).toContain('"\'@SUM(1,2)"');
     expect(csv).toContain('"\'\t=cmd"');

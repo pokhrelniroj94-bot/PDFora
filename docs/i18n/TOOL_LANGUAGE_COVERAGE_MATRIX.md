@@ -9,14 +9,14 @@ This matrix contains one row for every combination of **12 configured locales ×
 - PDF tools: 49
 - Catalog utilities: 124
 - Unique tools: 173
-- Matrix rows: 2076
+- Matrix rows: 2,076
 - Published locales: en, ne
 - RTL locales: ur, ar
 
 | Locale | Published tool rows | Interface-present rows | Content-present rows | Index-eligible rows |
 |---|---:|---:|---:|---:|
-| en | 173 | 173 | 49 | 173 |
-| ne | 70 | 70 | 49 | 6 |
+| en | 173 | 173 | 49 | 172 |
+| ne | 113 | 113 | 49 | 6 |
 | hi | 0 | 0 | 0 | 0 |
 | bn | 0 | 0 | 0 | 0 |
 | ur | 0 | 0 | 0 | 0 |
@@ -30,7 +30,8 @@ This matrix contains one row for every combination of **12 configured locales ×
 
 ## Current blockers
 
-- English is the source language. Nepali has 70 route-specific tool interfaces, but native-language review is not independently established.
-- Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
-- Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers.
+- Nepali has 113 localized tool interfaces (49 PDF + 64 catalog); 60 of the 173 tools still need Nepali interfaces.
+- The six index-approved Nepali PDF routes are a subset of the 113 localized interfaces. The other 107 localized tool routes remain excluded from indexing until their individual review and verification gates pass.
+- Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing. Shared-shell dictionaries do not count as localized tool interfaces.
+- Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers. Interface presence and guide presence do not imply runtime success or native-speaker review.
 - OCR is not counted among the 173 available tools because it remains excluded from the canonical PDF inventory.

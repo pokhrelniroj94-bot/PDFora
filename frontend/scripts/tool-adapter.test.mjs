@@ -177,9 +177,9 @@ test("scope guards: English tool route, sitemap and robots are not wired to the 
   assert.match(sitemap, /nepaliLocalizedUtilitySlugs/);
   assert.match(sitemap, /nepaliLocalizedFinancialSlugs/);
   assert.match(sitemap, /nepaliLocalizedCareerSlugs/);
-  assert.match(sitemap, /\\/ne\\/tools\\/\$\\{slug\\}/);
-  assert.match(sitemap, /\\/ne\\/market/);
-  assert.match(sitemap, /\\/ne\\/resume-builder/);
+  assert.match(sitemap, /\/ne\/tools\/\$\{slug\}/);
+  assert.match(sitemap, /\/ne\/market/);
+  assert.match(sitemap, /\/ne\/resume-builder/);
   assert.doesNotMatch(read("app/robots.ts"), /i18n|lib\/tools/, "robots policy must not change");
 });
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { bmi, bmr, businessDaysInclusive, gcd } from "../lib/catalog-calculations";
 import { addCalendarDays } from "../lib/date-time-calculations";
 import { jsonToYaml, parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
+import { csvToJson } from "../lib/catalog-text";
 
 type Values = Record<string, string>;
 const defaults: Record<string, Values> = {
@@ -75,7 +76,7 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "snake-case-converter":result=tokens(t).join("_");break;
  case "kebab-case-converter":result=tokens(t).join("-");break;
  case "html-tag-stripper":result=new DOMParser().parseFromString(t,"text/html").body.textContent||"";break;
- case "csv-to-json":{const lines=t.split(/\r?\n/).filter(Boolean);if(lines.length<2)throw Error("Provide a header row and at least one data row.");const parse=(line:string)=>{const a:string[]=[];let cell="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'&&q&&line[i+1]==='"'){cell+='"';i++;}else if(c==='"')q=!q;else if(c===","&&!q){a.push(cell);cell="";}else cell+=c;}a.push(cell);return a;};const h=parse(lines[0]);result=JSON.stringify(lines.slice(1).map(line=>{const row=parse(line);return Object.fromEntries(h.map((k,i)=>[k,row[i]??""]));}),null,2);break;}
+ case "csv-to-json":{result=csvToJson(t);break;}
  case "json-to-yaml":{const obj=JSON.parse(t);result=jsonToYaml(obj);break;}
  case "json-escape-unescape":result=get("mode")==="unescape"?JSON.parse(t.trim().startsWith('"')?t.trim():'"'+t+'"'):JSON.stringify(t).slice(1,-1);break;
  case "url-validator":{const u=new URL(t);if(!["http:","https:"].includes(u.protocol))throw Error("Only HTTP and HTTPS URLs are supported.");result="Valid URL\nProtocol: "+u.protocol+"\nHost: "+u.host+"\nPath: "+u.pathname+"\nQuery: "+u.search;break;}

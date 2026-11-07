@@ -44,7 +44,7 @@ for (const slug of legacyPdfSlugs) {
 const consolidatedPdfPages = ["merge-pdf", "delete-pages", "compress-pdf", "extract-pages", "images-to-pdf", "pdf-to-excel", "pdf-to-jpg", "pdf-to-word", "split-pdf", "watermark"];
 for (const slug of consolidatedPdfPages) {
   const page = read(`app/${slug}/page.tsx`);
-  assert.equal((page.match(/<section\\b/g) ?? []).length, 1, `${slug} should retain one clear tool hero and workspace section`);
+  assert.equal((page.match(/<section\b/g) ?? []).length, 1, `${slug} should retain one clear tool hero and workspace section`);
   assert.doesNotMatch(page, /ToolGuide|Frequently asked questions|How it works|More PDF tools/, `${slug} should not repeat the detailed guide or legacy promotional sections`);
 }
 

@@ -2,6 +2,7 @@ import { SITE_URL, defaultLocale, isLocale, isPublished, localeInfo, locales, ty
 import {
   nepaliLocalizedCareerSlugs,
   nepaliLocalizedFinancialSlugs,
+  nepaliLocalizedPublicInfoSlugs,
   nepaliLocalizedUtilitySlugs,
 } from "./nepali-tool-routes";
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
@@ -67,6 +68,7 @@ export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
   ...[
     ...nepaliLocalizedUtilitySlugs,
     ...nepaliLocalizedFinancialSlugs,
+    ...nepaliLocalizedPublicInfoSlugs,
     ...nepaliLocalizedCareerSlugs,
   ].map((slug) => `/tools/${slug}`),
 ]);

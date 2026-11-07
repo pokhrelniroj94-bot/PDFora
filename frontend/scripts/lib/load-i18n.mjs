@@ -48,7 +48,7 @@ export async function loadI18n() {
   const files = fs.readdirSync(dir).filter((f) => f.endsWith(".ts") && !skip.has(f)).map((f) => `lib/i18n/${f}`);
   // pdf-tool-seo.ts imports the shared guide catalog; copy it into the same temp tree
   // so extension-rewritten relative imports resolve during the i18n test run.
-  files.push("lib/tool-guides.ts", "lib/nepali-localized-blog-posts.ts", "lib/tools/localized-verification.ts");
+  files.push("lib/tool-guides.ts", "lib/nepali-localized-blog-posts.ts", "lib/tools/localized-verification.ts", "components/toolCatalog.ts", "lib/tool-directory.ts");
   return loadTsFiles(files);
 }
 

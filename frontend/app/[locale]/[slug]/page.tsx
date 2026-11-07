@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PDForaTool from "../../../components/PDForaTool";
 import Niroj77Tool from "../../../components/Niroj77Tool";
-import ToolGuide from "../../../components/ToolGuide";
+import ToolSEOContent from "../../../components/ToolSEOContent";
 import { isLocale, isRoutable } from "../../../lib/i18n/config";
 import { nepaliToolGuides } from "../../../lib/i18n/tool-guides-ne";
 import { nepaliToolNames } from "../../../lib/i18n/pdf-tool-names-ne";
@@ -99,7 +99,7 @@ export default async function NepaliPdfToolPage({ params }: Props) {
         <div className="mt-8">
           {route.component === "pdfora" ? <PDForaTool {...commonProps} /> : <Niroj77Tool {...commonProps} extraFields={route.extraFields} />}
         </div>
-        {guide && <ToolGuide guide={{ ...guide, slug, name: localizedName, keyword: "", related: [], blogSlug: "" }} />}
+        <ToolSEOContent slug={slug} locale="ne" />
       </div>
     </main>
   );

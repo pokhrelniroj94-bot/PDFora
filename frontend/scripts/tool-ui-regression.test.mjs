@@ -32,6 +32,9 @@ assert.ok(quickUtilities.includes("jsonToYaml(obj)"), "JSON-to-YAML must use the
 assert.ok(quickUtilities.includes("randomBelow(6)+1"), "Dice rolls must use unbiased random integers");
 assert.ok(extraTools.includes("chars[randomBelow(chars.length)]"), "Password characters must use unbiased random integers");
 assert.ok(inputHelpers.includes("value >= limit"), "Random helper must reject the incomplete modulo bucket");
+assert.ok(utilities.includes("if(!raw.trim())return Number.NaN"), "PDF/calculator workspace must not coerce blank or malformed numeric fields to zero");
+assert.ok(utilities.includes("wordCount>=8&&wordCount<=500"), "Lorem Ipsum generator must enforce its advertised word-count bounds");
+
 assert.ok(nepalTools.includes('amount.trim()!==""&&rate.trim()!==""'), "Nepal VAT must reject blank amount and rate fields");
 assert.ok(nepalTools.includes('number.trim()!==""&&Number.isSafeInteger(n)'), "Nepali number conversion must not treat blank input as zero");
 assert.ok(nepalTools.includes('weight.trim()!==""&&Number.isFinite(n)'), "Tola/gram conversion must reject blank weight");

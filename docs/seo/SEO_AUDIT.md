@@ -12,9 +12,9 @@ traffic claim.
 - Published Nepali equivalents use self-referencing canonicals and reciprocal
   English/Nepali hreflang.
 - Unpublished locales are not included in hreflang or the sitemap.
-- The sitemap contains English routes and only the six reviewed Nepali PDF routes.
+- The sitemap contains English routes, curated Nepali home/blog/market/resume/policy routes, and only the six reviewed Nepali localized tool routes.
 - Root `/en` redirects to the unprefixed English URL.
-- Page-relevant structured data and useful tool-guide content were preserved; obsolete FAQPage markup was removed from generic tool and blog pages because Google no longer shows FAQ rich results for ordinary sites.
+- Page-relevant structured data and useful tool-guide content were preserved; FAQPage markup was removed from tool, blog, PDF-guide and Nepali-home templates because Google Search no longer shows FAQ rich results as of May 7, 2026; visible FAQ text remains.
 
 ## Remaining validation
 
@@ -34,20 +34,20 @@ No ranking, indexing, traffic or Search Console submission is claimed by this au
 
 A live crawl of `/merge-pdf` exposed the same PDF practical guide twice in the rendered page. Source inspection confirmed that the guide was rendered both by the route layout and again inside the shared `PDForaTool` and `Niroj77Tool` client components. This duplicated the full guide and its FAQ/schema output on standalone PDF tool pages that use both layers.
 
-The release branch `seo/duplicate-content-audit-fix-2026-11-07` removes the second render from both shared workspaces, leaving each route layout as the single owner of the English PDF SEO guide. A regression assertion now guards this ownership. The Nepali dynamic PDF route continues to render its dedicated `ToolGuide` separately.
+The release branch `seo/duplicate-content-audit-fix-2026-11-07` removes the second render from both shared workspaces, leaving each route layout as the single owner of the English PDF SEO guide. A regression assertion now guards this ownership. The Nepali dynamic PDF route now renders the shared localized `ToolSEOContent` guide with `locale="ne"`, rather than falling back to the shorter generic `ToolGuide`.
 
-The same live crawl also found older, page-specific how-to and FAQ blocks on `/merge-pdf` and `/delete-pages` that overlap with the shared guide. These are being removed from those routes so the tool page has one clear guide structure. The same cleanup has now been applied to eight additional legacy PDF pages with large overlapping feature/how-to/FAQ blocks: `/compress-pdf`, `/extract-pages`, `/images-to-pdf`, `/pdf-to-excel`, `/pdf-to-jpg`, `/pdf-to-word`, `/split-pdf` and `/watermark`. Each keeps its original title, description and actual tool workspace; the route layout owns the full practical guide. Other standalone PDF routes still require an individual rendered-page comparison before their legacy copy can safely be consolidated.
+The same live crawl also found older, page-specific how-to and FAQ blocks on `/merge-pdf` and `/delete-pages` that overlap with the shared guide. These are being removed from those routes so the tool page has one clear guide structure. The same cleanup has now been applied to nine additional legacy PDF pages with large overlapping feature/how-to/FAQ blocks: `/compress-pdf`, `/extract-pages`, `/images-to-pdf`, `/pdf-to-excel`, `/pdf-to-jpg`, `/pdf-to-word`, `/split-pdf`, `/watermark` and `/rotate-pdf`. Each keeps its original title, description and actual tool workspace; the route layout owns the full practical guide. Other standalone PDF routes still require an individual rendered-page comparison before their legacy copy can safely be consolidated.
 
 ## Metadata inventory checks — 2026-11-07
 
 A source-level inventory of all 124 English catalogue tools found 124 unique tool names, 124 unique source descriptions and 124 unique keyword fields. The metadata generator has 50 explicit SEO overrides; all other tools now use their own catalog description directly rather than appending category-level boilerplate. The source descriptions range from 45 to 148 characters and are unique; no artificial minimum length is imposed because relevance is more important than padding. All 124 catalogue tools have an explicit advice entry with a task-specific example, accuracy note, workflow and common mistakes in `CatalogToolSEOContent.tsx`. Regression tests now check coverage and substantive field lengths.
 
-A regression check is being added to `verify-tool-catalog.mjs` so future catalogue edits cannot silently introduce duplicate names, descriptions, titles or meta descriptions. A separate inventory of the 49 PDF route guides also found 49 unique names, target phrases and purposes; every guide has three task-specific steps and a caution of at least 60 characters. These source checks do not replace rendered-page QA.
+Regression checks in `verify-tool-catalog.mjs` now guard future catalogue edits against duplicate names, descriptions, titles, meta descriptions and repeated tool-specific guidance fields. A separate inventory of the 49 PDF route guides also found 49 unique names, target phrases and purposes; every guide has three task-specific steps and a caution of at least 60 characters. These source checks do not replace rendered-page QA.
 
 ## Quality risks requiring page-level review
 
 - Catalog tool pages use shared category guidance and category-based FAQ fallbacks. This is useful baseline help, but it is not a substitute for tool-specific examples, supported-input details, edge cases and output limitations. Keep each page indexable only when its actual tool functionality and page content provide distinct value.
-- The English blog index contains many catalogue-generated guides with similar title/description patterns. These are excluded from the sitemap and marked noindex where generated; preserve that gate until each guide has been independently edited and verified.
+- The English blog data includes 124 generated catalogue guides and 42 generated PDF guide variants. All remain noindex and outside the editorial blog index and sitemap; links from the corresponding tool pages have been removed. Preserve this gate until any guide is independently edited and verified.
 - Nepali publication is intentionally limited: the current indexable localized PDF allowlist contains six routes. The other localized tool interfaces remain noindex and out of sitemap/hreflang pending full translation, functional QA and human review.
 - Do not merge language variants into one canonical URL. Each genuinely translated page needs its own self-canonical and reciprocal hreflang only when both versions are complete and indexable.
 - Search Console indexing, impressions, clicks and query performance cannot be inferred from a code audit. Those require the connected Search Console property and post-deployment data.
@@ -103,6 +103,15 @@ Nepali catalogue tool routes remain default-deny for indexing. The current expli
 
 
 The generated PDF guide variants were also identified as a duplicate-content risk: 42 of the 49 PDF guide records produced templated blog articles in addition to the canonical tool pages. Those 42 variants now remain accessible but are `noindex`, excluded from the editorial blog index and XML sitemap, and no longer linked from the main PDF tool guides. The seven PDF tasks with reviewed editorial articles retain their blog links; Nepali PDF pages now link to the matching Nepali article route rather than the English route. This preserves useful editorial content while consolidating repetitive generated pages around the canonical tool URLs.
+
+## Google Search Central standards used
+
+- [Helpful, reliable, people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content): prioritize original, complete, useful content; there is no preferred word count.
+- [Spam policies — scaled content abuse](https://developers.google.com/search/docs/essentials/spam-policies): exclude large volumes of unoriginal, low-value generated pages from Search.
+- [Title links](https://developers.google.com/search/docs/appearance/title-link) and [snippets/meta descriptions](https://developers.google.com/search/docs/appearance/snippet): use concise, accurate page-specific titles and useful descriptions; Google may generate titles/snippets from visible content.
+- [Localized versions](https://developers.google.com/search/docs/specialty/international/localized-versions): publish reciprocal hreflang only for genuinely translated equivalents.
+- [Canonicalization](https://developers.google.com/search/docs/crawling-indexing/canonicalization): choose one preferred URL for duplicate content and maintain consistent canonical signals.
+- [Google Search documentation updates](https://developers.google.com/search/updates): FAQ rich results stopped appearing in Search on May 7, 2026.
 
 ## Remaining work after source changes
 

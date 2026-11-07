@@ -48,5 +48,7 @@ assert.ok(noCost.trades.length > 0, "synthetic trend must trigger a crossover tr
 assert.ok(withCost.strategyReturn < noCost.strategyReturn, "round-trip costs must reduce strategy return");
 assert.ok(withCost.benchmarkReturn < noCost.benchmarkReturn, "round-trip costs must reduce benchmark return");
 assert.ok(withCost.trades[0].days > 0, "trade holding duration must include entry and exit sessions");
+assert.equal(runBacktest(rising, "sma", 20).strategyReturn, runBacktest(rising, "sma", 5).strategyReturn, "backtest cost input must be capped at five percent per side");
+assert.equal(runBacktest(rising, "sma", -1).strategyReturn, noCost.strategyReturn, "negative transaction costs must be clamped to zero");
 assert.throws(() => runBacktest(flat.slice(0, 40), "sma", 0), /52 valid daily observations/);
 console.log("NEPSE quant fixtures passed: RSI, data validation, 20/50-session market regime, Wilder ATR/ADX, volume ratio, OBV, price-gap flags, backtest and transaction costs.");

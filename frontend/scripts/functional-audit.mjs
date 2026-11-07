@@ -48,6 +48,8 @@ const browserReport = fs.existsSync(browserReportPath)
   ? JSON.parse(fs.readFileSync(browserReportPath, "utf8"))
   : null;
 const browserResults = new Map((browserReport?.results ?? []).map((row) => [row.slug, row]));
+const nepaliBrowserResults = new Map((browserReport?.nepaliResults ?? []).map((row) => [row.slug, row]));
+const nepaliStatusFor = (slug) => nepaliBrowserResults.get(slug)?.status ?? "NOT TESTED";
 const mobileStatusFor = (slug) => {
   const mobile = browserResults.get(slug)?.mobileViewport;
   if (!mobile) return "NOT TESTED";
@@ -102,7 +104,8 @@ const rows = [
     mobileStatus: mobileStatusFor(slug),
     keyboardStatus: keyboardStatusFor(slug),
     accessibilityStatus: accessibilityStatusFor(slug),
-    languageStatus: "PARTIAL",
+    languageStatus: nepaliStatusFor(slug),
+    nepaliInterfaceStatus: nepaliStatusFor(slug),
     seoStatus: "PARTIAL",
     defectsFound: [slug === "reorder-pdf" || slug === "delete-pages" ? "Shared browser worker previously accepted unsafe page selections." : "", ...(browserResults.get(slug)?.errors ?? [])].filter(Boolean).join("; "),
     fixesApplied: slug === "reorder-pdf" || slug === "delete-pages"
@@ -123,7 +126,8 @@ const rows = [
     mobileStatus: mobileStatusFor(entry.slug),
     keyboardStatus: keyboardStatusFor(entry.slug),
     accessibilityStatus: accessibilityStatusFor(entry.slug),
-    languageStatus: "PARTIAL",
+    languageStatus: nepaliStatusFor(entry.slug),
+    nepaliInterfaceStatus: nepaliStatusFor(entry.slug),
     seoStatus: "PARTIAL",
     defectsFound: [entry.slug === "nepal-electricity-bill-calculator" ? "A hard-coded tariff estimator could become inaccurate after the ERC 2083 tariff directive." : entry.slug === "unit-converter" ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families." : uiRegressionCatalog.has(entry.slug) ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction." : "", ...(browserResults.get(entry.slug)?.errors ?? [])].filter(Boolean).join("; "),
     fixesApplied: entry.slug === "nepal-electricity-bill-calculator"
@@ -176,6 +180,10 @@ const report = {
     functionalNotTested: rows.filter((row) => row.functionalTestStatus === "NOT TESTED").length,
     browserE2ePass: browserReport?.counts?.pass ?? 0,
     browserE2eFail: browserReport?.counts?.fail ?? 0,
+    nepaliInterfacePass: rows.filter((row) => row.nepaliInterfaceStatus === "PASS").length,
+    nepaliInterfacePartial: rows.filter((row) => row.nepaliInterfaceStatus === "PARTIAL").length,
+    nepaliInterfaceFail: rows.filter((row) => row.nepaliInterfaceStatus === "FAIL").length,
+    nepaliInterfaceNotTested: rows.filter((row) => row.nepaliInterfaceStatus === "NOT TESTED").length,
     mobilePass: rows.filter((row) => row.mobileStatus === "PASS").length,
     mobileNotTested: rows.filter((row) => row.mobileStatus === "NOT TESTED").length,
     mobileFail: rows.filter((row) => row.mobileStatus === "FAIL").length,

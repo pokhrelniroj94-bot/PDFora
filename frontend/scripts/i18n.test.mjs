@@ -55,6 +55,9 @@ test("shared UI coverage: English and Nepali copy is complete and route-aware", 
 
 test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools", "ne"), "/ne?from=%2Ftools");
+  assert.equal(routing.localizedOrFallbackPath("/tools/loan-emi-calculator", "ne"), "/ne/tools/loan-emi-calculator");
+  assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
+  assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne?from=%2Ftools%2Fjson-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });

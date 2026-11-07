@@ -1,4 +1,9 @@
 import { SITE_URL, defaultLocale, isLocale, isPublished, localeInfo, locales, type Locale } from "./config";
+import {
+  nepaliLocalizedCareerSlugs,
+  nepaliLocalizedFinancialSlugs,
+  nepaliLocalizedUtilitySlugs,
+} from "./nepali-tool-routes";
 
 /**
  * URL scheme: English keeps its existing unprefixed URLs (/merge-pdf, /tools/x, /blog/y).
@@ -63,7 +68,16 @@ const localizedPaths: ReadonlySet<string> = new Set([
 
 export function hasLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
-  return locale === "ne" && localizedPaths.has(normalizePath(path));
+  const normalized = normalizePath(path);
+  if (locale !== "ne") return false;
+  if (localizedPaths.has(normalized)) return true;
+  const localizedToolSlugs: ReadonlySet<string> = new Set([
+    ...nepaliLocalizedUtilitySlugs,
+    ...nepaliLocalizedFinancialSlugs,
+    ...nepaliLocalizedCareerSlugs,
+  ]);
+  const match = normalized.match(/^\/tools\/([^/]+)$/);
+  return match ? localizedToolSlugs.has(match[1]) : false;
 }
 
 /**

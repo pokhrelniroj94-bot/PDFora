@@ -10,6 +10,9 @@
 5. Add localized content for the remaining blogs, guides and remaining utilities.
    Three Nepali articles and four Nepali legal/static pages are implemented and
    measured; broader editorial and utility localization remains.
+6. Execute the 2,076-row tool-language workflow matrix with browser and functional
+   evidence; the current matrix records source/route status but does not claim every
+   workflow has been individually tested.
 
 ## Stage B completed in this continuation
 
@@ -21,6 +24,9 @@
 - Nepali now has a localized homepage, six reviewed PDF route pages, six reviewed utility route pages, seven financial/news/calculator route pages, a market dashboard, three reviewed articles and four reviewed legal/static pages.
 - The remaining English/Nepali route surfaces still require page-specific migration,
   especially the remaining blogs, guides, utilities and form/error messages.
+- The new tool-language matrix accounts for all 12 locales and 173 unique tools;
+  Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified
+  Chinese and Japanese remain unpublished.
 
 ## Required before merge
 
@@ -31,6 +37,15 @@
    genuinely reviewed content.
 5. Inspect PR checks and preview HTTP responses; do not merge or deploy without
    explicit approval.
+
+Current verification evidence:
+- Frontend Jest: 5/5.
+- i18n/rendered-content tests: 30/30; translation coverage: 2/2; tool-language matrix: 2/2.
+- Catalog verification: 173 unique available tools (49 PDF + 124 catalog utilities).
+- Frontend production build: PASS, 399 generated routes.
+- Backend pytest: 27 passed in an isolated environment with project requirements.
+- `npm audit --omit=dev --audit-level=high`: 0 vulnerabilities.
+- `pip-audit -r backend/requirements.txt`: no known vulnerabilities.
 
 ## Explicitly not claimed
 

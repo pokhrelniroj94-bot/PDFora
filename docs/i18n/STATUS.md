@@ -13,16 +13,23 @@ tools, calculators, market pages, AI pages and editorial content. Shared languag
 cookie controls also use localized English/Nepali labels.
 
 Latest executed checks for the legal/static localization stage: frontend Jest 5/5,
-i18n 30/30 plus 2 coverage tests, TypeScript through the production build, ESLint,
-catalog validation, i18n validation and production build (399 generated routes).
-Backend pytest remains unavailable in this shell. The Vercel check remains blocked
-by the provider's build-rate quota, not by the local build.
+i18n 30/30 plus 2 coverage tests and 2 tool-language matrix tests, TypeScript through
+the production build, ESLint, catalog validation, i18n validation and production
+build (399 generated routes). Backend pytest passed 27 tests in an isolated
+environment; Python dependency audit and npm production audit passed. The Vercel
+check remains blocked by the provider's build-rate quota, not by the local build.
 
 The current evidence report measures 32 Nepali route equivalents, including three AI
 writing routes, the localized Resume Builder, three fully translated articles and
 four localized legal/static pages. The remaining blog corpus, guides outside the
 reviewed PDF set and remaining utilities remain incomplete and are not counted as
 localized.
+
+The authoritative tool-language matrix is `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json`
+and contains 2,076 rows (12 locales × 173 unique tools). It records catalog existence,
+route/handler evidence, visible interface status, guide/content status, functional
+test status, human-review status and indexing eligibility independently. It does not
+inflate generated route counts into translation coverage.
 
 ## 12-language foundation snapshot
 
@@ -89,7 +96,7 @@ historical limitations are superseded by the verification results above and in
 | 4 Tools (125 catalog entries) | NOT STARTED |
 | 5 Blog | NOT STARTED |
 | 6 Static pages | COMPLETE for privacy, terms, about and contact; other static/editorial pages remain |
-| 7 SEO | NOT STARTED |
+| 7 SEO | PARTIAL: localized route registry and sitemap omissions fixed; full SEO audit remains |
 | 8 Security/perf | NOT STARTED |
 | 9 Regression | NOT STARTED |
 

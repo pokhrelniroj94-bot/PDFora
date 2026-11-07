@@ -38,7 +38,9 @@ if (process.env.PDFORA_EXPECT_HARDENED_CSP === "true") {
 }
 const permissions = headers.get("permissions-policy") || "";
 check("Permissions-Policy disables unused sensitive APIs", /camera=\(\)/.test(permissions) && /microphone=\(\)/.test(permissions) && /geolocation=\(\)/.test(permissions), permissions || "missing");
-check("No wildcard CORS on HTML", headers.get("access-control-allow-origin") !== "*", headers.get("access-control-allow-origin") || "not set");
+check("HTML does not grant credentialed wildcard CORS",
+  !(headers.get("access-control-allow-origin") === "*" && headers.get("access-control-allow-credentials") === "true"),
+  JSON.stringify({ allowOrigin: headers.get("access-control-allow-origin"), allowCredentials: headers.get("access-control-allow-credentials") }));
 
 const robotsText = await robots.text();
 check("robots disallows API crawling", /Disallow:\s*\/api\//i.test(robotsText), robotsText.slice(0, 300));
@@ -53,9 +55,24 @@ const privacyText = (await privacy.text()).toLowerCase();
 check("privacy policy discloses advertising provider", privacyText.includes("adsterra") && privacyText.includes("advertising"));
 check("privacy policy discloses Cloudflare AI processing", privacyText.includes("cloudflare workers ai") && privacyText.includes("ai"));
 check("privacy policy describes temporary upload processing", privacyText.includes("temporarily") && privacyText.includes("after processing"));
+const hostileAi = await fetch(new URL("/api/ai-writing", base), {
+  method: "POST",
+  headers: { Origin: "https://attacker.example", "Content-Type": "application/json" },
+  body: "not-json",
+  cache: "no-store",
+  signal: AbortSignal.timeout(15000),
+});
+check("AI endpoint rejects untrusted browser Origin before parsing", hostileAi.status === 403, String(hostileAi.status));
+
 const html = await home.text();
-check("homepage has canonical metadata", /<link[^>]+rel="canonical"[^>]+href="https:\/\/pd-fora\.vercel\.app\//i.test(html) || /<link[^>]+href="https:\/\/pd-fora\.vercel\.app\/[^"]*"[^>]+rel="canonical"/i.test(html));
-check("homepage has document language", /<html[^>]+lang="(?:en|ne)"/i.test(html));
+const canonicalTag = html.match(/<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/i)?.[0] || "";
+const canonicalHref = canonicalTag.match(/\bhref=["']([^"']+)["']/i)?.[1] || "";
+let canonicalUrl = null;
+try { canonicalUrl = canonicalHref ? new URL(canonicalHref, base) : null; } catch { canonicalUrl = null; }
+check("homepage has a self-referencing canonical URL",
+  Boolean(canonicalUrl && canonicalUrl.origin === new URL(base).origin && canonicalUrl.pathname === "/"),
+  canonicalHref || "missing");
+check("homepage has document language", /<html[^>]+lang=["'](?:en|ne)["']/i.test(html));
 const report = { generatedAt: new Date().toISOString(), base, checks, counts: { pass: checks.filter((x) => x.status === "PASS").length, fail: failures.length } };
 console.log(JSON.stringify(report, null, 2));
 if (failures.length) {

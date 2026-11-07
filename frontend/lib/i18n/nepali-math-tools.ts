@@ -1,7 +1,7 @@
 export type NepaliMathToolSlug =
   | "percentage-change-calculator" | "average-calculator" | "ratio-simplifier"
   | "fraction-calculator" | "percentage-of-number-calculator" | "gcd-lcm-calculator"
-  | "prime-number-checker" | "unit-converter";
+  | "prime-number-checker" | "unit-converter" | "bmi-calculator" | "bmr-calculator" | "tip-calculator" | "split-bill-calculator" | "simple-interest-calculator";
 
 export type NepaliMathInputs = Record<string, string>;
 const parse = (value: string) => value.trim() === "" ? NaN : Number(value);
@@ -88,6 +88,38 @@ export function runNepaliMathTool(slug: NepaliMathToolSlug, values: NepaliMathIn
     const converted = amount * fromFactor / toFactor;
     if (!Number.isFinite(converted)) return "रूपान्तरणको नतिजा संख्या सीमाभन्दा बाहिर छ।";
     return `${moneyNumber(amount)} ${from} = ${moneyNumber(converted)} ${to}`;
+  }
+
+  if (slug === "bmi-calculator") {
+    const weight = parse(values.weight ?? ""), heightCm = parse(values.height ?? "");
+    if (!Number.isFinite(weight) || !Number.isFinite(heightCm) || weight < 10 || weight > 300 || heightCm < 50 || heightCm > 250) return "तौल १०–३०० kg र उचाइ ५०–२५० cm बीचको मान्य संख्या हुनुपर्छ।";
+    const bmi = weight / ((heightCm / 100) ** 2);
+    const category = bmi < 18.5 ? "कम तौल" : bmi < 25 ? "सामान्य दायरा" : bmi < 30 ? "बढी तौल" : "मोटोपना दायरा";
+    return `BMI: ${moneyNumber(bmi)} kg/m²\\nवर्ग: ${category}\\nयो वयस्कका लागि सामान्य screening सूचक मात्र हो; निदान होइन।`;
+  }
+  if (slug === "bmr-calculator") {
+    const weight = parse(values.weight ?? ""), height = parse(values.height ?? ""), age = parse(values.age ?? "");
+    if (!Number.isFinite(weight) || !Number.isFinite(height) || !Number.isInteger(age) || weight < 10 || weight > 300 || height < 50 || height > 250 || age < 18 || age > 100) return "तौल १०–३०० kg, उचाइ ५०–२५० cm र उमेर १८–१०० वर्ष हुनुपर्छ।";
+    const base = 10 * weight + 6.25 * height - 5 * age;
+    const bmr = base + (values.sex === "female" ? -161 : 5);
+    return `अनुमानित BMR: ${moneyNumber(bmr)} kcal/day\\nयो आराम अवस्थामा शरीरले खर्च गर्ने ऊर्जाको सूत्रमा आधारित अनुमान हो, व्यक्तिगत आहार सल्लाह होइन।`;
+  }
+  if (slug === "tip-calculator") {
+    const bill = parse(values.bill ?? ""), tip = parse(values.tip ?? ""), people = parse(values.people ?? "1");
+    if (![bill, tip, people].every(Number.isFinite) || bill < 0 || tip < 0 || tip > 100 || !Number.isInteger(people) || people < 1 || people > 1000) return "बिल ० वा बढी, टिप ०–१००% र व्यक्ति १–१००० बीचको पूर्णांक हुनुपर्छ।";
+    const gratuity = bill * tip / 100, total = bill + gratuity;
+    return `टिप रकम: NPR ${moneyNumber(gratuity)}\\nकुल बिल: NPR ${moneyNumber(total)}\\nप्रति व्यक्ति: NPR ${moneyNumber(total / people)}`;
+  }
+  if (slug === "split-bill-calculator") {
+    const total = parse(values.total ?? ""), people = parse(values.people ?? "");
+    if (!Number.isFinite(total) || total < 0 || !Number.isInteger(people) || people < 1 || people > 1000) return "कुल बिल ० वा बढी र व्यक्ति संख्या १–१००० बीचको पूर्णांक हुनुपर्छ।";
+    return `कुल बिल: NPR ${moneyNumber(total)}\\nव्यक्ति संख्या: ${people}\\nप्रति व्यक्ति तिर्नुपर्ने: NPR ${moneyNumber(total / people)}`;
+  }
+  if (slug === "simple-interest-calculator") {
+    const principal = parse(values.principal ?? ""), rate = parse(values.rate ?? ""), years = parse(values.years ?? "");
+    if (![principal, rate, years].every(Number.isFinite) || principal <= 0 || rate < 0 || years < 0 || years > 100) return "मूलधन सकारात्मक, ब्याजदर ० वा बढी र अवधि ०–१०० वर्ष हुनुपर्छ।";
+    const interest = principal * rate * years / 100;
+    return `साधारण ब्याज: NPR ${moneyNumber(interest)}\\nकुल रकम: NPR ${moneyNumber(principal + interest)}\\nसूत्र: मूलधन × दर × अवधि ÷ १००`;
   }
   return "";
 }

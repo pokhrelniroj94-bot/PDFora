@@ -7,7 +7,7 @@ import { convertTolaGrams, validateNepalMobileNumber } from "../lib/i18n/nepali-
 const months = ["बैशाख", "जेठ", "असार", "साउन", "भदौ", "असोज", "कात्तिक", "मंसिर", "पुस", "माघ", "फागुन", "चैत"];
 const weekdays = ["आइतबार", "सोमबार", "मङ्गलबार", "बुधबार", "बिहीबार", "शुक्रबार", "शनिबार"];
 const toAsciiDigits = (value: string) => value.replace(/[०-९]/g, (digit) => String("०१२३४५६७८९".indexOf(digit)));
-const toNepaliDigits = (value: string) => value.replace(/\\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]);
+const toNepaliDigits = (value: string) => value.replace(/\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]);
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const button = "rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50";

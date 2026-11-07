@@ -157,7 +157,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के फोटो ठ्याक्कै ५०KB बनाउन सकिन्छ?", answer: "उपकरणले लक्ष्य आकार नजिक वा तोकिएको सीमाभित्र ल्याउन सक्छ; वास्तविक नतिजा मूल फोटो र सेटिङमा निर्भर हुन्छ।" },
       { question: "के ५०KB भएपछि फारामले फोटो स्वीकार गर्छ?", answer: "ग्यारेन्टी हुँदैन। पिक्सेल आयाम, अनुपात, पृष्ठभूमि र आवेदनको अन्य सर्त पनि मिल्नुपर्छ।" }
     ],
-    toolLinks: [{ label: "फोटो रिसाइजर", href: "/tools/image-resizer" }]
+    toolLinks: [{ label: "फोटो रिसाइजर", href: "/tools/loksewa-photo-resizer" }]
   },
   {
     slug: "nepse-share-buy-sell-profit-calculator-guide",
@@ -175,7 +175,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के यसले live NEPSE मूल्य देखाउँछ?", answer: "यो गणना उपकरण हो; live मूल्यको पुष्टि गर्न आधिकारिक बजार स्रोत हेर्नुहोस्।" },
       { question: "के CGT सबैका लागि एउटै हुन्छ?", answer: "करको दर र लागू हुने अवस्था लगानीकर्ताको प्रकार तथा हालको नियमअनुसार फरक हुन सक्छ।" }
     ],
-    toolLinks: [{ label: "NEPSE सेयर क्याल्कुलेटर", href: "/tools/nepse-share-calculator" }]
+    toolLinks: [{ label: "NEPSE सेयर क्याल्कुलेटर", href: "/tools/nepal-share-calculator" }]
   },
   {
     slug: "english-to-nepali-digits-converter-guide",
@@ -192,7 +192,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के यसले अङ्ग्रेजी शब्दलाई नेपालीमा अनुवाद गर्छ?", answer: "गर्दैन। यसले अङ्कका अक्षर मात्र बदल्छ।" },
       { question: "के विरामचिह्न र अरू पाठ जस्ताको तस्तै रहन्छ?", answer: "उपकरणको उद्देश्य अङ्क मात्र बदल्नु हो; प्रयोग गर्नुअघि नतिजा जाँच्नुहोस्।" }
     ],
-    toolLinks: [{ label: "नेपाली अङ्क कन्भर्टर", href: "/tools/english-to-nepali-digits" }]
+    toolLinks: [{ label: "नेपाली अङ्क कन्भर्टर", href: "/tools/nepali-digit-converter" }]
   },
   {
     slug: "preeti-to-unicode-nepali-font-converter-guide",
@@ -211,7 +211,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के यसले Kantipur वा PCS font पनि बदल्छ?", answer: "Preeti का लागि बनेको रूपान्तरणलाई अन्य legacy font मा भरपर्दो मान्न मिल्दैन। सम्बन्धित font को छुट्टै converter चाहिन सक्छ।" },
       { question: "के रूपान्तरणपछि पाठ जाँच्नुपर्छ?", answer: "पर्छ। विशेष गरी नाम, अंक, संयुक्त अक्षर र आधिकारिक विवरण मूल कागजातसँग मिलाउनुहोस्।" }
     ],
-    toolLinks: [{ label: "Preeti–Unicode कन्भर्टर", href: "/tools/preeti-to-unicode" }]
+    toolLinks: [{ label: "Preeti–Unicode कन्भर्टर", href: "/tools/preeti-unicode-converter" }]
   },
   {
     slug: "nepal-rastra-bank-daily-exchange-rates-guide",
@@ -230,7 +230,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "INR मा १०० एकाइ किन देखिन्छ?", answer: "केही मुद्रा दर १०० एकाइका आधारमा प्रकाशित हुन्छन्; गणना गर्दा प्रकाशित एकाइ जाँच्नुहोस्।" },
       { question: "के उपकरणले सधैँ live दर देखाउँछ?", answer: "उपलब्ध स्रोत र पछिल्लो प्रकाशित मितिमा निर्भर हुन्छ। नतिजामा देखाइएको मिति जाँच्नुहोस्।" }
     ],
-    toolLinks: [{ label: "नेपाल विदेशी मुद्रा दर", href: "/tools/nepal-forex" }]
+    toolLinks: [{ label: "नेपाल विदेशी मुद्रा दर", href: "/tools/nepal-forex-rates" }]
   },
   {
     slug: "nepal-salary-income-tax-calculator-2083-84-guide",
@@ -268,7 +268,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "मेरो NEA बिल किन फरक आयो?", answer: "मिटर क्षमता, खपत अवधि, न्यूनतम शुल्क, बक्यौता, कर र हालको दरका कारण फरक हुन सक्छ।" },
       { question: "के यो आधिकारिक बिल हो?", answer: "होइन। यो अनुमान मात्र हो; आधिकारिक रकम NEA को बिलमा हुन्छ।" }
     ],
-    toolLinks: [{ label: "नेपाल विद्युत् बिल क्याल्कुलेटर", href: "/tools/nea-electricity-bill-calculator" }]
+    toolLinks: [{ label: "नेपाल विद्युत् बिल क्याल्कुलेटर", href: "/tools/nepal-electricity-bill-calculator" }]
   },
   {
     slug: "nepal-public-holidays-2083-calendar-guide",
@@ -287,7 +287,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "केही मितिमा TBA किन लेखिएको हुन्छ?", answer: "त्यो मिति वा विवरण अन्तिम रूपमा पुष्टि नभएको हुन सक्छ; आधिकारिक सूचना जाँच्नुहोस्।" },
       { question: "आधिकारिक सूची कहाँ पुष्टि गर्ने?", answer: "नेपाल सरकारको राजपत्र, गृह मन्त्रालय वा सम्बन्धित सरकारी निकायको पछिल्लो सूचना हेर्नुहोस्।" }
     ],
-    toolLinks: [{ label: "नेपाल सार्वजनिक बिदा पात्रो", href: "/tools/nepal-public-holidays" }]
+    toolLinks: [{ label: "नेपाल सार्वजनिक बिदा पात्रो", href: "/tools/nepal-public-holidays-2083" }]
   },
   {
     slug: "nepali-unicode-typing-online-guide",
@@ -325,7 +325,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "+977 लाई १० अङ्कभित्र गनिन्छ?", answer: "गनिँदैन। +977 देश कोड हो; त्यसपछि राष्ट्रिय नम्बर आउँछ।" },
       { question: "के उपकरणले SIM सक्रिय छ कि छैन बताउँछ?", answer: "बताउँदैन। यसले नम्बरको ढाँचा मात्र जाँच्न सक्छ।" }
     ],
-    toolLinks: [{ label: "नेपाल मोबाइल नम्बर जाँचक", href: "/tools/nepal-mobile-number-checker" }]
+    toolLinks: [{ label: "नेपाल मोबाइल नम्बर जाँचक", href: "/tools/nepal-phone-validator" }]
   },
   {
     slug: "nepse-market-news-and-ipo-updates",
@@ -344,7 +344,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के IPO मिति र नतिजा सधैँ अद्यावधिक हुन्छ?", answer: "प्रकाशन ढिलाइ हुन सक्छ। कम्पनी, SEBON वा CDSC को आधिकारिक सूचना जाँच्नुहोस्।" },
       { question: "एउटै समाचार किन दोहोरिन्छ?", answer: "विभिन्न समाचार संस्थाले एउटै घटना प्रकाशित गर्दा स्वचालित सङ्कलनमा दोहोरिन सक्छ।" }
     ],
-    toolLinks: [{ label: "NEPSE बजार समाचार", href: "/market" }]
+    toolLinks: [{ label: "NEPSE बजार समाचार", href: "/tools/nepal-phone-validator" }]
   },
   {
     slug: "nepse-cash-dividend-and-bonus-share-calculator-guide",
@@ -366,6 +366,114 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
     toolLinks: [{ label: "NEPSE लाभांश क्याल्कुलेटर", href: "/tools/nepse-dividend-calculator" }]
   }
 ];
+
+const nepaliPdfBlogPosts: BlogPost[] = [
+  {
+    slug: "compress-pdf-to-under-1mb-online", title: "PDF फाइललाई अनलाइन १MB भन्दा सानो कसरी बनाउने?",
+    description: "इमेल र अनलाइन फारामका लागि PDF कम्प्रेस गर्ने तथा गुणस्तर जाँच्ने तरिका सिक्नुहोस्।", keyword: "PDF 1MB भन्दा सानो बनाउने",
+    updated: "2026-11-07", readTime: "५ मिनेट",
+    intro: "ठूलो PDF अनलाइन आवेदन वा इमेलमा अपलोड नहुन सक्छ। कम्प्रेस गरेर आकार घटाउन सकिन्छ, तर हरेक फाइललाई ठ्याक्कै १MB बनाउन सम्भव हुँदैन।",
+    sections: [
+      { heading: "PDF को आकार किन ठूलो हुन्छ?", paragraphs: ["उच्च resolution का फोटो, धेरै पृष्ठ, embedded font र स्क्यान गरिएका पृष्ठले PDF ठूलो बनाउँछन्।"] },
+      { heading: "PDF कम्प्रेस गर्ने चरण", bullets: ["PDF कम्प्रेस उपकरण खोल्नुहोस्।", "मूल PDF चयन गर्नुहोस्।", "उपलब्ध compression विकल्प छान्नुहोस्।", "कम्प्रेस भएको फाइल डाउनलोड गर्नुहोस्।", "फाइलको आकार र सबै पृष्ठको स्पष्टता जाँच्नुहोस्।"] },
+      { heading: "गुणस्तर जाँच्नुहोस्", paragraphs: ["धेरै कम्प्रेस गर्दा अक्षर वा फोटो धमिलो हुन सक्छ। सरकारी वा शैक्षिक कागजात पठाउनुअघि प्रत्येक पृष्ठ पढ्न मिल्छ कि मिल्दैन जाँच्नुहोस्।"] }
+    ],
+    faqs: [{ question: "के हरेक PDF लाई १MB बनाउन सकिन्छ?", answer: "ग्यारेन्टी हुँदैन। पृष्ठ सङ्ख्या, फोटो र मूल गुणस्तरले अन्तिम आकार निर्धारण गर्छ।" }, { question: "कम्प्रेस गर्दा अक्षर धमिलो हुन्छ?", answer: "सेटिङअनुसार गुणस्तर घट्न सक्छ। डाउनलोडपछि सबै पृष्ठ जाँच्नुहोस्।" }],
+    toolLinks: [{ label: "PDF कम्प्रेस", href: "/compress-pdf" }, { label: "PDF विभाजन", href: "/split-pdf" }]
+  },
+  {
+    slug: "merge-multiple-pdf-files-into-one-document", title: "धेरै PDF फाइललाई एउटै कागजातमा कसरी जोड्ने?",
+    description: "धेरै PDF लाई एउटै फाइलमा जोड्ने, पृष्ठ क्रम मिलाउने र अन्तिम कागजात जाँच्ने तरिका सिक्नुहोस्।", keyword: "धेरै PDF एउटै फाइलमा जोड्ने",
+    updated: "2026-11-07", readTime: "४ मिनेट",
+    intro: "फाराम, बिल, प्रमाणपत्र वा रिपोर्ट छुट्टाछुट्टै PDF मा हुँदा तिनलाई एउटै फाइलमा राख्न सजिलो हुन्छ। जोड्नुअघि पृष्ठ क्रम मिलाउनुहोस्।",
+    sections: [
+      { heading: "PDF जोड्नुअघि तयारी", paragraphs: ["जोड्नुपर्ने फाइलहरू छान्नुहोस् र कुन फाइल पहिले आउनुपर्छ भन्ने क्रम तय गर्नुहोस्। अनावश्यक वा संवेदनशील पृष्ठ पहिले हटाउनुहोस्।"] },
+      { heading: "धेरै PDF जोड्ने चरण", bullets: ["PDF जोड्ने उपकरण खोल्नुहोस्।", "फाइलहरू चयन गर्नुहोस्।", "फाइल वा पृष्ठको क्रम मिलाउनुहोस्।", "Merge सुरु गर्नुहोस्।", "तयार PDF डाउनलोड गरी सबै पृष्ठ जाँच्नुहोस्।"] },
+      { heading: "अन्तिम फाइल जाँच्नुहोस्", paragraphs: ["पृष्ठ हराएको, उल्टो भएको वा दोहोरिएको छैन भन्ने जाँच्नुहोस्। ठूलो फाइल पठाउनुअघि आवश्यक भए कम्प्रेस गर्नुहोस्।"] }
+    ],
+    faqs: [{ question: "के फरक आकारका PDF जोड्न मिल्छ?", answer: "सामान्यतया मिल्छ, तर पृष्ठको आकार फरक देखिन सक्छ। अन्तिम फाइल जाँच्नुहोस्।" }, { question: "के मूल फाइल मेटिन्छ?", answer: "संयुक्त नतिजा छुट्टै फाइल हुन्छ; मूल फाइल सुरक्षित राख्नुहोस्।" }],
+    toolLinks: [{ label: "PDF जोड्नुहोस्", href: "/merge-pdf" }, { label: "पृष्ठ क्रम मिलाउनुहोस्", href: "/reorder-pdf" }]
+  },
+  {
+    slug: "convert-jpg-images-to-one-pdf-on-phone", title: "मोबाइलमै धेरै JPG फोटो एउटै PDF मा कसरी बदल्ने?",
+    description: "फोनबाट फोटो चयन गरी एउटै PDF बनाउने र पृष्ठ क्रम तथा स्पष्टता जाँच्ने तरिका सिक्नुहोस्।", keyword: "मोबाइल JPG फोटो PDF बनाउने",
+    updated: "2026-11-07", readTime: "४ मिनेट",
+    intro: "मोबाइलमा खिचिएका प्रमाणपत्र, नोट वा कागजातका फोटो एउटै PDF मा राख्दा पठाउन सजिलो हुन्छ। फोटोको क्रम र स्पष्टता पहिले मिलाउनुहोस्।",
+    sections: [
+      { heading: "फोटो तयार पार्नुहोस्", paragraphs: ["हरेक पृष्ठको फोटो स्पष्ट, सीधा र पर्याप्त उज्यालो भएको सुनिश्चित गर्नुहोस्। किनारा काटिएको वा छायाँ परेको फोटो फेरि खिच्नुहोस्।"] },
+      { heading: "फोटोबाट PDF बनाउने चरण", bullets: ["Images to PDF उपकरण खोल्नुहोस्।", "आवश्यक फोटो छान्नुहोस्।", "फोटोको क्रम मिलाउनुहोस्।", "PDF बनाउने प्रक्रिया सुरु गर्नुहोस्।", "तयार PDF डाउनलोड गरी सबै पृष्ठ हेर्नुहोस्।"] },
+      { heading: "पठाउनुअघि जाँच्नुहोस्", paragraphs: ["पाठ पढ्न मिल्छ कि मिल्दैन, पृष्ठको दिशा ठीक छ कि छैन र सबै फोटो समावेश भए कि भएनन् जाँच्नुहोस्। कम्प्रेस गर्दा अक्षर धमिलो नहोस्।"] }
+    ],
+    faqs: [{ question: "के मोबाइलमै PDF बनाउन सकिन्छ?", answer: "आधुनिक मोबाइल ब्राउजरबाट समर्थित फोटो चयन गरी PDF बनाउन सकिन्छ।" }, { question: "फोटोको क्रम मिलाउन मिल्छ?", answer: "उपकरणमा क्रम मिलाउने सुविधा भए PDF बनाउनुअघि क्रम मिलाउनुहोस्।" }],
+    toolLinks: [{ label: "फोटोबाट PDF", href: "/images-to-pdf" }, { label: "PDF कम्प्रेस", href: "/compress-pdf" }]
+  },
+  {
+    slug: "convert-pdf-pages-to-jpg-images", title: "PDF का पृष्ठलाई JPG फोटोमा कसरी बदल्ने?",
+    description: "PDF का पृष्ठलाई JPG छविमा रूपान्तरण गर्ने र image quality तथा file size जाँच्ने तरिका बुझ्नुहोस्।", keyword: "PDF पृष्ठ JPG मा बदल्ने",
+    updated: "2026-11-07", readTime: "४ मिनेट",
+    intro: "PDF का पृष्ठलाई फोटोका रूपमा साझा गर्न वा प्रस्तुतिमा राख्नुपर्ने हुन सक्छ। PDF to JPG उपकरणले पृष्ठलाई छविमा बदल्न मद्दत गर्छ।",
+    sections: [
+      { heading: "PDF लाई JPG मा किन बदल्ने?", paragraphs: ["JPG छवि सामाजिक सञ्जाल, प्रस्तुति वा image upload फाराममा उपयोगी हुन्छ। तर JPG मा सामान्यतया पाठ चयन गर्न सकिँदैन।"] },
+      { heading: "PDF पृष्ठ JPG मा बदल्ने चरण", bullets: ["PDF to JPG उपकरण खोल्नुहोस्।", "PDF चयन गर्नुहोस्।", "उपलब्ध भए पृष्ठ वा गुणस्तर छान्नुहोस्।", "रूपान्तरण सुरु गर्नुहोस्।", "डाउनलोड गरिएका छविहरू खोलेर क्रम र स्पष्टता जाँच्नुहोस्।"] },
+      { heading: "गुणस्तर र आकार सन्तुलन", paragraphs: ["उच्च resolution ले अक्षर स्पष्ट राख्न सक्छ तर फाइल ठूलो बनाउँछ। कम resolution ले सानो अक्षर पढ्न कठिन बनाउन सक्छ। प्रयोगअनुसार गुणस्तर छान्नुहोस्।"] }
+    ],
+    faqs: [{ question: "के प्रत्येक पृष्ठ छुट्टै JPG हुन्छ?", answer: "सामान्यतया प्रत्येक रूपान्तरण गरिएको पृष्ठ छुट्टै छवि बन्छ।" }, { question: "के JPG मा पाठ चयन गर्न मिल्छ?", answer: "सामान्य JPG मा पाठ चयन हुँदैन; त्यसका लागि OCR आवश्यक पर्न सक्छ।" }],
+    toolLinks: [{ label: "PDF बाट JPG", href: "/pdf-to-jpg" }, { label: "PDF बाट PNG", href: "/pdf-to-png" }]
+  },
+  {
+    slug: "split-pdf-and-extract-selected-pages", title: "PDF कसरी विभाजन गर्ने र चाहिएका पृष्ठ मात्र निकाल्ने?",
+    description: "ठूलो PDF लाई साना फाइलमा विभाजन गर्ने वा निश्चित पृष्ठ मात्र निकाल्ने चरणहरू सिक्नुहोस्।", keyword: "PDF विभाजन र पृष्ठ निकाल्ने",
+    updated: "2026-11-07", readTime: "४ मिनेट",
+    intro: "लामो रिपोर्ट वा पुस्तकबाट केही पृष्ठ मात्र पठाउनुपर्ने हुन सक्छ। PDF विभाजन गर्दा आवश्यक भाग छुट्याउन सजिलो हुन्छ।",
+    sections: [
+      { heading: "Split र Extract बीचको फरक", paragraphs: ["Split ले PDF लाई धेरै भागमा छुट्याउन सक्छ। Extract ले तपाईंले छानेका पृष्ठ मात्र नयाँ PDF मा राख्छ।"] },
+      { heading: "चाहिएका पृष्ठ निकाल्ने तरिका", bullets: ["PDF Split वा Extract उपकरण खोल्नुहोस्।", "मूल PDF चयन गर्नुहोस्।", "पृष्ठ दायरा वा नम्बर राख्नुहोस्।", "प्रक्रिया सुरु गरी नयाँ PDF डाउनलोड गर्नुहोस्।", "पृष्ठ क्रम र सामग्री जाँच्नुहोस्।"] },
+      { heading: "गोपनीयता र पूर्णता जाँच", paragraphs: ["साझा गर्नुअघि हटाउनुपर्ने संवेदनशील पृष्ठ बाँकी छैनन् भन्ने सुनिश्चित गर्नुहोस्। मूल PDF सुरक्षित राख्नुहोस्।"] }
+    ],
+    faqs: [{ question: "के केही पृष्ठ मात्र निकाल्न मिल्छ?", answer: "उपकरणले पृष्ठ चयन वा range स्वीकार गरेमा आवश्यक पृष्ठ मात्र निकाल्न सकिन्छ।" }, { question: "के मूल PDF परिवर्तन हुन्छ?", answer: "नयाँ नतिजा छुट्टै फाइल हुन्छ; मूल फाइल सुरक्षित राख्नुहोस्।" }],
+    toolLinks: [{ label: "PDF विभाजन", href: "/split-pdf" }, { label: "PDF पृष्ठ निकाल्नुहोस्", href: "/extract-pages" }]
+  },
+  {
+    slug: "reduce-pdf-file-size-for-email-attachment", title: "इमेलमा पठाउन PDF को फाइल आकार कसरी घटाउने?",
+    description: "इमेल attachment सीमा पूरा गर्न PDF कम्प्रेस गर्ने वा विभाजन गर्ने तरिका बुझ्नुहोस्।", keyword: "इमेलका लागि PDF आकार घटाउने",
+    updated: "2026-11-07", readTime: "४ मिनेट",
+    intro: "इमेल सेवामा attachment को आकार सीमा हुन सक्छ। ठूलो PDF पठाउनुअघि कम्प्रेस गर्न वा धेरै भागमा विभाजन गर्न सकिन्छ।",
+    sections: [
+      { heading: "PDF किन इमेलमा नअट्न सक्छ?", paragraphs: ["धेरै स्क्यान, उच्च गुणस्तरका फोटो र धेरै पृष्ठले फाइल ठूलो बनाउँछन्। इमेल सेवा र संस्थाको सीमा फरक हुन सक्छ।"] },
+      { heading: "PDF सानो बनाएर पठाउने तरिका", bullets: ["PDF कम्प्रेस उपकरण खोल्नुहोस्।", "फाइल चयन गरी कम्प्रेस गर्नुहोस्।", "डाउनलोडपछि आकार र स्पष्टता जाँच्नुहोस्।", "अझै ठूलो भए पृष्ठ हटाउनुहोस् वा PDF विभाजन गर्नुहोस्।", "इमेलमा सही फाइल संलग्न भएको पुष्टि गर्नुहोस्।"] },
+      { heading: "वैकल्पिक उपाय", paragraphs: ["फाइल ठूलो भए संस्थाले स्वीकृत गरेको सुरक्षित cloud link प्रयोग गर्न सकिन्छ। संवेदनशील कागजात सार्वजनिक link मा नराख्नुहोस् र पहुँच अनुमति सीमित गर्नुहोस्।"] }
+    ],
+    faqs: [{ question: "इमेल attachment को अधिकतम आकार कति हुन्छ?", answer: "यो इमेल सेवा र संस्थाको सेटिङअनुसार फरक हुन्छ; आफ्नो सेवा प्रदायकको सीमा जाँच्नुहोस्।" }, { question: "कम्प्रेस गर्दा PDF धमिलो हुन्छ?", answer: "धेरै कम्प्रेस गर्दा गुणस्तर घट्न सक्छ। पठाउनुअघि सबै पृष्ठ जाँच्नुहोस्।" }],
+    toolLinks: [{ label: "PDF कम्प्रेस", href: "/compress-pdf" }, { label: "PDF विभाजन", href: "/split-pdf" }]
+  },
+  {
+    slug: "convert-pdf-table-to-excel-spreadsheet", title: "PDF को तालिकालाई Excel spreadsheet मा कसरी बदल्ने?",
+    description: "PDF बाट तालिका निकालेर Excel मा लैजाने र रूपान्तरणपछि सङ्ख्या, मिति तथा स्तम्भ जाँच्ने तरिका सिक्नुहोस्।", keyword: "PDF table Excel मा बदल्ने",
+    updated: "2026-11-07", readTime: "५ मिनेट",
+    intro: "PDF मा भएको तालिका Excel मा ल्याउँदा डेटा सम्पादन र विश्लेषण गर्न सजिलो हुन्छ। रूपान्तरणपछि स्तम्भ तथा सङ्ख्या जाँच्नु आवश्यक हुन्छ।",
+    sections: [
+      { heading: "रूपान्तरणअघि PDF जाँच्नुहोस्", paragraphs: ["PDF मा पाठ चयन गर्न मिल्छ भने तालिका निकाल्न सजिलो हुन सक्छ। स्क्यान गरिएको पृष्ठमा OCR आवश्यक पर्न सक्छ र सङ्ख्या गलत चिनिन सक्छ।"] },
+      { heading: "PDF तालिका Excel मा बदल्ने चरण", bullets: ["PDF to Excel उपकरण खोल्नुहोस्।", "तालिका भएको PDF चयन गर्नुहोस्।", "रूपान्तरण सुरु गर्नुहोस्।", "Spreadsheet डाउनलोड गरी खोल्नुहोस्।", "स्तम्भ, पङ्क्ति र heading मूल तालिकासँग तुलना गर्नुहोस्।"] },
+      { heading: "डेटा पुनः जाँच्नुहोस्", paragraphs: ["मिति, दशमलव, ऋणात्मक सङ्ख्या र जम्मा रकम गलत रूपमा import हुन सक्छन्। वित्तीय वा शैक्षिक काममा मूल PDF सँग महत्त्वपूर्ण मानहरू तुलना गर्नुहोस्।"] }
+    ],
+    faqs: [{ question: "के स्क्यान गरिएको PDF तालिका Excel मा बदल्न मिल्छ?", answer: "OCR आवश्यक पर्न सक्छ। OCR बाट आएको सङ्ख्या मूल PDF सँग मिलाउनुहोस्।" }, { question: "के Excel फाइल PDF जस्तै देखिन्छ?", answer: "सधैँ होइन। स्तम्भ, heading र cell format मिलाउनुपर्ने हुन सक्छ।" }, { question: "रूपान्तरणपछि के जाँच्ने?", answer: "स्तम्भ क्रम, दशमलव, मिति, ऋणात्मक मान र जम्मा रकम तुलना गर्नुहोस्।" }],
+    toolLinks: [{ label: "PDF बाट Excel", href: "/pdf-to-excel" }, { label: "PDF बाट CSV", href: "/pdf-to-csv" }]
+  },
+  {
+    slug: "convert-pdf-to-editable-word-document", title: "PDF लाई सम्पादन गर्न मिल्ने Word कागजातमा कसरी बदल्ने?",
+    description: "PDF लाई Word मा रूपान्तरण गर्ने, layout मिलाउने र scan भएका कागजातका सीमाबारे बुझ्नुहोस्।", keyword: "PDF editable Word मा बदल्ने",
+    updated: "2026-11-07", readTime: "५ मिनेट",
+    intro: "PDF ले कागजातको layout स्थिर राख्छ भने Word फाइल सम्पादन गर्न सजिलो हुन्छ। नतिजा भने मूल PDF को संरचनामा निर्भर हुन्छ।",
+    sections: [
+      { heading: "रूपान्तरणअघि PDF जाँच्नुहोस्", paragraphs: ["PDF मा शब्द चयन गर्न मिल्छ भने त्यसमा selectable text हुन सक्छ। पृष्ठ scan वा फोटो मात्र हो भने OCR आवश्यक पर्न सक्छ। तालिका र जटिल layout रूपान्तरणपछि सर्न सक्छन्।"] },
+      { heading: "PDF लाई Word मा बदल्ने चरण", bullets: ["PDF to Word उपकरण खोल्नुहोस्।", "PDF चयन गर्नुहोस्।", "रूपान्तरण प्रक्रिया सुरु गर्नुहोस्।", "Word फाइल डाउनलोड गरी editor मा खोल्नुहोस्।", "शीर्षक, अनुच्छेद, तालिका र page break मूल PDF सँग मिलाउनुहोस्।"] },
+      { heading: "स्क्यान गरिएको PDF को सीमा", paragraphs: ["स्क्यान गरिएको PDF पृष्ठका छविहरू हुन्। तिनको पाठ सम्पादन गर्न OCR चाहिन्छ र नतिजा scan को गुणस्तर तथा भाषामा निर्भर हुन्छ। नाम, मिति र रकम विशेष ध्यान दिएर जाँच्नुहोस्।"] }
+    ],
+    faqs: [{ question: "के कुनै पनि PDF editable Word बन्छ?", answer: "Text-based PDF राम्रोसँग रूपान्तरण हुन सक्छ। Scan भएका PDF मा OCR आवश्यक पर्न सक्छ।" }, { question: "के फोटो र तालिका उही ठाउँमा रहन्छन्?", answer: "सधैँ होइन। रूपान्तरणपछि फोटो, तालिका र page break जाँच्नुहोस्।" }, { question: "के Word फाइल तुरुन्त बुझाउन मिल्छ?", answer: "मूल PDF सँग तुलना, formatting सुधार र proofreading गरेपछि मात्र प्रयोग गर्नुहोस्।" }],
+    toolLinks: [{ label: "PDF बाट Word", href: "/pdf-to-word" }, { label: "PDF बाट Text", href: "/pdf-to-text" }]
+  }
+];
+
 
 export const nepaliLocalizedBlogPosts: BlogPost[] = [
   ...coreNepaliLocalizedBlogPosts,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T06:25:33.779Z",
+  "generatedAt": "2026-11-07T09:56:49.572Z",
   "sourceCommit": "951a782db51848a49e1ad4764b32d2f92fc977e8",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
@@ -2987,10 +2987,10 @@
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PARTIAL",
-      "defectsFound": "",
-      "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "defectsFound": "A hard-coded tariff estimator could become inaccurate after the ERC 2083 tariff directive.",
+      "fixesApplied": "Removed fixed-rate arithmetic and linked the tool to the live ERC calculator, the 2083 directive and NEA tariff information.",
+      "remainingBlockers": "External ERC handoff, official calculator availability and mobile navigation still require browser verification; PDFora intentionally does not estimate tariffs.",
+      "evidence": "frontend/components/NepalLiveTools.tsx; frontend/scripts/nepali-nepal-tools.test.mjs; ERC official calculator and 2083 directive"
     },
     {
       "slug": "nepal-public-holidays-2083",

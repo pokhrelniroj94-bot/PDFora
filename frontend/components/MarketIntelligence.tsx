@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import NepseFundamentalReview from "./NepseFundamentalReview";
 
 
 type NewsStory = { title: string; link: string; publishedAt: string; source: string };
@@ -349,8 +350,9 @@ export default function MarketIntelligence() {
       </section>
       <section className={card}><h3 className="font-extrabold text-slate-900">Risk warnings</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-amber-900">{analysis.risks.map((risk) => <li key={risk}>{risk}</li>)}</ul></section>
       <section className={card}><h3 className="font-extrabold text-slate-900">News & disclosure context (separate from signal)</h3><p className="mt-2 text-sm text-slate-600">Headline screening: <strong>{newsReview?.sentiment || "Unavailable"}</strong> · {newsReview?.stories.length || 0} relevant headlines</p><p className="mt-2 text-sm text-slate-600">{newsReview?.note || "News checked alongside technical indicators."}</p>{newsReview?.stories.length ? <ul className="mt-3 space-y-3">{newsReview.stories.map(story=><li key={story.link} className="border-t border-slate-100 pt-3"><a href={story.link} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal-800 underline">{story.title}</a><p className="mt-1 text-xs text-slate-500">{story.source} · {new Date(story.publishedAt).toLocaleString()}</p></li>)}</ul> : <p className="mt-3 text-xs text-amber-700">No relevant headlines were returned. This does not change the technical signal; verify official disclosures separately.</p>}</section>
+      {asset === "nepse" && symbol.trim().toUpperCase() !== "NEPSE" && <NepseFundamentalReview symbol={symbol.trim().toUpperCase()} price={analysis.close} />}
       <section className={card}>
-        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">NEPSE AI research report</h3><p className="mt-1 text-xs text-slate-500">Combines technical indicators with available company financials, profile, dividends and disclosures. Missing records are clearly marked; AI cannot override the computed signal.</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Researching…" : "Generate research report"}</button></div>
+        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">Optional AI research explanation</h3><p className="mt-1 text-xs text-slate-500">Optional AI-generated explanation of the already-computed report. The deterministic technical and fundamental snapshots above work without AI; AI cannot change their calculated values or signals.</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Researching…" : "Generate research report"}</button></div>
         {aiText && <p className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{aiText}</p>}
       </section>
     </div>}

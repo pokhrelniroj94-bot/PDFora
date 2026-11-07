@@ -271,7 +271,7 @@ export const nepalBlogPosts: BlogPost[] = [
     title: "Nepal Government Public Holidays 2083: Full Calendar and Regional Notes",
     description: "Search the 2083 BS public holiday list with AD dates, national holidays and community-specific observances.",
     keyword: "Nepal public holidays 2083",
-    updated: "2026-11-01",
+    updated: "2026-11-07",
     readTime: "6 min read",
     intro: "Nepal's public holiday notice includes national holidays as well as dates that apply only to particular regions, communities or groups. The Ministry of Home Affairs source page shows its 2083 notice was last updated on 2083-04-22. This guide is a searchable transcription of that notice, not a live feed; later amendments may change details. Checking the scope of a holiday matters when planning government visits, school work, travel or business deadlines.",
     sections: [

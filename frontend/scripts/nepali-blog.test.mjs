@@ -10,6 +10,7 @@ const nepalEditorial = read("lib/nepal-blog-posts.ts");
 const nepali = read("lib/nepali-localized-blog-posts.ts");
 const indexPage = read("app/[locale]/blog/page.tsx");
 const articlePage = read("app/[locale]/blog/[slug]/page.tsx");
+const englishArticlePage = read("app/blog/[slug]/page.tsx");
 const sitemap = read("app/sitemap.ts");
 const routing = read("lib/i18n/routing.ts");
 
@@ -30,7 +31,9 @@ assert.ok(articlePage.includes('inLanguage: "ne"'), "Nepali article structured d
 assert.ok(articlePage.includes('"@type": "BreadcrumbList"') && articlePage.includes("breadcrumbSchema"), "Nepali articles must include localized breadcrumb structured data");
 assert.ok(articlePage.includes("generateStaticParams"), "Nepali articles must be statically enumerable");
 assert.ok(sitemap.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be included in sitemap");
-assert.ok(sitemap.includes("nepaliLocalizedUtilitySlugs") && sitemap.includes("nepaliLocalizedFinancialSlugs") && sitemap.includes("nepaliLocalizedCareerSlugs"), "Every published Nepali utility, financial and career tool must be included in sitemap");
+assert.ok(sitemap.includes("isLocalizedToolIndexable") && sitemap.includes("filter((slug) => isLocalizedToolIndexable(\"ne\", slug))"), "Only verified, indexable Nepali tool pages may enter the sitemap");
+assert.ok(sitemap.includes("nepaliLocalizedUtilitySlugs") && sitemap.includes("nepaliLocalizedFinancialSlugs") && sitemap.includes("nepaliLocalizedCareerSlugs"), "The candidate list must cover all localized Nepali tool groups");
+assert.ok(englishArticlePage.includes("const languages = hreflangMap") && englishArticlePage.includes("languages"), "English articles must publish reciprocal hreflang for genuine Nepali equivalents");
 assert.ok(sitemap.includes("/ne/market") && sitemap.includes("/ne/resume-builder"), "Published Nepali market and resume pages must be included in sitemap");
 assert.ok(routing.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be registered for language switching and hreflang");
 

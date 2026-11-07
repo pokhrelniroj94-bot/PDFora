@@ -46,10 +46,10 @@ export default function Page() {
           <div className="grid gap-5 md:grid-cols-3">
             <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-lg">
-                ???
+                ✂️
               </div>
               <h2 className="mt-4 text-base font-black">
-                Remove Pages
+                Remove Selected Pages
               </h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Remove unwanted pages from your PDF and create a cleaner
@@ -59,7 +59,7 @@ export default function Page() {
 
             <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-lg">
-                ?
+                ✓
               </div>
               <h2 className="mt-4 text-base font-black">
                 Simple Workflow
@@ -72,7 +72,7 @@ export default function Page() {
 
             <div className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-lg">
-                ??
+                📱
               </div>
               <h2 className="mt-4 text-base font-black">
                 Works on Any Device

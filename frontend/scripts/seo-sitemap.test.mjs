@@ -10,6 +10,8 @@ const sitemapSource = read("app/sitemap.ts");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
 const englishToolPageSource = read("app/tools/[slug]/page.tsx");
+const pdfToolWorkspaceSource = read("components/PDForaTool.tsx");
+const mergePdfLayoutSource = read("app/merge-pdf/layout.tsx");
 const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
@@ -27,6 +29,9 @@ assert.deepEqual(
   [...pdfRoutes.filter((slug) => isLocalizedToolIndexable("ne", slug))].sort(),
   "The explicit Nepali PDF allowlist must match exactly the PDF routes approved for indexing",
 );
+
+assert.doesNotMatch(pdfToolWorkspaceSource, /ToolSEOContent/, "The shared PDF workspace must not render SEO guides already provided by each page layout");
+assert.match(mergePdfLayoutSource, /<ToolSEOContent slug="merge-pdf" \/>/, "The PDF page layout must remain the single owner of its SEO guide");
 
 assert.match(sitemapSource, /Object\.keys\(nepaliPdfRoutes\)/, "Sitemap must derive PDF URLs from the canonical route registry");
 assert.match(sitemapSource, /isLocalizedToolIndexable\("ne", slug\)/, "Localized sitemap entries must pass the same default-deny gate as metadata");

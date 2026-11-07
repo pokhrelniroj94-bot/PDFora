@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-07T13:39:12.337Z",
-  "sourceCommit": "31031a1268f4445705dd56fdaf8414d23698bf14",
+  "generatedAt": "2026-11-07T13:52:00.000Z",
+  "sourceCommit": "c6edb777480b24241f56b6f9e1fbd1bd8ed4d677",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     "expectedUniqueTools": 173,
@@ -17,7 +17,7 @@
       "en",
       "ne"
     ],
-    "localizedNepaliTools": 172,
+    "localizedNepaliTools": 173,
     "indexableNepaliTools": 6
   },
   "tools": [

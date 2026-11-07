@@ -10,7 +10,7 @@ Production branch: `master`, latest merged multilingual commit:
 - PR #79: merged after GitHub Actions passed backend regression tests, frontend catalog checks, i18n runtime/content checks, lint, production build, npm dependency audit and Python dependency audit.
 - 12 locales are registered: English, Nepali, Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese.
 - English and Nepali are published. Nepali has 27 curated localized editorial articles (19 Nepal-focused guides and 8 PDF workflow tutorials), a localized blog index and a limited set of reviewed tool/page equivalents.
-- The evidence report measures 79 Nepali route equivalents and 44 localized tool surfaces. Only six legacy PDF tools are currently index-eligible; generated catalogue tool guides remain noindex until reviewed.
+- The evidence report measures 87 Nepali route equivalents and 52 localized tool surfaces. Only six legacy PDF tools are currently index-eligible; generated catalogue tool guides remain noindex until reviewed.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished/noindex. Shared shell translations do not count as complete translations of pages or tools. Native-language review and RTL visual QA are still required.
 - The multilingual changes have been merged to GitHub. This status file does not claim a successful Vercel production deployment or Google indexing.
 

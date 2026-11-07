@@ -3,8 +3,8 @@ import { runNepaliDeveloperTool, runNepaliHashTool } from "../lib/i18n/nepali-de
 
 assert.equal(runNepaliDeveloperTool("json-formatter-validator", { text: '{"a":1}' }), '{\n  "a": 1\n}');
 assert.match(runNepaliDeveloperTool("json-formatter-validator", { text: "{" }), /JSON मान्य छैन/);
-assert.equal(runNepaliDeveloperTool("base64-encoder-decoder", { text: "नमस्ते" }), "4KSo4KSu4KWH4KSC");
-assert.equal(runNepaliDeveloperTool("base64-encoder-decoder", { text: "4KSo4KSu4KWH4KSC", mode: "decode" }), "नमस्ते");
+assert.equal(runNepaliDeveloperTool("base64-encoder-decoder", { text: "नमस्ते" }), "4KSo4KSu4KS44KWN4KSk4KWH");
+assert.equal(runNepaliDeveloperTool("base64-encoder-decoder", { text: "4KSo4KSu4KS44KWN4KSk4KWH", mode: "decode" }), "नमस्ते");
 assert.match(runNepaliDeveloperTool("base64-encoder-decoder", { text: "%%%" , mode: "decode" }), /Base64 मान्य छैन/);
 assert.equal(runNepaliDeveloperTool("url-encoder-decoder", { text: "hello world/नेपाली" }), "hello%20world%2F%E0%A4%A8%E0%A5%87%E0%A4%AA%E0%A4%BE%E0%A4%B2%E0%A5%80");
 assert.equal(runNepaliDeveloperTool("url-encoder-decoder", { text: "hello%20world", mode: "decode" }), "hello world");

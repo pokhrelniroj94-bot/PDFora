@@ -37,14 +37,14 @@ export default function NepalTools({slug}:{slug:string}) {
    if(existing){
     const loaded=()=>setPreetiReady(typeof PreetiConverter === "function");
     existing.addEventListener("load",loaded);
-    existing.addEventListener("error",()=>setResult("Preeti converter could not load. Please retry or use another Unicode converter."));
+    existing.addEventListener("error",()=>setResult("The bundled Preeti converter could not load. Reload the page and try again."));
     return ()=>existing.removeEventListener("load",loaded);
    }
    const script=document.createElement("script");
-   script.src="https://cdn.jsdelivr.net/npm/@dpr4dhan/preeti-to-unicode@1.0.2/preeti-to-unicode.js";
+   script.src="/vendor/preeti-to-unicode.js";
    script.async=true;script.dataset.preetiConverter="true";
    script.onload=()=>setPreetiReady(typeof PreetiConverter === "function");
-   script.onerror=()=>setResult("Preeti converter could not load. Please retry or use another Unicode converter.");
+   script.onerror=()=>setResult("The bundled Preeti converter could not load. Reload the page and try again.");
    document.head.appendChild(script);
    return ()=>{script.onload=null;script.onerror=null;};
   }

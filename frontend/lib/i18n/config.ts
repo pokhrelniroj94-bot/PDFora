@@ -34,8 +34,9 @@ export interface LocaleInfo {
 
 export const localeInfo: Record<Locale, LocaleInfo> = {
   en: { code: "en", englishName: "English", nativeName: "English", dir: "ltr", htmlLang: "en", hreflang: "en", intl: "en-US", status: "published" },
-  // NOTE: a hand-written Nepali page already lives at /ne (app/ne/page.tsx). It keeps
-  // working untouched; "ne" stays unpublished in this system until it is migrated.
+  // Nepali has reviewed, dedicated homepage, PDF, utility, finance, AI-writing and
+  // selected editorial routes. Other destinations use an explicit Nepali fallback rather
+  // than pretending that the entire English site has been translated.
   ne: { code: "ne", englishName: "Nepali", nativeName: "नेपाली", dir: "ltr", htmlLang: "ne", hreflang: "ne", intl: "ne-NP", status: "published" },
   hi: { code: "hi", englishName: "Hindi", nativeName: "हिन्दी", dir: "ltr", htmlLang: "hi", hreflang: "hi", intl: "hi-IN", status: "unpublished" },
   bn: { code: "bn", englishName: "Bengali", nativeName: "বাংলা", dir: "ltr", htmlLang: "bn", hreflang: "bn", intl: "bn-BD", status: "unpublished" },

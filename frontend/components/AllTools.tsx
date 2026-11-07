@@ -109,13 +109,15 @@ export function CatalogToolBody({slug,locale="en"}:{slug:string;locale?:"en"|"ne
       img.onerror=()=>reject(new Error("Could not read this image format."));
       img.src=sourceUrl;
     });
+    if(!img.naturalWidth||!img.naturalHeight||img.naturalWidth*img.naturalHeight>40000000) throw new Error("Image dimensions are invalid or exceed the 40-megapixel safety limit.");
     const canvas=document.createElement("canvas");
     canvas.width=img.naturalWidth;
     canvas.height=img.naturalHeight;
     const context=canvas.getContext("2d");
     if(!context) throw new Error("Your browser could not prepare the image for conversion.");
-    context.drawImage(img,0,0);
     const mime=slug==="image-compressor"?"image/webp":format;
+    if(mime==="image/jpeg"){context.fillStyle="#ffffff";context.fillRect(0,0,canvas.width,canvas.height);}
+    context.drawImage(img,0,0);
     const blob=await new Promise<Blob>((resolve,reject)=>canvas.toBlob(
       (value)=>value?resolve(value):reject(new Error("This format is not supported by your browser.")),
       mime,
@@ -179,7 +181,7 @@ function CurrencyTool({box,label,locale="en"}:{box:string;label:string;locale?:"
 
 
 function NotesToPDF({locale="en"}:{locale?:"en"|"ne"}) {
- const [title,setTitle]=useState("My Notes");
+ const [title,setTitle]=useState(locale==="ne"?"मेरा नोटहरू":"My Notes");
  const [notes,setNotes]=useState("");
  const [size,setSize]=useState("A4");
  const [fontSize,setFontSize]=useState("12");
@@ -190,7 +192,7 @@ function NotesToPDF({locale="en"}:{locale?:"en"|"ne"}) {
   const win=window.open("","_blank");
   if(!win){setMessage(locale==="ne"?"यो साइटका लागि pop-up अनुमति दिएर फेरि प्रयास गर्नुहोस्।":"Allow pop-ups for this site, then try again.");return;}
   win.document.open();
-  win.document.write("<!doctype html><html><head><meta charset='utf-8'><title>"+safe(title||"Notes")+"</title><style>@page{size:"+size+";margin:20mm}body{font-family:Arial,sans-serif;color:#172033;font-size:"+Math.max(9,Math.min(24,Number(fontSize)||12))+"pt;line-height:1.65}h1{font-size:22pt;margin:0 0 18pt;border-bottom:1px solid #ddd;padding-bottom:10pt}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}</style></head><body><h1>"+safe(title||"My Notes")+"</h1><pre>"+safe(notes)+"</pre><script>window.onload=()=>{window.focus();window.print()}<\/script></body></html>");
+  win.document.write("<!doctype html><html><head><meta charset='utf-8'><title>"+safe(title||"Notes")+"</title><style>@page{size:"+size+";margin:20mm}body{font-family:'Noto Sans Devanagari','Nirmala UI',Arial,sans-serif;color:#172033;font-size:"+Math.max(9,Math.min(24,Number(fontSize)||12))+"pt;line-height:1.65}h1{font-size:22pt;margin:0 0 18pt;border-bottom:1px solid #ddd;padding-bottom:10pt}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}</style></head><body><h1>"+safe(title||"My Notes")+"</h1><pre>"+safe(notes)+"</pre><script>window.onload=()=>{window.focus();window.print()}<\/script></body></html>");
   win.document.close();
   setMessage(locale==="ne"?"Print संवाद खुल्यो। PDF बनाउन printer/destination मा “Save as PDF” छान्नुहोस्।":"Print dialog opened. Choose “Save as PDF” as the printer/destination to create your PDF.");
  };

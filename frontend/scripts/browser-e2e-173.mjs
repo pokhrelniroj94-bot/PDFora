@@ -1204,6 +1204,7 @@ async function runTool(tool, index) {
           nepaliState.englishFallbackNotice || nepaliState.bodyLength < 80) {
         throw new Error("Nepali localized route did not pass visible-language checks: " + JSON.stringify(row.nepaliLocale));
       }
+      row.nepaliLocale.status = "PASS";
       row.checks.push("Nepali route has lang=ne, one main/h1, visible Devanagari content and no English-fallback notice");
       row.status = (expected || expectedPattern) && outputMatches && row.outputVerified ? "PASS" : "PARTIAL";
     }
@@ -1256,6 +1257,8 @@ const report = {
     pdf: results.filter((row) => row.kind === "pdf").length,
     catalog: results.filter((row) => row.kind === "catalog").length,
     aiExecutionSkipped: results.filter((row) => aiTools.has(row.slug)).length,
+    nepaliRoutePass: results.filter((row) => row.nepaliLocale?.status === "PASS").length,
+    nepaliRouteFail: results.filter((row) => row.nepaliLocale?.status !== "PASS").length,
   },
   results,
 };

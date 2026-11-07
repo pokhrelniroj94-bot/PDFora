@@ -28,7 +28,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="mb-2 text-2xl font-semibold text-gray-900">2. Your responsibility for uploaded content</h2>
-            <p>You are responsible for the files, text and other content you submit. Upload or process only material that you own or are legally permitted to use. You must not submit content that violates another person's rights or applicable law.</p>
+            <p>You are responsible for the files, text and other content you submit. Upload or process only material that you own or are legally permitted to use. You must not submit content that violates another person&apos;s rights or applicable law.</p>
             <p className="mt-2">Keep your own backup of important originals. Before relying on a processed file, open it and check that its pages, formatting, tables, images and other content are correct. PDF conversion and extraction can produce incomplete or altered results, particularly with scanned documents, unusual fonts, complex layouts or damaged files.</p>
           </section>
 

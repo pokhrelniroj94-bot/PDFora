@@ -57,6 +57,8 @@ jobs:
       - name: Audit npm dependencies
         run: npm audit --omit=dev --audit-level=high
       - name: Read-only production security, privacy and SEO smoke checks
+        id: production-security
+        continue-on-error: true
         run: node scripts/production-security-smoke.mjs
       - name: Install headless Chrome
         id: chrome
@@ -92,8 +94,12 @@ jobs:
           node --check scripts/preview-ai-smoke.mjs
           node --check scripts/security-config.test.mjs
       - name: Verify security configuration and privacy controls
+        id: security-config
+        continue-on-error: true
         run: node scripts/security-config.test.mjs
       - name: Verify live NRB, NEPSE and Nepal news freshness/fallback
+        id: live-data-smoke
+        continue-on-error: true
         env:
           E2E_BASE_URL: http://127.0.0.1:3000
         run: node scripts/live-data-smoke.mjs
@@ -129,6 +135,15 @@ jobs:
         run: exit 1
       - name: Fail CI when live Preview AI provider checks fail
         if: steps.preview-ai-smoke.outcome == 'failure'
+        run: exit 1
+      - name: Fail CI after all QA when production smoke checks fail
+        if: steps.production-security.outcome == 'failure'
+        run: exit 1
+      - name: Fail CI after all QA when security configuration checks fail
+        if: steps.security-config.outcome == 'failure'
+        run: exit 1
+      - name: Fail CI after all QA when live-data checks fail
+        if: steps.live-data-smoke.outcome == 'failure'
         run: exit 1
 
   live-production:

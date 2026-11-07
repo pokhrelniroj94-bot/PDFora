@@ -22,51 +22,49 @@ export function getNepaliExtraTextToolCopy(slug: NepaliExtraTextToolSlug) {
 export function runNepaliExtraTextTool(
   slug: NepaliExtraTextToolSlug,
   input: string,
+  search = "",
   replacement = ""
 ): string {
   const text = input ?? "";
   if (slug === "email-extractor") {
-    return [...new Set(text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/gi) ?? [])].join("\\n");
+    return [...new Set(text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) ?? [])].join("\n");
   }
   if (slug === "url-extractor") {
-    return [...new Set(text.match(/https?:\\/\\/[^\\s<>"']+/gi) ?? [])].map((url) => url.replace(/[),.;!?]+$/, "")).join("\\n");
+    return [...new Set((text.match(/https?:\/\/[^\s<>"']+/gi) ?? []).map((url) => url.replace(/[),.;!?]+$/, "")))].join("\n");
   }
   if (slug === "phone-number-extractor") {
-    const matches = text.match(/(?:\\+?\\d[\\d ()-]{6,}\\d)/g) ?? [];
-    return [...new Set(matches.map((value) => value.trim().replace(/\\s+/g, " ")))].join("\\n");
+    const matches = text.match(/(?:\+?\d[\d ()-]{6,}\d)/g) ?? [];
+    return [...new Set(matches.map((value) => value.trim().replace(/\s+/g, " ")))].join("\n");
   }
   if (slug === "number-extractor") {
-    return text.match(/[+-]?(?:\\d+(?:[.,]\\d+)?|[०-९]+(?:[.,][०-९]+)?)/g)?.join("\\n") ?? "";
+    return text.match(/[+-]?(?:\d+(?:[.,]\d+)?|[०-९]+(?:[.,][०-९]+)?)/g)?.join("\n") ?? "";
   }
   if (slug === "hashtag-extractor") {
-    return [...new Set(text.match(/#[\\p{L}\\p{N}_]+/gu) ?? [])].join("\\n");
+    return [...new Set(text.match(/#[\p{L}\p{N}_]+/gu) ?? [])].join("\n");
   }
   if (slug === "remove-duplicate-words") {
     const seen = new Set<string>();
-    return text.split(/(\\s+)/u).filter((part) => {
-      if (!part || /^\\s+$/u.test(part)) return true;
-      const key = part.toLocaleLowerCase();
+    return (text.match(/\S+/gu) ?? []).filter((word) => {
+      const key = word.toLocaleLowerCase();
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
-    }).join("");
+    }).join(" ");
   }
   if (slug === "find-replace-text") {
-    if (!replacement) return text;
-    const needle = replacement.split("\\u0000")[0];
-    const replaceWith = replacement.split("\\u0000").slice(1).join("\\u0000");
-    if (!needle) return text;
-    return text.split(needle).join(replaceWith);
+    return search ? text.split(search).join(replacement) : text;
   }
   if (slug === "palindrome-checker") {
-    const normalized = text.toLocaleLowerCase().replace(/[\\s\\p{P}\\p{S}]/gu, "");
+    const normalized = text.normalize("NFC").toLocaleLowerCase().replace(/[\s\p{P}\p{S}]/gu, "");
     if (!normalized) return "जाँच गर्न शब्द वा वाक्यांश प्रविष्ट गर्नुहोस्।";
-    return normalized === [...normalized].reverse().join("")
+    const segmenter = new Intl.Segmenter("ne", { granularity: "grapheme" });
+    const graphemes = [...segmenter.segment(normalized)].map((part) => part.segment);
+    return normalized === [...graphemes].reverse().join("")
       ? "यो पाठ अगाडि र पछाडि दुवैतर्फ एउटै पढिन्छ।"
       : "यो पाठ अगाडि र पछाडि एउटै पढिँदैन।";
   }
   if (slug === "acronym-generator") {
-    return text.trim().split(/\\s+/u).filter(Boolean).map((word) => [...word][0]).join("").toLocaleUpperCase();
+    return text.trim().split(/\s+/u).filter(Boolean).map((word) => [...word][0]).join("").toLocaleUpperCase();
   }
   return "";
 }

@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadToolAdapter } from "./lib/load-i18n.mjs";
-import { convertTolaGrams, GRAMS_PER_TOLA, validateNepalMobileNumber } from "../lib/i18n/nepali-nepal-tools.ts";
+import { ensureTypeStripping, loadToolAdapter } from "./lib/load-i18n.mjs";
+ ensureTypeStripping();
+const { convertTolaGrams, GRAMS_PER_TOLA, validateNepalMobileNumber } = await import("../lib/i18n/nepali-nepal-tools.ts");
 
 assert.equal(GRAMS_PER_TOLA, 11.6638038);
 assert.equal(convertTolaGrams(1, "tola"), 11.6638038);

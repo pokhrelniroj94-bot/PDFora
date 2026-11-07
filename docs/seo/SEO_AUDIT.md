@@ -42,7 +42,7 @@ The same live crawl also found older, page-specific how-to and FAQ blocks on `/m
 
 A source-level inventory of all 124 English catalogue tools found 124 unique tool names, 124 unique source descriptions and 124 unique keyword fields. The metadata generator currently has 50 explicit SEO overrides and nine category fallbacks; the resulting 124 English catalogue titles and descriptions were checked for duplicates and short/empty descriptions, with no duplicates or descriptions under 70 characters. All 124 catalogue tools also have a tool-specific advice entry in `CatalogToolSEOContent.tsx`. These checks establish metadata uniqueness and coverage, not the quality of every rendered page or its ability to rank.
 
-A regression check is being added to `verify-tool-catalog.mjs` so future catalogue edits cannot silently introduce duplicate names, descriptions, titles or meta descriptions.
+A regression check is being added to `verify-tool-catalog.mjs` so future catalogue edits cannot silently introduce duplicate names, descriptions, titles or meta descriptions. A separate inventory of the 49 PDF route guides also found 49 unique names, target phrases and purposes; every guide has three task-specific steps and a caution of at least 60 characters. These source checks do not replace rendered-page QA.
 
 ## Quality risks requiring page-level review
 

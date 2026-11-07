@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   title: "Terms of Service for Online Tools",
   description: "Read the terms for using PDFora online PDF, document, calculator and other browser-based tools, including user responsibilities and service limitations.",
   alternates: { canonical: "https://pd-fora.vercel.app/terms", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms for using PDFora online tools, including user responsibilities and service limitations." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms for using PDFora online tools, including user responsibilities and service limitations.", images: ["/opengraph-image"] },
+  twitter: { card: "summary_large_image", title: "PDFora Terms of Service", description: "Terms for using PDFora online tools, including user responsibilities and service limitations.", images: ["/opengraph-image"] },
 };
 
 export default function TermsPage() {

@@ -6,7 +6,7 @@ function safeSpreadsheetCell(value: unknown): string {
   const raw = value == null
     ? ""
     : typeof value === "object"
-      ? JSON.stringify(value)
+      ? (JSON.stringify(value) ?? "")
       : String(value);
   // Prefix a literal apostrophe before spreadsheet formula/control prefixes.
   // This keeps untrusted JSON values as text when a CSV is opened in Excel/Sheets.

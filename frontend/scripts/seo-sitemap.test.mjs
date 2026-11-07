@@ -8,6 +8,7 @@ ensureTypeStripping();
 const read = (relative) => fs.readFileSync(path.join(frontendRoot, relative), "utf8");
 const sitemapSource = read("app/sitemap.ts");
 const robotsSource = read("app/robots.ts");
+const layoutSource = read("app/layout.tsx");
 const modules = await loadToolAdapter();
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
 const pdfRoutes = Object.keys(modules["nepali-pdf-routes"].nepaliPdfRoutes);
@@ -30,6 +31,8 @@ assert.match(sitemapSource, /nepaliPdfRoutes\[slug\]/, "PDF URLs must retain the
 assert.doesNotMatch(sitemapSource, /\.\.\.\["merge-pdf",\s*"split-pdf",\s*"compress-pdf",\s*"rotate-pdf",\s*"pdf-to-word",\s*"pdf-to-jpg"\]/, "Do not maintain a second hard-coded localized PDF allowlist");
 assert.match(sitemapSource, /!isCatalogGeneratedGuide\(post\.slug\)/, "Unreviewed generated catalogue guides must stay out of the sitemap");
 assert.match(robotsSource, /disallow:\s*\["\/api\/"\]/, "API endpoints should stay excluded from crawling");
+assert.match(layoutSource, /inLanguage:\s*htmlLang/, "Structured data must reflect the server-rendered page language");
+assert.match(layoutSource, /publisher:\s*\{\s*"@id":\s*"https:\/\/pd-fora\.vercel\.app\/#organization"\s*\}/, "WebSite structured data should reference the canonical publisher entity");
 assert.doesNotMatch(robotsSource, /disallow:[^\]]*noindex|disallow:[^\]]*\/ne\//, "Do not block crawlers from reading noindex directives on localized pages");
 
 for (const slug of toolRoutes) {

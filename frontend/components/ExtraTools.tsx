@@ -4,6 +4,7 @@ import { average, convertUnit, fractionOperation, percentageChange, simplifyRati
 import { calculateAge, dateDifferenceDays, timeDurationMinutes } from "../lib/date-time-calculations";
 import { analyzeMetaTitle, analyzeMetaDescription, calculateKeywordDensity, generateRobotsTxt, generateSitemapXml, buildOpenGraphPreview } from "../lib/seo-utilities";
 import { jsonObjectsToCsv } from "../lib/catalog-text";
+import { parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
 type F={key:string;label:string;type?:"number"|"date"|"time"|"color";multiline?:boolean;value:string};
 const config:Record<string,F[]> = {
 "percentage-change-calculator":[{key:"a",label:"Original value",type:"number",value:"100"},{key:"b",label:"New value",type:"number",value:"120"}],
@@ -46,7 +47,8 @@ const lum=(h:string)=>{const x=h.slice(1).match(/.{2}/g)!.map(v=>parseInt(v,16)/
 export default function ExtraTools({slug}:{slug:string}){
  const fields=config[slug];const [v,setV]=useState<Record<string,string>>(()=>Object.fromEntries((fields??[]).map(f=>[f.key,f.value])));
  const [out,setOut]=useState("");const [err,setErr]=useState("");
- const val=(k:string)=>v[k]??"";const num=(k:string)=>{const x=Number(val(k));if(!Number.isFinite(x))throw Error("Enter valid numbers.");return x;};
+ const val=(k:string)=>v[k]??"";const num=(k:string)=>parseRequiredNumber(val(k));
+ const randomBelow=(max:number)=>randomIntegerBelow(max,()=>crypto.getRandomValues(new Uint32Array(1))[0]);
  const run=()=>{setErr("");setOut("");try{let s="";
  switch(slug){
  case "percentage-change-calculator":{const a=num("a"),b=num("b");const change=percentageChange(a,b);s=change.toFixed(2)+"% "+(b>=a?"increase":"decrease");break;}
@@ -63,7 +65,7 @@ export default function ExtraTools({slug}:{slug:string}){
  case "text-to-slug":s=val("text").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");break;
  case "whitespace-cleaner":s=val("text").split(/\r?\n/).map(x=>x.trim().replace(/\s+/g," ")).filter(Boolean).join("\n");break;
  case "character-frequency":{const m=new Map<string,number>();for(const c of val("text"))m.set(c,(m.get(c)||0)+1);s=[...m].sort((a,b)=>b[1]-a[1]).map(([c,n])=>(c===" "?"[space]":c)+" : "+n).join("\n");break;}
- case "password-generator":{const len=Math.max(8,Math.min(128,Math.floor(num("len")))),count=Math.max(1,Math.min(10,Math.floor(num("count")))),chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*()-_=+";s=Array.from({length:count},()=>Array.from({length:len},()=>chars[crypto.getRandomValues(new Uint32Array(1))[0]%chars.length]).join("")).join("\n");break;}
+ case "password-generator":{const len=Math.max(8,Math.min(128,Math.floor(num("len")))),count=Math.max(1,Math.min(10,Math.floor(num("count")))),chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*()-_=+";s=Array.from({length:count},()=>Array.from({length:len},()=>chars[randomBelow(chars.length)]).join("")).join("\n");break;}
  case "uuid-generator":s=Array.from({length:5},()=>crypto.randomUUID()).join("\n");break;
  case "url-query-parser":{const u=new URL(val("text"));s="URL: "+u.origin+u.pathname+"\n"+[...u.searchParams].map(([k,v])=>k+" = "+v).join("\n");if(!u.searchParams.size)s+="No query parameters found.";break;}
  case "xml-formatter-validator":{const raw=val("text");const doc=new DOMParser().parseFromString(raw,"application/xml");const issue=doc.querySelector("parsererror");if(issue)throw Error("Invalid XML: "+issue.textContent);const serializer=new XMLSerializer();const compact=serializer.serializeToString(doc);let depth=0;s=compact.replace(/></g,">\n<").split("\n").map(line=>{if(/^<\//.test(line))depth=Math.max(0,depth-1);const out="  ".repeat(depth)+line;if(/^<[^!?/][^>]*[^/]?>$/.test(line)&&!line.includes("</"))depth++;return out;}).join("\n");break;}
@@ -79,12 +81,12 @@ export default function ExtraTools({slug}:{slug:string}){
  case "robots-txt-generator":s=generateRobotsTxt(val("path"),val("site"));break;
  case "sitemap-generator":s=generateSitemapXml(val("text"));break;
  case "open-graph-preview":s=buildOpenGraphPreview({title:val("title"),description:val("description"),imageUrl:val("image"),pageUrl:val("url")});break;
- case "profit-margin-calculator":{const c=num("cost"),p=num("price");if(!p)throw Error("Selling price cannot be zero.");s="Gross profit: "+(p-c).toFixed(2)+"\nProfit margin: "+((p-c)/p*100).toFixed(2)+"%";break;}
- case "markup-calculator":{const c=num("cost"),r=num("rate");s="Selling price: "+(c*(1+r/100)).toFixed(2)+"\nMarkup amount: "+(c*r/100).toFixed(2);break;}
- case "break-even-calculator":{const f=num("fixed"),p=num("price"),c=num("variable");if(p<=c)throw Error("Selling price must exceed variable cost.");const q=f/(p-c);s="Break-even units: "+Math.ceil(q)+"\nBreak-even revenue: "+(q*p).toFixed(2);break;}
- case "sales-tax-calculator":{const a=num("amount"),r=num("rate")/100;if(r<0)throw Error("Tax rate cannot be negative.");const total=val("mode")==="remove"?a/(1+r):a*(1+r);s=(val("mode")==="remove"?"Before tax: ":"Total including tax: ")+total.toFixed(2)+"\nTax amount: "+(val("mode")==="remove"?a-total:total-a).toFixed(2);break;}
- case "salary-breakdown-calculator":{const a=num("salary"),r=num("rate")/100;if(r<0||r>1)throw Error("Deduction must be between 0 and 100%.");s="Gross monthly: "+a.toFixed(2)+"\nEstimated deduction: "+(a*r).toFixed(2)+"\nEstimated take-home monthly: "+(a*(1-r)).toFixed(2)+"\nEstimated take-home annual: "+(a*(1-r)*12).toFixed(2)+"\nIllustrative estimate only; not a statutory payroll calculation.";break;}
- case "savings-goal-calculator":{const t=num("target"),a=num("saved"),m=num("months");if(m<=0)throw Error("Months must be positive.");s="Remaining amount: "+Math.max(0,t-a).toFixed(2)+"\nMonthly savings needed: "+(Math.max(0,t-a)/m).toFixed(2);break;}
+ case "profit-margin-calculator":{const c=num("cost"),p=num("price");if(c<0||p<=0)throw Error("Cost must be non-negative and selling price must be positive.");s="Gross profit: "+(p-c).toFixed(2)+"\nProfit margin: "+((p-c)/p*100).toFixed(2)+"%";break;}
+ case "markup-calculator":{const c=num("cost"),r=num("rate");if(c<0||r<0)throw Error("Cost and markup rate cannot be negative.");s="Selling price: "+(c*(1+r/100)).toFixed(2)+"\nMarkup amount: "+(c*r/100).toFixed(2);break;}
+ case "break-even-calculator":{const f=num("fixed"),p=num("price"),c=num("variable");if(f<0||c<0||p<=c)throw Error("Fixed cost and variable cost must be non-negative, and selling price must exceed variable cost.");const q=f/(p-c);s="Break-even units: "+Math.ceil(q)+"\nBreak-even revenue: "+(q*p).toFixed(2);break;}
+ case "sales-tax-calculator":{const a=num("amount"),r=num("rate")/100;if(a<0||r<0||r>1)throw Error("Amount must be non-negative and tax rate must be between 0 and 100%.");const total=val("mode")==="remove"?a/(1+r):a*(1+r);s=(val("mode")==="remove"?"Before tax: ":"Total including tax: ")+total.toFixed(2)+"\nTax amount: "+(val("mode")==="remove"?a-total:total-a).toFixed(2);break;}
+ case "salary-breakdown-calculator":{const a=num("salary"),r=num("rate")/100;if(a<0||r<0||r>1)throw Error("Salary must be non-negative and deduction must be between 0 and 100%.");s="Gross monthly: "+a.toFixed(2)+"\nEstimated deduction: "+(a*r).toFixed(2)+"\nEstimated take-home monthly: "+(a*(1-r)).toFixed(2)+"\nEstimated take-home annual: "+(a*(1-r)*12).toFixed(2)+"\nIllustrative estimate only; not a statutory payroll calculation.";break;}
+ case "savings-goal-calculator":{const t=num("target"),a=num("saved"),m=num("months");if(t<0||a<0||m<=0)throw Error("Target and saved amounts must be non-negative; months must be positive.");s="Remaining amount: "+Math.max(0,t-a).toFixed(2)+"\nMonthly savings needed: "+(Math.max(0,t-a)/m).toFixed(2);break;}
  default:throw Error("Tool not implemented.");
  }
  setOut(s);

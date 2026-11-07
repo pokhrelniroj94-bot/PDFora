@@ -342,6 +342,14 @@ const catalogGuides: BlogPost[] = toolCatalog
 
 export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides];
 
+// Tool-specific PDF guides are also rendered on the canonical tool pages. Keep the
+// generated blog variants accessible for existing links, but do not index them as duplicate editorial pages.
+const generatedPdfGuideSlugs = new Set(additionalToolBlogPosts.map((post) => post.slug));
+export function isGeneratedPdfGuide(slug: string): boolean {
+  return generatedPdfGuideSlugs.has(slug);
+}
+
+
 // Catalog-wide guide pages are generated from a shared template. Keep them
 // accessible from their relevant tools, but do not expose them as indexable
 // editorial articles until each has been individually reviewed and expanded.

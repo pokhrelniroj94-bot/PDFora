@@ -21,7 +21,7 @@ Master baseline `defdd43ee53ecfc7e4341a95329ade6a02f2c2ec` merges PR #102. All c
 
 Next work: run full CI and functional checks for all 173 localized tools; then complete browser-level checks and native-language review. Market AI is included but is not yet browser-verified.
 
-The authoritative tool-language matrix contains 2,076 rows (12 locales × 173 tools). For Nepali it records 173/173 published routes, handlers, interfaces and metadata; 49/49 PDF guide entries; 69 catalog utilities with targeted unit tests; 49 PDF tools and 55 catalog utilities without individual functional tests; zero native-speaker reviews assessed; six indexable PDF routes and 167 noindex routes. A present Nepali interface flag does not certify every content string or human translation quality.
+The authoritative tool-language matrix contains 2,076 rows (12 locales × 173 tools). For Nepali it records 173/173 route, handler, interface-registration and metadata entries; 49/49 PDF guide entries; 69 catalog utilities with targeted unit tests; 49 PDF tools and 55 catalog utilities without individual functional tests; zero native-speaker reviews assessed; six indexable PDF routes and 167 noindex routes. A present Nepali interface flag does not certify every content string or human translation quality.
 
 ## Nepali Nepal utility batch 2 — merged in PR #102
 

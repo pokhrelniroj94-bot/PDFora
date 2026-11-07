@@ -34,6 +34,7 @@ assert.deepEqual(
 
 assert.doesNotMatch(pdfToolWorkspaceSource, /ToolSEOContent/, "PDForaTool must not render a second SEO guide");
 assert.doesNotMatch(niroj77ToolWorkspaceSource, /ToolSEOContent/, "Niroj77Tool must not render a second SEO guide");
+assert.match(read("app/[locale]/[slug]/page.tsx"), /<ToolSEOContent slug=\{slug\} locale="ne" \/>/, "Nepali PDF routes must render their localized SEO guide explicitly");
 assert.match(mergePdfLayoutSource, /<ToolSEOContent slug="merge-pdf" \/>/, "The PDF page layout must remain the single owner of its SEO guide");
 assert.equal(legacyPdfSlugs.length, 49, "Expected all 49 established PDF routes in the canonical registry");
 for (const slug of legacyPdfSlugs) {

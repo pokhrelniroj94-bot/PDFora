@@ -83,3 +83,10 @@ The reviewed bilingual tip article increases the curated Nepali localized blog c
 - [Localized versions of pages](https://developers.google.com/search/docs/specialty/international/localized-versions) — fully translated language variants, reciprocal hreflang and distinct language URLs.
 - [Google Search Essentials](https://developers.google.com/search/docs/essentials) — crawlable links, descriptive page titles and appropriate search appearance controls.
 
+
+
+## Second Search Console-driven article — 2026-11-07
+
+The generated `/blog/meta-title-checker-guide` page received 212 impressions in the 28-day Search Console sample, mainly for “seo title check” (73 impressions) and “meta title check” (46 impressions), at average position about 80.8. Its prior copy was a generic shared-template guide and remained noindex. The release branch now redirects that old URL to a new original English article, `/blog/how-to-write-seo-page-titles-google-title-links`, with a full Nepali translation and links to Google's primary title-link documentation. It explains that Google can generate title links from multiple page signals, that Google does not publish a fixed title character limit, and that title/meta descriptions cannot guarantee ranking or display.
+
+The curated Nepali localized blog collection now contains 29 articles. The new English and Nepali versions have distinct language URLs, self-canonicals and reciprocal hreflang through the shared route registry.

@@ -935,6 +935,52 @@ async function runTool(tool, index) {
         if (/\bNaN\b|\bInfinity\b|\[object Object\]/.test(emptyInputText)) throw new Error("Clearing an editable input produced an invalid numeric or object output.");
         row.checks.push("empty-input edge case did not render NaN, Infinity or object output");
       }
+      if (tool.slug === "loan-emi-calculator") {
+        const invalidState = await page.evaluate(`(() => {
+          const fields = [...document.querySelectorAll('main input:not([type="file"])')];
+          const alert = document.querySelector('main [role="alert"]')?.innerText || "";
+          return { count: fields.length, values: fields.map((field) => field.value), alert };
+        })()`);
+        if (invalidState.count !== 3 || !/loan amount|interest rate|loan term/i.test(invalidState.alert)) {
+          throw new Error("EMI validation must keep all three editable fields visible and explain invalid input.");
+        }
+        await page.evaluate(`(() => {
+          const field = document.querySelectorAll('main input:not([type="file"])')[0];
+          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+          setter?.call(field, "1000000");
+          field.dispatchEvent(new Event("input", { bubbles: true }));
+          field.dispatchEvent(new Event("change", { bubbles: true }));
+        })()`);
+        await delay(150);
+        await page.evaluate(`(() => {
+          const field = document.querySelectorAll('main input:not([type="file"])')[2];
+          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+          setter?.call(field, "60.5");
+          field.dispatchEvent(new Event("input", { bubbles: true }));
+          field.dispatchEvent(new Event("change", { bubbles: true }));
+        })()`);
+        await delay(150);
+        const fractionalState = await page.evaluate(`(() => ({
+          count: document.querySelectorAll('main input:not([type="file"])').length,
+          alert: document.querySelector('main [role="alert"]')?.innerText || ""
+        }))()`);
+        if (fractionalState.count !== 3 || !/whole-number|whole number/i.test(fractionalState.alert)) {
+          throw new Error("EMI must reject fractional months without hiding editable controls.");
+        }
+        await page.evaluate(`(() => {
+          const field = document.querySelectorAll('main input:not([type="file"])')[2];
+          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+          setter?.call(field, "60");
+          field.dispatchEvent(new Event("input", { bubbles: true }));
+          field.dispatchEvent(new Event("change", { bubbles: true }));
+        })()`);
+        await delay(150);
+        const recovered = await page.evaluate("document.querySelector('main')?.innerText || ''");
+        if (!recovered.includes("Monthly EMI:") || !recovered.includes("21,247.04")) {
+          throw new Error("EMI did not recover after correcting invalid values.");
+        }
+        row.checks.push("invalid and fractional input retained all fields; corrected values restored the expected EMI");
+      }
       if (finalState.alerts.some((alert) => /error|failed|invalid|could not|unavailable/i.test(alert))) {
         throw new Error(finalState.alerts.join(" | "));
       }

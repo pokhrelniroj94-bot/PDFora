@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { ensureTypeStripping, frontendRoot, loadToolAdapter } from "./lib/load-i18n.mjs";
 
 ensureTypeStripping();

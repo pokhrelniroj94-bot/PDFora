@@ -47,6 +47,10 @@ export const nepaliLocalizedUtilitySlugs = [
   "lorem-ipsum-generator",
   "html-encoder-decoder",
   "text-to-slug",
+  "nepal-phone-validator",
+  "gold-tola-gram-converter",
+  "nepali-calendar",
+  "loksewa-photo-resizer",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

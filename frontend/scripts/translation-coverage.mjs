@@ -83,9 +83,8 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
       published,
       sourceRouteFiles: pageSourceFiles.length,
       translatedRoutes: nepaliLocalizedRouteCount,
-      routeCoveragePercent: pageSourceFiles.length
-        ? Math.round((nepaliLocalizedRouteCount / pageSourceFiles.length) * 10000) / 100
-        : 0,
+      // Dynamic route handlers serve many slugs; do not divide route equivalents by source-file count.
+      routeCoveragePercent: null,
       sharedUiModuleCoveragePercent: sharedUiLeafCount
         ? Math.round((nepaliSharedUiLeafCount / sharedUiLeafCount) * 10000) / 100
         : 0,
@@ -158,8 +157,7 @@ fs.writeFileSync(path.join(outputDir, "TRANSLATION_COVERAGE.json"), `${JSON.stri
 const rows = config.locales.map((locale) => {
   const item = locales[locale];
   const routes = item.translatedRoutes === null ? "Source language" : item.translatedRoutes;
-  const routeCoverage = item.routeCoveragePercent === null ? "N/A" : `${item.routeCoveragePercent}%`;
-  return `| ${locale} | ${config.localeInfo[locale].englishName} | ${item.status} | ${routes} | ${routeCoverage} | ${item.sharedUiModuleCoveragePercent}% | ${item.pdfGuideCoverage.percent}% | ${item.blogCoverage.percent}% |`;
+  return `| ${locale} | ${config.localeInfo[locale].englishName} | ${item.status} | ${routes} | ${item.sharedUiModuleCoveragePercent}% | ${item.pdfGuideCoverage.percent}% | ${item.blogCoverage.percent}% |`;
 });
 const markdown = `# Translation coverage
 
@@ -171,7 +169,7 @@ The report deliberately separates source-language content from translated conten
 
 Inventory: ${pageSourceFiles.length} frontend page source files, ${apiRouteSourceFiles.length} API route source files, ${englishGuideCount} English PDF guides, ${nepaliGuideCount} Nepali PDF guides, ${editorialBlogCount} editorial articles and ${nepalBlogCount} Nepal articles.
 
-| Code | Language | Status | Localized routes | Route/source-file proxy | Shared UI module | PDF guides | Blog content |
+| Code | Language | Status | Localized route equivalents | Shared UI module | PDF guides | Blog content |
 |---|---|---|---:|---:|---:|---:|---:|
 ${rows.join("\n")}
 

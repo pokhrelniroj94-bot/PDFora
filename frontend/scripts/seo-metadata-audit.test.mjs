@@ -9,6 +9,7 @@ const modules = await loadToolAdapter();
 const catalog = modules.toolCatalog.toolCatalog.filter((tool) => tool.slug !== "pdf-tools");
 const englishPage = read("app/tools/[slug]/page.tsx");
 const nepaliPage = read("app/[locale]/tools/[slug]/page.tsx");
+const localizedMetadata = read("lib/tools/localized-metadata.ts");
 const englishOverridesSource = englishPage.slice(englishPage.indexOf("const seoOverrides"), englishPage.indexOf("const seo ="));
 const categorySource = englishPage.slice(englishPage.indexOf("const categoryDescription"), englishPage.indexOf("const description ="));
 const nepaliTitleSource = nepaliPage.slice(nepaliPage.indexOf("const nepaliTitles"), nepaliPage.indexOf("const nepaliDescriptions"));
@@ -75,6 +76,6 @@ assert.match(englishPage, /robots:\s*\{\s*index:\s*slug !== "ocr-pdf"/, "OCR rem
 assert.match(nepaliPage, /buildLocalizedToolMetadata/, "Nepali tool pages must use the shared locale-aware metadata builder");
 assert.match(nepaliPage, /title:\s*`\$\{nepaliTitles\[request\.implementation\.slug\]\} \| PDFora`/, "Nepali title must use its translated title dictionary and brand");
 assert.match(nepaliPage, /description:\s*nepaliDescriptions\[request\.implementation\.slug\]/, "Nepali description must use its translated description dictionary");
-assert.match(nepaliPage, /robots:\s*\{ index: false, follow: true \}/, "Unverified Nepali tools must stay noindex until the release gate is satisfied");
+assert.match(localizedMetadata, /robots:\s*\{ index: false, follow: isPublished\(locale\) \}/, "Unverified Nepali tools must stay noindex until the release gate is satisfied");
 
 console.log(`SEO metadata audit passed: ${englishMetadata.length} unique English tool titles/descriptions and ${nepaliMetadata.length} unique Nepali tool titles/descriptions.`);

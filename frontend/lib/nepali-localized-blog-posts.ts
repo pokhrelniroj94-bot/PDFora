@@ -286,7 +286,8 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { label: "नेपाल विद्युत् प्राधिकरण: उपभोक्ता महसुल जानकारी", url: "https://www.nea.org.np/en/pages/consumer-tariff-rates" }
     ]
   },
-  slug: "nepal-public-holidays-2083-calendar-guide",
+  {
+    slug: "nepal-public-holidays-2083-calendar-guide",
     title: "नेपाल सरकारका सार्वजनिक बिदा २०८३: राष्ट्रिय र क्षेत्रीय बिदा कसरी जाँच्ने?",
     description: "२०८३ सालका सार्वजनिक बिदा, AD मिति र क्षेत्र वा समुदायअनुसार लागू हुने सूचनाबारे बुझ्नुहोस्।",
     keyword: "नेपाल सार्वजनिक बिदा २०८३",

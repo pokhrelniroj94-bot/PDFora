@@ -2,6 +2,7 @@
 import {useState} from "react";
 import { average, convertUnit, fractionOperation, percentageChange, simplifyRatio } from "../lib/catalog-calculations";
 import { analyzeMetaTitle, analyzeMetaDescription, calculateKeywordDensity, generateRobotsTxt, generateSitemapXml, buildOpenGraphPreview } from "../lib/seo-utilities";
+import { jsonObjectsToCsv } from "../lib/catalog-text";
 type F={key:string;label:string;type?:"number"|"date"|"time"|"color";multiline?:boolean;value:string};
 const config:Record<string,F[]> = {
 "percentage-change-calculator":[{key:"a",label:"Original value",type:"number",value:"100"},{key:"b",label:"New value",type:"number",value:"120"}],
@@ -70,7 +71,7 @@ export default function ExtraTools({slug}:{slug:string}){
  case "jwt-decoder":{const p=val("text").trim().split(".");if(p.length!==3)throw Error("A JWT must have three dot-separated parts.");const d=(x:string)=>JSON.parse(decodeURIComponent(Array.from(atob(x.replace(/-/g,"+").replace(/_/g,"/")),c=>"%"+c.charCodeAt(0).toString(16).padStart(2,"0")).join("")));s="Header:\n"+JSON.stringify(d(p[0]),null,2)+"\nPayload:\n"+JSON.stringify(d(p[1]),null,2)+"\n\nDecoding does not verify the signature.";break;}
  case "color-contrast-checker":{const a=lum(val("fg")),b=lum(val("bg")),r=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);s="Contrast ratio: "+r.toFixed(2)+":1\nWCAG AA normal text (4.5:1): "+(r>=4.5?"PASS":"FAIL")+"\nWCAG AA large text (3:1): "+(r>=3?"PASS":"FAIL")+"\nWCAG AAA normal text (7:1): "+(r>=7?"PASS":"FAIL");break;}
  case "css-minifier":s=val("text").replace(/\/\*[\s\S]*?\*\//g,"").replace(/\s+/g," ").replace(/\s*([{}:;,])\s*/g,"$1").replace(/;}/g,"}").trim();break;
- case "json-to-csv":{const a=JSON.parse(val("text"));if(!Array.isArray(a)||!a.every(x=>x&&typeof x==="object"&&!Array.isArray(x)))throw Error("Input must be an array of JSON objects.");const keys=[...new Set(a.flatMap(x=>Object.keys(x)))];const cell=(x:unknown)=>{const z=String(x??"");return /[",\n]/.test(z)?'"'+z.replace(/"/g,'""')+'"':z;};s=[keys.map(cell).join(","),...a.map(row=>keys.map(k=>cell(typeof row[k]==="object"?JSON.stringify(row[k]):row[k])).join(","))].join("\n");break;}
+ case "json-to-csv":s=jsonObjectsToCsv(val("text"));break;
  case "meta-title-checker":{const report=analyzeMetaTitle(val("text"));s="Characters: "+report.characters+"\n"+report.guidance+"\nPreview: "+report.preview;break;}
  case "meta-description-checker":{const report=analyzeMetaDescription(val("text"));s="Characters: "+report.characters+"\n"+report.guidance+"\nPreview: "+report.preview;break;}
  case "keyword-density-checker":{const report=calculateKeywordDensity(val("text"),val("keyword"));s="Word count: "+report.wordCount+"\nKeyword occurrences: "+report.occurrences+"\nApproximate density: "+report.density.toFixed(2)+"%\nUse keywords naturally; no universal ideal density exists.";break;}

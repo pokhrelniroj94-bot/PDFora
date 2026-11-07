@@ -544,3 +544,14 @@ test("site language selector only advertises published locales", () => {
   );
   assert.ok(source.includes("publishedLocales.map("), "only the filtered locale list may render options");
 });
+
+
+test("Nepali business calculator pages are wired to dedicated localized logic", () => {
+  const page = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const workspace = fs.readFileSync(path.join(frontendRoot, "components", "NepaliBusinessCalculatorWorkspace.tsx"), "utf8");
+  assert.ok(page.includes("NepaliBusinessCalculatorWorkspace"));
+  for (const slug of ["profit-margin-calculator", "markup-calculator", "break-even-calculator", "sales-tax-calculator", "salary-breakdown-calculator", "commission-calculator", "hourly-to-salary-calculator"]) {
+    assert.ok(page.includes(`"${slug}"`), `${slug} must be routed to a Nepali page`);
+    assert.ok(workspace.includes(`"${slug}"`), `${slug} must have a localized workspace`);
+  }
+});

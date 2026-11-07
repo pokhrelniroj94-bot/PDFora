@@ -33,7 +33,7 @@ export function analyzeMetaDescription(input: string): MetaLengthReport {
 }
 
 function tokenize(input: string): string[] {
-  return input.normalize("NFC").toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+  return input.normalize("NFC").toLocaleLowerCase().match(/[\p{L}\p{M}\p{N}]+/gu) ?? [];
 }
 
 export function calculateKeywordDensity(text: string, keyword: string) {

@@ -291,6 +291,92 @@ async function runTool(tool, index) {
       throw new Error("Page did not render a usable tool workspace.");
     }
     row.heading = initial.heading;
+
+    // Exercise every tool at a narrow mobile viewport, then verify basic keyboard
+    // reachability and accessible names before returning to the desktop viewport.
+    await page.send("Emulation.setDeviceMetricsOverride", {
+      width: 390, height: 844, deviceScaleFactor: 1, mobile: true,
+    });
+    await delay(120);
+    const mobileState = await page.evaluate(`() => {
+      const root = document.documentElement;
+      const main = document.querySelector("main");
+      const visible = (element) => {
+        const rect = element.getBoundingClientRect();
+        const style = getComputedStyle(element);
+        return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+      };
+      const unnamedButtons = [...document.querySelectorAll("button")].filter((element) =>
+        visible(element) && !((element.innerText || "").trim() || element.getAttribute("aria-label") ||
+          element.getAttribute("aria-labelledby") || element.getAttribute("title")));
+      const unnamedLinks = [...document.querySelectorAll("a[href]")].filter((element) =>
+        visible(element) && !((element.innerText || "").trim() || element.getAttribute("aria-label") ||
+          element.getAttribute("aria-labelledby") || element.querySelector("img[alt]")));
+      const unnamedFields = [...document.querySelectorAll("input:not([type=hidden]), textarea, select")].filter((element) =>
+        visible(element) && !(element.labels?.length || element.getAttribute("aria-label") ||
+          element.getAttribute("aria-labelledby") || element.getAttribute("title")));
+      return {
+        viewport: { width: innerWidth, height: innerHeight },
+        documentWidth: root.scrollWidth,
+        viewportWidth: root.clientWidth,
+        mainWidth: main?.scrollWidth || 0,
+        mainClientWidth: main?.clientWidth || 0,
+        lang: root.getAttribute("lang") || "",
+        mainCount: document.querySelectorAll("main").length,
+        h1Count: document.querySelectorAll("h1").length,
+        unnamedButtons: unnamedButtons.length,
+        unnamedLinks: unnamedLinks.length,
+        unnamedFields: unnamedFields.length,
+      };
+    }`);
+    row.mobileViewport = mobileState;
+    if (mobileState.documentWidth > mobileState.viewportWidth + 2 ||
+        mobileState.mainWidth > mobileState.mainClientWidth + 2) {
+      throw new Error("Mobile horizontal overflow at 390px: " + JSON.stringify(mobileState));
+    }
+    row.checks.push("390px mobile viewport has no document/main horizontal overflow");
+
+    await page.evaluate("document.activeElement?.blur?.(); document.body?.focus?.();");
+    await page.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+    await page.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
+    const keyboardState = await page.evaluate(`() => {
+      const active = document.activeElement;
+      return {
+        tag: active?.tagName || "",
+        text: (active?.innerText || active?.getAttribute("aria-label") || active?.getAttribute("title") || "").trim().slice(0, 100),
+        isBody: active === document.body,
+      };
+    }`);
+    row.keyboardNavigation = keyboardState;
+    if (!keyboardState.tag || keyboardState.isBody) {
+      throw new Error("Tab key did not move focus to an interactive element.");
+    }
+    row.checks.push("keyboard Tab reaches a focusable element");
+
+    row.accessibility = {
+      langPresent: Boolean(mobileState.lang),
+      mainLandmarkCount: mobileState.mainCount,
+      h1Count: mobileState.h1Count,
+      unnamedVisibleButtons: mobileState.unnamedButtons,
+      unnamedVisibleLinks: mobileState.unnamedLinks,
+      unnamedVisibleFields: mobileState.unnamedFields,
+    };
+    if (!mobileState.lang || mobileState.mainCount !== 1 || mobileState.h1Count !== 1) {
+      throw new Error("Basic document semantics failed: " + JSON.stringify(row.accessibility));
+    }
+    if (mobileState.unnamedButtons || mobileState.unnamedLinks || mobileState.unnamedFields) {
+      row.accessibility.status = "PARTIAL";
+      row.accessibility.note = "Visible controls without accessible names/labels need manual review.";
+    } else {
+      row.accessibility.status = "PASS";
+    }
+    row.checks.push("document language, main landmark and one primary heading verified");
+
+    await page.send("Emulation.setDeviceMetricsOverride", {
+      width: 1280, height: 900, deviceScaleFactor: 1, mobile: false,
+    });
+    await delay(100);
+
     row.inputCount = initial.inputs;
     row.fileInputCount = initial.fileInputs;
     row.buttonCount = initial.buttons.length;

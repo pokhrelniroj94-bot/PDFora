@@ -60,8 +60,8 @@ const rows = [
     kind: "pdf",
     routeStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
     interfaceStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
-    handlerStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
-    functionalTestStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
+    handlerStatus: browserResults.get(slug)?.status === "PASS" && (browserResults.get(slug)?.action || browserResults.get(slug)?.outputVerified) ? "PASS" : "PARTIAL",
+    functionalTestStatus: browserResults.get(slug)?.status === "PASS" && (browserResults.get(slug)?.action || browserResults.get(slug)?.outputVerified) ? "PASS" : "PARTIAL",
     outputVerificationStatus: browserResults.get(slug)?.outputVerified ? "PASS" : "PARTIAL",
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
@@ -82,9 +82,9 @@ const rows = [
     category: entry.category,
     kind: "catalog",
     routeStatus: browserResults.get(entry.slug)?.status === "PASS" ? "PASS" : "PARTIAL",
-    interfaceStatus: browserResults.get(entry.slug)?.status === "PASS" ? "PASS" : "PARTIAL",
-    handlerStatus: browserResults.get(entry.slug)?.status === "PASS" && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped")) ? "PASS" : "PARTIAL",
-    functionalTestStatus: browserResults.get(entry.slug)?.status === "PASS" && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped"))
+    interfaceStatus: browserResults.get(entry.slug)?.status === "PASS" && browserResults.get(entry.slug)?.inputCount > 0 ? "PASS" : "PARTIAL",
+    handlerStatus: browserResults.get(entry.slug)?.status === "PASS" && (browserResults.get(entry.slug)?.action || browserResults.get(entry.slug)?.outputVerified) && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped")) ? "PASS" : "PARTIAL",
+    functionalTestStatus: browserResults.get(entry.slug)?.status === "PASS" && (browserResults.get(entry.slug)?.action || browserResults.get(entry.slug)?.outputVerified) && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped"))
       ? "PASS"
       : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
     outputVerificationStatus: browserResults.get(entry.slug)?.outputVerified ? "PASS" : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
@@ -123,7 +123,7 @@ const report = {
     sourceOfTruth: "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     statusRule: "Only executed tests produce PASS; source inspection produces PARTIAL or NOT TESTED.",
     limitations:
-      "This report does not claim browser, mobile, accessibility or individual catalog-tool runtime verification.",
+      browserReport ? "Browser route and tool-action checks are included where the per-tool report records them. Mobile, accessibility, visual comparison and independent parsing of downloaded bytes remain separate." : "No browser E2E report is present. Mobile, accessibility and individual catalog-tool runtime verification are not claimed.",
   },
   evidence: {
     backendPdfSweep: pdfEvidence,
@@ -174,7 +174,7 @@ const lines = [
   "",
   "This report records executed evidence only. It does not treat route existence or static handler references as proof that a tool works.",
   "",
-  `Summary: **${legacyToolSlugs.length} PDF tools** and **${catalog.length} catalog utilities** (${rows.length} total). Functional status: **${report.counts.functionalPartial} partial**, **${report.counts.functionalNotTested} not tested**, **0 full PASS**.`,
+  `Summary: **${legacyToolSlugs.length} PDF tools** and **${catalog.length} catalog utilities** (${rows.length} total). Functional status: **${report.counts.functionalPass} PASS**, **${report.counts.functionalPartial} partial**, **${report.counts.functionalNotTested} not tested**. Browser sweep: **${report.counts.browserE2ePass} passed**, **${report.counts.browserE2eFail} failed**.`,
   "",
   `Evidence: backend PDF sweep \`${pdfEvidence}\`; frontend worker tests \`${workerEvidence}\`; catalog static verification \`${catalogEvidence}\`.`,
   "",

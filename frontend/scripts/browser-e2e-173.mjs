@@ -136,7 +136,7 @@ async function openPage(url) {
     ws.send(JSON.stringify({ id, method, params }));
     setTimeout(() => {
       if (pending.has(id)) { pending.delete(id); reject(new Error("CDP timeout: " + method)); }
-    }, 15000).unref?.();
+    }, 30000).unref?.();
   });
   const evaluate = async (expression) => {
     const result = await send("Runtime.evaluate", {

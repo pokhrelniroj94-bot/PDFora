@@ -232,7 +232,7 @@ export default function MarketIntelligence() {
   const [newsReview, setNewsReview] = useState<NewsReview | null>(null);
 
   async function loadNepse() {
-    setBusy(true); setError(""); setAnalysis(null); setAiText("");
+    setBusy(true); setError(""); setAnalysis(null); setAiText(""); setNewsReview(null);
     try {
       const response = await fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", { cache: "no-store" });
       const data = await response.json();
@@ -243,17 +243,23 @@ export default function MarketIntelligence() {
       })).filter((p: Point) => p.date && Number.isFinite(p.close) && p.close > 0);
       const result = analyse(rows, "nepse");
       if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
-      const newsResponse = await fetch(`/api/nepal-market-news?symbol=${encodeURIComponent(symbol)}`, { cache: "no-store" });
-      if (!newsResponse.ok) throw new Error("News service unavailable; a news-verified signal cannot be issued.");
-      const newsPayload = await newsResponse.json();
-      const reviewed = reviewNews(newsPayload, symbol);
+
+      // The deterministic engine is the primary product. News is an optional,
+      // separately-labelled context feed and must never gate or rewrite its signal.
+      let reviewed: NewsReview | null = null;
+      try {
+        const newsResponse = await fetch(`/api/nepal-market-news?symbol=${encodeURIComponent(symbol.trim().toUpperCase())}`, { cache: "no-store" });
+        if (newsResponse.ok) reviewed = reviewNews(await newsResponse.json(), symbol);
+      } catch {
+        reviewed = null;
+      }
       setNewsReview(reviewed);
       const combined: Analysis = { ...result };
-      if (reviewed.sentiment === "Negative" && combined.signal === "Potential BUY setup") { combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "Negative recent headlines block a fresh BUY until original announcements are reviewed."]; }
-      else if (reviewed.sentiment === "Positive" && combined.signal.includes("SELL")) { combined.signal = "Wait / neutral"; combined.risks = [...combined.risks, "Positive headlines conflict with technical downside; wait for confirmation."]; }
-      else if (reviewed.sentiment === "Mixed / neutral") { if (combined.signal === "Potential BUY setup") combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "News is mixed or insufficient; a fresh BUY is blocked until there is clearer news context and technical confirmation."]; }
-      combined.reasons = [...combined.reasons, `News review: ${reviewed.sentiment}. ${reviewed.note}`];
-      setAnalysis(combined); setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
+      if (reviewed) combined.reasons = [...combined.reasons, `Separate headline context: ${reviewed.sentiment}. Headlines do not change the deterministic technical signal. ${reviewed.note}`];
+      else combined.risks = [...combined.risks, "News feed is unavailable. The rule-based technical analysis remains available; company announcements and material disclosures should be checked separately."];
+
+      setAnalysis(combined);
+      setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
     } catch (err) { setError(err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
     finally { setBusy(false); }
   }
@@ -297,9 +303,9 @@ export default function MarketIntelligence() {
   const scoreTone = analysis?.signal.includes("BUY") ? "text-emerald-700" : analysis?.signal.includes("SELL") ? "text-rose-700" : "text-amber-700";
   return <div className="space-y-6">
     <header>
-      <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora Smart Market AI</p>
+      <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora NEPSE Quant Engine</p>
       <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">Market Intelligence & Risk Analyzer</h1>
-      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Analyse NEPSE, Forex and Crypto price history with trend, momentum, volatility, support/resistance and rule-based entry/exit conditions. Optional free AI explains the calculated results.</p>
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Analyse NEPSE price history with deterministic, rule-based trend, momentum, volume and risk checks. The core signal works without AI; AI research is an optional explanation layer.</p>
       <a href="/nepse-lab" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">Open NEPSE Quant Strategy Lab <span aria-hidden="true">→</span></a>
     </header>
 
@@ -336,7 +342,7 @@ export default function MarketIntelligence() {
         <div className={card}><h3 className="font-extrabold text-slate-900">Why the engine reached this view</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-slate-700">{analysis.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul></div>
       </section>
       <section className={card}><h3 className="font-extrabold text-slate-900">Risk warnings</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-amber-900">{analysis.risks.map((risk) => <li key={risk}>{risk}</li>)}</ul></section>
-      <section className={card}><h3 className="font-extrabold text-slate-900">Market news cross-check</h3><p className="mt-2 text-sm text-slate-600">News sentiment: <strong>{newsReview?.sentiment || "Not checked"}</strong> · {newsReview?.stories.length || 0} relevant headlines</p><p className="mt-2 text-sm text-slate-600">{newsReview?.note || "News checked alongside technical indicators."}</p>{newsReview?.stories.length ? <ul className="mt-3 space-y-3">{newsReview.stories.map(story=><li key={story.link} className="border-t border-slate-100 pt-3"><a href={story.link} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal-800 underline">{story.title}</a><p className="mt-1 text-xs text-slate-500">{story.source} · {new Date(story.publishedAt).toLocaleString()}</p></li>)}</ul> : <p className="mt-3 text-xs text-amber-700">No relevant recent news found; confidence is reduced.</p>}</section>
+      <section className={card}><h3 className="font-extrabold text-slate-900">News & disclosure context (separate from signal)</h3><p className="mt-2 text-sm text-slate-600">Headline screening: <strong>{newsReview?.sentiment || "Unavailable"}</strong> · {newsReview?.stories.length || 0} relevant headlines</p><p className="mt-2 text-sm text-slate-600">{newsReview?.note || "News checked alongside technical indicators."}</p>{newsReview?.stories.length ? <ul className="mt-3 space-y-3">{newsReview.stories.map(story=><li key={story.link} className="border-t border-slate-100 pt-3"><a href={story.link} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal-800 underline">{story.title}</a><p className="mt-1 text-xs text-slate-500">{story.source} · {new Date(story.publishedAt).toLocaleString()}</p></li>)}</ul> : <p className="mt-3 text-xs text-amber-700">No relevant headlines were returned. This does not change the technical signal; verify official disclosures separately.</p>}</section>
       <section className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">NEPSE AI research report</h3><p className="mt-1 text-xs text-slate-500">Combines technical indicators with available company financials, profile, dividends and disclosures. Missing records are clearly marked; AI cannot override the computed signal.</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Researching…" : "Generate research report"}</button></div>
         {aiText && <p className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{aiText}</p>}

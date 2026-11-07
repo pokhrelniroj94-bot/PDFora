@@ -316,6 +316,154 @@ export const nepaliPdfRoutes: Record<string, NepaliPdfRoute> = {
     "downloadName": "PDFora-PDF-to-HTML.html",
     "component": "niroj"
   },
+  "extract-images": {
+    "slug": "extract-images",
+    "endpoint": "/api/extract-images",
+    "title": "Extract Images from PDF",
+    "description": "Extract embedded images from a PDF into a ZIP archive.",
+    "downloadName": "PDFora-Extracted-Images.zip",
+    "component": "niroj"
+  },
+  "remove-blank-pages": {
+    "slug": "remove-blank-pages",
+    "endpoint": "/api/remove-blank-pages",
+    "title": "Remove Blank PDF Pages",
+    "description": "Detect and remove pages that contain no selectable text, images or vector drawings.",
+    "downloadName": "PDFora-Without-Blank-Pages.pdf",
+    "component": "niroj"
+  },
+  "compare-pdf": {
+    "slug": "compare-pdf",
+    "endpoint": "/api/compare",
+    "title": "Compare PDF",
+    "description": "Compare selectable text from two PDF files and download a difference report.",
+    "downloadName": "PDFora-PDF-Comparison.txt",
+    "component": "niroj",
+    "multiple": true,
+    "accept": "application/pdf,.pdf",
+    "fieldName": "files"
+  },
+  "add-blank-pages": {
+    "slug": "add-blank-pages",
+    "endpoint": "/api/add-blank-pages",
+    "title": "Add Blank Pages",
+    "description": "Add one or more blank pages to the end of your PDF. The new pages use the dimensions of the last page in your document.",
+    "downloadName": "PDFora-Blank-Pages-Added.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "count",
+        "label": "Number of blank pages to add",
+        "placeholder": "1",
+        "defaultValue": "1"
+      }
+    ]
+  },
+  "rotate-selected-pages": {
+    "slug": "rotate-selected-pages",
+    "endpoint": "/api/rotate-selected-pages",
+    "title": "Rotate Selected Pages",
+    "description": "Rotate only the pages you choose. Enter page numbers separated by commas, such as 1,3,5, or enter all to rotate every page.",
+    "downloadName": "PDFora-Rotated-Selected-Pages.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "pages",
+        "label": "Pages to rotate (e.g. 1,3,5 or all)",
+        "placeholder": "1,3,5",
+        "defaultValue": "all"
+      },
+      {
+        "name": "degrees",
+        "label": "Rotation degrees (90, 180 or 270)",
+        "placeholder": "90",
+        "defaultValue": "90"
+      }
+    ]
+  },
+  "add-background": {
+    "slug": "add-background",
+    "endpoint": "/api/add-background",
+    "title": "Add PDF Background",
+    "description": "Add a subtle text background such as DRAFT to every page of a PDF.",
+    "downloadName": "PDFora-Background.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "text",
+        "label": "Background text",
+        "placeholder": "DRAFT",
+        "defaultValue": "DRAFT"
+      },
+      {
+        "name": "color",
+        "label": "Background color (preset)",
+        "placeholder": "#E5E7EB",
+        "defaultValue": "#E5E7EB"
+      }
+    ]
+  },
+  "add-bookmarks": {
+    "slug": "add-bookmarks",
+    "endpoint": "/api/add-bookmarks",
+    "title": "Add Bookmarks to PDF",
+    "description": "Add a clickable table of contents to a PDF. Enter one page number and bookmark title per line in page:title format.",
+    "downloadName": "PDFora-Bookmarks-Added.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "bookmarks",
+        "label": "Bookmarks (one per line: page:title)",
+        "placeholder": "1:Introduction\n5:Chapter One\n12:Conclusion",
+        "defaultValue": "1:Introduction",
+        "multiline": true
+      }
+    ]
+  },
+  "bates-numbering": {
+    "slug": "bates-numbering",
+    "endpoint": "/api/bates-numbering",
+    "title": "Bates Numbering PDF",
+    "description": "Add sequential Bates numbers to every page of a PDF, with a custom prefix, starting number and digit length.",
+    "downloadName": "PDFora-Bates-Numbered.pdf",
+    "component": "niroj",
+    "extraFields": [
+      {
+        "name": "prefix",
+        "label": "Prefix (optional)",
+        "placeholder": "CASE-",
+        "defaultValue": "CASE-"
+      },
+      {
+        "name": "start",
+        "label": "Starting number",
+        "placeholder": "1",
+        "defaultValue": "1"
+      },
+      {
+        "name": "digits",
+        "label": "Number of digits",
+        "placeholder": "6",
+        "defaultValue": "6"
+      }
+    ]
+  },
+  "extract-bookmarks": {
+    "slug": "extract-bookmarks",
+    "endpoint": "/api/extract-bookmarks",
+    "title": "Extract PDF Bookmarks",
+    "description": "Extract the table of contents and bookmarks from a PDF into a downloadable text file, including bookmark titles and page numbers.",
+    "downloadName": "PDFora-Bookmarks.txt",
+    "component": "niroj"
+  },
+  "extract-fonts": {
+    "slug": "extract-fonts",
+    "endpoint": "/api/extract-fonts",
+    "title": "Extract Fonts from PDF",
+    "description": "Extract embedded font files from a PDF when the document contains extractable embedded fonts.",
+    "downloadName": "PDFora-Fonts.zip",
+    "component": "niroj"
+  },
 };
 
 export function getNepaliPdfRoute(slug: string): NepaliPdfRoute | undefined {

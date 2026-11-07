@@ -116,6 +116,7 @@ jobs:
         continue-on-error: true
         env:
           PDFORA_AI_PREVIEW_URL: https://pd-fora-git-qa-173-tool-br-168b6d-pokhrelniroj94-7012s-projects.vercel.app
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: node scripts/preview-ai-smoke.mjs
       - name: Regenerate audit with browser evidence
         if: always()

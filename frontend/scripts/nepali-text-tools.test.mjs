@@ -17,6 +17,7 @@ assert.equal(runNepaliTextTool("word-character-counter", ""), "शब्द: 0\n
 assert.equal(runNepaliTextTool("email-extractor", "Contact a@example.com or a@example.com and b@test.org"), "a@example.com\nb@test.org");
 assert.equal(runNepaliTextTool("url-extractor", "See https://example.com/page, then www.example.org!"), "https://example.com/page\nwww.example.org");
 assert.equal(runNepaliTextTool("phone-number-extractor", "Call +977 980-123-4567 or 123"), "+977 980-123-4567");
+assert.equal(runNepaliTextTool("phone-number-extractor", "फोन ९८०१२३४५६७"), "९८०१२३४५६७");
 assert.equal(runNepaliTextTool("number-extractor", "कुल १२.५ र -42.75"), "१२.५\n-42.75");
 assert.equal(runNepaliTextTool("hashtag-extractor", "#नेपाली #PDFora #नेपाली"), "#नेपाली\n#PDFora");
 assert.equal(runNepaliTextTool("remove-duplicate-words", "PDFora pdfora tools tools"), "PDFora tools");
@@ -26,4 +27,4 @@ assert.equal(runNepaliTextTool("palindrome-checker", "A man, a plan, a canal: Pa
 assert.equal(runNepaliTextTool("palindrome-checker", "नेपाल"), "यो पाठ पालिन्ड्रोम होइन।");
 assert.equal(runNepaliTextTool("acronym-generator", "World Health Organization"), "WHO");
 
-console.log("Nepali text utility functional tests passed (24 assertions).");
+console.log("Nepali text utility functional tests passed (25 assertions).");

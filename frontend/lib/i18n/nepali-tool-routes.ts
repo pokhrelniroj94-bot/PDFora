@@ -121,6 +121,7 @@ export const nepaliLocalizedFinancialSlugs = [
   "savings-goal-calculator",
   "currency-converter",
   "nepal-share-calculator",
+  "market-ai",
 ] as const;
 
 export const nepaliLocalizedPublicInfoSlugs = [

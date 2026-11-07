@@ -1,7 +1,7 @@
 import Link from "next/link";
 import AdsterraNative from "../../components/AdsterraNative";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
 import { hreflangMap } from "../../../lib/i18n/routing";
 
@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  if (slug === "tip-calculator-guide") permanentRedirect("/blog/how-to-calculate-tip-and-split-the-bill");
   const post = getBlogPost(slug);
   if (!post) notFound();
 

@@ -12,7 +12,7 @@ traffic claim.
 - Published Nepali equivalents use self-referencing canonicals and reciprocal
   English/Nepali hreflang.
 - Unpublished locales are not included in hreflang or the sitemap.
-- The sitemap contains English routes, curated Nepali home/blog/market/resume/policy routes, and only the six reviewed Nepali localized tool routes.
+- The sitemap contains English routes, curated Nepali home/blog/market/resume/policy routes, the NEPSE strategy lab and resume builder, and only the six reviewed Nepali localized tool routes.
 - Root `/en` redirects to the unprefixed English URL.
 - Page-relevant structured data and useful tool-guide content were preserved; FAQPage markup was removed from tool, blog, PDF-guide and Nepali-home templates because Google Search no longer shows FAQ rich results as of May 7, 2026; visible FAQ text remains.
 
@@ -97,7 +97,7 @@ The unified catalogue is confirmed as 173 unique tools: 49 established PDF route
 
 The utility metadata fallback now uses each tool's own catalogue description directly instead of appending a generic category paragraph. The fallback title identifies the actual tool; the root layout appends the single PDFora brand suffix. Page-level titles were normalized to avoid appending the brand twice; the About page uses an absolute title because its descriptive wording already includes the brand. Existing 50 reviewed title/description overrides are retained. The route continues to emit a self-canonical URL, Open Graph and Twitter metadata, BreadcrumbList and SoftwareApplication structured data. OCR remains excluded from indexing until its processing backend is available.
 
-The audit also found missing social preview metadata on the NEPSE market page, NEPSE strategy lab, resume builder and blog index; the all-tools directory now has preview images. The Nepali homepage now links to all six verified localized PDF tools. Open Graph/Twitter metadata has been added to those landing pages. The About title was made more descriptive. Main landing-page and article regression tests now cover canonical, Open Graph, Twitter and indexing metadata.
+The audit also found missing social preview metadata on the NEPSE market page, NEPSE strategy lab, resume builder and blog index; the all-tools directory now has preview images. The Nepali homepage now links to all six verified localized PDF tools. The sitemap was also missing the indexable /nepse-lab and /resume-builder landing pages; both are now included with their existing self-canonicals. Open Graph/Twitter metadata has been added to those landing pages. The About title was made more descriptive. Main landing-page and article regression tests now cover canonical, Open Graph, Twitter and indexing metadata.
 
 Nepali catalogue tool routes remain default-deny for indexing. The current explicit localized utility route list is not itself an indexing approval: only the six reviewed Nepali PDF equivalents are indexable and included in hreflang/sitemap. Nepali home, blog, policy, market and resume routes use the shared locale metadata builder. Generated catalogue blog guides remain excluded from the sitemap and noindex until individually edited and reviewed.
 

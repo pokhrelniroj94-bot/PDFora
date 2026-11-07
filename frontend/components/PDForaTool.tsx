@@ -42,6 +42,9 @@ export default function PDForaTool({
   const pathname = usePathname();
   const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
   const ui = getPdfToolCopy(pathname);
+  const imageUpload = accept.includes("image/");
+  const chooseDropLabel = imageUpload ? (locale === "ne" ? "तस्बिर फाइल छान्नुहोस् वा यहाँ छोड्नुहोस्" : "Choose or drop image files") : (multiple ? ui.chooseDropMultiple : ui.chooseDropSingle);
+  const uploadLimitLabel = imageUpload ? (locale === "ne" ? "प्रत्येक तस्बिर अधिकतम ५० MB" : "Image files up to 50 MB each") : ui.pdfFilesLimit;
   const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
   const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const homeHref = locale === "en" ? "/" : `/${locale}`;
@@ -58,6 +61,16 @@ export default function PDForaTool({
 
   function applyFiles(selectedFiles: File[]) {
     const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
+    const invalidImage = imageUpload && selected.find((file) =>
+      !["image/jpeg", "image/png", "image/webp"].includes(file.type) &&
+      !/\.(jpe?g|png|webp)$/i.test(file.name)
+    );
+    if (invalidImage) {
+      setFiles([]);
+      setMessage(locale === "ne" ? "JPG, JPEG, PNG वा WebP तस्बिर मात्र छान्नुहोस्।" : "Choose JPG, JPEG, PNG or WebP image files only.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
     const oversized = selected.find((file) => file.size > 50 * 1024 * 1024);
     if (oversized) {
       setFiles([]);
@@ -265,19 +278,17 @@ export default function PDForaTool({
             className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] sm:min-h-64 ${dragActive ? "border-teal-500 bg-teal-50" : "border-slate-300 bg-slate-50/80 hover:border-teal-400 hover:bg-teal-50"}`}
           >
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-3xl ring-1 ring-teal-900/5">
-              📄
+              {imageUpload ? "🖼️" : "📄"}
             </div>
 
             <h2 className="mt-4 text-base font-black sm:text-lg">
               {files.length > 0
                 ? `${files.length} ${ui.filesSelected}`
-                : multiple
-                  ? ui.chooseDropMultiple
-                  : ui.chooseDropSingle}
+                : chooseDropLabel}
             </h2>
 
             <p className="mt-2 text-xs text-slate-500 sm:text-sm">
-              {ui.pdfFilesLimit}
+              {uploadLimitLabel}
             </p>
 
             <span className="mt-5 inline-flex min-h-12 items-center rounded-xl bg-gradient-to-r from-teal-600 to-cyan-700 px-5 text-sm font-bold text-white shadow-md shadow-teal-900/15">

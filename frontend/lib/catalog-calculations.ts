@@ -86,14 +86,14 @@ export function gcd(a: number, b: number): number {
 }
 
 function bigintGcd(a: bigint, b: bigint): bigint {
-  let left = a < 0n ? -a : a;
-  let right = b < 0n ? -b : b;
-  while (right !== 0n) {
+  let left = a < BigInt(0) ? -a : a;
+  let right = b < BigInt(0) ? -b : b;
+  while (right !== BigInt(0)) {
     const remainder = left % right;
     left = right;
     right = remainder;
   }
-  return left || 1n;
+  return left || BigInt(1);
 }
 
 export function simplifyRatio(a: number, b: number): string {
@@ -102,7 +102,7 @@ export function simplifyRatio(a: number, b: number): string {
   }
   let numerator = BigInt(a);
   let denominator = BigInt(b);
-  if (denominator < 0n) { numerator = -numerator; denominator = -denominator; }
+  if (denominator < BigInt(0)) { numerator = -numerator; denominator = -denominator; }
   const divisor = bigintGcd(numerator, denominator);
   return `${numerator / divisor}:${denominator / divisor}`;
 }
@@ -121,12 +121,12 @@ export function fractionOperation(a: number, b: number, c: number, d: number, op
   else if (operation === "-") { numerator = leftNumerator * rightDenominator - rightNumerator * leftDenominator; denominator = leftDenominator * rightDenominator; }
   else if (operation === "*") { numerator = leftNumerator * rightNumerator; denominator = leftDenominator * rightDenominator; }
   else if (operation === "/") {
-    if (rightNumerator === 0n) throw new Error("Cannot divide by zero.");
+    if (rightNumerator === BigInt(0)) throw new Error("Cannot divide by zero.");
     numerator = leftNumerator * rightDenominator;
     denominator = leftDenominator * rightNumerator;
   } else throw new Error("Operation must be +, -, *, or /.");
-  if (denominator === 0n) throw new Error("Fraction denominator cannot be zero.");
-  if (denominator < 0n) { numerator = -numerator; denominator = -denominator; }
+  if (denominator === BigInt(0)) throw new Error("Fraction denominator cannot be zero.");
+  if (denominator < BigInt(0)) { numerator = -numerator; denominator = -denominator; }
   const divisor = bigintGcd(numerator, denominator);
   const reducedNumerator = numerator / divisor;
   const reducedDenominator = denominator / divisor;

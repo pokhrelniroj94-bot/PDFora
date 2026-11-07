@@ -320,7 +320,7 @@ async function runTool(tool, index) {
         row.status = "PARTIAL";
         return row;
       }
-      if (/red-\\d{2,3}|text-red/i.test(statusClass) || /error|failed|invalid|could not|unavailable/i.test(statusText)) {
+      if (/red-\d{2,3}|text-red/i.test(statusClass) || /error|failed|invalid|could not|unavailable/i.test(statusText)) {
         throw new Error(statusText || "PDF tool reported a processing error.");
       }
       if (!finalState || (!finalState.links.length && row.downloadCount === 0 && !statusText)) {

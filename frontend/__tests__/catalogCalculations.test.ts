@@ -7,6 +7,7 @@ describe("catalog calculation engine", () => {
   test("loan EMI handles reducing balance and zero interest", () => {
     expect(loanEmi(100000, 12, 12)).toBeCloseTo(8884.88, 2);
     expect(loanEmi(1200, 0, 12)).toBe(100);
+    expect(() => loanEmi(Number.MAX_VALUE, 100000, 1200)).toThrow("numeric range");
   });
 
   test("SIP future value uses month-end contributions", () => {
@@ -60,6 +61,9 @@ describe("catalog calculation engine", () => {
     expect(() => businessDaysInclusive("11/02/2026", "2026-11-06")).toThrow("YYYY-MM-DD");
     expect(() => businessDaysInclusive("1900-01-01", "2026-01-01")).toThrow("100 years");
     expect(() => convertUnit(1, "m", "kg")).toThrow("compatible");
+    expect(() => convertUnit(Number.MAX_VALUE, "km", "m")).toThrow("numeric range");
+    expect(() => bmi(Number.MAX_VALUE, Number.MIN_VALUE)).toThrow("numeric range");
+    expect(() => bmr(Number.MAX_VALUE, Number.MAX_VALUE, 30, false)).toThrow("numeric range");
   });
 });
 

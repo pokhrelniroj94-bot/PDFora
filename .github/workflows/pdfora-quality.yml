@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-# Avoid running the expensive 173-tool browser sweep multiple times for every
-# successive QA commit on the same PR. Only the newest revision should consume CI.
+# Let an in-flight 173-tool browser sweep finish and preserve its report.
+# New commits queue rather than cancelling the only full-run evidence.
 concurrency:
   group: pdfora-quality-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   backend:
     runs-on: ubuntu-latest

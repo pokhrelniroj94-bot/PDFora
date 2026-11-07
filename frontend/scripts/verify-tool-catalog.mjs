@@ -101,7 +101,7 @@ assert.doesNotMatch(toolPage, /"@type": "FAQPage"/, "Do not emit FAQ rich-result
 assert.doesNotMatch(seoContent, /"@type": "FAQPage"/, "PDF guide content must not emit obsolete FAQ rich-result markup");
 assert.doesNotMatch(read("../components/PdfToolJsonLd.tsx"), /"@type": "FAQPage"/, "Shared PDF schema must not emit obsolete FAQ rich-result markup");
 assert.match(toolPage, /const description = seo\?\.description \?\? tool\.description\.trim\(\)/, "Fallback metadata must use the actual task-specific catalog description");
-assert.match(toolPage, /const title = seo\?\.title \?\? `Free \$\{tool\.name\} Online`/, "Fallback metadata title must identify the actual tool and rely on the root brand template");
+assert.match(toolPage, /const title = seo\\?\\.title \\?\\? `\\$\\{tool\\.name\\} Online`/, "Fallback metadata title must identify the actual tool; the root metadata template supplies the site name");
 assert.match(seoContent, /uniqueFaqItems\.map/, "Visible tool FAQs must remain available in page content");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 

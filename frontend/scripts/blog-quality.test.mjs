@@ -131,7 +131,19 @@ for (const slug of enSlugs) assert.ok(neSlugs.has(slug), "Missing Nepali article
 
 const englishArticlePage = read("app/blog/[slug]/page.tsx");
 const nepaliArticlePage = read("app/[locale]/blog/[slug]/page.tsx");
+
+const tipGuideSlug = "how-to-calculate-tip-and-split-the-bill";
+const englishTipGuide = articleBlocks(read("lib/blog-posts.ts")).find((item) => item.slug === tipGuideSlug);
+const nepaliTipGuide = articleBlocks(read("lib/nepali-localized-blog-posts.ts")).find((item) => item.slug === tipGuideSlug);
+assert.ok(englishTipGuide, "The Search Console tip-calculation opportunity needs a reviewed English article");
+assert.ok(nepaliTipGuide, "The reviewed tip-calculation article needs a complete Nepali translation");
+assert.match(englishTipGuide.body, /tip = bill amount|tip percentage/i, "The English tip article must explain the actual calculation");
+assert.match(nepaliTipGuide.body, /टिप रकम|टिप प्रतिशत/, "The Nepali tip article must explain the actual calculation");
+assert.ok(englishTipGuide.body.match(/heading:/g)?.length >= 5, "The English tip article needs distinct practical sections");
+assert.ok(nepaliTipGuide.body.match(/heading:/g)?.length >= 5, "The Nepali tip article needs distinct practical sections");
+
 assert.ok(englishArticlePage.includes('"@type": "BlogPosting"'), "English article needs BlogPosting structured data");
+assert.ok(englishArticlePage.includes('permanentRedirect("/blog/how-to-calculate-tip-and-split-the-bill")'), "The old thin tip guide must redirect to the reviewed article");
 assert.ok(nepaliArticlePage.includes('"@type": "BlogPosting"'), "Nepali article needs BlogPosting structured data");
 assert.ok(englishArticlePage.includes("isCatalogGeneratedGuide(post.slug)"), "Generated catalogue guides must keep their noindex gate");
 assert.ok(englishArticlePage.includes("post.title}</span>"), "English breadcrumb should identify the current article");

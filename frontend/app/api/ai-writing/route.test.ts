@@ -73,6 +73,27 @@ describe("POST /api/ai-writing", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("rejects an untrusted browser Origin before parsing the request body", async () => {
+    const fetchMock = jest.spyOn(global, "fetch");
+    const response = await POST(new Request("https://pdfora.test/api/ai-writing", {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "https://attacker.example" },
+      body: "not-json",
+    }));
+    expect(response.status).toBe(403);
+    expect((await response.json()).code).toBe("ORIGIN_NOT_ALLOWED");
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("allows same-origin browser requests to proceed to JSON validation", async () => {
+    const response = await POST(new Request("https://pdfora.test/api/ai-writing", {
+      method: "POST",
+      headers: { "content-type": "application/json", origin: "https://pdfora.test" },
+      body: "not-json",
+    }));
+    expect(response.status).toBe(400);
+  });
+
   it("rejects malformed JSON and unsupported tasks", async () => {
     const invalid = await POST(new Request("https://pdfora.test/api/ai-writing", {
       method: "POST", headers: { "content-type": "application/json" }, body: "{",

@@ -17,10 +17,10 @@ const { config, routing, translate, format, preference, switcher, metadata, "sha
 
 test("RTL and script font support covers Urdu, Arabic and Bengali", () => {
   const css = fs.readFileSync(path.join(frontendRoot, "app", "globals.css"), "utf8");
-  assert.match(css, /:lang\\(ar\\), :lang\\(ur\\)/, "Arabic and Urdu need script-aware font stacks");
-  assert.match(css, /:lang\\(bn\\)/, "Bengali needs a script-aware font stack");
-  assert.match(css, /\\[dir="rtl"\\] \\.i18n-flip/, "RTL directional icon helper must remain scoped to RTL");
-  assert.match(css, /\\.i18n-ltr \\{ direction: ltr; unicode-bidi: isolate; \\}/, "URLs, filenames and code need LTR isolation in RTL text");
+  assert.ok(css.includes(':lang(ar), :lang(ur)'), "Arabic and Urdu need script-aware font stacks");
+  assert.ok(css.includes(':lang(bn)'), "Bengali needs a script-aware font stack");
+  assert.ok(css.includes('[dir="rtl"] .i18n-flip'), "RTL directional icon helper must remain scoped to RTL");
+  assert.ok(css.includes(".i18n-ltr { direction: ltr; unicode-bidi: isolate; }"), "URLs, filenames and code need LTR isolation in RTL text");
 });
 
 test("locale table: requested 12 locales, English default, Arabic and Urdu are RTL", () => {

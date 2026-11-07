@@ -6,7 +6,8 @@ const localizedAlternates = hreflangMap("/about");
 export const metadata: Metadata = {
   title: { absolute: "About PDFora | Free Online PDF Tools & Nepal Utilities" },
   alternates: { canonical: "https://pd-fora.vercel.app/about", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/about", siteName: "PDFora", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/about", siteName: "PDFora", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools.", images: ["/opengraph-image"] },
+  twitter: { card: "summary_large_image", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools.", images: ["/opengraph-image"] },
   description:
     "Learn about PDFora, an online platform for PDF processing and practical digital tools.",
 };

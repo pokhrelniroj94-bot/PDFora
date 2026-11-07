@@ -120,7 +120,7 @@ async function openPage(url) {
   let state = "";
   while (Date.now() - started < 20000) {
     const result = await evaluate("document.readyState");
-    state = result.value ?? "";
+    state = result ?? "";
     if (state === "complete") break;
     await delay(200);
   }
@@ -225,7 +225,24 @@ async function runTool(tool, index) {
         row.status = "PASS";
         return row;
       }
-      if (tool.slug === "image-compressor" || tool.slug === "image-format-converter") {
+      if (tool.slug === "nepal-electricity-bill-calculator") {
+        const links = await page.evaluate('[...document.querySelectorAll("a[href]")].map((a) => a.href)');
+        if (!links.some((href) => href.includes("erc.gov.np/electricity-calculator"))) throw new Error("Official ERC calculator handoff link is missing.");
+        row.checks.push("official ERC calculator handoff link present");
+        row.outputVerified = true;
+        row.status = "PASS";
+        return row;
+      }
+      if (tool.slug === "nepal-public-holidays-2083") {
+        const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href) }))()');
+        if (state.rows < 30) throw new Error("2083 public-holiday table is missing expected entries.");
+        if (!state.links.some((href) => href.includes("moha.gov.np/en/page/government-and-public-holidays-in-2083"))) throw new Error("Official MoHA public-holiday source link is missing.");
+        row.checks.push("2083 holiday table and official MoHA source verified");
+        row.outputVerified = true;
+        row.status = "PASS";
+        return row;
+      }
+      if (tool.slug === "image-compressor" || tool.slug === "image-format-converter" || tool.slug === "loksewa-photo-resizer") {
         const inputNode = await page.send("DOM.getDocument", { depth: 1 });
         const query = await page.send("DOM.querySelector", { nodeId: inputNode.root.nodeId, selector: 'input[type="file"]' });
         if (!query.nodeId) throw new Error("Image tool has no file input.");

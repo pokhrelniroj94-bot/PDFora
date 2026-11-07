@@ -30,7 +30,7 @@ const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh
 const rtlLocales = new Set(["ur", "ar"]);
 const publishedLocales = new Set(["en", "ne"]);
 const handlerEvidence = "catalog-handler-check";
-const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter", "nepal-electricity-bill-calculator"]);
+const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter"]);
 
 const matrix = [];
 for (const locale of locales) {

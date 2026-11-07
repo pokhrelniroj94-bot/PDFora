@@ -71,7 +71,22 @@ describe('PDF Worker Core', () => {
     const cmd: PdfCommand = { type: 'merge' };
     await expect(processPdf(cmd, [badFile])).rejects.toThrow('Invalid PDF');
   });
-});
 
+  test('reorder rejects incomplete, duplicate, and malformed page orders', async () => {
+    const file = await createSamplePdf('reorder.pdf');
+    await expect(processPdf({ type: 'reorder', order: '2' }, [file]))
+      .rejects.toThrow('each of the 2 pages exactly once');
+    await expect(processPdf({ type: 'reorder', order: '1,1' }, [file]))
+      .rejects.toThrow('Duplicate page number');
+    await expect(processPdf({ type: 'reorder', order: '1,x' }, [file]))
+      .rejects.toThrow('Invalid page number');
+  });
+
+  test('delete pages refuses to create an empty PDF', async () => {
+    const file = await createSamplePdf('delete-all.pdf');
+    await expect(processPdf({ type: 'deletePages', pages: '1-2' }, [file]))
+      .rejects.toThrow('Cannot delete every page');
+  });
+});
 
 

@@ -59,10 +59,21 @@ function parsePageList(pages: string, pageCount: number): number[] {
 /** Utility: parse an order list like "3,1,2" (1Ã¢â‚¬â€˜based) */
 function parseOrder(order: string, pageCount: number): number[] {
   const parts = order.split(/[,;\s]+/).map((s) => s.trim()).filter(Boolean);
+  if (parts.length !== pageCount) {
+    throw new Error(`Reorder must contain each of the ${pageCount} pages exactly once`);
+  }
   const result: number[] = [];
+  const seen = new Set<number>();
   for (const part of parts) {
-    const idx = parseInt(part, 10) - 1;
-    if (!isNaN(idx) && idx >= 0 && idx < pageCount) result.push(idx);
+    if (!/^\d+$/.test(part)) throw new Error(`Invalid page number: '${part}'`);
+    const idx = Number(part) - 1;
+    if (idx < 0 || idx >= pageCount) throw new Error(`Page number out of bounds: '${part}'`);
+    if (seen.has(idx)) throw new Error(`Duplicate page number: '${part}'`);
+    seen.add(idx);
+    result.push(idx);
+  }
+  if (seen.size !== pageCount) {
+    throw new Error(`Reorder must contain each of the ${pageCount} pages exactly once`);
   }
   return result;
 }
@@ -172,6 +183,7 @@ export async function processPdf(
       const keepIndices = src
         .getPageIndices()
         .filter((i) => !toDelete.has(i));
+      if (!keepIndices.length) throw new Error("Cannot delete every page from a PDF");
       const pages = await outputDoc.copyPages(src, keepIndices);
       pages.forEach((p) => outputDoc.addPage(p));
       break;
@@ -260,7 +272,6 @@ export async function processPdf(
     warnings: warnings.length ? warnings : undefined,
   };
 }
-
 
 
 

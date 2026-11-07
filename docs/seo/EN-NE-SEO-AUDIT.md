@@ -4,10 +4,11 @@ Audit scope: English and Nepali blog index/article routes, English catalog tool 
 
 ## Current source inventory
 
-- English catalog: 124 routable catalog tool entries (the non-tool `pdf-tools` directory entry is excluded from the tool page count).
-- English tool metadata: 124 unique title/description pairs. 50 tools have dedicated title and description overrides; the other 74 use a unique title from the catalog name and a catalog description with category-specific usage guidance.
-- Nepali catalog equivalents: 123 registered tool routes with 123 distinct Nepali title and description entries.
+- English catalog: 124 catalog entries; 123 use `/tools/<slug>` and Resume Builder uses its dedicated `/resume-builder` route. The non-tool `pdf-tools` directory entry is excluded from the tool page count.
+- English catalog tool metadata: 123 unique title/description pairs. 50 tools have dedicated title and description overrides; the other 73 use a unique title from the catalog name and a catalog description with category-specific usage guidance. Resume Builder has a separate dedicated title, description and canonical.
+- Nepali catalog equivalents: 123 registered tool routes with 123 distinct Nepali title and description entries. Resume Builder has its own dedicated localized metadata.
 - Nepali localized tools: remain `noindex,follow` until each page has native-speaker review, functional verification and explicit release approval. The six already-approved Nepali PDF routes remain the only localized tool URLs eligible for indexing and hreflang.
+- PDF tools: all 49 English and all 49 Nepali PDF tool pages have unique tool-specific titles and descriptions. The Nepali versions use self-canonicals; only six are indexable under the current verification allowlist.
 - Editorial guides: 8 English PDF guides, 19 English Nepal guides and 27 Nepali translated editorial guides. The Nepali blog routes and translations are checked by the existing blog regression suite.
 - Generated catalog helper guides remain excluded from the sitemap and noindex. Do not publish/index them just to increase URL count.
 

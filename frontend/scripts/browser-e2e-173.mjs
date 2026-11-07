@@ -460,6 +460,7 @@ async function runTool(tool, index) {
         live: [...document.querySelectorAll('[aria-live]')].map((e) => e.innerText.trim()).filter(Boolean),
         tables: [...document.querySelectorAll('table')].map((table) => table.innerText).join('\\n'),
         inputs: document.querySelectorAll("input,textarea,select").length,
+        inputValues: [...document.querySelectorAll("input,textarea,select")].map((input) => ({ value: input.value || "", type: input.type || input.tagName.toLowerCase() })),
       }))()`);
       if (/Tool configuration missing|Tool not implemented|This utility is not available yet|Nepal utility not found/i.test(finalState.body)) {
         throw new Error("Tool reported an unavailable handler/configuration.");
@@ -570,7 +571,7 @@ async function runTool(tool, index) {
       };
       const expected = expectedOutputs[tool.slug];
       const expectedPattern = expectedPatterns[tool.slug];
-      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette"].includes(tool.slug) ? "\n" + finalState.body : "") + (tool.slug === "case-converter" ? "\n" + finalState.inputs.map((input) => input.value).join("\n") : "");
+      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette"].includes(tool.slug) ? "\n" + finalState.body : "") + (tool.slug === "case-converter" ? "\n" + finalState.inputValues.map((input) => input.value).join("\n") : "");
       const normalizedLiveText = liveText.replace(/\s+/g, " ").trim();
       let outputMatches = expected ? normalizedLiveText.includes(expected.replace(/\s+/g, " ").trim()) : expectedPattern ? expectedPattern.test(liveText) : false;
       if (tool.slug === "password-generator") {

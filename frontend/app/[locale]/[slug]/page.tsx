@@ -10,11 +10,12 @@ import { getNepaliPdfRoute, nepaliPdfRoutes } from "../../../lib/i18n/nepali-pdf
 import { buildLocaleMetadata } from "../../../lib/i18n/metadata";
 import NepseMarketDashboard from "../../../components/NepseMarketDashboard";
 import ResumeBuilder from "../../../components/ResumeBuilder";
+import NepaliStaticPage from "../../../components/NepaliStaticPage";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export function generateStaticParams() {
-  return [...Object.keys(nepaliPdfRoutes), "market", "resume-builder"].map((slug) => ({ locale: "ne", slug }));
+  return [...Object.keys(nepaliPdfRoutes), "market", "resume-builder", "privacy", "terms", "about", "contact"].map((slug) => ({ locale: "ne", slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -35,6 +36,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: "२० व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन र PDF निर्यातसहित नेपाली रिजुमे तथा CV बनाउनुहोस्।",
     });
   }
+  const staticMetadata: Record<string, { title: string; description: string }> = {
+    privacy: { title: "नेपाली गोपनीयता नीति | PDFora", description: "PDFora ले फाइल, कुकी, AI र तेस्रो पक्षका सेवासँग सम्बन्धित जानकारी कसरी सम्हाल्छ भन्ने नेपाली नीति।" },
+    terms: { title: "नेपाली सेवा सर्तहरू | PDFora", description: "PDFora का सेवा प्रयोग, फाइल, उपलब्धता र दायित्वसम्बन्धी नेपाली सर्तहरू।" },
+    about: { title: "PDFora बारेमा | नेपाली", description: "PDFora का PDF टुल, नेपाल उपयोगी क्याल्कुलेटर र प्लेटफर्मको उद्देश्यबारे नेपाली जानकारी।" },
+    contact: { title: "PDFora सम्पर्क | नेपाली", description: "PDFora का टुल सहायता, सुझाव र गोपनीयता प्रश्नका लागि नेपाली सम्पर्क जानकारी।" },
+  };
+  if (locale === "ne" && staticMetadata[slug]) {
+    return buildLocaleMetadata({ locale, path: `/${slug}`, ...staticMetadata[slug] });
+  }
   const route = getNepaliPdfRoute(slug);
   if (!route || locale !== "ne") return { title: "Page not found", robots: { index: false, follow: true } };
   const name = nepaliToolNames[slug] ?? route.title;
@@ -54,6 +64,9 @@ export default async function NepaliPdfToolPage({ params }: Props) {
   }
   if (locale === "ne" && slug === "resume-builder") {
     return <ResumeBuilder locale="ne" />;
+  }
+  if (locale === "ne" && ["privacy", "terms", "about", "contact"].includes(slug)) {
+    return <NepaliStaticPage page={slug as "privacy" | "terms" | "about" | "contact"} />;
   }
   const route = getNepaliPdfRoute(slug);
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale) || !route) notFound();

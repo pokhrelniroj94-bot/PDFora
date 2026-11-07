@@ -135,6 +135,15 @@ test("Nepali blog routes contain complete reviewed article content", () => {
   assert.ok(page.includes('href="/ne/blog"'));
 });
 
+test("Nepali legal and static routes contain complete localized copy", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "NepaliStaticPage.tsx"), "utf8");
+  const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "[slug]", "page.tsx"), "utf8");
+  for (const phrase of ["गोपनीयता नीति", "सेवा प्रयोगका सर्तहरू", "PDFora बारेमा", "PDFora लाई सम्पर्क गर्नुहोस्", "अन्तिम अद्यावधिक"]) {
+    assert.ok(source.includes(phrase), `Nepali static content must include: ${phrase}`);
+  }
+  for (const slug of ["privacy", "terms", "about", "contact"]) assert.ok(routeSource.includes(`"${slug}"`), `${slug} must have a localized route`);
+});
+
 test("published Nepali PDF routes use localized names and guide copy", () => {
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
   assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);
@@ -189,7 +198,7 @@ test("switcher: never offers an unavailable page", () => {
   const home = switcher.getSwitcherOptions("/");
   assert.deepEqual(home.map((o) => o.locale), ["en", "ne"]);
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"]);
-  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en"], "untranslated pages stay English-only");
+  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne"], "only reviewed static pages offer Nepali");
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 

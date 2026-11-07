@@ -2,7 +2,7 @@
 
 ## Current continuation status
 
-Branch: `feature/complete-12-language-platform` at `ba93eeb`; PR #77 remains open,
+Branch: `feature/complete-12-language-platform`; PR #77 remains open,
 mergeable, and not merged or deployed. The translation coverage generator now runs in
 CI and reports source-language content separately from reviewed translations. Cookie
 consent is localized for English and Nepali, including the consent dialog, settings,
@@ -12,16 +12,17 @@ workflows, FAQs, localized discovery links and explicit fallback links for untra
 tools, calculators, market pages, AI pages and editorial content. Shared language and
 cookie controls also use localized English/Nepali labels.
 
-Latest executed checks for the AI localization stage: frontend Jest 5/5, i18n 27/27
-plus 2 coverage tests, TypeScript through the production build, ESLint, catalog
-validation, i18n validation and production build (390 generated routes). Backend pytest
-was unavailable in this shell. The Vercel check remains blocked by the provider's
-build-rate quota, not by the local build.
+Latest executed checks for the legal/static localization stage: frontend Jest 5/5,
+i18n 30/30 plus 2 coverage tests, TypeScript through the production build, ESLint,
+catalog validation, i18n validation and production build (399 generated routes).
+Backend pytest remains unavailable in this shell. The Vercel check remains blocked
+by the provider's build-rate quota, not by the local build.
 
-The current evidence report measures 28 Nepali route equivalents, including three AI
-writing routes, the localized Resume Builder and three fully translated articles. The
-remaining blog corpus, guides outside the reviewed PDF set, legal/static pages and
-remaining utilities remain incomplete and are not counted as localized.
+The current evidence report measures 32 Nepali route equivalents, including three AI
+writing routes, the localized Resume Builder, three fully translated articles and
+four localized legal/static pages. The remaining blog corpus, guides outside the
+reviewed PDF set and remaining utilities remain incomplete and are not counted as
+localized.
 
 ## 12-language foundation snapshot
 
@@ -87,7 +88,7 @@ historical limitations are superseded by the verification results above and in
 | 3 Shared UI | NOT STARTED |
 | 4 Tools (125 catalog entries) | NOT STARTED |
 | 5 Blog | NOT STARTED |
-| 6 Static pages | NOT STARTED |
+| 6 Static pages | COMPLETE for privacy, terms, about and contact; other static/editorial pages remain |
 | 7 SEO | NOT STARTED |
 | 8 Security/perf | NOT STARTED |
 | 9 Regression | NOT STARTED |

@@ -7,9 +7,9 @@
 2. Add real localized route equivalents only after the complete page content exists.
 3. Add native or qualified human review status for every published translation.
 4. Expand RTL and CJK browser checks across representative tools and mobile layouts.
-5. Add localized content for the remaining blogs, guides, legal/static pages and
-   remaining utilities. Three Nepali articles are implemented and measured; broader
-   editorial and utility localization remains.
+5. Add localized content for the remaining blogs, guides and remaining utilities.
+   Three Nepali articles and four Nepali legal/static pages are implemented and
+   measured; broader editorial and utility localization remains.
 
 ## Stage B completed in this continuation
 
@@ -18,11 +18,9 @@
   behavior.
 - Cookie consent copy is now localized for English and Nepali, including dialog,
   settings, optional categories and accessibility labels.
-- Nepali now has a localized homepage, six reviewed PDF route pages, six reviewed utility route pages, seven financial/news/calculator route pages, and a market dashboard; all other
-  Nepali destinations remain explicit fallback routes until their full content is
-  translated and reviewed.
+- Nepali now has a localized homepage, six reviewed PDF route pages, six reviewed utility route pages, seven financial/news/calculator route pages, a market dashboard, three reviewed articles and four reviewed legal/static pages.
 - The remaining English/Nepali route surfaces still require page-specific migration,
-  especially blogs, legal pages, calculators, market tools and form/error messages.
+  especially the remaining blogs, guides, utilities and form/error messages.
 
 ## Required before merge
 
@@ -39,3 +37,6 @@
 - No language is claimed as fully translated merely because its locale is registered.
 - No search traffic, ranking, indexing or Search Console result is claimed.
 - No production deployment was performed by this branch.
+- Nepali privacy, terms, about and contact routes are published only after
+  rendered-content checks; other static/editorial routes remain on honest fallback
+  routing.

@@ -14,7 +14,7 @@ traffic claim.
 - Unpublished locales are not included in hreflang or the sitemap.
 - The sitemap contains English routes and only the six reviewed Nepali PDF routes.
 - Root `/en` redirects to the unprefixed English URL.
-- Structured data and useful tool-guide content were preserved.
+- Page-relevant structured data and useful tool-guide content were preserved; obsolete FAQPage markup was removed from generic tool and blog pages because Google no longer shows FAQ rich results for ordinary sites.
 
 ## Remaining validation
 
@@ -40,7 +40,7 @@ The same live crawl also found older, page-specific how-to and FAQ blocks on `/m
 
 ## Metadata inventory checks — 2026-11-07
 
-A source-level inventory of all 124 English catalogue tools found 124 unique tool names, 124 unique source descriptions and 124 unique keyword fields. The metadata generator currently has 50 explicit SEO overrides and nine category fallbacks; the resulting 124 English catalogue titles and descriptions were checked for duplicates and short/empty descriptions, with no duplicates or descriptions under 70 characters. All 124 catalogue tools also have a tool-specific advice entry in `CatalogToolSEOContent.tsx`. These checks establish metadata uniqueness and coverage, not the quality of every rendered page or its ability to rank.
+A source-level inventory of all 124 English catalogue tools found 124 unique tool names, 124 unique source descriptions and 124 unique keyword fields. The metadata generator has 50 explicit SEO overrides; all other tools now use their own catalog description directly rather than appending category-level boilerplate. The source descriptions range from 45 to 148 characters and are unique; no artificial minimum length is imposed because relevance is more important than padding. All 124 catalogue tools have an explicit advice entry with a task-specific example, accuracy note, workflow and common mistakes in `CatalogToolSEOContent.tsx`. Regression tests now check coverage and substantive field lengths.
 
 A regression check is being added to `verify-tool-catalog.mjs` so future catalogue edits cannot silently introduce duplicate names, descriptions, titles or meta descriptions. A separate inventory of the 49 PDF route guides also found 49 unique names, target phrases and purposes; every guide has three task-specific steps and a caution of at least 60 characters. These source checks do not replace rendered-page QA.
 
@@ -90,3 +90,21 @@ The two reviewed bilingual articles increase the curated Nepali localized blog c
 The generated `/blog/meta-title-checker-guide` page received 212 impressions in the 28-day Search Console sample, mainly for “seo title check” (73 impressions) and “meta title check” (46 impressions), at average position about 80.8. Its prior copy was a generic shared-template guide and remained noindex. The release branch now redirects that old URL to a new original English article, `/blog/how-to-write-seo-page-titles-google-title-links`, with a full Nepali translation and links to Google's primary title-link documentation. It explains that Google can generate title links from multiple page signals, that Google does not publish a fixed title character limit, and that title/meta descriptions cannot guarantee ranking or display.
 
 The curated Nepali localized blog collection now contains 29 articles. The new English and Nepali versions have distinct language URLs, self-canonicals and reciprocal hreflang through the shared route registry.
+
+## Expanded 173-tool and site-page audit — 2026-11-07
+
+The unified catalogue is confirmed as 173 unique tools: 49 established PDF routes and 124 catalogue utilities. The 124 utility entries have unique names and descriptions, and each has four dedicated guidance fields (example, accuracy, workflow and mistakes). The shared utility page renderer also retains tool-specific questions where available and category-level fallback questions; visible FAQs remain on the page, but FAQPage JSON-LD has been removed from utility and English/Nepali article pages. Google announced in May 2026 that FAQ rich results are no longer shown in Search; FAQ text remains useful for readers and can still inform ordinary snippets.
+
+The utility metadata fallback now uses each tool's own catalogue description directly instead of appending a generic category paragraph. The fallback title identifies the actual tool and PDFora. Existing 50 reviewed title/description overrides are retained. The route continues to emit a self-canonical URL, Open Graph and Twitter metadata, BreadcrumbList and SoftwareApplication structured data. OCR remains excluded from indexing until its processing backend is available.
+
+The audit also found missing social preview metadata on the NEPSE market page, NEPSE strategy lab and resume builder. Open Graph/Twitter metadata has been added to those landing pages. The About title was made more descriptive. Main landing-page and article regression tests now cover canonical, Open Graph, Twitter and indexing metadata.
+
+Nepali catalogue tool routes remain default-deny for indexing. The current explicit localized utility route list is not itself an indexing approval: only the six reviewed Nepali PDF equivalents are indexable and included in hreflang/sitemap. Nepali home, blog, policy, market and resume routes use the shared locale metadata builder. Generated catalogue blog guides remain excluded from the sitemap and noindex until individually edited and reviewed.
+
+## Remaining work after source changes
+
+- Complete CI (catalog/i18n, lint, production build, backend regression tests and dependency audits) for the final branch head.
+- Run an HTTP crawl of all 173 tool URLs and the rest of the sitemap against the deployed release; compare rendered title, description, canonical, robots, hreflang, JSON-LD, response status and page content.
+- Verify every tool's actual rendered instructions and output against its implementation, including edge cases and mobile behavior. Source-level advice coverage is not proof that a tool works.
+- Reconcile sitemap URLs with Search Console indexed/not-indexed reports after deployment. Do not claim indexing or traffic improvement before Google recrawls the pages.
+- Review all non-generated editorial articles for first-hand value, accurate references, dates and non-overlapping search intent.

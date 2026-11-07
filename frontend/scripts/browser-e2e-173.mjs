@@ -323,6 +323,25 @@ async function runTool(tool, index) {
       } else if (tool.slug === "nepal-land-area-converter") {
         await setFieldByLabel(page, "Ropani", "1");
       }
+      if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
+        await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
+      } else if (tool.slug === "base64-encoder-decoder") {
+        await setFirstTextArea(page, "PDFora E2E test");
+      } else if (tool.slug === "url-encoder-decoder") {
+        await setFirstTextArea(page, "https://example.com/a path?q=hello world");
+      } else if (tool.slug === "notes-to-pdf") {
+        await setFirstTextArea(page, "PDFora E2E Notes\\nThis is a browser-generated test document.");
+      } else if (tool.slug === "jwt-decoder") {
+        await setFirstTextArea(page, "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
+      } else if (tool.slug === "nepali-unicode-typing") {
+        await setFirstTextArea(page, "Namaste Nepal");
+      } else if (tool.slug === "nepali-date-converter") {
+        await setFieldByLabel(page, "English date", "2026-11-07");
+      } else if (tool.slug === "nepal-phone-validator") {
+        await setFieldByLabel(page, "Phone number", "9800000000");
+      } else if (tool.slug === "nepal-land-area-converter") {
+        await setFieldByLabel(page, "Ropani", "1");
+      }
       if (tool.slug === "image-compressor" || tool.slug === "image-format-converter" || tool.slug === "loksewa-photo-resizer") {
         const inputNode = await page.send("DOM.getDocument", { depth: 1 });
         const query = await page.send("DOM.querySelector", { nodeId: inputNode.root.nodeId, selector: 'input[type="file"]' });

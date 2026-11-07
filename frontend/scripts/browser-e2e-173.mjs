@@ -202,7 +202,9 @@ async function runTool(tool, index) {
       row.checks.push("processing response appeared");
       row.output = finalState.body.slice(-700);
       row.downloadLinks = finalState.links;
-      row.outputVerified = finalState.links.length > 0 || fs.readdirSync(downloadsDir).some((name) => !name.endsWith(".crdownload")) || /completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body);
+      const downloadsAfter = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")).length;
+      row.downloadCount = Math.max(0, downloadsAfter - downloadsBefore);
+      row.outputVerified = finalState.links.length > 0 || row.downloadCount > 0 || /completed|success|ready|processed|pages found|page count|metadata/i.test(finalState.body);
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
       if (aiTools.has(tool.slug)) {

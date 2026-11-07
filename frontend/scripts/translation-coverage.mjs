@@ -98,7 +98,7 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
         translated: nepaliLocalizedBlogCount,
         total: editorialBlogCount + nepalBlogCount,
         percent: editorialBlogCount + nepalBlogCount ? Math.round((nepaliLocalizedBlogCount / (editorialBlogCount + nepalBlogCount)) * 10000) / 100 : 0,
-        note: `${nepaliLocalizedBlogCount} fully translated Nepali articles are published; the remaining blog corpus is not localized.`,
+        note: `All ${nepaliLocalizedBlogCount} curated editorial articles are translated; generated catalog guides remain noindex and are not counted.`,
       },
       namespaceFiles: namespaceFiles.length,
       reviewStatus: "Existing Nepali routes and PDF guide copy; complete site-wide native review not assessed",

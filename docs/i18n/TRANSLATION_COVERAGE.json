@@ -25,7 +25,7 @@
     "publishedNepaliBlogRoutes": 28,
     "publishedNepaliStaticRoutes": 4,
     "publishedNepaliHomeRoute": true,
-    "publishedNepaliRouteEquivalents": 206
+    "publishedNepaliRouteEquivalents": 207
   },
   "locales": {
     "en": {
@@ -68,7 +68,7 @@
         "note": "All 27 curated editorial articles are translated into Nepali; generated catalog guides remain noindex and are not counted."
       },
       "namespaceFiles": 3,
-      "reviewStatus": "172 of 173 catalog tools have Nepali workspaces; Market AI remains deferred. Site-wide native-speaker review is not assessed."
+      "reviewStatus": "173 of 173 catalog tools have Nepali route/workspace coverage including Market AI; site-wide native-speaker review is not assessed."
     },
     "hi": {
       "status": "Not published",

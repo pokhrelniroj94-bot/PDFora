@@ -33,11 +33,11 @@ export function normalizeOhlcvBars(input) {
     const date = String(row?.date ?? "").slice(0, 10), close = Number(row?.close);
     if (!validTradingDate(date) || !Number.isFinite(close) || close <= 0) continue;
     const rawOpen = row.open, rawHigh = row.high, rawLow = row.low, rawVolume = row.volume;
-    const open = rawOpen !== null && rawOpen !== undefined && Number.isFinite(Number(rawOpen)) && Number(rawOpen) > 0 ? Number(rawOpen) : undefined;
-    let high = rawHigh !== null && rawHigh !== undefined && Number.isFinite(Number(rawHigh)) ? Number(rawHigh) : undefined;
-    let low = rawLow !== null && rawLow !== undefined && Number.isFinite(Number(rawLow)) ? Number(rawLow) : undefined;
+    const open = rawOpen !== null && rawOpen !== undefined && rawOpen !== "" && Number.isFinite(Number(rawOpen)) && Number(rawOpen) > 0 ? Number(rawOpen) : undefined;
+    let high = rawHigh !== null && rawHigh !== undefined && rawHigh !== "" && Number.isFinite(Number(rawHigh)) ? Number(rawHigh) : undefined;
+    let low = rawLow !== null && rawLow !== undefined && rawLow !== "" && Number.isFinite(Number(rawLow)) ? Number(rawLow) : undefined;
     if (high === undefined || low === undefined || high < low || high < close || low > close) { high = undefined; low = undefined; }
-    const volume = rawVolume !== null && rawVolume !== undefined && Number.isFinite(Number(rawVolume)) && Number(rawVolume) >= 0 ? Number(rawVolume) : undefined;
+    const volume = rawVolume !== null && rawVolume !== undefined && rawVolume !== "" && Number.isFinite(Number(rawVolume)) && Number(rawVolume) >= 0 ? Number(rawVolume) : undefined;
     byDate.set(date, { date, close, ...(open === undefined ? {} : { open }), ...(high === undefined ? {} : { high }), ...(low === undefined ? {} : { low }), ...(volume === undefined ? {} : { volume }) });
   }
   return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));

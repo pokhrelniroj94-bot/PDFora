@@ -74,7 +74,7 @@ const rows = [
     remainingBlockers: browserResults.get(slug)?.status === "FAIL"
       ? "Browser E2E failure: " + (browserResults.get(slug)?.errors ?? []).join("; ") + ". Fix and rerun. Mobile and accessibility remain untested."
       : "Mobile layout, accessibility and independent download-byte verification require separate evidence.",
-    evidence: `${pdfEvidence}; ${workerEvidence}`,
+    evidence: `${pdfEvidence}; ${workerEvidence}${browserReport ? "; docs/qa/BROWSER_E2E_173_REPORT.json" : ""}`,
   })),
   ...catalog.map((entry) => ({
     slug: entry.slug,
@@ -104,13 +104,13 @@ const rows = [
         : testedCatalog.has(entry.slug)
           ? "Browser route, mobile layout and accessibility evidence remain unverified."
           : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-    evidence: inputTestedCatalog.has(entry.slug)
-      ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
+    evidence: `${inputTestedCatalog.has(entry.slug)
+      ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"`
       : uiRegressionCatalog.has(entry.slug)
         ? "frontend/scripts/tool-ui-regression.test.mjs; frontend/components/AllTools.tsx"
         : testedCatalog.has(entry.slug)
           ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
-          : catalogEvidence,
+          : catalogEvidence}${browserResults.has(entry.slug) ? "; docs/qa/BROWSER_E2E_173_REPORT.json" : ""}`,
   })),
 ];
 

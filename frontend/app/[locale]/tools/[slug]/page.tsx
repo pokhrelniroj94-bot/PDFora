@@ -12,6 +12,7 @@ import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtility
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
+import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWorkspace";
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
 import AIWritingTools from "../../../../components/AIWritingTools";
@@ -23,6 +24,10 @@ const nepaliTitles: Record<string, string> = {
   "nepali-digit-converter": "नेपाली अंक रूपान्तरण",
   "nepali-number-converter": "नेपाली नम्बर रूपान्तरण",
   "nepali-date-converter": "नेपाली मिति रूपान्तरण",
+  "nepal-phone-validator": "नेपाल मोबाइल नम्बर जाँच",
+  "gold-tola-gram-converter": "तोला र ग्राम रूपान्तरण",
+  "nepali-calendar": "नेपाली पात्रो",
+  "loksewa-photo-resizer": "लोकसेवा फोटो रिसाइजर",
   "nepal-land-area-converter": "रोपनी आना क्षेत्रफल रूपान्तरण",
   "nepali-vat-calculator": "नेपाल VAT क्याल्कुलेटर",
   "neb-gpa-calculator": "NEB GPA क्याल्कुलेटर",
@@ -83,6 +88,10 @@ const nepaliDescriptions: Record<string, string> = {
   "nepali-digit-converter": "अङ्ग्रेजी अंकलाई नेपाली देवनागरी अंकमा र नेपाली अंकलाई अङ्ग्रेजी अंकमा रूपान्तरण गर्नुहोस्।",
   "nepali-number-converter": "नम्बरलाई नेपाली अंकमा देखाउनुहोस् र नेपाली लाख तथा करोडको ढाँचा जाँच्नुहोस्।",
   "nepali-date-converter": "विक्रम संवत् र इस्वी संवत्का मितिहरूबीच रूपान्तरण गर्नुहोस् र समर्थित मिति दायरा जाँच्नुहोस्।",
+  "nepal-phone-validator": "नेपालको सामान्य १० अङ्कको मोबाइल नम्बर ढाँचा जाँच्नुहोस् र +977 अन्तर्राष्ट्रिय ढाँचा हेर्नुहोस्।",
+  "gold-tola-gram-converter": "तोला र ग्रामबीच तौल रूपान्तरण गर्नुहोस्। १ तोला = ११.६६३८०३८ ग्रामको मान प्रयोग गरिएको छ।",
+  "nepali-calendar": "समर्थित BS वर्ष र महिनाको पात्रोमा AD मिति तथा बार हेर्नुहोस्। सार्वजनिक बिदा र तिथि यसमा समावेश छैनन्।",
+  "loksewa-photo-resizer": "लोकसेवा तथा अनलाइन फारामका लागि फोटोको पिक्सेल आयाम र JPEG फाइल आकार घटाउनुहोस्। आवेदनको आधिकारिक मापदण्ड छुट्टै जाँच्नुहोस्।",
   "nepal-land-area-converter": "रोपनी, आना, पैसा र दामलाई वर्गफुट तथा वर्गमिटरमा रूपान्तरण गर्नुहोस्।",
   "nepali-vat-calculator": "नेपालको १३ प्रतिशत VAT थप्नुहोस् वा VAT सहितको रकमबाट आधार मूल्य र कर छुट्याउनुहोस्।",
   "neb-gpa-calculator": "विषयको credit hour र grade point प्रयोग गरेर credit-weighted NEB GPA अनुमान गर्नुहोस्।",
@@ -186,6 +195,9 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && ["percentage-change-calculator", "average-calculator", "ratio-simplifier", "fraction-calculator", "percentage-of-number-calculator", "gcd-lcm-calculator", "prime-number-checker", "unit-converter", "bmi-calculator", "bmr-calculator", "tip-calculator", "split-bill-calculator", "simple-interest-calculator"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली गणित टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliMathUtilityWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["nepal-phone-validator", "gold-tola-gram-converter", "nepali-calendar", "loksewa-photo-resizer"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाल उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliNepalToolsWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;

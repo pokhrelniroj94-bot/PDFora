@@ -531,6 +531,17 @@ async function runTool(tool, index) {
           storyLinks: scope.querySelectorAll("section ul li a").length,
         };
       })()`);
+      if (tool.slug === "word-character-counter") {
+        const textState = await page.evaluate("({ value: document.querySelector('main textarea')?.value || '', content: (document.querySelector('main')?.innerText || '').replace(/\\s+/g, ' ') })");
+        if (textState.value !== "PDFora tools make everyday tasks faster." || !/Words\\s+6\\b/.test(textState.content) || !/Characters\\s+40\\b/.test(textState.content) || !/Sentences\\s+1\\b/.test(textState.content) || !/Paragraphs\\s+1\\b/.test(textState.content)) {
+          throw new Error("Word & character counter did not show the expected 6 words, 40 characters, 1 sentence and 1 paragraph.");
+        }
+        row.checks.push("live word, character, sentence and paragraph counts verified");
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "exact-live-counter-values-verified";
+        return row;
+      }
       if (tool.slug === "case-converter") {
         const converted = await page.evaluate("document.querySelector('main textarea')?.value || ''");
         if (converted !== "PDFORA TOOLS MAKE EVERYDAY TASKS FASTER.") {
@@ -567,7 +578,7 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepali-calendar") {
-        const calendar = await page.evaluate("({ rows: document.querySelectorAll('tbody tr').length, body: document.querySelector('tbody')?.innerText || '' })");
+        const calendar = await page.evaluate("({ rows: document.querySelectorAll('main tbody tr').length, body: document.querySelector('main tbody')?.innerText || '' })");
         if (calendar.rows < 25 || !/2026-04-/.test(calendar.body)) throw new Error("Nepali calendar did not produce a populated 2083 BS month with AD dates.");
         row.checks.push("2083 BS calendar generated with day, AD date and weekday rows");
         row.outputVerified = true;
@@ -576,7 +587,7 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepali-unicode-typing") {
-        const output = await page.evaluate("document.querySelectorAll('textarea')[1]?.value || ''");
+        const output = await page.evaluate("document.querySelectorAll('main textarea')[1]?.value || ''");
         if (!/[\u0900-\u097F]/.test(output)) throw new Error("Nepali typing did not convert romanized input into Devanagari output.");
         row.checks.push("Romanized input converted to Devanagari output textarea");
         row.outputVerified = true;
@@ -585,7 +596,7 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "preeti-unicode-converter") {
-        const output = await page.evaluate("document.querySelector('[aria-live]')?.innerText || ''");
+        const output = await page.evaluate("document.querySelector('main [aria-live]')?.innerText || ''");
         if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Preeti converter did not return Devanagari output for the built-in Preeti sample.");
         row.checks.push("Preeti sample converted to Devanagari Unicode");
         row.outputVerified = true;
@@ -594,7 +605,7 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "color-picker-palette") {
-        const colorState = await page.evaluate("({ value: document.querySelector('input[type=color]')?.value, body: document.body?.innerText || '', swatches: [...document.querySelectorAll('button[title]')].map(b => b.title) })");
+        const colorState = await page.evaluate("({ value: document.querySelector('main input[type=color]')?.value, body: document.querySelector('main')?.innerText || '', swatches: [...document.querySelectorAll('main button[title]')].map(b => b.title) })");
         if (colorState.value !== "#0f766e" || !colorState.body.includes("#0F766E") || !colorState.body.includes("15, 118, 110") || colorState.swatches.length < 5) throw new Error("Color picker did not show the selected HEX/RGB values and five palette swatches.");
         row.checks.push("selected color, HEX, RGB and five palette swatches verified");
         row.outputVerified = true;

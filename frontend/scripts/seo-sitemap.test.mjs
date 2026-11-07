@@ -13,6 +13,13 @@ const englishToolPageSource = read("app/tools/[slug]/page.tsx");
 const pdfToolWorkspaceSource = read("components/PDForaTool.tsx");
 const niroj77ToolWorkspaceSource = read("components/Niroj77Tool.tsx");
 const mergePdfLayoutSource = read("app/merge-pdf/layout.tsx");
+
+const englishHomeSource = read("app/page.tsx");
+const nepaliHomeSource = read("app/ne/page.tsx");
+const blogArticleSource = read("app/blog/[slug]/page.tsx");
+const nepaliBlogArticleSource = read("app/[locale]/blog/[slug]/page.tsx");
+const localeMetadataSource = read("lib/i18n/metadata.ts");
+
 const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;
@@ -114,5 +121,27 @@ for (const slug of approvedNepali) {
   assert.equal(metadata.alternates?.languages?.ne, `https://pd-fora.vercel.app/ne${pathName}`);
   assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app${pathName}`);
 }
+
+
+assert.match(read("app/layout.tsx"), /metadataBase:\s*new URL\("https:\/\/pd-fora\.vercel\.app"\)/, "The site must have one consistent metadata base");
+assert.match(read("app/about/page.tsx"), /title:\s*"About PDFora \| Free Online PDF Tools & Nepal Utilities"/, "About page title must identify the site and its actual purpose");
+for (const [source, label] of [[englishHomeSource, "English home"], [nepaliHomeSource, "Nepali home"]]) {
+  assert.match(source, /alternates:\s*\{[\s\S]*?canonical:/, `${label} must declare a self-canonical URL`);
+  assert.match(source, /openGraph:\s*\{/, `${label} must provide Open Graph metadata`);
+  assert.match(source, /twitter:\s*\{/, `${label} must provide social preview metadata`);
+}
+assert.match(englishToolPageSource, /alternates:\s*\{\s*canonical/, "Catalog tool pages must publish self-canonical URLs");
+assert.match(englishToolPageSource, /openGraph:\s*\{/, "Catalog tool pages must publish Open Graph metadata");
+assert.match(englishToolPageSource, /twitter:\s*\{/, "Catalog tool pages must publish Twitter metadata");
+assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*slug\s*!==\s*"ocr-pdf"/, "OCR must remain excluded from indexing");
+assert.match(blogArticleSource, /alternates:\s*\{\s*canonical:\s*url/, "English articles must publish self-canonicals");
+assert.match(blogArticleSource, /robots:\s*isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false/, "Generated thin blog guides must remain noindex");
+assert.match(blogArticleSource, /openGraph:\s*\{\s*type:\s*"article"/, "English articles must publish article Open Graph metadata");
+assert.match(blogArticleSource, /twitter:\s*\{/, "English articles must publish Twitter metadata");
+assert.match(nepaliBlogArticleSource, /buildLocaleMetadata\(/, "Nepali articles must use the shared canonical and locale metadata builder");
+assert.match(localeMetadataSource, /alternates:\s*\{\s*canonical,/, "Localized pages must self-canonicalize");
+assert.match(localeMetadataSource, /openGraph:\s*\{/, "Localized pages must publish locale-aware Open Graph metadata");
+assert.match(localeMetadataSource, /twitter:\s*\{/, "Localized pages must publish locale-aware Twitter metadata");
+assert.match(localeMetadataSource, /robots:\s*!published\s*\?/, "Unpublished locales must remain excluded from indexing");
 
 console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} approved Nepali tool URLs; ${toolRoutes.length} unapproved localized catalog tools remain noindex.`);

@@ -105,6 +105,7 @@ function LoksewaPhotoResizer() {
 
   async function resizePhoto() {
     if (!photo) { setMessage("पहिले फोटो छान्नुहोस्।"); return; }
+    if (!["image/jpeg", "image/png", "image/webp"].includes(photo.type)) { setMessage("JPEG, PNG वा WebP फोटो मात्र छान्नुहोस्।"); return; }
     if (photo.size > 20 * 1024 * 1024) { setMessage("फोटोको आकार २० MB भन्दा कम हुनुपर्छ।"); return; }
     setBusy(true);
     setMessage("");
@@ -121,9 +122,9 @@ function LoksewaPhotoResizer() {
         throw new Error("फोटोको रिजोल्युसन धेरै ठूलो छ। २५ मेगापिक्सेलभन्दा कम भएको फोटो छान्नुहोस्।");
       }
       const max = Number(dimension);
-      const scale = Math.min(1, max / image.width, max / image.height);
-      const width = Math.max(1, Math.round(image.width * scale));
-      const height = Math.max(1, Math.round(image.height * scale));
+      const scale = Math.min(1, max / image.naturalWidth, max / image.naturalHeight);
+      const width = Math.max(1, Math.round(image.naturalWidth * scale));
+      const height = Math.max(1, Math.round(image.naturalHeight * scale));
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;

@@ -67,7 +67,7 @@ export function runNepaliMathTool(slug: NepaliMathToolSlug, values: NepaliMathIn
   }
   if (slug === "prime-number-checker") {
     const value = parse(values.number ?? "");
-    if (!Number.isSafeInteger(value) || value < 0) return "० वा ऋणात्मक होइन, मान्य गैर-ऋणात्मक पूर्णांक प्रविष्ट गर्नुहोस्।";
+    if (!Number.isSafeInteger(value) || value < 0) return "मान्य गैर-ऋणात्मक पूर्णांक प्रविष्ट गर्नुहोस्।";
     if (value < 2) return `${value} अभाज्य संख्या होइन।`;
     for (let divisor = 2; divisor <= Math.sqrt(value); divisor += 1) if (value % divisor === 0) return `${value} अभाज्य संख्या होइन।\n${divisor} ले निःशेष भाग गर्छ।`;
     return `${value} अभाज्य संख्या हो।`;

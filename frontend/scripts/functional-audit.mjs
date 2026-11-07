@@ -34,8 +34,14 @@ const testedCatalog = new Set([
   "random-number-generator",
   "dice-roller",
   "password-generator",
+  "nepali-vat-calculator",
+  "nepali-number-converter",
+  "gold-tola-gram-converter",
+  "nepal-share-calculator",
+  "lorem-ipsum-generator",
 ]);
 const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator", "nepali-vat-calculator", "nepali-number-converter", "gold-tola-gram-converter", "nepal-share-calculator"]);
+const uiRegressionCatalog = new Set([...inputTestedCatalog, "lorem-ipsum-generator"]);
 
 // Catalog route/handler/SEO statuses are PARTIAL: current evidence proves registry,
 // adapter and metadata contracts only, not an HTTP-rendered page or complete SEO validation.
@@ -78,10 +84,10 @@ const rows = [
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: inputTestedCatalog.has(entry.slug)
+    defectsFound: uiRegressionCatalog.has(entry.slug)
       ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
       : "",
-    fixesApplied: inputTestedCatalog.has(entry.slug)
+    fixesApplied: uiRegressionCatalog.has(entry.slug)
       ? "Added required-number validation, Nepal form blank-field checks, JSON-safe YAML serialization, and rejection-sampled random integers with unit/regression tests."
       : "",
     remainingBlockers: testedCatalog.has(entry.slug)
@@ -89,9 +95,11 @@ const rows = [
       : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
     evidence: inputTestedCatalog.has(entry.slug)
       ? "frontend/__tests__/catalogInputs.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts"
-      : testedCatalog.has(entry.slug)
-        ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
-        : catalogEvidence,
+      : uiRegressionCatalog.has(entry.slug)
+        ? "frontend/scripts/tool-ui-regression.test.mjs; frontend/components/AllTools.tsx"
+        : testedCatalog.has(entry.slug)
+          ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
+          : catalogEvidence,
   })),
 ];
 

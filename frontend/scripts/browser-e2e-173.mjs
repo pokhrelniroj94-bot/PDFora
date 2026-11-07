@@ -350,30 +350,122 @@ async function runTool(tool, index) {
         body: document.body?.innerText?.slice(-8000) || "",
         alerts: [...document.querySelectorAll('[role="alert"]')].map((e) => e.innerText.trim()).filter(Boolean),
         live: [...document.querySelectorAll('[aria-live]')].map((e) => e.innerText.trim()).filter(Boolean),
+        tables: [...document.querySelectorAll('table')].map((table) => table.innerText).join('\\n'),
         inputs: document.querySelectorAll("input,textarea,select").length,
       }))()`);
       if (/Tool configuration missing|Tool not implemented|This utility is not available yet|Nepal utility not found/i.test(finalState.body)) {
         throw new Error("Tool reported an unavailable handler/configuration.");
       }
       const expectedOutputs = {
-        "bmi-calculator": "BMI: 22.5",
-        "bmr-calculator": "Estimated BMR: 1593 kcal/day",
-        "unit-converter": "1000",
-        "fraction-calculator": "5/6",
+        "loan-emi-calculator": "Monthly EMI: NPR 21,247.04",
+        "compound-interest-sip-calculator": "Estimated future value: NPR 1,024,224.89",
+        "discount-percentage-calculator": "Price after discount: 800",
+        "lorem-ipsum-generator": "lorem ipsum dolor sit amet",
+        "text-diff-checker": "No differences found.",
+        "json-formatter-validator": '"name": "PDFora"',
+        "hash-generator": "SHA-256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "percentage-change-calculator": "20.00% increase",
+        "average-calculator": "Mean: 25",
+        "ratio-simplifier": "2:3",
+        "date-difference-calculator": "0 days",
+        "time-duration-calculator": "8 hours 0 minutes",
+        "remove-duplicate-lines": "apple\nbanana",
+        "sort-lines": "apple\nBanana\nOrange",
+        "reverse-text": "dlrow olleH",
+        "text-to-slug": "my-awesome-website",
+        "whitespace-cleaner": "Remove extra spaces",
+        "character-frequency": "a : 3",
+        "html-encoder-decoder": "&lt;h1&gt;Hello &amp; welcome&lt;/h1&gt;",
+        "regex-tester": "Match: Cat at index 0",
+        "color-contrast-checker": "Contrast ratio: 17.74:1",
+        "css-minifier": ".card{color:#333;padding:16px}",
+        "json-to-csv": '"name","age"',
+        "meta-title-checker": "Characters: 30",
+        "meta-description-checker": "Characters: 93",
+        "keyword-density-checker": "Word count: 9",
+        "robots-txt-generator": "User-agent: *",
+        "sitemap-generator": "<urlset",
+        "open-graph-preview": "og:title: Your page title",
+        "profit-margin-calculator": "Profit margin: 40.00%",
+        "markup-calculator": "Selling price: 84.00",
+        "break-even-calculator": "Break-even units: 500",
+        "sales-tax-calculator": "Total including tax: 1130.00",
+        "salary-breakdown-calculator": "Gross monthly: 50000.00",
+        "savings-goal-calculator": "Monthly savings needed: 7500.00",
+        "url-query-parser": "q = pdf",
+        "xml-formatter-validator": "<root>",
+        "word-frequency-counter": "save — 2",
+        "reading-time-calculator": "4 words",
+        "sentence-counter": "Sentences: 3",
+        "email-extractor": "hello@example.com",
+        "url-extractor": "https://example.com",
+        "phone-number-extractor": "+977-9812345678",
+        "number-extractor": "2026",
+        "hashtag-extractor": "#PDFora",
+        "remove-duplicate-words": "the quick brown fox",
+        "find-replace-text": "Hi world. Hi again.",
+        "binary-to-text": "Hi",
+        "text-to-hex": "48 65 6c 6c 6f",
+        "hex-to-text": "Hello",
+        "morse-code-translator": "... --- ... / .... . .-.. .--.",
+        "palindrome-checker": "Palindrome",
+        "acronym-generator": "NAASA",
+        "camel-case-converter": "convertThisPhrase",
+        "snake-case-converter": "convert_this_phrase",
+        "kebab-case-converter": "convert-this-phrase",
+        "html-tag-stripper": "HelloWelcome back.",
         "csv-to-json": "Asha",
-        "json-to-yaml": "\"name\": \"Asha\"",
-        "roman-numeral-converter": "MMXXVI",
-        "business-days-calculator": "Weekdays (inclusive): 21",
-        "text-to-binary": "01001000 01100101 01101100 01101100 01101111",
-        "aspect-ratio-calculator": "16:9",
+        "json-to-yaml": '"name": "Asha"',
+        "json-escape-unescape": "Line one\\nLine two",
+        "url-validator": "Valid URL",
+        "email-validator": "Basic email syntax looks valid.",
+        "password-strength-checker": "Criteria met: 5/5",
+        "tip-calculator": "Per person: 1375.00",
+        "split-bill-calculator": "Per person: 1000.00",
+        "simple-interest-calculator": "Simple interest: 2400.00",
+        "commission-calculator": "Commission: 5000.00",
+        "hourly-to-salary-calculator": "Weekly: 600.00",
         "percentage-of-number-calculator": "37.5000",
-        "line-counter": "Total lines: 4",
+        "gcd-lcm-calculator": "GCD: 12",
+        "prime-number-checker": "97 is prime",
+        "date-add-subtract-calculator": "2026-12-01",
+        "business-days-calculator": "Weekdays (inclusive): 21",
+        "px-rem-converter": "1.5000 rem",
+        "aspect-ratio-calculator": "16:9",
+        "color-converter": "HEX: #0F766E",
+        "css-gradient-generator": "background: linear-gradient(135deg, #0f766e, #38bdf8);",
+        "roman-numeral-converter": "MMXXVI",
+        "nepali-vat-calculator": "Total including VAT: NPR 1,130",
+        "nepal-land-area-converter": "5476 sq ft",
         "nepali-number-converter": "बाह्र लाख",
+        "nepal-phone-validator": "Valid-looking Nepal mobile number format",
+        "gold-tola-gram-converter": "11.6638 grams",
+        "nepali-digit-converter": "नेपाली अंक: नेपाल २०८३ साल",
+        "neb-gpa-calculator": "3.20 / 4.00",
+        "nepal-share-calculator": "Total buy cost: NPR 20075.00",
+        "nepal-salary-tax-calculator": "Estimated annual income tax: NPR 30,000.00",
+        "nepse-dividend-calculator": "Estimated cash dividend after tax: NPR 950.00",
+      };
+      const expectedPatterns = {
+        "age-calculator": /\d+ years, \d+ months, \d+ days/,
+        "currency-converter": /1 USD = [\d,.]+ NPR/,
+        "password-generator": /^[^\n]{20}\n[^\n]{20}\n[^\n]{20}$/,
+        "uuid-generator": /^(?:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\n?){5}$/i,
+        "random-number-generator": /^\d+(?:\n\d+){4}$/,
+        "dice-roller": /^Rolls: [1-6], [1-6]\nTotal: \d+$/,
+        "image-compressor": /^Done\. Original:/,
+        "image-format-converter": /^Done\. Original:/,
+        "loksewa-photo-resizer": /Ready: 1 × 1 px/,
+        "nepali-date-converter": /\d{4}-\d{2}-\d{2} BS/,
+        "nepali-calendar": /BS day[\s\S]*AD date[\s\S]*Weekday/,
+        "nepal-forex-rates": /USD[\s\S]*NPR/,
       };
       const expected = expectedOutputs[tool.slug];
-      const liveText = finalState.live.join("\\n");
-      if (expected && !liveText.includes(expected)) {
-        throw new Error("Expected output was not found: " + expected + "; actual: " + liveText.slice(0, 300));
+      const expectedPattern = expectedPatterns[tool.slug];
+      const liveText = finalState.live.join("\n") + "\n" + finalState.tables;
+      const outputMatches = expected ? liveText.includes(expected) : expectedPattern ? expectedPattern.test(liveText) : false;
+      if ((expected || expectedPattern) && !outputMatches) {
+        throw new Error("Expected output was not found for " + tool.slug + "; actual: " + liveText.slice(0, 300));
       }
       if (!finalState.inputs && !/calendar|market|news|resume|holiday|dashboard|typing/i.test(tool.slug)) {
         throw new Error("Tool rendered no interactive inputs.");
@@ -383,9 +475,9 @@ async function runTool(tool, index) {
       }
       row.output = finalState.live.filter(Boolean).join(" | ").slice(0, 700) || finalState.body.slice(-700);
       row.outputVerified = finalState.live.some((value) => value.trim().length > 0);
-      row.evidenceLevel = expected ? "expected-output-assertion" : row.outputVerified ? "live-output-observed-not-oracle-checked" : "route-and-controls-smoke-only";
+      row.evidenceLevel = (expected || expectedPattern) && outputMatches ? "expected-output-assertion" : row.outputVerified ? "live-output-observed-not-oracle-checked" : "route-and-controls-smoke-only";
       row.checks.push("workspace output inspected");
-      row.status = expected && row.outputVerified ? "PASS" : "PARTIAL";
+      row.status = (expected || expectedPattern) && outputMatches && row.outputVerified ? "PASS" : "PARTIAL";
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

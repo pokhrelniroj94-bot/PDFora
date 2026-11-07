@@ -146,5 +146,6 @@ assert.ok(strategyLab.includes("runBacktest") && quantEngine.includes("rows[51].
 assert.ok(strategyLab.includes("const costRate=Math.max") && strategyLab.includes("fmt(costRate)") && strategyLab.includes("historyStale") && strategyLab.includes("largeGaps"), "Backtest must show effective fees and flag stale/corporate-action data");
 assert.ok(quantEngine.includes("validTradingDate") && quantEngine.includes("nepalToday"), "NEPSE input must reject future-dated observations using Nepal local date");
 assert.ok(marketIntelligence.includes("NepseMarketContext") && marketIntelligence.includes("NepseAdvancedIndicators"), "NEPSE dashboard must render the deterministic market context and advanced indicators");
+assert.ok(marketIntelligence.includes("normalizeOhlcvBars") && quantEngine.includes("validTradingDate"), "Main NEPSE signal engine must reject invalid and future-dated candles");
 assert.ok(marketIntelligence.includes("NepseMacroDrivers") && macroDrivers.includes("https://www.nrb.org.np/nsdp/") && macroDrivers.includes("Not scored live"), "NEPSE macro driver panel must link primary sources and disclose non-live scoring");
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

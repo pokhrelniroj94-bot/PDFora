@@ -36,8 +36,8 @@ const matrix = [];
 for (const locale of locales) {
   for (const tool of tools) {
     const english = locale === "en";
-    const nepaliReviewed = locale === "ne" && localizedNepaliTools.has(tool.slug);
-    const localized = english || nepaliReviewed;
+    const nepaliInterfacePresent = locale === "ne" && localizedNepaliTools.has(tool.slug);
+    const localized = english || nepaliInterfacePresent;
     const guide = english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug);
     const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug);
     matrix.push({
@@ -108,9 +108,9 @@ ${summary}
 
 ## Current blockers
 
-- Only English is the source language; Nepali has reviewed route-specific surfaces, but complete native review is not independently established.
+- Nepali has ${localizedNepaliTools.size} route-specific tool interfaces, but native-language review is not independently established.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
-- Functional testing is not claimed for every tool until the workflow matrix is executed against each handler.
+- Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers.
 - OCR is not counted among the 173 available tools because it remains excluded from the canonical PDF inventory.
 `;
 fs.writeFileSync(path.join(outputDir, "TOOL_LANGUAGE_COVERAGE_MATRIX.md"), markdown);

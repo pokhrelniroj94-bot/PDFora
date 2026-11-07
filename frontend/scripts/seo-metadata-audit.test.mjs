@@ -21,6 +21,8 @@ const nepaliPdfNamesSource = read("lib/i18n/pdf-tool-names-ne.ts");
 const nepaliPdfRoutesSource = read("lib/i18n/nepali-pdf-routes.ts");
 const nepaliPdfPage = read("app/[locale]/[slug]/page.tsx");
 const englishPdfMetadataCore = read("lib/i18n/pdf-tool-seo-core.ts");
+const englishResumeBuilder = read("app/resume-builder/page.tsx");
+const nepaliStaticRoutePage = read("app/[locale]/[slug]/page.tsx");
 const englishOverridesSource = englishPage.slice(englishPage.indexOf("const seoOverrides"), englishPage.indexOf("const seo ="));
 const categorySource = englishPage.slice(englishPage.indexOf("const categoryDescription"), englishPage.indexOf("const description ="));
 const nepaliTitleSource = nepaliPage.slice(nepaliPage.indexOf("const nepaliTitles"), nepaliPage.indexOf("const nepaliDescriptions"));
@@ -135,5 +137,11 @@ assert.match(englishPdfMetadataCore, /robots:\s*\{ index: true, follow: true \}/
 assert.match(englishPdfMetadataCore, /openGraph:\s*\{[^}]*title:\s*brandedTitle/s, "English PDF pages need page-specific Open Graph titles");
 assert.match(englishPdfMetadataCore, /twitter:\s*\{[^}]*title:\s*brandedTitle/s, "English PDF pages need page-specific Twitter titles");
 assert.match(sitemap, /legacyToolSlugs\.map/, "English PDF tool routes must be present in the sitemap");
+assert.match(englishPage, /tool\.slug !== "resume-builder"/, "The duplicate /tools/resume-builder URL must not be statically generated");
+assert.match(englishPage, /slug === "resume-builder"\) permanentRedirect\("\/resume-builder"\)/, "The duplicate catalog Resume Builder route must permanently redirect to its canonical page");
+assert.match(englishResumeBuilder, /canonical:\s*"https:\/\/pd-fora\.vercel\.app\/resume-builder"/, "English Resume Builder must self-canonicalize to its dedicated route");
+assert.match(nepaliStaticRoutePage, /path:\s*"\/resume-builder"/, "Nepali Resume Builder must use its dedicated localized canonical route");
+assert.match(sitemap, /tool\.slug !== "resume-builder"/, "Sitemap must exclude the duplicate catalog Resume Builder URL");
+assert.match(sitemap, /url:\s*`\$\{baseUrl\}\/resume-builder`/, "Sitemap must include the canonical English Resume Builder URL");
 
 console.log(`SEO metadata audit passed: ${englishMetadata.length} unique English tool titles/descriptions and ${nepaliMetadata.length} unique Nepali tool titles/descriptions.`);

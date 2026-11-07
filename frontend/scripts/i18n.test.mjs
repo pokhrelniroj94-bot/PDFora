@@ -14,6 +14,7 @@ const {
   "pdf-tool-seo-core": pdfToolSeoCore, "pdf-tool-fields-ne": pdfToolFields,
 } = await loadI18n();
 const { getPdfToolCopy } = pdfToolUi;
+const { createTranslator } = translate;
 const { nepaliToolGuides } = nepaliGuides;
 const { nepaliToolNames } = nepaliNames;
 const { toolGuides } = toolGuidesModule;

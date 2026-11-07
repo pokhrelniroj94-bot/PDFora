@@ -19,7 +19,7 @@ interface LocaleMetadataInput {
 export function buildLocaleMetadata({ locale, path, title, description }: LocaleMetadataInput): Metadata {
   const published = isPublished(locale);
   const canonical = absoluteUrl(path, locale);
-  const pdfSlug = path.replace(/^\\/+/, "");
+  const pdfSlug = path.replace(/^\/+/, "");
   const isPdfTool = Object.prototype.hasOwnProperty.call(nepaliPdfRoutes, pdfSlug);
   const indexable = published && (!isPdfTool || isLocalizedToolIndexable(locale, pdfSlug));
   const languages = indexable ? hreflangMap(path) : undefined;

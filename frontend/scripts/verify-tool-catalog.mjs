@@ -14,6 +14,8 @@ const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
 const pdfToolGuidesSource = read("../lib/tool-guides.ts");
 const toolPage = read("../app/tools/[slug]/page.tsx");
+const rootLayout = read("../app/layout.tsx");
+const localizedBlogArticle = read("../app/[locale]/blog/[slug]/page.tsx");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
@@ -102,6 +104,9 @@ assert.doesNotMatch(seoContent, /"@type": "FAQPage"/, "PDF guide content must no
 assert.doesNotMatch(read("../components/PdfToolJsonLd.tsx"), /"@type": "FAQPage"/, "Shared PDF schema must not emit obsolete FAQ rich-result markup");
 assert.match(toolPage, /const description = seo\?\.description \?\? tool\.description\.trim\(\)/, "Fallback metadata must use the actual task-specific catalog description");
 assert.ok(toolPage.includes("const title = seo?.title ?? `${tool.name} Online`"), "Fallback metadata title must identify the actual tool; the root metadata template supplies the site name");
+assert.ok(rootLayout.includes('template: "%s | PDFora"'), "Root layout must append one PDFora brand suffix");
+assert.ok(localizedBlogArticle.includes("title: post.title"), "Localized blog articles must pass unbranded titles to the root template");
+assert.ok(!localizedBlogArticle.includes('title: `${post.title} | PDFora`'), "Localized blog article titles must not duplicate the PDFora suffix");
 assert.match(seoContent, /uniqueFaqItems\.map/, "Visible tool FAQs must remain available in page content");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 

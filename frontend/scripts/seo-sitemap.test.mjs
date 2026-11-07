@@ -150,10 +150,10 @@ for (const slug of approvedNepali) {
 assert.match(read("app/layout.tsx"), /metadataBase:\s*new URL\("https:\/\/pd-fora\.vercel\.app"\)/, "The site must have one consistent metadata base");
 assert.match(read("app/about/page.tsx"), /title:\s*\{\s*absolute:\s*"About PDFora \| Free Online PDF Tools & Nepal Utilities"/, "About page must use an absolute descriptive title without duplicating the root brand template");
 
-assert.match(layoutSource, /title:\s*\{\s*default:[\s\S]*?template:\s*"%s \\| PDFora"/, "The root layout must own the single PDFora title suffix");
+assert.match(layoutSource, /title:\s*\{\s*default:[\s\S]*?template:\s*"%s \| PDFora"/, "The root layout must own the single PDFora title suffix");
 for (const relativePath of ["app/tools/page.tsx", "app/market/page.tsx", "app/nepse-lab/page.tsx", "app/resume-builder/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx", "app/contact/page.tsx", "app/[locale]/blog/page.tsx", "app/[locale]/[slug]/page.tsx"]) {
   const source = read(relativePath);
-  assert.doesNotMatch(source, /title:\s*"[^"]*\\|\\s*PDFora"/, `${relativePath} must not repeat the root title-template brand suffix`);
+  assert.doesNotMatch(source, /title:\s*"[^"]*\|\s*PDFora"/, relativePath + " must not repeat the root title-template brand suffix");
 }
 assert.match(read("lib/tools/localized-metadata.ts"), /title: entry\.name/, "Localized tool titles must rely on the shared root brand suffix");
 assert.match(read("lib/i18n/pdf-tool-seo-core.ts"), /const title = `\$\{guide\.name\} Online`/, "PDF guide titles must rely on the shared root brand suffix");

@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main, master, feat/free-market-data-fallbacks, i18n/global-multilingual, feature/complete-12-language-platform]
   push:
-    branches: [master, niroj77-seo-ux-security, i18n/global-multilingual, fix/published-language-switcher]
+    branches: [master, niroj77-seo-ux-security, i18n/global-multilingual, fix/published-language-switcher, codex/multilingual-completion]
   workflow_dispatch:
 permissions:
   contents: read

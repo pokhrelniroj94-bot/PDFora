@@ -1,4 +1,4 @@
-import { blogPosts, isCatalogGeneratedGuide } from "../lib/blog-posts";
+import { blogPosts, isCatalogGeneratedGuide, isGeneratedPdfGuide } from "../lib/blog-posts";
 import type { MetadataRoute } from "next";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
@@ -66,7 +66,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...legacyPdfEntries,
     ...catalogEntries,
     { url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.8 },
-    ...blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug)).map((post) => ({
+    ...blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug) && !isGeneratedPdfGuide(post.slug)).map((post) => ({
       url: `${baseUrl}/blog/${post.slug}`,
       lastModified: new Date(post.updated),
       changeFrequency: "monthly" as const,

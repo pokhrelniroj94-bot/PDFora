@@ -51,7 +51,16 @@ const nepalBlogCount = (nepalBlogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepaliLocalizedBlogCount = nepaliBlogArticleCount;
 const nepaliLocalizedStaticCount = routing.nepaliLocalizedNonToolPaths.filter((route) => ["/privacy", "/terms", "/about", "/contact"].includes(route)).length;
 const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);
+const expectedNepaliLocalizedRouteCount = routing.nepaliLocalizedNonToolPaths.length
+  + nepaliPdfRouteSlugs.length
+  + nepaliUtilityRoutes.length
+  + nepaliFinancialRoutes.length
+  + nepaliPublicInfoRoutes.length
+  + nepaliCareerRoutes.length;
 const nepaliLocalizedRouteCount = routing.nepaliLocalizedRoutePaths.size;
+if (nepaliLocalizedRouteCount !== expectedNepaliLocalizedRouteCount) {
+  throw new Error(`Nepali route registry mismatch: routing exposes ${nepaliLocalizedRouteCount} routes, but the current source registries describe ${expectedNepaliLocalizedRouteCount}.`);
+}
 const sharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("en"));
 const sharedUiCoverage = Object.fromEntries(config.locales.map((locale) => {
   const translatedLeafCount = countLeaves(sharedUi.getSharedUiCopy(locale));
@@ -178,7 +187,7 @@ Inventory: ${pageSourceFiles.length} frontend page source files, ${apiRouteSourc
 |---|---|---|---:|---:|---:|---:|---:|
 ${rows.join("\n")}
 
-Nepali currently has the homepage, six localized PDF routes, 52 localized utility routes, seven finance/news routes, two public-information routes, three AI-writing routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, ${nepaliLocalizedBlogCount} curated editorial articles and four localized legal/static pages. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has ${nepaliHomeExists ? "the homepage" : "no localized homepage"}, ${nepaliPdfRouteSlugs.length} localized PDF routes, ${nepaliUtilityRoutes.length} localized utility routes, ${nepaliFinancialRoutes.length} finance/news routes, ${nepaliPublicInfoRoutes.length} public-information routes, ${nepaliCareerRoutes.length} AI-writing routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, ${nepaliLocalizedBlogCount} curated editorial articles and ${nepaliLocalizedStaticCount} localized legal/static pages. The complete route registry contains ${nepaliLocalizedRouteCount} distinct Nepali route equivalents. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
 `;
 fs.writeFileSync(path.join(outputDir, "TRANSLATION_COVERAGE.md"), markdown);
 console.log(markdown);

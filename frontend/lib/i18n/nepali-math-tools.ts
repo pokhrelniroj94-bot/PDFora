@@ -21,14 +21,14 @@ export function runNepaliMathTool(slug: NepaliMathToolSlug, values: NepaliMathIn
     const to = parse(values.to ?? "");
     if (!Number.isFinite(from) || !Number.isFinite(to)) return "कृपया दुवै मान्य संख्या प्रविष्ट गर्नुहोस्।";
     if (from === 0) return to === 0 ? "प्रतिशत परिवर्तन: ०% (परिवर्तन छैन)।" : "सुरुको मान ० भएकाले प्रतिशत परिवर्तन गणना गर्न सकिँदैन।";
-    const change = ((to - from) / Math.abs(from)) * 100;
+    const change = ((to - from) / Math.abs(from)) * 100;\n    if (!Number.isFinite(change)) return "प्रविष्ट गरिएको मानको दायरा धेरै ठूलो छ।";
     return `परिवर्तन: ${moneyNumber(to - from)}\nप्रतिशत परिवर्तन: ${moneyNumber(change)}%\nस्थिति: ${change > 0 ? "वृद्धि" : change < 0 ? "घटेको" : "परिवर्तन छैन"}`;
   }
   if (slug === "average-calculator") {
     const raw = (values.numbers ?? "").split(/[\s,;]+/).filter(Boolean);
     const numbers = raw.map(Number);
     if (!raw.length || numbers.some((number) => !Number.isFinite(number))) return "कृपया comma वा space ले छुट्याएका मान्य संख्या प्रविष्ट गर्नुहोस्।";
-    const sum = numbers.reduce((total, number) => total + number, 0);
+    const sum = numbers.reduce((total, number) => total + number, 0);\n    if (!Number.isFinite(sum)) return "संख्याहरूको जम्मा गणना गर्न दायरा धेरै ठूलो छ।";
     return `संख्या: ${numbers.length}\nजम्मा: ${moneyNumber(sum)}\nऔसत: ${moneyNumber(sum / numbers.length)}`;
   }
   if (slug === "ratio-simplifier") {
@@ -48,7 +48,7 @@ export function runNepaliMathTool(slug: NepaliMathToolSlug, values: NepaliMathIn
     else if (operation === "subtract") { numerator = a * d - c * b; denominator = b * d; }
     else if (operation === "multiply") { numerator = a * c; denominator = b * d; }
     else { numerator = a * d; denominator = b * c; }
-    if (denominator < 0) { numerator *= -1; denominator *= -1; }
+    if (!Number.isSafeInteger(numerator) || !Number.isSafeInteger(denominator)) return "भिन्नको गणना सुरक्षित पूर्णांक सीमाभन्दा ठूलो भयो।";\n    if (denominator < 0) { numerator *= -1; denominator *= -1; }
     const divisor = gcd(numerator, denominator) || 1;
     numerator /= divisor; denominator /= divisor;
     return `सरल नतिजा: ${numerator}/${denominator}\nदशमलव: ${moneyNumber(numerator / denominator)}`;
@@ -62,13 +62,13 @@ export function runNepaliMathTool(slug: NepaliMathToolSlug, values: NepaliMathIn
     const a = parse(values.a ?? ""), b = parse(values.b ?? "");
     if (!Number.isSafeInteger(a) || !Number.isSafeInteger(b) || (a === 0 && b === 0)) return "दुई पूर्णांक प्रविष्ट गर्नुहोस्; दुवै ० हुन सक्दैनन्।";
     const divisor = gcd(a, b);
-    const multiple = divisor === 0 ? 0 : Math.abs((a / divisor) * b);
+    const multiple = divisor === 0 ? 0 : Math.abs((a / divisor) * b);\n    if (!Number.isSafeInteger(multiple)) return "LCM सुरक्षित पूर्णांक सीमाभन्दा ठूलो भयो।";
     return `महत्तम समापवर्तक (GCD): ${divisor}\nलघुत्तम समापवर्त्य (LCM): ${multiple}`;
   }
   if (slug === "prime-number-checker") {
     const value = parse(values.number ?? "");
     if (!Number.isSafeInteger(value) || value < 0) return "मान्य गैर-ऋणात्मक पूर्णांक प्रविष्ट गर्नुहोस्।";
-    if (value < 2) return `${value} अभाज्य संख्या होइन।`;
+    if (value < 2) return `${value} अभाज्य संख्या होइन।`;\n    if (value > 1_000_000_000_000) return "यो जाँचका लागि संख्या १,०००,०००,०००,००० भन्दा सानो हुनुपर्छ।";
     for (let divisor = 2; divisor <= Math.sqrt(value); divisor += 1) if (value % divisor === 0) return `${value} अभाज्य संख्या होइन।\n${divisor} ले निःशेष भाग गर्छ।`;
     return `${value} अभाज्य संख्या हो।`;
   }
@@ -80,7 +80,7 @@ export function runNepaliMathTool(slug: NepaliMathToolSlug, values: NepaliMathIn
     const toFactor = lengthToMeters[to] ?? massToGrams[to];
     const sameDimension = Boolean(lengthToMeters[from] && lengthToMeters[to]) || Boolean(massToGrams[from] && massToGrams[to]);
     if (!sameDimension || !fromFactor || !toFactor) return "एउटै प्रकारका एकाइ छान्नुहोस् (लम्बाइ वा तौल)।";
-    return `${moneyNumber(amount)} ${from} = ${moneyNumber(amount * fromFactor / toFactor)} ${to}`;
+    const converted = amount * fromFactor / toFactor;\n    if (!Number.isFinite(converted)) return "रूपान्तरणको नतिजा संख्या सीमाभन्दा बाहिर छ।";\n    return `${moneyNumber(amount)} ${from} = ${moneyNumber(converted)} ${to}`;
   }
   return "";
 }

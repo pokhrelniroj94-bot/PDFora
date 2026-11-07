@@ -30,7 +30,17 @@ const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh
 const rtlLocales = new Set(["ur", "ar"]);
 const publishedLocales = new Set(["en", "ne"]);
 const handlerEvidence = "catalog-handler-check";
-const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter"]);
+// Derive targeted coverage from executable tests rather than a stale hand-maintained list.
+const targetedNepaliUnitTests = new Set([
+  ...parseSlugs(read("scripts/nepali-text-tools.test.mjs"), /runNepaliTextTool\\("([^"]+)"/g),
+  ...parseSlugs(read("scripts/nepali-developer-text-tools.test.mjs"), /runNepaliDeveloperTool\\("([^"]+)"/g),
+  ...parseSlugs(read("scripts/nepali-math-tools.test.mjs"), /runNepaliMathTool\\("([^"]+)"/g),
+  ...parseSlugs(read("scripts/nepali-business-tools.test.mjs"), /runNepaliBusinessTool\\("([^"]+)"/g),
+  ...parseSlugs(read("scripts/nepali-date-time-tools.test.mjs"), /runNepaliDateTimeTool\\("([^"]+)"/g),
+  "hash-generator",
+  "nepal-phone-validator",
+  "gold-tola-gram-converter",
+]);
 
 const matrix = [];
 for (const locale of locales) {

@@ -13,7 +13,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.counts.tools, 173);
   assert.equal(report.counts.matrixRows, 12 * 173);
   assert.equal(report.rows.length, 2076);
-  assert.equal(report.counts.localizedNepaliTools, 172, "49 PDF tools, 122 localized catalog routes and the dedicated Resume Builder route");
+  assert.equal(report.counts.localizedNepaliTools, 173, "49 PDF tools, 123 localized catalog routes and the dedicated Resume Builder route");
   assert.equal(report.counts.indexableNepaliTools, 6);
   assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 173);
   for (const slug of [
@@ -23,7 +23,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
     "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator",
     "line-counter", "sentence-counter", "json-formatter-validator", "base64-encoder-decoder",
     "url-encoder-decoder", "html-encoder-decoder", "text-to-slug", "lorem-ipsum-generator", "text-diff-checker",
-    "hash-generator", "nepal-phone-validator", "gold-tola-gram-converter",
+    "hash-generator", "nepal-phone-validator", "gold-tola-gram-converter", "market-ai",
   ]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
     assert.equal(row?.functionalTest, "targeted-unit-tests", `${slug} should be marked only when its dedicated test runs`);

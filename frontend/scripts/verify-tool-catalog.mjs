@@ -133,7 +133,7 @@ const advancedIndicators = read("../components/NepseAdvancedIndicators.tsx");
 const marketIntelligence = read("../components/MarketIntelligence.tsx");
 const quantEngine = read("../lib/nepse-quant.mjs");
 const strategyLab = read("../components/NepseAlphaLab.tsx");
-assert.ok(quantEngine.includes('/^\d{4}-\d{2}-\d{2}$/'), "NEPSE quant engine must validate real ISO dates");
+assert.ok(quantEngine.includes(String.raw`/^\d{4}-\d{2}-\d{2}$/`), "NEPSE quant engine must validate real ISO dates");
 assert.ok(quantEngine.includes("Math.sqrt(252)") && quantEngine.includes("ret50"), "NEPSE market regime must calculate 20/50-session returns and annualized volatility");
 assert.ok(quantEngine.includes("averageGain") && quantEngine.includes("averageLoss"), "NEPSE RSI must use Wilder smoothing");
 assert.ok(marketContext.includes("calculateMarketRegime") && (marketContext.includes("advancers") || marketContext.includes("let up=0,down=0,flat=0")), "NEPSE breadth calculation is missing");

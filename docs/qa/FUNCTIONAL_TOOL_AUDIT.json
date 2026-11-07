@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-07T05:20:23.361Z",
-  "sourceCommit": "c3eb9dc321f400433b1252116702e8dde5e99787",
+  "generatedAt": "2026-11-07T05:26:18.662Z",
+  "sourceCommit": "a343c25c38f5bb88b4b2c98f431be17298072777",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     "statusRule": "Only executed tests produce PASS; source inspection produces PARTIAL or NOT TESTED.",
@@ -18,8 +18,8 @@
     "pdfTools": 49,
     "catalogUtilities": 124,
     "functionalPass": 0,
-    "functionalPartial": 49,
-    "functionalNotTested": 124
+    "functionalPartial": 60,
+    "functionalNotTested": 113
   },
   "tools": [
     {
@@ -929,16 +929,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "compound-interest-sip-calculator",
@@ -947,16 +947,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "discount-percentage-calculator",
@@ -965,16 +965,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "currency-converter",
@@ -1199,16 +1199,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "average-calculator",
@@ -1217,16 +1217,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "ratio-simplifier",
@@ -1235,16 +1235,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "fraction-calculator",
@@ -1253,16 +1253,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "unit-converter",
@@ -1271,16 +1271,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "age-calculator",
@@ -2369,16 +2369,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "bmr-calculator",
@@ -2387,16 +2387,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "tip-calculator",
@@ -2621,16 +2621,16 @@
       "routeStatus": "PASS",
       "interfaceStatus": "PARTIAL",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
+      "functionalTestStatus": "PARTIAL",
+      "outputVerificationStatus": "PARTIAL",
       "mobileStatus": "NOT TESTED",
       "accessibilityStatus": "NOT TESTED",
       "languageStatus": "PARTIAL",
       "seoStatus": "PASS",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "remainingBlockers": "Browser route, mobile layout and accessibility evidence remain unverified.",
+      "evidence": "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
     },
     {
       "slug": "px-rem-converter",

@@ -1,10 +1,10 @@
 # Functional Tool Audit
 
-Generated from commit `c3eb9dc321f400433b1252116702e8dde5e99787` on 2026-11-07T05:20:23.361Z.
+Generated from commit `a343c25c38f5bb88b4b2c98f431be17298072777` on 2026-11-07T05:26:18.662Z.
 
 This report records executed evidence only. It does not treat route existence or static handler references as proof that a tool works.
 
-Summary: **49 PDF tools** and **124 catalog utilities** (173 total). Functional status: **49 partial**, **124 not tested**, **0 full PASS**.
+Summary: **49 PDF tools** and **124 catalog utilities** (173 total). Functional status: **60 partial**, **113 not tested**, **0 full PASS**.
 
 Evidence: backend PDF sweep `backend/tests/test_tool_api.py::test_all_available_pdf_tools_process_a_realistic_pdf`; frontend worker tests `frontend/__tests__/pdfWorker.test.ts`; catalog static verification `frontend/scripts/verify-tool-catalog.mjs`.
 
@@ -60,9 +60,9 @@ Evidence: backend PDF sweep `backend/tests/test_tool_api.py::test_all_available_
 | unlock-pdf | PDF | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser workflow, mobile layout, accessibility and download integrity require browser evidence. |
 | watermark | PDF | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser workflow, mobile layout, accessibility and download integrity require browser evidence. |
 | resume-builder | Career Tools | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| loan-emi-calculator | Finance | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| compound-interest-sip-calculator | Finance | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| discount-percentage-calculator | Finance | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
+| loan-emi-calculator | Finance | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
+| compound-interest-sip-calculator | Finance | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
+| discount-percentage-calculator | Finance | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
 | currency-converter | Finance | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | word-character-counter | Text | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | case-converter | Text | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
@@ -75,11 +75,11 @@ Evidence: backend PDF sweep `backend/tests/test_tool_api.py::test_all_available_
 | image-compressor | Image | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | image-format-converter | Image | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | color-picker-palette | Image | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| percentage-change-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| average-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| ratio-simplifier | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| fraction-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| unit-converter | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
+| percentage-change-calculator | Math | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
+| average-calculator | Math | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
+| ratio-simplifier | Math | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
+| fraction-calculator | Math | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
+| unit-converter | Math | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
 | age-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | date-difference-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | time-duration-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
@@ -140,8 +140,8 @@ Evidence: backend PDF sweep `backend/tests/test_tool_api.py::test_all_available_
 | url-validator | Developer | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | email-validator | Developer | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | password-strength-checker | Developer | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| bmi-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| bmr-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
+| bmi-calculator | Math | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
+| bmr-calculator | Math | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
 | tip-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | split-bill-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | simple-interest-calculator | Finance | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
@@ -154,7 +154,7 @@ Evidence: backend PDF sweep `backend/tests/test_tool_api.py::test_all_available_
 | dice-roller | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | unix-timestamp-converter | Developer | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | date-add-subtract-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| business-days-calculator | Math | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
+| business-days-calculator | Math | PASS | PARTIAL | PASS | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | PARTIAL | PASS | Browser route, mobile layout and accessibility evidence remain unverified. |
 | px-rem-converter | Developer | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | aspect-ratio-calculator | Image | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | color-converter | Image | PASS | PARTIAL | PASS | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PASS | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |

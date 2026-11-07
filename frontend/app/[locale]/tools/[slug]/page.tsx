@@ -52,6 +52,21 @@ const nepaliTitles: Record<string, string> = {
   "find-replace-text": "पाठ खोज्ने र बदल्ने",
   "palindrome-checker": "पालिन्ड्रोम जाँच",
   "acronym-generator": "संक्षिप्त रूप बनाउने",
+  "text-to-binary": "पाठलाई बाइनरीमा बदल्ने",
+  "binary-to-text": "बाइनरीलाई पाठमा बदल्ने",
+  "text-to-hex": "पाठलाई Hex मा बदल्ने",
+  "hex-to-text": "Hex लाई पाठमा बदल्ने",
+  "morse-code-translator": "Morse Code रूपान्तरण",
+  "camel-case-converter": "Camel Case रूपान्तरण",
+  "snake-case-converter": "Snake Case रूपान्तरण",
+  "kebab-case-converter": "Kebab Case रूपान्तरण",
+  "html-tag-stripper": "HTML Tag हटाउने",
+  "json-escape-unescape": "JSON Escape तथा Unescape",
+  "url-query-parser": "URL Query Parameter जाँच",
+  "url-validator": "URL ढाँचा जाँच",
+  "email-validator": "इमेल ढाँचा जाँच",
+  "password-strength-checker": "पासवर्ड बल जाँच",
+  "uuid-generator": "UUID Generator",
   "percentage-change-calculator": "प्रतिशत परिवर्तन क्याल्कुलेटर",
   "average-calculator": "औसत क्याल्कुलेटर",
   "ratio-simplifier": "अनुपात सरल बनाउने",
@@ -127,6 +142,21 @@ const nepaliDescriptions: Record<string, string> = {
   "find-replace-text": "पाठमा खोजिएको अंशका सबै मिल्दो occurrence अर्को पाठले बदल्नुहोस्।",
   "palindrome-checker": "खाली स्थान र विरामचिह्न बेवास्ता गरी पाठ दुवैतर्फबाट उस्तै पढिन्छ कि जाँच्नुहोस्।",
   "acronym-generator": "वाक्यांशका शब्दहरूको पहिलो अक्षर जोडेर संक्षिप्त रूप बनाउनुहोस्।",
+  "text-to-binary": "पाठलाई UTF-8 बाइटको ८-बिट बाइनरी समूहमा बदल्नुहोस्।",
+  "binary-to-text": "वैध ८-बिट बाइनरी समूहलाई UTF-8 पाठमा बदल्नुहोस्।",
+  "text-to-hex": "पाठका UTF-8 बाइटलाई hexadecimal ढाँचामा बदल्नुहोस्।",
+  "hex-to-text": "वैध hexadecimal बाइटलाई UTF-8 पाठमा बदल्नुहोस्।",
+  "morse-code-translator": "अङ्ग्रेजी A–Z र 0–9 लाई Morse code मा वा Morse code बाट रूपान्तरण गर्नुहोस्।",
+  "camel-case-converter": "शब्दहरूलाई camelCase शैलीमा जोड्नुहोस्।",
+  "snake-case-converter": "शब्दहरूलाई snake_case शैलीमा बदल्नुहोस्।",
+  "kebab-case-converter": "शब्दहरूलाई kebab-case शैलीमा बदल्नुहोस्।",
+  "html-tag-stripper": "HTML tag हटाएर देखिने पाठ निकाल्नुहोस्; यसलाई सुरक्षा sanitizer नमान्नुहोस्।",
+  "json-escape-unescape": "JSON string का विशेष अक्षरलाई escape वा unescape गर्नुहोस्।",
+  "url-query-parser": "पूर्ण URL का query parameter निकालेर JSON मा देखाउनुहोस्।",
+  "url-validator": "HTTP वा HTTPS URL को syntax जाँच्नुहोस्; वेबसाइट उपलब्धता जाँचिँदैन।",
+  "email-validator": "इमेल ठेगानाको सामान्य syntax जाँच्नुहोस्; मेलबक्स अस्तित्व पुष्टि हुँदैन।",
+  "password-strength-checker": "पासवर्डको लम्बाइ र अक्षर विविधता स्थानीय रूपमा जाँच्नुहोस्; यो सुरक्षा प्रमाणीकरण होइन।",
+  "uuid-generator": "ब्राउजरको सुरक्षित randomUUID सुविधा प्रयोग गरी UUID v4 बनाउनुहोस्।",
   "percentage-change-calculator": "सुरुको र नयाँ मानबाट प्रतिशत वृद्धि वा कमी निकाल्नुहोस्।",
   "average-calculator": "अल्पविराम वा space ले छुट्याएका संख्याको औसत निकाल्नुहोस्।",
   "ratio-simplifier": "दुई पूर्णांकको अनुपातलाई सबैभन्दा सरल रूपमा बदल्नुहोस्।",
@@ -204,7 +234,7 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.locale === "ne" && ["word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text", "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator", "line-counter", "sentence-counter"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTextUtilityWorkspace slug={toolSlug} /></section></main>;
   }
-  if (request.locale === "ne" && ["json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator", "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug"].includes(toolSlug)) {
+  if (request.locale === "ne" && ["json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator", "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug", "text-to-binary", "binary-to-text", "text-to-hex", "hex-to-text", "morse-code-translator", "camel-case-converter", "snake-case-converter", "kebab-case-converter", "html-tag-stripper", "json-escape-unescape", "url-query-parser", "url-validator", "email-validator", "password-strength-checker", "uuid-generator"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली Developer तथा Text Tools</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliDeveloperTextWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && ["age-calculator", "date-difference-calculator", "time-duration-calculator"].includes(toolSlug)) {

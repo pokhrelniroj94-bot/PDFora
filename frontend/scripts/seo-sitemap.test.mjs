@@ -13,6 +13,7 @@ const englishToolPageSource = read("app/tools/[slug]/page.tsx");
 const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
+const isLocalizedToolIndexable = modules["localized-verification"].isLocalizedToolIndexable;
 const pdfRoutes = Object.keys(modules["nepali-pdf-routes"].nepaliPdfRoutes);
 const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedUtilitySlugs,
@@ -23,8 +24,8 @@ const toolRoutes = [
 
 assert.deepEqual(
   [...approvedNepali].sort(),
-  [...pdfRoutes].sort(),
-  "Every currently approved Nepali tool URL must come from the explicit PDF verification allowlist",
+  [...pdfRoutes.filter((slug) => isLocalizedToolIndexable("ne", slug))].sort(),
+  "The explicit Nepali PDF allowlist must match exactly the PDF routes approved for indexing",
 );
 
 assert.match(sitemapSource, /Object\.keys\(nepaliPdfRoutes\)/, "Sitemap must derive PDF URLs from the canonical route registry");

@@ -18,7 +18,7 @@ export function normalizeDailyBars(input) {
   for (const row of Array.isArray(input) ? input : []) {
     const date = String(row?.date ?? "").slice(0, 10);
     const close = Number(row?.close);
-    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date) || !Number.isFinite(Date.parse(date + "T00:00:00Z")) || new Date(date + "T00:00:00Z").toISOString().slice(0, 10) !== date || !Number.isFinite(close) || close <= 0) continue;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(Date.parse(date + "T00:00:00Z")) || new Date(date + "T00:00:00Z").toISOString().slice(0, 10) !== date || !Number.isFinite(close) || close <= 0) continue;
     const volume = Number(row?.volume);
     byDate.set(date, { date, close, ...(Number.isFinite(volume) && volume >= 0 ? { volume } : {}) });
   }

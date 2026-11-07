@@ -33,7 +33,8 @@ export function normalizeDailyBars(input) {
     const date = String(row?.date ?? "").slice(0, 10);
     const close = Number(row?.close);
     if (!validTradingDate(date) || !Number.isFinite(close) || close <= 0) continue;
-    const volume = Number(row?.volume);
+    const rawVolume = row?.volume;
+    const volume = rawVolume === null || rawVolume === undefined ? Number.NaN : Number(rawVolume);
     byDate.set(date, { date, close, ...(Number.isFinite(volume) && volume >= 0 ? { volume } : {}) });
   }
   return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));

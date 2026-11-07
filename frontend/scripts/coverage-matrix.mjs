@@ -40,6 +40,7 @@ const targetedNepaliUnitTests = new Set([
   "hash-generator",
   "nepal-phone-validator",
   "gold-tola-gram-converter",
+  "market-ai",
 ]);
 
 const matrix = [];

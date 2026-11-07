@@ -26,7 +26,7 @@ describe("catalog calculation engine", () => {
     expect(simplifyRatio(12, 18)).toBe("2:3");
     expect(fractionOperation(1, 2, 1, 3, "+")).toEqual({ numerator: 5, denominator: 6, value: 5 / 6 });
     expect(fractionOperation(1, -2, 0, 1, "+")).toEqual({ numerator: -1, denominator: 2, value: -0.5 });
-    expect(fractionOperation(1, 2, 1, -3, "+")).toEqual({ numerator: -1, denominator: 6, value: -1 / 6 });
+    expect(fractionOperation(1, 2, 1, -3, "+")).toEqual({ numerator: 1, denominator: 6, value: 1 / 6 });
     expect(() => fractionOperation(Number.MAX_SAFE_INTEGER, 1, 1, 1, "+")).toThrow("safe integer range");
     expect(() => fractionOperation(1.5, 2, 1, 3, "+")).toThrow("safe whole-number");
     expect(() => fractionOperation(1, 2, 0, 3, "/")).toThrow("zero");

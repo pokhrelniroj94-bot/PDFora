@@ -223,7 +223,7 @@ async function runTool(tool, index) {
       }
       const clicked = await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
-        const patterns = /^(run tool|calculate|convert|generate|check|format json|minify|encode|decode|create pdf|create|compress image|convert image|generate sha-256 & sha-1|get latest exchange rate|refresh|resize|process)$/i;
+        const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*)$/i;
         const button = buttons.find((b) => patterns.test(b.innerText.trim()));
         if (button) { button.click(); return button.innerText.trim(); }
         return "";

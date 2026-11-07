@@ -266,7 +266,8 @@ export const nepalBlogPosts: BlogPost[] = [
       { label: "NEA consumer tariff information", url: "https://www.nea.org.np/en/pages/consumer-tariff-rates" }
     ],
   },
-  slug: "nepal-public-holidays-2083-calendar-guide",
+  {
+    slug: "nepal-public-holidays-2083-calendar-guide",
     title: "Nepal Government Public Holidays 2083: Full Calendar and Regional Notes",
     description: "Search the 2083 BS public holiday list with AD dates, national holidays and community-specific observances.",
     keyword: "Nepal public holidays 2083",

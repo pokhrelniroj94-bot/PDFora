@@ -171,8 +171,11 @@ test("route file contract: validates through the resolver, 404s, no JSON-LD, Eng
   assert.match(meta, /isPublished\(locale\) && isLocalizedToolIndexable/);
 });
 
-test("scope guards: English tool route, sitemap and robots are not wired to the localized route", () => {
-  assert.doesNotMatch(read("app/tools/[slug]/page.tsx"), /lib\/tools\/|localized-/, "English route must stay independent");
+test("scope guards: English tool execution stays independent while approved hreflang is reciprocal", () => {
+  const englishToolPage = read("app/tools/[slug]/page.tsx");
+  assert.doesNotMatch(englishToolPage, /resolveLocalizedToolRequest|buildLocalizedToolMetadata|NepaliNepalToolsWorkspace/, "English tool execution must not be routed through localized workspace handlers");
+  assert.match(englishToolPage, /isLocalizedToolIndexable\("ne", slug\)/, "Only explicitly approved Nepali tool equivalents may appear in English hreflang");
+  assert.match(englishToolPage, /hreflangMap\(canonicalPath\)/, "Approved translations must receive reciprocal alternate URLs");
   const sitemap = read("app/sitemap.ts");
   assert.match(sitemap, /nepaliLocalizedUtilitySlugs/);
   assert.match(sitemap, /nepaliLocalizedFinancialSlugs/);

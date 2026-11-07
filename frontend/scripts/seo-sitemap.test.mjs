@@ -22,6 +22,7 @@ const localeMetadataSource = read("lib/i18n/metadata.ts");
 
 const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
+const { getPdfToolMetadata } = await import("../lib/i18n/pdf-tool-seo.ts");
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
 const isLocalizedToolIndexable = modules["localized-verification"].isLocalizedToolIndexable;
@@ -44,6 +45,20 @@ assert.doesNotMatch(niroj77ToolWorkspaceSource, /ToolSEOContent/, "Niroj77Tool m
 assert.match(read("app/[locale]/[slug]/page.tsx"), /<ToolSEOContent slug=\{slug\} locale="ne" \/>/, "Nepali PDF routes must render their localized SEO guide explicitly");
 assert.match(mergePdfLayoutSource, /<ToolSEOContent slug="merge-pdf" \/>/, "The PDF page layout must remain the single owner of its SEO guide");
 assert.equal(legacyPdfSlugs.length, 49, "Expected all 49 established PDF routes in the canonical registry");
+const pdfMetadataTitles = new Set();
+const pdfMetadataDescriptions = new Set();
+for (const slug of legacyPdfSlugs) {
+  const metadata = getPdfToolMetadata(slug);
+  assert.equal(metadata.alternates?.canonical, `https://pd-fora.vercel.app/${slug}`, `${slug} must have a self-canonical URL`);
+  assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} must remain indexable only with its dedicated guide`);
+  assert.ok(metadata.openGraph?.title && metadata.openGraph?.description, `${slug} must have Open Graph metadata`);
+  assert.ok(metadata.twitter?.title && metadata.twitter?.description, `${slug} must have Twitter metadata`);
+  pdfMetadataTitles.add(String(metadata.title));
+  pdfMetadataDescriptions.add(String(metadata.description));
+}
+assert.equal(pdfMetadataTitles.size, legacyPdfSlugs.length, "All PDF tools must have unique metadata titles");
+assert.equal(pdfMetadataDescriptions.size, legacyPdfSlugs.length, "All PDF tools must have unique metadata descriptions");
+
 for (const slug of legacyPdfSlugs) {
   const layout = read(`app/${slug}/layout.tsx`);
   assert.equal((layout.match(/<ToolSEOContent\b/g) ?? []).length, 1, `${slug} must render exactly one shared PDF SEO guide from its layout`);

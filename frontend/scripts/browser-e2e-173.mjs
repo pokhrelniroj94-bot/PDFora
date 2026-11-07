@@ -23,7 +23,7 @@ const pdfRoutes = [...pdfBlock.matchAll(/href:\s*"([^"]+)"/g)]
 const catalogTools = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"([^"]+)",category:"([^"]+)"/g)]
   .filter((match) => match[1] !== "pdf-tools")
   .map((match) => ({ slug: match[1], name: match[2], category: match[3] }));
-const aiTools = new Set(["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer"]);
+const aiTools = new Set(["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer", "market-ai"]);
 const tools = [
   ...pdfRoutes.map((href) => ({ kind: "pdf", slug: href.slice(1), url: href })),
   ...catalogTools.map((tool) => ({ kind: "catalog", ...tool, url: "/tools/" + tool.slug })),
@@ -138,6 +138,33 @@ async function openPage(url) {
     evaluate,
     close: async () => { try { ws.close(); } catch {} try { await fetch("http://127.0.0.1:9222/json/close/" + target.id); } catch {} },
   };
+}
+
+async function setFirstTextArea(page, value) {
+  return page.evaluate(`() => {
+    const element = document.querySelector("textarea");
+    if (!element) return false;
+    const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set;
+    setter?.call(element, ${JSON.stringify(value)});
+    element.dispatchEvent(new Event("input", { bubbles: true }));
+    element.dispatchEvent(new Event("change", { bubbles: true }));
+    return true;
+  })()`);
+}
+
+async function setFieldByLabel(page, labelText, value) {
+  return page.evaluate(`(() => {
+    const label = [...document.querySelectorAll("label")].find((element) =>
+      element.innerText.trim().startsWith(${JSON.stringify(labelText)}));
+    const field = label?.querySelector("input,textarea");
+    if (!field) return false;
+    const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+    const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+    setter?.call(field, ${JSON.stringify(value)});
+    field.dispatchEvent(new Event("input", { bubbles: true }));
+    field.dispatchEvent(new Event("change", { bubbles: true }));
+    return true;
+  })()`);
 }
 
 const results = [];

@@ -36,7 +36,7 @@ A live crawl of `/merge-pdf` exposed the same PDF practical guide twice in the r
 
 The release branch `seo/duplicate-content-audit-fix-2026-11-07` removes the second render from both shared workspaces, leaving each route layout as the single owner of the English PDF SEO guide. A regression assertion now guards this ownership. The Nepali dynamic PDF route continues to render its dedicated `ToolGuide` separately.
 
-The same live crawl also found older, page-specific how-to and FAQ blocks on `/merge-pdf` and `/delete-pages` that overlap with the shared guide. These are being removed from those routes so the tool page has one clear guide structure. Other standalone PDF routes still require an individual rendered-page comparison before their legacy copy can safely be consolidated.
+The same live crawl also found older, page-specific how-to and FAQ blocks on `/merge-pdf` and `/delete-pages` that overlap with the shared guide. These are being removed from those routes so the tool page has one clear guide structure. The same cleanup has now been applied to eight additional legacy PDF pages with large overlapping feature/how-to/FAQ blocks: `/compress-pdf`, `/extract-pages`, `/images-to-pdf`, `/pdf-to-excel`, `/pdf-to-jpg`, `/pdf-to-word`, `/split-pdf` and `/watermark`. Each keeps its original title, description and actual tool workspace; the route layout owns the full practical guide. Other standalone PDF routes still require an individual rendered-page comparison before their legacy copy can safely be consolidated.
 
 ## Metadata inventory checks — 2026-11-07
 

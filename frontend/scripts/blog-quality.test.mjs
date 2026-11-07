@@ -21,7 +21,7 @@ function articleBlocks(source) {
       const character = source[index];
       if (quote) {
         if (escaped) escaped = false;
-        else if (character === "\\\\") escaped = true;
+        else if (character === "\\") escaped = true;
         else if (character === quote) quote = null;
         continue;
       }

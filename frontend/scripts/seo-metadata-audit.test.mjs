@@ -20,7 +20,7 @@ const nepaliTitles = parseDictionary(nepaliTitleSource);
 const nepaliDescriptions = parseDictionary(nepaliDescriptionSource);
 const categoryAdvice = Object.fromEntries([...categorySource.matchAll(/^\\s*(PDF|Finance|Math|Text|Developer|Image|SEO|Business|Nepal):\\s*"([^"]+)"/gm)].map((match) => [match[1], match[2]]));
 
-assert.equal(catalog.length, 125, "Update the audit when the canonical catalog size changes");
+assert.equal(catalog.length, 124, "Update the audit when the canonical catalog size changes");
 const slugs = new Set(catalog.map((tool) => tool.slug));
 for (const slug of overrides.keys()) assert.ok(slugs.has(slug), "Unknown English SEO override: " + slug);
 
@@ -54,7 +54,7 @@ const localizedSlugs = [
   ...modules["nepali-tool-routes"].nepaliLocalizedCareerSlugs,
 ];
 assert.equal(new Set(localizedSlugs).size, localizedSlugs.length, "Nepali localized route registries must not contain duplicate slugs");
-assert.equal(localizedSlugs.length, 122, "Update Nepali metadata coverage expectation when routes change");
+assert.equal(localizedSlugs.length, 123, "Update Nepali metadata coverage expectation when routes change");
 for (const slug of localizedSlugs) {
   assert.ok(slugs.has(slug), "Nepali SEO metadata references a non-catalog slug: " + slug);
   assert.ok(nepaliTitles.has(slug), "Missing Nepali title: " + slug);

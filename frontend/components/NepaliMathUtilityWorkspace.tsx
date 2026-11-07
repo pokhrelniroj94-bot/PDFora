@@ -13,18 +13,23 @@ const labels: Record<NepaliMathToolSlug, { title: string; description: string }>
   "gcd-lcm-calculator": { title: "GCD तथा LCM क्याल्कुलेटर", description: "दुई पूर्णांकको महत्तम समापवर्तक र लघुत्तम समापवर्त्य निकाल्नुहोस्।" },
   "prime-number-checker": { title: "अभाज्य संख्या जाँच", description: "कुनै पूर्णांक अभाज्य हो वा होइन जाँच गर्नुहोस्।" },
   "unit-converter": { title: "एकाइ रूपान्तरण", description: "लम्बाइ र तौलका सामान्य एकाइहरूबीच रूपान्तरण गर्नुहोस्।" },
+  "bmi-calculator": { title: "BMI क्याल्कुलेटर", description: "तौल र उचाइबाट वयस्कको BMI अनुमान गर्नुहोस्; यो चिकित्सकीय निदान होइन।" },
+  "bmr-calculator": { title: "BMR क्याल्कुलेटर", description: "उमेर, उचाइ, तौल र सूत्रमा प्रयोग हुने लिङ्ग विकल्पबाट आधारभूत ऊर्जा खर्च अनुमान गर्नुहोस्।" },
+  "tip-calculator": { title: "टिप क्याल्कुलेटर", description: "बिल रकम, टिप प्रतिशत र व्यक्तिको संख्याबाट बाँडफाँट निकाल्नुहोस्।" },
+  "split-bill-calculator": { title: "बिल बाँडफाँट क्याल्कुलेटर", description: "कुल बिललाई व्यक्तिको संख्याले बराबर बाँड्नुहोस्।" },
+  "simple-interest-calculator": { title: "साधारण ब्याज क्याल्कुलेटर", description: "मूलधन, वार्षिक ब्याजदर र अवधिबाट साधारण ब्याज निकाल्नुहोस्।" },
 };
 
 const inputLabels: Record<string, string> = {
   from: "सुरुको मान", to: "नयाँ मान", numbers: "संख्याहरू", a: "पहिलो मान / अंश १",
   b: "दोस्रो मान / हर १", c: "अंश २", d: "हर २", number: "संख्या",
-  percentage: "प्रतिशत", amount: "रकम / परिमाण",
+  percentage: "प्रतिशत", amount: "रकम / परिमाण", weight: "तौल (kg)", height: "उचाइ (cm)", age: "उमेर (वर्ष)", bill: "बिल रकम (NPR)", tip: "टिप (%)", people: "व्यक्ति संख्या", total: "कुल बिल (NPR)", principal: "मूलधन (NPR)", rate: "वार्षिक ब्याज दर (%)", years: "अवधि (वर्ष)",
 };
 
 export default function NepaliMathUtilityWorkspace({ slug }: { slug: string }) {
   const [values, setValues] = useState<Record<string, string>>({
     from: "100", to: "125", numbers: "10, 20, 30", a: "1", b: "2", c: "1", d: "3",
-    number: "100", percentage: "15", amount: "1", operation: "add", fromUnit: "km", toUnit: "m",
+    number: "100", percentage: "15", amount: "1", operation: "add", fromUnit: "km", toUnit: "m", weight: "65", height: "170", age: "25", sex: "male", bill: "1000", tip: "10", people: "2", total: "2400", principal: "100000", rate: "10", years: "2",
   });
   const [copyState, setCopyState] = useState("");
   if (!(slug in labels)) return null;
@@ -55,6 +60,10 @@ export default function NepaliMathUtilityWorkspace({ slug }: { slug: string }) {
       {toolSlug === "fraction-calculator" && <div className="space-y-3"><div className="grid gap-3 sm:grid-cols-2">{numberField("a", "भिन्न १ को अंश", "1")}{numberField("b", "भिन्न १ को हर", "1")}{numberField("c", "भिन्न २ को अंश", "1")}{numberField("d", "भिन्न २ को हर", "1")}</div><label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">गणनाको प्रकार</span><select className={field} value={values.operation} onChange={(event) => update("operation", event.target.value)}><option value="add">जोड (+)</option><option value="subtract">घटाउ (−)</option><option value="multiply">गुणन (×)</option><option value="divide">भाग (÷)</option></select></label></div>}
       {toolSlug === "percentage-of-number-calculator" && <div className="grid gap-3 sm:grid-cols-2">{numberField("number")}{numberField("percentage")}</div>}
       {toolSlug === "prime-number-checker" && numberField("number", "पूर्णांक", "1")}
+      {["bmi-calculator", "bmr-calculator"].includes(toolSlug) && <div className="grid gap-3 sm:grid-cols-2">{numberField("weight")}{numberField("height")}{toolSlug === "bmr-calculator" && <>{numberField("age", inputLabels.age, "1")}<label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">सूत्रको विकल्प</span><select className={field} value={values.sex} onChange={(event) => update("sex", event.target.value)}><option value="male">पुरुष सूत्र</option><option value="female">महिला सूत्र</option></select></label></>}</div>}
+      {toolSlug === "tip-calculator" && <div className="grid gap-3 sm:grid-cols-3">{numberField("bill")}{numberField("tip")}{numberField("people", inputLabels.people, "1")}</div>}
+      {toolSlug === "split-bill-calculator" && <div className="grid gap-3 sm:grid-cols-2">{numberField("total")}{numberField("people", inputLabels.people, "1")}</div>}
+      {toolSlug === "simple-interest-calculator" && <div className="grid gap-3 sm:grid-cols-3">{numberField("principal")}{numberField("rate")}{numberField("years")}</div>}
       {toolSlug === "unit-converter" && <div className="grid gap-3 sm:grid-cols-2">{numberField("amount")}<label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">बाट</span><select className={field} value={values.fromUnit} onChange={(event) => update("fromUnit", event.target.value)}>{unitOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">मा</span><select className={field} value={values.toUnit} onChange={(event) => update("toUnit", event.target.value)}>{unitOptions.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label></div>}
       <div className="rounded-2xl border border-teal-200 bg-teal-50 p-4" aria-live="polite"><h3 className="text-sm font-bold text-teal-950">नतिजा</h3><pre className="mt-2 whitespace-pre-wrap break-words font-sans text-sm leading-7 text-teal-950">{result}</pre></div>
       <div className="flex flex-wrap gap-2"><button type="button" className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700" onClick={() => { setValues({}); setCopyState(""); }}>मानहरू हटाउनुहोस्</button><button type="button" className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white" onClick={copyResult}>नतिजा कपी गर्नुहोस्</button></div>

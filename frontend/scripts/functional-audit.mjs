@@ -89,13 +89,13 @@ const rows = [
       ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
       : "",
     fixesApplied: uiRegressionCatalog.has(entry.slug)
-      ? "Added required-number validation, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
+      ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
       : "",
     remainingBlockers: testedCatalog.has(entry.slug)
       ? "Browser route, mobile layout and accessibility evidence remain unverified."
       : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
     evidence: inputTestedCatalog.has(entry.slug)
-      ? "frontend/__tests__/catalogInputs.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts"
+      ? "frontend/__tests__/catalogInputs.test.ts; frontend/__tests__/nepali-number-words.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts; frontend/lib/nepali-number-words.ts"
       : uiRegressionCatalog.has(entry.slug)
         ? "frontend/scripts/tool-ui-regression.test.mjs; frontend/components/AllTools.tsx"
         : testedCatalog.has(entry.slug)

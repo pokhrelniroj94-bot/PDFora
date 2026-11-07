@@ -10,7 +10,7 @@ function safeSpreadsheetCell(value: unknown): string {
       : String(value);
   // Prefix a literal apostrophe before spreadsheet formula/control prefixes.
   // This keeps untrusted JSON values as text when a CSV is opened in Excel/Sheets.
-  const safe = /^[\\s\\u0000-\\u001f]*[=+\\-@]/.test(raw) ? "'" + raw : raw;
+  const safe = /^[\s\u0000-\u001f]*[=+\-@]/.test(raw) ? "'" + raw : raw;
   return '"' + safe.replace(/"/g, '""') + '"';
 }
 
@@ -45,5 +45,5 @@ export function jsonObjectsToCsv(input: string): string {
   return [
     keys.map(safeSpreadsheetCell).join(","),
     ...rows.map((row) => keys.map((key) => safeSpreadsheetCell(row[key])).join(",")),
-  ].join("\\r\\n");
+  ].join("\r\n");
 }

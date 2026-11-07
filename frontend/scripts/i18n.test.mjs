@@ -149,7 +149,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne?from=%2Ftools%2Fjson-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 33);
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 57);
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -242,7 +242,7 @@ test("Nepali blog routes contain complete reviewed article content", () => {
   for (const phrase of ["नेपाली मिति कन्भर्टर", "नेपालमा १३% VAT", "रोपनी, आना, पैसा र दाम", "बारम्बार सोधिने प्रश्न"]) {
     assert.ok(source.includes(phrase) || page.includes(phrase), `Nepali blog content must include: ${phrase}`);
   }
-  assert.equal((source.match(/slug: "/g) ?? []).length, 3);
+  assert.equal((source.match(/slug: "/g) ?? []).length, 27);
   assert.ok(page.includes('inLanguage: "ne"'));
   assert.ok(page.includes('href="/ne/blog"'));
 });

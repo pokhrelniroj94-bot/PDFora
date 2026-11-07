@@ -38,7 +38,7 @@ export function runNepaliTextTool(slug: NepaliTextToolSlug, input: string, optio
     return sorted.join("\n") + (trailingNewline ? "\n" : "");
   }
   if (slug === "reverse-text") return [...input].reverse().join("");
-  if (slug === "whitespace-cleaner") return input.split("\n").map((line) => line.replace(/[\t ]+/g, " ").trim()).filter((line, index, all) => line || all[index - 1] !== "").join("\n").trim();
+  if (slug === "whitespace-cleaner") return input.split("\\n").map((line) => line.replace(/[\\t ]+/g, " ").trim()).filter(Boolean).join("\\n").trim();
   if (slug === "character-frequency") {
     const counts = new Map<string, number>();
     for (const character of [...input.replace(/\s/gu, "")]) counts.set(character, (counts.get(character) ?? 0) + 1);

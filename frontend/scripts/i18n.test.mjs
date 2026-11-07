@@ -12,6 +12,7 @@ const {
   "pdf-tool-names-ne": nepaliNames, "tool-guides-ne": nepaliGuides,
   "pdf-tool-ui": pdfToolUi, "tool-guides": toolGuidesModule,
   "pdf-tool-seo-core": pdfToolSeoCore, "pdf-tool-fields-ne": pdfToolFields,
+  "nepali-localized-blog-posts": localizedBlogModule,
 } = await loadI18n();
 const { getPdfToolCopy } = pdfToolUi;
 const { createTranslator } = translate;
@@ -20,6 +21,16 @@ const { nepaliToolNames } = nepaliNames;
 const { toolGuides } = toolGuidesModule;
 const { buildPdfToolMetadata } = pdfToolSeoCore;
 const { getNepaliPdfFieldText } = pdfToolFields;
+const { nepaliLocalizedBlogPosts } = localizedBlogModule;
+
+test("every curated Nepali blog article is a real localized route with hreflang", () => {
+  assert.equal(nepaliLocalizedBlogPosts.length, 27);
+  for (const post of nepaliLocalizedBlogPosts) {
+    const localizedPath = "/blog/" + post.slug;
+    assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);
+    assert.equal(routing.hreflangMap(localizedPath)?.ne, "https://pd-fora.vercel.app/ne" + localizedPath);
+  }
+});
 
 test("AI Help resets and aborts pending conversations when the locale changes", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");

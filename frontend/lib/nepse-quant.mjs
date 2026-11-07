@@ -90,7 +90,7 @@ export function runBacktest(rows, mode, costPct) {
   const wins = trades.filter(trade => trade.pnl > 0), losses = trades.filter(trade => trade.pnl < 0);
   const grossWins = wins.reduce((sum, trade) => sum + trade.pnl, 0);
   const grossLosses = Math.abs(losses.reduce((sum, trade) => sum + trade.pnl, 0));
-  const benchmarkStart = rows[50].close * (1 + cost), benchmarkEnd = rows.at(-1).close * (1 - cost);
+  const benchmarkStart = rows[51].close * (1 + cost), benchmarkEnd = rows.at(-1).close * (1 - cost);
   const sessionsInMarket = trades.reduce((sum, trade) => sum + trade.days, 0);
   return {
     trades,

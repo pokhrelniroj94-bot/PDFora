@@ -40,6 +40,15 @@ export default async function NepaliBlogArticle({ params }: Props) {
     "@type": "FAQPage",
     mainEntity: post.faqs.map((faq) => ({ "@type": "Question", name: faq.question, acceptedAnswer: { "@type": "Answer", text: faq.answer } })),
   };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "गृहपृष्ठ", item: `${baseUrl}/ne` },
+      { "@type": "ListItem", position: 2, name: "मार्गदर्शिका", item: `${baseUrl}/ne/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${baseUrl}/ne/blog/${post.slug}` },
+    ],
+  };
   return (
     <main lang="ne" className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
       <article className="mx-auto max-w-3xl">
@@ -81,6 +90,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
         </div>
       </article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </main>
   );

@@ -87,7 +87,8 @@ assert.match(englishPage, /openGraph:\s*\{[^}]*title:/s, "English tool pages mus
 assert.match(englishPage, /twitter:\s*\{[^}]*title:/s, "English tool pages must define Twitter titles");
 assert.match(englishPage, /robots:\s*\{\s*index:\s*slug !== "ocr-pdf"/, "OCR remains excluded from indexing");
 assert.match(nepaliPage, /buildLocalizedToolMetadata/, "Nepali tool pages must use the shared locale-aware metadata builder");
-assert.match(nepaliPage, /title:\s*`\$\{nepaliTitles\[request\.implementation\.slug\]\} \| PDFora`/, "Nepali title must use its translated title dictionary and brand");
+assert.match(nepaliPage, /title:\s*nepaliTitles\[request\.implementation\.slug\]/, "Nepali titles must use the translated dictionary without repeating the root layout brand suffix");
+assert.doesNotMatch(nepaliPage, /title:\s*`[^`]*\\| PDFora`/, "Localized tool titles must not append PDFora twice");
 assert.match(nepaliPage, /description:\s*nepaliDescriptions\[request\.implementation\.slug\]/, "Nepali description must use its translated description dictionary");
 assert.match(localizedMetadata, /robots:\s*\{ index: false, follow: isPublished\(locale\) \}/, "Unverified Nepali tools must stay noindex until the release gate is satisfied");
 assert.match(englishBlogIndex, /title:\s*"Practical PDF & Nepal Guides/, "English blog index needs a descriptive title");
@@ -104,6 +105,7 @@ assert.match(nepaliBlogIndex, /path:\s*"\/blog"/, "Nepali blog index must canoni
 assert.match(nepaliBlogArticle, /buildLocaleMetadata/, "Nepali articles must use shared locale metadata");
 assert.match(nepaliBlogArticle, /post\.title/, "Nepali articles need localized titles");
 assert.match(nepaliBlogArticle, /post\.description/, "Nepali articles need localized descriptions");
+assert.doesNotMatch(nepaliBlogArticle, /title:\s*`\$\{post\.title\} \\| PDFora`/, "Localized article titles must rely on the root metadata template for a single brand suffix");
 assert.match(sitemap, /nepaliLocalizedBlogPosts\.map/, "Nepali editorial articles must be represented in the sitemap");
 assert.match(sitemap, /blogPosts\.filter\(\(post\) => !isCatalogGeneratedGuide\(post\.slug\)\)/, "Only curated English editorial articles should enter the sitemap");
 
@@ -124,7 +126,7 @@ assertUnique(nepaliPdfMetadata, "title", "Nepali PDF tool metadata");
 assertUnique(nepaliPdfMetadata, "description", "Nepali PDF tool metadata");
 for (const item of nepaliPdfMetadata) {
   assert.ok(item.title && item.description, "Nepali PDF title/description missing for " + item.slug);
-  const metadata = modules.metadata.buildLocaleMetadata({ locale: "ne", path: `/${item.slug}`, title: item.title + " | PDFora", description: item.description });
+  const metadata = modules.metadata.buildLocaleMetadata({ locale: "ne", path: `/${item.slug}`, title: item.title, description: item.description });
   assert.equal(metadata.alternates?.canonical, `https://pd-fora.vercel.app/ne/${item.slug}`, "Nepali PDF canonical must be self-referencing: " + item.slug);
   const approved = modules["localized-verification"].isLocalizedToolIndexable("ne", item.slug);
   assert.deepEqual(metadata.robots, approved ? { index: true, follow: true } : { index: false, follow: true }, "Nepali PDF indexability must use the explicit allowlist: " + item.slug);

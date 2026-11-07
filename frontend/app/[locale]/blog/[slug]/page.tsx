@@ -25,14 +25,13 @@ export default async function NepaliBlogArticle({ params }: Props) {
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale) || !post) notFound();
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
-    datePublished: post.updated,
-    dateModified: post.updated,
+    dateModified: `${post.updated}T00:00:00+05:45`,
     inLanguage: "ne",
     mainEntityOfPage: `${baseUrl}/ne/blog/${post.slug}`,
-    author: { "@type": "Organization", name: "PDFora", url: baseUrl },
+    author: { "@type": "Organization", name: "PDFora Editorial Team", url: `${baseUrl}/ne/about` },
     publisher: { "@type": "Organization", name: "PDFora", url: baseUrl },
   };
   const faqSchema = {
@@ -55,13 +54,13 @@ export default async function NepaliBlogArticle({ params }: Props) {
         <nav aria-label="ब्रेडक्रम" className="text-sm text-slate-500">
           <Link href="/ne" className="hover:text-teal-700">गृहपृष्ठ</Link><span className="mx-2">/</span>
           <Link href="/ne/blog" className="hover:text-teal-700">मार्गदर्शिका</Link><span className="mx-2">/</span>
-          <span className="text-slate-700">लेख</span>
+          <span aria-current="page" className="text-slate-700">{post.title}</span>
         </nav>
         <header className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 sm:p-9">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora नेपाली मार्गदर्शिका · {post.readTime}</p>
           <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
-          <p className="mt-5 text-xs text-slate-500">अद्यावधिक: {post.updated}</p>
+          <p className="mt-5 text-xs text-slate-500">लेखन: PDFora सम्पादकीय टोली · अन्तिम अद्यावधिक: {post.updated}</p>
         </header>
         <div className="mt-6 space-y-6">
           {post.sections.map((section) => (
@@ -71,6 +70,10 @@ export default async function NepaliBlogArticle({ params }: Props) {
               {section.bullets && <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-700">{section.bullets.map((item) => <li key={item}>{item}</li>)}</ol>}
             </section>
           ))}
+          {post.sources && post.sources.length > 0 && <section className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8" aria-labelledby="official-sources-heading">
+            <h2 id="official-sources-heading" className="text-xl font-black text-slate-950">आधिकारिक तथा प्राविधिक स्रोत</h2>
+            <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-teal-700">{post.sources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer" className="font-semibold underline">{source.label}</a></li>)}</ul>
+          </section>}
           <section className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">बारम्बार सोधिने प्रश्न</h2>
             <div className="mt-5 space-y-5">

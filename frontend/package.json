@@ -9,9 +9,13 @@
     "lint": "eslint",
     "verify:tools": "node scripts/verify-tool-catalog.mjs",
     "test": "jest",
-    "i18n:test": "node scripts/i18n.test.mjs",
+    "tools:test": "node scripts/tool-adapter.test.mjs",
+    "audit:functional": "node scripts/functional-audit.mjs",
+    "i18n:test": "node scripts/i18n.test.mjs && node scripts/translation-coverage.test.mjs && node scripts/coverage-matrix.mjs && node scripts/coverage-matrix.test.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
-    "prebuild": "npm run verify:tools && npm run i18n:test && npm run i18n:check && npm run lint"
+    "i18n:coverage": "node scripts/translation-coverage.mjs",
+    "i18n:matrix": "node scripts/coverage-matrix.mjs",
+    "prebuild": "npm run verify:tools && npm run tools:test && npm run i18n:test && npm run i18n:check && npm run lint"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.1",

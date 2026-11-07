@@ -12,15 +12,15 @@ import { buildPdfToolMetadata } from "../lib/i18n/pdf-tool-seo-core.ts";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
 
 ensureTypeStripping();
-const { config, routing, translate, format, preference, switcher, metadata } = await loadI18n();
+const { config, routing, translate, format, preference, switcher, metadata, "shared-ui": sharedUi, "nepali-pdf-routes": nepaliRoutes, "pdf-tool-names-ne": nepaliNames, "tool-guides-ne": nepaliGuides } = await loadI18n();
 
-test("locale table: 10 locales, English default, Arabic is the only RTL", () => {
-  assert.deepEqual([...config.locales], ["en", "ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"]);
+test("locale table: requested 12 locales, English default, Arabic and Urdu are RTL", () => {
+  assert.deepEqual([...config.locales], ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
   assert.equal(config.defaultLocale, "en");
   const rtl = config.locales.filter((l) => config.localeInfo[l].dir === "rtl");
-  assert.deepEqual(rtl, ["ar"]);
+  assert.deepEqual(rtl, ["ur", "ar"]);
   const names = config.locales.map((l) => config.localeInfo[l].nativeName);
-  assert.equal(new Set(names).size, 10, "native names must be unique");
+  assert.equal(new Set(names).size, 12, "native names must be unique");
   assert.equal(config.localeInfo.ar.nativeName, "العربية");
   for (const l of config.locales) assert.equal(config.localeInfo[l].code, l);
 });
@@ -36,8 +36,138 @@ test("publishing policy: English and reviewed Nepali routes are published", () =
   assert.deepEqual(config.getRoutableLocales(), ["ne"]);
   assert.equal(config.isRoutable("en"), false, "English is served unprefixed, never at /en");
   process.env.PDFORA_I18N_PREVIEW = "1";
-  assert.deepEqual(config.getRoutableLocales(), ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"]);
+  assert.deepEqual(config.getRoutableLocales(), ["ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
   delete process.env.PDFORA_I18N_PREVIEW;
+});
+
+test("shared UI coverage: English and Nepali copy is complete and route-aware", () => {
+  const required = ["footerNavigation", "allTools", "guides", "about", "contact", "language", "languageHint", "directoryLabel", "directoryTitle", "directoryDescription", "directoryLink"];
+  for (const locale of ["en", "ne"]) {
+    const copy = sharedUi.getSharedUiCopy(locale);
+    for (const key of required) assert.equal(typeof copy[key], "string", `${locale}.${key} must be translated`);
+    assert.deepEqual(Object.keys(copy.groups).sort(), ["Convert PDF", "Edit PDF", "Organize PDF", "Secure & manage"]);
+    assert.ok(copy.cookie.settings && copy.cookie.privacyPolicy, `${locale}.cookie must be localized`);
+  }
+  assert.equal(sharedUi.localeFromPathname("/ne/merge-pdf"), "ne");
+  assert.equal(sharedUi.localeFromPathname("/merge-pdf"), "en");
+  assert.equal(sharedUi.getSharedUiCopy("ne").directoryTitle, "सबै PDF टुलहरू");
+});
+
+test("shared navigation preserves unavailable Nepali destinations", () => {
+  assert.equal(routing.localizedOrFallbackPath("/tools", "ne"), "/ne?from=%2Ftools");
+  assert.equal(routing.localizedOrFallbackPath("/tools/loan-emi-calculator", "ne"), "/ne/tools/loan-emi-calculator");
+  assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
+  assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne?from=%2Ftools%2Fjson-formatter-validator");
+  assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 33);
+  assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
+});
+
+test("Nepali homepage renders reviewed content and honest fallback links", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "NepaliHomePage.tsx"), "utf8");
+  for (const phrase of ["नेपालीमा उपलब्ध PDF टुलहरू", "सोधिने प्रश्नहरू", "सबै टुलहरू", "PDFora बारेमा"]) {
+    assert.ok(source.includes(phrase), `Nepali homepage must include reviewed copy: ${phrase}`);
+  }
+  assert.ok(source.includes('const fallback = (path: string) => localizedOrFallbackPath(path, "ne")'));
+  assert.ok(source.includes('fallback("/tools")'));
+  assert.ok(source.includes('fallback("/blog")'));
+  assert.ok(source.includes('href={`/ne/${slug}`}'));
+});
+
+test("Nepali utility workspace contains real localized calculator surfaces", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "NepaliUtilityWorkspace.tsx"), "utf8");
+  for (const phrase of ["नेपाली अंक रूपान्तरण", "विक्रम संवत्", "रोपनी–आना–पैसा–दाम", "नेपाल VAT क्याल्कुलेटर", "NEB GPA क्याल्कुलेटर"]) {
+    assert.ok(source.includes(phrase), `Nepali utility workspace must include: ${phrase}`);
+  }
+  for (const slug of ["nepali-digit-converter", "nepali-number-converter", "nepali-date-converter", "nepal-land-area-converter", "nepali-vat-calculator", "neb-gpa-calculator"]) {
+    assert.ok(source.includes(`slug === "${slug}"`), `${slug} must have a localized implementation`);
+  }
+});
+
+test("Nepali market and finance surfaces contain localized rendered UI", () => {
+  const dashboard = fs.readFileSync(path.join(frontendRoot, "components", "NepseMarketDashboard.tsx"), "utf8");
+  const finance = fs.readFileSync(path.join(frontendRoot, "components", "NepalLiveTools.tsx"), "utf8");
+  const news = fs.readFileSync(path.join(frontendRoot, "components", "NepalMarketNews.tsx"), "utf8");
+  for (const phrase of ["NEPSE बजार ड्यासबोर्ड", "बजार डेटा अद्यावधिक गर्नुहोस्", "उच्च माग", "सूचीबद्ध कम्पनीहरू"]) {
+    assert.ok(dashboard.includes(phrase), `Nepali dashboard must include: ${phrase}`);
+  }
+  for (const phrase of ["नेपाल राष्ट्र बैंक विनिमय दर", "दर अद्यावधिक गर्नुहोस्", "खरिद · NPR", "नेपाल तलब / आयकर क्याल्कुलेटर", "NEPSE नगद लाभांश तथा बोनस शेयर क्याल्कुलेटर"]) {
+    assert.ok(finance.includes(phrase), `Nepali finance UI must include: ${phrase}`);
+  }
+  const calculators = fs.readFileSync(path.join(frontendRoot, "components", "NepaliFinanceCalculatorWorkspace.tsx"), "utf8");
+  for (const phrase of ["ऋण EMI क्याल्कुलेटर", "चक्रवृद्धि ब्याज तथा SIP क्याल्कुलेटर", "छुट प्रतिशत क्याल्कुलेटर"]) {
+    assert.ok(calculators.includes(phrase), `Nepali financial calculator must include: ${phrase}`);
+  }
+  for (const phrase of ["विश्व समाचार र नेपाल बजार समाचार", "समाचार अद्यावधिक गर्नुहोस्", "NEPSE तथा बजार अद्यावधिक"]) {
+    assert.ok(news.includes(phrase), `Nepali market news UI must include: ${phrase}`);
+  }
+});
+
+test("Nepali AI writing routes contain localized rendered UI", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "AIWritingTools.tsx"), "utf8");
+  const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  for (const phrase of ["AI रिजुमे लेखक", "AI कभर लेटर जेनेरेटर", "AI पाठ परिष्कार तथा पुनर्लेखन", "तपाईंको नतिजा", "गोपनीयता:"]) {
+    assert.ok(source.includes(phrase), `Nepali AI writing UI must include: ${phrase}`);
+  }
+  for (const slug of ["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer"]) {
+    assert.ok(routeSource.includes(`"${slug}"`), `${slug} must retain its localized route`);
+  }
+});
+
+test("all localized Nepali catalog tools have localized metadata", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const registry = fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "nepali-tool-routes.ts"), "utf8");
+  const slugs = [...registry.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]);
+  const descriptionBlock = source.match(/const nepaliDescriptions:[\s\S]*?\n\};/)?.[0] ?? "";
+  const titleBlock = source.match(/const nepaliTitles:[\s\S]*?\n\};/)?.[0] ?? "";
+  for (const slug of slugs) {
+    assert.ok(titleBlock.includes(`"${slug}"`), `${slug} needs a Nepali title`);
+    assert.ok(descriptionBlock.includes(`"${slug}"`), `${slug} needs a Nepali metadata description`);
+  }
+});
+
+test("Nepali Resume Builder preserves all templates and print-safe Devanagari output", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "ResumeBuilder.tsx"), "utf8");
+  const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "[slug]", "page.tsx"), "utf8");
+  const templateBlock = source.match(/const templates = \[([\s\S]*?)\n\];/);
+  assert.equal(templateBlock?.[1].match(/\bid:\s*"/g)?.length, 20, "Resume Builder must retain all 20 templates");
+  for (const phrase of ["व्यावसायिक रिजुमे बिल्डर", "प्रत्यक्ष CV पूर्वावलोकन", "PDF निर्यात", "प्रोफाइल तस्बिर", "Noto Sans Devanagari", "A4 प्रिन्ट ढाँचा"]) {
+    assert.ok(source.includes(phrase), `Nepali Resume Builder must include: ${phrase}`);
+  }
+  assert.ok(routeSource.includes('slug === "resume-builder"'));
+  assert.ok(routeSource.includes('<ResumeBuilder locale="ne" />'));
+  assert.ok(source.includes('@page { size: A4; margin: 0; }'));
+  assert.ok(source.includes('id="resume-paper" lang={ne ? "ne" : "en"}'));
+});
+
+test("Nepali blog routes contain complete reviewed article content", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "lib", "nepali-localized-blog-posts.ts"), "utf8");
+  const page = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "blog", "[slug]", "page.tsx"), "utf8");
+  for (const phrase of ["नेपाली मिति कन्भर्टर", "नेपालमा १३% VAT", "रोपनी, आना, पैसा र दाम", "बारम्बार सोधिने प्रश्न"]) {
+    assert.ok(source.includes(phrase) || page.includes(phrase), `Nepali blog content must include: ${phrase}`);
+  }
+  assert.equal((source.match(/slug: "/g) ?? []).length, 3);
+  assert.ok(page.includes('inLanguage: "ne"'));
+  assert.ok(page.includes('href="/ne/blog"'));
+});
+
+test("Nepali legal and static routes contain complete localized copy", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "NepaliStaticPage.tsx"), "utf8");
+  const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "[slug]", "page.tsx"), "utf8");
+  for (const phrase of ["गोपनीयता नीति", "सेवा प्रयोगका सर्तहरू", "PDFora बारेमा", "PDFora लाई सम्पर्क गर्नुहोस्", "अन्तिम अद्यावधिक"]) {
+    assert.ok(source.includes(phrase), `Nepali static content must include: ${phrase}`);
+  }
+  for (const slug of ["privacy", "terms", "about", "contact"]) assert.ok(routeSource.includes(`"${slug}"`), `${slug} must have a localized route`);
+});
+
+test("published Nepali PDF routes use localized names and guide copy", () => {
+  const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
+  assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);
+  for (const slug of slugs) {
+    assert.ok(nepaliNames.nepaliToolNames[slug], `${slug} needs a Nepali tool name`);
+    const guide = nepaliGuides.nepaliToolGuides[slug];
+    assert.ok(guide?.purpose && guide.steps.length > 0 && guide.caution, `${slug} needs reviewed Nepali guide copy`);
+  }
 });
 
 test("routing: English URLs are unchanged, others are prefixed", () => {
@@ -84,7 +214,7 @@ test("switcher: never offers an unavailable page", () => {
   const home = switcher.getSwitcherOptions("/");
   assert.deepEqual(home.map((o) => o.locale), ["en", "ne"]);
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"]);
-  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en"], "untranslated pages stay English-only");
+  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne"], "only reviewed static pages offer Nepali");
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 
@@ -104,7 +234,7 @@ test("preference: browser language matching", () => {
   assert.equal(m("zh-Hans"), "zh");
   assert.equal(m("zh-TW"), undefined);
   assert.equal(m("zh-Hant-HK"), undefined);
-  assert.equal(m("pt-BR"), undefined);
+  assert.equal(m("pt-BR"), "pt");
   assert.equal(m("ar_EG"), "ar");
   assert.equal(preference.detectBrowserLocale(["pt-BR", "fr-CA", "de"], ["en", "de"]), "de");
   assert.equal(preference.detectBrowserLocale(["fr"], ["en"]), undefined);
@@ -115,7 +245,7 @@ test("preference: cookie parse/serialize is strict", () => {
   assert.equal(preference.parseLocaleCookie("ar"), "ar");
   assert.equal(preference.parseLocaleCookie("../evil"), undefined);
   assert.equal(preference.parseLocaleCookie(undefined), undefined);
-  assert.equal(preference.readLocaleFromCookieHeader("a=1; pdfora-locale=ko; b=2"), "ko");
+  assert.equal(preference.readLocaleFromCookieHeader("a=1; pdfora-locale=pt; b=2"), "pt");
   assert.equal(preference.readLocaleFromCookieHeader("pdfora-locale=xx"), undefined);
   const c = preference.localeCookieString("de", { secure: true });
   assert.match(c, /^pdfora-locale=de; Path=\/; Max-Age=31536000; SameSite=Lax; Secure$/);

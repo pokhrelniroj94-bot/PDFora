@@ -1,0 +1,39 @@
+{
+  "generatedAt": "2026-11-06T15:51:03.843Z",
+  "baseCommit": "8323820",
+  "frontendPageFiles": 66,
+  "apiRouteFiles": 6,
+  "catalogToolEntries": 125,
+  "catalogCategories": 10,
+  "catalogCategoryNames": [
+    "Career Tools",
+    "PDF",
+    "Finance",
+    "Text",
+    "Developer",
+    "Image",
+    "Math",
+    "SEO",
+    "Business",
+    "Nepal"
+  ],
+  "blogRecordSlugLiterals": 8,
+  "guideSlugLiterals": 0,
+  "publishedLocales": [
+    "en",
+    "ne"
+  ],
+  "unpublishedLocales": [
+    "hi",
+    "bn",
+    "ur",
+    "ar",
+    "es",
+    "fr",
+    "de",
+    "pt",
+    "zh",
+    "ja"
+  ],
+  "publishedLocalizedRouteFiles": 3
+}

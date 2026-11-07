@@ -1,9 +1,86 @@
 # PDFora i18n rollout: status
 
+## Current continuation status
+
+Branch: `feature/complete-12-language-platform`; PR #77 remains open,
+mergeable, and not merged or deployed. The translation coverage generator now runs in
+CI and reports source-language content separately from reviewed translations. Cookie
+consent is localized for English and Nepali, including the consent dialog, settings,
+accessibility label and privacy-policy link.
+The Nepali locale home page is now a reviewed localized page with six supported PDF
+workflows, FAQs, localized discovery links and explicit fallback links for untranslated
+tools, calculators, market pages, AI pages and editorial content. Shared language and
+cookie controls also use localized English/Nepali labels.
+
+Latest executed checks for the legal/static localization stage: frontend Jest 5/5,
+i18n 30/30 plus 2 coverage tests and 2 tool-language matrix tests, TypeScript through
+the production build, ESLint, catalog validation, i18n validation and production
+build (399 generated routes). Backend pytest passed 27 tests in an isolated
+environment; Python dependency audit and npm production audit passed. The Vercel
+check remains blocked by the provider's build-rate quota, not by the local build.
+
+The current evidence report measures 33 Nepali route equivalents, including three AI
+writing routes, the localized Resume Builder, three fully translated articles and
+the localized blog index and four localized legal/static pages. The remaining blog
+corpus, guides outside the reviewed PDF set and remaining utilities remain incomplete
+and are not counted as localized. The 22 localized Nepali tool surfaces comprise 16
+catalog-tool routes and six legacy PDF routes; only six PDF routes are index-eligible.
+
+The authoritative tool-language matrix is `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json`
+and contains 2,076 rows (12 locales × 173 unique tools). It records catalog existence,
+route/handler evidence, visible interface status, guide/content status, functional
+test status, human-review status and indexing eligibility independently. It does not
+inflate generated route counts into translation coverage.
+
+## 12-language foundation snapshot
+
+Branch: `i18n/12-language-foundation`, based on master `6cc1f06`. This branch is not
+merged or deployed. It registers exactly the requested locales: English, Nepali, Hindi,
+Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and
+Japanese.
+
+English and the existing reviewed Nepali pages remain published. The other ten locales
+are intentionally unpublished: their locale home routes provide a localized,
+`noindex` fallback explaining that the requested page is not translated, while fake
+localized tool/blog URLs are not advertised in hreflang or the sitemap. Arabic and Urdu
+use RTL direction. The language selector exposes all requested languages and preserves
+the current route only when a reviewed equivalent exists; otherwise it preserves the
+destination in a fallback link.
+
+The proxy now passes the locale's BCP-47 HTML language and direction to the root
+layout, so the initial server-rendered `<html>` has the correct `lang` and `dir`.
+
+Current truthful coverage: English is complete for the existing published site; Nepali
+is complete only for the existing homepage and six PDF routes plus the reviewed shared
+namespaces/guides already present in the repository; Hindi, Bengali, Urdu, Arabic,
+Spanish, French, German, Portuguese, Chinese and Japanese are not translated or
+published.
+
+Verification performed on this branch:
+- `npm run verify:tools`: PASS (124 catalog tools, 173 unified homepage/directory tools)
+- `npm run i18n:test`: PASS (20/20)
+- `npm run i18n:check`: PASS with ten locales explicitly reported as unpublished
+- `npx tsc --noEmit`: PASS
+- `npm run lint -- --quiet`: PASS (existing non-blocking `<img>` warning is suppressed)
+- `npm run build`: PASS (390 generated routes; locale handling uses the Next 16 `proxy.ts` convention)
+
+Stage B progress on the continuation branch:
+- Shared footer and PDF directory copy now uses a centralized typed UI copy module.
+- English and Nepali footer labels, directory headings, category labels and route links
+  are covered by executable i18n tests.
+- Nepali directory links use the localized `/ne/...` path only for the six reviewed
+  equivalents; all other links remain explicitly English rather than pretending to be
+  translated.
+- Published Nepali PDF route components now pass localized tool names and guide
+  descriptions into the processing UI instead of retaining the English registry labels.
+
 Branch: `i18n/global-multilingual` (from `feat/pdf-ora-ai-help-market-signals` @ 8cf31b8). Not merged, not deployed.
 
-## Execution limits (verified in this sandbox)
-- `npm ci` / `next build` / lint / tsc: BLOCKED. npm crashes and the egress proxy answers 403 for registry.npmjs.org. Nothing has been built or tested; no result below is a PASS.
+## Historical execution limits
+
+The earlier authoring environment could not run npm installation commands. Those
+historical limitations are superseded by the verification results above and in
+`docs/qa/TEST_RESULTS.md`.
 - Existing `npm run verify:tools` FAILS on this branch before any i18n change: "Homepage is not using the canonical tool directory" (scripts/verify-tool-catalog.mjs:87). The homepage moved to `components/HomePageClient.tsx` while the script reads `app/page.tsx`. Needs a reviewed fix; the test was not edited or removed.
 
 ## Inventory (static parse, see inventory.json)
@@ -19,8 +96,8 @@ Branch: `i18n/global-multilingual` (from `feat/pdf-ora-ai-help-market-signals` @
 | 3 Shared UI | NOT STARTED |
 | 4 Tools (125 catalog entries) | NOT STARTED |
 | 5 Blog | NOT STARTED |
-| 6 Static pages | NOT STARTED |
-| 7 SEO | NOT STARTED |
+| 6 Static pages | COMPLETE for privacy, terms, about and contact; other static/editorial pages remain |
+| 7 SEO | PARTIAL: localized route registry and sitemap omissions fixed; full SEO audit remains |
 | 8 Security/perf | NOT STARTED |
 | 9 Regression | NOT STARTED |
 
@@ -63,6 +140,10 @@ Phase 2 status: PARTIALLY COMPLETE until the browser checks are reported.
 
 ## Tool adapter + localized tool route (catalog utilities)
 Verified here (authoring sandbox, commands actually run): `verify:tools` PASS; `i18n:test` 14/14; `i18n:check` no blocking problems; `tools:test` 12/12 (4 injected defects were each caught by the suite); bun syntax check of the 5 new TS/TSX files OK; partial strict `tsc` on the 4 pure modules reports nothing beyond the expected missing-`next`/`process` types.
-Not run here (npm blocked): `npm run lint`, `npx tsc --noEmit` (full), `npm run build`, browser/HTTP checks. Pending owner's local run.
+Browser/HTTP checks remain pending; build, lint and TypeScript have since been run successfully on the continuation branch.
 Unchanged by this work (git diff vs HEAD empty): `app/tools`, `app/sitemap.ts`, `app/robots.ts`, all of `components/`.
 Status: adapter PARTIALLY COMPLETE (catalog utilities only; PDF tools deferred); localized route WRITTEN, NOT BUILT; indexing: DISABLED by default (nothing verified); sitemap: UNCHANGED.
+Latest verified Nepali route evidence (commit `ba93eeb`): 24 route equivalents are
+measured, including three AI writing routes (Resume Writer, Cover Letter Generator and
+Humanizer). This does not include the Resume Builder, blogs, legal/static pages or
+remaining utilities; those remain unpublished through fallback routing until reviewed.

@@ -91,6 +91,10 @@ const dictionaries: Record<Locale, PdfToolCopy> = {
     privacyAnswer:"अनुरोधित कार्रवाई पूरी करने के लिए फ़ाइलें सुरक्षित रूप से PDFora प्रोसेसिंग सेवा को भेजी जाती हैं। ऐसी संवेदनशील जानकारी वाले दस्तावेज़ अपलोड न करें जिन्हें आप ऑनलाइन प्रोसेस नहीं करवाना चाहते।",
     maxSizeError:"{name} प्रति फ़ाइल 50 MB की सीमा से बड़ी है।"
   },
+  // These locales remain unpublished until reviewed dictionaries are added.
+  bn: en,
+  ur: en,
+  pt: en,
   es: {
     allTools:"Todas las herramientas", back:"Volver", toolLabel:"Herramienta de PDFora",
     chooseDropMultiple:"Selecciona o arrastra archivos PDF", chooseDropSingle:"Selecciona o arrastra un archivo PDF",
@@ -241,31 +245,6 @@ const dictionaries: Record<Locale, PdfToolCopy> = {
     privacyAnswer:"依頼された処理を完了するため、ファイルはPDForaの処理サービスに安全に送信されます。オンラインで処理したくない情報を含む文書はアップロードしないでください。",
     maxSizeError:"{name} は1ファイルあたり50 MBの上限を超えています。"
   },
-  ko: {
-    allTools:"모든 도구", back:"뒤로", toolLabel:"PDFora 도구",
-    chooseDropMultiple:"PDF 파일을 선택하거나 여기에 놓으세요", chooseDropSingle:"PDF 파일을 선택하거나 여기에 놓으세요",
-    chooseFilesAria:"PDF 파일을 선택하거나 여기에 놓으세요", filesSelected:"개 파일 선택됨",
-    pdfFilesLimit:"PDF 파일당 최대 50MB", chooseFile:"파일 선택", selectedFiles:"선택한 파일",
-    removeFile:"삭제", rotationAngle:"회전 각도", enterValue:"값 입력", processing:"처리 중…",
-    selectFile:"파일을 선택하세요.", requiredInfo:"필수 정보를 입력하세요.",
-    processingFailed:"PDF 처리에 실패했습니다.", completed:"성공적으로 완료되었습니다. 다운로드가 시작되었습니다.",
-    serverTimeout:"처리 서버 응답이 너무 오래 걸립니다. 서버가 시작 중이거나 사용 중일 수 있습니다. 다시 시도하세요.",
-    connectionFailed:"처리 서버에 연결할 수 없습니다. 연결을 확인한 후 다시 시도하세요.",
-    couldNotProcess:"PDF를 처리할 수 없습니다.",
-    connectingServer:"PDFora 처리 서버에 연결 중입니다. 서버가 유휴 상태였다면 첫 요청에 최대 1분이 걸릴 수 있습니다.",
-    easy:"간편함", easyDescription:"파일을 선택하고 한 번의 탭으로 처리하세요.",
-    private:"개인정보 보호", privateDescription:"파일은 PDFora 백엔드에서 처리됩니다.",
-    mobileReady:"모바일 지원", mobileDescription:"휴대폰과 데스크톱에서 원활하게 작동하도록 설계되었습니다.",
-    howToUse:"사용 방법", stepSelect:"업로드 영역에서 PDF 파일을 선택하거나 끌어다 놓으세요.",
-    stepOptions:"이 도구에 필요한 옵션을 입력하세요.",
-    stepProcess:"처리 버튼을 누르고 PDFora가 파일을 준비할 때까지 기다리세요.",
-    stepDownload:"처리가 끝나면 결과 파일이 자동으로 다운로드됩니다.",
-    freeQuestion:"이 PDF 도구는 무료인가요?",
-    freeAnswer:"데스크톱 소프트웨어를 설치하지 않고도 이 PDFora 도구를 온라인에서 사용할 수 있습니다. 파일을 선택하고 작업을 실행한 다음 결과를 다운로드하세요.",
-    privacyQuestion:"파일은 비공개로 유지되나요?",
-    privacyAnswer:"요청한 작업을 완료하기 위해 파일은 PDFora 처리 서비스로 안전하게 전송됩니다. 온라인 처리를 원하지 않는 정보가 포함된 문서는 업로드하지 마세요.",
-    maxSizeError:"{name} 파일이 파일당 50MB 제한을 초과합니다."
-  }
 };
 
 export function getPdfToolCopy(pathname: string): PdfToolCopy {

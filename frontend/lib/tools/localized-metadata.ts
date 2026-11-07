@@ -22,7 +22,12 @@ export function buildLocalizedToolMetadata(locale: Locale, entry: ToolInfo): Met
     description: entry.description,
   });
   const indexable = isPublished(locale) && isLocalizedToolIndexable(locale, entry.slug);
-  return { ...base, robots: indexable ? { index: true, follow: true } : { index: false, follow: false } };
+  if (indexable) return { ...base, robots: { index: true, follow: true } };
+  return {
+    ...base,
+    alternates: { canonical: base.alternates?.canonical },
+    robots: { index: false, follow: false },
+  };
 }
 
 /** Used for every rejected request so a 404 never carries tool metadata or an index signal. */

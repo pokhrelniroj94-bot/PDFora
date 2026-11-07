@@ -1,4 +1,10 @@
 import { SITE_URL, defaultLocale, isLocale, isPublished, localeInfo, locales, type Locale } from "./config";
+import {
+  nepaliLocalizedCareerSlugs,
+  nepaliLocalizedFinancialSlugs,
+  nepaliLocalizedUtilitySlugs,
+} from "./nepali-tool-routes";
+import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 
 /**
  * URL scheme: English keeps its existing unprefixed URLs (/merge-pdf, /tools/x, /blog/y).
@@ -42,19 +48,49 @@ export function absoluteUrl(path: string, locale: Locale): string {
  * the language switcher and hreflang both read it, so users are never sent to a page
  * that does not exist.
  */
-const localizedPaths: ReadonlySet<string> = new Set([
+export const nepaliLocalizedNonToolPaths = [
   "/",
-  "/merge-pdf",
-  "/split-pdf",
-  "/compress-pdf",
-  "/rotate-pdf",
-  "/pdf-to-word",
-  "/pdf-to-jpg",
+  "/market",
+  "/resume-builder",
+  "/blog",
+  "/blog/nepali-date-converter-bs-to-ad-guide",
+  "/blog/nepal-vat-calculator-13-percent-guide",
+  "/blog/ropani-aana-paisa-daam-land-measurement-guide",
+  "/privacy",
+  "/terms",
+  "/about",
+  "/contact",
+] as const;
+
+export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
+  ...nepaliLocalizedNonToolPaths,
+  ...Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`),
+  ...[
+    ...nepaliLocalizedUtilitySlugs,
+    ...nepaliLocalizedFinancialSlugs,
+    ...nepaliLocalizedCareerSlugs,
+  ].map((slug) => `/tools/${slug}`),
 ]);
+
+const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
 
 export function hasLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
-  return locale === "ne" && localizedPaths.has(normalizePath(path));
+  const normalized = normalizePath(path);
+  if (locale !== "ne") return false;
+  if (localizedPaths.has(normalized)) return true;
+  return false;
+}
+
+/**
+ * Return a real localized URL when one exists. Otherwise route through the selected
+ * locale's explicit fallback page and preserve the requested English destination.
+ */
+export function localizedOrFallbackPath(path: string, locale: Locale): string {
+  const normalized = normalizePath(path);
+  if (locale === defaultLocale) return normalized;
+  if (hasLocalizedPage(normalized, locale)) return localizePath(normalized, locale);
+  return `${localizePath("/", locale)}?from=${encodeURIComponent(normalized)}`;
 }
 
 export interface AlternateOptions {

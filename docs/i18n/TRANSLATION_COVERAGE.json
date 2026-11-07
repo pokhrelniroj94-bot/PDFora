@@ -1,0 +1,274 @@
+{
+  "generatedAt": "2026-11-07T05:26:30.960Z",
+  "sourceCommit": "f8233e740e43f3c6f6ceb78c343c63d7adce5f9c",
+  "methodology": {
+    "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
+    "routeCoverage": "Published locale route equivalents divided by frontend page source files; a conservative source-file proxy, not interface-string coverage.",
+    "sharedUiModuleCoverage": "Leaf strings in lib/i18n/shared-ui.ts only; does not measure every component or form.",
+    "pdfGuideCoverage": "Nepali guide entries compared with the English tool guide registry.",
+    "blogCoverage": "Registered localized article records compared with English editorial and Nepal article records.",
+    "review": "Automation cannot certify native-speaker or human editorial review."
+  },
+  "inventory": {
+    "frontendPageSourceFiles": 68,
+    "apiRouteSourceFiles": 6,
+    "pdfGuides": 49,
+    "nepaliPdfGuides": 49,
+    "editorialBlogArticles": 8,
+    "nepalBlogArticles": 19,
+    "publishedNepaliPdfRoutes": 6,
+    "publishedNepaliUtilityRoutes": 6,
+    "publishedNepaliFinancialRoutes": 7,
+    "publishedNepaliCareerRoutes": 3,
+    "publishedNepaliMarketDashboardRoute": true,
+    "publishedNepaliResumeBuilderRoute": true,
+    "publishedNepaliBlogRoutes": 4,
+    "publishedNepaliStaticRoutes": 4,
+    "publishedNepaliHomeRoute": true,
+    "publishedNepaliRouteEquivalents": 33
+  },
+  "locales": {
+    "en": {
+      "status": "Source language; translation review not assessed",
+      "published": true,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": null,
+      "routeCoveragePercent": null,
+      "sharedUiModuleCoveragePercent": 100,
+      "pdfGuideCoverage": {
+        "translated": 49,
+        "total": 49,
+        "percent": 100
+      },
+      "blogCoverage": {
+        "translated": 27,
+        "total": 27,
+        "percent": 100,
+        "note": "English source content; editorial review is not independently measured."
+      },
+      "namespaceFiles": 3,
+      "reviewStatus": "Source content; human editorial review not independently measured"
+    },
+    "ne": {
+      "status": "Partially translated",
+      "published": true,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 33,
+      "routeCoveragePercent": 48.53,
+      "sharedUiModuleCoveragePercent": 100,
+      "pdfGuideCoverage": {
+        "translated": 49,
+        "total": 49,
+        "percent": 100
+      },
+      "blogCoverage": {
+        "translated": 3,
+        "total": 27,
+        "percent": 11.11,
+        "note": "3 fully translated Nepali articles are published; the remaining blog corpus is not localized."
+      },
+      "namespaceFiles": 3,
+      "reviewStatus": "Existing Nepali routes and PDF guide copy; complete site-wide native review not assessed"
+    },
+    "hi": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    },
+    "bn": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    },
+    "ur": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    },
+    "ar": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    },
+    "es": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    },
+    "fr": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    },
+    "de": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    },
+    "pt": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    },
+    "zh": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    },
+    "ja": {
+      "status": "Not published",
+      "published": false,
+      "sourceRouteFiles": 68,
+      "translatedRoutes": 0,
+      "routeCoveragePercent": 0,
+      "sharedUiModuleCoveragePercent": 0,
+      "pdfGuideCoverage": {
+        "translated": 0,
+        "total": 49,
+        "percent": 0
+      },
+      "blogCoverage": {
+        "translated": 0,
+        "total": 27,
+        "percent": 0
+      },
+      "namespaceFiles": 0,
+      "reviewStatus": "No published localized page content"
+    }
+  }
+}

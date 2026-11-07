@@ -325,7 +325,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "+977 लाई १० अङ्कभित्र गनिन्छ?", answer: "गनिँदैन। +977 देश कोड हो; त्यसपछि राष्ट्रिय नम्बर आउँछ।" },
       { question: "के उपकरणले SIM सक्रिय छ कि छैन बताउँछ?", answer: "बताउँदैन। यसले नम्बरको ढाँचा मात्र जाँच्न सक्छ।" }
     ],
-    toolLinks: [{ label: "नेपाल मोबाइल नम्बर जाँचक", href: "/tools/nepse-market-news" }]
+    toolLinks: [{ label: "नेपाल मोबाइल नम्बर जाँचक", href: "/tools/nepal-phone-validator" }]
   },
   {
     slug: "nepse-market-news-and-ipo-updates",
@@ -344,7 +344,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के IPO मिति र नतिजा सधैँ अद्यावधिक हुन्छ?", answer: "प्रकाशन ढिलाइ हुन सक्छ। कम्पनी, SEBON वा CDSC को आधिकारिक सूचना जाँच्नुहोस्।" },
       { question: "एउटै समाचार किन दोहोरिन्छ?", answer: "विभिन्न समाचार संस्थाले एउटै घटना प्रकाशित गर्दा स्वचालित सङ्कलनमा दोहोरिन सक्छ।" }
     ],
-    toolLinks: [{ label: "NEPSE बजार समाचार", href: "/tools/nepal-phone-validator" }]
+    toolLinks: [{ label: "NEPSE बजार समाचार", href: "/tools/nepse-market-news" }]
   },
   {
     slug: "nepse-cash-dividend-and-bonus-share-calculator-guide",

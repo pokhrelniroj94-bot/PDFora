@@ -142,5 +142,7 @@ assert.ok(marketApi.includes("validFresh") && marketApi.includes("Date.now() - D
 assert.ok(marketContext.includes("calculateMarketRegime") && (marketContext.includes("advancers") || marketContext.includes("let up=0,down=0,flat=0")), "NEPSE breadth calculation is missing");
 assert.ok(advancedIndicators.includes("ATR (14)") && advancedIndicators.includes("ADX (14)") && advancedIndicators.includes("OBV") && advancedIndicators.includes("calculateOhlcvIndicators"), "Advanced deterministic OHLCV diagnostics are incomplete");
 assert.ok(strategyLab.includes("runBacktest") && quantEngine.includes("rows[51].close") && quantEngine.includes("price * (1 - cost)"), "Backtest must align benchmark dates and include transaction costs");
+assert.ok(strategyLab.includes("const costRate=Math.max") && strategyLab.includes("fmt(costRate)") && strategyLab.includes("historyStale") && strategyLab.includes("largeGaps"), "Backtest must show effective fees and flag stale/corporate-action data");
+assert.ok(quantEngine.includes("validTradingDate") && quantEngine.includes("nepalToday"), "NEPSE input must reject future-dated observations using Nepal local date");
 assert.ok(marketIntelligence.includes("NepseMarketContext") && marketIntelligence.includes("NepseAdvancedIndicators"), "NEPSE dashboard must render the deterministic market context and advanced indicators");
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

@@ -46,7 +46,7 @@ export function calculateAge(birthDate: string, asOfDate: string): { years: numb
 
 export function timeDurationMinutes(start: string, end: string): number {
   const parseTime = (value: string): number => {
-    if (!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(value)) {
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) {
       throw new Error("Enter valid 24-hour times in HH:MM format.");
     }
     const [hours, minutes] = value.split(":").map(Number);

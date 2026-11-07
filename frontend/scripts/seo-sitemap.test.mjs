@@ -47,6 +47,8 @@ assert.equal(legacyPdfSlugs.length, 49, "Expected all 49 established PDF routes 
 for (const slug of legacyPdfSlugs) {
   const layout = read(`app/${slug}/layout.tsx`);
   assert.equal((layout.match(/<ToolSEOContent\b/g) ?? []).length, 1, `${slug} must render exactly one shared PDF SEO guide from its layout`);
+  const page = read(`app/${slug}/page.tsx`);
+  assert.doesNotMatch(page, /ToolGuide|Frequently asked questions|How it works|More PDF tools/, `${slug} must not duplicate guide or promotional sections outside its shared layout`);
 }
 
 const consolidatedPdfPages = ["merge-pdf", "delete-pages", "compress-pdf", "extract-pages", "images-to-pdf", "pdf-to-excel", "pdf-to-jpg", "pdf-to-word", "split-pdf", "watermark", "rotate-pdf"];

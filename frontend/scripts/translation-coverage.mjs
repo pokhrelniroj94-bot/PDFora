@@ -53,7 +53,12 @@ const nepaliLocalizedStaticCount = routing.nepaliLocalizedNonToolPaths.filter((r
 const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);
 const nepaliLocalizedRouteCount = routing.nepaliLocalizedRoutePaths.size;
 const sharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("en"));
-const nepaliSharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("ne"));
+const sharedUiCoverage = Object.fromEntries(config.locales.map((locale) => {
+  const translatedLeafCount = countLeaves(sharedUi.getSharedUiCopy(locale));
+  return [locale, sharedUiLeafCount
+    ? Math.round((translatedLeafCount / sharedUiLeafCount) * 10000) / 100
+    : 0];
+}));
 const nepaliGuideCount = Object.keys(nepaliGuidesModule.nepaliToolGuides).length;
 const englishGuideCount = guidesModule.toolGuides.length;
 
@@ -70,7 +75,7 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
       sourceRouteFiles: pageSourceFiles.length,
       translatedRoutes: null,
       routeCoveragePercent: null,
-      sharedUiModuleCoveragePercent: 100,
+      sharedUiModuleCoveragePercent: sharedUiCoverage[locale],
       pdfGuideCoverage: { translated: englishGuideCount, total: englishGuideCount, percent: 100 },
       blogCoverage: { translated: editorialBlogCount + nepalBlogCount, total: editorialBlogCount + nepalBlogCount, percent: 100, note: "English source content; editorial review is not independently measured." },
       namespaceFiles: namespaceFiles.length,
@@ -86,9 +91,7 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
       translatedRoutes: nepaliLocalizedRouteCount,
       // Dynamic route handlers serve many slugs; do not divide route equivalents by source-file count.
       routeCoveragePercent: null,
-      sharedUiModuleCoveragePercent: sharedUiLeafCount
-        ? Math.round((nepaliSharedUiLeafCount / sharedUiLeafCount) * 10000) / 100
-        : 0,
+      sharedUiModuleCoveragePercent: sharedUiCoverage[locale],
       pdfGuideCoverage: {
         translated: nepaliGuideCount,
         total: englishGuideCount,
@@ -111,11 +114,11 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
     sourceRouteFiles: pageSourceFiles.length,
     translatedRoutes: 0,
     routeCoveragePercent: 0,
-    sharedUiModuleCoveragePercent: 0,
+    sharedUiModuleCoveragePercent: sharedUiCoverage[locale],
     pdfGuideCoverage: { translated: 0, total: englishGuideCount, percent: 0 },
     blogCoverage: { translated: 0, total: editorialBlogCount + nepalBlogCount, percent: 0 },
     namespaceFiles: namespaceFiles.length,
-    reviewStatus: "No published localized page content",
+    reviewStatus: "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed",
   }];
 }));
 

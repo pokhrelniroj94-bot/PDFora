@@ -173,7 +173,13 @@ test("route file contract: validates through the resolver, 404s, no JSON-LD, Eng
 
 test("scope guards: English tool route, sitemap and robots are not wired to the localized route", () => {
   assert.doesNotMatch(read("app/tools/[slug]/page.tsx"), /lib\/tools\/|localized-/, "English route must stay independent");
-  assert.doesNotMatch(read("app/sitemap.ts"), /i18n|lib\/tools|getRoutableLocales|localizePath/, "sitemap must not include localized URLs yet");
+  const sitemap = read("app/sitemap.ts");
+  assert.match(sitemap, /nepaliLocalizedUtilitySlugs/);
+  assert.match(sitemap, /nepaliLocalizedFinancialSlugs/);
+  assert.match(sitemap, /nepaliLocalizedCareerSlugs/);
+  assert.match(sitemap, /\\/ne\\/tools\\/\$\\{slug\\}/);
+  assert.match(sitemap, /\\/ne\\/market/);
+  assert.match(sitemap, /\\/ne\\/resume-builder/);
   assert.doesNotMatch(read("app/robots.ts"), /i18n|lib\/tools/, "robots policy must not change");
 });
 

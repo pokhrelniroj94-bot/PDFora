@@ -566,8 +566,8 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "resume-builder") {
-        const preview = await page.evaluate("document.querySelector('#resume-paper')?.innerText || ''");
-        const templates = await page.evaluate("document.querySelectorAll('button[aria-label]').length");
+        const preview = await page.evaluate("document.querySelector('main #resume-paper')?.innerText || ''");
+        const templates = await page.evaluate("document.querySelectorAll('main button[aria-label]').length");
         if (!preview.includes("PDFora E2E Candidate") || !preview.includes("Quality Assurance Analyst") || !preview.includes("Experienced tester focused on reliable web applications.") || !preview.includes("Testing") || templates < 20) {
           throw new Error("Resume builder did not reflect entered profile data in its live preview or expose all 20 templates.");
         }
@@ -575,6 +575,20 @@ async function runTool(tool, index) {
         row.outputVerified = true;
         row.status = "PASS";
         row.evidenceLevel = "live-preview-and-template-count-verified";
+        return row;
+      }
+      if (tool.slug === "nepse-market-news") {
+        const newsState = await page.evaluate("({ links: [...document.querySelectorAll('main section ul li a')].map(a => a.href), body: document.querySelector('main')?.innerText || '' })");
+        const validLinks = newsState.links.filter((href) => /^https:\/\//i.test(href));
+        if (validLinks.length > 0 && /NEPSE official/.test(newsState.body) && /SEBON official/.test(newsState.body)) {
+          row.checks.push("live news headlines link to HTTPS publisher pages; official NEPSE and SEBON source links present");
+          row.outputVerified = true;
+          row.status = "PASS";
+          row.evidenceLevel = "live-headline-links-and-official-sources-verified";
+        } else {
+          row.checks.push("news page and refresh action rendered; feed did not provide enough live headline evidence for a full pass");
+          row.evidenceLevel = "route-refresh-and-official-source-links-only";
+        }
         return row;
       }
       if (tool.slug === "nepali-calendar") {

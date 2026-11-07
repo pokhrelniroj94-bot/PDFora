@@ -89,6 +89,10 @@ jobs:
           node --check scripts/browser-e2e-173.mjs
           node --check scripts/live-data-smoke.mjs
           node --check scripts/production-security-smoke.mjs
+          node --check scripts/preview-ai-smoke.mjs
+          node --check scripts/security-config.test.mjs
+      - name: Verify security configuration and privacy controls
+        run: node scripts/security-config.test.mjs
       - name: Verify live NRB, NEPSE and Nepal news freshness/fallback
         env:
           E2E_BASE_URL: http://127.0.0.1:3000

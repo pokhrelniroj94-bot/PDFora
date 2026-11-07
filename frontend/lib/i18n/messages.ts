@@ -5,20 +5,19 @@ import { createTranslator, type MessageTree, type Translator } from "./translate
  * Per-namespace dictionaries, loaded on demand so a page only ships what it renders.
  * Files: lib/i18n/messages/<locale>/<namespace>.json
  *
- * Add a namespace here AND create messages/en/<namespace>.json (English is the source of
- * truth). Other locales add a file only when fully translated; `npm run i18n:check`
- * verifies key parity and placeholder parity against English.
- * Planned namespaces (added per phase): navigation, homepage, tools, categories,
- * tool-descriptions, forms, validation, errors, downloads, blog, faq, about, privacy,
- * terms, contact, cookies, footer.
+ * English is the source of truth. Every JSON file must be registered with a static import
+ * below; `npm run i18n:check` verifies key parity, placeholder parity, and loader coverage.
+ * Keep a locale unpublished until every user-facing namespace and route is translated,
+ * tested, and reviewed by a fluent speaker. The current common/accessibility/seo set is
+ * only the shared-shell foundation, not a complete site translation.
  */
 export const namespaces = ["common", "accessibility", "seo"] as const;
 export type Namespace = (typeof namespaces)[number];
 
 type Loader = () => Promise<{ default: unknown }>;
 
-// Import paths must be static strings so the bundler can split them. No other locale has
-// translated files yet; add entries below only together with the reviewed JSON files.
+// Import paths must be static strings so the bundler can split them. All 12 locales currently
+// load the shared-shell foundation (common, accessibility, seo); this does not publish them.
 const loaders: Partial<Record<Locale, Partial<Record<Namespace, Loader>>>> = {
   en: {
     common: () => import("./messages/en/common.json"),
@@ -29,6 +28,56 @@ const loaders: Partial<Record<Locale, Partial<Record<Namespace, Loader>>>> = {
     common: () => import("./messages/ne/common.json"),
     accessibility: () => import("./messages/ne/accessibility.json"),
     seo: () => import("./messages/ne/seo.json"),
+  },
+  hi: {
+    common: () => import("./messages/hi/common.json"),
+    accessibility: () => import("./messages/hi/accessibility.json"),
+    seo: () => import("./messages/hi/seo.json"),
+  },
+  bn: {
+    common: () => import("./messages/bn/common.json"),
+    accessibility: () => import("./messages/bn/accessibility.json"),
+    seo: () => import("./messages/bn/seo.json"),
+  },
+  ur: {
+    common: () => import("./messages/ur/common.json"),
+    accessibility: () => import("./messages/ur/accessibility.json"),
+    seo: () => import("./messages/ur/seo.json"),
+  },
+  ar: {
+    common: () => import("./messages/ar/common.json"),
+    accessibility: () => import("./messages/ar/accessibility.json"),
+    seo: () => import("./messages/ar/seo.json"),
+  },
+  es: {
+    common: () => import("./messages/es/common.json"),
+    accessibility: () => import("./messages/es/accessibility.json"),
+    seo: () => import("./messages/es/seo.json"),
+  },
+  fr: {
+    common: () => import("./messages/fr/common.json"),
+    accessibility: () => import("./messages/fr/accessibility.json"),
+    seo: () => import("./messages/fr/seo.json"),
+  },
+  de: {
+    common: () => import("./messages/de/common.json"),
+    accessibility: () => import("./messages/de/accessibility.json"),
+    seo: () => import("./messages/de/seo.json"),
+  },
+  pt: {
+    common: () => import("./messages/pt/common.json"),
+    accessibility: () => import("./messages/pt/accessibility.json"),
+    seo: () => import("./messages/pt/seo.json"),
+  },
+  zh: {
+    common: () => import("./messages/zh/common.json"),
+    accessibility: () => import("./messages/zh/accessibility.json"),
+    seo: () => import("./messages/zh/seo.json"),
+  },
+  ja: {
+    common: () => import("./messages/ja/common.json"),
+    accessibility: () => import("./messages/ja/accessibility.json"),
+    seo: () => import("./messages/ja/seo.json"),
   },
 };
 

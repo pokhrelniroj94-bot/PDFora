@@ -47,6 +47,15 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
   const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")) : [];
   const published = config.isPublished(locale);
   const problems = [];
+  // Every locale JSON file must be reachable through a static loader import. This catches
+  // dictionaries that exist in the repository but are silently never loaded by the app.
+  for (const file of files) {
+    const ns = file.replace(/\.json$/, "");
+    if (!enFiles.includes(file)) problems.push(`${ns}: namespace has no English source`);
+    if (!registered.includes(`messages/${locale}/${ns}.json`)) {
+      problems.push(`${ns}: file is not registered in lib/i18n/messages.ts`);
+    }
+  }
   for (const ns of Object.keys(en)) {
     if (!files.includes(`${ns}.json`)) { problems.push(`${ns}: file missing`); continue; }
     const tr = readNs(locale, `${ns}.json`);

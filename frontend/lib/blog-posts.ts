@@ -251,6 +251,8 @@ const editorialBlogPosts: BlogPost[] = [
 ];
 
 
+const catalogToolHref = (slug: string) => slug === "resume-builder" ? "/resume-builder" : `/tools/${slug}`;
+
 const existingArticleSlugs = new Set([...editorialBlogPosts, ...additionalToolBlogPosts].map((post) => post.slug));
 const catalogGuides: BlogPost[] = toolCatalog
   .filter((tool) => tool.slug !== "pdf-tools" && !existingArticleSlugs.has(`${tool.slug}-guide`))
@@ -335,7 +337,7 @@ const catalogGuides: BlogPost[] = toolCatalog
         { question: `How do I use the ${tool.name} online?`, answer: steps.join(" ") },
         { question: "Is the result guaranteed to be correct?", answer: "No online utility can guarantee every result for every input. Check the format, assumptions and output, and independently verify anything important." }
       ],
-      toolLinks: [{ label: tool.name, href: `/tools/${tool.slug}` }, ...toolCatalog.filter((related) => related.category === tool.category && related.slug !== tool.slug && related.slug !== "pdf-tools").slice(0,3).map((related) => ({ label: related.name, href: `/tools/${related.slug}` }))]
+      toolLinks: [{ label: tool.name, href: catalogToolHref(tool.slug) }, ...toolCatalog.filter((related) => related.category === tool.category && related.slug !== tool.slug && related.slug !== "pdf-tools").slice(0,3).map((related) => ({ label: related.name, href: catalogToolHref(related.slug) }))]
     };
   });
 

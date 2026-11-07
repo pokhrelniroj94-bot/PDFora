@@ -16,6 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = getBlogPost(slug);
   if (!post) return { title: "Article not found" };
   const url = `${baseUrl}/blog/${post.slug}`;
+  const languages = hreflangMap(`/blog/${post.slug}`);
   return {
     title: post.title,
     description: post.description,

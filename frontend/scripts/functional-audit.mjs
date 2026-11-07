@@ -85,12 +85,16 @@ const rows = [
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: uiRegressionCatalog.has(entry.slug)
-      ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
-      : "",
-    fixesApplied: uiRegressionCatalog.has(entry.slug)
-      ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
-      : "",
+    defectsFound: entry.slug === "unit-converter"
+      ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families."
+      : uiRegressionCatalog.has(entry.slug)
+        ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction."
+        : "",
+    fixesApplied: entry.slug === "unit-converter"
+      ? "Rejects negative physical quantities and incompatible temperature/physical unit conversions; allows negative temperatures."
+      : uiRegressionCatalog.has(entry.slug)
+        ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
+        : "",
     remainingBlockers: testedCatalog.has(entry.slug)
       ? "Browser route, mobile layout and accessibility evidence remain unverified."
       : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",

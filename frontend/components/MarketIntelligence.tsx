@@ -5,6 +5,7 @@ import NepseFundamentalReview from "./NepseFundamentalReview";
 import NepseMarketContext from "./NepseMarketContext";
 import NepseAdvancedIndicators from "./NepseAdvancedIndicators";
 import NepseMacroDrivers from "./NepseMacroDrivers";
+import { normalizeOhlcvBars } from "../lib/nepse-quant.mjs";
 
 
 type NewsStory = { title: string; link: string; publishedAt: string; source: string };
@@ -59,7 +60,7 @@ function rsi(values: number[], period = 14) {
   return 100 - 100 / (1 + rs);
 }
 function analyse(points: Point[], asset: string): Analysis | null {
-  const rows = points.filter((p) => Number.isFinite(p.close) && p.close > 0).sort((a, b) => a.date.localeCompare(b.date));
+  const rows = normalizeOhlcvBars(points);
   if (rows.length < 50) return null;
   const closes = rows.map((p) => p.close);
   const e20 = ema(closes, 20), e50 = ema(closes, 50);
@@ -248,10 +249,7 @@ export default function MarketIntelligence() {
       const response = await fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", { cache: "no-store" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "NEPSE data is unavailable.");
-      const rows = (data.points || []).map((p: Record<string, unknown>) => ({
-        date: String(p.date || ""), open: Number(p.open) || undefined, high: Number(p.high) || undefined,
-        low: Number(p.low) || undefined, close: Number(p.close), volume: Number(p.volume) || undefined,
-      })).filter((p: Point) => p.date && Number.isFinite(p.close) && p.close > 0);
+      const rows = normalizeOhlcvBars(data.points || []);
       setSelectedPoints(rows);
       const result = analyse(rows, "nepse");
       if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");

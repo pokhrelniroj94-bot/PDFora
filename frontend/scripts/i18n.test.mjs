@@ -357,6 +357,27 @@ test("switcher: never offers an unavailable page", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 
+test("metadata: unreviewed Nepali PDF routes remain crawlable but noindex", () => {
+  const approved = metadata.buildLocaleMetadata({
+    locale: "ne",
+    path: "/merge-pdf",
+    title: "पीडीएफ जोड्नुहोस्",
+    description: "धेरै पीडीएफ फाइललाई एउटै फाइलमा जोड्नुहोस्।",
+  });
+  assert.deepEqual(approved.robots, { index: true, follow: true });
+  assert.ok(approved.alternates.languages?.ne);
+
+  const pending = metadata.buildLocaleMetadata({
+    locale: "ne",
+    path: "/images-to-pdf",
+    title: "तस्बिरबाट PDF",
+    description: "धेरै तस्बिरलाई एउटै PDF मा रूपान्तरण गर्नुहोस्।",
+  });
+  assert.deepEqual(pending.robots, { index: false, follow: true });
+  assert.equal(pending.alternates.languages, undefined);
+  assert.equal(pending.alternates.canonical, "https://pd-fora.vercel.app/ne/images-to-pdf");
+});
+
 test("metadata: unpublished locales are noindex with no hreflang; canonical is self-referencing", () => {
   const m = metadata.buildLocaleMetadata({ locale: "ar", path: "/", title: "T", description: "D" });
   assert.equal(m.alternates.canonical, "https://pd-fora.vercel.app/ar");

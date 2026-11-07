@@ -19,17 +19,33 @@ const labels: Record<NepaliTextToolSlug, { title: string; description: string }>
   "reading-time-calculator": { title: "पढ्ने समय गणक", description: "शब्द संख्या र रोजिएको पढ्ने गतिका आधारमा अनुमानित समय निकाल्नुहोस्।" },
   "line-counter": { title: "लाइन गणक", description: "कुल लाइन, खाली लाइन र सामग्री भएका लाइन छुट्याउनुहोस्।" },
   "sentence-counter": { title: "वाक्य गणक", description: "अङ्ग्रेजी विरामचिह्न र नेपाली पूर्णविरामका आधारमा वाक्य संख्या अनुमान गर्नुहोस्।" },
+  "email-extractor": { title: "इमेल ठेगाना निकाल्ने", description: "पाठभित्र रहेका सम्भावित इमेल ठेगाना खोजेर छुट्टै सूची बनाउनुहोस्।" },
+  "url-extractor": { title: "URL निकाल्ने", description: "पाठभित्रका HTTP, HTTPS र www लिंकहरू निकाल्नुहोस्।" },
+  "phone-number-extractor": { title: "फोन नम्बर निकाल्ने", description: "पाठमा रहेका ७ देखि १५ अंकका सम्भावित फोन नम्बर खोज्नुहोस्; नतिजा आफैं जाँच्नुहोस्।" },
+  "number-extractor": { title: "संख्या निकाल्ने", description: "पाठमा रहेका पूर्णांक तथा दशमलव संख्याहरू क्रमअनुसार निकाल्नुहोस्।" },
+  "hashtag-extractor": { title: "ह्यासट्याग निकाल्ने", description: "नेपाली र अन्य Unicode अक्षर भएका hashtag छुट्टै सूचीमा निकाल्नुहोस्।" },
+  "remove-duplicate-words": { title: "दोहोरो शब्द हटाउने", description: "दोहोरो शब्द हटाएर पहिलो पटक आएको क्रम सुरक्षित राख्नुहोस्। विरामचिह्न हटाइन्छ।" },
+  "find-replace-text": { title: "पाठ खोज्ने र बदल्ने", description: "दिएको पाठका सबै मिल्दो अंश अर्को पाठले बदल्नुहोस्।" },
+  "palindrome-checker": { title: "पालिन्ड्रोम जाँच", description: "खाली स्थान र विरामचिह्न बेवास्ता गरी पाठ दुवैतर्फबाट उस्तै पढिन्छ कि जाँच्नुहोस्।" },
+  "acronym-generator": { title: "संक्षिप्त रूप बनाउने", description: "वाक्यांशका प्रत्येक शब्दको पहिलो अक्षर जोडेर संक्षिप्त रूप बनाउनुहोस्।" },
 };
 
 export default function NepaliTextUtilityWorkspace({ slug }: { slug: string }) {
   const [input, setInput] = useState("");
   const [mode, setMode] = useState<"upper" | "lower" | "title" | "sentence">("upper");
   const [speed, setSpeed] = useState("200");
+  const [findText, setFindText] = useState("");
+  const [replaceText, setReplaceText] = useState("");
   const [copyState, setCopyState] = useState("");
   if (!(slug in labels)) return null;
   const toolSlug = slug as NepaliTextToolSlug;
   const config = labels[toolSlug];
-  const result = runNepaliTextTool(toolSlug, input, { caseMode: mode, wordsPerMinute: Number(speed) });
+  const result = runNepaliTextTool(toolSlug, input, {
+    caseMode: mode,
+    wordsPerMinute: Number(speed),
+    findText,
+    replaceText,
+  });
 
   async function copyResult() {
     try {
@@ -45,6 +61,10 @@ export default function NepaliTextUtilityWorkspace({ slug }: { slug: string }) {
       <div><h2 className="text-xl font-black text-slate-950">{config.title}</h2><p className="mt-1 text-sm leading-6 text-slate-600">{config.description}</p></div>
       {toolSlug === "case-converter" && <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">रूपान्तरण शैली</span><select className={field} value={mode} onChange={(event) => setMode(event.target.value as typeof mode)}><option value="upper">UPPERCASE</option><option value="lower">lowercase</option><option value="title">Title Case</option><option value="sentence">Sentence case</option></select></label>}
       {toolSlug === "reading-time-calculator" && <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">पढ्ने गति (शब्द/मिनेट)</span><select className={field} value={speed} onChange={(event) => setSpeed(event.target.value)}><option value="150">१५० — ढिलो</option><option value="200">२०० — सामान्य</option><option value="250">२५० — छिटो</option><option value="300">३०० — धेरै छिटो</option></select></label>}
+      {toolSlug === "find-replace-text" && <div className="grid gap-3 sm:grid-cols-2">
+        <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">खोज्नुपर्ने पाठ</span><input className={field} value={findText} onChange={(event) => setFindText(event.target.value)} /></label>
+        <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">बदल्ने पाठ</span><input className={field} value={replaceText} onChange={(event) => setReplaceText(event.target.value)} /></label>
+      </div>}
       <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">आफ्नो पाठ यहाँ राख्नुहोस्</span><textarea className={field + " min-h-44 resize-y"} value={input} onChange={(event) => setInput(event.target.value)} placeholder="यहाँ पाठ टाइप वा paste गर्नुहोस्…" /></label>
       <div className="flex flex-wrap gap-2"><button type="button" className={secondary} onClick={() => { setInput(""); setCopyState(""); }}>पाठ हटाउनुहोस्</button><button type="button" className={button} onClick={copyResult}>नतिजा कपी गर्नुहोस्</button></div>
       <div className="rounded-2xl border border-teal-200 bg-teal-50 p-4" aria-live="polite"><h3 className="text-sm font-bold text-teal-950">नतिजा</h3><pre className="mt-2 whitespace-pre-wrap break-words font-sans text-sm leading-7 text-teal-950">{result || "नतिजा हेर्न माथिको बाकसमा पाठ लेख्नुहोस्।"}</pre></div>

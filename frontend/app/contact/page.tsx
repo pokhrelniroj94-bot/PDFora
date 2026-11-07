@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { hreflangMap } from "../../lib/i18n/routing";
+
+const localizedAlternates = hreflangMap("/contact");
 
 export const metadata: Metadata = {
   title: "Contact PDFora | Support, Feedback and Privacy Questions",
   description: "Contact the PDFora team by email for tool support, feedback, bug reports, business enquiries and privacy questions.",
-  alternates: { canonical: "https://pd-fora.vercel.app/contact" },
+  alternates: { canonical: "https://pd-fora.vercel.app/contact", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
   openGraph: { type: "website", url: "https://pd-fora.vercel.app/contact", siteName: "PDFora", title: "Contact PDFora", description: "Email PDFora for tool support, feedback, bug reports, business enquiries and privacy questions." },
 };
 

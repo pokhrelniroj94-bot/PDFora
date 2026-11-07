@@ -16,7 +16,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 | Locale | Published tool rows | Interface-present rows | Content-present rows | Index-eligible rows |
 |---|---:|---:|---:|---:|
 | en | 173 | 173 | 49 | 173 |
-| ne | 64 | 64 | 49 | 6 |
+| ne | 70 | 70 | 49 | 6 |
 | hi | 0 | 0 | 0 | 0 |
 | bn | 0 | 0 | 0 | 0 |
 | ur | 0 | 0 | 0 | 0 |
@@ -30,7 +30,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 
 ## Current blockers
 
-- Only English is the source language; Nepali has reviewed route-specific surfaces, but complete native review is not independently established.
+- English is the source language. Nepali has 70 route-specific tool interfaces, but native-language review is not independently established.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
-- Functional testing is not claimed for every tool until the workflow matrix is executed against each handler.
+- Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers.
 - OCR is not counted among the 173 available tools because it remains excluded from the canonical PDF inventory.

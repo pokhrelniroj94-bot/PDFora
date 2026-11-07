@@ -37,7 +37,7 @@ const nepalTools = [
   { href: "/tools/nepali-unicode-typing", title: "नेपाली Unicode Typing", description: "Romanized Nepali लेखेर देवनागरी Unicode text बनाउनुहोस्।" },
   { href: "/tools/nepal-forex-rates", title: "नेपाल राष्ट्र बैंक विनिमय दर", description: "उपलब्ध पछिल्लो प्रकाशित विदेशी मुद्रा दर हेर्नुहोस्।" },
   { href: "/tools/nepal-salary-tax-calculator", title: "नेपाल तलब कर क्याल्कुलेटर", description: "आयकरको अनुमानित हिसाब गर्नुहोस्; नतिजा आधिकारिक कर निर्धारण होइन।" },
-  { href: "/tools/nepal-electricity-bill-calculator", title: "NEA बिजुली बिल अनुमान", description: "समर्थित घरेलु single-phase जडानका लागि बिल अनुमान गर्नुहोस्।" },
+  { href: "/tools/nepal-electricity-bill-calculator", title: "आधिकारिक ERC बिजुली बिल क्याल्कुलेटर", description: "अद्यावधिक महसुल र जडान विवरणसहित ERC को आधिकारिक क्याल्कुलेटर खोल्नुहोस्।" },
   { href: "/tools/nepal-public-holidays-2083", title: "नेपालका सार्वजनिक बिदा २०८३", description: "राष्ट्रिय र क्षेत्रगत सार्वजनिक बिदा हेर्नुहोस्।" },
 ];
 

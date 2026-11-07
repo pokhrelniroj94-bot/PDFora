@@ -30,13 +30,14 @@ const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh
 const rtlLocales = new Set(["ur", "ar"]);
 const publishedLocales = new Set(["en", "ne"]);
 const handlerEvidence = "catalog-handler-check";
+const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter"]);
 
 const matrix = [];
 for (const locale of locales) {
   for (const tool of tools) {
     const english = locale === "en";
-    const nepaliReviewed = locale === "ne" && localizedNepaliTools.has(tool.slug);
-    const localized = english || nepaliReviewed;
+    const nepaliInterfacePresent = locale === "ne" && localizedNepaliTools.has(tool.slug);
+    const localized = english || nepaliInterfacePresent;
     const guide = english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug);
     const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug);
     matrix.push({
@@ -46,9 +47,9 @@ for (const locale of locales) {
       route: tool.kind === "pdf" ? `/${tool.slug}` : `/tools/${tool.slug}`,
       routeExists: true,
       handler: english ? handlerEvidence : localized ? "localized-route-handler" : "not-published",
-      interface: english ? "source-language" : localized ? "reviewed-nepali-surface" : "not-implemented",
-      content: guide ? (english ? "source-guide" : "reviewed-nepali-guide") : "not-verified",
-      functionalTest: "not-individually-verified",
+      interface: english ? "source-language" : localized ? "nepali-interface-present" : "not-implemented",
+      content: guide ? (english ? "source-guide" : "nepali-guide-present") : "not-verified",
+      functionalTest: locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
       humanReview: english ? "source-content-review-not-assessed" : localized ? "native-review-not-assessed" : "not-reviewed",
       indexing: indexable ? "eligible" : "excluded",
       published: publishedLocales.has(locale) && localized,
@@ -107,9 +108,9 @@ ${summary}
 
 ## Current blockers
 
-- Only English is the source language; Nepali has reviewed route-specific surfaces, but complete native review is not independently established.
+- Nepali has ${localizedNepaliTools.size} route-specific tool interfaces, but native-language review is not independently established.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
-- Functional testing is not claimed for every tool until the workflow matrix is executed against each handler.
+- Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers.
 - OCR is not counted among the 173 available tools because it remains excluded from the canonical PDF inventory.
 `;
 fs.writeFileSync(path.join(outputDir, "TOOL_LANGUAGE_COVERAGE_MATRIX.md"), markdown);

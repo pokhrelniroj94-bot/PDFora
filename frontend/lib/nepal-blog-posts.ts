@@ -241,33 +241,39 @@ export const nepalBlogPosts: BlogPost[] = [
   },
   {
     slug: "nea-electricity-bill-calculator-nepal-guide",
-    title: "NEA Electricity Bill Calculator Nepal: Units, Meter Capacity and VAT Explained",
-    description: "Estimate a domestic electricity bill using monthly units, meter capacity, block rates and current tax assumptions.",
-    keyword: "NEA electricity bill calculator Nepal",
-    updated: "2026-11-01",
+    title: "How to Check Your Nepal Electricity Bill: Official ERC Calculator and 2083 Tariff",
+    description: "Learn which meter details to prepare, how to use the official ERC electricity calculator and where to verify Nepal's current tariff.",
+    keyword: "official ERC electricity bill calculator Nepal",
+    updated: "2026-11-07",
     readTime: "6 min read",
-    intro: "A household electricity bill depends on monthly units consumed, the meter capacity and the applicable minimum and energy charges. Block billing means the price of each band applies only to the units within that band.",
+    intro: "A Nepal electricity bill depends on the applicable consumer category, connection details, units consumed during the billing period and the tariff schedule in force. The Electricity Regulatory Commission issued a new tariff directive in 2083. Because rates and categories can change, this guide points readers to the live official calculator instead of repeating a fixed rate table that may become outdated.",
     sections: [
-      { heading: "How domestic block billing works", paragraphs: ["The estimator uses a published single-phase domestic schedule for 5A, 15A, 30A and 60A connections. The first block and monthly minimum charge differ by meter size, while higher consumption blocks use their respective unit rates.", "It also includes an estimated 5% VAT on energy charges above 50 units and an optional 2% early-payment rebate. These assumptions should be checked against the latest bill and official tariff guidance."] },
-      { heading: "How to estimate your bill", paragraphs: [], bullets: ["Check your monthly consumption in kWh (units) from the meter reading.", "Choose the meter capacity printed on your bill or meter card.", "Select the early-payment rebate only if you expect to pay within the eligible period.", "Review the energy charge, minimum charge, VAT and estimated total.", "Compare the estimate with the current bill and official ERC calculator."] },
-      { heading: "When not to use this estimator", paragraphs: ["This estimator is for single-phase domestic connections only. Commercial, industrial, three-phase, time-of-day and special tariff customers need the applicable tariff category and demand charges. Use the official Electricity Regulatory Commission calculator for those cases."] }
+      { heading: "Why a static electricity-bill estimate can mislead", paragraphs: ["A reliable bill check needs the correct consumer category, connection and fuse capacity, billing period, meter reading and applicable tariff options. Minimum charges, taxes, adjustments, arrears or later tariff changes can affect the final amount.", "A simple online formula that hard-codes old unit rates can give a confident-looking but incorrect result. PDFora therefore does not calculate a bill from fixed tariff assumptions; it links to the current ERC calculator and official notice."] },
+      { heading: "Prepare the details from your NEA bill", paragraphs: [], bullets: ["Find the consumer category and connection details on your latest bill.", "Note the meter or fuse capacity shown for your account.", "Use the units (kWh) and exact billing period from the meter reading, not an approximate daily average.", "Keep any previous balance, adjustment or late-fee line visible so you do not confuse it with the current-period energy charge."] },
+      { heading: "Use the official ERC electricity calculator", paragraphs: [], bullets: ["Open the Electricity Regulatory Commission calculator linked below.", "Choose the matching consumer category, connection and fuse capacity.", "Enter the units consumed for the billing period and select the tariff options requested by the official tool.", "Review the result, then confirm that the category and period match your NEA bill.", "Read the 2083 tariff directive if you need to understand the applicable schedule."] },
+      { heading: "Compare the result with your actual NEA bill", paragraphs: ["The official calculator result is only as accurate as the details entered. Your issued bill may also show arrears, meter-reading adjustments, service charges or other account-specific items. If the amount differs, check the reading dates and contact NEA or the relevant service centre rather than changing tariff assumptions yourself."] }
     ],
     faqs: [
-      { question: "Does it calculate commercial electricity bills?", answer: "No. It estimates single-phase domestic bills only. Use the official ERC calculator for commercial or other categories." },
-      { question: "Why is my NEA bill different?", answer: "Your bill may include arrears, meter/account adjustments, tariff changes or other items not included in this estimate." },
-      { question: "Is the estimate an official bill?", answer: "No. The actual bill issued by NEA is final. Check current ERC and NEA tariff information." }
+      { question: "Does PDFora calculate my electricity bill?", answer: "No. PDFora links to the live official ERC calculator and does not display an estimate based on hard-coded tariff rates." },
+      { question: "Which details should I enter?", answer: "Use the consumer category, connection or fuse capacity and kWh consumption shown for your account. Follow the fields requested by the official ERC calculator." },
+      { question: "Why might the calculator result differ from my NEA bill?", answer: "The billing period, meter reading, arrears, adjustments, account category or tariff changes may differ from the details entered." },
+      { question: "Where can I verify the current tariff?", answer: "Check the ERC electricity calculator and its 2083 tariff directive, then compare the account details with your NEA bill." }
     ],
-    toolLinks: [{ label: "NEA Electricity Bill Calculator", href: "/tools/nepal-electricity-bill-calculator" }],
-    sources: [{ label: "Electricity Regulatory Commission official bill calculator", url: "https://www.erc.gov.np/electricity-calculator" }, { label: "NEA consumer tariff rates", url: "https://www.nea.org.np/en/pages/consumer-tariff-rates" }],
+    toolLinks: [{ label: "Open the official ERC electricity bill calculator", href: "/tools/nepal-electricity-bill-calculator" }],
+    sources: [
+      { label: "Electricity Regulatory Commission official bill calculator", url: "https://www.erc.gov.np/electricity-calculator" },
+      { label: "ERC 2083 electricity tariff directive", url: "https://www.erc.gov.np/detail/314" },
+      { label: "NEA consumer tariff information", url: "https://www.nea.org.np/en/pages/consumer-tariff-rates" }
+    ],
   },
   {
     slug: "nepal-public-holidays-2083-calendar-guide",
     title: "Nepal Government Public Holidays 2083: Full Calendar and Regional Notes",
     description: "Search the 2083 BS public holiday list with AD dates, national holidays and community-specific observances.",
     keyword: "Nepal public holidays 2083",
-    updated: "2026-11-01",
+    updated: "2026-11-07",
     readTime: "6 min read",
-    intro: "Nepal's public holiday notice includes national holidays as well as dates that apply only to particular regions, communities or groups. Checking the scope of a holiday matters when planning government visits, school work, travel or business deadlines.",
+    intro: "Nepal's public holiday notice includes national holidays as well as dates that apply only to particular regions, communities or groups. The Ministry of Home Affairs page currently displays “Last Updated: 2083-07-20 15:42:42”. This guide is a searchable transcription of that notice, not a live feed; later amendments may change details. Checking the scope of a holiday matters when planning government visits, school work, travel or business deadlines.",
     sections: [
       { heading: "National and restricted holidays", paragraphs: ["The Ministry of Home Affairs publishes the annual government and public holiday notice. Some entries are nationwide, while others apply to the Kathmandu Valley, particular communities, women employees, educational institutions or specific Terai and Hill districts.", "Several lunar observances may be announced later after the date is confirmed. A calendar should label these as to be announced rather than guessing a date."] },
       { heading: "How to search the 2083 calendar", paragraphs: [], bullets: ["Open the Nepal Public Holidays 2083 tool.", "Search by holiday name, BS date or AD date.", "Use the category filters to show national, regional, community-specific or to-be-announced entries.", "Open the Ministry of Home Affairs notice before relying on a date for an official deadline."] },

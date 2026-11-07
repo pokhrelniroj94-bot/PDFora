@@ -178,6 +178,8 @@ assert.match(toolsIndexSource, /openGraph:\s*\{[\s\S]*?images:/, "All-tools dire
 assert.match(toolsIndexSource, /twitter:\s*\{[\s\S]*?images:/, "All-tools directory must provide a Twitter preview image");
 for (const slug of approvedNepali) assert.ok(nepaliHomeSource.includes(`href: "/ne/${slug}"`), `Nepali homepage must link to its reviewed localized PDF tool: ${slug}`);
 assert.match(sitemapSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must be excluded from the sitemap");
+assert.match(sitemapSource, /baseUrl\}\/nepse-lab/, "NEPSE strategy lab must be included in the sitemap");
+assert.match(sitemapSource, /baseUrl\}\/resume-builder/, "Resume builder must be included in the sitemap");
 assert.match(toolSeoContentSource, /!isGeneratedPdfGuide\(guide\.blogSlug\)/, "PDF tool pages must link only to reviewed editorial guides");
 assert.match(catalogToolSeoContentSource, /guideSlug && !isCatalogGeneratedGuide\(guideSlug\)/, "Utility pages must not link to generated noindex catalog guide duplicates");
 assert.match(blogArticleSource, /openGraph:\s*\{\s*type:\s*"article"/, "English articles must publish article Open Graph metadata");

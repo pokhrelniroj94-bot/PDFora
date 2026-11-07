@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { bmi, bmr, businessDaysInclusive, gcd } from "../lib/catalog-calculations";
 import { addCalendarDays } from "../lib/date-time-calculations";
+import { jsonToYaml, parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
+import { csvToJson } from "../lib/catalog-text";
 
 type Values = Record<string, string>;
 const defaults: Record<string, Values> = {
@@ -48,7 +50,8 @@ function toRoman(value:number){let n=value,out="";for(const [v,s] of romanPairs)
 function fromRoman(s:string){const map:Record<string,number>={I:1,V:5,X:10,L:50,C:100,D:500,M:1000};let n=0;for(let i=0;i<s.length;i++){const v=map[s[i]],next=map[s[i+1]]||0;if(!v)throw Error("Invalid Roman numeral.");n+=v<next?-v:v;}if(n<1||n>3999||toRoman(n)!==s)throw Error("Use a canonical Roman numeral from I to MMMCMXCIX.");return n;}
 export default function QuickUtilityTools({slug}:{slug:string}) {
  const initial=defaults[slug]||{text:""};const [v,setV]=useState<Values>(initial);const [out,setOut]=useState("");const [error,setError]=useState("");
- const get=(k:string)=>v[k]??"";const n=(k:string)=>{const x=Number(get(k));if(!Number.isFinite(x))throw Error("Enter valid numbers.");return x;};
+ const get=(k:string)=>v[k]??"";const n=(k:string)=>parseRequiredNumber(get(k));
+ const randomBelow=(max:number)=>randomIntegerBelow(max,()=>crypto.getRandomValues(new Uint32Array(1))[0]);
  const run=()=>{setError("");setOut("");try{const t=get("text");let result="";
  switch(slug){
  case "word-frequency-counter":{const m=new Map<string,number>();words(t.toLowerCase().replace(/[^\p{L}\p{N}'-]+/gu," ")).forEach(w=>m.set(w,(m.get(w)||0)+1));result=[...m].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).map(([w,c])=>w+" — "+c).join("\n")||"No words found.";break;}
@@ -73,8 +76,8 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "snake-case-converter":result=tokens(t).join("_");break;
  case "kebab-case-converter":result=tokens(t).join("-");break;
  case "html-tag-stripper":result=new DOMParser().parseFromString(t,"text/html").body.textContent||"";break;
- case "csv-to-json":{const lines=t.split(/\r?\n/).filter(Boolean);if(lines.length<2)throw Error("Provide a header row and at least one data row.");const parse=(line:string)=>{const a:string[]=[];let cell="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'&&q&&line[i+1]==='"'){cell+='"';i++;}else if(c==='"')q=!q;else if(c===","&&!q){a.push(cell);cell="";}else cell+=c;}a.push(cell);return a;};const h=parse(lines[0]);result=JSON.stringify(lines.slice(1).map(line=>{const row=parse(line);return Object.fromEntries(h.map((k,i)=>[k,row[i]??""]));}),null,2);break;}
- case "json-to-yaml":{const obj=JSON.parse(t);const emit=(x:unknown,indent=0):string=>{const pad=" ".repeat(indent);if(Array.isArray(x))return x.map(z=>pad+"- "+(z&&typeof z==="object"?"\n"+emit(z,indent+2):JSON.stringify(z))).join("\n");if(x&&typeof x==="object")return Object.entries(x).map(([k,z])=>pad+k+": "+(z&&typeof z==="object"?"\n"+emit(z,indent+2):JSON.stringify(z))).join("\n");return pad+String(x);};result=emit(obj);break;}
+ case "csv-to-json":{result=csvToJson(t);break;}
+ case "json-to-yaml":{const obj=JSON.parse(t);result=jsonToYaml(obj);break;}
  case "json-escape-unescape":result=get("mode")==="unescape"?JSON.parse(t.trim().startsWith('"')?t.trim():'"'+t+'"'):JSON.stringify(t).slice(1,-1);break;
  case "url-validator":{const u=new URL(t);if(!["http:","https:"].includes(u.protocol))throw Error("Only HTTP and HTTPS URLs are supported.");result="Valid URL\nProtocol: "+u.protocol+"\nHost: "+u.host+"\nPath: "+u.pathname+"\nQuery: "+u.search;break;}
  case "email-validator":result=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(t.trim())?"Basic email syntax looks valid. No email was sent.":"Invalid email syntax.";break;
@@ -89,9 +92,9 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "percentage-of-number-calculator":{const x=n("value"),r=n("rate");result=r+"% of "+x+" = "+(x*r/100).toFixed(4);break;}
  case "gcd-lcm-calculator":{const a=n("a"),b=n("b");if(!Number.isInteger(a)||!Number.isInteger(b)||(!a&&!b))throw Error("Enter integers; at least one must be non-zero.");const g=gcd(a,b);result="GCD: "+g+"\nLCM: "+(a&&b?Math.abs(a*b)/g:0);break;}
  case "prime-number-checker":{const x=n("n");if(!Number.isInteger(x)||x<0)throw Error("Enter a non-negative integer.");let prime=x>=2;for(let i=2;i<=Math.sqrt(x)&&prime;i++)if(x%i===0)prime=false;result=x+" is "+(prime?"prime":"not prime");break;}
- case "random-number-generator":{const min=Math.ceil(n("min")),max=Math.floor(n("max")),count=Math.max(1,Math.min(100,Math.floor(n("count"))));if(max<min||max-min+1>4294967296)throw Error("Enter a valid integer range up to 2^32 values.");const range=max-min+1,limit=Math.floor(4294967296/range)*range;const pick=()=>{let x=0;do{x=crypto.getRandomValues(new Uint32Array(1))[0];}while(x>=limit);return min+x%range;};result=Array.from({length:count},pick).join("\n");break;}
- case "dice-roller":{const count=Math.max(1,Math.min(100,Math.floor(n("count")))),rolls=Array.from({length:count},()=>crypto.getRandomValues(new Uint32Array(1))[0]%6+1);result="Rolls: "+rolls.join(", ")+"\nTotal: "+rolls.reduce((a,b)=>a+b,0);break;}
- case "unix-timestamp-converter":{const x=Number(t),d=new Date(Math.abs(x)<1e12?x*1000:x);if(!Number.isFinite(x)||isNaN(+d))throw Error("Enter a valid Unix timestamp.");result="UTC: "+d.toISOString()+"\nLocal: "+d.toString();break;}
+ case "random-number-generator":{const min=n("min"),max=n("max"),count=n("count");if(!Number.isInteger(min)||!Number.isInteger(max)||!Number.isInteger(count)||max<min||count<1||count>100||max-min+1>4294967296)throw Error("Use whole-number bounds, a range up to 2^32 values, and 1–100 results.");const range=max-min+1;const pick=()=>min+randomBelow(range);result=Array.from({length:count},pick).join("\n");break;}
+ case "dice-roller":{const count=n("count");if(!Number.isInteger(count)||count<1||count>100)throw Error("Enter a whole number of dice from 1 to 100.");const rolls=Array.from({length:count},()=>randomBelow(6)+1);result="Rolls: "+rolls.join(", ")+"\nTotal: "+rolls.reduce((a,b)=>a+b,0);break;}
+ case "unix-timestamp-converter":{if(!t.trim())throw Error("Enter a Unix timestamp.");const x=Number(t),d=new Date(Math.abs(x)<1e12?x*1000:x);if(!Number.isFinite(x)||isNaN(+d))throw Error("Enter a valid Unix timestamp.");result="UTC: "+d.toISOString()+"\nLocal: "+d.toString();break;}
  case "date-add-subtract-calculator":{result=addCalendarDays(get("date"),n("days"));break;}
  case "business-days-calculator":result="Weekdays (inclusive): "+businessDaysInclusive(get("start"),get("end"))+"\nPublic holidays are not excluded.";break;
  case "px-rem-converter":{const x=n("value"),root=n("root");if(root<=0)throw Error("Root font size must be positive.");result=get("mode")==="rem-to-px"?(x*root).toFixed(4)+" px":(x/root).toFixed(4)+" rem";break;}

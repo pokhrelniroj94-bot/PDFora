@@ -21,4 +21,26 @@ assert.ok(utilities.includes("if(file.size>50*1024*1024)"), "Image tools must re
 assert.ok(!homepage.includes("upload the required file"), "Homepage utility cards must not give generic PDF-upload instructions");
 assert.ok(homepage.includes("review the result before using or downloading it"), "Homepage cards must show neutral, tool-appropriate guidance");
 
+
+const quickUtilities = read("../components/QuickUtilityTools.tsx");
+const extraTools = read("../components/ExtraTools.tsx");
+const nepalTools = read("../components/NepalTools.tsx");
+const inputHelpers = read("../lib/catalog-inputs.ts");
+const catalogText = read("../lib/catalog-text.ts");
+assert.ok(quickUtilities.includes("parseRequiredNumber(get(k))"), "QuickUtilityTools must reject blank numeric fields");
+assert.ok(extraTools.includes("parseRequiredNumber(val(k))"), "ExtraTools must reject blank numeric fields");
+assert.ok(quickUtilities.includes("jsonToYaml(obj)"), "JSON-to-YAML must use the tested serializer");
+assert.ok(quickUtilities.includes("result=csvToJson(t)"), "CSV-to-JSON must use the strict parser");
+assert.ok(catalogText.includes("CSV row ") && catalogText.includes("unclosed quoted field"), "CSV parser must reject malformed and ragged rows");
+assert.ok(quickUtilities.includes("randomBelow(6)+1"), "Dice rolls must use unbiased random integers");
+assert.ok(extraTools.includes("chars[randomBelow(chars.length)]"), "Password characters must use unbiased random integers");
+assert.ok(inputHelpers.includes("value >= limit"), "Random helper must reject the incomplete modulo bucket");
+assert.ok(utilities.includes("if(!raw.trim())return Number.NaN"), "PDF/calculator workspace must not coerce blank or malformed numeric fields to zero");
+assert.ok(utilities.includes("wordCount>=8&&wordCount<=500"), "Lorem Ipsum generator must enforce its advertised word-count bounds");
+
+assert.ok(nepalTools.includes('amount.trim()!==""&&rate.trim()!==""'), "Nepal VAT must reject blank amount and rate fields");
+assert.ok(nepalTools.includes('number.trim()!==""&&Number.isSafeInteger(n)'), "Nepali number conversion must not treat blank input as zero");
+assert.ok(nepalTools.includes('weight.trim()!==""&&Number.isFinite(n)'), "Tola/gram conversion must reject blank weight");
+assert.ok(nepalTools.includes('shares,buyPrice,sellPrice,brokerRate,sebonRate,dpCharge,cgtRate].every(x=>x.trim()!=="")'), "NEPSE share calculator must require every charge and price input");
+
 console.log("Tool UI regression checks passed: image upload copy, validation, object URL lifecycle and homepage guidance.");

@@ -22,6 +22,7 @@ const blogPostSource = read("lib/blog-posts.ts");
 const nepaliBlogArticleSource = read("app/[locale]/blog/[slug]/page.tsx");
 const localeMetadataSource = read("lib/i18n/metadata.ts");
 const toolSeoContentSource = read("components/ToolSEOContent.tsx");
+const catalogToolSeoContentSource = read("components/CatalogToolSEOContent.tsx");
 const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
 
 const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
@@ -163,6 +164,7 @@ assert.match(blogArticleSource, /isGeneratedPdfGuide\(post\.slug\)/, "Generated 
 assert.match(englishBlogIndexSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must not appear as editorial blog cards");
 assert.match(sitemapSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must be excluded from the sitemap");
 assert.match(toolSeoContentSource, /!isGeneratedPdfGuide\(guide\.blogSlug\)/, "PDF tool pages must link only to reviewed editorial guides");
+assert.match(catalogToolSeoContentSource, /guideSlug && !isCatalogGeneratedGuide\(guideSlug\)/, "Utility pages must not link to generated noindex catalog guide duplicates");
 assert.match(blogArticleSource, /openGraph:\s*\{\s*type:\s*"article"/, "English articles must publish article Open Graph metadata");
 assert.match(blogArticleSource, /twitter:\s*\{/, "English articles must publish Twitter metadata");
 assert.match(nepaliBlogArticleSource, /buildLocaleMetadata\(/, "Nepali articles must use the shared canonical and locale metadata builder");

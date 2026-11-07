@@ -123,6 +123,9 @@ const howToUse: Record<string, string> = {
     "/remove-pdf-links": "Upload a PDF and strip clickable link annotations from its pages.",
     "/remove-pdf-metadata": "Upload a PDF and clear document metadata such as title and author.",
     "/split-by-bookmarks": "Upload a bookmarked PDF and split it into sections using bookmark destinations.",
+    "/tools/loan-emi-calculator": "Enter the loan principal, annual interest rate and repayment term to calculate monthly EMI, total interest and total repayment.",
+    "/tools/notes-to-pdf": "Type or paste your notes, format the page, then use your browser’s print dialog to save the document as a PDF.",
+    "/tools/nepal-share-calculator": "Enter share quantity and buy/sell prices, then review estimated charges, net proceeds and profit or loss using the editable fee assumptions.",
   };
 
 export default function HomePageClient() {

@@ -2,26 +2,25 @@
 
 import { useMemo, useState } from "react";
 
-import { detectLargePriceGaps, normalizeDailyBars, runBacktest, type QuantBar as Bar, type QuantResult as Result } from "../lib/nepse-quant.mjs";
+import { detectLargePriceGaps, normalizeDailyBars, runBacktest, type QuantBar as Bar } from "../lib/nepse-quant.mjs";
 
 const panel = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5";
 const input = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 
 export default function NepseAlphaLab(){
- const [symbol,setSymbol]=useState("NABIL"),[mode,setMode]=useState("sma"),[cost,setCost]=useState("0.45"),[rows,setRows]=useState<Bar[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(""),[source,setSource]=useState("");
- const [result,setResult]=useState<Result|null>(null);
+ const [symbol,setSymbol]=useState("NABIL"),[mode,setMode]=useState("sma"),[cost,setCost]=useState("0.45"),[rows,setRows]=useState<Bar[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(""),[source,setSource]=useState(""),[historyAgeDays,setHistoryAgeDays]=useState<number|null>(null);
  async function load(){
-  setBusy(true);setError("");setResult(null);
+  setBusy(true);setError("");setHistoryAgeDays(null);
   try{const res=await fetch("/api/nepse-market?symbol="+encodeURIComponent(symbol.trim().toUpperCase())+"&period=1Y",{cache:"no-store"});const data=await res.json();if(!res.ok)throw new Error(data.error||"Historical prices unavailable.");
    const clean=normalizeDailyBars(data.points||[]);
    if(clean.length<80)throw new Error("At least 80 daily price observations are required. This symbol has "+clean.length+".");
-   setRows(clean);setSource(String(data.source||"Historical NEPSE data")+" · "+clean[0].date+" to "+clean[clean.length-1].date);
+   setRows(clean);setHistoryAgeDays(Math.floor((Date.now()-Date.parse(clean[clean.length-1].date+"T00:00:00Z"))/86400000));setSource(String(data.source||"Historical NEPSE data")+" · "+clean[0].date+" to "+clean[clean.length-1].date);
   }catch(e){setError(e instanceof Error?e.message:"Could not load stock history.");}finally{setBusy(false);}
  }
  const costRate=Math.max(0,Math.min(5,Number(cost)||0));
  const metrics=useMemo(()=>rows.length?runBacktest(rows,mode,costRate):null,[rows,mode,costRate]);
  const largeGaps=useMemo(()=>detectLargePriceGaps(rows),[rows]);
- const historyAgeDays=rows.length?Math.floor((Date.now()-Date.parse(rows[rows.length-1].date+"T00:00:00Z"))/86400000):null;
+
  const historyStale=historyAgeDays!==null&&historyAgeDays>7;
  const fmt=(n:number)=>n.toLocaleString(undefined,{maximumFractionDigits:2});
  return <main className="mx-auto min-h-screen max-w-7xl px-4 py-10 sm:px-6">

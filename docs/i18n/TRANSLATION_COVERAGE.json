@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-07T13:08:17.477Z",
-  "sourceCommit": "07d4402e7700d3f7e03f8854c3aa88375407a553",
+  "generatedAt": "2026-11-07T13:32:51.700Z",
+  "sourceCommit": "3be902400db6d7dc2a5d33177d16ea01c153d9f3",
   "methodology": {
     "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
     "routeCoverage": "Dynamic route handlers serve multiple slugs; localized route equivalents are reported as counts only, not percentages of page source files.",
@@ -17,15 +17,15 @@
     "editorialBlogArticles": 8,
     "nepalBlogArticles": 19,
     "publishedNepaliPdfRoutes": 49,
-    "publishedNepaliUtilityRoutes": 61,
-    "publishedNepaliFinancialRoutes": 7,
+    "publishedNepaliUtilityRoutes": 107,
+    "publishedNepaliFinancialRoutes": 10,
     "publishedNepaliCareerRoutes": 3,
     "publishedNepaliMarketDashboardRoute": true,
     "publishedNepaliResumeBuilderRoute": true,
     "publishedNepaliBlogRoutes": 28,
     "publishedNepaliStaticRoutes": 4,
     "publishedNepaliHomeRoute": true,
-    "publishedNepaliRouteEquivalents": 157
+    "publishedNepaliRouteEquivalents": 206
   },
   "locales": {
     "en": {
@@ -53,7 +53,7 @@
       "status": "Partially translated",
       "published": true,
       "sourceRouteFiles": 68,
-      "translatedRoutes": 157,
+      "translatedRoutes": 206,
       "routeCoveragePercent": null,
       "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
@@ -68,7 +68,7 @@
         "note": "All 27 curated editorial articles are translated into Nepali; generated catalog guides remain noindex and are not counted."
       },
       "namespaceFiles": 3,
-      "reviewStatus": "Nepali route interfaces and curated content are present; site-wide native-speaker review is not assessed"
+      "reviewStatus": "172 of 173 catalog tools have Nepali workspaces; Market AI remains deferred. Site-wide native-speaker review is not assessed."
     },
     "hi": {
       "status": "Not published",

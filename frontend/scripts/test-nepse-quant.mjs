@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { detectLargePriceGaps, normalizeDailyBars, rsi, runBacktest } from "../lib/nepse-quant.mjs";
+import { calculateMarketRegime, calculateOhlcvIndicators, detectLargePriceGaps, normalizeDailyBars, rsi, runBacktest } from "../lib/nepse-quant.mjs";
 
 assert.equal(rsi(Array(20).fill(100), 19), 50, "flat market RSI must be neutral");
 assert.equal(rsi(Array.from({length: 20}, (_, i) => 100 + i), 19), 100, "all-up RSI must be 100");
@@ -17,6 +17,20 @@ assert.equal(normalized.length, 2, "invalid rows must be dropped and duplicate d
 assert.equal(normalized[1].close, 102, "latest duplicate observation wins");
 assert.equal(detectLargePriceGaps([{date:"a",close:100},{date:"b",close:125}])[0].changePct, 25);
 
+const trend51 = Array.from({length: 51}, (_, i) => ({date:new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10),close:100+i}));
+const regime = calculateMarketRegime(trend51);
+assert.equal(regime.label, "Bullish trend", "51 valid rising sessions must produce a bullish regime");
+assert.ok(Number.isFinite(regime.ret20) && Number.isFinite(regime.ret50) && Number.isFinite(regime.vol));
+assert.equal(calculateMarketRegime(trend51.slice(0,50)).label, "Insufficient history", "50 sessions are insufficient for a 50-session return");
+
+const candles = Array.from({length:30}, (_, i) => ({date:new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10),close:100,high:105,low:95,volume:i===29?200:100}));
+const diagnostics = calculateOhlcvIndicators(candles);
+assert.equal(diagnostics.atr, 10, "Wilder ATR should equal constant true range");
+assert.equal(diagnostics.adx, 0, "flat candles should have zero directional trend strength");
+assert.equal(diagnostics.volumeRatio, 2, "latest volume should compare with prior 20 sessions");
+assert.equal(diagnostics.obvTrend, "Flat", "flat close and volume history should produce flat OBV");
+assert.equal(calculateOhlcvIndicators(candles.map(({volume,...row})=>row)).obvTrend, "Unavailable", "OBV must remain unavailable without complete volume data");
+
 const flat = Array.from({length: 100}, (_, i) => ({date:new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10),close:100}));
 const flatResult = runBacktest(flat, "sma", 0);
 assert.equal(flatResult.trades.length, 0);
@@ -32,4 +46,4 @@ assert.ok(withCost.strategyReturn < noCost.strategyReturn, "round-trip costs mus
 assert.ok(withCost.benchmarkReturn < noCost.benchmarkReturn, "round-trip costs must reduce benchmark return");
 assert.ok(withCost.trades[0].days > 0, "trade holding duration must include entry and exit sessions");
 assert.throws(() => runBacktest(flat.slice(0, 40), "sma", 0), /52 valid daily observations/);
-console.log("NEPSE quant fixtures passed: RSI, input normalization, corporate-action gap flag, flat market, trend crossover and transaction costs.");
+console.log("NEPSE quant fixtures passed: RSI, data validation, 20/50-session market regime, Wilder ATR/ADX, volume ratio, OBV, price-gap flags, backtest and transaction costs.");

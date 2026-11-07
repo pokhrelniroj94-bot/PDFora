@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-07T08:24:15.396Z",
-  "sourceCommit": "ff4e278b3a0e9947d4ac17eb4cb124b14b3cf02b",
+  "generatedAt": "2026-11-07T08:26:21.039Z",
+  "sourceCommit": "d57df2b7403fc88a396157162ec5cbdcbb16201c",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     "expectedUniqueTools": 173,

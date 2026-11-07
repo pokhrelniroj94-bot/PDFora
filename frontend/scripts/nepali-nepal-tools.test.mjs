@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ensureTypeStripping, loadToolAdapter } from "./lib/load-i18n.mjs";
- ensureTypeStripping();
+ensureTypeStripping();
 const { convertTolaGrams, GRAMS_PER_TOLA, validateNepalMobileNumber } = await import("../lib/i18n/nepali-nepal-tools.ts");
 
 assert.equal(GRAMS_PER_TOLA, 11.6638038);

@@ -74,7 +74,7 @@ export function runNepaliMathTool(slug: NepaliMathToolSlug, values: NepaliMathIn
   }
   if (slug === "unit-converter") {
     const amount = parse(values.amount ?? "");
-    const from = values.from ?? "m", to = values.to ?? "km";
+    const from = values.fromUnit ?? "m", to = values.toUnit ?? "km";
     if (!Number.isFinite(amount)) return "कृपया मान्य संख्या प्रविष्ट गर्नुहोस्।";
     const fromFactor = lengthToMeters[from] ?? massToGrams[from];
     const toFactor = lengthToMeters[to] ?? massToGrams[to];

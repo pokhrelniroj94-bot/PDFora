@@ -169,31 +169,31 @@ async function setFieldByLabel(page, labelText, value) {
 
 
 async function seedPdfFields(page, slug) {
-  return page.evaluate(`(() => {
-    const controls = [...document.querySelectorAll('input:not([type="file"]), textarea')];
-    const updated = [];
-    for (const control of controls) {
-      if (control.value?.trim()) continue;
-      const label = [
-        ...(control.labels || [])
-      ].map((item) => item.innerText).join(" ");
-      const key = [label, control.getAttribute("aria-label"), control.placeholder, control.name, control.id]
-        .filter(Boolean).join(" ").toLowerCase();
-      let value = "1";
-      if (/password|passphrase|owner key|user key/.test(key)) value = "PDFora-E2E-123!";
-      else if (/watermark|header|footer|text|signature|name|reason|title/.test(key)) value = "PDFora E2E";
-      else if (/degree|rotation|angle/.test(key)) value = "90";
-      else if (/page|range|order|crop|margin|width|height|top|bottom|left|right/.test(key)) value = "1";
-      if (control instanceof HTMLTextAreaElement && !/page|range|order/.test(key)) value = "PDFora E2E test";
-      const prototype = control instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
-      const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
-      setter?.call(control, value);
-      control.dispatchEvent(new Event("input", { bubbles: true }));
-      control.dispatchEvent(new Event("change", { bubbles: true }));
-      updated.push({ label: key, value });
-    }
-    return updated;
-  })()`);
+  const expression = [
+    "(() => {",
+    "  const controls = [...document.querySelectorAll('input:not([type=\"file\"]), textarea')];",
+    "  const updated = [];",
+    "  for (const control of controls) {",
+    "    if (control.value?.trim()) continue;",
+    "    const label = [...(control.labels || [])].map((item) => item.innerText).join(' ');",
+    "    const key = [label, control.getAttribute('aria-label'), control.placeholder, control.name, control.id].filter(Boolean).join(' ').toLowerCase();",
+    "    let value = '1';",
+    "    if (/password|passphrase|owner key|user key/.test(key)) value = 'PDFora-E2E-123!';",
+    "    else if (/watermark|header|footer|text|signature|name|reason|title/.test(key)) value = 'PDFora E2E';",
+    "    else if (/degree|rotation|angle/.test(key)) value = '90';",
+    "    else if (/page|range|order|crop|margin|width|height|top|bottom|left|right/.test(key)) value = '1';",
+    "    if (control instanceof HTMLTextAreaElement && !/page|range|order/.test(key)) value = 'PDFora E2E test';",
+    "    const prototype = control instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;",
+    "    const setter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set;",
+    "    setter?.call(control, value);",
+    "    control.dispatchEvent(new Event('input', { bubbles: true }));",
+    "    control.dispatchEvent(new Event('change', { bubbles: true }));",
+    "    updated.push({ label: key, value });",
+    "  }",
+    "  return updated;",
+    "})()",
+  ].join("\n");
+  return page.evaluate(expression);
 }
 
 const results = [];

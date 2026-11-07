@@ -69,7 +69,7 @@ if (!browserVersion) throw new Error("Chrome DevTools did not start.");
 
 let nextId = 0;
 async function openPage(url) {
-  const targetResponse = await fetch("http://127.0.0.1:9222/json/new?" + encodeURIComponent(url), { method: "PUT" });
+  const targetResponse = await fetch("http://127.0.0.1:9222/json/new?about:blank", { method: "PUT" });
   if (!targetResponse.ok) throw new Error("Could not create browser tab: " + targetResponse.status);
   const target = await targetResponse.json();
   const ws = new WebSocket(target.webSocketDebuggerUrl);

@@ -1,38 +1,24 @@
 # PDFora i18n rollout: status
 
-## Current continuation status
+## Current continuation status — 2026-11-07
 
-Branch: `feature/complete-12-language-platform`; PR #77 remains open,
-mergeable, and not merged or deployed. The translation coverage generator now runs in
-CI and reports source-language content separately from reviewed translations. Cookie
-consent is localized for English and Nepali, including the consent dialog, settings,
-accessibility label and privacy-policy link.
-The Nepali locale home page is now a reviewed localized page with six supported PDF
-workflows, FAQs, localized discovery links and explicit fallback links for untranslated
-tools, calculators, market pages, AI pages and editorial content. Shared language and
-cookie controls also use localized English/Nepali labels.
+Production branch: `master`, latest merged multilingual commit:
+`a7708b24013f06bc7142f8431b6df08b08fb0cd6`.
 
-Latest executed checks for the legal/static localization stage: frontend Jest 5/5,
-i18n 30/30 plus 2 coverage tests and 2 tool-language matrix tests, TypeScript through
-the production build, ESLint, catalog validation, i18n validation and production
-build (399 generated routes). Backend pytest passed 27 tests in an isolated
-environment; Python dependency audit and npm production audit passed. The Vercel
-check remains blocked by the provider's build-rate quota, not by the local build.
+- PR #77: merged; established the 12-locale routing and shared multilingual foundation.
+- PR #78: closed without merge; its work was superseded by the clean master-based PR #79.
+- PR #79: merged after GitHub Actions passed backend regression tests, frontend catalog checks, i18n runtime/content checks, lint, production build, npm dependency audit and Python dependency audit.
+- 12 locales are registered: English, Nepali, Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese.
+- English and Nepali are published. Nepali has 27 curated localized editorial articles (19 Nepal-focused guides and 8 PDF workflow tutorials), a localized blog index and a limited set of reviewed tool/page equivalents.
+- The evidence report measures 57 Nepali route equivalents and 22 localized tool surfaces. Only six legacy PDF tools are currently index-eligible; generated catalogue tool guides remain noindex until reviewed.
+- Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished/noindex. Shared shell translations do not count as complete translations of pages or tools. Native-language review and RTL visual QA are still required.
+- The multilingual changes have been merged to GitHub. This status file does not claim a successful Vercel production deployment or Google indexing.
 
-The current evidence report measures 57 Nepali route equivalents, including three AI
-writing routes, the localized Resume Builder, all 27 curated editorial articles (19
-Nepal-focused guides and 8 PDF workflow tutorials), the localized blog index and four
-localized legal/static pages. Generated catalog-tool guides remain noindex and are not
-counted as editorial blog articles. The 22 localized Nepali tool surfaces comprise 16
-catalog-tool routes and six legacy PDF routes; only six PDF routes are index-eligible.
+Next content-quality work is tracked separately in `docs/blog/EDITORIAL_STANDARDS.md` and the `seo/blog-editorial-quality-hardening` branch. The blog release gate checks original, useful content; complete sections; FAQs for readers; working internal links; source URL safety; localized article parity; and no arbitrary word-count target.
 
-The authoritative tool-language matrix is `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json`
-and contains 2,076 rows (12 locales × 173 unique tools). It records catalog existence,
-route/handler evidence, visible interface status, guide/content status, functional
-test status, human-review status and indexing eligibility independently. It does not
-inflate generated route counts into translation coverage.
+The authoritative tool-language matrix is `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json` (2,076 rows: 12 locales × 173 tools). It records route, handler, visible UI, guide, functional test, human review and indexing eligibility independently.
 
-## 12-language foundation snapshot
+## Historical 12-language foundation snapshot (superseded)
 
 Branch: `i18n/12-language-foundation`, based on master `6cc1f06`. This branch is not
 merged or deployed. It registers exactly the requested locales: English, Nepali, Hindi,

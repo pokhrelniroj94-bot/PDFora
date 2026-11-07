@@ -202,7 +202,28 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
   ].join("\n");
 }
 
+const TRUSTED_PREVIEW_ORIGIN = /^https:\/\/pd-fora-[a-z0-9-]+-pokhrelniroj94-7012s-projects\.vercel\.app$/;
+
+function isAllowedBrowserOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return true; // server-to-server calls do not carry a browser Origin
+  try {
+    const parsed = new URL(origin);
+    if (parsed.origin !== origin) return false;
+    return parsed.origin === new URL(request.url).origin || TRUSTED_PREVIEW_ORIGIN.test(parsed.origin);
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(request: Request) {
+  if (!isAllowedBrowserOrigin(request)) {
+    return Response.json(
+      { error: "This endpoint only accepts requests from PDFora.", code: "ORIGIN_NOT_ALLOWED" },
+      { status: 403, headers: NO_STORE },
+    );
+  }
+
   const contentType = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
   if (contentType !== "application/json") {
     return Response.json({ error: "Send a JSON request." }, { status: 415, headers: NO_STORE });

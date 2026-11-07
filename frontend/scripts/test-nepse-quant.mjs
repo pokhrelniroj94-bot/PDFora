@@ -22,6 +22,10 @@ const normalizedOhlcv = normalizeOhlcvBars([{date:"2026-01-01",close:100,high:10
 assert.equal(normalizedOhlcv[0].high, 105);
 assert.equal(normalizedOhlcv[1].high, undefined, "inconsistent OHLC range must be discarded without dropping valid close");
 assert.equal(normalizedOhlcv[1].volume, undefined, "null volume must remain unavailable");
+const emptyOhlcv = normalizeOhlcvBars([{date:"2026-01-03",close:100,high:"",low:"",volume:""}])[0];
+assert.equal(emptyOhlcv.high, undefined);
+assert.equal(emptyOhlcv.low, undefined);
+assert.equal(emptyOhlcv.volume, undefined, "empty strings must not be converted to zero volume");
 assert.equal(detectLargePriceGaps([{date:"a",close:100},{date:"b",close:125}])[0].changePct, 25);
 
 const trend51 = Array.from({length: 51}, (_, i) => ({date:new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10),close:100+i}));

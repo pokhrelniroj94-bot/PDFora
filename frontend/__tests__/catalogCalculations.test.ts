@@ -34,6 +34,10 @@ describe("catalog calculation engine", () => {
     expect(bmi(65, 170)).toBeCloseTo(22.491, 3);
     expect(Math.round(bmr(65, 170, 25, false))).toBe(1593);
     expect(businessDaysInclusive("2026-11-02", "2026-11-06")).toBe(5);
+    expect(businessDaysInclusive("2026-11-06", "2026-11-02")).toBe(5);
+    expect(businessDaysInclusive("2026-11-07", "2026-11-08")).toBe(0);
+    expect(() => businessDaysInclusive("2026-02-30", "2026-03-02")).toThrow("valid calendar dates");
+    expect(() => businessDaysInclusive("11/02/2026", "2026-11-06")).toThrow("YYYY-MM-DD");
     expect(() => convertUnit(1, "m", "kg")).toThrow("compatible");
   });
 });

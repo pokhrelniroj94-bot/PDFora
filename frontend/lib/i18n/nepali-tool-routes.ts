@@ -16,6 +16,14 @@ export const nepaliLocalizedUtilitySlugs = [
   "reading-time-calculator",
   "line-counter",
   "sentence-counter",
+  "percentage-change-calculator",
+  "average-calculator",
+  "ratio-simplifier",
+  "fraction-calculator",
+  "percentage-of-number-calculator",
+  "gcd-lcm-calculator",
+  "prime-number-checker",
+  "unit-converter",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

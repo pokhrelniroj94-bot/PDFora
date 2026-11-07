@@ -65,7 +65,7 @@ const hostileAi = await fetch(new URL("/api/ai-writing", base), {
 check("AI endpoint rejects untrusted browser Origin before parsing", hostileAi.status === 403, String(hostileAi.status));
 
 const html = await home.text();
-const canonicalTag = html.match(/<link\\b(?=[^>]*\\brel=["']canonical["'])[^>]*>/i)?.[0] || "";
+const canonicalTag = html.match(/<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/i)?.[0] || "";
 const canonicalHref = canonicalTag.match(/\bhref=["']([^"']+)["']/i)?.[1] || "";
 let canonicalUrl = null;
 try { canonicalUrl = canonicalHref ? new URL(canonicalHref, base) : null; } catch { canonicalUrl = null; }

@@ -1,9 +1,17 @@
 export type NepaliTextToolSlug =
   | "word-character-counter" | "case-converter" | "remove-duplicate-lines"
   | "sort-lines" | "reverse-text" | "whitespace-cleaner" | "character-frequency"
-  | "word-frequency-counter" | "reading-time-calculator" | "line-counter" | "sentence-counter";
+  | "word-frequency-counter" | "reading-time-calculator" | "line-counter" | "sentence-counter"
+  | "email-extractor" | "url-extractor" | "phone-number-extractor" | "number-extractor"
+  | "hashtag-extractor" | "remove-duplicate-words" | "find-replace-text"
+  | "palindrome-checker" | "acronym-generator";
 
-export type NepaliTextToolOptions = { caseMode?: "upper" | "lower" | "title" | "sentence"; wordsPerMinute?: number };
+export type NepaliTextToolOptions = {
+  caseMode?: "upper" | "lower" | "title" | "sentence";
+  wordsPerMinute?: number;
+  findText?: string;
+  replaceText?: string;
+};
 
 const wordsIn = (input: string) => input.match(/[\p{L}\p{M}\p{N}]+(?:['’][\p{L}\p{M}\p{N}]+)*/gu) ?? [];
 const linesIn = (input: string) => input.replace(/\r\n?/g, "\n").split("\n");
@@ -64,6 +72,56 @@ export function runNepaliTextTool(slug: NepaliTextToolSlug, input: string, optio
   if (slug === "sentence-counter") {
     const sentences = input.trim().split(/[.!?।]+(?:\s+|$)/u).filter((part) => part.trim());
     return `अनुमानित वाक्य: ${input.trim() ? sentences.length : 0}\nशब्द: ${words.length}`;
+  }
+  if (slug === "email-extractor") {
+    const matches = input.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/giu) ?? [];
+    return [...new Set(matches)].join("\\n") || "कुनै इमेल ठेगाना भेटिएन।";
+  }
+  if (slug === "url-extractor") {
+    const matches = (input.match(/(?:https?:\\/\\/|www\\.)[^\\s<>"']+/giu) ?? [])
+      .map((value) => value.replace(/[),.;!?]+$/u, ""));
+    return [...new Set(matches)].join("\\n") || "कुनै URL भेटिएन।";
+  }
+  if (slug === "phone-number-extractor") {
+    const matches = (input.match(/\\+?[\\p{N}][\\p{N}\\s().-]{5,}[\\p{N}]/gu) ?? [])
+      .map((value) => value.trim())
+      .filter((value) => {
+        const digits = value.replace(/\\D/gu, "");
+        return digits.length >= 7 && digits.length <= 15;
+      });
+    return [...new Set(matches)].join("\\n") || "कुनै सम्भावित फोन नम्बर भेटिएन।";
+  }
+  if (slug === "number-extractor") {
+    const matches = input.match(/-?[\\p{N}]+(?:[.,][\\p{N}]+)*/gu) ?? [];
+    return matches.join("\\n") || "कुनै संख्या भेटिएन।";
+  }
+  if (slug === "hashtag-extractor") {
+    const matches = input.match(/#[\\p{L}\\p{M}\\p{N}_]+/gu) ?? [];
+    return [...new Set(matches)].join("\\n") || "कुनै hashtag भेटिएन।";
+  }
+  if (slug === "remove-duplicate-words") {
+    const seen = new Set<string>();
+    return words.filter((word) => {
+      const key = word.toLocaleLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).join(" ");
+  }
+  if (slug === "find-replace-text") {
+    const findText = options.findText ?? "";
+    if (!findText) return "खोज्नुपर्ने पाठ प्रविष्ट गर्नुहोस्।";
+    return input.replaceAll(findText, options.replaceText ?? "");
+  }
+  if (slug === "palindrome-checker") {
+    const normalized = [...input.toLocaleLowerCase()].filter((character) => /[\\p{L}\\p{M}\\p{N}]/u.test(character));
+    if (!normalized.length) return "जाँच गर्न अक्षर वा अंक भएको पाठ प्रविष्ट गर्नुहोस्।";
+    return normalized.join("") === [...normalized].reverse().join("")
+      ? "यो पाठ पालिन्ड्रोम हो।"
+      : "यो पाठ पालिन्ड्रोम होइन।";
+  }
+  if (slug === "acronym-generator") {
+    return words.map((word) => [...word][0]?.toLocaleUpperCase() ?? "").join("") || "संक्षिप्त रूप बनाउन शब्द प्रविष्ट गर्नुहोस्।";
   }
   return "";
 }

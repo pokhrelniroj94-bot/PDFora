@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SmartToolCenter } from "../../components/SmartToolCenter";
 
 export const metadata: Metadata = {
-  title: "All Online Tools – Smart PDF, Image, Nepal & Finance Tool Finder | PDFora",
+  title: "All Online Tools – Smart PDF, Image, Nepal & Finance Tool Finder",
   description: "Find the right free online tool by task. Search PDF tools, image converters, calculators, Nepal utilities, text tools, developer tools and more in one searchable directory.",
   alternates: { canonical: "https://pd-fora.vercel.app/tools" },
   keywords: [

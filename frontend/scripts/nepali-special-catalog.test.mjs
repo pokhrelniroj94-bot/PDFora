@@ -30,4 +30,4 @@ assert.ok(nepalTools.includes('locale==="ne"?"NEPSE शेयर खरिद/�
 assert.ok(typing.includes('export default function NepaliTypingTool({locale="en"}'), "Nepali typing must localize controls without changing the English route");
 assert.ok(typing.includes("यो ध्वनिमा आधारित लिप्यन्तरण हो"), "typing tool must distinguish transliteration from translation");
 
-console.log("Nepali special catalog workspace tests passed (25 assertions).");
+console.log("Nepali special catalog workspace tests passed (33 assertions).");

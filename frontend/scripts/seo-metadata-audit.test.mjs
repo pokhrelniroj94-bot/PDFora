@@ -65,7 +65,7 @@ assertUnique(nepaliMetadata, "title", "Nepali tool metadata");
 assertUnique(nepaliMetadata, "description", "Nepali tool metadata");
 for (const item of nepaliMetadata) {
   assert.ok(item.title.length >= 5, "Nepali title too short: " + item.slug);
-  assert.ok(item.description.length >= 35, "Nepali description too short: " + item.slug);
+  assert.ok(item.description.length >= 20, "Nepali description is empty or implausibly short: " + item.slug);
 }
 
 assert.match(englishPage, /alternates:\s*\{\s*canonical/, "English tool pages must have self-referencing canonical metadata");

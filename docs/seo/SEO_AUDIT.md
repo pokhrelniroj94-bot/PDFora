@@ -68,3 +68,18 @@ Other priorities from the same window:
 - `/blog/split-pdf-and-extract-selected-pages`: 139 impressions at average position about 84.5; needs query-to-content relevance review before any rewrite.
 
 The Search Console connector data is delayed by several days, so the 28-day window is not a real-time report. Organic traffic and rankings are not guaranteed by these changes.
+
+
+## Search Console sitemap status — 2026-11-07
+
+The connected Search Console Sitemaps report shows `https://pd-fora.vercel.app/sitemap.xml` with 257 submitted URLs, zero reported errors and zero warnings. The deprecated sitemap `indexed` field is not used as an index-coverage measure. The sitemap report confirms successful retrieval, not that every submitted URL is indexed.
+
+The reviewed bilingual tip article increases the curated Nepali localized blog collection from 27 to 28 posts. The old generated `tip-calculator-guide` remains a noindex redirect source; the new reviewed article has a distinct slug and a self-canonical localized counterpart.
+
+## Google Search Central references
+
+- [Creating helpful, reliable, people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content) — original, useful content; no target word count; avoid mass-produced search-first pages.
+- [Canonicalization](https://developers.google.com/search/docs/crawling-indexing/canonicalization) and [consolidating duplicate URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls) — choose one representative URL and use redirects/canonicals consistently.
+- [Localized versions of pages](https://developers.google.com/search/docs/specialty/international/localized-versions) — fully translated language variants, reciprocal hreflang and distinct language URLs.
+- [Google Search Essentials](https://developers.google.com/search/docs/essentials) — crawlable links, descriptive page titles and appropriate search appearance controls.
+

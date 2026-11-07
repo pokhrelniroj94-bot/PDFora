@@ -1,3 +1,7 @@
+> **STALE SNAPSHOT — superseded by the 2026-11-07 browser run.** This file was generated before the 173-route Chromium sweep and must not be used as the current tool status. The latest run recorded 172 browser PASS, 1 PARTIAL (`market-ai`), and 0 FAIL. See [BROWSER_E2E_173_RESULTS_2026-11-07.md](./BROWSER_E2E_173_RESULTS_2026-11-07.md) for methodology, limitations, run link and remaining release gates. This browser sweep is not full certification: mobile, accessibility, exhaustive input boundaries, independent downloaded-file parsing and live AI provider execution remain outstanding.
+
+---
+
 # Functional Tool Audit
 
 Generated from commit `951a782db51848a49e1ad4764b32d2f92fc977e8` on 2026-11-07T06:25:33.779Z.

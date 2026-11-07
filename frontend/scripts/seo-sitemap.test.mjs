@@ -30,6 +30,7 @@ const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
 const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
 const { toolGuides } = await import("../lib/tool-guides.ts");
+const { toolCatalog } = await import("../components/toolCatalog.ts");
 const { buildPdfToolMetadata } = await import("../lib/i18n/pdf-tool-seo-core.ts");
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
@@ -53,6 +54,11 @@ assert.doesNotMatch(niroj77ToolWorkspaceSource, /ToolSEOContent/, "Niroj77Tool m
 assert.match(read("app/[locale]/[slug]/page.tsx"), /<ToolSEOContent slug=\{slug\} locale="ne" \/>/, "Nepali PDF routes must render their localized SEO guide explicitly");
 assert.match(mergePdfLayoutSource, /<ToolSEOContent slug="merge-pdf" \/>/, "The PDF page layout must remain the single owner of its SEO guide");
 assert.equal(legacyPdfSlugs.length, 49, "Expected all 49 established PDF routes in the canonical registry");
+
+const catalogueToolSlugs = toolCatalog.map((tool) => tool.slug).filter((slug) => slug !== "pdf-tools");
+assert.equal(catalogueToolSlugs.length, 124, "Expected 124 catalogue utilities");
+assert.equal(new Set([...legacyPdfSlugs, ...catalogueToolSlugs]).size, 173, "All 173 tools must have one unique canonical route identity");
+
 const pdfMetadataTitles = new Set();
 const pdfMetadataDescriptions = new Set();
 for (const slug of legacyPdfSlugs) {

@@ -26,6 +26,7 @@ const localeMetadataSource = read("lib/i18n/metadata.ts");
 const toolSeoContentSource = read("components/ToolSEOContent.tsx");
 const catalogToolSeoContentSource = read("components/CatalogToolSEOContent.tsx");
 const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
+const pdfToolMetadataSource = read("lib/i18n/pdf-tool-seo-core.ts");
 
 const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
@@ -185,6 +186,8 @@ assert.match(blogPostSource, /generatedPdfGuideSlugs = new Set\(additionalToolBl
 assert.match(blogArticleSource, /isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide articles must remain noindex");
 assert.match(englishBlogIndexSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must not appear as editorial blog cards");
 assert.match(englishBlogIndexSource, /twitter:\s*\{/, "Editorial blog index must provide Twitter preview metadata");
+assert.match(englishBlogIndexSource, /openGraph:\s*\{[\s\S]*?images:/, "Editorial blog index must provide an Open Graph image");
+assert.match(englishBlogIndexSource, /twitter:\s*\{[\s\S]*?images:/, "Editorial blog index must provide a Twitter image");
 assert.match(toolsIndexSource, /openGraph:\s*\{[\s\S]*?images:/, "All-tools directory must provide an Open Graph image");
 assert.match(toolsIndexSource, /twitter:\s*\{[\s\S]*?images:/, "All-tools directory must provide a Twitter preview image");
 for (const slug of approvedNepali) assert.ok(nepaliHomeSource.includes(`href: "/ne/${slug}"`), `Nepali homepage must link to its reviewed localized PDF tool: ${slug}`);
@@ -203,10 +206,20 @@ assert.match(toolSeoContentSource, /!isGeneratedPdfGuide\(guide\.blogSlug\)/, "P
 assert.match(catalogToolSeoContentSource, /guideSlug && !isCatalogGeneratedGuide\(guideSlug\)/, "Utility pages must not link to generated noindex catalog guide duplicates");
 assert.match(blogArticleSource, /openGraph:\s*\{\s*type:\s*"article"/, "English articles must publish article Open Graph metadata");
 assert.match(blogArticleSource, /twitter:\s*\{/, "English articles must publish Twitter metadata");
+assert.match(blogArticleSource, /openGraph:\s*\{[\s\S]*?images:/, "English articles must publish an Open Graph image");
+assert.match(blogArticleSource, /twitter:\s*\{[\s\S]*?images:/, "English articles must publish a Twitter image");
+assert.match(pdfToolMetadataSource, /openGraph:\s*\{[\s\S]*?images:/, "PDF tools must publish an Open Graph image");
+assert.match(pdfToolMetadataSource, /twitter:\s*\{[\s\S]*?images:/, "PDF tools must publish a Twitter image");
 assert.match(nepaliBlogArticleSource, /buildLocaleMetadata\(/, "Nepali articles must use the shared canonical and locale metadata builder");
 assert.match(localeMetadataSource, /alternates:\s*\{\s*canonical,/, "Localized pages must self-canonicalize");
 assert.match(localeMetadataSource, /openGraph:\s*\{/, "Localized pages must publish locale-aware Open Graph metadata");
 assert.match(localeMetadataSource, /twitter:\s*\{/, "Localized pages must publish locale-aware Twitter metadata");
+for (const relativePath of ["app/about/page.tsx", "app/contact/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx"]) {
+  const source = read(relativePath);
+  assert.match(source, /openGraph:\s*\{[\s\S]*?images:/, `${relativePath} must provide an Open Graph image`);
+  assert.match(source, /twitter:\s*\{[\s\S]*?images:/, `${relativePath} must provide a Twitter image`);
+}
+
 assert.match(localeMetadataSource, /robots:\s*!published\s*\?/, "Unpublished locales must remain excluded from indexing");
 
 assert.doesNotMatch(blogArticleSource, /"@type": "FAQPage"/, "English blog pages must not carry obsolete FAQ rich-result markup");

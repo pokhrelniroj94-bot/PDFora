@@ -40,7 +40,7 @@ export function runNepaliExtraTextTool(
     return text.match(/[+-]?(?:\d+(?:[.,]\d+)?|[०-९]+(?:[.,][०-९]+)?)/g)?.join("\n") ?? "";
   }
   if (slug === "hashtag-extractor") {
-    return [...new Set(text.match(/#[\p{L}\p{N}_]+/gu) ?? [])].join("\n");
+    return [...new Set(text.match(/#[\p{L}\p{M}\p{N}_]+/gu) ?? [])].join("\n");
   }
   if (slug === "remove-duplicate-words") {
     const seen = new Set<string>();

@@ -142,8 +142,20 @@ assert.match(nepaliTipGuide.body, /टिप रकम|टिप प्रति
 assert.ok(englishTipGuide.body.match(/heading:/g)?.length >= 5, "The English tip article needs distinct practical sections");
 assert.ok(nepaliTipGuide.body.match(/heading:/g)?.length >= 5, "The Nepali tip article needs distinct practical sections");
 
+const titleGuideSlug = "how-to-write-seo-page-titles-google-title-links";
+const englishTitleGuide = articleBlocks(read("lib/blog-posts.ts")).find((item) => item.slug === titleGuideSlug);
+const nepaliTitleGuide = articleBlocks(read("lib/nepali-localized-blog-posts.ts")).find((item) => item.slug === titleGuideSlug);
+assert.ok(englishTitleGuide, "The Search Console title-check opportunity needs a reviewed English article");
+assert.ok(nepaliTitleGuide, "The reviewed title-check article needs a full Nepali translation");
+assert.match(englishTitleGuide.body, /Google Search Central|title link|<title>/i, "The English SEO title article must explain Google's actual title-link system");
+assert.match(nepaliTitleGuide.body, /Google|title link|<title>/i, "The Nepali SEO title article must explain Google's actual title-link system");
+assert.ok(englishTitleGuide.body.includes("developers.google.com/search/docs/appearance/title-link"), "The English SEO title article must cite Google's primary title-link guidance");
+assert.ok(nepaliTitleGuide.body.includes("developers.google.com/search/docs/appearance/title-link"), "The Nepali SEO title article must cite Google's primary title-link guidance");
+
+
 assert.ok(englishArticlePage.includes('"@type": "BlogPosting"'), "English article needs BlogPosting structured data");
 assert.ok(englishArticlePage.includes('permanentRedirect("/blog/how-to-calculate-tip-and-split-the-bill")'), "The old thin tip guide must redirect to the reviewed article");
+assert.ok(englishArticlePage.includes('permanentRedirect("/blog/how-to-write-seo-page-titles-google-title-links")'), "The old thin title-check guide must redirect to the reviewed article");
 assert.ok(nepaliArticlePage.includes('"@type": "BlogPosting"'), "Nepali article needs BlogPosting structured data");
 assert.ok(englishArticlePage.includes("isCatalogGeneratedGuide(post.slug)"), "Generated catalogue guides must keep their noindex gate");
 assert.ok(englishArticlePage.includes("post.title}</span>"), "English breadcrumb should identify the current article");

@@ -146,4 +146,16 @@ assert.match(localeMetadataSource, /openGraph:\s*\{/, "Localized pages must publ
 assert.match(localeMetadataSource, /twitter:\s*\{/, "Localized pages must publish locale-aware Twitter metadata");
 assert.match(localeMetadataSource, /robots:\s*!published\s*\?/, "Unpublished locales must remain excluded from indexing");
 
+assert.doesNotMatch(blogArticleSource, /"@type": "FAQPage"/, "English blog pages must not carry obsolete FAQ rich-result markup");
+assert.doesNotMatch(nepaliBlogArticleSource, /"@type": "FAQPage"/, "Nepali blog pages must not carry obsolete FAQ rich-result markup");
+assert.match(blogArticleSource, /post\.faqs\.map/, "English article FAQs must remain visible to readers");
+assert.match(nepaliBlogArticleSource, /post\.faqs\.map/, "Nepali article FAQs must remain visible to readers");
+for (const relativePath of ["app/market/page.tsx", "app/nepse-lab/page.tsx", "app/resume-builder/page.tsx"]) {
+  const source = read(relativePath);
+  assert.match(source, /alternates:\s*\{\s*canonical:/, `${relativePath} must have a self-canonical URL`);
+  assert.match(source, /openGraph:\s*\{/, `${relativePath} must have Open Graph metadata`);
+  assert.match(source, /twitter:\s*\{/, `${relativePath} must have social preview metadata`);
+}
+
+
 console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} approved Nepali tool URLs; ${toolRoutes.length} unapproved localized catalog tools remain noindex.`);

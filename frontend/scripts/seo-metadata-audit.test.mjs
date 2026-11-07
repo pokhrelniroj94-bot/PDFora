@@ -132,5 +132,8 @@ assert.match(nepaliPdfPage, /title:\s*`\${name} \| PDFora`/, "Nepali PDF pages m
 assert.match(nepaliPdfPage, /description:\s*guide\?\.purpose \?\? route\.description/, "Nepali PDF pages must use localized guide descriptions");
 assert.match(englishPdfMetadataCore, /alternates:\s*\{ canonical: url \}/, "English PDF pages must have self-referencing canonicals");
 assert.match(englishPdfMetadataCore, /robots:\s*\{ index: true, follow: true \}/, "English PDF tool metadata must be indexable");
+assert.match(englishPdfMetadataCore, /openGraph:\s*\{[^}]*title:\s*brandedTitle/s, "English PDF pages need page-specific Open Graph titles");
+assert.match(englishPdfMetadataCore, /twitter:\s*\{[^}]*title:\s*brandedTitle/s, "English PDF pages need page-specific Twitter titles");
+assert.match(sitemap, /legacyToolSlugs\.map/, "English PDF tool routes must be present in the sitemap");
 
 console.log(`SEO metadata audit passed: ${englishMetadata.length} unique English tool titles/descriptions and ${nepaliMetadata.length} unique Nepali tool titles/descriptions.`);

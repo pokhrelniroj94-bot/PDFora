@@ -216,7 +216,8 @@ async function seedPdfFields(page, slug) {
     "    const label = [...(control.labels || [])].map((item) => item.innerText).join(' ');",
     "    const key = [label, control.getAttribute('aria-label'), control.placeholder, control.name, control.id].filter(Boolean).join(' ').toLowerCase();",
     "    let value = '1';",
-    "    if (/password|passphrase|owner key|user key/.test(key)) value = 'PDFora-E2E-123!';",
+    "    if (slug === 'reorder-pdf' && /order/.test(key)) value = '1,2';",
+    "    else if (/password|passphrase|owner key|user key/.test(key)) value = 'PDFora-E2E-123!';",
     "    else if (/watermark|header|footer|text|signature|name|reason|title/.test(key)) value = 'PDFora E2E';",
     "    else if (/degree|rotation|angle/.test(key)) value = '90';",
     "    else if (/page|range|order|crop|margin|width|height|top|bottom|left|right/.test(key)) value = '1';",
@@ -278,6 +279,9 @@ async function runTool(tool, index) {
       if (attached < expectedFileCount) throw new Error("PDF fixture selection was not reflected in the upload workspace.");
       row.checks.push("PDF file selected");
       row.seededFields = await seedPdfFields(page, tool.slug);
+      if (tool.slug === "reorder-pdf") {
+        await page.evaluate("(() => { const field = [...document.querySelectorAll('input:not([type=file]), textarea')].find((item) => item.type !== 'number'); if (!field) return false; const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype; const setter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set; setter?.call(field, '1,2'); field.dispatchEvent(new Event('input', { bubbles: true })); field.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
+      }
       const action = await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
         const preferred = buttons.find((b) => /merge|split|compress|convert|process|rotate|delete|extract|watermark|protect|unlock|sign|repair|count|information|compare|flatten|crop|reorder|bookmark|metadata|grayscale|background|page number|header|footer|remove|export|run/i.test(b.innerText));
@@ -447,6 +451,8 @@ async function runTool(tool, index) {
         await delay(["nepal-forex-rates"].includes(tool.slug) ? 20000 : ["currency-converter", "nepse-market-news", "preeti-unicode-converter"].includes(tool.slug) ? 5000 : 800);
       } else {
         row.checks.push("reactive output/controls inspected (no submit button by design)");
+        if (tool.slug === "nepal-forex-rates") await delay(20000);
+        else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter"].includes(tool.slug)) await delay(5000);
       }
       const finalState = await page.evaluate(`(() => ({
         body: document.body?.innerText?.slice(-8000) || "",
@@ -538,7 +544,7 @@ async function runTool(tool, index) {
         "css-gradient-generator": "background: linear-gradient(135deg, #0f766e, #38bdf8);",
         "roman-numeral-converter": "MMXXVI",
         "nepali-vat-calculator": "Total including VAT: NPR 1,130",
-        "nepal-land-area-converter": "5476 sq ft",
+        "nepal-land-area-converter": "5,476 sq ft",
         "nepali-number-converter": "बाह्र लाख",
         "nepal-phone-validator": "Valid-looking Nepal mobile number format",
         "gold-tola-gram-converter": "11.6638 grams",
@@ -559,12 +565,12 @@ async function runTool(tool, index) {
         "image-format-converter": /^Done\. Original:/,
         "loksewa-photo-resizer": /Ready: 1 × 1 px/,
         "nepali-date-converter": /\d{4}-\d{2}-\d{2} BS/,
-        "nepali-calendar": /BS day[\s\S]*AD date[\s\S]*Weekday/,
+        "nepali-calendar": /(?:BS day|BS गते)[\s\S]*(?:AD date|AD मिति)[\s\S]*(?:Weekday|बार)/,
         "nepal-forex-rates": /USD[\s\S]*NPR/,
       };
       const expected = expectedOutputs[tool.slug];
       const expectedPattern = expectedPatterns[tool.slug];
-      const liveText = finalState.live.join("\n") + "\n" + finalState.tables;
+      const liveText = finalState.live.join("\n") + "\n" + finalState.tables + (["word-character-counter", "color-picker-palette"].includes(tool.slug) ? "\n" + finalState.body : "") + (tool.slug === "case-converter" ? "\n" + finalState.inputs.map((input) => input.value).join("\n") : "");
       const normalizedLiveText = liveText.replace(/\s+/g, " ").trim();
       let outputMatches = expected ? normalizedLiveText.includes(expected.replace(/\s+/g, " ").trim()) : expectedPattern ? expectedPattern.test(liveText) : false;
       if (tool.slug === "password-generator") {

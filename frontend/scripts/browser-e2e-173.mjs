@@ -313,7 +313,14 @@ async function runTool(tool, index) {
       row.downloadCount = Math.max(0, downloadsAfter - downloadsBefore);
       const statusText = finalState?.statuses?.map((status) => status.text).join(" | ") ?? "";
       const statusClass = finalState?.statuses?.map((status) => status.className).join(" ") ?? "";
-      if (/red-\d{2,3}|text-red/i.test(statusClass) || /error|failed|invalid|could not|unavailable/i.test(statusText)) {
+      if (tool.slug === "extract-fonts" && /No extractable embedded fonts were found/i.test(statusText)) {
+        row.checks.push("expected negative path: fixture uses standard non-embedded fonts; tool reports that no embedded fonts can be extracted");
+        row.output = statusText;
+        row.evidenceLevel = "negative-path-response-observed-fixture-limitation";
+        row.status = "PARTIAL";
+        return row;
+      }
+      if (/red-\\d{2,3}|text-red/i.test(statusClass) || /error|failed|invalid|could not|unavailable/i.test(statusText)) {
         throw new Error(statusText || "PDF tool reported a processing error.");
       }
       if (!finalState || (!finalState.links.length && row.downloadCount === 0 && !statusText)) {

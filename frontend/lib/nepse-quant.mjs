@@ -127,7 +127,7 @@ export function calculateOhlcvIndicators(input) {
   const byDate = new Map();
   for (const row of Array.isArray(input) ? input : []) {
     const date = String(row?.date ?? "").slice(0, 10), close = Number(row?.close);
-    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date) || !Number.isFinite(Date.parse(date + "T00:00:00Z")) || new Date(date + "T00:00:00Z").toISOString().slice(0, 10) !== date || !Number.isFinite(close) || close <= 0) continue;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(Date.parse(date + "T00:00:00Z")) || new Date(date + "T00:00:00Z").toISOString().slice(0, 10) !== date || !Number.isFinite(close) || close <= 0) continue;
     const high = Number(row.high), low = Number(row.low), rawVolume = row.volume;
     byDate.set(date, { date, close, high, low, volume: rawVolume !== null && rawVolume !== undefined && Number.isFinite(Number(rawVolume)) && Number(rawVolume) >= 0 ? Number(rawVolume) : undefined });
   }

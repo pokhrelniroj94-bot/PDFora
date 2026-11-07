@@ -141,7 +141,7 @@ async function openPage(url) {
 }
 
 async function setFirstTextArea(page, value) {
-  return page.evaluate(`() => {
+  return page.evaluate(`(() => {
     const element = document.querySelector("textarea");
     if (!element) return false;
     const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set;
@@ -164,6 +164,35 @@ async function setFieldByLabel(page, labelText, value) {
     field.dispatchEvent(new Event("input", { bubbles: true }));
     field.dispatchEvent(new Event("change", { bubbles: true }));
     return true;
+  })()`);
+}
+
+
+async function seedPdfFields(page, slug) {
+  return page.evaluate(`(() => {
+    const controls = [...document.querySelectorAll('input:not([type="file"]), textarea')];
+    const updated = [];
+    for (const control of controls) {
+      if (control.value?.trim()) continue;
+      const label = [
+        ...(control.labels || [])
+      ].map((item) => item.innerText).join(" ");
+      const key = [label, control.getAttribute("aria-label"), control.placeholder, control.name, control.id]
+        .filter(Boolean).join(" ").toLowerCase();
+      let value = "1";
+      if (/password|passphrase|owner key|user key/.test(key)) value = "PDFora-E2E-123!";
+      else if (/watermark|header|footer|text|signature|name|reason|title/.test(key)) value = "PDFora E2E";
+      else if (/degree|rotation|angle/.test(key)) value = "90";
+      else if (/page|range|order|crop|margin|width|height|top|bottom|left|right/.test(key)) value = "1";
+      if (control instanceof HTMLTextAreaElement && !/page|range|order/.test(key)) value = "PDFora E2E test";
+      const prototype = control instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+      const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+      setter?.call(control, value);
+      control.dispatchEvent(new Event("input", { bubbles: true }));
+      control.dispatchEvent(new Event("change", { bubbles: true }));
+      updated.push({ label: key, value });
+    }
+    return updated;
   })()`);
 }
 
@@ -210,6 +239,7 @@ async function runTool(tool, index) {
       const attached = await page.evaluate("document.body.innerText.split(" + JSON.stringify(fixtureName) + ").length - 1");
       if (attached < expectedFileCount) throw new Error("PDF fixture selection was not reflected in the upload workspace.");
       row.checks.push("PDF file selected");
+      row.seededFields = await seedPdfFields(page, tool.slug);
       const action = await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
         const preferred = buttons.find((b) => /merge|split|compress|convert|process|rotate|delete|extract|watermark|protect|unlock|sign|repair|count|information|compare|flatten|crop|reorder|bookmark|metadata|grayscale|background|page number|header|footer|remove|export|run/i.test(b.innerText));
@@ -273,7 +303,7 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepal-public-holidays-2083") {
-        const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "", search: document.querySelector("input") }))()');
+        const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "", search: !!document.querySelector("input") }))()');
         if (state.rows < 30) throw new Error("2083 public-holiday table is missing expected entries.");
         if (!state.links.some((href) => href.includes("moha.gov.np/en/page/government-and-public-holidays-in-2083"))) throw new Error("Official MoHA public-holiday source link is missing.");
         if (!/Last Updated:\s*20\d{2}-\d{2}-\d{2}/.test(state.body)) throw new Error("Holiday page must disclose the MoHA source page update timestamp.");
@@ -482,7 +512,18 @@ async function runTool(tool, index) {
       const expected = expectedOutputs[tool.slug];
       const expectedPattern = expectedPatterns[tool.slug];
       const liveText = finalState.live.join("\n") + "\n" + finalState.tables;
-      const outputMatches = expected ? liveText.includes(expected) : expectedPattern ? expectedPattern.test(liveText) : false;
+      const normalizedLiveText = liveText.replace(/\\s+/g, " ").trim();
+      let outputMatches = expected ? normalizedLiveText.includes(expected.replace(/\\s+/g, " ").trim()) : expectedPattern ? expectedPattern.test(liveText) : false;
+      if (tool.slug === "password-generator") {
+        const generated = liveText.split(/\\r?\\n/).map((line) => line.trim()).filter((line) => /^[A-Za-z0-9!@#$%^&*()_+\\-=\\[\\]{};':"\\\\|,.<>/?~`]{20}$/.test(line));
+        outputMatches = generated.length >= 3;
+      } else if (tool.slug === "random-number-generator") {
+        const generated = liveText.split(/\\r?\\n/).map((line) => line.trim()).filter((line) => /^\\d+$/.test(line)).map(Number);
+        outputMatches = generated.length >= 5 && generated.slice(0, 5).every((value) => Number.isInteger(value) && value >= 1 && value <= 100);
+      } else if (tool.slug === "dice-roller") {
+        const match = liveText.match(/Rolls:\\s*(\\d+)\\s*,\\s*(\\d+)[\\s\\S]*?Total:\\s*(\\d+)/);
+        outputMatches = !!match && Number(match[1]) >= 1 && Number(match[1]) <= 6 && Number(match[2]) >= 1 && Number(match[2]) <= 6 && Number(match[3]) === Number(match[1]) + Number(match[2]);
+      }
       if ((expected || expectedPattern) && !outputMatches) {
         throw new Error("Expected output was not found for " + tool.slug + "; actual: " + liveText.slice(0, 300));
       }

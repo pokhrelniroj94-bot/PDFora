@@ -194,7 +194,7 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
     "",
     "COMPANY RESEARCH RECORDS (source-labelled; may be incomplete):",
     "<company_research>",
-    safe("research", 9000),
+    safe("research", 6000),
     "</company_research>",
     "",
     "User's research question: " + safe("question", 700),

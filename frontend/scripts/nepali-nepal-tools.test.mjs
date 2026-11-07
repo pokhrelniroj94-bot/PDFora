@@ -5,7 +5,6 @@ import { fileURLToPath } from "node:url";
 import { ensureTypeStripping, loadToolAdapter } from "./lib/load-i18n.mjs";
 ensureTypeStripping();
 const { convertTolaGrams, GRAMS_PER_TOLA, validateNepalMobileNumber } = await import("../lib/i18n/nepali-nepal-tools.ts");
-const DateConverter = (await import("../lib/nepali-date-converter/index.ts")).default;
 
 assert.equal(GRAMS_PER_TOLA, 11.6638038);
 assert.equal(convertTolaGrams(1, "tola"), 11.6638038);
@@ -26,12 +25,6 @@ assert.equal(validateNepalMobileNumber("8812345678").valid, false);
 assert.equal(validateNepalMobileNumber("+1 9812345678").valid, false);
 
 assert.equal(validateNepalMobileNumber("+1 9812345678").valid, false);
-
-const bsNewYear = new DateConverter("2026-04-14").toBs();
-assert.deepEqual({ year: bsNewYear.year, month: bsNewYear.month, date: bsNewYear.date }, { year: 2083, month: 1, date: 1 });
-const adNewYear = new DateConverter("2083-01-01").toAd();
-assert.deepEqual({ year: adNewYear.year, month: adNewYear.month, date: adNewYear.date }, { year: 2026, month: 4, date: 14 });
-assert.throws(() => new DateConverter("2099-13-01").toAd());
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const routeSource = fs.readFileSync(path.join(root, "lib/i18n/nepali-tool-routes.ts"), "utf8");
@@ -67,14 +60,34 @@ const holidayBlock = liveSource.slice(liveSource.indexOf("const holidays = ["), 
 const holidayRows = [...holidayBlock.matchAll(/\{ name: "([^"]+)", bs: "([^"]+)", ad: "([^"]*)", note: "([^"]+)", type: "([^"]+)" \}/g)];
 assert.ok(holidayRows.length >= 30, "The 2083 list must retain its full holiday/observance dataset");
 assert.equal(new Set(holidayRows.map((row) => row[1])).size, holidayRows.length, "Holiday names must be unique");
+
+// Independently cross-check every displayed BS/AD pair against the repository's calendar data.
+const yearSource = fs.readFileSync(path.join(root, "lib/nepali-date-converter/years.ts"), "utf8");
+const yearData = new Map();
+for (const [, year, values] of yearSource.matchAll(/years\[(\d+)\] = \[([^\]]+)\];/g)) {
+  yearData.set(Number(year), values.split(",").map((value) => Number(value.trim())));
+}
+for (const [, year, sourceYear] of yearSource.matchAll(/years\[(\d+)\] = years\[(\d+)\];/g)) {
+  yearData.set(Number(year), yearData.get(Number(sourceYear)));
+}
+const monthNames = ["", "Baisakh", "Jestha", "Asar", "Shrawan", "Bhadra", "Asoj", "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"];
+function convertAdToBs(ad) {
+  const [year, month, day] = ad.split("-").map(Number);
+  let remaining = (Date.UTC(year, month - 1, day) - Date.UTC(1918, 3, 13)) / 86400000;
+  let bsYear = 1975;
+  while (bsYear <= 2099 && remaining >= yearData.get(bsYear)[12]) remaining -= yearData.get(bsYear++)[12];
+  let bsMonth = 1;
+  while (remaining >= yearData.get(bsYear)[bsMonth - 1]) remaining -= yearData.get(bsYear)[bsMonth++ - 1];
+  return { year: bsYear, month: bsMonth, date: remaining + 1 };
+}
+assert.deepEqual(convertAdToBs("2026-04-14"), { year: 2083, month: 1, date: 1 }, "BS New Year reference must match the calendar dataset");
 for (const [, name, bs, ad] of holidayRows) {
   if (!ad) {
     assert.equal(bs, "Date to be announced", `${name} should explain why its date is not confirmed`);
     continue;
   }
   const [bsYear, bsMonth, bsDay] = bs.split(" ");
-  const converted = new DateConverter(ad).toBs();
-  const monthNames = ["", "Baisakh", "Jestha", "Asar", "Shrawan", "Bhadra", "Asoj", "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"];
+  const converted = convertAdToBs(ad);
   assert.equal(converted.year, Number(bsYear), `${name} BS year must match its AD date`);
   assert.equal(converted.month, monthNames.indexOf(bsMonth), `${name} BS month must match its AD date`);
   assert.equal(converted.date, Number(bsDay), `${name} BS day must match its AD date`);

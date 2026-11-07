@@ -10,6 +10,7 @@ import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne.ts";
 import { toolGuides } from "../lib/tool-guides.ts";
 import { buildPdfToolMetadata } from "../lib/i18n/pdf-tool-seo-core.ts";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne.ts";
+import { createTranslator } from "../lib/i18n/translate.ts";
 
 ensureTypeStripping();
 const { config, routing, translate, format, preference, switcher, metadata, "shared-ui": sharedUi, "nepali-pdf-routes": nepaliRoutes, "pdf-tool-names-ne": nepaliNames, "tool-guides-ne": nepaliGuides } = await loadI18n();
@@ -23,6 +24,32 @@ test("locale table: requested 12 locales, English default, Arabic and Urdu are R
   assert.equal(new Set(names).size, 12, "native names must be unique");
   assert.equal(config.localeInfo.ar.nativeName, "العربية");
   for (const l of config.locales) assert.equal(config.localeInfo[l].code, l);
+});
+
+test("all twelve locales load translated common, accessibility and SEO namespaces", () => {
+  const read = (locale, namespace) => JSON.parse(
+    fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "messages", locale, namespace + ".json"), "utf8"),
+  );
+  const source = {
+    common: read("en", "common"),
+    accessibility: read("en", "accessibility"),
+    seo: read("en", "seo"),
+  };
+  for (const locale of config.locales) {
+    const messages = {
+      common: read(locale, "common"),
+      accessibility: read(locale, "accessibility"),
+      seo: read(locale, "seo"),
+    };
+    const t = createTranslator({ locale, messages, fallback: locale === "en" ? undefined : source });
+    assert.ok(t("common.language").trim(), locale + " language label must not be empty");
+    assert.ok(t("accessibility.languageSwitcher").trim(), locale + " switcher label must not be empty");
+    assert.ok(t("seo.home.title").trim(), locale + " homepage SEO title must not be empty");
+    assert.notEqual(t("common.language"), source.common.language, locale + " language label must be translated");
+    assert.notEqual(t("accessibility.languageSwitcher"), source.accessibility.languageSwitcher, locale + " accessibility label must be translated");
+    assert.notEqual(t("seo.home.title"), source.seo.home.title, locale + " SEO title must be translated");
+    assert.ok(t("accessibility.currentLanguage", { name: "PDFora test" }).includes("PDFora test"), locale + " placeholder must interpolate");
+  }
 });
 
 test("publishing policy: English and reviewed Nepali routes are published", () => {
@@ -51,6 +78,9 @@ test("shared UI coverage: English and Nepali copy is complete and route-aware", 
   assert.equal(sharedUi.localeFromPathname("/ne/merge-pdf"), "ne");
   assert.equal(sharedUi.localeFromPathname("/merge-pdf"), "en");
   assert.equal(sharedUi.getSharedUiCopy("ne").directoryTitle, "सबै PDF टुलहरू");
+  assert.equal(sharedUi.localeFromPathname("/toString"), "en");
+  assert.equal(sharedUi.localeFromPathname("/constructor"), "en");
+  assert.equal(sharedUi.localeFromPathname("/ar/tools/example"), "ar");
 });
 
 test("shared navigation preserves unavailable Nepali destinations", () => {

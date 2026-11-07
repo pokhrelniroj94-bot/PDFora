@@ -63,6 +63,8 @@ export const nepaliLocalizedFinancialSlugs = [
   "loan-emi-calculator",
   "compound-interest-sip-calculator",
   "discount-percentage-calculator",
+  "nepal-electricity-bill-calculator",
+  "nepal-public-holidays-2083",
 ] as const;
 
 export const nepaliLocalizedCareerSlugs = [

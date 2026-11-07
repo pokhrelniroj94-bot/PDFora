@@ -1,12 +1,15 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { hreflangMap } from "../../lib/i18n/routing";
 import { blogPosts, isCatalogGeneratedGuide } from "../../lib/blog-posts";
 import AdsterraNative from "../components/AdsterraNative";
+
+const localizedAlternates = hreflangMap("/blog");
 
 export const metadata: Metadata = {
   title: "Practical PDF & Nepal Guides – Tutorials and How-to Articles",
   description: "Step-by-step guides for PDF tasks, Nepal calculators, exchange rates, tax estimates, electricity bills, Nepali typing, BS dates and online tools.",
-  alternates: { canonical: "https://pd-fora.vercel.app/blog" },
+  alternates: { canonical: "https://pd-fora.vercel.app/blog", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
   openGraph: {
     title: "Practical PDF & Nepal Guides – Tutorials and How-to Articles | PDFora",
     description: "Learn PDF workflows and practical Nepal tools through clear tutorials, worked examples, FAQs and official reference links.",

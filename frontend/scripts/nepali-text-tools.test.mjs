@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import { runNepaliTextTool } from "../lib/i18n/nepali-text-tools.ts";
 
 assert.equal(runNepaliTextTool("word-character-counter", "नमस्ते world"), "शब्द: 2\nअक्षर (space सहित): 12\nअक्षर (space बाहेक): 11\nअनुच्छेद: 1");
@@ -27,4 +28,16 @@ assert.equal(runNepaliTextTool("palindrome-checker", "A man, a plan, a canal: Pa
 assert.equal(runNepaliTextTool("palindrome-checker", "नेपाल"), "यो पाठ पालिन्ड्रोम होइन।");
 assert.equal(runNepaliTextTool("acronym-generator", "World Health Organization"), "WHO");
 
-console.log("Nepali text utility functional tests passed (25 assertions).");
+const localizedToolPage = fs.readFileSync(new URL("../app/[locale]/tools/[slug]/page.tsx", import.meta.url), "utf8");
+assert.ok(localizedToolPage.includes("NepaliTextUtilityWorkspace"), "Nepali text utilities must render their localized workspace");
+for (const slug of [
+  "word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text",
+  "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator",
+  "line-counter", "sentence-counter", "email-extractor", "url-extractor", "phone-number-extractor",
+  "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text",
+  "palindrome-checker", "acronym-generator",
+]) {
+  assert.ok(localizedToolPage.includes('"'+slug+'"'), slug+" must be routed to the Nepali text workspace");
+}
+
+console.log("Nepali text utility functional and route tests passed (45+ assertions).");

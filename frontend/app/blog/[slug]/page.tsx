@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function BlogArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   if (slug === "tip-calculator-guide") permanentRedirect("/blog/how-to-calculate-tip-and-split-the-bill");
+  if (slug === "meta-title-checker-guide") permanentRedirect("/blog/how-to-write-seo-page-titles-google-title-links");
   const post = getBlogPost(slug);
   if (!post) notFound();
 

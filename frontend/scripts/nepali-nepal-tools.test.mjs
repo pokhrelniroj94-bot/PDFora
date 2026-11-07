@@ -41,6 +41,7 @@ for (const slug of newSlugs) {
   assert.equal(request.status, "ok", `${slug} must resolve through the localized route`);
   const metadata = modules["localized-metadata"].buildLocalizedToolMetadata("ne", request.implementation.entry);
   assert.deepEqual(metadata.robots, { index: false, follow: true }, `${slug} stays noindex, but followable, until native review and explicit approval`);
+  assert.equal(metadata.alternates?.canonical, `https://pd-fora.vercel.app/ne/tools/${slug}`, `${slug} must keep its self-referencing canonical`);
   assert.equal(metadata.alternates?.languages, undefined, `${slug} must not publish hreflang before approval`);
 }
 

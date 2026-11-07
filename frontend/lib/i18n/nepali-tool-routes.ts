@@ -24,6 +24,9 @@ export const nepaliLocalizedUtilitySlugs = [
   "gcd-lcm-calculator",
   "prime-number-checker",
   "unit-converter",
+  "age-calculator",
+  "date-difference-calculator",
+  "time-duration-calculator",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

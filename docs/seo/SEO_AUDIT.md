@@ -74,7 +74,7 @@ The Search Console connector data is delayed by several days, so the 28-day wind
 
 The connected Search Console Sitemaps report shows `https://pd-fora.vercel.app/sitemap.xml` with 257 submitted URLs, zero reported errors and zero warnings. The deprecated sitemap `indexed` field is not used as an index-coverage measure. The sitemap report confirms successful retrieval, not that every submitted URL is indexed.
 
-The reviewed bilingual tip article increases the curated Nepali localized blog collection from 27 to 28 posts. The old generated `tip-calculator-guide` remains a noindex redirect source; the new reviewed article has a distinct slug and a self-canonical localized counterpart.
+The two reviewed bilingual articles increase the curated Nepali localized blog collection from 27 to 29 posts. The old generated `tip-calculator-guide` remains a noindex redirect source; the new reviewed article has a distinct slug and a self-canonical localized counterpart.
 
 ## Google Search Central references
 

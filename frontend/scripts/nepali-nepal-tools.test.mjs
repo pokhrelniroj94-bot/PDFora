@@ -126,8 +126,8 @@ for (const [, name, bs, ad] of holidayRows) {
   assert.equal(converted.date, Number(bsDay), `${name} BS day must match its AD date`);
 }
 assert.ok(liveSource.includes("https://moha.gov.np/en/page/government-and-public-holidays-in-2083"), "Holiday list must link to the official MoHA notice");
-assert.ok(liveSource.includes("2083-04-22") && liveSource.includes("२०८३-०४-२२"), "Holiday list must disclose the source notice update date and that it is a static reference");
-assert.ok(nepaliBlogSource.includes("२०८३-०४-२२") && englishBlogSource.includes("2083-04-22"), "Both holiday guides must disclose the official notice update date");
+assert.ok(liveSource.includes("2083-07-20") && liveSource.includes("२०८३-०७-२०") && liveSource.includes("static reference"), "Holiday list must disclose the current MoHA page update date and that it is a static reference");
+assert.ok(nepaliBlogSource.includes("२०८३-०७-२०") && englishBlogSource.includes("2083-07-20"), "Both holiday guides must disclose the MoHA page update date");
 
 const modules = await loadToolAdapter();
 for (const slug of [...newSlugs, ...liveSlugs]) {

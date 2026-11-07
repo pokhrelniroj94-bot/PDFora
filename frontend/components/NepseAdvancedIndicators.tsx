@@ -6,11 +6,12 @@ export default function NepseAdvancedIndicators({rows}:{rows:Candle[]}){
  const result=useMemo(()=>{
   const clean=rows.filter(x=>Number.isFinite(x.close)&&x.close>0).sort((a,b)=>a.date.localeCompare(b.date));
   const last=clean.at(-1); if(!last)return null;
-  const full=clean.length>=30&&clean.slice(-30).every(x=>Number.isFinite(x.high)&&Number.isFinite(x.low));
+  const candles=clean.slice(-30);
+  const full=candles.length>=30&&candles.every(x=>Number.isFinite(x.high)&&Number.isFinite(x.low));
   let atr:number|null=null,adx:number|null=null;
   if(full){
    const tr:number[]=[],plus:number[]=[],minus:number[]=[];
-   for(let i=1;i<clean.length;i++){const a=clean[i],p=clean[i-1],up=a.high!-p.high!,down=p.low!-a.low!;tr.push(Math.max(a.high!-a.low!,Math.abs(a.high!-p.close),Math.abs(a.low!-p.close)));plus.push(up>down&&up>0?up:0);minus.push(down>up&&down>0?down:0);}
+   for(let i=1;i<candles.length;i++){const a=candles[i],p=candles[i-1],up=a.high!-p.high!,down=p.low!-a.low!;tr.push(Math.max(a.high!-a.low!,Math.abs(a.high!-p.close),Math.abs(a.low!-p.close)));plus.push(up>down&&up>0?up:0);minus.push(down>up&&down>0?down:0);}
    const n=14; if(tr.length>=n){atr=tr.slice(-n).reduce((a,b)=>a+b,0)/n;let st=tr.slice(0,n).reduce((a,b)=>a+b,0),sp=plus.slice(0,n).reduce((a,b)=>a+b,0),sm=minus.slice(0,n).reduce((a,b)=>a+b,0);const dx:number[]=[];for(let i=n;i<tr.length;i++){st=st-st/n+tr[i];sp=sp-sp/n+plus[i];sm=sm-sm/n+minus[i];const p=st?100*sp/st:0,m=st?100*sm/st:0;dx.push(p+m?100*Math.abs(p-m)/(p+m):0);}if(dx.length>=n)adx=dx.slice(-n).reduce((a,b)=>a+b,0)/n;}
   }
   const volumes=clean.slice(-21).map(x=>x.volume);

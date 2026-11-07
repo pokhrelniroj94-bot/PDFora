@@ -35,7 +35,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           "@graph": [
             { "@type": "WebSite", "@id": "https://pd-fora.vercel.app/#website", name: "PDFora", url: "https://pd-fora.vercel.app/", inLanguage: htmlLang, publisher: { "@id": "https://pd-fora.vercel.app/#organization" } },
             { "@type": "Organization", "@id": "https://pd-fora.vercel.app/#organization", name: "PDFora", url: "https://pd-fora.vercel.app/" },
-            { "@type": "SoftwareApplication", "@id": "https://pd-fora.vercel.app/#application", name: "PDFora", url: "https://pd-fora.vercel.app/", applicationCategory: "UtilitiesApplication", operatingSystem: "Any", description: "Free browser-based tools for PDF, image, text and everyday productivity tasks.", inLanguage: htmlLang, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } }
           ]
         }) }} />
         <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} />

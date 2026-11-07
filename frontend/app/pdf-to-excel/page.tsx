@@ -1,9 +1,6 @@
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
-import { getRequiredToolGuide } from "../../lib/tool-guides";
 import Niroj77Tool from "../../components/Niroj77Tool";
-import ToolGuide from "../../components/ToolGuide";
 
-const guide = getRequiredToolGuide("pdf-to-excel");
 export const metadata = getPdfToolMetadata("pdf-to-excel");
 
 export default function Page() {
@@ -152,19 +149,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="border-t border-slate-200 bg-white px-4 py-12 sm:px-6">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-2xl font-black">How to use PDF to Excel</h2>
-          <p className="mt-3 text-sm leading-7 text-slate-600">{guide.purpose}</p>
-          <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-600">
-            {guide.steps.map((step) => <li key={step}>{step}</li>)}
-          </ol>
-          <p className="mt-4 rounded-xl bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-            <strong>Before using the workbook:</strong> {guide.caution}
-          </p>
-        </div>
-      </section>
-      <ToolGuide guide={guide} />
+
     </main>
   );
 }

@@ -236,10 +236,31 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepal-public-holidays-2083") {
-        const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "" }))()');
+        const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "", search: document.querySelector("input") }))()');
         if (state.rows < 30) throw new Error("2083 public-holiday table is missing expected entries.");
         if (!state.links.some((href) => href.includes("moha.gov.np/en/page/government-and-public-holidays-in-2083"))) throw new Error("Official MoHA public-holiday source link is missing.");
-        row.checks.push("2083 holiday table and official MoHA source verified");
+        if (!state.body.includes("Last Updated: 2083-07-20 15:42:42")) throw new Error("Holiday page must disclose the source page's current update timestamp.");
+        if (!state.search) throw new Error("Holiday list is missing its search input.");
+        await page.evaluate(`(() => {
+          const input = document.querySelector("input");
+          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;
+          setter.call(input, "Tihar");
+          input.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: "Tihar" }));
+        })()`);
+        await delay(150);
+        const searched = await page.evaluate('({ rows: document.querySelectorAll("tbody tr").length, body: document.querySelector("tbody")?.innerText || "" })');
+        if (!searched.rows || !/Tihar/i.test(searched.body)) throw new Error("Holiday search did not filter to the requested Tihar entry.");
+        const community = await page.evaluate(`(() => {
+          const button = [...document.querySelectorAll("button")].find((item) => item.innerText.trim() === "Community");
+          if (!button) return false;
+          button.click();
+          return true;
+        })()`);
+        if (!community) throw new Error("Holiday category filter button is missing.");
+        await delay(150);
+        const filtered = await page.evaluate('({ rows: document.querySelectorAll("tbody tr").length, body: document.querySelector("tbody")?.innerText || "" })');
+        if (!filtered.rows || !/Gaura Parwa|Gai Jatra|Dura Mhaipru Nakuma/.test(filtered.body)) throw new Error("Community holiday filter did not show community observances.");
+        row.checks.push("2083 holiday table, search, community filter and official MoHA source verified");
         row.outputVerified = true;
         row.status = "PASS";
         return row;

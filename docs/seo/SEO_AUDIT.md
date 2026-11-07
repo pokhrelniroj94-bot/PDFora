@@ -38,6 +38,12 @@ The release branch `seo/duplicate-content-audit-fix-2026-11-07` removes the seco
 
 The same live crawl also found older, page-specific how-to and FAQ blocks on `/merge-pdf` that overlap with the shared guide. These are being removed from that route so the tool page has one clear guide structure. Other standalone PDF routes still require an individual rendered-page comparison before their legacy copy can safely be consolidated.
 
+## Metadata inventory checks — 2026-11-07
+
+A source-level inventory of all 124 English catalogue tools found 124 unique tool names, 124 unique source descriptions and 124 unique keyword fields. The metadata generator currently has 50 explicit SEO overrides and nine category fallbacks; the resulting 124 English catalogue titles and descriptions were checked for duplicates and short/empty descriptions, with no duplicates or descriptions under 70 characters. All 124 catalogue tools also have a tool-specific advice entry in `CatalogToolSEOContent.tsx`. These checks establish metadata uniqueness and coverage, not the quality of every rendered page or its ability to rank.
+
+A regression check is being added to `verify-tool-catalog.mjs` so future catalogue edits cannot silently introduce duplicate names, descriptions, titles or meta descriptions.
+
 ## Quality risks requiring page-level review
 
 - Catalog tool pages use shared category guidance and category-based FAQ fallbacks. This is useful baseline help, but it is not a substitute for tool-specific examples, supported-input details, edge cases and output limitations. Keep each page indexable only when its actual tool functionality and page content provide distinct value.

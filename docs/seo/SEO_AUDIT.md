@@ -115,7 +115,7 @@ The generated PDF guide variants were also identified as a duplicate-content ris
 
 ## Remaining work after source changes
 
-- **CI passed for branch head `484dc7e5243b211c8528b70105fae17e5c54c831`** in workflow run `42388335300`; frontend and backend jobs succeeded and the live-production job was skipped.
+- **CI passed for branch head `c1d823fd9d3c7e00e1f2037e9d64443d6cddbef6`** in workflow run `42392049032`; frontend and backend jobs succeeded and the live-production job was skipped. The localized blog title was also corrected to rely on the root metadata template for one brand suffix.
 - A fresh Vercel Preview deployment could not be created because the Vercel API deployment quota reported more than 100 deployments in the rolling day and a 24-hour retry window. No Production deployment or protection change was attempted. The Preview build and deployed HTTP crawl therefore remain unverified.
 - Run an HTTP crawl of all 173 tool URLs and the rest of the sitemap against a new Preview; compare rendered title, description, canonical, robots, hreflang, JSON-LD, response status and page content.
 - Verify every tool's actual rendered instructions and output against its implementation, including edge cases and mobile behavior. Source-level advice coverage is not proof that a tool works.

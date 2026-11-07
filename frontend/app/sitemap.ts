@@ -2,6 +2,7 @@ import { blogPosts, isCatalogGeneratedGuide } from "../lib/blog-posts";
 import type { MetadataRoute } from "next";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
+import { nepaliLocalizedBlogPosts } from "../lib/nepali-localized-blog-posts";
 
 const baseUrl = "https://pd-fora.vercel.app";
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
@@ -36,15 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly" as const,
       priority: 0.35,
     })),
-    ...[
-      "blog",
-      "nepali-date-converter-bs-to-ad-guide",
-      "nepal-vat-calculator-13-percent-guide",
-      "ropani-aana-paisa-daam-land-measurement-guide",
-    ].map((slug) => ({
-      url: `${baseUrl}/ne/blog/${slug}`,
+    { url: `${baseUrl}/ne/blog`, changeFrequency: "weekly" as const, priority: 0.7 },
+    ...nepaliLocalizedBlogPosts.map((post) => ({
+      url: `${baseUrl}/ne/blog/${post.slug}`,
+      lastModified: new Date(post.updated),
       changeFrequency: "monthly" as const,
-      priority: 0.6,
+      priority: 0.65,
     })),
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/market`, changeFrequency: "daily", priority: 0.85 },

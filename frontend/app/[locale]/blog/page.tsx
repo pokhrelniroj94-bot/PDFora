@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return buildLocaleMetadata({
     locale,
     path: "/blog",
-    title: "नेपाली PDF तथा नेपाल उपयोगी मार्गदर्शिका | PDFora",
+    title: "नेपाली PDF तथा नेपाल उपयोगी मार्गदर्शिका",
     description: "PDF काम, नेपाली मिति, VAT र जग्गा क्षेत्रफलजस्ता विषयमा स्पष्ट नेपाली मार्गदर्शिका र उपयोगी उदाहरण।",
   });
 }

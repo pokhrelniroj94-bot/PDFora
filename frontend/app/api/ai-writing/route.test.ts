@@ -73,6 +73,28 @@ describe("POST /api/ai-writing", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("rejects untrusted browser origins before contacting providers", async () => {
+    const fetchMock = jest.spyOn(global, "fetch");
+    const response = await POST(request(
+      { kind: "site-help", question: "Synthetic origin security test" },
+      { Origin: "https://attacker.example" },
+    ));
+    expect(response.status).toBe(403);
+    expect((await response.json()).code).toBe("ORIGIN_NOT_ALLOWED");
+    expect(response.headers.get("cache-control")).toMatch(/no-store/);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("allows this project's exact Vercel Preview origin", async () => {
+    mockSuccessfulProviders();
+    const response = await POST(request(
+      { kind: "site-help", question: "How do I merge PDF files?" },
+      { Origin: "https://pd-fora-git-qa-173-tool-br-168b6d-pokhrelniroj94-7012s-projects.vercel.app" },
+    ));
+    expect(response.status).toBe(200);
+    expect((await response.json()).provider).toBe("Cloudflare Workers AI (Free allocation)");
+  });
+
   it("rejects malformed JSON and unsupported tasks", async () => {
     const invalid = await POST(new Request("https://pdfora.test/api/ai-writing", {
       method: "POST", headers: { "content-type": "application/json" }, body: "{",

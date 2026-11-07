@@ -51,7 +51,7 @@ assert.ok(liveSource.includes("https://www.erc.gov.np/detail/314"), "Electricity
 assert.ok(!liveSource.includes("estimateNepalDomesticElectricityBill"), "Electricity tool must not use unverified hard-coded tariff assumptions");
 assert.ok(catalogSource.includes("live calculator") && !catalogSource.includes("Estimate a Nepal single-phase domestic electricity bill"), "Catalog metadata must describe the official calculator handoff, not a fixed-rate estimate");
 assert.ok(englishToolPageSource.includes("does not estimate bills from outdated fixed rates"), "English SEO metadata must disclose that PDFora does not estimate current tariffs");
-assert.ok(seoGuideSource.includes("PDFora does not calculate a bill from hard-coded tariff assumptions") && !seoGuideSource.includes("supported single-phase domestic meter capacity to estimate"), "Tool SEO guidance must not describe the retired fixed-rate estimator");
+assert.ok(seoGuideSource.includes("PDFora does not calculate or guarantee an electricity bill from hard-coded tariff assumptions") && !seoGuideSource.includes("supported single-phase domestic meter capacity to estimate"), "Tool SEO guidance must not describe the retired fixed-rate estimator");
 assert.ok(englishBlogSource.includes("PDFora therefore does not calculate a bill from fixed tariff assumptions"), "English blog guide must explain the official ERC handoff");
 assert.ok(nepaliBlogSource.includes("PDFora ले स्थिर दरबाट बिल निकाल्दैन"), "Nepali blog guide must explain the official ERC handoff");
 assert.ok(nepaliHomeSource.includes("आधिकारिक ERC बिजुली बिल क्याल्कुलेटर") && !nepaliHomeSource.includes("NEA बिजुली बिल अनुमान"), "Nepali homepage must not advertise the retired estimate");

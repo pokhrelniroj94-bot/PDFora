@@ -96,6 +96,17 @@ for (const [label, file] of collections) {
     assert.ok(sections >= 3, label + ": needs at least three meaningful sections for " + slug);
     assert.ok(faqs >= 2, label + ": add useful reader questions for " + slug);
     assert.ok(toolLinks >= 1, label + ": add at least one relevant internal tool link for " + slug);
+    for (const paragraphArray of body.matchAll(/paragraphs:\s*\[([\s\S]*?)\]/g)) {
+      for (const paragraphMatch of paragraphArray[1].matchAll(/"((?:\\.|[^"\\])*)"/g)) {
+        const paragraph = paragraphMatch[1].normalize("NFC").replace(/\s+/gu, " ").trim();
+        if (paragraph.length >= 80) {
+          const normalized = paragraph.toLocaleLowerCase();
+          const previous = substantialParagraphs.get(normalized);
+          assert.ok(!previous || previous === slug, label + ": repeated substantial paragraph shared by " + previous + " and " + slug);
+          substantialParagraphs.set(normalized, slug);
+        }
+      }
+    }
     for (const match of body.matchAll(/href:\s*"([^"]+)"/g)) {
       const href = match[1];
       if (href.startsWith("/tools/")) {
@@ -120,9 +131,11 @@ for (const [label, file] of collections) {
     }
     slugs.add(slug);
     titles.add(title);
-    descriptions.add(description);\n    intros.add(intro.normalize("NFC").trim());
+    descriptions.add(description);
+    intros.add(intro.normalize("NFC").trim());
   }
-  seenByCollection.set(label, articles.length);\n  substantialParagraphsByCollection.set(label, substantialParagraphs.size);
+  seenByCollection.set(label, articles.length);
+  substantialParagraphsByCollection.set(label, substantialParagraphs.size);
 }
 
 const enSlugs = new Set([

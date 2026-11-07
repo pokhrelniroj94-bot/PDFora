@@ -14,6 +14,15 @@ const cases = [
 const checks = [];
 const failures = [];
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const hostileOrigin = await fetch(new URL("/api/ai-writing", base), {
+  method: "POST",
+  headers: { Origin: "https://attacker.example", "Content-Type": "application/json" },
+  body: "not-json",
+  cache: "no-store",
+  signal: AbortSignal.timeout(15000),
+});
+checks.push({ kind: "untrusted-origin-rejection", status: hostileOrigin.status === 403 ? "PASS" : "FAIL", httpStatus: hostileOrigin.status });
+if (hostileOrigin.status !== 403) failures.push("AI API did not reject an untrusted Origin before parsing the body");
 async function call(testCase) {
   return fetch(new URL("/api/ai-writing", base), {
     method: "POST",

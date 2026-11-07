@@ -276,9 +276,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Is the result my final payroll tax?", a: "No. Allowances, deductions, rebates, employment category and personal circumstances can change the liability. Confirm with IRD or payroll." }
     ],
     "nepal-electricity-bill-calculator": [
-      { q: "Which meter capacities are supported?", a: "The estimator supports single-phase domestic 5A, 15A, 30A and 60A connections as labelled in the tool." },
-      { q: "Can I use it for commercial electricity bills?", a: "No. It is intended for the supported single-phase domestic tariff assumptions, not commercial or industrial tariffs." },
-      { q: "Will the estimate exactly match my NEA bill?", a: "Not necessarily. Check the current tariff, meter category, minimum charge, VAT and any adjustments on your actual bill." }
+      { q: "Does PDFora calculate the bill?", a: "No. It opens the Electricity Regulatory Commission's live calculator and does not estimate a bill from fixed tariff assumptions." },
+      { q: "Which details should I prepare?", a: "Use the consumer category, connection or fuse capacity and kWh consumption shown on your latest NEA bill." },
+      { q: "Will the ERC result always equal my NEA bill?", a: "Not necessarily. The billing period, meter reading, arrears, account adjustments or tariff changes can affect the issued bill." },
+      { q: "Where can I verify the current rates?", a: "Check the ERC calculator and its 2083 tariff directive, then compare your account details with NEA's consumer tariff information." }
     ],
     "nepal-public-holidays-2083": [
       { q: "Which year does this holiday calendar cover?", a: "It lists Nepal public holidays for Bikram Sambat 2083." },

@@ -86,7 +86,7 @@ export function runNepaliTextTool(slug: NepaliTextToolSlug, input: string, optio
     const matches = (input.match(/\+?[\p{N}][\p{N}\s().-]{5,}[\p{N}]/gu) ?? [])
       .map((value) => value.trim())
       .filter((value) => {
-        const digits = value.replace(/\D/gu, "");
+        const digits = value.replace(/[^\p{N}]/gu, "");
         return digits.length >= 7 && digits.length <= 15;
       });
     return [...new Set(matches)].join("\n") || "कुनै सम्भावित फोन नम्बर भेटिएन।";

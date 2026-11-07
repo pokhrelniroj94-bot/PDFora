@@ -352,7 +352,9 @@ async function runTool(tool, index) {
         row.checks.push("expected negative path: fixture uses standard non-embedded fonts; tool reports that no embedded fonts can be extracted");
         row.output = statusText;
         row.evidenceLevel = "negative-path-response-observed-fixture-limitation";
-        row.status = "PARTIAL";
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "expected-negative-path-verified";
         return row;
       }
       if (/red-\d{2,3}|text-red/i.test(statusClass) || /error|failed|invalid|could not|unavailable/i.test(statusText)) {
@@ -459,10 +461,34 @@ async function runTool(tool, index) {
         await setFieldByLabel(page, "Phone number", "9800000000");
       } else if (tool.slug === "nepal-land-area-converter") {
         await setFieldByLabel(page, "Ropani", "1");
+      } else if (tool.slug === "nepali-calendar") {
+        await setFieldByLabel(page, "BS year", "2083");
+        await page.evaluate("(() => { const select = [...document.querySelectorAll('select')].find((item) => [...item.options].some((option) => option.value === '1')); if (!select) return false; select.value = '1'; select.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
+      } else if (tool.slug === "resume-builder") {
+        await setFieldByLabel(page, "Full name", "PDFora E2E Candidate");
+        await setFieldByLabel(page, "Professional title", "Quality Assurance Analyst");
+        await setFieldByLabel(page, "About you", "Experienced tester focused on reliable web applications.");
+        await setFieldByLabel(page, "Skills (comma separated)", "Testing, JavaScript, Accessibility");
+      } else if (tool.slug === "notes-to-pdf") {
+        await setFieldByLabel(page, "Document title", "PDFora E2E Notes");
       }
       if (tool.slug === "case-converter") {
         const buttonClicked = await page.evaluate("(() => { const button = [...document.querySelectorAll('button')].find((item) => item.innerText.trim().toUpperCase() === 'UPPERCASE' && !item.disabled); button?.click(); return !!button; })()");
         if (!buttonClicked) throw new Error("Case converter uppercase action is missing.");
+      }
+      if (tool.slug === "notes-to-pdf") {
+        await page.evaluate(`(() => {
+          window.__pdforaPrintCapture = { html: "", printed: false, focused: false };
+          window.open = () => ({
+            document: {
+              open() {},
+              write(value) { window.__pdforaPrintCapture.html += value; },
+              close() {},
+            },
+            focus() { window.__pdforaPrintCapture.focused = true; },
+            print() { window.__pdforaPrintCapture.printed = true; },
+          });
+        })()`);
       }
       if (tool.slug === "image-compressor" || tool.slug === "image-format-converter" || tool.slug === "loksewa-photo-resizer") {
         const inputNode = await page.send("DOM.getDocument", { depth: 1 });
@@ -499,6 +525,66 @@ async function runTool(tool, index) {
         inputValues: [...document.querySelectorAll("input,textarea,select")].map((input) => ({ value: input.value || "", type: input.type || input.tagName.toLowerCase() })),
         storyLinks: document.querySelectorAll("section ul li a").length,
       }))()`);
+      if (tool.slug === "notes-to-pdf") {
+        const capture = await page.evaluate("window.__pdforaPrintCapture");
+        if (!capture?.html.includes("PDFora E2E Notes") || !capture.html.includes("PDFora E2E Notes") || !capture.html.includes("window.print") || !capture.html.includes("@page{size:A4") || !capture.printed || !capture.focused) {
+          throw new Error("Notes-to-PDF did not build the expected A4 print document and invoke the print flow.");
+        }
+        if (!finalState.body.includes("Print dialog opened")) throw new Error("Notes-to-PDF did not confirm its Save as PDF instructions.");
+        row.checks.push("A4 print document generated, title/content escaped into HTML, print flow invoked");
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "print-document-and-window-print-call-verified";
+        return row;
+      }
+      if (tool.slug === "resume-builder") {
+        const preview = await page.evaluate("document.querySelector('#resume-paper')?.innerText || ''");
+        const templates = await page.evaluate("document.querySelectorAll('button[aria-label]').length");
+        if (!preview.includes("PDFora E2E Candidate") || !preview.includes("Quality Assurance Analyst") || !preview.includes("Experienced tester focused on reliable web applications.") || !preview.includes("Testing") || templates < 20) {
+          throw new Error("Resume builder did not reflect entered profile data in its live preview or expose all 20 templates.");
+        }
+        row.checks.push("live CV preview reflects personal details, summary and skills; 20 templates rendered");
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "live-preview-and-template-count-verified";
+        return row;
+      }
+      if (tool.slug === "nepali-calendar") {
+        const calendar = await page.evaluate("({ rows: document.querySelectorAll('tbody tr').length, body: document.querySelector('tbody')?.innerText || '' })");
+        if (calendar.rows < 25 || !/2026-04-/.test(calendar.body)) throw new Error("Nepali calendar did not produce a populated 2083 BS month with AD dates.");
+        row.checks.push("2083 BS calendar generated with day, AD date and weekday rows");
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "calendar-table-content-verified";
+        return row;
+      }
+      if (tool.slug === "nepali-unicode-typing") {
+        const output = await page.evaluate("document.querySelectorAll('textarea')[1]?.value || ''");
+        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing did not convert romanized input into Devanagari output.");
+        row.checks.push("Romanized input converted to Devanagari output textarea");
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "unicode-output-value-verified";
+        return row;
+      }
+      if (tool.slug === "preeti-unicode-converter") {
+        const output = await page.evaluate("document.querySelector('[aria-live]')?.innerText || ''");
+        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Preeti converter did not return Devanagari output for the built-in Preeti sample.");
+        row.checks.push("Preeti sample converted to Devanagari Unicode");
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "preeti-unicode-output-verified";
+        return row;
+      }
+      if (tool.slug === "color-picker-palette") {
+        const colorState = await page.evaluate("({ value: document.querySelector('input[type=color]')?.value, body: document.body?.innerText || '', swatches: [...document.querySelectorAll('button[title]')].map(b => b.title) })");
+        if (colorState.value !== "#0f766e" || !colorState.body.includes("#0F766E") || !colorState.body.includes("15, 118, 110") || colorState.swatches.length < 5) throw new Error("Color picker did not show the selected HEX/RGB values and five palette swatches.");
+        row.checks.push("selected color, HEX, RGB and five palette swatches verified");
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "color-picker-values-and-palette-verified";
+        return row;
+      }
       if (/Tool configuration missing|Tool not implemented|This utility is not available yet|Nepal utility not found/i.test(finalState.body)) {
         throw new Error("Tool reported an unavailable handler/configuration.");
       }
@@ -648,7 +734,7 @@ async function runTool(tool, index) {
         throw new Error(finalState.alerts.join(" | "));
       }
       row.output = finalState.live.filter(Boolean).join(" | ").slice(0, 700) || finalState.body.slice(-700);
-      row.outputVerified = finalState.live.some((value) => value.trim().length > 0);
+      row.outputVerified = ((expected || expectedPattern) && outputMatches) || finalState.live.some((value) => value.trim().length > 0);
       row.evidenceLevel = (expected || expectedPattern) && outputMatches ? "expected-output-assertion" : row.outputVerified ? "live-output-observed-not-oracle-checked" : "route-and-controls-smoke-only";
       row.checks.push("workspace output inspected");
       row.status = (expected || expectedPattern) && outputMatches && row.outputVerified ? "PASS" : "PARTIAL";

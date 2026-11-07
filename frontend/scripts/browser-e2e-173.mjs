@@ -121,7 +121,7 @@ async function openPage(url) {
   while (Date.now() - started < 20000) {
     const result = await evaluate("document.readyState");
     state = result ?? "";
-    if (state === "complete") break;
+    if (state === "interactive" || state === "complete") break;
     await delay(200);
   }
   // Allow React hydration and dynamically imported tool components to mount.

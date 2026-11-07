@@ -41,12 +41,6 @@ describe("catalog calculation engine", () => {
     expect(() => convertUnit(-1, "l", "ml")).toThrow("cannot be negative");
     expect(() => convertUnit(20, "c", "kg")).toThrow("cannot be mixed");
     expect(() => convertUnit(20, "km", "c")).toThrow("cannot be mixed");
-    expect(convertUnit(-40, "c", "f")).toBe(-40);
-    expect(() => convertUnit(-1, "km", "m")).toThrow("cannot be negative");
-    expect(() => convertUnit(-1, "kg", "g")).toThrow("cannot be negative");
-    expect(() => convertUnit(-1, "l", "ml")).toThrow("cannot be negative");
-    expect(() => convertUnit(20, "c", "kg")).toThrow("cannot be mixed");
-    expect(() => convertUnit(20, "km", "c")).toThrow("cannot be mixed");
     expect(bmi(65, 170)).toBeCloseTo(22.491, 3);
     expect(Math.round(bmr(65, 170, 25, false))).toBe(1593);
     expect(businessDaysInclusive("2026-11-02", "2026-11-06")).toBe(5);

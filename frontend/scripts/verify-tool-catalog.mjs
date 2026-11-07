@@ -17,17 +17,17 @@ const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
 
-const metadataEntries = [...catalogSource.matchAll(/\\{slug:"([^"]+)",name:"([^"]+)",category:"([^"]+)",description:"([^"]+)",keywords:"([^"]+)"\\}/g)]
+const metadataEntries = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"([^"]+)",category:"([^"]+)",description:"([^"]+)",keywords:"([^"]+)"\}/g)]
   .map((match) => ({ slug: match[1], name: match[2], category: match[3], description: match[4] }))
   .filter((entry) => entry.slug !== "pdf-tools");
 assert.equal(metadataEntries.length, 124, "Every catalog tool must have a metadata source entry");
 assert.equal(new Set(metadataEntries.map((entry) => entry.name.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool names must be unique");
 assert.equal(new Set(metadataEntries.map((entry) => entry.description.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool descriptions must be unique");
 
-const seoOverridesBlock = toolPage.match(/const seoOverrides:[\\s\\S]*?= \\{([\\s\\S]*?)\\n  \\};/)?.[1] ?? "";
-const seoOverrides = new Map([...seoOverridesBlock.matchAll(/"([^"]+)": \\{ title: "([^"]+)", description: "([^"]+)" \\}/g)]
+const seoOverridesBlock = toolPage.match(/const seoOverrides:[\s\S]*?= \{([\s\S]*?)\n  \};/)?.[1] ?? "";
+const seoOverrides = new Map([...seoOverridesBlock.matchAll(/"([^"]+)": \{ title: "([^"]+)", description: "([^"]+)" \}/g)]
   .map((match) => [match[1], { title: match[2], description: match[3] }]));
-const categoryDescriptionsBlock = toolPage.match(/const categoryDescription:[\\s\\S]*?= \\{([\\s\\S]*?)\\n  \\};/)?.[1] ?? "";
+const categoryDescriptionsBlock = toolPage.match(/const categoryDescription:[\s\S]*?= \{([\s\S]*?)\n  \};/)?.[1] ?? "";
 const categoryDescriptions = new Map([...categoryDescriptionsBlock.matchAll(/([A-Za-z]+): "([^"]+)"/g)]
   .map((match) => [match[1], match[2]]));
 const generatedMetadata = metadataEntries.map((entry) => ({

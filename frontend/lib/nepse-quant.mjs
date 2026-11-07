@@ -116,13 +116,17 @@ export function calculateMarketRegime(input) {
   return { label: bullish ? "Bullish trend" : bearish ? "Bearish trend" : "Sideways / mixed", ret20, ret50, vol, close: closes[last], ema20: e20[last], ema50: e50[last], asOf: rows[last].date };
 }
 export function calculateOhlcvIndicators(input) {
-  const rows = normalizeDailyBars(input).map(row => {
-    const original = (Array.isArray(input) ? input : []).find(item => item?.date === row.date) ?? {};
-    return { ...row, high: Number(original.high), low: Number(original.low), volume: Number.isFinite(Number(original.volume)) && Number(original.volume) >= 0 ? Number(original.volume) : undefined };
-  });
+  const byDate = new Map();
+  for (const row of Array.isArray(input) ? input : []) {
+    const date = String(row?.date ?? "").slice(0, 10), close = Number(row?.close);
+    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date) || !Number.isFinite(Date.parse(date + "T00:00:00Z")) || new Date(date + "T00:00:00Z").toISOString().slice(0, 10) !== date || !Number.isFinite(close) || close <= 0) continue;
+    const high = Number(row.high), low = Number(row.low), rawVolume = row.volume;
+    byDate.set(date, { date, close, high, low, volume: rawVolume !== null && rawVolume !== undefined && Number.isFinite(Number(rawVolume)) && Number(rawVolume) >= 0 ? Number(rawVolume) : undefined });
+  }
+  const rows = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
   const last = rows.at(-1);
   if (!last) return null;
-  const candles = rows.slice(-30), full = candles.length >= 28 && candles.every(row => Number.isFinite(row.high) && Number.isFinite(row.low) && row.high >= row.low);
+  const candles = rows.slice(-30), full = candles.length >= 15 && candles.every(row => Number.isFinite(row.high) && Number.isFinite(row.low) && row.high >= row.low);
   let atr = null, adx = null;
   if (full) {
     const tr = [], plus = [], minus = [];

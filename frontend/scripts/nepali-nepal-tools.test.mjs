@@ -65,6 +65,7 @@ assert.ok(liveSource.includes('return <HolidayTool locale={locale}/>'), "Holiday
 for (const required of ["नेपाली नयाँ वर्ष", "हरितालिका तीज", "शहीद दिवस", "महिला कर्मचारीका लागि मात्र", "आधिकारिक गृह मन्त्रालय"]) {
   assert.ok(liveSource.includes(required) || pageSource.includes(required), `Expected Nepali holiday copy: ${required}`);
 }
+assert.ok(componentSource.includes('["image/jpeg", "image/png", "image/webp"].includes(photo.type)'), "Photo resizer must validate supported image MIME types");
 assert.ok(componentSource.includes("photo.size > 20 * 1024 * 1024"), "Photo resizer must enforce its 20 MB client-side limit");
 assert.ok(componentSource.includes("sourcePixels > 25_000_000"), "Photo resizer must reject decompression-heavy images above 25 megapixels");
 assert.ok(componentSource.includes("URL.createObjectURL(photo)") && componentSource.includes("canvas.toBlob"), "Photo resizing must be performed locally in the browser");

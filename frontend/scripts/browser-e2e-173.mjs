@@ -165,7 +165,7 @@ async function openPage(url) {
   await send("Runtime.enable");
   await send("Network.enable");
   try { await send("Page.setDownloadBehavior", { behavior: "allow", downloadPath: downloadsDir }); } catch {}
-  const nav = await send("Page.navigate", { url: baseUrl + url });
+  const nav = await send("Page.navigate", { url: new URL(url, baseUrl).toString() });
   if (nav.errorText) throw new Error(nav.errorText);
   const started = Date.now();
   let state = "";
@@ -1176,47 +1176,6 @@ async function runTool(tool, index) {
       row.evidenceLevel = (expected || expectedPattern) && outputMatches ? "expected-output-assertion" : row.outputVerified ? "live-output-observed-not-oracle-checked" : "route-and-controls-smoke-only";
       row.checks.push("workspace output inspected");
 
-      // Check the localized Nepali equivalent for every catalog and PDF tool.
-      const nepaliPath = tool.kind === "pdf"
-        ? "/ne" + tool.url
-        : tool.slug === "resume-builder" ? "/ne/resume-builder" : "/ne/tools/" + tool.slug;
-      const nepaliUrl = new URL(nepaliPath, baseUrl).toString();
-      // Navigate the already-open tab through its own location API. This avoids
-      // a Chromium CDP Page.navigate edge case after file-download interactions.
-      try { await page.evaluate("location.href = " + JSON.stringify(nepaliUrl)); } catch { /* navigation may destroy the old execution context */ }
-      const localizedStarted = Date.now();
-      let localizedReady = { state: "", path: "" };
-      while (Date.now() - localizedStarted < 15000) {
-        localizedReady = await page.evaluate("(() => ({ state: document.readyState, path: location.pathname }))()");
-        if (localizedReady.path === nepaliPath &&
-            (localizedReady.state === "interactive" || localizedReady.state === "complete")) break;
-        await delay(200);
-      }
-      if (localizedReady.path !== nepaliPath) {
-        throw new Error("Nepali route did not finish navigation to " + nepaliPath + ": " + JSON.stringify(localizedReady));
-      }
-      await delay(500);
-      const nepaliState = await page.evaluate(`(() => {
-        const body = document.body?.innerText || "";
-        return {
-          lang: document.documentElement.getAttribute("lang") || "",
-          title: document.title || "",
-          heading: document.querySelector("h1")?.innerText?.trim() || "",
-          headingCount: document.querySelectorAll("h1").length,
-          mainCount: document.querySelectorAll("main").length,
-          hasDevanagari: /[\\u0900-\\u097F]/.test(body),
-          englishFallbackNotice: body.includes("यस पृष्ठको टुल इन्टरफेस अझै पूर्ण रूपमा नेपालीमा अनुवाद गरिएको छैन"),
-          bodyLength: body.trim().length,
-        };
-      })()`);
-      row.nepaliLocale = { path: nepaliPath, ...nepaliState };
-      if (nepaliState.lang !== "ne" || !nepaliState.heading || nepaliState.headingCount !== 1 ||
-          nepaliState.mainCount !== 1 || !nepaliState.hasDevanagari ||
-          nepaliState.englishFallbackNotice || nepaliState.bodyLength < 80) {
-        throw new Error("Nepali localized route did not pass visible-language checks: " + JSON.stringify(row.nepaliLocale));
-      }
-      row.nepaliLocale.status = "PASS";
-      row.checks.push("Nepali route has lang=ne, one main/h1, visible Devanagari content and no English-fallback notice");
       row.status = (expected || expectedPattern) && outputMatches && row.outputVerified ? "PASS" : "PARTIAL";
     }
   } catch (error) {
@@ -1349,7 +1308,7 @@ const report = {
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each PDF route, attach a generated one-page PDF, click the processing action and inspect completion/output state.",
-    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. Every tool also checks its Nepali route for lang=ne, one main/h1, visible Devanagari content and no explicit English-fallback notice. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL.",
+    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A separate second pass verifies every Nepali route and its visible controls.",
     ai: "AI tools are route-smoke-tested only; execution is intentionally skipped per project scope and is always PARTIAL.",
     limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 173 tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },
@@ -1361,8 +1320,8 @@ const report = {
     pdf: results.filter((row) => row.kind === "pdf").length,
     catalog: results.filter((row) => row.kind === "catalog").length,
     aiExecutionSkipped: results.filter((row) => aiTools.has(row.slug)).length,
-    nepaliRoutePass: results.filter((row) => row.nepaliLocale?.status === "PASS").length,
-    nepaliRouteFail: results.filter((row) => row.nepaliLocale?.status !== "PASS").length,
+    nepaliRoutePass: nepaliResults.filter((row) => row.status === "PASS").length,
+    nepaliRouteFail: nepaliResults.filter((row) => row.status !== "PASS").length,
     nepaliTotal: nepaliResults.length,
     nepaliPass: nepaliResults.filter((row) => row.status === "PASS").length,
     nepaliPartial: nepaliResults.filter((row) => row.status === "PARTIAL").length,

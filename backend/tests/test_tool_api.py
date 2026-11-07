@@ -388,6 +388,33 @@ def test_premium_redesign_preview_origin_is_allowed_by_cors():
     assert response.headers.get("access-control-allow-origin") == origin
 
 
+def test_current_and_future_project_vercel_preview_origins_are_allowed_by_cors():
+    from fastapi.testclient import TestClient
+
+    allowed_origin = "https://pd-fora-k13ztdyzf-pokhrelniroj94-7012s-projects.vercel.app"
+    response = TestClient(client.app).options(
+        "/api/merge",
+        headers={
+            "Origin": allowed_origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == allowed_origin
+
+    hostile_origin = "https://pd-fora-preview-pokhrelniroj94-7012s-projects.vercel.app.attacker.test"
+    hostile = TestClient(client.app).options(
+        "/api/merge",
+        headers={
+            "Origin": hostile_origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert hostile.headers.get("access-control-allow-origin") != hostile_origin
+
+
 def test_backend_security_headers_are_present():
     response = TestClient(app).get("/health")
     assert response.status_code == 200

@@ -99,7 +99,7 @@ export default async function NepaliPdfToolPage({ params }: Props) {
         <div className="mt-8">
           {route.component === "pdfora" ? <PDForaTool {...commonProps} /> : <Niroj77Tool {...commonProps} extraFields={route.extraFields} />}
         </div>
-        {guide && <ToolGuide guide={{ ...guide, slug, name: localizedName, keyword: "", related: [], blogSlug: "" }} />}
+        {guide && <ToolGuide guide={{ ...guide, slug, name: localizedName, keyword: "", related: [], blogSlug: "" }} locale="ne" />}
       </div>
     </main>
   );

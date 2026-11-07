@@ -338,7 +338,7 @@ async function runTool(tool, index) {
         }))()`);
         const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name)).length;
         const statusText = finalState.statuses.map((status) => status.text).join(" | ");
-        if (downloadCount > downloadsBefore || finalState.links.length || (statusText && !/processing|please wait/i.test(statusText)) || finalState.alerts.length) break;
+        if (downloadCount > downloadsBefore.size || finalState.links.length || (statusText && !/processing|please wait/i.test(statusText)) || finalState.alerts.length) break;
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));

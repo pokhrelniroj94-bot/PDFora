@@ -22,10 +22,10 @@
     "publishedNepaliCareerRoutes": 3,
     "publishedNepaliMarketDashboardRoute": true,
     "publishedNepaliResumeBuilderRoute": true,
-    "publishedNepaliBlogRoutes": 4,
+    "publishedNepaliBlogRoutes": 28,
     "publishedNepaliStaticRoutes": 4,
     "publishedNepaliHomeRoute": true,
-    "publishedNepaliRouteEquivalents": 33
+    "publishedNepaliRouteEquivalents": 57
   },
   "locales": {
     "en": {
@@ -53,8 +53,8 @@
       "status": "Partially translated",
       "published": true,
       "sourceRouteFiles": 68,
-      "translatedRoutes": 33,
-      "routeCoveragePercent": 48.53,
+      "translatedRoutes": 57,
+      "routeCoveragePercent": 83.82,
       "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 49,
@@ -62,10 +62,10 @@
         "percent": 100
       },
       "blogCoverage": {
-        "translated": 3,
+        "translated": 27,
         "total": 27,
-        "percent": 11.11,
-        "note": "3 fully translated Nepali articles are published; the remaining blog corpus is not localized."
+        "percent": 100,
+        "note": "All 27 curated editorial articles are translated into Nepali; generated catalog guides remain noindex and are not counted."
       },
       "namespaceFiles": 3,
       "reviewStatus": "Existing Nepali routes and PDF guide copy; complete site-wide native review not assessed"

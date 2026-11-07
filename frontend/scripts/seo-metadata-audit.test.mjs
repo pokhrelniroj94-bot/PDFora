@@ -15,6 +15,12 @@ const englishBlogArticle = read("app/blog/[slug]/page.tsx");
 const nepaliBlogIndex = read("app/[locale]/blog/page.tsx");
 const nepaliBlogArticle = read("app/[locale]/blog/[slug]/page.tsx");
 const sitemap = read("app/sitemap.ts");
+const englishPdfGuidesSource = read("lib/tool-guides.ts");
+const nepaliPdfGuidesSource = read("lib/i18n/tool-guides-ne.ts");
+const nepaliPdfNamesSource = read("lib/i18n/pdf-tool-names-ne.ts");
+const nepaliPdfRoutesSource = read("lib/i18n/nepali-pdf-routes.ts");
+const nepaliPdfPage = read("app/[locale]/[slug]/page.tsx");
+const englishPdfMetadataCore = read("lib/i18n/pdf-tool-seo-core.ts");
 const englishOverridesSource = englishPage.slice(englishPage.indexOf("const seoOverrides"), englishPage.indexOf("const seo ="));
 const categorySource = englishPage.slice(englishPage.indexOf("const categoryDescription"), englishPage.indexOf("const description ="));
 const nepaliTitleSource = nepaliPage.slice(nepaliPage.indexOf("const nepaliTitles"), nepaliPage.indexOf("const nepaliDescriptions"));
@@ -98,5 +104,33 @@ assert.match(nepaliBlogArticle, /post\.title/, "Nepali articles need localized t
 assert.match(nepaliBlogArticle, /post\.description/, "Nepali articles need localized descriptions");
 assert.match(sitemap, /nepaliLocalizedBlogPosts\.map/, "Nepali editorial articles must be represented in the sitemap");
 assert.match(sitemap, /blogPosts\.filter\(\(post\) => !isCatalogGeneratedGuide\(post\.slug\)\)/, "Only curated English editorial articles should enter the sitemap");
+
+const englishPdfGuides = [...englishPdfGuidesSource.matchAll(/"slug":\s*"([^"]+)"[\s\S]*?"name":\s*"([^"]+)"[\s\S]*?"purpose":\s*"([^"]+)"/g)]
+  .map((match) => ({ slug: match[1], title: `${match[2]} Online`, description: match[3].replace(/\s+/g, " ").trim().length <= 160 ? match[3].replace(/\s+/g, " ").trim() : (() => { const clean = match[3].replace(/\s+/g, " ").trim(); const shortened = clean.slice(0, 159); const boundary = shortened.lastIndexOf(" "); return `${shortened.slice(0, boundary > 110 ? boundary : 159).replace(/[,:;–-]+$/, "")}.`; })() }));
+const routeStart = nepaliPdfRoutesSource.indexOf("export const nepaliPdfRoutes");
+const nepaliPdfSlugs = [...nepaliPdfRoutesSource.slice(routeStart).matchAll(/^\s*"([^"]+)":\s*\{/gm)].map((match) => match[1]);
+const nepaliPdfNames = parseDictionary(nepaliPdfNamesSource.slice(nepaliPdfNamesSource.indexOf("export const nepaliToolNames")));
+const nepaliPdfPurposes = new Map([...nepaliPdfGuidesSource.matchAll(/"([^"]+)":\s*\{purpose:\s*"([^"]+)"/g)].map((match) => [match[1], match[2]]));
+assert.equal(englishPdfGuides.length, 49, "All 49 English PDF tools need SEO metadata");
+assert.equal(nepaliPdfSlugs.length, 49, "All 49 Nepali PDF routes need SEO metadata");
+assert.equal(nepaliPdfNames.size, 49, "All 49 Nepali PDF routes need localized titles");
+assert.equal(nepaliPdfPurposes.size, 49, "All 49 Nepali PDF routes need localized descriptions");
+assertUnique(englishPdfGuides, "title", "English PDF tool metadata");
+assertUnique(englishPdfGuides, "description", "English PDF tool metadata");
+const nepaliPdfMetadata = nepaliPdfSlugs.map((slug) => ({ slug, title: nepaliPdfNames.get(slug), description: nepaliPdfPurposes.get(slug) }));
+assertUnique(nepaliPdfMetadata, "title", "Nepali PDF tool metadata");
+assertUnique(nepaliPdfMetadata, "description", "Nepali PDF tool metadata");
+for (const item of nepaliPdfMetadata) {
+  assert.ok(item.title && item.description, "Nepali PDF title/description missing for " + item.slug);
+  const metadata = modules.metadata.buildLocaleMetadata({ locale: "ne", path: `/${item.slug}`, title: item.title + " | PDFora", description: item.description });
+  assert.equal(metadata.alternates?.canonical, `https://pd-fora.vercel.app/ne/${item.slug}`, "Nepali PDF canonical must be self-referencing: " + item.slug);
+  const approved = modules["localized-verification"].isLocalizedToolIndexable("ne", item.slug);
+  assert.deepEqual(metadata.robots, approved ? { index: true, follow: true } : { index: false, follow: true }, "Nepali PDF indexability must use the explicit allowlist: " + item.slug);
+  assert.equal(Boolean(metadata.alternates?.languages), approved, "Only approved Nepali PDF routes may publish hreflang: " + item.slug);
+}
+assert.match(nepaliPdfPage, /title:\s*`\${name} \| PDFora`/, "Nepali PDF pages must use their localized title");
+assert.match(nepaliPdfPage, /description:\s*guide\?\.purpose \?\? route\.description/, "Nepali PDF pages must use localized guide descriptions");
+assert.match(englishPdfMetadataCore, /alternates:\s*\{ canonical: url \}/, "English PDF pages must have self-referencing canonicals");
+assert.match(englishPdfMetadataCore, /robots:\s*\{ index: true, follow: true \}/, "English PDF tool metadata must be indexable");
 
 console.log(`SEO metadata audit passed: ${englishMetadata.length} unique English tool titles/descriptions and ${nepaliMetadata.length} unique Nepali tool titles/descriptions.`);

@@ -23,6 +23,30 @@ export type BlogPost = {
 
 const editorialBlogPosts: BlogPost[] = [
   {
+    slug: "how-to-calculate-tip-and-split-the-bill",
+    title: "How to Calculate a Tip: Percentage, Total Bill and Per-Person Split",
+    description: "Calculate a tip amount, the final bill and an equal share per person with clear formulas, worked examples and checks for service charges and rounding.",
+    keyword: "how to calculate a tip and split a bill",
+    updated: "2026-11-07",
+    readTime: "5 min read",
+    intro: "To calculate a tip, multiply the bill amount you choose to tip on by the tip percentage, then add the tip to the bill. If the group is splitting the bill equally, divide the final total by the number of people. The steps are simple, but choosing the right bill amount and checking an included service charge can prevent common mistakes.",
+    sections: [
+      { heading: "1. Choose the bill amount you want to calculate from", paragraphs: ["Start with the amount that you intend to use as the tip base. Depending on local custom, the receipt and your preference, that may be the pre-tax amount or the amount after tax. There is no single rule that applies to every country or restaurant, so check the receipt and use one consistent amount.", "If the receipt already includes a service charge or gratuity, check what it covers before adding another tip. A service charge may be handled differently from an optional tip."] },
+      { heading: "2. Calculate the tip percentage", paragraphs: ["Convert the percentage to a decimal by dividing it by 100, then multiply it by the chosen bill amount. For example, 18% becomes 0.18. The tip formula is: tip = bill amount × tip percentage ÷ 100.", "For a $80 bill and an 18% tip, the tip is $80 × 18 ÷ 100 = $14.40. Add the tip to the bill to get a total of $94.40."] },
+      { heading: "3. Split the total between people", paragraphs: ["For an equal split, divide the bill plus tip by the number of people. Using the $94.40 total above, four people would each pay $94.40 ÷ 4 = $23.60.", "An equal split assumes everyone is sharing the cost evenly. If people ordered different items, paid separate deposits or want to contribute different tip amounts, calculate each person's share separately instead of treating the equal-split result as exact."] },
+      { heading: "4. Check service charges, tax and rounding", paragraphs: ["Before paying, look for a service charge, gratuity or tip already added to the receipt. Do not add the same charge twice. If you are unsure whether a charge is mandatory or optional, ask the restaurant rather than guessing.", "Rounding can create a small difference when a total is divided among several people. Agree how to handle the remaining cents, and make sure the individual payments add back up to the amount due."] },
+      { heading: "5. Common tip-calculation mistakes", paragraphs: ["A calculator can give the correct arithmetic while still using the wrong base amount. Check the receipt and the assumptions before relying on the result."], bullets: ["Using the wrong bill amount or mixing pre-tax and after-tax totals.", "Adding a second tip without checking an included service charge or gratuity.", "Entering 18 instead of 0.18 in a tool that specifically asks for a decimal rate.", "Dividing only the tip instead of the full bill-plus-tip total.", "Ignoring rounding differences or assuming every person has an equal share."] }
+    ],
+    faqs: [
+      { question: "What is the formula for calculating a tip?", answer: "Tip amount = chosen bill amount × tip percentage ÷ 100. Add the tip amount to the bill to get the total including tip." },
+      { question: "How much is an 18% tip on $80?", answer: "An 18% tip on $80 is $14.40. The total including the tip is $94.40." },
+      { question: "How do I split a bill with tip between four people?", answer: "Add the tip to the bill, then divide the final total by four. For a $94.40 total, each person pays $23.60 if the split is equal." },
+      { question: "Should I tip on the amount before or after tax?", answer: "Practices vary by location and personal preference. Check local custom and the receipt, choose the amount you intend to use, and apply the percentage consistently." },
+      { question: "Does the calculator account for service charges?", answer: "The calculator performs the percentage and split arithmetic. It cannot determine whether a restaurant's service charge or gratuity is already included, so check the receipt first." }
+    ],
+    toolLinks: [{ label: "Tip Calculator", href: "/tools/tip-calculator" }, { label: "Split Bill Calculator", href: "/tools/split-bill-calculator" }]
+  },
+  {
     slug: "compress-pdf-to-under-1mb-online",
     title: "How to Compress a PDF to Under 1MB Online",
     description: "Learn practical ways to reduce a PDF to under 1MB for online forms, email and document uploads, and find out why some files cannot reach an exact size.",

@@ -216,7 +216,7 @@ async function seedPdfFields(page, slug) {
     "    const label = [...(control.labels || [])].map((item) => item.innerText).join(' ');",
     "    const key = [label, control.getAttribute('aria-label'), control.placeholder, control.name, control.id].filter(Boolean).join(' ').toLowerCase();",
     "    let value = '1';",
-    "    else if (/password|passphrase|owner key|user key/.test(key)) value = 'PDFora-E2E-123!';",
+    "    if (/password|passphrase|owner key|user key/.test(key)) value = 'PDFora-E2E-123!';",
     "    else if (/watermark|header|footer|text|signature|name|reason|title/.test(key)) value = 'PDFora E2E';",
     "    else if (/degree|rotation|angle/.test(key)) value = '90';",
     "    else if (/page|range|order|crop|margin|width|height|top|bottom|left|right/.test(key)) value = '1';",

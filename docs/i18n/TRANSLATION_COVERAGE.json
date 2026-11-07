@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-07T05:26:30.960Z",
-  "sourceCommit": "f8233e740e43f3c6f6ceb78c343c63d7adce5f9c",
+  "generatedAt": "2026-11-07T09:39:08.310Z",
+  "sourceCommit": "4eb52b6e2a31a964b0416fcffecd45023593b8d7",
   "methodology": {
     "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
-    "routeCoverage": "Published locale route equivalents divided by frontend page source files; a conservative source-file proxy, not interface-string coverage.",
+    "routeCoverage": "Dynamic route handlers serve multiple slugs; localized route equivalents are reported as counts only, not percentages of page source files.",
     "sharedUiModuleCoverage": "Leaf strings in lib/i18n/shared-ui.ts only; does not measure every component or form.",
     "pdfGuideCoverage": "Nepali guide entries compared with the English tool guide registry.",
     "blogCoverage": "Registered localized article records compared with English editorial and Nepal article records.",
@@ -17,15 +17,15 @@
     "editorialBlogArticles": 8,
     "nepalBlogArticles": 19,
     "publishedNepaliPdfRoutes": 6,
-    "publishedNepaliUtilityRoutes": 6,
-    "publishedNepaliFinancialRoutes": 7,
+    "publishedNepaliUtilityRoutes": 52,
+    "publishedNepaliFinancialRoutes": 9,
     "publishedNepaliCareerRoutes": 3,
     "publishedNepaliMarketDashboardRoute": true,
     "publishedNepaliResumeBuilderRoute": true,
     "publishedNepaliBlogRoutes": 28,
     "publishedNepaliStaticRoutes": 4,
     "publishedNepaliHomeRoute": true,
-    "publishedNepaliRouteEquivalents": 57
+    "publishedNepaliRouteEquivalents": 105
   },
   "locales": {
     "en": {
@@ -53,8 +53,8 @@
       "status": "Partially translated",
       "published": true,
       "sourceRouteFiles": 68,
-      "translatedRoutes": 57,
-      "routeCoveragePercent": 83.82,
+      "translatedRoutes": 105,
+      "routeCoveragePercent": null,
       "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
         "translated": 49,

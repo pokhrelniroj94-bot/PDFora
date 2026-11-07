@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     url: "https://pd-fora.vercel.app/market",
     siteName: "PDFora",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "NEPSE Market Dashboard & Stock Charts | PDFora",
+    description: "Explore NEPSE index, listed company prices, market movers, sector indices and historical charts.",
+    images: ["/opengraph-image"],
+  },
 };
 
 export default function MarketPage() {

@@ -270,11 +270,11 @@ export default function CatalogToolSEOContent({
       note: "This estimate is based on the stated FY 2083/84 assumptions and does not automatically cover every benefit, deduction, credit, employment type or special tax status. Confirm the current law and your circumstances with IRD or a tax professional."
     },
     "nepal-electricity-bill-calculator": {
-      heading: "Estimate a Nepal domestic electricity bill from monthly units",
-      intro: "Estimate a single-phase domestic electricity bill by entering monthly energy consumption in units (kWh) and selecting the meter capacity supported by the calculator. The estimate separates energy-block charges and applicable minimum or VAT assumptions.",
-      steps: ["Enter the total units consumed during the billing period.", "Choose the single-phase meter capacity matching your NEA connection.", "Review the estimated energy charge, minimum charge and VAT components.", "Compare the estimate with your actual NEA bill and the current tariff notice."],
-      example: "If a household consumes 100 units in a month, the calculator applies the applicable energy blocks rather than multiplying every unit by one flat rate.",
-      note: "The estimator is limited to the connection types and assumptions stated in the tool. It is not suitable for commercial, industrial or unsupported three-phase tariffs. Confirm the applicable tariff and bill adjustments with NEA."
+      heading: "Use Nepal's official ERC electricity bill calculator",
+      intro: "Electricity charges depend on the applicable tariff category, consumption, connection details and current tariff schedule. ERC issued a new tariff directive in 2083, so a static rate table can become inaccurate. This page sends you to the live official calculator instead of reproducing old rates.",
+      steps: ["Keep your latest NEA bill or meter details ready.", "Open the official ERC electricity calculator.", "Choose the correct consumer category, connection and fuse capacity shown for your account.", "Enter the billing-period consumption in kWh and select any applicable tariff option requested by the official tool.", "Review the result and compare the inputs with your actual NEA bill."],
+      example: "Do not assume that a fixed number of units always has the same price. The applicable tariff schedule, category, minimum charges, taxes and later adjustments can change the final amount.",
+      note: "PDFora does not calculate or guarantee an electricity bill from hard-coded tariff assumptions. Use ERC's current calculator and 2083 directive; the actual bill issued by NEA remains the final account statement."
     },
     "nepal-public-holidays-2083": {
       heading: "Check Nepal public holidays for Bikram Sambat 2083",

@@ -302,7 +302,7 @@ test("Nepali legal and static routes contain complete localized copy", () => {
 test("all 49 PDF tools have registered Nepali routes, names and guide copy", async () => {
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
   const { pdfTools } = await import("../lib/tool-directory.ts");
-  const expected = pdfTools.map((tool) => tool.href.replace(/^\\//, "")).sort();
+  const expected = pdfTools.map((tool) => tool.href.replace(/^\//, "")).sort();
   assert.equal(slugs.length, 49);
   assert.deepEqual([...slugs].sort(), expected);
   for (const slug of slugs) {

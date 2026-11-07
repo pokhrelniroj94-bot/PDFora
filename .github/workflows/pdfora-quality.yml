@@ -7,6 +7,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+# Avoid running the expensive 173-tool browser sweep multiple times for every
+# successive QA commit on the same PR. Only the newest revision should consume CI.
+concurrency:
+  group: pdfora-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   backend:
     runs-on: ubuntu-latest
@@ -51,6 +56,58 @@ jobs:
       - run: npm run build
       - name: Audit npm dependencies
         run: npm audit --omit=dev --audit-level=high
+      - name: Install headless Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Start production server for browser tests
+        run: |
+          npm start -- --hostname 127.0.0.1 > /tmp/pdfora-next.log 2>&1 &
+          for attempt in {1..90}; do
+            if curl --fail --silent http://127.0.0.1:3000/ > /dev/null; then
+              echo "Next.js production server is ready."
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/pdfora-next.log
+          exit 1
+      - name: Warm the Render PDF backend before browser processing tests
+        run: |
+          for attempt in {1..45}; do
+            if curl --max-time 8 --fail --silent https://pdfora-493r.onrender.com/ > /dev/null; then
+              echo "Render backend is responding."
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Render backend did not respond within 90 seconds."
+          exit 1
+      - name: Check browser E2E runner syntax
+        run: node --check scripts/browser-e2e-173.mjs
+      - name: Run individual Chromium E2E checks for all 173 tools
+        id: browser-e2e
+        continue-on-error: true
+        env:
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
+          E2E_BASE_URL: http://127.0.0.1:3000
+          E2E_TOOL_TIMEOUT_MS: "45000"
+        run: node scripts/browser-e2e-173.mjs
+      - name: Regenerate audit with browser evidence
+        if: always()
+        run: npm run audit:functional
+      - name: Upload individual tool E2E and functional audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfora-browser-e2e-173-report
+          path: |
+            docs/qa/BROWSER_E2E_173_REPORT.json
+            docs/qa/FUNCTIONAL_TOOL_AUDIT.json
+            docs/qa/FUNCTIONAL_TOOL_AUDIT.md
+          if-no-files-found: warn
+      - name: Fail CI when any individual E2E check fails
+        if: steps.browser-e2e.outcome == 'failure'
+        run: exit 1
 
   live-production:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'

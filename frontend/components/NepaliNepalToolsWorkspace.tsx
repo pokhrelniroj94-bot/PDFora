@@ -103,6 +103,7 @@ function LoksewaPhotoResizer() {
 
   async function resizePhoto() {
     if (!photo) { setMessage("पहिले फोटो छान्नुहोस्।"); return; }
+    if (photo.size > 20 * 1024 * 1024) { setMessage("फोटोको आकार २० MB भन्दा कम हुनुपर्छ।"); return; }
     setBusy(true);
     setMessage("");
     const sourceUrl = URL.createObjectURL(photo);
@@ -137,7 +138,7 @@ function LoksewaPhotoResizer() {
       anchor.href = outputUrl;
       anchor.download = "nepal-form-photo.jpg";
       anchor.click();
-      URL.revokeObjectURL(outputUrl);
+      window.setTimeout(() => URL.revokeObjectURL(outputUrl), 1000);
       setMessage(`फोटो तयार भयो: ${width} × ${height} px, ${(blob.size / 1024).toFixed(1)} KB। मूल फाइल: ${(photo.size / 1024).toFixed(1)} KB।`);
     } catch (cause) {
       setMessage(cause instanceof Error ? cause.message : "फोटो सानो बनाउन सकिएन।");
@@ -151,7 +152,7 @@ function LoksewaPhotoResizer() {
     <div className="space-y-4">
       <div><h2 className="text-lg font-bold">लोकसेवा तथा अनलाइन फाराम फोटो रिसाइजर</h2><p className="mt-1 text-sm text-slate-600">फोटोको पिक्सेल आयाम र JPEG फाइल आकार घटाएर डाउनलोड गर्नुहोस्।</p></div>
       {photo && <p className="text-sm text-slate-600">छानिएको फाइल: {photo.name} · {(photo.size / 1024).toFixed(1)} KB</p>}
-      <label className="block"><span className={label}>फोटो छान्नुहोस्</span><input className={field} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { setPhoto(event.target.files?.[0] ?? null); setMessage(""); }} /></label>
+      <label className="block"><span className={label}>फोटो छान्नुहोस् (अधिकतम २० MB)</span><input className={field} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { setPhoto(event.target.files?.[0] ?? null); setMessage(""); }} /></label>
       <div className="grid grid-cols-2 gap-3">
         <label><span className={label}>अधिकतम फाइल आकार</span><select className={field} value={limit} onChange={(event) => setLimit(event.target.value)}><option value="50">५० KB</option><option value="100">१०० KB</option><option value="200">२०० KB</option></select></label>
         <label><span className={label}>अधिकतम चौडाइ/उचाइ</span><select className={field} value={dimension} onChange={(event) => setDimension(event.target.value)}><option value="600">६०० px</option><option value="800">८०० px</option><option value="1200">१२०० px</option></select></label>

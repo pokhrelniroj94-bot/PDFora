@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const seo = seoOverrides[slug];
   // Every catalog entry has a reviewed, unique description in toolCatalog.ts.
   // Use that task-specific copy directly instead of appending generic category filler.
-  const title = seo?.title ?? `Free ${tool.name} Online`;
+  const title = seo?.title ?? `${tool.name} Online | PDFora`;
   const socialTitle = `${tool.name} Online | PDFora`;
   const description = seo?.description ?? tool.description.trim();
   const canonicalPath = legacyToolSlugSet.has(slug) ? `/${slug}` : `/tools/${slug}`;

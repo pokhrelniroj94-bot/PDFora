@@ -32,12 +32,16 @@ const testedCatalog = new Set([
   "business-days-calculator",
 ]);
 
+// Catalog route/handler/SEO statuses are PARTIAL: current evidence proves registry,
+// adapter and metadata contracts only, not an HTTP-rendered page or complete SEO validation.
+// The PDF handler PASS is backed by the real-PDF backend sweep; its route and SEO remain PARTIAL.
+
 const rows = [
   ...legacyToolSlugs.map((slug) => ({
     slug,
     category: "PDF",
     kind: "pdf",
-    routeStatus: "PASS",
+    routeStatus: "PARTIAL",
     interfaceStatus: "PARTIAL",
     handlerStatus: "PASS",
     functionalTestStatus: "PARTIAL",
@@ -45,7 +49,7 @@ const rows = [
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
-    seoStatus: "PASS",
+    seoStatus: "PARTIAL",
     defectsFound: slug === "reorder-pdf" || slug === "delete-pages"
       ? "Shared browser worker previously accepted unsafe page selections."
       : "",
@@ -60,15 +64,15 @@ const rows = [
     slug: entry.slug,
     category: entry.category,
     kind: "catalog",
-    routeStatus: "PASS",
+    routeStatus: "PARTIAL",
     interfaceStatus: "PARTIAL",
-    handlerStatus: "PASS",
+    handlerStatus: "PARTIAL",
     functionalTestStatus: testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
     outputVerificationStatus: testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
-    seoStatus: "PASS",
+    seoStatus: "PARTIAL",
     defectsFound: "",
     fixesApplied: "",
     remainingBlockers: testedCatalog.has(entry.slug)

@@ -9,7 +9,8 @@ export interface NepalMobileNumberResult {
 
 /** Validate the common 10-digit Nepal mobile-number format; this does not check SIM status. */
 export function validateNepalMobileNumber(input: string): NepalMobileNumberResult {
-  const compact = input.trim().replace(/[\s()-]/g, "");
+  const asciiInput = input.replace(/[०-९]/g, (digit) => String("०१२३४५६७८९".indexOf(digit)));
+  const compact = asciiInput.trim().replace(/[\s()-]/g, "");
   const digits = compact.startsWith("+977")
     ? compact.slice(4)
     : compact.startsWith("977")

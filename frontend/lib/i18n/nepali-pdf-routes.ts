@@ -464,6 +464,86 @@ export const nepaliPdfRoutes: Record<string, NepaliPdfRoute> = {
     "downloadName": "PDFora-Fonts.zip",
     "component": "niroj"
   },
+  "extract-page-images": {
+    "slug": "extract-page-images",
+    "endpoint": "/api/extract-page-images",
+    "title": "Render PDF Pages to PNG",
+    "description": "Render every PDF page as a PNG image and download all pages together in a ZIP archive.",
+    "downloadName": "PDFora-Page-Images.zip",
+    "component": "niroj"
+  },
+  "page-counter": {
+    "slug": "page-counter",
+    "endpoint": "/api/page-counter",
+    "title": "PDF Page Counter",
+    "description": "Count the pages in a PDF and download a simple report with the page count and file size.",
+    "downloadName": "PDFora-Page-Count.txt",
+    "component": "niroj"
+  },
+  "pdf-information": {
+    "slug": "pdf-information",
+    "endpoint": "/api/pdf-info",
+    "title": "PDF Information",
+    "description": "View PDF details including page count, file size, page dimensions, document metadata and encryption status.",
+    "downloadName": "PDFora-Information.txt",
+    "component": "niroj"
+  },
+  "pdf-to-bmp": {
+    "slug": "pdf-to-bmp",
+    "endpoint": "/api/pdf-to-bmp",
+    "title": "PDF to BMP",
+    "description": "Convert each PDF page into a BMP image and download all pages in a ZIP archive.",
+    "downloadName": "PDFora-BMP-Pages.zip",
+    "component": "niroj"
+  },
+  "pdf-to-csv": {
+    "slug": "pdf-to-csv",
+    "endpoint": "/api/pdf-to-csv",
+    "title": "PDF to CSV",
+    "description": "Extract detected tables from a PDF into CSV format for spreadsheet workflows. Best for PDFs with selectable, clearly structured tables.",
+    "downloadName": "PDFora-Tables.csv",
+    "component": "niroj"
+  },
+  "pdf-to-json": {
+    "slug": "pdf-to-json",
+    "endpoint": "/api/pdf-to-json",
+    "title": "PDF to JSON",
+    "description": "Extract text blocks, page numbers, page dimensions and text positions from a PDF into structured JSON data.",
+    "downloadName": "PDFora-Text.json",
+    "component": "niroj"
+  },
+  "pdf-to-markdown": {
+    "slug": "pdf-to-markdown",
+    "endpoint": "/api/pdf-to-markdown",
+    "title": "PDF to Markdown",
+    "description": "Extract selectable text from PDF pages into a Markdown document with page headings.",
+    "downloadName": "PDFora-Text.md",
+    "component": "niroj"
+  },
+  "pdf-to-tiff": {
+    "slug": "pdf-to-tiff",
+    "endpoint": "/api/pdf-to-tiff",
+    "title": "PDF to TIFF",
+    "description": "Convert every page of a PDF into a TIFF image. Download all converted page images together in a ZIP archive.",
+    "downloadName": "PDFora-TIFF-Pages.zip",
+    "component": "niroj"
+  },
+  "remove-annotations": {
+    "slug": "remove-annotations",
+    "endpoint": "/api/remove-annotations",
+    "title": "Remove PDF Annotations",
+    "description": "Remove comments, highlights, sticky notes and other PDF annotations while keeping the page content.",
+    "downloadName": "PDFora-Annotations-Removed.pdf",
+    "component": "niroj"
+  },
+  "remove-attachments": {
+    "slug": "remove-attachments",
+    "endpoint": "/api/remove-attachments",
+    "title": "Remove PDF Attachments",
+    "description": "Remove embedded file attachments from a PDF document while keeping its pages.",
+    "downloadName": "PDFora-Attachments-Removed.pdf",
+    "component": "niroj"
+  },
 };
 
 export function getNepaliPdfRoute(slug: string): NepaliPdfRoute | undefined {

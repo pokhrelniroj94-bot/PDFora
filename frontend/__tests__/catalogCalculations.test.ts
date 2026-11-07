@@ -57,3 +57,10 @@ describe("catalog calculation engine", () => {
     expect(() => convertUnit(1, "m", "kg")).toThrow("compatible");
   });
 });
+
+describe("BMR input validation", () => {
+  test("uses whole-number ages and rejects fractional ages", () => {
+    expect(bmr(70, 175, 30, false)).toBeCloseTo(1648.75);
+    expect(() => bmr(70, 175, 30.5, false)).toThrow("positive weight, height and age");
+  });
+});

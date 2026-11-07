@@ -13,13 +13,11 @@ const expected = [
   ["/tools/nepal-share-calculator", "share quantity", "profit or loss"],
 ];
 for (const [href, ...phrases] of expected) {
-  const entry = homepage.match(new RegExp(`"${href.replace(/[.*+?^\\{}()|[\]\\\\]/g, "\\\\  assert.ok(homepage.includes(`"${href}"`), `Homepage must provide a specific usage guide for ${href}`);
+  const entryLine = homepage.split("\n").find((line) => line.includes(`"${href}": "`));
+  assert.ok(entryLine, `Homepage must provide a specific usage guide for ${href}`);
+  const instruction = entryLine.slice(entryLine.indexOf('": "') + 4).replace(/",?$/, "");
   for (const phrase of phrases) {
-    assert.ok(homepage.toLowerCase().includes(phrase.toLowerCase()), `Missing useful homepage instruction for ${href}: ${phrase}`);
-  }")}":\\s*"([^"]+)"`));
-  assert.ok(entry, `Homepage must provide a specific usage guide for ${href}`);
-  for (const phrase of phrases) {
-    assert.ok(entry[1].toLowerCase().includes(phrase.toLowerCase()), `Missing task-specific instruction for ${href}: ${phrase}`);
+    assert.ok(instruction.toLowerCase().includes(phrase.toLowerCase()), `Missing task-specific instruction for ${href}: ${phrase}`);
   }
 }
 assert.ok(!homepage.includes("upload the required file, follow the options and download the result"), "Homepage fallback must not falsely imply every tool requires file uploads");

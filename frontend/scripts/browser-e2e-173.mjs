@@ -1175,11 +1175,15 @@ async function runTool(tool, index) {
       const localizedNavigation = await page.send("Page.navigate", { url: baseUrl + nepaliPath });
       if (localizedNavigation.errorText) throw new Error("Nepali route navigation failed for " + tool.slug + ": " + localizedNavigation.errorText);
       const localizedStarted = Date.now();
-      let localizedReady = "";
+      let localizedReady = { state: "", path: "" };
       while (Date.now() - localizedStarted < 15000) {
-        localizedReady = await page.evaluate("document.readyState");
-        if (localizedReady === "interactive" || localizedReady === "complete") break;
+        localizedReady = await page.evaluate("(() => ({ state: document.readyState, path: location.pathname }))()");
+        if (localizedReady.path === nepaliPath &&
+            (localizedReady.state === "interactive" || localizedReady.state === "complete")) break;
         await delay(200);
+      }
+      if (localizedReady.path !== nepaliPath) {
+        throw new Error("Nepali route did not finish navigation to " + nepaliPath + ": " + JSON.stringify(localizedReady));
       }
       await delay(500);
       const nepaliState = await page.evaluate(`(() => {

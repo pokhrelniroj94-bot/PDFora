@@ -172,6 +172,10 @@ for (const [source, label] of [[englishHomeSource, "English home"], [nepaliHomeS
 }
 assert.match(englishToolPageSource, /alternates:\s*\{\s*canonical/, "Catalog tool pages must publish self-canonical URLs");
 assert.match(englishToolPageSource, /const title = seo\?\.title \?\? `Free \$\{tool\.name\} Online`/, "Fallback metadata title must rely on the root brand template exactly once");
+assert.doesNotMatch(englishToolPageSource, /keywords\s*[:,]/, "Utility pages must not emit ignored meta-keywords");
+assert.doesNotMatch(read("app/tools/page.tsx"), /keywords\s*:/, "The tools directory must not emit ignored meta-keywords");
+assert.doesNotMatch(read("app/resume-builder/page.tsx"), /keywords\s*:/, "Resume builder must not emit ignored meta-keywords");
+assert.doesNotMatch(read("lib/i18n/pdf-tool-seo-core.ts"), /keywords/, "PDF guide metadata must not emit ignored meta-keywords");
 assert.match(englishToolPageSource, /openGraph:\s*\{/, "Catalog tool pages must publish Open Graph metadata");
 assert.match(englishToolPageSource, /twitter:\s*\{/, "Catalog tool pages must publish Twitter metadata");
 assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*slug\s*!==\s*"ocr-pdf"/, "OCR must remain excluded from indexing");

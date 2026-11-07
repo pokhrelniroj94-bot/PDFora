@@ -5,7 +5,7 @@ import ResumeBuilder from "../../components/ResumeBuilder";
 const localizedAlternates = hreflangMap("/resume-builder");
 
 export const metadata: Metadata = {
-  title: "Free Resume Builder – Professional CV Templates & PDF Download | PDFora",
+  title: "Free Resume Builder – Professional CV Templates & PDF Download",
   description: "Create a professional resume online with 20 professional CV templates, live A4 preview, editable sections, custom colours and free PDF export. No signup required.",
   alternates: { canonical: "https://pd-fora.vercel.app/resume-builder", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
   keywords: ["free resume builder", "CV maker", "resume templates", "professional CV", "download resume PDF", "ATS friendly resume", "Europass CV"],

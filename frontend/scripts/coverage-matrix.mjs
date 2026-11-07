@@ -32,11 +32,11 @@ const publishedLocales = new Set(["en", "ne"]);
 const handlerEvidence = "catalog-handler-check";
 // Derive targeted coverage from executable tests rather than a stale hand-maintained list.
 const targetedNepaliUnitTests = new Set([
-  ...parseSlugs(read("scripts/nepali-text-tools.test.mjs"), /runNepaliTextTool\\("([^"]+)"/g),
-  ...parseSlugs(read("scripts/nepali-developer-text-tools.test.mjs"), /runNepaliDeveloperTool\\("([^"]+)"/g),
-  ...parseSlugs(read("scripts/nepali-math-tools.test.mjs"), /runNepaliMathTool\\("([^"]+)"/g),
-  ...parseSlugs(read("scripts/nepali-business-tools.test.mjs"), /runNepaliBusinessTool\\("([^"]+)"/g),
-  ...parseSlugs(read("scripts/nepali-date-time-tools.test.mjs"), /runNepaliDateTimeTool\\("([^"]+)"/g),
+  ...parseSlugs(read("scripts/nepali-text-tools.test.mjs"), /runNepaliTextTool\("([^"]+)"/g),
+  ...parseSlugs(read("scripts/nepali-developer-text-tools.test.mjs"), /runNepaliDeveloperTool\("([^"]+)"/g),
+  ...parseSlugs(read("scripts/nepali-math-tools.test.mjs"), /runNepaliMathTool\("([^"]+)"/g),
+  ...parseSlugs(read("scripts/nepali-business-tools.test.mjs"), /runNepaliBusinessTool\("([^"]+)"/g),
+  ...parseSlugs(read("scripts/nepali-date-time-tools.test.mjs"), /runNepaliDateTimeTool\("([^"]+)"/g),
   "hash-generator",
   "nepal-phone-validator",
   "gold-tola-gram-converter",

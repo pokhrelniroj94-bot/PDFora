@@ -16,11 +16,13 @@ export const metadata: Metadata = {
     description: "Search and discover PDF, image, finance, Nepal, text and developer tools by the task you want to complete.",
     url: "https://pd-fora.vercel.app/tools",
     siteName: "PDFora",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora online tools directory" }],
   },
   twitter: {
     card: "summary",
     title: "Smart Tool Center | PDFora",
     description: "Find the right tool by task across PDF, image, finance, Nepal and productivity utilities.",
+    images: ["/opengraph-image"],
   },
 };
 

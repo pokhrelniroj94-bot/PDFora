@@ -431,7 +431,7 @@ async function runTool(tool, index) {
       } else if (tool.slug === "nepali-unicode-typing") {
         await setFirstTextArea(page, "Namaste Nepal");
       } else if (tool.slug === "preeti-unicode-converter") {
-        await setFirstTextArea(page, "pzfprq");
+        await setFirstTextArea(page, "g]kfn ;/sf/sf");
       } else if (tool.slug === "nepali-date-converter") {
         await setFieldByLabel(page, "English date", "2026-11-07");
       } else if (tool.slug === "nepal-phone-validator") {
@@ -621,7 +621,7 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "preeti-unicode-converter") {
         const output = await page.evaluate("document.querySelector('main [aria-live]')?.innerText || ''");
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Preeti converter did not return Devanagari output for the known Preeti sample.");
+        if (!output.includes("नेपाल सरकारका")) throw new Error("Preeti converter did not correctly convert the known sample to नेपाल सरकारका.");
         const switched = await page.evaluate("(() => { const select = document.querySelector('main select'); if (!select) return false; select.value = 'to-preeti'; select.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
         if (!switched) throw new Error("Preeti converter is missing its reverse-conversion selector.");
         await setFirstTextArea(page, output);

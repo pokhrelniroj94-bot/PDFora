@@ -84,8 +84,15 @@ jobs:
           done
           echo "Render backend did not respond within 90 seconds."
           exit 1
-      - name: Check browser E2E runner syntax
-        run: node --check scripts/browser-e2e-173.mjs
+      - name: Check browser and live-data smoke runner syntax
+        run: |
+          node --check scripts/browser-e2e-173.mjs
+          node --check scripts/live-data-smoke.mjs
+          node --check scripts/production-security-smoke.mjs
+      - name: Verify live NRB, NEPSE and Nepal news freshness/fallback
+        env:
+          E2E_BASE_URL: http://127.0.0.1:3000
+        run: node scripts/live-data-smoke.mjs
       - name: Run individual Chromium E2E checks for all 173 tools
         id: browser-e2e
         continue-on-error: true

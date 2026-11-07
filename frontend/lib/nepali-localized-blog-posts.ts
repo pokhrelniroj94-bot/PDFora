@@ -24,7 +24,7 @@ const coreNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "Google ले मेरो meta description सधैँ देखाउँछ?", answer: "देखाउँदैन। Google ले meta description वा query सँग मिल्ने पेजको देखिने text बाट snippet बनाउन सक्छ। त्यसैले पेजको मुख्य सामग्री पनि स्पष्ट र उपयोगी हुनुपर्छ।" },
       { question: "Title checker ले ranking बढ्ने ग्यारेन्टी गर्छ?", answer: "गर्दैन। Checker ले लम्बाइ र wording जाँच्न मद्दत गर्छ, तर Google ले कुन title देखाउँछ, पेज index हुन्छ कि हुँदैन वा कति rank गर्छ भन्ने ग्यारेन्टी गर्दैन।" }
     ],
-    toolLinks: [{ label: "Meta Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }],
+    toolLinks: [],
     sources: [{ label: "Google Search Central: Title link मार्गदर्शन", url: "https://developers.google.com/search/docs/appearance/title-link" }, { label: "Google Search Essentials", url: "https://developers.google.com/search/docs/essentials" }, { label: "Google SEO Starter Guide", url: "https://developers.google.com/search/docs/fundamentals/seo-starter-guide" }]
   },
   {

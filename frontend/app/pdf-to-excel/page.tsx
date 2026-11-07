@@ -118,7 +118,7 @@ export default function Page() {
               Upload only documents you are authorised to process. Avoid
               submitting files containing passwords, financial account
               credentials or confidential personal information unless you
-              have reviewed the service's privacy information and are
+              have reviewed the service&apos;s privacy information and are
               comfortable using the tool. Download your result and keep your
               own backup of important source documents.
             </p>

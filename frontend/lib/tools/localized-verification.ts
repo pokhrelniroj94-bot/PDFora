@@ -10,8 +10,9 @@ import type { Locale } from "../i18n/config";
  *      reviewed by a native speaker;
  *   2. its calculations / processing were tested in that locale;
  *   3. the project owner explicitly approved the release.
- * Never populate this from the catalog automatically. Today it is intentionally empty, so every
- * localized tool page is noindex/nofollow, has no hreflang and is not in the sitemap.
+ * Never populate this from the catalog automatically. The current Nepali allowlist is limited to
+ * six PDF tools that have completed the project's localized verification gate; all other
+ * localized tool pages remain noindex/nofollow, have no hreflang and stay out of the sitemap.
  */
 export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {
   ne: ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"],

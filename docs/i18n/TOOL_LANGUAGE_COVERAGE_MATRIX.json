@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T10:30:00.000Z",
+  "generatedAt": "2026-11-07T11:00:00.000Z",
   "sourceCommit": "e37016e2e79af57c01e337ed1127b57d87e680fe",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",

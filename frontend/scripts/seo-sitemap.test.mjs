@@ -19,6 +19,8 @@ const nepaliHomeSource = read("app/ne/page.tsx");
 const blogArticleSource = read("app/blog/[slug]/page.tsx");
 const nepaliBlogArticleSource = read("app/[locale]/blog/[slug]/page.tsx");
 const localeMetadataSource = read("lib/i18n/metadata.ts");
+const toolSeoContentSource = read("components/ToolSEOContent.tsx");
+const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
 
 const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
@@ -162,6 +164,9 @@ assert.match(localeMetadataSource, /twitter:\s*\{/, "Localized pages must publis
 assert.match(localeMetadataSource, /robots:\s*!published\s*\?/, "Unpublished locales must remain excluded from indexing");
 
 assert.doesNotMatch(blogArticleSource, /"@type": "FAQPage"/, "English blog pages must not carry obsolete FAQ rich-result markup");
+assert.doesNotMatch(toolSeoContentSource, /"@type": "FAQPage"/, "English and Nepali PDF guides must not emit obsolete FAQ rich-result markup");
+assert.doesNotMatch(nepaliHomeSource, /"@type": "FAQPage"/, "Nepali homepage must not emit obsolete FAQ rich-result markup");
+assert.doesNotMatch(pdfToolJsonLdSource, /"@type": "FAQPage"/, "Shared PDF JSON-LD must not emit obsolete FAQ rich-result markup");
 assert.doesNotMatch(nepaliBlogArticleSource, /"@type": "FAQPage"/, "Nepali blog pages must not carry obsolete FAQ rich-result markup");
 assert.match(blogArticleSource, /post\.faqs\.map/, "English article FAQs must remain visible to readers");
 assert.match(nepaliBlogArticleSource, /post\.faqs\.map/, "Nepali article FAQs must remain visible to readers");

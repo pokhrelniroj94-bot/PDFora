@@ -6,6 +6,8 @@ import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
 import { toolCatalog } from "../../../components/toolCatalog";
 import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
+import { hreflangMap } from "../../../lib/i18n/routing";
+import { isLocalizedToolIndexable } from "../../../lib/tools/localized-verification";
 
 const site = "https://pd-fora.vercel.app";
 export function generateStaticParams() {
@@ -84,10 +86,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
   const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")} ${categoryDescription[tool.category] ?? "Check the input and output carefully before using the result."}`.slice(0, 160);
   const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
-  const canonical = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;
+  const canonicalPath = legacyToolSlugSet.has(slug) ? `/${slug}` : `/tools/${slug}`;
+  const canonical = `${site}${canonicalPath}`;
+  const languages = isLocalizedToolIndexable("ne", slug) ? hreflangMap(canonicalPath) : undefined;
   return {
     title, description, keywords,
-    alternates: { canonical },
+    alternates: { canonical, ...(languages ? { languages } : {}) },
     robots: { index: slug !== "ocr-pdf", follow: true },
     openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
     twitter: { card: "summary_large_image", title: socialTitle, description, images: [`/tools/${tool.slug}/opengraph-image`] },

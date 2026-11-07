@@ -11,7 +11,7 @@
     "test": "jest",
     "tools:test": "node scripts/tool-adapter.test.mjs && node scripts/tool-ui-regression.test.mjs",
     "audit:functional": "node scripts/functional-audit.mjs",
-    "i18n:test": "node scripts/i18n.test.mjs && node scripts/nepali-blog.test.mjs && node scripts/blog-quality.test.mjs && node scripts/nepali-text-tools.test.mjs && node scripts/nepali-math-tools.test.mjs && node scripts/nepali-date-time-tools.test.mjs && node scripts/nepali-developer-text-tools.test.mjs && node scripts/nepali-business-tools.test.mjs && node scripts/nepali-nepal-tools.test.mjs && node scripts/translation-coverage.test.mjs && node scripts/coverage-matrix.mjs && node scripts/coverage-matrix.test.mjs && node scripts/seo-sitemap.test.mjs && node scripts/homepage-content.test.mjs",
+    "i18n:test": "node scripts/i18n.test.mjs && node scripts/nepali-blog.test.mjs && node scripts/blog-quality.test.mjs && node scripts/nepali-text-tools.test.mjs && node scripts/nepali-extra-text-tools.test.mjs && node scripts/nepali-math-tools.test.mjs && node scripts/nepali-date-time-tools.test.mjs && node scripts/nepali-developer-text-tools.test.mjs && node scripts/nepali-business-tools.test.mjs && node scripts/nepali-nepal-tools.test.mjs && node scripts/translation-coverage.test.mjs && node scripts/coverage-matrix.mjs && node scripts/coverage-matrix.test.mjs && node scripts/seo-sitemap.test.mjs && node scripts/homepage-content.test.mjs",
     "i18n:check": "node scripts/i18n-check.mjs",
     "i18n:coverage": "node scripts/translation-coverage.mjs",
     "i18n:matrix": "node scripts/coverage-matrix.mjs",

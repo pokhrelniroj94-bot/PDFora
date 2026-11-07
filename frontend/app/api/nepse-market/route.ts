@@ -17,7 +17,12 @@ async function getShareHubToken(forceRefresh = false): Promise<string | null> {
   if (shareHubTokenFlight) return shareHubTokenFlight;
   shareHubTokenFlight = (async () => {
     const old = shareHubTokens; const useRefresh = Boolean(old?.refreshToken);
-    const response = await fetch(SHAREHUB_AUTH + (useRefresh ? "/refresh" : "/email"), { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(useRefresh ? { accessToken: old!.accessToken, refreshToken: old!.refreshToken } : { email: process.env.SHAREHUB_EMAIL, password: process.env.SHAREHUB_PASSWORD, useOnCookies: false }), cache: "no-store", signal: AbortSignal.timeout(9000) });
+    const login = () => fetch(SHAREHUB_AUTH + "/email", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ email: process.env.SHAREHUB_EMAIL, password: process.env.SHAREHUB_PASSWORD, useOnCookies: false }), cache: "no-store", signal: AbortSignal.timeout(9000) });
+    let response = useRefresh
+      ? await fetch(SHAREHUB_AUTH + "/refresh", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ accessToken: old!.accessToken, refreshToken: old!.refreshToken }), cache: "no-store", signal: AbortSignal.timeout(9000) })
+      : await login();
+    // A revoked/expired refresh token must not permanently disable the optional provider.
+    if (useRefresh && (response.status === 401 || response.status === 403)) { shareHubTokens = null; response = await login(); }
     if (!response.ok) throw new Error("ShareHub authentication failed (" + response.status + ")");
     const payload = await response.json() as { success?: boolean; data?: { accessToken?: string; refreshToken?: string; accessTokenExpiration?: string } };
     const accessToken = payload.data?.accessToken, refreshToken = payload.data?.refreshToken;

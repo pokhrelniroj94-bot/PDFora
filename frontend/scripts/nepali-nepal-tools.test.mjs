@@ -133,6 +133,10 @@ assert.ok(liveSource.includes('name: "Gaura Parwa"') && liveSource.includes('nam
 assert.ok(liveSource.includes('name: "Dura Mhaipru Nakuma"') && liveSource.includes('name: "Tamu Lhosar"'), "Dura Mhaipru Nakuma must remain distinct from the nationwide Tamu Lhosar holiday");
 assert.ok(liveSource.includes('name: "International Women’s Day"') && liveSource.includes('note: "National public holiday", type: "National"'), "International Women's Day must follow the nationwide day-holiday classification");
 assert.ok(liveSource.includes('name: "Siruwa Pawani"'), "Use the official gazette spelling Siruwa Pawani");
+assert.ok(liveSource.includes('note: "Newar community nationwide", type: "Community"'), "Gai Jatra must retain its community-specific scope");
+assert.ok(liveSource.includes('note: "Women employees only"'), "Teej must be limited to the women employees identified in the gazette");
+assert.ok(liveSource.includes('note: "Employees with disabilities only"'), "Disability Day must not be misrepresented as a nationwide employee holiday");
+assert.ok(!liveSource.includes('note: "Women only"') && !liveSource.includes('Krishna Janmashtami · Gaura Parwa'), "Do not retain overbroad or merged holiday classifications");
 
 const modules = await loadToolAdapter();
 for (const slug of [...newSlugs, ...liveSlugs]) {

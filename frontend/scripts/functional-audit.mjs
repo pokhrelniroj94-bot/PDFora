@@ -48,6 +48,30 @@ const browserReport = fs.existsSync(browserReportPath)
   ? JSON.parse(fs.readFileSync(browserReportPath, "utf8"))
   : null;
 const browserResults = new Map((browserReport?.results ?? []).map((row) => [row.slug, row]));
+const mobileStatusFor = (slug) => {
+  const mobile = browserResults.get(slug)?.mobileViewport;
+  if (!mobile) return "NOT TESTED";
+  return mobile.viewport?.width <= 400 &&
+    mobile.documentWidth <= mobile.viewportWidth + 2 &&
+    mobile.mainWidth <= mobile.mainClientWidth + 2 ? "PASS" : "FAIL";
+};
+const keyboardStatusFor = (slug) =>
+  browserResults.get(slug)?.keyboardNavigation?.afterTab?.advanced === true ? "PASS" :
+    browserResults.get(slug)?.keyboardNavigation ? "FAIL" : "NOT TESTED";
+const accessibilityStatusFor = (slug) =>
+  browserResults.get(slug)?.accessibility?.status ?? "NOT TESTED";
+const blockersFor = (slug, kind) => {
+  const result = browserResults.get(slug);
+  const blockers = [];
+  if (!result) blockers.push("Browser E2E evidence is missing");
+  else if (result.status === "FAIL") blockers.push("Browser E2E failure: " + (result.errors ?? []).join("; "));
+  if (mobileStatusFor(slug) !== "PASS") blockers.push("390px mobile viewport check is not passing");
+  if (keyboardStatusFor(slug) !== "PASS") blockers.push("Keyboard Tab progression check is not passing");
+  if (accessibilityStatusFor(slug) !== "PASS") blockers.push("Basic document/control accessibility review is incomplete");
+  if (kind === "pdf" && !result?.outputVerified) blockers.push("Downloaded PDF/archive bytes and content were not independently validated");
+  blockers.push("Screen-reader, contrast and manual visual review remain separate WCAG checks");
+  return blockers.join("; ");
+};
 
 // Catalog route/handler/SEO statuses are PARTIAL: current evidence proves registry,
 // adapter and metadata contracts only, not an HTTP-rendered page or complete SEO validation.
@@ -75,20 +99,16 @@ const rows = [
     handlerStatus: functionalStatusFor(slug, "pdf"),
     functionalTestStatus: functionalStatusFor(slug, "pdf"),
     outputVerificationStatus: browserResults.get(slug)?.outputVerified ? "PASS" : browserResults.get(slug)?.status === "FAIL" ? "FAIL" : "PARTIAL",
-    mobileStatus: browserResults.get(slug)?.mobileViewport
-      ? (browserResults.get(slug).mobileViewport.documentWidth <= browserResults.get(slug).mobileViewport.viewportWidth + 2 &&
-         browserResults.get(slug).mobileViewport.mainWidth <= browserResults.get(slug).mobileViewport.mainClientWidth + 2 ? "PASS" : "FAIL")
-      : "NOT TESTED",
-    accessibilityStatus: browserResults.get(slug)?.accessibility?.status ?? "NOT TESTED",
+    mobileStatus: mobileStatusFor(slug),
+    keyboardStatus: keyboardStatusFor(slug),
+    accessibilityStatus: accessibilityStatusFor(slug),
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
     defectsFound: [slug === "reorder-pdf" || slug === "delete-pages" ? "Shared browser worker previously accepted unsafe page selections." : "", ...(browserResults.get(slug)?.errors ?? [])].filter(Boolean).join("; "),
     fixesApplied: slug === "reorder-pdf" || slug === "delete-pages"
       ? "Worker now rejects incomplete, duplicate, malformed reorder input and deleting every page."
       : "",
-    remainingBlockers: browserResults.get(slug)?.status === "FAIL"
-      ? "Browser E2E failure: " + (browserResults.get(slug)?.errors ?? []).join("; ") + ". Fix and rerun. Mobile and accessibility remain untested."
-      : "Mobile layout, accessibility and independent download-byte verification require separate evidence.",
+    remainingBlockers: blockersFor(slug, "pdf"),
     evidence: `${pdfEvidence}; ${workerEvidence}${browserReport ? "; docs/qa/BROWSER_E2E_173_REPORT.json" : ""}`,
   })),
   ...catalog.map((entry) => ({
@@ -100,11 +120,9 @@ const rows = [
     handlerStatus: functionalStatusFor(entry.slug, "catalog"),
     functionalTestStatus: functionalStatusFor(entry.slug, "catalog"),
     outputVerificationStatus: browserResults.get(entry.slug)?.outputVerified ? "PASS" : browserResults.get(entry.slug)?.status === "FAIL" ? "FAIL" : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
-    mobileStatus: browserResults.get(entry.slug)?.mobileViewport
-      ? (browserResults.get(entry.slug).mobileViewport.documentWidth <= browserResults.get(entry.slug).mobileViewport.viewportWidth + 2 &&
-         browserResults.get(entry.slug).mobileViewport.mainWidth <= browserResults.get(entry.slug).mobileViewport.mainClientWidth + 2 ? "PASS" : "FAIL")
-      : "NOT TESTED",
-    accessibilityStatus: browserResults.get(entry.slug)?.accessibility?.status ?? "NOT TESTED",
+    mobileStatus: mobileStatusFor(entry.slug),
+    keyboardStatus: keyboardStatusFor(entry.slug),
+    accessibilityStatus: accessibilityStatusFor(entry.slug),
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
     defectsFound: [entry.slug === "nepal-electricity-bill-calculator" ? "A hard-coded tariff estimator could become inaccurate after the ERC 2083 tariff directive." : entry.slug === "unit-converter" ? "Negative length, weight and volume values were accepted; temperature could be mixed with unrelated unit families." : uiRegressionCatalog.has(entry.slug) ? "Blank numeric fields were silently coerced to zero or accepted as valid; YAML escaping and random modulo bias needed correction." : "", ...(browserResults.get(entry.slug)?.errors ?? [])].filter(Boolean).join("; "),
@@ -116,14 +134,8 @@ const rows = [
         ? "Added required-number validation, complete Nepali number-word conversion through crore, Nepal form blank-field checks, JSON-safe YAML serialization, strict CSV parsing, and rejection-sampled random integers with unit/regression tests."
         : "",
     remainingBlockers: entry.slug === "nepal-electricity-bill-calculator"
-      ? "External ERC handoff, official calculator availability and mobile navigation still require browser verification; PDFora intentionally does not estimate tariffs."
-      : browserResults.get(entry.slug)?.status === "FAIL"
-        ? "Browser E2E failure: " + (browserResults.get(entry.slug)?.errors ?? []).join("; ") + ". Fix and rerun. Mobile and accessibility remain untested."
-        : browserResults.get(entry.slug)?.status === "PASS"
-        ? "Mobile layout, accessibility, exhaustive boundary tests and independent download-byte verification remain untested."
-        : testedCatalog.has(entry.slug)
-          ? "Browser route, mobile layout and accessibility evidence remain unverified."
-          : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
+      ? "External ERC handoff and official calculator availability require separate live verification; PDFora intentionally does not estimate tariffs. " + blockersFor(entry.slug, "catalog")
+      : blockersFor(entry.slug, "catalog"),
     evidence: `${entry.slug === "nepal-electricity-bill-calculator"
       ? "frontend/components/NepalLiveTools.tsx; frontend/scripts/nepali-nepal-tools.test.mjs; ERC official calculator and 2083 directive"
       : inputTestedCatalog.has(entry.slug)
@@ -144,7 +156,7 @@ const report = {
     sourceOfTruth: "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     statusRule: "Only executed tests produce PASS; source inspection produces PARTIAL or NOT TESTED.",
     limitations:
-      browserReport ? "Browser route and tool-action checks are included where the per-tool report records them. Mobile overflow, Tab reachability and basic document/control semantics are recorded per route. This does not replace visual comparison, WCAG contrast measurement, screen-reader testing or exhaustive input validation." : "No browser E2E report is present. Mobile, accessibility and individual catalog-tool runtime verification are not claimed.",
+      browserReport ? "Browser route and tool-action checks are included where the per-tool report records them. 390px mobile viewport, Tab progression and basic document/control semantics are recorded per route. This does not replace visual comparison, WCAG contrast measurement, screen-reader testing or exhaustive input validation." : "No browser E2E report is present. Mobile, accessibility and individual catalog-tool runtime verification are not claimed.",
 
   },
   evidence: {
@@ -166,6 +178,10 @@ const report = {
     browserE2eFail: browserReport?.counts?.fail ?? 0,
     mobilePass: rows.filter((row) => row.mobileStatus === "PASS").length,
     mobileNotTested: rows.filter((row) => row.mobileStatus === "NOT TESTED").length,
+    mobileFail: rows.filter((row) => row.mobileStatus === "FAIL").length,
+    keyboardPass: rows.filter((row) => row.keyboardStatus === "PASS").length,
+    keyboardFail: rows.filter((row) => row.keyboardStatus === "FAIL").length,
+    keyboardNotTested: rows.filter((row) => row.keyboardStatus === "NOT TESTED").length,
     accessibilityPass: rows.filter((row) => row.accessibilityStatus === "PASS").length,
     accessibilityPartial: rows.filter((row) => row.accessibilityStatus === "PARTIAL").length,
     accessibilityNotTested: rows.filter((row) => row.accessibilityStatus === "NOT TESTED").length,

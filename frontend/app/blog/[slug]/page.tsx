@@ -54,16 +54,6 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       { "@type": "ListItem", position: 3, name: post.title, item: `${baseUrl}/blog/${post.slug}` },
     ],
   };
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: post.faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: { "@type": "Answer", text: faq.answer },
-    })),
-  };
-
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
       <article className="mx-auto max-w-3xl">

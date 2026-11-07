@@ -4,8 +4,7 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { defaultLocale, localeInfo, locales, type Locale } from "../lib/i18n/config";
 import { storeLocalePreference } from "../lib/i18n/preference";
-import { localizePath, stripLocale } from "../lib/i18n/routing";
-import { hasLocalizedPage } from "../lib/i18n/routing";
+import { hasLocalizedPage, localizePath, stripLocale } from "../lib/i18n/routing";
 import { getSharedUiCopy } from "../lib/i18n/shared-ui";
 
 export default function SiteLanguageBar() {

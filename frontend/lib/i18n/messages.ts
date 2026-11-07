@@ -30,6 +30,56 @@ const loaders: Partial<Record<Locale, Partial<Record<Namespace, Loader>>>> = {
     accessibility: () => import("./messages/ne/accessibility.json"),
     seo: () => import("./messages/ne/seo.json"),
   },
+  hi: {
+    common: () => import("./messages/hi/common.json"),
+    accessibility: () => import("./messages/hi/accessibility.json"),
+    seo: () => import("./messages/hi/seo.json"),
+  },
+  bn: {
+    common: () => import("./messages/bn/common.json"),
+    accessibility: () => import("./messages/bn/accessibility.json"),
+    seo: () => import("./messages/bn/seo.json"),
+  },
+  ur: {
+    common: () => import("./messages/ur/common.json"),
+    accessibility: () => import("./messages/ur/accessibility.json"),
+    seo: () => import("./messages/ur/seo.json"),
+  },
+  ar: {
+    common: () => import("./messages/ar/common.json"),
+    accessibility: () => import("./messages/ar/accessibility.json"),
+    seo: () => import("./messages/ar/seo.json"),
+  },
+  es: {
+    common: () => import("./messages/es/common.json"),
+    accessibility: () => import("./messages/es/accessibility.json"),
+    seo: () => import("./messages/es/seo.json"),
+  },
+  fr: {
+    common: () => import("./messages/fr/common.json"),
+    accessibility: () => import("./messages/fr/accessibility.json"),
+    seo: () => import("./messages/fr/seo.json"),
+  },
+  de: {
+    common: () => import("./messages/de/common.json"),
+    accessibility: () => import("./messages/de/accessibility.json"),
+    seo: () => import("./messages/de/seo.json"),
+  },
+  pt: {
+    common: () => import("./messages/pt/common.json"),
+    accessibility: () => import("./messages/pt/accessibility.json"),
+    seo: () => import("./messages/pt/seo.json"),
+  },
+  zh: {
+    common: () => import("./messages/zh/common.json"),
+    accessibility: () => import("./messages/zh/accessibility.json"),
+    seo: () => import("./messages/zh/seo.json"),
+  },
+  ja: {
+    common: () => import("./messages/ja/common.json"),
+    accessibility: () => import("./messages/ja/accessibility.json"),
+    seo: () => import("./messages/ja/seo.json"),
+  },
 };
 
 async function loadLocale(locale: Locale, wanted: readonly Namespace[]): Promise<MessageTree> {

@@ -11,7 +11,7 @@ Inventory: 68 frontend page source files, 6 API route source files, 49 English P
 | Code | Language | Status | Localized route equivalents | Shared UI module | PDF guides | Blog content |
 |---|---|---|---:|---:|---:|---:|
 | en | English | Source language; translation review not assessed | Source language | 100% | 100% | 100% |
-| ne | Nepali | Partially translated; PR #104 candidate | 157 | 100% | 100% | 100% |
+| ne | Nepali | Partially translated; PR #104 candidate | 172 | 100% | 100% | 100% |
 | hi | Hindi | Not published | 0 | 100% | 0% | 0% |
 | bn | Bengali | Not published | 0 | 100% | 0% | 0% |
 | ur | Urdu | Not published | 0 | 100% | 0% | 0% |
@@ -25,6 +25,6 @@ Inventory: 68 frontend page source files, 6 API route source files, 49 English P
 
 The 100% shared UI figures cover only the typed shared-shell copy in `shared-ui.ts`; all twelve locales also have the three registered common, accessibility and SEO message namespaces. This is not full website translation and does not make the ten unpublished locales indexable.
 
-The master baseline contains 148 Nepali localized route equivalents and 113 tool interfaces (49 PDF + 64 catalog). PR #104 proposes nine additional catalog text tools, which would bring the branch candidate to 157 route equivalents and 122/173 tool interfaces (49 PDF + 73 catalog), with 51 tools still untranslated. The 73 catalog tools comprise 61 utilities, seven finance/news/calculator tools, two public-information tools and three AI-writing tools.
+The master baseline contains 148 Nepali localized route equivalents and 113 tool interfaces (49 PDF + 64 catalog). PR #104 proposes nine additional catalog text tools, which would bring the branch candidate to 172 route equivalents and 137/173 tool interfaces (49 PDF + 73 catalog), with 36 tools still untranslated. The 88 catalog tools comprise 76 utilities, seven finance/news/calculator tools, two public-information tools and three AI-writing tools.
 
-Only six Nepali PDF tool routes are approved for indexing. On the PR #104 candidate, the other 116 localized tool routes remain noindex and excluded from sitemap/hreflang until each page's translated interface, metadata, errors, help, behavior and native-language review are complete. All ten additional locales remain unpublished and excluded from indexing. Generated catalog guides remain noindex until individually reviewed. Candidate counts must be confirmed by CI before release.
+Only six Nepali PDF tool routes are approved for indexing. On the PR #104 candidate, the other 131 localized tool routes remain noindex and excluded from sitemap/hreflang until each page's translated interface, metadata, errors, help, behavior and native-language review are complete. All ten additional locales remain unpublished and excluded from indexing. Generated catalog guides remain noindex until individually reviewed. Candidate counts must be confirmed by CI before release.

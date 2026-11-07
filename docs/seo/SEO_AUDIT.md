@@ -52,3 +52,19 @@ A regression check is being added to `verify-tool-catalog.mjs` so future catalog
 - Do not merge language variants into one canonical URL. Each genuinely translated page needs its own self-canonical and reciprocal hreflang only when both versions are complete and indexable.
 - Search Console indexing, impressions, clicks and query performance cannot be inferred from a code audit. Those require the connected Search Console property and post-deployment data.
 
+
+
+## Search Console content opportunities — 2026-11-07
+
+The connected Search Console property `https://pd-fora.vercel.app/` returned 860 search-analytics rows for the available 28-day window (2026-10-10 to 2026-11-06): 1,304 impressions, 1 click, 86 distinct landing pages and 414 distinct queries. These are small-sample observations, not a traffic forecast.
+
+The strongest immediate opportunity is `/tools/tip-calculator`: 120 impressions, including 115 for “tip calculator”, at an impression-weighted average position of about 6.2, but no clicks in the returned window. The live page title still displays “Free Tip Calculator Online | PDFora”, while the current repository source has a more descriptive title override (“Tip Calculator – Calculate Tip, Total & Split the Bill”). The production deployment is behind the current repository, so the source override is not yet live.
+
+The generated `/blog/tip-calculator-guide` received 102 impressions, mainly for “how to calculate tip”, at average position about 9.7. Its current live copy is a short shared-template guide and is noindex in the source. It is being replaced in the release branch by a genuinely editorial English guide plus a full Nepali translation at `/blog/how-to-calculate-tip-and-split-the-bill`, with the old generated URL redirected to the reviewed article. This converts an observed query opportunity into useful content rather than simply removing the page or making thin copy indexable.
+
+Other priorities from the same window:
+- `/delete-pages`: 205 impressions but average position about 74.5; needs a dedicated page-level content and SERP review.
+- `/blog/meta-title-checker-guide`: 212 impressions but average position about 80.8; it remains a generated noindex guide until it can be rewritten with original, accurate Google title-link guidance.
+- `/blog/split-pdf-and-extract-selected-pages`: 139 impressions at average position about 84.5; needs query-to-content relevance review before any rewrite.
+
+The Search Console connector data is delayed by several days, so the 28-day window is not a real-time report. Organic traffic and rankings are not guaranteed by these changes.

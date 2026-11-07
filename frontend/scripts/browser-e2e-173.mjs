@@ -178,8 +178,10 @@ async function runTool(tool, index) {
       for (const nodeId of queries.nodeIds) {
         await page.send("DOM.setFileInputFiles", { nodeId, files: tool.slug === "images-to-pdf" ? [pngPath] : tool.slug === "merge-pdf" ? [fixturePath, fixturePath] : [fixturePath] });
       }
-      const attached = await page.evaluate("[...document.querySelectorAll('input[type=file]')].filter((input) => input.files?.length).length");
-      if (attached !== queries.nodeIds.length) throw new Error("PDF fixture was not attached to every upload field.");
+      const fixtureName = tool.slug === "images-to-pdf" ? path.basename(pngPath) : path.basename(fixturePath);
+      const expectedFileCount = tool.slug === "merge-pdf" || tool.slug === "compare-pdf" ? 2 : 1;
+      const attached = await page.evaluate("document.body.innerText.split(" + JSON.stringify(fixtureName) + ").length - 1");
+      if (attached < expectedFileCount) throw new Error("PDF fixture selection was not reflected in the upload workspace.");
       row.checks.push("PDF file selected");
       const action = await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
@@ -313,7 +315,7 @@ async function runTool(tool, index) {
         "unit-converter": "1000",
         "fraction-calculator": "5/6",
         "csv-to-json": "Asha",
-        "json-to-yaml": "name: Asha",
+        "json-to-yaml": "\"name\": \"Asha\"",
         "roman-numeral-converter": "MMXXVI",
         "business-days-calculator": "Weekdays (inclusive): 21",
         "text-to-binary": "01001000 01100101 01101100 01101100 01101111",

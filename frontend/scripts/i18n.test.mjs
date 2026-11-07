@@ -236,7 +236,7 @@ test("Nepali Resume Builder preserves all templates and print-safe Devanagari ou
   assert.ok(source.includes('id="resume-paper" lang={ne ? "ne" : "en"}'));
 });
 
-test("Nepali blog routes contain complete reviewed article content", () => {
+test("Nepali blog routes contain complete translated article content", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "lib", "nepali-localized-blog-posts.ts"), "utf8");
   const page = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "blog", "[slug]", "page.tsx"), "utf8");
   for (const phrase of ["नेपाली मिति कन्भर्टर", "नेपालमा १३% VAT", "रोपनी, आना, पैसा र दाम", "बारम्बार सोधिने प्रश्न"]) {

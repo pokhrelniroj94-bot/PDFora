@@ -78,8 +78,8 @@ export function csvToJson(input: string): string {
 
     if (quoteClosed) {
       if (char === ",") finishCell();
-      else if (char === "\\r" || char === "\\n") {
-        if (char === "\\r" && input[i + 1] === "\\n") i += 1;
+      else if (char === "\r" || char === "\n") {
+        if (char === "\r" && input[i + 1] === "\n") i += 1;
         finishRow();
       } else {
         throw new Error("Unexpected characters after a quoted CSV field.");
@@ -92,8 +92,8 @@ export function csvToJson(input: string): string {
       inQuotes = true;
     } else if (char === ",") {
       finishCell();
-    } else if (char === "\\r" || char === "\\n") {
-      if (char === "\\r" && input[i + 1] === "\\n") i += 1;
+    } else if (char === "\r" || char === "\n") {
+      if (char === "\r" && input[i + 1] === "\n") i += 1;
       finishRow();
     } else {
       cell += char;

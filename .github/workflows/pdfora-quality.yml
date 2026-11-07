@@ -101,6 +101,12 @@ jobs:
           E2E_BASE_URL: http://127.0.0.1:3000
           E2E_TOOL_TIMEOUT_MS: "45000"
         run: node scripts/browser-e2e-173.mjs
+      - name: Run real Cloudflare Workers AI and Upstash checks on protected Preview
+        id: preview-ai-smoke
+        continue-on-error: true
+        env:
+          PDFORA_AI_PREVIEW_URL: https://pd-fora-git-qa-173-tool-br-168b6d-pokhrelniroj94-7012s-projects.vercel.app
+        run: node scripts/preview-ai-smoke.mjs
       - name: Regenerate audit with browser evidence
         if: always()
         run: npm run audit:functional
@@ -116,6 +122,9 @@ jobs:
           if-no-files-found: warn
       - name: Fail CI when any individual E2E check fails
         if: steps.browser-e2e.outcome == 'failure'
+        run: exit 1
+      - name: Fail CI when live Preview AI provider checks fail
+        if: steps.preview-ai-smoke.outcome == 'failure'
         run: exit 1
 
   live-production:

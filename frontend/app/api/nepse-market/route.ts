@@ -16,7 +16,7 @@ async function getShareHubToken(forceRefresh = false): Promise<string | null> {
   if (!forceRefresh && shareHubTokens && shareHubTokens.accessExpiresAt > Date.now() + 60_000) return shareHubTokens.accessToken;
   if (shareHubTokenFlight) return shareHubTokenFlight;
   shareHubTokenFlight = (async () => {
-    const old = shareHubTokens; const useRefresh = Boolean(old?.refreshToken && !forceRefresh);
+    const old = shareHubTokens; const useRefresh = Boolean(old?.refreshToken);
     const response = await fetch(SHAREHUB_AUTH + (useRefresh ? "/refresh" : "/email"), { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(useRefresh ? { accessToken: old!.accessToken, refreshToken: old!.refreshToken } : { email: process.env.SHAREHUB_EMAIL, password: process.env.SHAREHUB_PASSWORD, useOnCookies: false }), cache: "no-store", signal: AbortSignal.timeout(9000) });
     if (!response.ok) throw new Error("ShareHub authentication failed (" + response.status + ")");
     const payload = await response.json() as { success?: boolean; data?: { accessToken?: string; refreshToken?: string; accessTokenExpiration?: string } };

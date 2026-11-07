@@ -235,6 +235,35 @@ async function seedPdfFields(page, slug) {
   return page.evaluate(expression);
 }
 
+
+async function validateDownloadedFile(filePath) {
+  const bytes = fs.readFileSync(filePath);
+  if (!bytes.length) throw new Error("Downloaded output is empty: " + path.basename(filePath));
+  const extension = path.extname(filePath).toLowerCase();
+  const hasPrefix = (...values) => values.every((value, index) => bytes[index] === value);
+  if (extension === ".pdf") {
+    const document = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    if (document.getPageCount() < 1) throw new Error("Downloaded PDF has no pages: " + path.basename(filePath));
+  } else if ([".zip", ".docx", ".xlsx", ".pptx", ".odt", ".ods"].includes(extension)) {
+    if (!hasPrefix(0x50, 0x4b)) throw new Error("Downloaded archive/Office file has no ZIP signature: " + path.basename(filePath));
+  } else if (extension === ".png") {
+    if (!hasPrefix(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) throw new Error("Downloaded PNG signature is invalid: " + path.basename(filePath));
+  } else if ([".jpg", ".jpeg"].includes(extension)) {
+    if (!hasPrefix(0xff, 0xd8, 0xff)) throw new Error("Downloaded JPEG signature is invalid: " + path.basename(filePath));
+  } else if (extension === ".webp") {
+    if (bytes.subarray(0, 4).toString() !== "RIFF" || bytes.subarray(8, 12).toString() !== "WEBP") throw new Error("Downloaded WebP signature is invalid: " + path.basename(filePath));
+  } else if (extension === ".bmp") {
+    if (bytes.subarray(0, 2).toString() !== "BM") throw new Error("Downloaded BMP signature is invalid: " + path.basename(filePath));
+  } else if ([".tif", ".tiff"].includes(extension)) {
+    const littleEndian = hasPrefix(0x49, 0x49, 0x2a, 0x00);
+    const bigEndian = hasPrefix(0x4d, 0x4d, 0x00, 0x2a);
+    if (!littleEndian && !bigEndian) throw new Error("Downloaded TIFF signature is invalid: " + path.basename(filePath));
+  } else if ([".txt", ".csv", ".json", ".html", ".htm", ".md", ".xml", ".rtf"].includes(extension)) {
+    if (!bytes.toString("utf8").trim()) throw new Error("Downloaded text output is empty: " + path.basename(filePath));
+  }
+  return { file: path.basename(filePath), bytes: bytes.length, extension, valid: true };
+}
+
 const results = [];
 let browserFailures = 0;
 let fatalBrowserError = false;
@@ -282,6 +311,7 @@ async function runTool(tool, index) {
       if (tool.slug === "reorder-pdf") {
         await page.evaluate("(() => { const field = [...document.querySelectorAll('input:not([type=file]), textarea')].find((item) => item.type !== 'number'); if (!field) return false; const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype; const setter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set; setter?.call(field, '1,2'); field.dispatchEvent(new Event('input', { bubbles: true })); field.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
       }
+      const downloadsBefore = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
       const action = await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
         const preferred = buttons.find((b) => /merge|split|compress|convert|process|rotate|delete|extract|watermark|protect|unlock|sign|repair|count|information|compare|flatten|crop|reorder|bookmark|metadata|grayscale|background|page number|header|footer|remove|export|run/i.test(b.innerText));
@@ -294,7 +324,6 @@ async function runTool(tool, index) {
       row.action = action;
       row.checks.push("processing action clicked");
       const start = Date.now();
-      const downloadsBefore = fs.readdirSync(downloadsDir).length;
       let finalState = null;
       while (Date.now() - start < timeoutMs) {
         finalState = await page.evaluate(`(() => ({
@@ -307,14 +336,17 @@ async function runTool(tool, index) {
           links: [...document.querySelectorAll('a[download]')].map((a) => a.download),
           busy: !!document.querySelector('button[disabled]'),
         }))()`);
-        const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")).length;
+        const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name)).length;
         const statusText = finalState.statuses.map((status) => status.text).join(" | ");
         if (downloadCount > downloadsBefore || finalState.links.length || (statusText && !/processing|please wait/i.test(statusText)) || finalState.alerts.length) break;
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));
-      const downloadsAfter = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")).length;
-      row.downloadCount = Math.max(0, downloadsAfter - downloadsBefore);
+      const newDownloadNames = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name));
+      const validatedDownloads = [];
+      for (const name of newDownloadNames) validatedDownloads.push(await validateDownloadedFile(path.join(downloadsDir, name)));
+      row.downloadCount = validatedDownloads.length;
+      row.downloadedFiles = validatedDownloads;
       const statusText = finalState?.statuses?.map((status) => status.text).join(" | ") ?? "";
       const statusClass = finalState?.statuses?.map((status) => status.className).join(" ") ?? "";
       if (tool.slug === "extract-fonts" && /No extractable embedded fonts were found/i.test(statusText)) {
@@ -333,9 +365,9 @@ async function runTool(tool, index) {
       row.checks.push("processing response appeared");
       row.output = statusText || finalState.body.slice(-700);
       row.downloadLinks = finalState.links;
-      row.outputVerified = finalState.links.length > 0 || row.downloadCount > 0 || (/green-\d{2,3}|text-green/i.test(statusClass) && !!statusText);
-      row.evidenceLevel = "browser-processing-state-observed-download-bytes-not-independently-validated";
-      row.status = "PARTIAL";
+      row.outputVerified = validatedDownloads.length > 0;
+      row.evidenceLevel = validatedDownloads.length > 0 ? "downloaded-file-bytes-and-signature-validated" : "processing-response-only";
+      row.status = validatedDownloads.length > 0 ? "PASS" : "PARTIAL";
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
       if (aiTools.has(tool.slug)) {

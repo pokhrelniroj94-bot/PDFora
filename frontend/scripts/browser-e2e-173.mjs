@@ -538,23 +538,27 @@ async function runTool(tool, index) {
         };
       })()`);
       if (tool.slug === "nepal-forex-rates") {
-        const forexState = await page.evaluate(`new Promise((resolve) => {
-          const started = Date.now();
-          const poll = () => {
+        let forexState = null;
+        const forexStarted = Date.now();
+        while (Date.now() - forexStarted < 35000) {
+          forexState = await page.evaluate(`(() => {
             const scope = document.querySelector("main") || document.body;
             const rows = [...scope.querySelectorAll("table tbody tr")].map((row) => row.innerText.trim());
             const alert = scope.querySelector('[role="alert"]')?.innerText?.trim() || "";
             const live = [...scope.querySelectorAll('[aria-live]')].map((item) => item.innerText.trim()).filter(Boolean).join("\\n");
-            const hasUsd = rows.some((row) => /\\bUSD\\b/.test(row));
-            if ((hasUsd && /\\bNPR\\b/.test(live)) || (alert && rows.length === 0) || Date.now() - started > 35000) {
-              resolve({ rows: rows.length, hasUsd, live, alert, body: scope.innerText?.slice(0, 1200) || "", timedOut: Date.now() - started > 35000 });
-              return;
-            }
-            setTimeout(poll, 250);
-          };
-          poll();
-        })`);
-        if (forexState.hasUsd && /\\bNPR\\b/.test(forexState.live) && /Nepal Rastra Bank/i.test(forexState.body)) {
+            return {
+              rows: rows.length,
+              hasUsd: rows.some((row) => /\\bUSD\\b/.test(row)),
+              hasNpr: /\\bNPR\\b/.test(live),
+              live,
+              alert,
+              body: scope.innerText?.slice(0, 1200) || "",
+            };
+          })()`);
+          if ((forexState.hasUsd && forexState.hasNpr) || forexState.alert) break;
+          await delay(500);
+        }
+        if (forexState?.hasUsd && forexState.hasNpr && /Nepal Rastra Bank/i.test(forexState.body)) {
           row.output = forexState.live.slice(0, 700);
           row.checks.push("official USD row and live NPR conversion rendered; stale-rate notice remains visible when applicable");
           row.outputVerified = true;
@@ -562,8 +566,8 @@ async function runTool(tool, index) {
           row.evidenceLevel = "official-usd-row-and-npr-conversion-verified";
           return row;
         }
-        if (forexState.alert) throw new Error("NRB forex source returned an error: " + forexState.alert);
-        throw new Error(`NRB forex data did not render a verifiable USD/NPR conversion within 35 seconds (rows=${forexState.rows}, timedOut=${forexState.timedOut}, body=${forexState.body}).`);
+        if (forexState?.alert) throw new Error("NRB forex source returned an error: " + forexState.alert);
+        throw new Error(`NRB forex data did not render a verifiable USD/NPR conversion within 35 seconds (rows=${forexState?.rows ?? 0}, body=${forexState?.body ?? ""}).`);
       }
       if (tool.slug === "word-character-counter") {
         const textState = await page.evaluate("({ value: document.querySelector('main textarea')?.value || '', content: (document.querySelector('main')?.innerText || '').replace(/\\s+/g, ' ') })");

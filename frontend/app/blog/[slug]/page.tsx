@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.title,
     description: post.description,
     alternates: { canonical: url, ...(languages ? { languages } : {}) },
-    robots: isCatalogGeneratedGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
+    robots: isCatalogGeneratedGuide(post.slug) || isGeneratedPdfGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, modifiedTime: `${post.updated}T00:00:00+05:45` },
     twitter: { card: "summary", title: post.title, description: post.description },
   };

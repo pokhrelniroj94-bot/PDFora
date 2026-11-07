@@ -53,16 +53,27 @@ const browserResults = new Map((browserReport?.results ?? []).map((row) => [row.
 // adapter and metadata contracts only, not an HTTP-rendered page or complete SEO validation.
 // The PDF handler PASS is backed by the real-PDF backend sweep; its route and SEO remain PARTIAL.
 
+const functionalStatusFor = (slug, kind) => {
+  const result = browserResults.get(slug);
+  const skipped = result?.checks?.some((check) => check.includes("execution intentionally skipped"));
+  if (result?.status === "FAIL") return "FAIL";
+  if (result?.status === "PASS" && (result.action || result.outputVerified) && !skipped) return "PASS";
+  if (result?.status === "PARTIAL") return "PARTIAL";
+  if (skipped) return "NOT TESTED";
+  if (kind === "pdf") return "PARTIAL"; // real-PDF API sweep exists, but browser evidence is absent
+  return testedCatalog.has(slug) ? "PARTIAL" : "NOT TESTED";
+};
+
 const rows = [
   ...legacyToolSlugs.map((slug) => ({
     slug,
     category: "PDF",
     kind: "pdf",
-    routeStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : "PARTIAL",
-    interfaceStatus: browserResults.get(slug)?.status === "PASS" && browserResults.get(slug)?.fileInputCount > 0 ? "PASS" : "PARTIAL",
-    handlerStatus: browserResults.get(slug)?.status === "PASS" && (browserResults.get(slug)?.action || browserResults.get(slug)?.outputVerified) ? "PASS" : "PARTIAL",
-    functionalTestStatus: browserResults.get(slug)?.status === "PASS" && (browserResults.get(slug)?.action || browserResults.get(slug)?.outputVerified) ? "PASS" : "PARTIAL",
-    outputVerificationStatus: browserResults.get(slug)?.outputVerified ? "PASS" : "PARTIAL",
+    routeStatus: browserResults.get(slug)?.status === "PASS" ? "PASS" : browserResults.get(slug)?.status === "FAIL" ? "FAIL" : "PARTIAL",
+    interfaceStatus: browserResults.get(slug)?.status === "PASS" && browserResults.get(slug)?.fileInputCount > 0 ? "PASS" : browserResults.get(slug)?.status === "FAIL" ? "FAIL" : "PARTIAL",
+    handlerStatus: functionalStatusFor(slug, "pdf"),
+    functionalTestStatus: functionalStatusFor(slug, "pdf"),
+    outputVerificationStatus: browserResults.get(slug)?.outputVerified ? "PASS" : browserResults.get(slug)?.status === "FAIL" ? "FAIL" : "PARTIAL",
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
@@ -80,13 +91,11 @@ const rows = [
     slug: entry.slug,
     category: entry.category,
     kind: "catalog",
-    routeStatus: browserResults.get(entry.slug)?.status === "PASS" ? "PASS" : "PARTIAL",
-    interfaceStatus: browserResults.get(entry.slug)?.status === "PASS" && browserResults.get(entry.slug)?.inputCount > 0 ? "PASS" : "PARTIAL",
-    handlerStatus: browserResults.get(entry.slug)?.status === "PASS" && (browserResults.get(entry.slug)?.action || browserResults.get(entry.slug)?.outputVerified) && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped")) ? "PASS" : "PARTIAL",
-    functionalTestStatus: browserResults.get(entry.slug)?.status === "PASS" && (browserResults.get(entry.slug)?.action || browserResults.get(entry.slug)?.outputVerified) && !browserResults.get(entry.slug)?.checks?.some((check) => check.includes("execution intentionally skipped"))
-      ? "PASS"
-      : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
-    outputVerificationStatus: browserResults.get(entry.slug)?.outputVerified ? "PASS" : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
+    routeStatus: browserResults.get(entry.slug)?.status === "PASS" ? "PASS" : browserResults.get(entry.slug)?.status === "FAIL" ? "FAIL" : "PARTIAL",
+    interfaceStatus: browserResults.get(entry.slug)?.status === "PASS" && browserResults.get(entry.slug)?.inputCount > 0 ? "PASS" : browserResults.get(entry.slug)?.status === "FAIL" ? "FAIL" : "PARTIAL",
+    handlerStatus: functionalStatusFor(entry.slug, "catalog"),
+    functionalTestStatus: functionalStatusFor(entry.slug, "catalog"),
+    outputVerificationStatus: browserResults.get(entry.slug)?.outputVerified ? "PASS" : browserResults.get(entry.slug)?.status === "FAIL" ? "FAIL" : testedCatalog.has(entry.slug) ? "PARTIAL" : "NOT TESTED",
     mobileStatus: "NOT TESTED",
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
@@ -143,6 +152,7 @@ const report = {
     catalogUtilities: catalog.length,
     functionalPass: rows.filter((row) => row.functionalTestStatus === "PASS").length,
     functionalPartial: rows.filter((row) => row.functionalTestStatus === "PARTIAL").length,
+    functionalFail: rows.filter((row) => row.functionalTestStatus === "FAIL").length,
     functionalNotTested: rows.filter((row) => row.functionalTestStatus === "NOT TESTED").length,
     browserE2ePass: browserReport?.counts?.pass ?? 0,
     browserE2eFail: browserReport?.counts?.fail ?? 0,
@@ -179,7 +189,7 @@ const lines = [
   "",
   "This report records executed evidence only. It does not treat route existence or static handler references as proof that a tool works.",
   "",
-  `Summary: **${legacyToolSlugs.length} PDF tools** and **${catalog.length} catalog utilities** (${rows.length} total). Functional status: **${report.counts.functionalPass} PASS**, **${report.counts.functionalPartial} partial**, **${report.counts.functionalNotTested} not tested**. Browser sweep: **${report.counts.browserE2ePass} passed**, **${report.counts.browserE2eFail} failed**.`,
+  `Summary: **${legacyToolSlugs.length} PDF tools** and **${catalog.length} catalog utilities** (${rows.length} total). Functional status: **${report.counts.functionalPass} PASS**, **${report.counts.functionalPartial} partial**, **${report.counts.functionalFail} FAIL**, **${report.counts.functionalNotTested} not tested**. Browser sweep: **${browserReport?.counts?.pass ?? 0} PASS**, **${browserReport?.counts?.partial ?? 0} PARTIAL**, **${browserReport?.counts?.fail ?? 0} FAIL**.`,
   "",
   `Evidence: backend PDF sweep \`${pdfEvidence}\`; frontend worker tests \`${workerEvidence}\`; catalog static verification \`${catalogEvidence}\`.`,
   "",

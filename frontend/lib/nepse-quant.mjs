@@ -134,7 +134,7 @@ export function calculateOhlcvIndicators(input) {
   const rows = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
   const last = rows.at(-1);
   if (!last) return null;
-  const candles = rows.slice(-30), full = candles.length >= 15 && candles.every(row => Number.isFinite(row.high) && Number.isFinite(row.low) && row.high >= row.low);
+  const candles = rows.slice(-30), full = candles.length >= 15 && candles.every(row => Number.isFinite(row.high) && Number.isFinite(row.low) && row.high >= row.low && row.high >= row.close && row.low <= row.close);
   let atr = null, adx = null;
   if (full) {
     const tr = [], plus = [], minus = [];
@@ -167,7 +167,7 @@ export function calculateOhlcvIndicators(input) {
   const obvAvailable = rows.every(row => Number.isFinite(row.volume));
   let obvTrend = "Unavailable";
   if (obvAvailable && rows.length >= 21) {
-    const obv = rows.map((row, index) => index ? 0 : 0);
+    const obv = Array(rows.length).fill(0);
     for (let i = 1; i < rows.length; i++) obv[i] = obv[i - 1] + (rows[i].close > rows[i - 1].close ? 1 : rows[i].close < rows[i - 1].close ? -1 : 0) * rows[i].volume;
     obvTrend = obv.at(-1) > obv[obv.length - 21] ? "Rising" : obv.at(-1) < obv[obv.length - 21] ? "Falling" : "Flat";
   }

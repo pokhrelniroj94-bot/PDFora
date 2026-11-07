@@ -9,11 +9,12 @@ import { nepaliToolNames } from "../../../lib/i18n/pdf-tool-names-ne";
 import { getNepaliPdfRoute, nepaliPdfRoutes } from "../../../lib/i18n/nepali-pdf-routes";
 import { buildLocaleMetadata } from "../../../lib/i18n/metadata";
 import NepseMarketDashboard from "../../../components/NepseMarketDashboard";
+import ResumeBuilder from "../../../components/ResumeBuilder";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export function generateStaticParams() {
-  return Object.keys(nepaliPdfRoutes).map((slug) => ({ locale: "ne", slug }));
+  return [...Object.keys(nepaliPdfRoutes), "market", "resume-builder"].map((slug) => ({ locale: "ne", slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -24,6 +25,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       path: "/market",
       title: "NEPSE बजार ड्यासबोर्ड | PDFora",
       description: "NEPSE सूचकाङ्क, शेयर मूल्य, बजारका बढेका/घटेका शेयर र ऐतिहासिक चार्टको नेपाली ड्यासबोर्ड।",
+    });
+  }
+  if (locale === "ne" && slug === "resume-builder") {
+    return buildLocaleMetadata({
+      locale,
+      path: "/resume-builder",
+      title: "नेपाली रिजुमे बिल्डर तथा CV टेम्प्लेट | PDFora",
+      description: "२० व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन र PDF निर्यातसहित नेपाली रिजुमे तथा CV बनाउनुहोस्।",
     });
   }
   const route = getNepaliPdfRoute(slug);
@@ -42,6 +51,9 @@ export default async function NepaliPdfToolPage({ params }: Props) {
   const { locale, slug } = await params;
   if (locale === "ne" && slug === "market") {
     return <NepseMarketDashboard locale="ne" />;
+  }
+  if (locale === "ne" && slug === "resume-builder") {
+    return <ResumeBuilder locale="ne" />;
   }
   const route = getNepaliPdfRoute(slug);
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale) || !route) notFound();

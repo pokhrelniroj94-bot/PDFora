@@ -110,6 +110,20 @@ test("Nepali AI writing routes contain localized rendered UI", () => {
   }
 });
 
+test("Nepali Resume Builder preserves all templates and print-safe Devanagari output", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "ResumeBuilder.tsx"), "utf8");
+  const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "[slug]", "page.tsx"), "utf8");
+  const templateBlock = source.match(/const templates = \[([\s\S]*?)\n\];/);
+  assert.equal(templateBlock?.[1].match(/\bid:\s*"/g)?.length, 20, "Resume Builder must retain all 20 templates");
+  for (const phrase of ["व्यावसायिक रिजुमे बिल्डर", "प्रत्यक्ष CV पूर्वावलोकन", "PDF निर्यात", "प्रोफाइल तस्बिर", "Noto Sans Devanagari", "A4 प्रिन्ट ढाँचा"]) {
+    assert.ok(source.includes(phrase), `Nepali Resume Builder must include: ${phrase}`);
+  }
+  assert.ok(routeSource.includes('slug === "resume-builder"'));
+  assert.ok(routeSource.includes('<ResumeBuilder locale="ne" />'));
+  assert.ok(source.includes('@page { size: A4; margin: 0; }'));
+  assert.ok(source.includes('id="resume-paper" lang={ne ? "ne" : "en"}'));
+});
+
 test("published Nepali PDF routes use localized names and guide copy", () => {
   const slugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
   assert.deepEqual(slugs, ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"]);

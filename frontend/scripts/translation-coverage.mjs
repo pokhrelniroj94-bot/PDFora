@@ -47,7 +47,7 @@ const apiRouteSourceFiles = walk(appRoot).filter((file) => file.endsWith("/route
 const editorialBlogCount = (blogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepalBlogCount = (nepalBlogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);
-const nepaliLocalizedRouteCount = nepaliPdfRouteSlugs.length + nepaliUtilityRoutes.length + nepaliFinancialRoutes.length + nepaliCareerRoutes.length + 1 + Number(nepaliHomeExists);
+const nepaliLocalizedRouteCount = nepaliPdfRouteSlugs.length + nepaliUtilityRoutes.length + nepaliFinancialRoutes.length + nepaliCareerRoutes.length + 2 + Number(nepaliHomeExists);
 const sharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("en"));
 const nepaliSharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("ne"));
 const nepaliGuideCount = Object.keys(nepaliGuidesModule.nepaliToolGuides).length;
@@ -139,6 +139,7 @@ const report = {
     publishedNepaliFinancialRoutes: nepaliFinancialRoutes.length,
     publishedNepaliCareerRoutes: nepaliCareerRoutes.length,
     publishedNepaliMarketDashboardRoute: true,
+    publishedNepaliResumeBuilderRoute: true,
     publishedNepaliHomeRoute: nepaliHomeExists,
     publishedNepaliRouteEquivalents: nepaliLocalizedRouteCount,
   },
@@ -169,7 +170,7 @@ Inventory: ${pageSourceFiles.length} frontend page source files, ${apiRouteSourc
 |---|---|---|---:|---:|---:|---:|---:|
 ${rows.join("\n")}
 
-Nepali currently has the homepage, six localized PDF routes, six localized utility routes, seven localized financial/news/calculator routes, three localized AI writing routes, and the localized NEPSE market dashboard. Its 49 Nepali PDF guide records are measured separately; the blog corpus remains untranslated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has the homepage, six localized PDF routes, six localized utility routes, seven localized financial/news/calculator routes, three localized AI writing routes, the localized NEPSE market dashboard, and a localized Resume Builder. Its 49 Nepali PDF guide records are measured separately; the blog corpus remains untranslated. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
 `;
 fs.writeFileSync(path.join(outputDir, "TRANSLATION_COVERAGE.md"), markdown);
 console.log(markdown);

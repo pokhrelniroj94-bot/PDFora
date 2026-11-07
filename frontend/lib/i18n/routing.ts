@@ -50,6 +50,7 @@ const localizedPaths: ReadonlySet<string> = new Set([
   "/rotate-pdf",
   "/pdf-to-word",
   "/pdf-to-jpg",
+  "/resume-builder",
 ]);
 
 export function hasLocalizedPage(path: string, locale: Locale): boolean {

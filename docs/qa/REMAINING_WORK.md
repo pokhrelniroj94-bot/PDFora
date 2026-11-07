@@ -7,9 +7,9 @@
 2. Add real localized route equivalents only after the complete page content exists.
 3. Add native or qualified human review status for every published translation.
 4. Expand RTL and CJK browser checks across representative tools and mobile layouts.
-5. Add localized content for Resume Builder, blogs, guides, legal/static pages and
-   remaining utilities. Nepali AI writing routes are implemented and measured; broader
-   CV workflow localization remains.
+5. Add localized content for blogs, guides, legal/static pages and remaining utilities.
+   Nepali AI writing routes and Resume Builder are implemented and measured; broader
+   editorial and utility localization remains.
 
 ## Stage B completed in this continuation
 

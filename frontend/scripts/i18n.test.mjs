@@ -15,6 +15,14 @@ import { createTranslator } from "../lib/i18n/translate.ts";
 ensureTypeStripping();
 const { config, routing, translate, format, preference, switcher, metadata, "shared-ui": sharedUi, "nepali-pdf-routes": nepaliRoutes, "pdf-tool-names-ne": nepaliNames, "tool-guides-ne": nepaliGuides } = await loadI18n();
 
+test("AI help derives locale prefixes from the central locale registry", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");
+  assert.ok(source.includes('import { localeFromPathname } from "../lib/i18n/shared-ui"'));
+  assert.ok(source.includes('const locale = localeFromPathname(pathname)'));
+  assert.ok(source.includes('new RegExp(`^/${locale}(?=/|$)`)'), "page context must strip the configured locale prefix");
+  assert.ok(!source.includes("|id|"), "the AI help locale list must not contain an unsupported locale");
+});
+
 test("RTL and script font support covers Urdu, Arabic and Bengali", () => {
   const css = fs.readFileSync(path.join(frontendRoot, "app", "globals.css"), "utf8");
   assert.ok(css.includes(':lang(ar), :lang(ur)'), "Arabic and Urdu need script-aware font stacks");

@@ -10,6 +10,11 @@ const catalog = modules.toolCatalog.toolCatalog.filter((tool) => tool.slug !== "
 const englishPage = read("app/tools/[slug]/page.tsx");
 const nepaliPage = read("app/[locale]/tools/[slug]/page.tsx");
 const localizedMetadata = read("lib/tools/localized-metadata.ts");
+const englishBlogIndex = read("app/blog/page.tsx");
+const englishBlogArticle = read("app/blog/[slug]/page.tsx");
+const nepaliBlogIndex = read("app/[locale]/blog/page.tsx");
+const nepaliBlogArticle = read("app/[locale]/blog/[slug]/page.tsx");
+const sitemap = read("app/sitemap.ts");
 const englishOverridesSource = englishPage.slice(englishPage.indexOf("const seoOverrides"), englishPage.indexOf("const seo ="));
 const categorySource = englishPage.slice(englishPage.indexOf("const categoryDescription"), englishPage.indexOf("const description ="));
 const nepaliTitleSource = nepaliPage.slice(nepaliPage.indexOf("const nepaliTitles"), nepaliPage.indexOf("const nepaliDescriptions"));
@@ -77,5 +82,21 @@ assert.match(nepaliPage, /buildLocalizedToolMetadata/, "Nepali tool pages must u
 assert.match(nepaliPage, /title:\s*`\$\{nepaliTitles\[request\.implementation\.slug\]\} \| PDFora`/, "Nepali title must use its translated title dictionary and brand");
 assert.match(nepaliPage, /description:\s*nepaliDescriptions\[request\.implementation\.slug\]/, "Nepali description must use its translated description dictionary");
 assert.match(localizedMetadata, /robots:\s*\{ index: false, follow: isPublished\(locale\) \}/, "Unverified Nepali tools must stay noindex until the release gate is satisfied");
+assert.match(englishBlogIndex, /title:\s*"Practical PDF & Nepal Guides/, "English blog index needs a descriptive title");
+assert.match(englishBlogIndex, /description:\s*"Step-by-step guides/, "English blog index needs a relevant description");
+assert.match(englishBlogIndex, /alternates:\s*\{ canonical:/, "English blog index needs a self-canonical");
+assert.match(englishBlogIndex, /openGraph:\s*\{/, "English blog index needs Open Graph metadata");
+assert.match(englishBlogArticle, /title:\s*post\.title/, "English articles need post-specific titles");
+assert.match(englishBlogArticle, /description:\s*post\.description/, "English articles need post-specific descriptions");
+assert.match(englishBlogArticle, /canonical:\s*url/, "English articles need self-canonicals");
+assert.match(englishBlogArticle, /openGraph:\s*\{[^}]*title:\s*post\.title/s, "English articles need matching Open Graph titles");
+assert.match(englishBlogArticle, /twitter:\s*\{[^}]*title:\s*post\.title/s, "English articles need matching Twitter titles");
+assert.match(nepaliBlogIndex, /buildLocaleMetadata/, "Nepali blog index must use shared locale metadata");
+assert.match(nepaliBlogIndex, /path:\s*"\/blog"/, "Nepali blog index must canonicalize to its own locale path");
+assert.match(nepaliBlogArticle, /buildLocaleMetadata/, "Nepali articles must use shared locale metadata");
+assert.match(nepaliBlogArticle, /post\.title/, "Nepali articles need localized titles");
+assert.match(nepaliBlogArticle, /post\.description/, "Nepali articles need localized descriptions");
+assert.match(sitemap, /nepaliLocalizedBlogPosts\.map/, "Nepali editorial articles must be represented in the sitemap");
+assert.match(sitemap, /blogPosts\.filter\(\(post\) => !isCatalogGeneratedGuide\(post\.slug\)\)/, "Only curated English editorial articles should enter the sitemap");
 
 console.log(`SEO metadata audit passed: ${englishMetadata.length} unique English tool titles/descriptions and ${nepaliMetadata.length} unique Nepali tool titles/descriptions.`);

@@ -245,7 +245,8 @@ test("Nepali date and time calculators have localized routes and visible copy", 
     assert.ok(component.includes(`"${slug}"`), `${slug} must have localized UI copy`);
     assert.ok(logic.includes(`slug === "${slug}"`), `${slug} must have calculation logic`);
   }
-  assert.ok(component.includes("नेपाली मिति तथा समय टुल"));
+  assert.ok(route.includes("नेपाली मिति तथा समय टुल"))
+  assert.ok(component.includes("उमेर क्याल्कुलेटर"));
   assert.ok(logic.includes("Date.UTC"));
 });
 

@@ -354,7 +354,7 @@ async function runTool(tool, index) {
     }
     row.checks.push("390px mobile viewport has no document/main horizontal overflow");
 
-    const focusStart = await page.evaluate(`() => {
+    const focusStart = await page.evaluate(`(() => {
       const visible = (element) => {
         const rect = element.getBoundingClientRect();
         const style = getComputedStyle(element);
@@ -367,11 +367,11 @@ async function runTool(tool, index) {
       candidate.focus();
       window.__pdforaFocusStart = candidate;
       return { tag: candidate.tagName, id: candidate.id, name: candidate.getAttribute("name"), text: (candidate.innerText || candidate.getAttribute("aria-label") || candidate.getAttribute("title") || "").trim().slice(0, 100) };
-    }`);
+    })()`);
     if (!focusStart) throw new Error("No visible keyboard-focusable control exists.");
     await page.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
     await page.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
-    const keyboardState = await page.evaluate(`() => {
+    const keyboardState = await page.evaluate(`(() => {
       const active = document.activeElement;
       return {
         tag: active?.tagName || "",

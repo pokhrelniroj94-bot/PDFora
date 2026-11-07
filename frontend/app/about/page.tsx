@@ -4,7 +4,7 @@ import { hreflangMap } from "../../lib/i18n/routing";
 const localizedAlternates = hreflangMap("/about");
 
 export const metadata: Metadata = {
-  title: "About PDFora | Free Online PDF Tools & Nepal Utilities",
+  title: { absolute: "About PDFora | Free Online PDF Tools & Nepal Utilities" },
   alternates: { canonical: "https://pd-fora.vercel.app/about", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
   openGraph: { type: "website", url: "https://pd-fora.vercel.app/about", siteName: "PDFora", title: "About PDFora", description: "Learn about PDFora, an online platform for PDF processing and practical digital tools." },
   description:

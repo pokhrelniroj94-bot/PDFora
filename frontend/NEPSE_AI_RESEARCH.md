@@ -97,3 +97,13 @@ NEPSE itself operates the primary exchange data service at https://www.nepalstoc
 - Deterministic numerical fixtures cover Wilder RSI, invalid/duplicate date handling, 20/50-session market regime, Wilder ATR/ADX, volume ratio, OBV, price-gap flags, flat-price backtests, trend crossover, benchmark alignment and round-trip costs.
 
 Still not validated with provider credentials or exchange-adjusted source data: licensed ShareHub response schemas, corporate-action adjustment factors, circuit-limit fills, liquidity/market impact, taxes and out-of-sample performance. Those are production validation gates, not assumptions.
+
+## Official Nepal macro-data sources and integration boundary
+
+For future macro-regime coverage, prefer primary NRB/IMF-distributed datasets over copied market commentary:
+- NRB Statistics & Data Links: https://www.nrb.org.np/departments/statistics-data-links/ — monthly macroeconomic situation, policy/deposit/lending rates, central-bank survey/liquidity position, BFI statistics and forex.
+- NRB National Summary Data Page (NSDP): https://www.nrb.org.np/nsdp/ — downloadable SDMX datasets for CPI, interest rates, depository corporations survey, central-bank survey, stock market and balance of payments.
+- NRB Forex API documentation: https://www.nrb.org.np/api-docs-v1/ — documented JSON API for daily FX rates; this API is for forex, not a general macroeconomic indicator endpoint.
+- NRB homepage indicators: https://www.nrb.org.np/ — headline deposit/credit, interbank rate, inflation, broad-money and private-credit figures are displayed with reporting dates.
+
+The official sources reviewed expose macro data through a mix of monthly publications, SDMX downloads and a dedicated forex API. A stable, documented, unauthenticated JSON endpoint for the complete monthly macro series was not established in this implementation. Therefore the deterministic NEPSE engine does not fabricate or silently scrape macro values. Until a schema-stable source is verified, show macro indicators as unavailable or source-linked context; preserve the publication date, fiscal period, unit, revision status and source URL for every imported observation.

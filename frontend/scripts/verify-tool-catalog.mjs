@@ -89,7 +89,10 @@ assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf
 const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
-assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
+assert.doesNotMatch(toolPage, /"@type": "FAQPage"/, "Do not emit FAQ rich-result markup on generic utility pages");
+assert.match(toolPage, /const description = seo\?\.description \?\? tool\.description\.trim\(\)/, "Fallback metadata must use the actual task-specific catalog description");
+assert.match(toolPage, /const title = seo\?\.title \?\? `\$\{tool\.name\} Online \| PDFora`/, "Fallback metadata title must identify the actual tool and site");
+assert.match(toolPage, /questions\.map\(\(item\) => \(\{ "@type": "Question"/, "Visible tool FAQs must remain available in page content");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
@@ -97,6 +100,17 @@ assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
 const advisedSlugs = [...adviceBlock[1].matchAll(/^\s{4}"([^"]+)":\s*\{/gm)].map((m) => m[1]);
 const missingToolAdvice = catalog.filter((slug) => !advisedSlugs.includes(slug));
 assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO guidance: " + missingToolAdvice.join(", "));
+assert.equal(advisedSlugs.length, catalog.length, "Every catalog tool must have one and only one dedicated SEO advice record");
+for (const slug of catalog) {
+  const marker = `"${slug}": {`;
+  const start = adviceBlock[1].indexOf(marker);
+  const next = adviceBlock[1].indexOf('\n    "', start + marker.length);
+  const entry = adviceBlock[1].slice(start, next < 0 ? undefined : next);
+  for (const field of ["example", "accuracy", "workflow", "mistakes"]) {
+    const match = entry.match(new RegExp(field + ': "([^"]+)"'));
+    assert.ok(match && match[1].trim().length >= 90, `${slug} needs substantial tool-specific ${field} guidance`);
+  }
+}
 
 assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weighted grade points");
 assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");

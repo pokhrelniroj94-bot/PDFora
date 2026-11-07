@@ -64,3 +64,23 @@ For company-level work, use sector-aware fundamentals only when the underlying r
 - Backtest with next-session execution, realistic brokerage/SEBON/DP fees, price bands/circuit limits, liquidity constraints and out-of-sample periods. Report sample size, benchmark, max drawdown, exposure and profit factor; never present historical win rate as a future probability.
 - Confirm upstream data timestamps and source attribution on every report. Do not label community datasets as official NEPSE APIs.
 - Keep a hard no-signal state when required price history is insufficient, stale, malformed or materially inconsistent.
+
+
+## Live-data provider hierarchy and licensing
+
+The market endpoint supports this provider order:
+1. **ShareHub NEPSE Data API**, when server-side `SHAREHUB_EMAIL` and `SHAREHUB_PASSWORD` are configured and its live services work. It provides a documented licensed REST API; its documentation states approximately 20-second refresh during trading and 5-minute refresh while closed. It requires a Data API licence, enabled endpoint packages and an allow-listed server IP. Never put credentials in browser code or `NEXT_PUBLIC_*` variables.
+2. **NEPSEman unofficial session API**, when it returns a sufficiently broad, timestamp-verified snapshot.
+3. **YONEPSE public open dataset**, used for archived OHLCV/history and as the public fallback. YONEPSE attributes its live snapshot upstream to the official NEPSE API, but remains an independent community project and is not an official NEPSE developer service.
+
+ShareHub integration is conditional, not automatically active: no licence or credentials are assumed. Its API may be paid/licensed; confirm current pricing, redistribution/display rights, enabled package, server egress IP allow-list and terms with ShareHub before enabling it. Its documented API uses bearer authentication with short-lived access tokens; this server route keeps credentials out of the client and refreshes tokens in process memory. Serverless cold starts may authenticate again. If a stable outbound IP is required and the deployment platform cannot provide one, use an approved fixed-egress backend or ask ShareHub about test mode; do not bypass the IP allow-list.
+
+NEPSE itself operates the primary exchange data service at https://www.nepalstock.com/. A public, supported developer API suitable for unauthenticated third-party commercial use was not identified in this review. Some open-source projects reverse-engineer its client authentication, but that is brittle and can break when NEPSE changes its web application. Do not build a production dependency on reverse-engineered authentication without reviewing the exchange terms and operational risk.
+
+## Additional deterministic context panels
+
+- Market regime: calculate 20/50-session index returns, EMA alignment and realized volatility from index history.
+- Market breadth: count advancers, decliners and unchanged stocks only when daily percentage-change fields exist.
+- Sector rotation: rank sector index daily changes; this is relative performance, not evidence of actual fund flows.
+- Relative strength: compare the selected symbol and NEPSE over overlapping dated observations.
+- Advanced diagnostics: ATR(14), ADX(14), latest volume versus prior 20-session average and OBV direction. ATR/ADX require OHLC data; volume/OBV require complete volume data. Missing inputs are explicitly unavailable.

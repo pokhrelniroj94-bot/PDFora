@@ -236,6 +236,19 @@ test("Nepali math utilities have dedicated localized route and interface", () =>
   }
 });
 
+test("Nepali date and time calculators have localized routes and visible copy", () => {
+  const route = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const component = fs.readFileSync(path.join(frontendRoot, "components", "NepaliDateTimeWorkspace.tsx"), "utf8");
+  const logic = fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "nepali-date-time-tools.ts"), "utf8");
+  for (const slug of ["age-calculator", "date-difference-calculator", "time-duration-calculator"]) {
+    assert.ok(route.includes(`"${slug}"`), `${slug} must have a localized route`);
+    assert.ok(component.includes(`"${slug}"`), `${slug} must have localized UI copy`);
+    assert.ok(logic.includes(`slug === "${slug}"`), `${slug} must have calculation logic`);
+  }
+  assert.ok(component.includes("नेपाली मिति तथा समय टुल"));
+  assert.ok(logic.includes("UTC date arithmetic"));
+});
+
 test("Nepali Resume Builder preserves all templates and print-safe Devanagari output", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "ResumeBuilder.tsx"), "utf8");
   const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "[slug]", "page.tsx"), "utf8");

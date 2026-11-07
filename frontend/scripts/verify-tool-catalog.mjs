@@ -128,4 +128,12 @@ assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-re
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
+const marketContext = read("../components/NepseMarketContext.tsx");
+const advancedIndicators = read("../components/NepseAdvancedIndicators.tsx");
+const marketIntelligence = read("../components/MarketIntelligence.tsx");
+assert.ok(marketContext.includes('/^\\d{4}-\\d{2}-\\d{2}$/'), "NEPSE market regime must validate ISO dates with a real digit regex");
+assert.ok(marketContext.includes("Math.sqrt(252)") && marketContext.includes("ret50"), "NEPSE market regime must calculate 20/50-session returns and annualized volatility");
+assert.ok(marketContext.includes("advancers") || marketContext.includes("let up=0,down=0,flat=0"), "NEPSE breadth calculation is missing");
+assert.ok(advancedIndicators.includes("ATR (14)") && advancedIndicators.includes("ADX (14)") && advancedIndicators.includes("OBV"), "Advanced deterministic OHLCV diagnostics are incomplete");
+assert.ok(marketIntelligence.includes("NepseMarketContext") && marketIntelligence.includes("NepseAdvancedIndicators"), "NEPSE dashboard must render the deterministic market context and advanced indicators");
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

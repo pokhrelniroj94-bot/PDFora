@@ -30,7 +30,12 @@ const testedCatalog = new Set([
   "bmi-calculator",
   "bmr-calculator",
   "business-days-calculator",
+  "json-to-yaml",
+  "random-number-generator",
+  "dice-roller",
+  "password-generator",
 ]);
+const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator"]);
 
 // Catalog route/handler/SEO statuses are PARTIAL: current evidence proves registry,
 // adapter and metadata contracts only, not an HTTP-rendered page or complete SEO validation.
@@ -73,14 +78,20 @@ const rows = [
     accessibilityStatus: "NOT TESTED",
     languageStatus: "PARTIAL",
     seoStatus: "PARTIAL",
-    defectsFound: "",
-    fixesApplied: "",
+    defectsFound: inputTestedCatalog.has(entry.slug)
+      ? "Blank numeric fields were silently coerced to zero; YAML escaping and random modulo bias needed correction."
+      : "",
+    fixesApplied: inputTestedCatalog.has(entry.slug)
+      ? "Added required-number validation, JSON-safe YAML serialization, and rejection-sampled random integers with unit/regression tests."
+      : "",
     remainingBlockers: testedCatalog.has(entry.slug)
       ? "Browser route, mobile layout and accessibility evidence remain unverified."
       : "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-    evidence: testedCatalog.has(entry.slug)
-      ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
-      : catalogEvidence,
+    evidence: inputTestedCatalog.has(entry.slug)
+      ? "frontend/__tests__/catalogInputs.test.ts; frontend/scripts/tool-ui-regression.test.mjs; frontend/lib/catalog-inputs.ts"
+      : testedCatalog.has(entry.slug)
+        ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
+        : catalogEvidence,
   })),
 ];
 

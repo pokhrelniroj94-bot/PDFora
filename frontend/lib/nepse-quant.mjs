@@ -3,15 +3,23 @@ function sma(values, period, index) {
   return index + 1 < period ? null : average(values.slice(index - period + 1, index + 1));
 }
 export function rsi(values, index, period = 14) {
-  if (index < period) return null;
-  let gain = 0, loss = 0;
-  for (let i = index - period + 1; i <= index; i++) {
+  if (index < period || period < 1) return null;
+  let averageGain = 0, averageLoss = 0;
+  for (let i = 1; i <= period; i++) {
     const delta = values[i] - values[i - 1];
-    gain += Math.max(delta, 0);
-    loss += Math.max(-delta, 0);
+    averageGain += Math.max(delta, 0);
+    averageLoss += Math.max(-delta, 0);
   }
-  if (loss === 0) return gain === 0 ? 50 : 100;
-  return 100 - 100 / (1 + gain / loss);
+  averageGain /= period;
+  averageLoss /= period;
+  for (let i = period + 1; i <= index; i++) {
+    const delta = values[i] - values[i - 1];
+    averageGain = (averageGain * (period - 1) + Math.max(delta, 0)) / period;
+    averageLoss = (averageLoss * (period - 1) + Math.max(-delta, 0)) / period;
+  }
+  if (averageLoss === 0) return averageGain === 0 ? 50 : 100;
+  const relativeStrength = averageGain / averageLoss;
+  return 100 - 100 / (1 + relativeStrength);
 }
 export function normalizeDailyBars(input) {
   const byDate = new Map();

@@ -313,7 +313,7 @@ async function runTool(tool, index) {
       width: 390, height: 844, deviceScaleFactor: 1, mobile: true,
     });
     await delay(120);
-    const mobileState = await page.evaluate(`() => {
+    const mobileState = await page.evaluate(`(() => {
       const root = document.documentElement;
       const main = document.querySelector("main");
       const visible = (element) => {
@@ -343,7 +343,7 @@ async function runTool(tool, index) {
         unnamedLinks: unnamedLinks.length,
         unnamedFields: unnamedFields.length,
       };
-    }`);
+    })()`);
     row.mobileViewport = mobileState;
     if (mobileState.viewport.width > 400) {
       throw new Error("Mobile emulation did not apply a device-width viewport: " + JSON.stringify(mobileState.viewport));
@@ -354,7 +354,7 @@ async function runTool(tool, index) {
     }
     row.checks.push("390px mobile viewport has no document/main horizontal overflow");
 
-    const focusStart = await page.evaluate(`() => {
+    const focusStart = await page.evaluate(`(() => {
       const visible = (element) => {
         const rect = element.getBoundingClientRect();
         const style = getComputedStyle(element);
@@ -367,11 +367,11 @@ async function runTool(tool, index) {
       candidate.focus();
       window.__pdforaFocusStart = candidate;
       return { tag: candidate.tagName, id: candidate.id, name: candidate.getAttribute("name"), text: (candidate.innerText || candidate.getAttribute("aria-label") || candidate.getAttribute("title") || "").trim().slice(0, 100) };
-    }`);
+    })()`);
     if (!focusStart) throw new Error("No visible keyboard-focusable control exists.");
     await page.send("Input.dispatchKeyEvent", { type: "keyDown", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
     await page.send("Input.dispatchKeyEvent", { type: "keyUp", key: "Tab", code: "Tab", windowsVirtualKeyCode: 9 });
-    const keyboardState = await page.evaluate(`() => {
+    const keyboardState = await page.evaluate(`(() => {
       const active = document.activeElement;
       return {
         tag: active?.tagName || "",
@@ -379,7 +379,7 @@ async function runTool(tool, index) {
         isBody: active === document.body,
         advanced: active !== window.__pdforaFocusStart,
       };
-    }`);
+    })()`);
     row.keyboardNavigation = { start: focusStart, afterTab: keyboardState };
     if (!keyboardState.tag || keyboardState.isBody || !keyboardState.advanced) {
       throw new Error("Tab key did not advance focus from the first visible interactive control.");
@@ -1191,7 +1191,7 @@ async function runNepaliRoute(tool, index) {
   let page;
   try {
     page = await openPage(new URL(row.route, baseUrl).toString());
-    const state = await page.evaluate(`() => {
+    const state = await page.evaluate(`(() => {
       const main = document.querySelector("main");
       const visible = (element) => {
         const rect = element.getBoundingClientRect();
@@ -1217,7 +1217,7 @@ async function runNepaliRoute(tool, index) {
         controlCoverage: controls.length ? nepaliControls.length / controls.length : 1,
         bodySample: body.slice(0, 900),
       };
-    }`);
+    })()`);
     row.evidence = state;
     if (state.htmlLang !== "ne" || state.mainLang !== "ne" || state.mainCount !== 1 || state.h1Count !== 1) {
       throw new Error("Nepali route did not render one main landmark with lang=ne: " + JSON.stringify(state));
@@ -1227,7 +1227,7 @@ async function runNepaliRoute(tool, index) {
     }
     row.checks.push("route renders a Nepali main landmark, heading and visible Nepali content");
     if (tool.slug === "loan-emi-calculator") {
-      const invalidEmi = await page.evaluate(`() => {
+      const invalidEmi = await page.evaluate(`(() => {
         const fields = [...document.querySelectorAll("main input:not([type=file])")];
         const field = fields[2];
         const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
@@ -1235,17 +1235,17 @@ async function runNepaliRoute(tool, index) {
         field.dispatchEvent(new Event("input", { bubbles: true }));
         field.dispatchEvent(new Event("change", { bubbles: true }));
         return { count: fields.length, alert: document.querySelector("main [role=alert]")?.innerText || "" };
-      }`);
+      })()`);
       if (invalidEmi.count !== 3 || !/पूर्ण महिनामा/.test(invalidEmi.alert)) {
         throw new Error("Nepali EMI must retain all fields and reject fractional months.");
       }
-      await page.evaluate(`() => {
+      await page.evaluate(`(() => {
         const field = document.querySelectorAll("main input:not([type=file])")[2];
         const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
         setter?.call(field, "60");
         field.dispatchEvent(new Event("input", { bubbles: true }));
         field.dispatchEvent(new Event("change", { bubbles: true }));
-      }`);
+      })()`);
       await delay(150);
       const recovered = await page.evaluate("document.querySelector('main')?.innerText || ''");
       if (!recovered.includes("मासिक EMI:") || !recovered.includes("21,247.04")) {

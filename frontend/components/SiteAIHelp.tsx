@@ -16,6 +16,16 @@ const quickQuestionsEn = [
 export default function SiteAIHelp() {
   const pathname = usePathname() || "/";
   const locale = localeFromPathname(pathname);
+  return <SiteAIHelpConversation key={locale} pathname={pathname} locale={locale} />;
+}
+
+function SiteAIHelpConversation({
+  pathname,
+  locale,
+}: {
+  pathname: string;
+  locale: ReturnType<typeof localeFromPathname>;
+}) {
   const isNepali = locale === "ne";
   const quickQuestions = isNepali ? [
     "यो पृष्ठको टुल कसरी प्रयोग गर्ने?",
@@ -36,16 +46,12 @@ export default function SiteAIHelp() {
   const [pageContext, setPageContext] = useState("");
   const requestController = useRef<AbortController | null>(null);
 
-  // A client-side language switch starts a fresh conversation in the new language.
-  // Abort any in-flight answer so it cannot leak into the new locale's chat.
-  useEffect(() => {
+  // Locale-keyed remounts start a fresh conversation. Abort any pending answer
+  // when this conversation instance unmounts so it cannot leak into another language.
+  useEffect(() => () => {
     requestController.current?.abort();
     requestController.current = null;
-    setBusy(false);
-    setQuestion("");
-    setError("");
-    setMessages([{ role: "assistant", text: isNepali ? "नमस्कार! म PDFora AI सहायता हुँ। टुल प्रयोग गर्न, नतिजा बुझ्न वा समस्या समाधान गर्न के सहयोग चाहिन्छ?" : "Namaste! I am PDFora AI Help. How can I help you use a tool, understand a result or solve a problem?" }]);
-  }, [locale, isNepali]);
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();

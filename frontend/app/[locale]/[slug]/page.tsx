@@ -79,7 +79,11 @@ export default async function NepaliPdfToolPage({ params }: Props) {
     title: localizedName,
     description: localizedDescription,
     multiple: route.multiple,
+    accept: route.accept,
     downloadName: route.downloadName,
+    fieldName: route.fieldName,
+    formField: route.formField,
+    formPlaceholder: route.formPlaceholder,
     queryField: route.queryField,
     queryDefault: route.queryDefault,
   };
@@ -93,7 +97,7 @@ export default async function NepaliPdfToolPage({ params }: Props) {
           <p className="mx-auto mt-4 max-w-2xl text-slate-600">{localizedDescription}</p>
         </header>
         <div className="mt-8">
-          {route.component === "pdfora" ? <PDForaTool {...commonProps} /> : <Niroj77Tool {...commonProps} />}
+          {route.component === "pdfora" ? <PDForaTool {...commonProps} /> : <Niroj77Tool {...commonProps} extraFields={route.extraFields} />}
         </div>
         {guide && <ToolGuide guide={{ ...guide, slug, name: localizedName, keyword: "", related: [], blogSlug: "" }} />}
       </div>

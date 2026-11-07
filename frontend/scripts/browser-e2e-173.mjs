@@ -34,20 +34,22 @@ if (pdfRoutes.length !== 49 || catalogTools.length !== 124 || tools.length !== 1
     pdfRoutes.length + " + " + catalogTools.length + " = " + tools.length);
 }
 
+const pngPath = path.join(tempDir, "pdfora-e2e-fixture.png");
+// Valid 1x1 PNG used by image and PDF-image conversion tests.
+fs.writeFileSync(pngPath, Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j9S8AAAAASUVORK5CYII=",
+  "base64",
+));
+
 const pdf = await PDFDocument.create();
 const page = pdf.addPage([595, 842]);
 const font = await pdf.embedFont(StandardFonts.Helvetica);
 page.drawText("PDFora browser E2E fixture - page one", { x: 48, y: 780, size: 14, font });
 page.drawText("Text extraction and processing test.", { x: 48, y: 750, size: 11, font });
+const embeddedImage = await pdf.embedPng(fs.readFileSync(pngPath));
+page.drawImage(embeddedImage, { x: 48, y: 640, width: 80, height: 80 });
 const fixturePath = path.join(tempDir, "pdfora-e2e-fixture.pdf");
 fs.writeFileSync(fixturePath, await pdf.save());
-
-const pngPath = path.join(tempDir, "pdfora-e2e-fixture.png");
-// Valid 1x1 transparent PNG for the browser-only image tools.
-fs.writeFileSync(pngPath, Buffer.from(
-  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+j9S8AAAAASUVORK5CYII=",
-  "base64",
-));
 
 const chrome = spawn(chromePath, [
   "--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage",
@@ -166,7 +168,7 @@ async function runTool(tool, index) {
       });
       if (!queries.nodeIds?.length) throw new Error("PDF page has no file upload input.");
       for (const nodeId of queries.nodeIds) {
-        await page.send("DOM.setFileInputFiles", { nodeId, files: [fixturePath] });
+        await page.send("DOM.setFileInputFiles", { nodeId, files: tool.slug === "images-to-pdf" ? [pngPath] : tool.slug === "merge-pdf" ? [fixturePath, fixturePath] : [fixturePath] });
       }
       const attached = await page.evaluate("[...document.querySelectorAll('input[type=file]')].filter((input) => input.files?.length).length");
       if (attached !== queries.nodeIds.length) throw new Error("PDF fixture was not attached to every upload field.");

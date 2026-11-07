@@ -510,6 +510,7 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "nepal-forex-rates") await delay(20000);
       else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug)) await delay(5000);
+      const catalogDownloadsBefore = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
       const clicked = tool.slug === "nepal-forex-rates" ? "" : await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
         const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*|show calendar)$/i;
@@ -525,6 +526,19 @@ async function runTool(tool, index) {
         await delay(["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug) ? 1500 : 800);
       } else {
         row.checks.push("reactive output/controls inspected (no submit button by design)");
+      }
+      if (["image-compressor", "image-format-converter", "loksewa-photo-resizer"].includes(tool.slug)) {
+        const downloadStarted = Date.now();
+        let downloadedNames = [];
+        while (Date.now() - downloadStarted < 5000) {
+          downloadedNames = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !catalogDownloadsBefore.has(name));
+          if (downloadedNames.length > 0) break;
+          await delay(250);
+        }
+        if (downloadedNames.length !== 1) throw new Error("Expected exactly one processed image download; received " + downloadedNames.length + ".");
+        row.downloadedFiles = [await validateDownloadedFile(path.join(downloadsDir, downloadedNames[0]))];
+        row.downloadCount = row.downloadedFiles.length;
+        row.checks.push("downloaded image bytes and file signature validated");
       }
       const finalState = await page.evaluate(`(() => {
         const scope = document.querySelector("main") || document.body;

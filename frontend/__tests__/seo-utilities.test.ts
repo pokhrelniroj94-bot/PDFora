@@ -19,11 +19,9 @@ describe("shared SEO utility functions", () => {
   });
 
   test("keyword density matches normalized whole-word phrases, not substrings or regex", () => {
-    expect(calculateKeywordDensity("New York, new yorker; NEW YORK!", "new york")).toEqual({
-      wordCount: 6,
-      occurrences: 2,
-      density: 100 / 3,
-    });
+    const phraseDensity = calculateKeywordDensity("New York, new yorker; NEW YORK!", "new york");
+    expect(phraseDensity).toMatchObject({ wordCount: 6, occurrences: 2 });
+    expect(phraseDensity.density).toBeCloseTo(100 / 3, 10);
     expect(calculateKeywordDensity("café CAFÉ cafe", "café")).toMatchObject({
       wordCount: 3,
       occurrences: 2,

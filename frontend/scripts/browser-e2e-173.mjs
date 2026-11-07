@@ -916,6 +916,14 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "preeti-unicode-converter") {
+        const preetiStarted = Date.now();
+        let preetiClicked = false;
+        while (Date.now() - preetiStarted < 12000 && !preetiClicked) {
+          preetiClicked = await page.evaluate('(() => { const button = document.querySelector("main button:not([disabled])"); if (!button) return false; button.click(); return true; })()');
+          if (!preetiClicked) await delay(250);
+        }
+        if (!preetiClicked) throw new Error("Preeti converter did not become ready or expose its forward conversion action.");
+        await delay(250);
         const output = await page.evaluate("document.querySelector('main [aria-live]')?.innerText || ''");
         if (!output.includes("नेपाल सरकारका")) throw new Error("Preeti converter did not correctly convert the known sample to नेपाल सरकारका.");
         const switched = await page.evaluate("(() => { const select = document.querySelector('main select'); if (!select) return false; select.value = 'to-preeti'; select.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
@@ -1175,7 +1183,8 @@ async function runTool(tool, index) {
       const nepaliPath = tool.kind === "pdf"
         ? "/ne" + tool.url
         : tool.slug === "resume-builder" ? "/ne/resume-builder" : "/ne/tools/" + tool.slug;
-      const localizedNavigation = await page.send("Page.navigate", { url: baseUrl + nepaliPath });
+      const nepaliUrl = new URL(nepaliPath, baseUrl).toString();
+      const localizedNavigation = await page.send("Page.navigate", { url: nepaliUrl });
       if (localizedNavigation.errorText) throw new Error("Nepali route navigation failed for " + tool.slug + ": " + localizedNavigation.errorText);
       const localizedStarted = Date.now();
       let localizedReady = { state: "", path: "" };

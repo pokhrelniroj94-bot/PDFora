@@ -41,7 +41,7 @@ for (const slug of legacyPdfSlugs) {
   assert.equal((layout.match(/<ToolSEOContent\b/g) ?? []).length, 1, `${slug} must render exactly one shared PDF SEO guide from its layout`);
 }
 
-const consolidatedPdfPages = ["merge-pdf", "delete-pages", "compress-pdf", "extract-pages", "images-to-pdf", "pdf-to-excel", "pdf-to-jpg", "pdf-to-word", "split-pdf", "watermark"];
+const consolidatedPdfPages = ["merge-pdf", "delete-pages", "compress-pdf", "extract-pages", "images-to-pdf", "pdf-to-excel", "pdf-to-jpg", "pdf-to-word", "split-pdf", "watermark", "rotate-pdf"];
 for (const slug of consolidatedPdfPages) {
   const page = read(`app/${slug}/page.tsx`);
   assert.equal((page.match(/<section\b/g) ?? []).length, 1, `${slug} should retain one clear tool hero and workspace section`);

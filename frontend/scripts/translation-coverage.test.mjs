@@ -22,6 +22,7 @@ test("translation coverage report is conservative and tied to the current commit
   assert.equal(report.locales.en.routeCoveragePercent, null, "source language must not be misreported as translated/reviewed");
   assert.equal(report.locales.ne.status, "Partially translated");
   assert.equal(report.locales.ne.translatedRoutes, 105, "Nepali homepage, six PDF routes, 52 utility tools, nine financial/calculator routes, three AI writing routes, the market dashboard, Resume Builder, blog index, 27 articles, and four static pages");
+  assert.equal(report.locales.ne.routeCoveragePercent, null, "dynamic route equivalents must not be divided by source-file counts");
   assert.equal(report.locales.ne.pdfGuideCoverage.translated, 49);
   assert.equal(report.locales.ne.pdfGuideCoverage.total, 49);
   assert.equal(report.locales.ne.blogCoverage.translated, 27, "All 27 curated editorial articles have Nepali translations");
@@ -35,7 +36,7 @@ test("translation coverage report is conservative and tied to the current commit
     assert.equal(report.locales[locale].routeCoveragePercent, 0);
   }
 
-  assert.match(report.methodology.routeCoverage, /source-file proxy/i);
+  assert.match(report.methodology.routeCoverage, /reported as counts only/i);
   assert.match(report.methodology.review, /cannot certify/i);
 });
 

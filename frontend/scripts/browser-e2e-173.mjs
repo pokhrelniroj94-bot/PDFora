@@ -217,6 +217,8 @@ async function runTool(tool, index) {
       row.output = statusText || finalState.body.slice(-700);
       row.downloadLinks = finalState.links;
       row.outputVerified = finalState.links.length > 0 || row.downloadCount > 0 || (/green-\d{2,3}|text-green/i.test(statusClass) && !!statusText);
+      row.evidenceLevel = "browser-processing-state-observed-download-bytes-not-independently-validated";
+      row.status = "PARTIAL";
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
       if (aiTools.has(tool.slug)) {

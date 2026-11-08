@@ -80,6 +80,7 @@ export default async function RootLayout({
                   name: "PDFora",
                   url: "https://pd-fora.vercel.app/",
                   inLanguage: htmlLang,
+                  publisher: { "@id": "https://pd-fora.vercel.app/#organization" },
                 },
                 {
                   "@type": "Organization",
@@ -87,20 +88,6 @@ export default async function RootLayout({
                   name: "PDFora",
                   url: "https://pd-fora.vercel.app/",
                 },
-                {
-                  "@type": "SoftwareApplication",
-                  "@id": "https://pd-fora.vercel.app/#application",
-                  name: "PDFora",
-                  url: "https://pd-fora.vercel.app/",
-                  applicationCategory: "UtilitiesApplication",
-                  operatingSystem: "Any",
-                  description:
-                    "Free browser-based tools for PDF, image, text and everyday productivity tasks.",
-                  offers: {
-                    "@type": "Offer",
-                    price: "0",
-                    priceCurrency: "USD",
-                  },
                 },
               ],
             }),

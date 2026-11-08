@@ -276,6 +276,7 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
       const controller = new AbortController();
       let requestTimeout: ReturnType<typeof setTimeout> | undefined;
       let response: Response;
+      let responseText: string;
       try {
         const timeout = new Promise<never>((_, reject) => {
           requestTimeout = setTimeout(() => {
@@ -285,17 +286,21 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
             reject(timeoutError);
           }, 15000);
         });
-        response = await Promise.race([
+        const result = await Promise.race([
           fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", {
             cache: "no-store",
             signal: controller.signal,
-          }),
+          }).then(async (marketResponse) => ({
+            response: marketResponse,
+            responseText: await marketResponse.text(),
+          })),
           timeout,
         ]);
+        response = result.response;
+        responseText = result.responseText;
       } finally {
         if (requestTimeout !== undefined) clearTimeout(requestTimeout);
       }
-      const responseText = await response.text();
       let data: {
         error?: unknown;
         points?: Point[];

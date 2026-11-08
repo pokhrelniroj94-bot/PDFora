@@ -162,7 +162,7 @@ test("route file contract: validates through the resolver, 404s, no JSON-LD, Eng
   const page = read("app/[locale]/tools/[slug]/page.tsx");
   assert.match(page, /resolveLocalizedToolRequest\(/);
   assert.match(page, /notFound\(\)/);
-  assert.match(page, /<ToolWorkspace slug=\{toolSlug\} \/>/, "must reuse the existing ToolWorkspace");
+  assert.match(page, /<ToolWorkspace slug=\{toolSlug\} locale=\{request\.locale\} \/>/, "must reuse the existing ToolWorkspace and pass locale for translated controls");
   assert.match(page, /lang="en" dir="ltr"/, "untranslated tool UI must be declared English");
   assert.doesNotMatch(page, /ld\+json|SoftwareApplication|FAQPage/, "English structured data must not be attached to localized URLs");
   assert.doesNotMatch(page, /index:\s*true/, "indexing is decided only in lib/tools/localized-metadata.ts");

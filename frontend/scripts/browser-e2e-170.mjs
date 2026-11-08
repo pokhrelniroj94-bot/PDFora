@@ -659,6 +659,9 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "nepal-forex-rates") await delay(20000);
       else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug)) await delay(5000);
+      // The NEPSE analysis workspace has a larger client bundle; allow React hydration
+      // to attach its click handler before exercising the primary action.
+      if (tool.slug === "nepse-technical-analysis") await delay(2500);
       const catalogDownloadsBefore = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
       const clicked = tool.slug === "nepal-forex-rates" ? "" : await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
@@ -705,7 +708,7 @@ async function runTool(tool, index) {
           row.output = analysisState.alert;
           return row;
         }
-        throw new Error("NEPSE analysis did not render a verifiable signal or a safe data-unavailable message.");
+        throw new Error("NEPSE analysis did not render a verifiable signal or a safe data-unavailable message. Diagnostics: " + JSON.stringify({ alert: analysisState?.alert || "", hasAnalysis: analysisState?.hasAnalysis || false, hasMetrics: analysisState?.hasMetrics || false, bodyTail: analysisState?.body?.slice(-1200) || "" }));
       }
       if (["image-compressor", "image-format-converter", "loksewa-photo-resizer"].includes(tool.slug)) {
         const downloadStarted = Date.now();

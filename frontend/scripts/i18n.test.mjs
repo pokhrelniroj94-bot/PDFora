@@ -36,7 +36,7 @@ test("AI Help resets and aborts pending conversations when the locale changes", 
   const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");
   assert.ok(source.includes("useRef<AbortController | null>(null)"), "AI Help must retain the active request controller");
   assert.ok(source.includes("requestController.current?.abort()"), "locale changes must abort the previous language request");
-  assert.ok(source.includes("<SiteAIHelpConversation key={locale}"), "locale changes must remount a fresh conversation with the active-language greeting");
+  assert.ok(source.includes("setMessages([{ role: \"assistant\", text: locale === \"ne\""), "locale changes must reset the conversation with an active-language greeting");
   assert.ok(source.includes("useEffect(() => () => {") && source.includes("requestController.current = null;"), "unmounting the old locale must abort and clear its pending request");
   assert.ok(source.includes("signal: controller.signal"), "AI requests must be cancellable");
   assert.ok(source.includes("if (!controller.signal.aborted) setError("), "aborted requests must not surface stale errors");

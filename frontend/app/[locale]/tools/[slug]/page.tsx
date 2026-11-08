@@ -92,7 +92,7 @@ const nepaliTitles: Record<string, string> = {
   "loan-emi-calculator": "ऋण EMI क्याल्कुलेटर",
   "compound-interest-sip-calculator": "चक्रवृद्धि ब्याज तथा SIP क्याल्कुलेटर",
   "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",
-  "nepse-technical-analysis": "बजार विश्लेषण तथा जोखिम परीक्षक",
+  "nepse-technical-analysis": "NEPSE प्राविधिक विश्लेषण",
   "uuid-generator": "UUID बनाउने उपकरण",
   "jwt-decoder": "JWT Token खोल्ने उपकरण",
   "css-minifier": "CSS कोड सानो बनाउने",
@@ -256,6 +256,7 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.locale === "ne" && nepaliLocalizedPublicInfoSlugs.includes(toolSlug as (typeof nepaliLocalizedPublicInfoSlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपालका आधिकारिक सेवा तथा सार्वजनिक सूचना</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepalLiveTools slug={toolSlug} locale="ne" /></section></main>;
   }
+
   if (request.locale === "ne" && nepaliLocalizedFinancialSlugs.includes(toolSlug as (typeof nepaliLocalizedFinancialSlugs)[number])) {
     if (["loan-emi-calculator", "compound-interest-sip-calculator", "discount-percentage-calculator"].includes(toolSlug)) {
       return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली वित्तीय टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliFinanceCalculatorWorkspace slug={toolSlug} /></section></main>;

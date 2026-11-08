@@ -5,6 +5,7 @@ import {
   nepaliLocalizedUtilitySlugs,
 } from "./nepali-tool-routes";
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
+import { isLocalizedToolIndexable } from "../tools/localized-verification";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 
 /**
@@ -52,6 +53,7 @@ export function absoluteUrl(path: string, locale: Locale): string {
 export const nepaliLocalizedNonToolPaths = [
   "/",
   "/market",
+  "/tools",
   "/resume-builder",
   "/blog",
   ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),
@@ -72,6 +74,24 @@ export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
 ]);
 
 const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
+
+// Only pages that are eligible for indexing may participate in hreflang.
+// Existing localized routes such as the full tools directory and the NEPSE
+// analysis shell intentionally remain noindex until their content is fully reviewed.
+const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set([
+  "/", "/market", "/resume-builder", "/blog",
+  ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),
+  "/privacy", "/terms", "/about", "/contact",
+]);
+
+export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean {
+  if (locale === defaultLocale) return true;
+  if (locale !== "ne" || !isPublished(locale)) return false;
+  const normalized = normalizePath(path);
+  if (nepaliIndexableNonToolPaths.has(normalized)) return true;
+  const pdfSlug = normalized.startsWith("/") ? normalized.slice(1) : normalized;
+  return nepaliPdfRoutes[pdfSlug] !== undefined && isLocalizedToolIndexable(locale, pdfSlug);
+}
 
 export function hasLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
@@ -103,7 +123,7 @@ export interface AlternateOptions {
  * Never lists unpublished or missing translations.
  */
 export function hreflangMap(path: string, options: AlternateOptions = {}): Record<string, string> | undefined {
-  const isAvailable = options.isAvailable ?? ((l: Locale, p: string) => isPublished(l) && hasLocalizedPage(p, l));
+  const isAvailable = options.isAvailable ?? ((l: Locale, p: string) => hasIndexableLocalizedPage(p, l));
   const map: Record<string, string> = {};
   for (const locale of locales) {
     if (locale === defaultLocale || isAvailable(locale, path)) {

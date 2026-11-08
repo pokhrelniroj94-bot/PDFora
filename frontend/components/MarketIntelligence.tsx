@@ -326,9 +326,15 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
 
       // The deterministic engine is the primary product. News is an optional,
       // separately-labelled context feed and must never gate or rewrite its signal.
+      // Render the technical result first so a slow or unavailable news provider
+      // can never leave the analysis panel blank.
+      setNewsReview(null);
+      setAnalysis({ ...result });
+      setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
+
       let reviewed: NewsReview | null = null;
       try {
-        const newsResponse = await fetch(`/api/nepal-market-news?symbol=${encodeURIComponent(symbol.trim().toUpperCase())}`, { cache: "no-store" });
+        const newsResponse = await fetch(`/api/nepal-market-news?symbol=${encodeURIComponent(symbol.trim().toUpperCase())}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
         if (newsResponse.ok) reviewed = reviewNews(await newsResponse.json(), symbol);
       } catch {
         reviewed = null;
@@ -337,9 +343,7 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
       const combined: Analysis = { ...result };
       if (reviewed) combined.reasons = [...combined.reasons, `Separate headline context: ${reviewed.sentiment}. Headlines do not change the deterministic technical signal. ${reviewed.note}`];
       else combined.risks = [...combined.risks, "News feed is unavailable. The rule-based technical analysis remains available; company announcements and material disclosures should be checked separately."];
-
       setAnalysis(combined);
-      setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
     } catch (err) { setError(err instanceof Error && err.name === "TimeoutError" ? "NEPSE market data request timed out. No signal was generated. Please retry later or upload a verified historical CSV." : err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
     finally { setBusy(false); }
   }
@@ -362,7 +366,7 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
   return <div className="space-y-6">
     <header>
       <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora NEPSE Quant Engine</p>
-      <Heading className="mt-2 text-3xl font-black tracking-tight text-slate-950">{locale === "ne" ? "बजार विश्लेषण तथा जोखिम परीक्षक" : "Market Intelligence & Risk Analyzer"}</Heading>
+      <Heading className="mt-2 text-3xl font-black tracking-tight text-slate-950">{locale === "ne" ? "NEPSE प्राविधिक विश्लेषण" : "NEPSE Technical Analysis & Risk Lab"}</Heading>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{locale === "ne" ? "नियममा आधारित trend, momentum, volume, data-quality र risk checks बाट NEPSE को ऐतिहासिक मूल्य विश्लेषण गर्नुहोस्। सबै सूचक र संकेत पारदर्शी सूत्रबाट स्थानीय रूपमा गणना हुन्छन्।" : "Analyse NEPSE price history using transparent, deterministic trend, momentum, volume, data-quality and risk checks. All indicators and signals are calculated transparently from the supplied market data using fixed formulas."}</p>
       <a href="/nepse-lab" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">{locale === "ne" ? "NEPSE Quant Strategy Lab खोल्नुहोस्" : "Open NEPSE Quant Strategy Lab"} <span aria-hidden="true">→</span></a>
     </header>
@@ -376,7 +380,7 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
         <button type="button" onClick={() => void loadNepse()} disabled={busy || !symbol.trim()} className="self-end rounded-xl bg-teal-700 px-6 py-3 text-sm font-bold text-white disabled:opacity-50">{busy ? (locale === "ne" ? "विश्लेषण हुँदैछ…" : "Analysing…") : (locale === "ne" ? "NEPSE विश्लेषण गर्नुहोस्" : "Analyse NEPSE")}</button>
       </div> : <div className="space-y-3">
         <label className="block max-w-sm"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{asset === "forex" ? "Forex pair" : "Crypto pair"}</span><input className={cls} value={marketSymbol} onChange={(e) => setMarketSymbol(e.target.value)} placeholder={asset === "forex" ? "EUR/USD" : "BTC/USD"} /></label>
-        <p className="text-sm text-slate-700">Upload a CSV exported from your broker or exchange. Required columns: <code>Date, Close</code>. Recommended: <code>Date, Open, High, Low, Close, Volume</code>. At least 50 daily rows are needed.</p>
+        <p className="text-sm text-slate-700">Upload a CSV exported from your broker or exchange. Required columns: <code>Date, Close</code>. Recommended: <code>Date, Open, High, Low, Close, Volume</code>. At least 100 daily rows are needed.</p>
         <input className={cls} type="file" accept=".csv,text/csv" onChange={(e) => void loadCsv(e.target.files?.[0])} /><button type="button" onClick={() => { const sample = "Date,Open,High,Low,Close,Volume\n2026-01-01,100,102,99,101,1200\n"; const url = URL.createObjectURL(new Blob([sample], { type: "text/csv" })); const a = document.createElement("a"); a.href = url; a.download = "pdfora-market-sample.csv"; a.click(); URL.revokeObjectURL(url); }} className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Download CSV format</button>
         <p className="text-xs leading-5 text-slate-500">PDFora does not scrape third-party Forex/Crypto feeds without display and analysis rights. CSV analysis runs on the uploaded historical data. Do not upload account credentials or private keys.</p>
       </div>}

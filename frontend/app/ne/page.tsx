@@ -4,24 +4,11 @@ import Link from "next/link";
 const site = "https://pd-fora.vercel.app";
 
 export const metadata: Metadata = {
-  title: "निःशुल्क PDF टुल र नेपालका उपयोगी अनलाइन उपकरणहरू | PDFora",
+  title: "निःशुल्क PDF उपकरण र नेपालका उपयोगी अनलाइन टुलहरू | PDFora",
   description: "PDF जोड्ने, छुट्याउने, कम्प्रेस गर्ने र रूपान्तरण गर्ने नेपाली अनलाइन टुलहरू। नेपाली मिति, मुद्रा विनिमय, कर, NEPSE र दैनिक उपयोगिताहरू एउटै ठाउँमा।",
   alternates: { canonical: `${site}/ne`, languages: { en: site, ne: `${site}/ne`, "x-default": site } },
-  openGraph: {
-    type: "website",
-    title: "PDFora नेपाली — निःशुल्क PDF र दैनिक उपयोगी टुलहरू",
-    description: "कागजात व्यवस्थापन, नेपालका गणना उपकरण र दैनिक डिजिटल कामका उपयोगी टुलहरू।",
-    url: `${site}/ne`,
-    siteName: "PDFora",
-    locale: "ne_NP",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora नेपाली अनलाइन टुलहरू" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "PDFora नेपाली — निःशुल्क अनलाइन टुलहरू",
-    description: "PDF व्यवस्थापन र नेपालका उपयोगी अनलाइन उपकरणहरू।",
-    images: ["/opengraph-image"],
-  },
+  openGraph: { type: "website", title: "PDFora नेपाली — निःशुल्क PDF र दैनिक उपयोगी टुलहरू", description: "कागजात व्यवस्थापन, नेपालका गणना उपकरण र दैनिक डिजिटल कामका उपयोगी टुलहरू।", url: `${site}/ne`, siteName: "PDFora", locale: "ne_NP", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora नेपाली अनलाइन टुलहरू" }] },
+  twitter: { card: "summary_large_image", title: "PDFora नेपाली — निःशुल्क अनलाइन टुलहरू", description: "PDF व्यवस्थापन र नेपालका उपयोगी अनलाइन उपकरणहरू।", images: ["/opengraph-image"] },
 };
 
 const pdfTools = [
@@ -52,167 +39,76 @@ const faqs = [
   { q: "PDFora कसरी प्रयोग गर्ने?", a: "सबै टुलको सूचीबाट आवश्यक उपकरण छान्नुहोस्। टुलले मागेको फाइल वा विवरण दिनुहोस्, देखाइएको प्रक्रिया पूरा गर्नुहोस् र डाउनलोड गर्नुअघि नतिजा जाँच गर्नुहोस्। केही उपकरणमा फाइलको प्रकार वा आकारसम्बन्धी सीमा हुन सक्छ।" },
   { q: "के PDFora मोबाइल र कम्प्युटर दुवैमा चल्छ?", a: "PDFora आधुनिक मोबाइल, ट्याब्लेट र कम्प्युटर ब्राउजरमा प्रयोग गर्न मिल्ने गरी तयार गरिएको हो। ठूलो फाइल प्रशोधन गर्दा उपकरणको मेमोरी, इन्टरनेट र ब्राउजरअनुसार गति फरक हुन सक्छ।" },
   { q: "के सबै टुल पूर्ण रूपमा नेपाली भाषामा छन्?", a: "होमपेज र स्पष्ट रूपमा नेपालीमा समीक्षा गरिएका टुलहरू नेपालीमा उपलब्ध छन्। केही अन्य टुल वा लेखमा अंग्रेजी सामग्री बाँकी हुन सक्छ; त्यस्ता पृष्ठलाई पूर्ण नेपाली अनुवाद भएको भनेर दाबी गरिएको छैन।" },
-  { q: "के क्याल्कुलेटरको नतिजा आधिकारिक हुन्छ?", a: "हुँदैन। कर, बिजुली, वित्त र बजारसम्बन्धी गणना जानकारी तथा अनुमानका लागि हुन्। नियम वा दर परिवर्तन हुन सक्छन्, त्यसैले कर कार्यालय, सम्बन्धित सेवा प्रदायक, नेपाल राष्ट्र बैंक वा NEPSE जस्ता आधिकारिक स्रोतबाट महत्त्वपूर्ण विवरण पुष्टि गर्नुहोस्।" },
+  { q: "के क्याल्कुलेटरको नतिजा आधिकारिक हुन्छ?", a: "हुँदैन। कर, बिजुली, वित्त र बजारसम्बन्धी गणना जानकारी तथा अनुमानका लागि हुन्। नियम वा दर परिवर्तन हुन सक्छन्, त्यसैले महत्त्वपूर्ण विवरण सम्बन्धित आधिकारिक स्रोतबाट पुष्टि गर्नुहोस्।" },
   { q: "मेरो PDF नतिजा डाउनलोड गर्नुअघि के जाँच्नुपर्छ?", a: "पृष्ठको क्रम, अक्षर, तस्बिर, तालिका र फाइल खुल्ने अवस्था जाँच्नुहोस्। संवेदनशील वा कानुनी कागजात प्रयोग गर्नुअघि नतिजा मूल फाइलसँग तुलना गर्नुहोस्।" },
 ];
 
 export default async function NepaliHomePage({ searchParams }: { searchParams?: Promise<{ from?: string }> }) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
-  const breadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "गृहपृष्ठ", item: `${site}/ne` },
-      { "@type": "ListItem", position: 2, name: "नेपाली टुलहरू", item: `${site}/ne` },
-    ],
-  };
-  const pageSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: "PDFora नेपाली — निःशुल्क PDF र दैनिक उपयोगी अनलाइन टुलहरू",
-    description: "PDF व्यवस्थापन, नेपाली मिति, वित्तीय गणना र नेपाल-केन्द्रित दैनिक डिजिटल उपकरणहरू।",
-    url: `${site}/ne`,
-    inLanguage: "ne-NP",
-    isPartOf: { "@id": `${site}/#website` },
-  };
-  return (
-    <main lang="ne" className="min-h-screen bg-slate-50 text-slate-900">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <Link href="/ne" className="flex items-center gap-3" aria-label="PDFora गृहपृष्ठ">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 font-black text-white">P</span>
-            <span className="text-xl font-black">PDFora</span>
-          </Link>
-          <nav aria-label="मुख्य नेभिगेसन" className="flex flex-wrap items-center gap-3 text-sm font-semibold">
-            <Link href="/ne/tools" className="text-slate-700 hover:text-blue-700">सबै टुलहरू</Link>
-            <Link href="/ne/blog" className="text-slate-700 hover:text-blue-700">मार्गदर्शिका</Link>
-            <Link href="/" className="text-slate-600 hover:text-blue-700">English</Link>
-          </nav>
-        </div>
-      </header>
-      {resolvedSearchParams?.from && (
-        <div role="status" className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-900">
-          तपाईंले खोज्नुभएको पृष्ठको पूर्ण नेपाली संस्करण अहिले उपलब्ध छैन। हाल उपलब्ध नेपाली पृष्ठ वा अङ्ग्रेजी संस्करण प्रयोग गर्नुहोस्।
-        </div>
-      )}
+  const breadcrumb = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+    { "@type": "ListItem", position: 1, name: "गृहपृष्ठ", item: `${site}/ne` },
+    { "@type": "ListItem", position: 2, name: "नेपाली टुलहरू", item: `${site}/ne/tools` },
+  ] };
+  const pageSchema = { "@context": "https://schema.org", "@type": "WebPage", name: "PDFora नेपाली — निःशुल्क PDF र दैनिक उपयोगी अनलाइन टुलहरू", description: "PDF व्यवस्थापन, नेपाली मिति, वित्तीय गणना र नेपाल-केन्द्रित दैनिक डिजिटल उपकरणहरू।", url: `${site}/ne`, inLanguage: "ne-NP", isPartOf: { "@id": `${site}/#website` } };
 
-      <section className="bg-white px-4 py-14 sm:px-6 sm:py-20">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-sm font-bold tracking-wider text-blue-700">नेपाली भाषामा डिजिटल सहयोग</p>
-          <h1 className="mt-4 text-3xl font-black tracking-tight sm:text-5xl">PDF र दैनिक कामका उपयोगी अनलाइन टुलहरू</h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600">कागजात जोड्ने, छुट्याउने, आकार घटाउने र रूपान्तरण गर्ने काम अनलाइनमै गर्नुहोस्। नेपाली मिति, युनिकोड टाइपिङ, विनिमय दर, कर तथा अन्य नेपाल-केन्द्रित उपयोगी उपकरण पनि एउटै ठाउँमा पाउनुहोस्।</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/ne/tools" className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700">सम्पूर्ण टुल सूची हेर्नुहोस्</Link>
-            <Link href="/ne/merge-pdf" className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-800 hover:border-blue-500">PDF जोड्न सुरु गर्नुहोस्</Link>
-          </div>
-          <p className="mt-5 text-xs leading-6 text-slate-500">फाइल वा गणनाको नतिजा प्रयोग गर्नुअघि सधैँ आफैँ जाँच गर्नुहोस्। वित्तीय र ज्योतिषीय उपकरणका नतिजा निश्चित निर्णय वा भविष्यवाणी होइनन्।</p>
-        </div>
-      </section>
+  return <main lang="ne" className="min-h-screen bg-slate-50 text-slate-900">
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
+    <header className="border-b border-slate-200 bg-white">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
+        <Link href="/ne" className="flex items-center gap-3" aria-label="PDFora गृहपृष्ठ"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 font-black text-white">P</span><span className="text-xl font-black">PDFora</span></Link>
+        <nav aria-label="मुख्य नेभिगेसन" className="flex flex-wrap items-center gap-3 text-sm font-semibold">
+          <Link href="/ne/tools" className="text-slate-700 hover:text-blue-700">सबै टुलहरू</Link>
+          <Link href="/ne/blog" className="text-slate-700 hover:text-blue-700">मार्गदर्शिका</Link>
+          <Link href="/" className="text-slate-600 hover:text-blue-700">English</Link>
+        </nav>
+      </div>
+    </header>
+    {resolvedSearchParams?.from && <div role="status" className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-900">तपाईंले खोज्नुभएको पृष्ठको पूर्ण नेपाली संस्करण अहिले उपलब्ध छैन। हाल उपलब्ध नेपाली पृष्ठ वा अङ्ग्रेजी संस्करण प्रयोग गर्नुहोस्।</div>}
 
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-2xl font-black">लोकप्रिय PDF उपकरणहरू</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-600">सामान्य कागजात व्यवस्थापन र रूपान्तरणका लागि उपयोगी उपकरणहरू।</p>
-          </div>
-          <Link href="/ne/tools" className="text-sm font-bold text-blue-700 underline underline-offset-4">सबै PDF टुल हेर्नुहोस्</Link>
+    <section className="bg-white px-4 py-14 sm:px-6 sm:py-20">
+      <div className="mx-auto max-w-4xl text-center">
+        <p className="text-sm font-bold tracking-wider text-blue-700">नेपाली भाषामा डिजिटल सहयोग</p>
+        <h1 className="mt-4 text-3xl font-black tracking-tight sm:text-5xl">PDF र दैनिक कामका उपयोगी अनलाइन टुलहरू</h1>
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600">कागजात जोड्ने, छुट्याउने, आकार घटाउने र रूपान्तरण गर्ने काम अनलाइनमै गर्नुहोस्। नेपाली मिति, युनिकोड टाइपिङ, विनिमय दर, कर तथा अन्य नेपाल-केन्द्रित उपयोगी उपकरण पनि एउटै ठाउँमा पाउनुहोस्।</p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Link href="/ne/tools" className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700">सम्पूर्ण टुल सूची हेर्नुहोस्</Link>
+          <Link href="/ne/merge-pdf" className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-800 hover:border-blue-500">PDF जोड्न सुरु गर्नुहोस्</Link>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {pdfTools.map((tool) => (
-            <Link key={tool.href} href={tool.href} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-md">
-              <h3 className="font-bold">{tool.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{tool.description}</p>
-              <span className="mt-4 inline-block text-sm font-bold text-blue-700">उपकरण खोल्नुहोस् →</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+        <p className="mt-5 text-xs leading-6 text-slate-500">फाइल वा गणनाको नतिजा प्रयोग गर्नुअघि सधैँ आफैँ जाँच गर्नुहोस्। वित्तीय र ज्योतिषीय उपकरणका नतिजा निश्चित निर्णय वा भविष्यवाणी होइनन्।</p>
+      </div>
+    </section>
 
-      <section className="border-y border-slate-200 bg-white px-4 py-12 sm:px-6">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h2 className="text-2xl font-black">नेपालका उपयोगी अनलाइन उपकरणहरू</h2>
-              <p className="mt-2 text-sm leading-7 text-slate-600">नेपाली मिति, व्यक्तिगत हिसाब, सार्वजनिक सूचना र बजारसम्बन्धी उपयोगिता।</p>
-            </div>
-            <Link href="/ne/tools" className="text-sm font-bold text-blue-700 underline underline-offset-4">थप उपकरणहरू हेर्नुहोस्</Link>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {nepalTools.map((tool) => (
-              <Link key={tool.href} href={tool.href} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-blue-400 hover:bg-white">
-                <h3 className="font-bold">{tool.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{tool.description}</p>
-                <span className="mt-4 inline-block text-sm font-bold text-blue-700">उपकरण खोल्नुहोस् →</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3"><div><h2 className="text-2xl font-black">लोकप्रिय PDF उपकरणहरू</h2><p className="mt-2 text-sm leading-7 text-slate-600">सामान्य कागजात व्यवस्थापन र रूपान्तरणका लागि उपयोगी उपकरणहरू।</p></div><Link href="/ne/tools" className="text-sm font-bold text-blue-700 underline underline-offset-4">सबै PDF टुल हेर्नुहोस्</Link></div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{pdfTools.map((tool) => <Link key={tool.href} href={tool.href} className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-md"><h3 className="font-bold">{tool.title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{tool.description}</p><span className="mt-4 inline-block text-sm font-bold text-blue-700">उपकरण खोल्नुहोस् →</span></Link>)}</div>
+    </section>
 
-      <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-        <h2 className="text-2xl font-black">PDF र अनलाइन टुल प्रयोग गर्ने तरिका</h2>
-        <div className="mt-5 grid gap-4 sm:grid-cols-3">
-          <article className="rounded-2xl border border-slate-200 bg-white p-5">
-            <h3 className="font-bold">१. आवश्यक उपकरण छान्नुहोस्</h3>
-            <p className="mt-2 text-sm leading-7 text-slate-600">सबै टुलको सूचीमा गएर PDF, गणना वा नेपाल-केन्द्रित उपकरणमध्ये आफ्नो कामसँग मिल्ने विकल्प खोल्नुहोस्।</p>
-          </article>
-          <article className="rounded-2xl border border-slate-200 bg-white p-5">
-            <h3 className="font-bold">२. फाइल वा विवरण दिनुहोस्</h3>
-            <p className="mt-2 text-sm leading-7 text-slate-600">टुलले मागेको फाइल छान्नुहोस् वा आवश्यक विवरण भर्नुहोस्। अपलोड गर्नुअघि फाइलको प्रकार र संवेदनशीलता विचार गर्नुहोस्।</p>
-          </article>
-          <article className="rounded-2xl border border-slate-200 bg-white p-5">
-            <h3 className="font-bold">३. नतिजा जाँच्नुहोस्</h3>
-            <p className="mt-2 text-sm leading-7 text-slate-600">डाउनलोड वा निर्णय गर्नुअघि नतिजा मूल फाइल र आवश्यक आधिकारिक स्रोतसँग तुलना गर्नुहोस्।</p>
-          </article>
-        </div>
-      </section>
+    <section className="border-y border-slate-200 bg-white px-4 py-12 sm:px-6">
+      <div className="mx-auto max-w-6xl"><div className="mb-6"><h2 className="text-2xl font-black">नेपालका उपयोगी अनलाइन टुलहरू</h2><p className="mt-2 text-sm leading-7 text-slate-600">नेपालमा मिति, कर, बिजुली बिल, विनिमय दर र बजार जानकारीका लागि उपयोगी उपकरणहरू।</p></div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{nepalTools.map((tool) => <Link key={tool.href} href={tool.href} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 transition hover:border-blue-400 hover:bg-white"><h3 className="font-bold">{tool.title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{tool.description}</p><span className="mt-4 inline-block text-sm font-bold text-blue-700">उपकरण खोल्नुहोस् →</span></Link>)}</div>
+      </div>
+    </section>
 
-      <section className="border-y border-slate-200 bg-white px-4 py-12 sm:px-6">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-2xl font-black">प्रायः सोधिने प्रश्नहरू</h2>
-          <div className="mt-5 space-y-4">
-            {faqs.map((faq) => (
-              <article key={faq.q} className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-                <h3 className="font-bold">{faq.q}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-700">{faq.a}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+    <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+      <div className="mb-6"><h2 className="text-2xl font-black">PDFora कसरी प्रयोग गर्ने?</h2><p className="mt-2 text-sm leading-7 text-slate-600">केही सरल चरणमा आवश्यक उपकरण चलाउनुहोस्।</p></div>
+      <ol className="grid gap-4 sm:grid-cols-3">
+        <li className="rounded-2xl border border-slate-200 bg-white p-5"><span className="text-sm font-black text-blue-700">१</span><h3 className="mt-2 font-bold">उपकरण छान्नुहोस्</h3><p className="mt-2 text-sm leading-6 text-slate-600">सबै टुलको सूचीबाट आफ्नो कामसँग मिल्ने उपकरण खोल्नुहोस्।</p></li>
+        <li className="rounded-2xl border border-slate-200 bg-white p-5"><span className="text-sm font-black text-blue-700">२</span><h3 className="mt-2 font-bold">फाइल वा विवरण दिनुहोस्</h3><p className="mt-2 text-sm leading-6 text-slate-600">स्क्रिनमा देखिएका निर्देशनअनुसार फाइल छान्नुहोस् वा आवश्यक विवरण भर्नुहोस्।</p></li>
+        <li className="rounded-2xl border border-slate-200 bg-white p-5"><span className="text-sm font-black text-blue-700">३</span><h3 className="mt-2 font-bold">नतिजा जाँच्नुहोस्</h3><p className="mt-2 text-sm leading-6 text-slate-600">डाउनलोड वा प्रयोग गर्नुअघि फाइल र गणनाको नतिजा आफैँ पुष्टि गर्नुहोस्।</p></li>
+      </ol>
+    </section>
 
-      <footer className="border-t border-slate-200 bg-slate-950 px-4 py-9 text-sm text-slate-300">
-        <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="text-lg font-black text-white">PDFora</p>
-            <p className="mt-3 max-w-xs leading-7">कागजात व्यवस्थापन र दैनिक डिजिटल कामका लागि उपयोगी अनलाइन उपकरणहरूको संग्रह।</p>
-          </div>
-          <div>
-            <h2 className="font-bold text-white">उपकरणहरू</h2>
-            <ul className="mt-3 space-y-2">
-              <li><Link href="/ne/tools" className="hover:text-white">सबै उपकरणहरू</Link></li>
-              <li><Link href="/ne/merge-pdf" className="hover:text-white">PDF जोड्नुहोस्</Link></li>
-              <li><Link href="/ne/tools/nepali-date-converter" className="hover:text-white">नेपाली मिति रूपान्तरण</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h2 className="font-bold text-white">जानकारी</h2>
-            <ul className="mt-3 space-y-2">
-              <li><Link href="/ne/blog" className="hover:text-white">मार्गदर्शिका तथा लेख</Link></li>
-              <li><Link href="/ne/privacy" className="hover:text-white">गोपनीयता नीति</Link></li>
-              <li><Link href="/ne/terms" className="hover:text-white">सेवाका सर्तहरू</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h2 className="font-bold text-white">भाषा</h2>
-            <p className="mt-3">यो पृष्ठ नेपाली भाषामा छ।</p>
-            <Link href="/" className="mt-2 inline-block underline underline-offset-4 hover:text-white">अङ्ग्रेजी संस्करण खोल्नुहोस्</Link>
-          </div>
-        </div>
-        <p className="mx-auto mt-8 max-w-6xl border-t border-slate-700 pt-5 text-center">© २०२६ PDFora — सर्वाधिकार सुरक्षित।</p>
-      </footer>
-    </main>
-  );
+    <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+      <h2 className="text-2xl font-black">सोधिने प्रश्नहरू</h2>
+      <div className="mt-5 space-y-3">{faqs.map((faq) => <details key={faq.q} className="rounded-xl border border-slate-200 bg-white p-5"><summary className="cursor-pointer font-bold">{faq.q}</summary><p className="mt-3 text-sm leading-7 text-slate-600">{faq.a}</p></details>)}</div>
+    </section>
+
+    <footer className="border-t border-slate-200 bg-slate-950 px-4 py-8 text-center text-sm text-slate-300">
+      <p>© 2026 PDFora — उपयोगी अनलाइन टुलहरू</p>
+      <nav aria-label="फुटर नेभिगेसन" className="mt-3 flex flex-wrap justify-center gap-4">
+        <Link href="/ne/tools" className="underline underline-offset-4">सबै टुलहरू</Link><Link href="/ne/blog" className="underline underline-offset-4">गाइड तथा ट्युटोरियल</Link><Link href="/ne/about" className="underline underline-offset-4">PDFora बारेमा</Link><Link href="/ne/contact" className="underline underline-offset-4">सम्पर्क</Link><Link href="/ne/privacy" className="underline underline-offset-4">गोपनीयता नीति</Link><Link href="/ne/terms" className="underline underline-offset-4">सेवाका सर्तहरू</Link><Link href="/" className="underline underline-offset-4">English</Link>
+      </nav>
+    </footer>
+  </main>;
 }

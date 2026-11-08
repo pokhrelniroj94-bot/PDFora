@@ -116,12 +116,13 @@ test("shared UI coverage: all twelve locales have complete translated site chrom
 });
 
 test("shared navigation preserves unavailable Nepali destinations", () => {
-  assert.equal(routing.localizedOrFallbackPath("/tools", "ne"), "/ne?from=%2Ftools");
+  assert.equal(routing.localizedOrFallbackPath("/tools", "ne"), "/ne/tools");
   assert.equal(routing.localizedOrFallbackPath("/tools/loan-emi-calculator", "ne"), "/ne/tools/loan-emi-calculator");
   assert.equal(routing.localizedOrFallbackPath("/tools/nepse-technical-analysis", "ne"), "/ne/tools/nepse-technical-analysis");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
+  assert.notEqual(routing.localizedOrFallbackPath("/nepse-technical-analysis", "ne"), "/ne/nepse-technical-analysis", "The standalone duplicate Nepali NEPSE route was retired; /ne/tools/nepse-technical-analysis is canonical");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 165, "All localized routes must be represented in the route registry");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 166, "All localized routes must be represented in the route registry: 5 core paths (home, market, tools directory, Resume Builder, blog), 29 articles, 4 static pages, 49 PDF routes and 79 utility/finance/public-info tools");
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 

@@ -31,7 +31,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
     dateModified: `${post.updated}T00:00:00+05:45`,
     inLanguage: "ne",
     mainEntityOfPage: `${baseUrl}/ne/blog/${post.slug}`,
-    author: { "@type": "Organization", name: "PDFora Editorial Team", url: `${baseUrl}/ne/about` },
+    author: { "@type": "Organization", name: "PDFora", url: `${baseUrl}/ne/about` },
     publisher: { "@type": "Organization", name: "PDFora", url: baseUrl },
   };
   const breadcrumbSchema = {
@@ -55,7 +55,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora नेपाली मार्गदर्शिका · {post.readTime}</p>
           <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
-          <p className="mt-5 text-xs text-slate-500">लेखन: PDFora सम्पादकीय टोली · अन्तिम अद्यावधिक: {post.updated}</p>
+          <p className="mt-5 text-xs text-slate-500">प्रकाशक: PDFora · अन्तिम अद्यावधिक: {post.updated}</p>
         </header>
         <div className="mt-6 space-y-6">
           {post.sections.map((section) => (

@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
         destination: `/${slug}`,
         permanent: true,
       })),
+      // The Nepali NEPSE analysis lives under the shared localized tool route only.
+      { source: "/ne/nepse-technical-analysis", destination: "/ne/tools/nepse-technical-analysis", permanent: true },
+      // Retired generative-AI tools. The manual Resume Builder is the relevant non-AI replacement for the
+      // resume and cover-letter writers. The humanizer has no equivalent, so it is left to return 404
+      // instead of redirecting to an unrelated page.
+      ...["ai-resume-writer", "ai-cover-letter-generator"].flatMap((slug) => [
+        { source: `/tools/${slug}`, destination: "/resume-builder", permanent: true },
+        { source: `/ne/tools/${slug}`, destination: "/ne/resume-builder", permanent: true },
+        { source: `/${slug}`, destination: "/resume-builder", permanent: true },
+      ]),
       // English is served from the unprefixed URLs and never under /en.
       { source: "/en", destination: "/", permanent: true },
       { source: "/en/:path*", destination: "/:path*", permanent: true },

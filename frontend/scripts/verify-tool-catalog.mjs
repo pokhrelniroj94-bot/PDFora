@@ -108,6 +108,7 @@ assert.ok(rootLayout.includes('template: "%s | PDFora"'), "Root layout must appe
 assert.ok(localizedBlogArticle.includes("title: post.title"), "Localized blog articles must pass unbranded titles to the root template");
 assert.ok(!localizedBlogArticle.includes('title: `${post.title} | PDFora`'), "Localized blog article titles must not duplicate the PDFora suffix");
 assert.match(seoContent, /uniqueFaqItems\.map/, "Visible tool FAQs must remain available in page content");
+assert.ok(seoContent.includes("Frequently asked questions"), "Tool pages must retain visible, user-facing FAQ content");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
@@ -196,6 +197,14 @@ assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trad
 const watchlistModule = read("../lib/nepse-watchlist.ts");
 assert.ok(marketDashboard.includes("watchlistStore") && marketDashboard.includes("useSyncExternalStore"), "NEPSE dashboard must use the browser-local watchlist store");
 assert.ok(watchlistModule.includes('"pdfora-nepse-watchlist"') && watchlistModule.includes("localStorage") && /WATCHLIST_LIMIT\s*=\s*20/.test(watchlistModule), "NEPSE watchlist must be browser-local and capped at 20 symbols");
+{
+  // The engine rejects fewer than 100 valid daily bars; user-facing instructions must say the same number.
+  const engine = read("../components/MarketIntelligence.tsx");
+  assert.ok(/rows\.length < 100\) return null/.test(engine), "NEPSE analysis engine minimum must stay at 100 bars (update the user-facing copy if this changes)");
+  for (const [name, source] of [["workspace", engine], ["catalog SEO guide", read("../components/CatalogToolSEOContent.tsx")], ["English tool page FAQ", read("../app/tools/[slug]/page.tsx")]]) {
+    assert.ok(!/at least 50 (valid|daily)/i.test(source), `${name} must not tell users 50 rows are enough for NEPSE technical analysis`);
+  }
+}
 assert.ok(!/\bfetch\(|XMLHttpRequest|sendBeacon/.test(watchlistModule), "NEPSE watchlist must never upload symbols to a server");
 assert.ok(!/\bsetWatchlist\b/.test(marketDashboard), "NEPSE dashboard must not copy watchlist storage into component state via an effect");
 const marketIntelligence = read("../components/MarketIntelligence.tsx");

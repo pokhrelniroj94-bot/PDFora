@@ -10,6 +10,15 @@ const sitemapSource = read("app/sitemap.ts");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
 const homepageSource = read("app/page.tsx");
+const blogArticleSource = read("app/blog/[slug]/page.tsx");
+const englishNepalBlogSource = read("lib/nepal-blog-posts.ts");
+const englishEditorialBlogSource = read("lib/blog-posts.ts");
+const nepaliLocalizedBlogSource = read("lib/nepali-localized-blog-posts.ts");
+const nepaliBlogArticleSource = read("app/[locale]/blog/[slug]/page.tsx");
+const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
+const pdfToolSeoSource = read("components/ToolSEOContent.tsx");
+const nepaliToolsDirectorySource = read("app/[locale]/tools/page.tsx");
+const nextConfigSource = read("next.config.ts");
 const englishToolPageSource = read("app/tools/[slug]/page.tsx");
 const pdfToolWorkspaceSource = read("components/PDForaTool.tsx");
 const niroj77ToolWorkspaceSource = read("components/Niroj77Tool.tsx");
@@ -17,16 +26,13 @@ const mergePdfLayoutSource = read("app/merge-pdf/layout.tsx");
 
 const englishHomeSource = read("app/page.tsx");
 const nepaliHomeSource = read("app/ne/page.tsx");
-const blogArticleSource = read("app/blog/[slug]/page.tsx");
 const englishBlogIndexSource = read("app/blog/page.tsx");
 const toolsIndexSource = read("app/tools/page.tsx");
 const toolDirectorySource = read("lib/tool-directory.ts");
 const blogPostSource = read("lib/blog-posts.ts");
-const nepaliBlogArticleSource = read("app/[locale]/blog/[slug]/page.tsx");
 const localeMetadataSource = read("lib/i18n/metadata.ts");
 const toolSeoContentSource = read("components/ToolSEOContent.tsx");
 const catalogToolSeoContentSource = read("components/CatalogToolSEOContent.tsx");
-const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
 const pdfToolMetadataSource = read("lib/i18n/pdf-tool-seo-core.ts");
 const catalogIndexabilitySource = read("lib/tools/catalog-indexability.ts");
 const catalogSeoContentSource = read("components/CatalogToolSEOContent.tsx");
@@ -104,6 +110,17 @@ assert.match(layoutSource, /publisher:\s*\{\s*"@id":\s*"https:\/\/pd-fora\.verce
 assert.doesNotMatch(layoutSource, /SoftwareApplication/, "SoftwareApplication schema must not be injected into unrelated blog, legal and utility pages");
 assert.match(homepageSource, /"@type":\s*"SoftwareApplication"/, "SoftwareApplication schema should appear on the homepage that describes the application");
 assert.doesNotMatch(robotsSource, /disallow:[^\]]*noindex|disallow:[^\]]*\/ne\//, "Do not block crawlers from reading noindex directives on localized pages");
+assert.doesNotMatch(nepaliBlogArticleSource, /"@type":\s*"FAQPage"/, "Nepali blog pages must not emit deprecated FAQ rich-result markup");
+assert.doesNotMatch(pdfToolJsonLdSource, /FAQPage/, "PDF tool JSON-LD must not emit deprecated FAQ rich-result markup");
+assert.doesNotMatch(pdfToolSeoSource, /FAQPage/, "Localized PDF tool pages must retain visible FAQs without obsolete FAQ markup");
+assert.doesNotMatch(blogArticleSource, /"@type":\s*"FAQPage"/, "Do not emit obsolete FAQ rich-result markup");
+assert.match(blogArticleSource, /"@type":\s*"BlogPosting"/, "Blog articles must retain accurate Article structured data");
+assert.match(nepaliToolsDirectorySource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "The partially translated Nepali directory must stay noindex");
+assert.ok(!fs.existsSync(new URL("../app/ne/nepse-technical-analysis/page.tsx", import.meta.url)), "The duplicate standalone Nepali NEPSE page must not return; the shared localized tool route is canonical");
+assert.match(nextConfigSource, /source: "\/ne\/nepse-technical-analysis", destination: "\/ne\/tools\/nepse-technical-analysis", permanent: true/, "The old standalone Nepali NEPSE URL must permanently redirect to the canonical route");
+assert.match(nextConfigSource, /"ai-resume-writer", "ai-cover-letter-generator"/, "Retired AI resume/cover-letter URLs must redirect to the manual Resume Builder");
+assert.doesNotMatch(nextConfigSource, /ai-humanizer/, "The humanizer has no relevant replacement and must not redirect to an unrelated page");
+assert.doesNotMatch(sitemapSource, /nepaliLocalizedPublicInfoSlugs/, "Unreviewed public-info translations must not be added to the indexable sitemap automatically");
 
 const reciprocalEnglishPages = [
   ["app/about/page.tsx", "/about"],
@@ -122,6 +139,15 @@ for (const [relativePath, localeFreePath] of reciprocalEnglishPages) {
   assert.equal(alternates?.en, `https://pd-fora.vercel.app${localeFreePath}`);
   assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne${localeFreePath}`);
   assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
+}
+
+const englishBlogSlugs = new Set([...englishNepalBlogSource.matchAll(/slug:\s*"([^"]+)"/g), ...englishEditorialBlogSource.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]));
+const nepaliBlogSlugs = [...nepaliLocalizedBlogSource.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
+for (const slug of nepaliBlogSlugs) {
+  assert.ok(englishBlogSlugs.has(slug), `Nepali blog ${slug} must have a real English equivalent before publishing hreflang`);
+  const alternates = hreflangMap(`/blog/${slug}`);
+  assert.equal(alternates?.en, `https://pd-fora.vercel.app/blog/${slug}`);
+  assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne/blog/${slug}`);
 }
 
 assert.match(englishToolPageSource, /isLocalizedToolIndexable\("ne", slug\)/, "English tool pages must gate Nepali hreflang on explicit indexing approval");

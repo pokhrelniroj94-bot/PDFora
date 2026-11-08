@@ -74,7 +74,7 @@ assert.ok(resumeRoute.includes('slug === "resume-builder"') && resumeRoute.inclu
 assert.ok(financial.includes("nepse-technical-analysis"), "NEPSE Technical Analysis must be registered for Nepali localization");
 assert.ok(!financial.includes("market-ai"), "The retired market-ai slug must not be a Nepali route");
 assert.ok(page.includes('toolSlug === "nepse-technical-analysis"') && page.includes('<MarketIntelligence locale="ne" nestedHeading />'), "NEPSE Technical Analysis must dispatch to its Nepali workspace");
-assert.ok(marketWorkspace.includes('locale = "en"') && marketWorkspace.includes('बजार विश्लेषण तथा जोखिम परीक्षक'), "NEPSE Technical Analysis must expose its localized workspace and title");
+assert.ok(marketWorkspace.includes('locale = "en"') && marketWorkspace.includes('NEPSE प्राविधिक विश्लेषण'), "NEPSE Technical Analysis must expose its localized workspace and title");
 assert.ok(marketWorkspace.includes('यो शैक्षिक प्रयोजनको प्राविधिक विश्लेषण सहायता हो'), "NEPSE Technical Analysis must translate the financial-risk disclosure");
 
 console.log("Nepali route dispatch, metadata and workspace coverage passed for " + all.length + " registered catalog routes.");

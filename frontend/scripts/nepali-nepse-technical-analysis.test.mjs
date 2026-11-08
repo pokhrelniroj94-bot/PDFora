@@ -11,7 +11,7 @@ const sitemap = fs.readFileSync(new URL("../app/sitemap.ts", import.meta.url), "
 const slug = "nepse-technical-analysis";
 assert.ok(routes.includes(`"${slug}"`), "NEPSE Technical Analysis must be in the Nepali financial route registry");
 assert.ok(!routes.includes('"market-ai"'), "The retired market-ai slug must not be a Nepali route");
-assert.ok(page.includes('"nepse-technical-analysis": "बजार विश्लेषण तथा जोखिम परीक्षक"'), "NEPSE Technical Analysis must have a Nepali SEO title");
+assert.ok(page.includes('"nepse-technical-analysis": "NEPSE प्राविधिक विश्लेषण"'), "NEPSE Technical Analysis must have a Nepali SEO title");
 assert.ok(page.includes('"nepse-technical-analysis": "NEPSE को उपलब्ध ऐतिहासिक'), "NEPSE Technical Analysis must have an accurate Nepali SEO description");
 assert.ok(page.includes('<MarketIntelligence locale="ne"'), "Nepali route must pass locale to the existing market engine");
 assert.ok(!verification.includes('"nepse-technical-analysis"') && !verification.includes('"market-ai"'), "NEPSE Technical Analysis must remain outside the Nepali indexing allowlist until human and browser review");
@@ -19,7 +19,7 @@ assert.ok(metadata.includes("isLocalizedToolIndexable(locale, entry.slug)") && m
 assert.ok(sitemap.includes('filter((slug) => isLocalizedToolIndexable("ne", slug))'), "Only explicitly verified Nepali tools may enter the sitemap");
 assert.ok(workspace.includes('locale?: "en" | "ne"'), "Market engine must preserve English and accept Nepali");
 for (const phrase of [
-  "बजार विश्लेषण तथा जोखिम परीक्षक", "सम्भावित खरिद अवस्था", "होल्ड / निगरानी",
+  "NEPSE प्राविधिक विश्लेषण", "सम्भावित खरिद अवस्था", "होल्ड / निगरानी",
   "जोखिमसम्बन्धी चेतावनी", "समाचारको धारणा:",
   "यो शैक्षिक प्रयोजनको प्राविधिक विश्लेषण सहायता हो",
 ]) assert.ok(workspace.includes(phrase), "Missing Nepali NEPSE Technical Analysis copy: " + phrase);

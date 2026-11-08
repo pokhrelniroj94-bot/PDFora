@@ -145,7 +145,7 @@ test("Nepali PDF tool form placeholders are translated for every configured rout
   const { getNepaliPdfFieldText } = await import("../lib/i18n/pdf-tool-fields-ne.ts");
   const routes = fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "nepali-pdf-routes.ts"), "utf8");
   const placeholders = [...routes.matchAll(/"(?:formPlaceholder|label|placeholder)":\s*"([^"]+)"/g)]
-    .map((match) => match[1])
+    .map((match) => match[1].replace(/\\n/g, "\n"))
     .filter((value) => value.length > 3 && !/^#[0-9A-F]{6}$/i.test(value));
   const unique = [...new Set(placeholders)];
   const missing = unique.filter((value) => getNepaliPdfFieldText(value) === value);

@@ -1227,8 +1227,6 @@ const report = {
     pdf: results.filter((row) => row.kind === "pdf").length,
     catalog: results.filter((row) => row.kind === "catalog").length,
     aiExecutionSkipped: results.filter((row) => aiTools.has(row.slug)).length,
-    nepaliRoutePass: nepaliResults.filter((row) => row.status === "PASS").length,
-    nepaliRouteFail: nepaliResults.filter((row) => row.status !== "PASS").length,
   },
   results,
 };

@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function NepaliPdfToolPage({ params }: Props) {
   const { locale, slug } = await params;
   if (locale === "ne" && slug === "market") {
-    return <NepseMarketDashboard locale="ne" />;
+    return <NepseMarketDashboard />;
   }
   if (locale === "ne" && slug === "resume-builder") {
     return <ResumeBuilder locale="ne" />;

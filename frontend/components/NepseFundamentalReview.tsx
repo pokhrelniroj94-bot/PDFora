@@ -20,6 +20,9 @@ export default function NepseFundamentalReview({ symbol, price, priceAsOf }: { s
   const [payload, setPayload] = useState<Payload | null>(null);
   const [error, setError] = useState("");
   const [loadedSymbol, setLoadedSymbol] = useState("");
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => { setNow(Date.now()); }, []);
 
   useEffect(() => {
     let active = true;
@@ -60,14 +63,14 @@ export default function NepseFundamentalReview({ symbol, price, priceAsOf }: { s
 
   const eps = number(report.eps), pe = number(report.pe), book = number(report.net_worth_per_share);
   const priceDateMs = Date.parse(priceAsOf + "T00:00:00Z");
-  const priceAgeDays = Number.isFinite(priceDateMs) ? Math.floor((Date.now() - priceDateMs) / 86_400_000) : Number.POSITIVE_INFINITY;
-  const priceFresh = priceAgeDays >= 0 && priceAgeDays <= 7;
+  const priceAgeDays = Number.isFinite(priceDateMs) ? Math.floor(((now ?? 0) - priceDateMs) / 86_400_000) : Number.POSITIVE_INFINITY;
+  const priceFresh = now !== null && priceAgeDays >= 0 && priceAgeDays <= 7;
   const pb = book !== null && book > 0 && price > 0 && priceFresh ? price / book : null;
   const submitted = report.documents?.map(document => document.submitted_date).filter(Boolean).sort().at(-1);
   const submittedDate = submitted ? submitted.slice(0, 10) : "";
   const submittedMs = submittedDate ? Date.parse(submittedDate + "T00:00:00Z") : Number.NaN;
-  const reportAgeDays = Number.isFinite(submittedMs) ? Math.floor((Date.now() - submittedMs) / 86_400_000) : Number.POSITIVE_INFINITY;
-  const reportFresh = reportAgeDays >= 0 && reportAgeDays <= 180;
+  const reportAgeDays = Number.isFinite(submittedMs) ? Math.floor(((now ?? 0) - submittedMs) / 86_400_000) : Number.POSITIVE_INFINITY;
+  const reportFresh = now !== null && reportAgeDays >= 0 && reportAgeDays <= 180;
   const growthText = (value: number | null) => value === null ? "Not comparable / unavailable" : (value > 0 ? "+" : "") + value.toFixed(2) + "%";
   return <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
     <div className="flex flex-wrap items-start justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">Fundamental snapshot · {symbol}</h3><p className="mt-1 text-xs text-slate-500">{report.type || "Financial report"} · {report.quarter} · FY {report.fy}</p></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Non-AI data analysis</span></div>

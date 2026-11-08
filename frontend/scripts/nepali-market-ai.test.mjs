@@ -25,12 +25,15 @@ for (const phrase of [
 // Localization must not alter deterministic analysis, stale-data suppression, CSV validation,
 // news cross-checking, or the optional AI explanation request.
 for (const invariant of [
-  "function analyse(points: Point[], asset: string)",
-  "const finalSignal = stale ? \"Wait / neutral\" : signal",
-  "Fewer than 50 valid price rows were found in the CSV.",
-  "News service unavailable; a news-verified signal cannot be issued.",
+  "function analyse(points: Point[], asset: string, sourceMeta?",
+  "const stale = hasStaleMarketData(last.date, asset);",
+  'if (stale) qualityWarnings.push("Latest daily candle is stale for the market calendar.")',
+  'const signal = actionable ? technicalSignal : "Wait / neutral";',
+  "CSV needs Date/Time and Close columns.",
+  "Fewer than 100 valid price rows were found in the CSV.",
+  "No sufficiently relevant recent headlines found. News sentiment is unavailable, not neutral.",
   'kind: "market-explain"',
-  "AI cannot override the computed signal",
+  "AI cannot change their calculated values or signals.",
 ]) assert.ok(workspace.includes(invariant), "Market AI safety/logic invariant missing: " + invariant);
 
 console.log("Nepali Market AI localization and safety regression tests passed.");

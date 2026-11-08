@@ -13,6 +13,21 @@ async function isRateLimited(request: Request): Promise<boolean> {
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!redisUrl || !redisToken) throw new Error("SHARED_RATE_LIMIT_NOT_CONFIGURED");
+  let redisEndpoint: URL;
+  try {
+    redisEndpoint = new URL(redisUrl);
+  } catch {
+    throw new Error("SHARED_RATE_LIMIT_INVALID_URL");
+  }
+  if (
+    redisEndpoint.protocol !== "https:" ||
+    redisEndpoint.username ||
+    redisEndpoint.password ||
+    redisEndpoint.search ||
+    redisEndpoint.hash
+  ) {
+    throw new Error("SHARED_RATE_LIMIT_INVALID_URL");
+  }
 
   // Prefer Vercel's trusted client-IP header. On deployments where it is
   // absent, use the right-most address appended by the hosting proxy.

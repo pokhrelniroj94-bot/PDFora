@@ -126,5 +126,5 @@ export const toolCatalog: ToolInfo[] = [
 
 
 
-{slug:"nepse-technical-analysis",name:"NEPSE Technical Analysis & Risk Lab",category:"Finance",description:"Analyse NEPSE historical prices with transparent EMA, RSI, MACD, volume, volatility, support, resistance and data-quality checks. No AI or price predictions.",keywords:"NEPSE technical analysis stock market risk analyzer RSI MACD EMA volume support resistance historical data Nepal"}
+{slug:"nepse-technical-analysis",name:"NEPSE Technical Analysis & Risk Lab",category:"Finance",description:"Analyse NEPSE historical prices with transparent EMA, RSI, MACD, volume, volatility, support, resistance and data-quality checks. Results are historical estimates, not price predictions.",keywords:"NEPSE technical analysis stock market risk analyzer RSI MACD EMA volume support resistance historical data Nepal"}
 ];

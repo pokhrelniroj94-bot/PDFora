@@ -16,7 +16,7 @@ const money = (value: number | null) => value === null ? "Unavailable" : value.t
 const quarterRank = (value: string) => ({ "first quarter": 1, "second quarter": 2, "third quarter": 3, "fourth quarter": 4 }[value.toLowerCase()] || 0);
 function fyStart(value: string) { const match = value.match(/(20\d{2})/); return match ? Number(match[1]) : 0; }
 
-export default function NepseFundamentalReview({ symbol, price }: { symbol: string; price: number }) {
+export default function NepseFundamentalReview({ symbol, price, priceAsOf }: { symbol: string; price: number; priceAsOf: string }) {
   const [payload, setPayload] = useState<Payload | null>(null);
   const [error, setError] = useState("");
   const [loadedSymbol, setLoadedSymbol] = useState("");
@@ -59,15 +59,23 @@ export default function NepseFundamentalReview({ symbol, price }: { symbol: stri
   if (!report) return <section className="rounded-2xl border border-slate-200 bg-white p-5"><h3 className="font-extrabold text-slate-900">Fundamental snapshot · {symbol}</h3><p className="mt-2 text-sm text-slate-600">{payload?.notice || "No structured company financial report was matched. Missing data is unavailable, not zero."}</p><p className="mt-2 text-xs text-slate-500">Provider: YONEPSE community dataset · not an official NEPSE API</p></section>;
 
   const eps = number(report.eps), pe = number(report.pe), book = number(report.net_worth_per_share);
-  const pb = book !== null && book > 0 && price > 0 ? price / book : null;
+  const priceDateMs = Date.parse(priceAsOf + "T00:00:00Z");
+  const priceAgeDays = Number.isFinite(priceDateMs) ? Math.floor((Date.now() - priceDateMs) / 86_400_000) : Number.POSITIVE_INFINITY;
+  const priceFresh = priceAgeDays >= 0 && priceAgeDays <= 7;
+  const pb = book !== null && book > 0 && price > 0 && priceFresh ? price / book : null;
   const submitted = report.documents?.map(document => document.submitted_date).filter(Boolean).sort().at(-1);
+  const submittedDate = submitted ? submitted.slice(0, 10) : "";
+  const submittedMs = submittedDate ? Date.parse(submittedDate + "T00:00:00Z") : Number.NaN;
+  const reportAgeDays = Number.isFinite(submittedMs) ? Math.floor((Date.now() - submittedMs) / 86_400_000) : Number.POSITIVE_INFINITY;
+  const reportFresh = reportAgeDays >= 0 && reportAgeDays <= 180;
   const growthText = (value: number | null) => value === null ? "Not comparable / unavailable" : (value > 0 ? "+" : "") + value.toFixed(2) + "%";
   return <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
     <div className="flex flex-wrap items-start justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">Fundamental snapshot · {symbol}</h3><p className="mt-1 text-xs text-slate-500">{report.type || "Financial report"} · {report.quarter} · FY {report.fy}</p></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Non-AI data analysis</span></div>
+    {(!reportFresh || !priceFresh) && <div role="status" className="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-3 text-xs leading-5 text-amber-950">{!reportFresh ? "Financial report submission date is missing, future-dated or older than 180 days; verify the original exchange filing before using valuation figures. " : ""}{!priceFresh ? "Latest price observation is missing, future-dated or older than 7 days; indicative P/B is suppressed." : ""}</div>}
     <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
       {[["Reported EPS", money(eps)],["Reported P/E", money(pe)],["Book value / share", money(book)],["Indicative P/B", money(pb)],["Reported profit (NPR)", money(number(report.profit))],["EPS YoY · same quarter", growthText(review.epsGrowth)],["Profit YoY · same quarter", growthText(review.profitGrowth)],["Paid-up capital (NPR)", money(number(report.paid_up_capital))],["Reports matched", String(review.reports)]].map(([label,value])=><div key={label} className="rounded-xl bg-slate-50 p-3"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 break-words text-sm font-bold text-slate-900">{value}</p></div>)}
     </div>
-    <p className="mt-3 text-xs leading-5 text-slate-500">Latest matched report only. YoY growth is shown only when the same quarter from an earlier fiscal year exists. Indicative P/B = latest market close ÷ reported book value per share. P/E is displayed as supplied by the dataset; no unsupported valuation threshold is applied. {submitted ? "Document submitted: " + submitted + ". " : ""}Financial dataset may be delayed or incomplete and is not a substitute for the original report.</p>
+    <p className="mt-3 text-xs leading-5 text-slate-500">Latest matched report only. YoY growth is shown only when the same quarter from an earlier fiscal year exists. Indicative P/B = latest market close ÷ reported book value per share. P/E is displayed as supplied by the dataset; no unsupported valuation threshold is applied. {submitted ? "Document submitted: " + submitted + " (" + reportAgeDays + " days ago). " : "Submission date unavailable. "}{priceFresh ? "Market price as of " + priceAsOf + ". " : "Market price freshness not verified. "}Financial dataset may be delayed or incomplete and is not a substitute for the original report.</p>
     <p className="mt-2 text-xs text-slate-500">Source: YONEPSE public community dataset · independent project, not an official NEPSE API.</p>
   </section>;
 }

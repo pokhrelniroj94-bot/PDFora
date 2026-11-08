@@ -668,10 +668,11 @@ async function runTool(tool, index) {
         const target = await page.evaluate(`(() => {
           const button = [...document.querySelectorAll("button")].find((b) => /^analyse nepse$/i.test(b.innerText.trim()));
           if (!button) return null;
+          button.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
           const rect = button.getBoundingClientRect();
-          return { text: button.innerText.trim(), x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+          return { text: button.innerText.trim(), x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, disabled: button.disabled, viewport: { width: innerWidth, height: innerHeight } };
         })()`);
-        if (target) {
+        if (target && !target.disabled && target.x >= 0 && target.y >= 0 && target.x <= target.viewport.width && target.y <= target.viewport.height) {
           await page.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: target.x, y: target.y });
           await page.send("Input.dispatchMouseEvent", { type: "mousePressed", x: target.x, y: target.y, button: "left", clickCount: 1 });
           await page.send("Input.dispatchMouseEvent", { type: "mouseReleased", x: target.x, y: target.y, button: "left", clickCount: 1 });

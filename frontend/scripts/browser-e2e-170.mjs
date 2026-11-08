@@ -703,7 +703,8 @@ async function runTool(tool, index) {
             body: document.querySelector("main")?.innerText || "",
             alert: document.querySelector("main [role=alert]")?.innerText || "",
             hasAnalysis: /Computed technical setup/.test(document.querySelector("main")?.innerText || ""),
-            hasMetrics: /EMA20/.test(document.querySelector("main")?.innerText || "") && /RSI/.test(document.querySelector("main")?.innerText || "") && /MACD/.test(document.querySelector("main")?.innerText || "")
+            hasMetrics: /EMA20/.test(document.querySelector("main")?.innerText || "") && /RSI/.test(document.querySelector("main")?.innerText || "") && /MACD/.test(document.querySelector("main")?.innerText || ""),
+            analysisButton: (() => { const b = [...document.querySelectorAll("button")].find((button) => /analyse nepse|analysing/i.test(button.innerText.trim())); return b ? { text: b.innerText.trim(), disabled: b.disabled } : null; })()
           }))()`);
           if (analysisState.hasAnalysis || analysisState.alert) break;
           await delay(500);
@@ -724,7 +725,7 @@ async function runTool(tool, index) {
           row.output = analysisState.alert;
           return row;
         }
-        throw new Error("NEPSE analysis did not render a verifiable signal or a safe data-unavailable message. Diagnostics: " + JSON.stringify({ alert: analysisState?.alert || "", hasAnalysis: analysisState?.hasAnalysis || false, hasMetrics: analysisState?.hasMetrics || false, bodyTail: analysisState?.body?.slice(-1200) || "", analysisButton: (() => { const b = [...document.querySelectorAll("button")].find((button) => /analyse nepse|analysing/i.test(button.innerText.trim())); return b ? { text: b.innerText.trim(), disabled: b.disabled } : null; })() }));
+        throw new Error("NEPSE analysis did not render a verifiable signal or a safe data-unavailable message. Diagnostics: " + JSON.stringify({ alert: analysisState?.alert || "", hasAnalysis: analysisState?.hasAnalysis || false, hasMetrics: analysisState?.hasMetrics || false, bodyTail: analysisState?.body?.slice(-1200) || "", analysisButton: analysisState?.analysisButton || null }));
       }
       if (["image-compressor", "image-format-converter", "loksewa-photo-resizer"].includes(tool.slug)) {
         const downloadStarted = Date.now();

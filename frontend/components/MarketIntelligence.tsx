@@ -257,7 +257,9 @@ function hasStaleMarketData(latestDate: string, asset: string) {
   return expectedSessions >= 2;
 }
 
-export default function MarketIntelligence() {
+export default function MarketIntelligence({ locale = "en", nestedHeading = false }: { locale?: "en" | "ne"; nestedHeading?: boolean }) {
+  const tr = (value: string) => locale === "ne" ? ({ NEPSE: "नेप्से", Forex: "विदेशी मुद्रा", Crypto: "क्रिप्टो" }[value] ?? value) : value;
+  const Heading = nestedHeading ? "h2" : "h1";
   const [asset, setAsset] = useState("nepse");
   const [symbol, setSymbol] = useState("NEPSE");
   const [marketSymbol, setMarketSymbol] = useState("EUR/USD");
@@ -341,7 +343,7 @@ export default function MarketIntelligence() {
   return <div className="space-y-6">
     <header>
       <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora NEPSE Quant Engine</p>
-      <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950">Market Intelligence & Risk Analyzer</h2>
+      <Heading className="mt-2 text-3xl font-black tracking-tight text-slate-950">Market Intelligence & Risk Analyzer</Heading>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Analyse NEPSE price history with deterministic, rule-based trend, momentum, volume and risk checks. The core signal works without AI; AI research is an optional explanation layer.</p>
       <a href="/nepse-lab" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">Open NEPSE Quant Strategy Lab <span aria-hidden="true">→</span></a>
     </header>

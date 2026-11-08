@@ -53,6 +53,7 @@ export function absoluteUrl(path: string, locale: Locale): string {
 export const nepaliLocalizedNonToolPaths = [
   "/",
   "/market",
+  "/nepse-technical-analysis",
   "/tools",
   "/resume-builder",
   "/blog",

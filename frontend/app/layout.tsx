@@ -5,7 +5,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import CookieConsent, { CookieSettingsLink } from "../components/CookieConsent";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
-import SiteAIHelp from "../components/SiteAIHelp";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,7 +65,6 @@ export default async function RootLayout({
           <CookieSettingsLink />
         </footer>
         <ToolDirectory />
-        <SiteAIHelp key={htmlLang} />
         <Script
           id="pdfora-structured-data"
           type="application/ld+json"

@@ -677,6 +677,26 @@ async function runTool(tool, index) {
           await page.send("Input.dispatchMouseEvent", { type: "mousePressed", x: target.x, y: target.y, button: "left", clickCount: 1 });
           await page.send("Input.dispatchMouseEvent", { type: "mouseReleased", x: target.x, y: target.y, button: "left", clickCount: 1 });
           clicked = target.text;
+          // Some headless Chromium builds deliver the pointer sequence without
+          // activating a hydrated React button. Confirm that the application
+          // observed the action before waiting for its async result; if not,
+          // use the native button activation as a deterministic fallback.
+          await delay(300);
+          const actionObserved = await page.evaluate(`(() => {
+            const main = document.querySelector("main");
+            const button = [...document.querySelectorAll("button")].find((b) => /analyse nepse|analysing/i.test(b.innerText.trim()));
+            return Boolean(button?.disabled || main?.querySelector('[role="alert"]') ||
+              /Computed technical setup/.test(main?.innerText || ""));
+          })()`);
+          if (!actionObserved) {
+            const fallbackActivated = await page.evaluate(`(() => {
+              const button = [...document.querySelectorAll("button")].find((b) => /^analyse nepse$/i.test(b.innerText.trim()));
+              if (!button || button.disabled) return false;
+              button.click();
+              return true;
+            })()`);
+            if (fallbackActivated) clicked += " (native activation fallback)";
+          }
         }
       } else if (tool.slug !== "nepal-forex-rates") {
         clicked = await page.evaluate(`(() => {

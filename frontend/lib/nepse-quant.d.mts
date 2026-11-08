@@ -1,0 +1,13 @@
+export type QuantBar = { date: string; close: number; volume?: number };
+export type QuantTrade = { buyDate: string; sellDate: string; buy: number; sell: number; returnPct: number; pnl: number; days: number };
+export type QuantResult = { trades: QuantTrade[]; strategyReturn: number; benchmarkReturn: number; winRate: number; maxDrawdown: number; profitFactor: number; exposure: number; equity: number[] };
+export function rsi(values: number[], index: number, period?: number): number | null;
+export type QuantOhlcvBar = QuantBar & { open?: number; high?: number; low?: number };
+export function normalizeOhlcvBars(input: unknown[]): QuantOhlcvBar[];
+export function normalizeDailyBars(input: unknown[]): QuantBar[];
+export function detectLargePriceGaps(rows: QuantBar[], thresholdPct?: number): { date: string; changePct: number }[];
+export function runBacktest(rows: QuantBar[], mode: string, costPct: number): QuantResult;
+export type MarketRegime = { label: string; ret20: number | null; ret50: number | null; vol: number | null; close: number | null; ema20: number | null; ema50: number | null; asOf: string };
+export function calculateMarketRegime(input: unknown[]): MarketRegime;
+export type OhlcvIndicators = { atr: number | null; adx: number | null; volumeRatio: number | null; obvTrend: "Rising" | "Falling" | "Flat" | "Unavailable"; atrPct: number | null } | null;
+export function calculateOhlcvIndicators(input: unknown[]): OhlcvIndicators;

@@ -28,21 +28,23 @@ const holidays = [
   { name: "Labour Day · Buddha Jayanti · Ubhauli · Chandi Purnima", bs: "2083 Baisakh 18", ad: "2026-05-01", note: "National public holiday", type: "National" },
   { name: "Republic Day", bs: "2083 Jestha 15", ad: "2026-05-29", note: "National public holiday", type: "National" },
   { name: "Rakshya Bandhan", bs: "2083 Bhadra 12", ad: "2026-08-28", note: "National public holiday", type: "National" },
-  { name: "Gai Jatra", bs: "2083 Bhadra 13", ad: "2026-08-29", note: "Kathmandu Valley and Newar community", type: "Regional" },
-  { name: "Krishna Janmashtami · Gaura Parwa", bs: "2083 Bhadra 19", ad: "2026-09-04", note: "National public holiday", type: "National" },
-  { name: "Haritalika Teej", bs: "2083 Bhadra 29", ad: "2026-09-14", note: "Women only", type: "Community" },
+  { name: "Gai Jatra", bs: "2083 Bhadra 13", ad: "2026-08-29", note: "Newar community nationwide", type: "Regional" },
+  { name: "Krishna Janmashtami", bs: "2083 Bhadra 19", ad: "2026-09-04", note: "National public holiday", type: "National" },
+  { name: "Gaura Parwa", bs: "2083 Bhadra 19", ad: "2026-09-04", note: "Far-western community observance", type: "Community" },
+  { name: "Haritalika Teej", bs: "2083 Bhadra 29", ad: "2026-09-14", note: "Women employees only", type: "Community" },
   { name: "Constitution Day", bs: "2083 Asoj 03", ad: "2026-09-19", note: "National public holiday", type: "National" },
   { name: "Indra Jatra", bs: "2083 Asoj 09", ad: "2026-09-25", note: "Kathmandu Valley only", type: "Regional" },
-  { name: "Jitiya Parwa", bs: "2083 Asoj 18", ad: "2026-10-04", note: "Women celebrating Jitiya Parwa", type: "Community" },
+  { name: "Jitiya Parwa", bs: "2083 Asoj 15", ad: "2026-10-01", note: "Women celebrating Jitiya Parwa", type: "Community" },
   { name: "Ghatasthapana", bs: "2083 Asoj 25", ad: "2026-10-11", note: "National public holiday", type: "National" },
   { name: "Dashain holiday begins", bs: "2083 Asoj 31", ad: "2026-10-17", note: "Seven-day Dashain holiday: 17–23 October", type: "National" },
   { name: "Tihar holiday begins", bs: "2083 Kartik 22", ad: "2026-11-08", note: "Five-day Tihar holiday: 8–12 November", type: "National" },
   { name: "Falgunand Jayanti", bs: "2083 Kartik 25", ad: "2026-11-11", note: "Kirant community", type: "Community" },
   { name: "Chhath Parwa", bs: "2083 Kartik 29", ad: "2026-11-15", note: "National public holiday", type: "National" },
-  { name: "International Day of Persons with Disabilities", bs: "2083 Mangsir 17", ad: "2026-12-03", note: "Persons with disabilities", type: "Community" },
+  { name: "International Day of Persons with Disabilities", bs: "2083 Mangsir 17", ad: "2026-12-03", note: "Employees with disabilities only", type: "Community" },
   { name: "Dhanya Purnima · Udhauli · Yomari Punhi", bs: "2083 Poush 09", ad: "2026-12-24", note: "National public holiday", type: "National" },
   { name: "Christmas Day", bs: "2083 Poush 10", ad: "2026-12-25", note: "National public holiday", type: "National" },
-  { name: "Tamu Lhosar · Dura Mhaipru Nakuma", bs: "2083 Poush 15", ad: "2026-12-30", note: "National public holiday", type: "National" },
+  { name: "Tamu Lhosar", bs: "2083 Poush 15", ad: "2026-12-30", note: "National public holiday", type: "National" },
+  { name: "Dura Mhaipru Nakuma", bs: "2083 Poush 15", ad: "2026-12-30", note: "Dura community observance", type: "Community" },
   { name: "Prithvi Jayanti · National Unity Day", bs: "2083 Poush 27", ad: "2027-01-11", note: "National public holiday", type: "National" },
   { name: "Maghi · Maghe Sankranti", bs: "2083 Magh 01", ad: "2027-01-15", note: "National public holiday", type: "National" },
   { name: "Martyrs’ Day", bs: "2083 Magh 16", ad: "2027-01-30", note: "National public holiday", type: "National" },
@@ -50,14 +52,14 @@ const holidays = [
   { name: "Basanta Panchami", bs: "2083 Magh 28", ad: "2027-02-11", note: "Educational institutions only", type: "Community" },
   { name: "National Democracy Day", bs: "2083 Falgun 07", ad: "2027-02-19", note: "National public holiday", type: "National" },
   { name: "Maha Shivaratri", bs: "2083 Falgun 22", ad: "2027-03-06", note: "National public holiday", type: "National" },
-  { name: "International Women’s Day", bs: "2083 Falgun 24", ad: "2027-03-08", note: "Women employees only", type: "Community" },
+  { name: "International Women’s Day", bs: "2083 Falgun 24", ad: "2027-03-08", note: "National public holiday", type: "National" },
   { name: "Gyalpo Lhosar", bs: "2083 Falgun 25", ad: "2027-03-09", note: "National public holiday", type: "National" },
   { name: "Fagu Purnima · Holi (Hills)", bs: "2083 Chaitra 07", ad: "2027-03-21", note: "56 Himalayan and Hill districts", type: "Regional" },
   { name: "Terai Holi", bs: "2083 Chaitra 08", ad: "2027-03-22", note: "21 Terai districts", type: "Regional" },
   { name: "Ghode Jatra", bs: "2083 Chaitra 23", ad: "2027-04-06", note: "Kathmandu Valley only", type: "Regional" },
   { name: "Eid al-Fitr", bs: "Date to be announced", ad: "", note: "Date depends on moon sighting", type: "To be announced" },
   { name: "Eid al-Adha", bs: "Date to be announced", ad: "", note: "Date depends on moon sighting", type: "To be announced" },
-  { name: "Saruwa Pawani", bs: "Date to be announced", ad: "", note: "Jhapa, Morang, Sunsari, Siraha and Saptari", type: "To be announced" },
+  { name: "Siruwa Pawani", bs: "Date to be announced", ad: "", note: "Jhapa, Morang, Sunsari, Siraha and Saptari", type: "To be announced" },
   { name: "Bhoto Jatra", bs: "Date to be announced", ad: "", note: "Kathmandu Valley only", type: "To be announced" },
   { name: "Muhammad Jayanti", bs: "Date to be announced", ad: "", note: "Muslim community", type: "To be announced" },
   { name: "Guru Nanak Jayanti", bs: "Date to be announced", ad: "", note: "Sikh community", type: "To be announced" },
@@ -247,29 +249,29 @@ function ElectricityTool({ locale = "en" }: { locale?: "en" | "ne" }) {
 const holidayNamesNe: Record<string, string> = {
   "Nepali New Year": "नेपाली नयाँ वर्ष", "Labour Day · Buddha Jayanti · Ubhauli · Chandi Purnima": "मजदुर दिवस · बुद्ध जयन्ती · उभौली · चण्डी पूर्णिमा",
   "Republic Day": "गणतन्त्र दिवस", "Rakshya Bandhan": "रक्षाबन्धन", "Gai Jatra": "गाईजात्रा",
-  "Krishna Janmashtami · Gaura Parwa": "कृष्ण जन्माष्टमी · गौरा पर्व", "Haritalika Teej": "हरितालिका तीज",
+  "Krishna Janmashtami": "कृष्ण जन्माष्टमी", "Gaura Parwa": "गौरा पर्व", "Haritalika Teej": "हरितालिका तीज",
   "Constitution Day": "संविधान दिवस", "Indra Jatra": "इन्द्रजात्रा", "Jitiya Parwa": "जितिया पर्व",
   "Ghatasthapana": "घटस्थापना", "Dashain holiday begins": "दशैँ बिदा सुरु", "Tihar holiday begins": "तिहार बिदा सुरु",
   "Falgunand Jayanti": "फाल्गुनन्द जयन्ती", "Chhath Parwa": "छठ पर्व",
   "International Day of Persons with Disabilities": "अपाङ्गता भएका व्यक्तिहरूको अन्तर्राष्ट्रिय दिवस",
   "Dhanya Purnima · Udhauli · Yomari Punhi": "धान्य पूर्णिमा · उधौली · योमरी पुन्हि", "Christmas Day": "क्रिसमस डे",
-  "Tamu Lhosar · Dura Mhaipru Nakuma": "तमु ल्होसार · दुरा म्हैप्रु नकुमा", "Prithvi Jayanti · National Unity Day": "पृथ्वी जयन्ती · राष्ट्रिय एकता दिवस",
+  "Tamu Lhosar": "तमु ल्होसार", "Dura Mhaipru Nakuma": "दुरा म्हैप्रु नकुमा", "Prithvi Jayanti · National Unity Day": "पृथ्वी जयन्ती · राष्ट्रिय एकता दिवस",
   "Maghi · Maghe Sankranti": "माघी · माघे सङ्क्रान्ति", "Martyrs’ Day": "शहीद दिवस", "Sonam Lhosar": "सोनाम ल्होसार",
   "Basanta Panchami": "वसन्त पञ्चमी", "National Democracy Day": "प्रजातन्त्र दिवस", "Maha Shivaratri": "महाशिवरात्रि",
   "International Women’s Day": "अन्तर्राष्ट्रिय महिला दिवस", "Gyalpo Lhosar": "ग्याल्पो ल्होसार",
   "Fagu Purnima · Holi (Hills)": "फागु पूर्णिमा · होली (पहाड)", "Terai Holi": "तराई होली", "Ghode Jatra": "घोडेजात्रा",
-  "Eid al-Fitr": "ईद उल फित्र", "Eid al-Adha": "ईद उल अजहा", "Saruwa Pawani": "सिरुवा पवनी",
+  "Eid al-Fitr": "ईद उल फित्र", "Eid al-Adha": "ईद उल अजहा", "Siruwa Pawani": "सिरुवा पवनी",
   "Bhoto Jatra": "भोटो जात्रा", "Muhammad Jayanti": "मोहम्मद जयन्ती", "Guru Nanak Jayanti": "गुरु नानक जयन्ती"
 };
 const holidayNotesNe: Record<string, string> = {
-  "National public holiday": "राष्ट्रिय सार्वजनिक बिदा", "Kathmandu Valley and Newar community": "काठमाडौं उपत्यका तथा नेवार समुदाय",
-  "Women only": "महिला कर्मचारीका लागि मात्र", "Kathmandu Valley only": "काठमाडौं उपत्यकामा मात्र",
+  "National public holiday": "राष्ट्रिय सार्वजनिक बिदा", "Newar community nationwide": "देशभरका नेवार समुदाय", "Far-western community observance": "सुदूरपश्चिमेली समुदायको पर्व", "Dura community observance": "दुरा समुदायको पर्व",
+   "Kathmandu Valley only": "काठमाडौं उपत्यकामा मात्र",
   "Women celebrating Jitiya Parwa": "जितिया पर्व मनाउने महिलाहरू", "Seven-day Dashain holiday: 17–23 October": "सात दिने दशैँ बिदा: अक्टोबर १७–२३",
   "Five-day Tihar holiday: 8–12 November": "पाँच दिने तिहार बिदा: नोभेम्बर ८–१२", "Kirant community": "किरात समुदाय",
-  "Persons with disabilities": "अपाङ्गता भएका व्यक्तिहरू", "Date depends on moon sighting": "चन्द्रदर्शनमा निर्भर मिति",
+  "Employees with disabilities only": "अपाङ्गता भएका कर्मचारीका लागि मात्र", "Women employees only": "महिला कर्मचारीका लागि मात्र", "Date depends on moon sighting": "चन्द्रदर्शनमा निर्भर मिति",
   "Jhapa, Morang, Sunsari, Siraha and Saptari": "झापा, मोरङ, सुनसरी, सिरहा र सप्तरी", "Muslim community": "मुस्लिम समुदाय",
   "Sikh community": "सिख समुदाय", "56 Himalayan and Hill districts": "हिमाली तथा पहाडी ५६ जिल्ला",
-  "21 Terai districts": "तराईका २१ जिल्ला", "Educational institutions only": "शैक्षिक संस्थामा मात्र"
+  "21 Terai districts": "तराईका २१ जिल्ला", "Educational institutions only": "शैक्षिक संस्थामा मात्र", "National public holiday": "राष्ट्रिय सार्वजनिक बिदा"
 };
 const holidayTypeNe: Record<string, string> = {
   National: "राष्ट्रिय", Regional: "क्षेत्रीय", Community: "समुदाय-विशेष", "To be announced": "घोषणा हुन बाँकी"
@@ -288,7 +290,7 @@ function HolidayTool({ locale = "en" }: { locale?: "en" | "ne" }) {
     const matchesQuery = `${item.name} ${holidayNamesNe[item.name] ?? ""} ${item.bs} ${item.ad} ${item.note} ${holidayNotesNe[item.note] ?? ""}`.toLowerCase().includes(query.toLowerCase());
     return matchesQuery && (filter === "All" || item.type === filter);
   }), [query, filter]);
-  const labels = ne ? { title: "नेपालका सार्वजनिक बिदा २०८३ (२०२६/२७)", intro: "राष्ट्रिय, क्षेत्रीय तथा समुदाय-विशेष सार्वजनिक बिदा र पर्व खोज्नुहोस्।", search: "बिदा खोज्नुहोस्", all: "सबै", national: "राष्ट्रिय", regional: "क्षेत्रीय", community: "समुदाय-विशेष", tba: "घोषणा हुन बाँकी", red: "रातो: राष्ट्रिय सार्वजनिक बिदा", saturday: "हल्का रातो: शनिबार", amber: "पहेंलो: मिति घोषणा हुन बाँकी", showing: "देखाइएको", entries: "प्रविष्टि", holiday: "बिदा / पर्व", bs: "वि.सं. मिति", ad: "ई.सं. मिति", applies: "लागू हुने क्षेत्र / टिप्पणी", public: "सार्वजनिक बिदा", footer: "यो २०८३ को सरकारी बिदा सूचीको खोज्न मिल्ने प्रतिलिपि हो। निजी रोजगारदाता, विद्यालय, बैंक वा प्रदेश सबैले यही बिदा पालना गर्छन् भन्ने ग्यारेन्टी होइन। चन्द्र पात्रोमा आधारित TBA मितिहरू आधिकारिक पुष्टि भएपछि मात्र निश्चित हुन्छन्।", verify: "गृह मन्त्रालयको आधिकारिक २०८३ बिदा सूचना हेर्नुहोस्" } : { title: "Nepal Public Holidays 2083 BS (2026/27)", intro: "Search government and public holidays, including national, regional and community-specific observances.", search: "Search holidays", all: "All", national: "National", regional: "Regional", community: "Community", tba: "To be announced", red: "Red: National public holiday", saturday: "Light red: Saturday", amber: "Amber: Date to be announced", showing: "Showing", entries: "entries", holiday: "Holiday", bs: "BS date", ad: "AD date", applies: "Applies to / note", public: "Public holiday", footer: "This is a searchable transcription of the 2083 government holiday list, not a guarantee that every private employer, school, bank or province follows the same closure schedule. Dates for lunar observances marked TBA require later official confirmation.", verify: "Verify with Ministry of Home Affairs official 2083 holiday notice" };
+  const labels = ne ? { title: "नेपालका सार्वजनिक बिदा २०८३ (२०२६/२७)", intro: "राष्ट्रिय, क्षेत्रीय तथा समुदाय-विशेष सार्वजनिक बिदा र पर्व खोज्नुहोस्।", search: "बिदा खोज्नुहोस्", all: "सबै", national: "राष्ट्रिय", regional: "क्षेत्रीय", community: "समुदाय-विशेष", tba: "घोषणा हुन बाँकी", red: "रातो: राष्ट्रिय सार्वजनिक बिदा", saturday: "हल्का रातो: शनिबार", amber: "पहेंलो: मिति घोषणा हुन बाँकी", showing: "देखाइएको", entries: "प्रविष्टि", holiday: "बिदा / पर्व", bs: "वि.सं. मिति", ad: "ई.सं. मिति", applies: "लागू हुने क्षेत्र / टिप्पणी", public: "सार्वजनिक बिदा", footer: "यो २०८३ को सरकारी बिदा सूचीको खोज्न मिल्ने प्रतिलिपि हो। निजी रोजगारदाता, विद्यालय, बैंक वा प्रदेश सबैले यही बिदा पालना गर्छन् भन्ने ग्यारेन्टी होइन। चन्द्र पात्रोमा आधारित TBA मितिहरू आधिकारिक पुष्टि भएपछि मात्र निश्चित हुन्छन्।", verify: "आधिकारिक गृह मन्त्रालयको २०८३ बिदा सूचना हेर्नुहोस्" } : { title: "Nepal Public Holidays 2083 BS (2026/27)", intro: "Search government and public holidays, including national, regional and community-specific observances.", search: "Search holidays", all: "All", national: "National", regional: "Regional", community: "Community", tba: "To be announced", red: "Red: National public holiday", saturday: "Light red: Saturday", amber: "Amber: Date to be announced", showing: "Showing", entries: "entries", holiday: "Holiday", bs: "BS date", ad: "AD date", applies: "Applies to / note", public: "Public holiday", footer: "This is a searchable transcription of the 2083 government holiday list, not a guarantee that every private employer, school, bank or province follows the same closure schedule. Dates for lunar observances marked TBA require later official confirmation.", verify: "Verify with Ministry of Home Affairs official 2083 holiday notice" };
   return <div className="space-y-4">
     <div><h2 className="text-lg font-bold">{labels.title}</h2><p className="mt-1 text-sm text-slate-600">{labels.intro}</p></div>
     <Field title={labels.search} value={query} onChange={setQuery} type="text"/>

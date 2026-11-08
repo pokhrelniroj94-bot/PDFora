@@ -88,7 +88,6 @@ export default async function RootLayout({
                   name: "PDFora",
                   url: "https://pd-fora.vercel.app/",
                 },
-                },
               ],
             }),
           }}

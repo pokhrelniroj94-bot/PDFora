@@ -274,11 +274,11 @@ const holidayNotesNe: Record<string, string> = {
 const holidayTypeNe: Record<string, string> = {
   National: "राष्ट्रिय", Regional: "क्षेत्रीय", Community: "समुदाय-विशेष", "To be announced": "घोषणा हुन बाँकी"
 };
-const nepaliNumberText = "०१२३४५६७८९";
 const holidayMonthNe: Record<string, string> = {
   Baisakh: "वैशाख", Jestha: "जेठ", Asar: "असार", Shrawan: "साउन", Bhadra: "भदौ", Asoj: "असोज",
   Kartik: "कार्तिक", Mangsir: "मंसिर", Poush: "पुस", Magh: "माघ", Falgun: "फागुन", Chaitra: "चैत"
 };
+const nepaliNumberText = "०१२३४५६७८९";
 
 function HolidayTool({ locale = "en" }: { locale?: "en" | "ne" }) {
   const [query, setQuery] = useState("");

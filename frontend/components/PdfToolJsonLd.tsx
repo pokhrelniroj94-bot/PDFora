@@ -8,7 +8,7 @@ function safeJsonLd(value: unknown): string {
 }
 
 /** Server component; schema must match visible content in the selected locale. */
-export default function PdfToolJsonLd({ name, description, url, locale, faqs = [], price }: PdfToolJsonLdProps): ReactElement {
+export default function PdfToolJsonLd({ name, description, url, locale, price }: PdfToolJsonLdProps): ReactElement {
   const graph: Record<string, unknown>[] = [{
     "@type": "SoftwareApplication", name, description, url,
     applicationCategory: "UtilitiesApplication", operatingSystem: "Any", inLanguage: locale,

@@ -1,5 +1,17 @@
 # PDFora i18n rollout: status
 
+## Current continuation update — 2026-11-08 (AI-free release work)
+
+The current integration branch removes all AI-powered features. The catalog now contains **170 active tools**: 49 PDF routes and 121 catalog utilities. The three AI writing tools have been removed; the visual Resume Builder remains a manual, browser-local CV editor. The global AI help widget, AI generation API, AI market explanation, and NRB AI rate explanation have also been removed. No user text is sent to an AI provider.
+
+The NEPSE dashboard retains public-data quotes, index and sector snapshots, price/volume charts, market movers, supply/demand context, company search, market news and official-disclosure links. A browser-local watchlist (up to 20 symbols) has been added. The renamed NEPSE Technical Analysis & Risk Lab calculates EMA20/EMA50, RSI(14), MACD, five-session momentum, volume confirmation, volatility and historical support/resistance using deterministic rules. Stale or incomplete data blocks actionable BUY/SELL setups; results are not forecasts or investment advice.
+
+The former `/tools/market-ai` and localized URL redirect to `/tools/nepse-technical-analysis`. Privacy and terms copy now describes public market-data processing and deterministic calculations. AI provider setup files, API route, UI components, and Preview AI workflow checks have been removed.
+
+Validation still required on this updated branch: full backend/frontend CI, 170-tool Chromium E2E, live NRB/NEPSE smoke tests, and review of the final Vercel deployment. This update does **not** claim that those checks have passed or that Production has been deployed.
+
+> The dated status entries below are historical records from the pre-removal localization branch; their 173-tool and AI-feature counts are not current.
+
 ## Current continuation status — 2026-11-07 (master `defdd43`; PR #104 continuation)
 
 Master baseline `defdd43ee53ecfc7e4341a95329ade6a02f2c2ec` merges PR #102. All current localization work remains on the separate Draft PR #104 branch; nothing has been merged or deployed to Production.
@@ -83,9 +95,9 @@ historical limitations are superseded by the verification results above and in
 - Existing `npm run verify:tools` FAILS on this branch before any i18n change: "Homepage is not using the canonical tool directory" (scripts/verify-tool-catalog.mjs:87). The homepage moved to `components/HomePageClient.tsx` while the script reads `app/page.tsx`. Needs a reviewed fix; the test was not edited or removed.
 
 ## Inventory (static parse, see inventory.json)
-- Page routes 63, API routes 6, catalog entries 125 (10 categories), 49 legacy root-level PDF slugs.
+- Page routes 63, API routes 5, catalog entries 122 (9 categories), 49 legacy root-level PDF slugs.
 - Hand-written blog slugs: 8 (blog-posts.ts) + 19 (nepal-blog-posts.ts); tool-guides.ts adds posts at runtime (count to confirm at build time).
-- Branch-specific features to preserve: NEPSE market/research/lab, forex, news APIs, AI writing (`/api/ai-writing`, Upstash + Cloudflare rate limiting), SiteAIHelp, SmartToolCenter, MarketIntelligence.
+- Current features to preserve: NEPSE market dashboard, deterministic technical analysis, forex, market news APIs, SmartToolCenter and MarketIntelligence.
 
 ## Status table
 | Phase | Status |

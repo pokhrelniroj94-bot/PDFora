@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const post = getNepaliLocalizedBlogPost(slug);
   if (locale !== "ne" || !post) return { title: "Article not found", robots: { index: false, follow: true } };
-  return buildLocaleMetadata({ locale, path: `/blog/${post.slug}`, title: `${post.title} | PDFora`, description: post.description });
+  return buildLocaleMetadata({ locale, path: `/blog/${post.slug}`, title: post.title, description: post.description });
 }
 
 export default async function NepaliBlogArticle({ params }: Props) {
@@ -33,11 +33,6 @@ export default async function NepaliBlogArticle({ params }: Props) {
     mainEntityOfPage: `${baseUrl}/ne/blog/${post.slug}`,
     author: { "@type": "Organization", name: "PDFora Editorial Team", url: `${baseUrl}/ne/about` },
     publisher: { "@type": "Organization", name: "PDFora", url: baseUrl },
-  };
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: post.faqs.map((faq) => ({ "@type": "Question", name: faq.question, acceptedAnswer: { "@type": "Answer", text: faq.answer } })),
   };
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -83,7 +78,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
           <section className="rounded-3xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">सम्बन्धित टुल</h2>
             <div className="mt-4 flex flex-wrap gap-3">
-              {post.toolLinks.map((tool) => <Link key={tool.href} href={tool.href.replace(/^\/tools/, "/ne/tools")} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
+              {post.toolLinks.map((tool) => <Link key={tool.href} href={tool.href.startsWith("/ne/") ? tool.href : tool.href.startsWith("/tools/") ? tool.href.replace(/^\/tools/, "/ne/tools") : tool.href.startsWith("/") ? `/ne${tool.href}` : tool.href} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
             </div>
           </section>
         </div>
@@ -94,7 +89,6 @@ export default async function NepaliBlogArticle({ params }: Props) {
       </article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </main>
   );
 }

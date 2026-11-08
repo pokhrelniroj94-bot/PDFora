@@ -1,5 +1,5 @@
 /**
- * The Nepali calendar data from 1975 BS to 2099 BS. Based on the array index
+ * The bundled Nepali calendar data from 1975 BS to 2083 BS. Future extrapolations are intentionally excluded.
  * months days (0 → 11th), total days in the year (12th)
  */
 const years: number[][] = [];
@@ -113,22 +113,7 @@ years[2080] = years[1991];
 years[2081] = years[1992];
 years[2082] = years[1978];
 years[2083] = years[1978];
-years[2084] = years[1976];
-years[2085] = years[2000];
-years[2086] = years[1978];
-years[2087] = years[1975];
-years[2088] = years[1976];
-years[2089] = years[2000];
-years[2090] = years[1978];
-years[2091] = years[1975];
-years[2092] = years[1976];
-years[2093] = years[1981];
-years[2094] = years[1978];
-years[2095] = years[1975];
-years[2096] = years[1976];
-years[2097] = years[1985];
-years[2098] = years[1978];
-years[2099] = years[1975];
+
 
 // export years data
 export { years };

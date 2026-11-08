@@ -24,7 +24,7 @@ const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
 test("every curated Nepali blog article is a real localized route with hreflang", () => {
-  assert.equal(nepaliLocalizedBlogPosts.length, 27);
+  assert.equal(nepaliLocalizedBlogPosts.length, 29);
   for (const post of nepaliLocalizedBlogPosts) {
     const localizedPath = "/blog/" + post.slug;
     assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);
@@ -36,8 +36,8 @@ test("AI Help resets and aborts pending conversations when the locale changes", 
   const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");
   assert.ok(source.includes("useRef<AbortController | null>(null)"), "AI Help must retain the active request controller");
   assert.ok(source.includes("requestController.current?.abort()"), "locale changes must abort the previous language request");
-  assert.ok(source.includes("<SiteAIHelpConversation key={locale}"), "locale changes must remount a fresh conversation with the active-language greeting");
-  assert.ok(source.includes("useEffect(() => () => {") && source.includes("requestController.current = null;"), "unmounting the old locale must abort and clear its pending request");
+  assert.ok(source.includes("setMessages([{ role: \"assistant\", text: locale === \"ne\""), "locale changes must reset the conversation with an active-language greeting");
+  assert.ok(source.includes("return () => {") && source.includes("requestController.current = null;"), "unmounting the old locale must abort and clear its pending request");
   assert.ok(source.includes("signal: controller.signal"), "AI requests must be cancellable");
   assert.ok(source.includes("if (!controller.signal.aborted) setError("), "aborted requests must not surface stale errors");
 });
@@ -45,7 +45,7 @@ test("AI Help resets and aborts pending conversations when the locale changes", 
 test("AI help derives locale prefixes from the central locale registry", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");
   assert.ok(source.includes('import { localeFromPathname } from "../lib/i18n/shared-ui"'));
-  assert.ok(source.includes('const locale = localeFromPathname(pathname)'));
+  assert.ok(source.includes('const locale = localeFromPathname(pathname || "/")'));
   assert.ok(source.includes('new RegExp(`^/${locale}(?=/|$)`)'), "page context must strip the configured locale prefix");
   assert.ok(!source.includes("|id|"), "the AI help locale list must not contain an unsupported locale");
 });
@@ -149,7 +149,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 157, "All localized routes must be represented in the route registry");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 159, "All localized routes must be represented in the route registry");
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -285,7 +285,7 @@ test("Nepali blog routes contain complete translated article content", () => {
   for (const phrase of ["नेपाली मिति कन्भर्टर", "नेपालमा १३% VAT", "रोपनी, आना, पैसा र दाम", "बारम्बार सोधिने प्रश्न"]) {
     assert.ok(source.includes(phrase) || page.includes(phrase), `Nepali blog content must include: ${phrase}`);
   }
-  assert.equal((source.match(/slug: "/g) ?? []).length, 27);
+  assert.equal((source.match(/slug: "/g) ?? []).length, 29);
   assert.ok(page.includes('inLanguage: "ne"'));
   assert.ok(page.includes('href="/ne/blog"'));
 });

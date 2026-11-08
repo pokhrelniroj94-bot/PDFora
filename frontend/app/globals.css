@@ -12,19 +12,16 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 html { color-scheme: light; scroll-behavior: smooth; }
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
-}
-.font-nepali {
-  font-family: "Noto Sans Devanagari", "Nirmala UI", "Mangal", ui-sans-serif, system-ui, sans-serif;
 }
 ::selection { background: #99f6e4; color: #134e4a; }
 :focus-visible { outline: 3px solid #0f766e; outline-offset: 3px; }
@@ -107,17 +104,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 
 /* Use explicit .pdfora-enter and .pdfora-stagger classes for predictable page motion. */
 
-/* i18n (Phase 2) ------------------------------------------------------------
-   Script-appropriate system font stacks: no web-font downloads, so no layout shift
-   or extra requests. Each selector matches only its own language, so English pages
-   are unaffected. */
-:lang(ar), :lang(ur) { font-family: "Noto Naskh Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, ui-sans-serif, system-ui, sans-serif; }
-:lang(ne), :lang(hi) { font-family: "Nirmala UI", "Noto Sans Devanagari", Mangal, ui-sans-serif, system-ui, sans-serif; }
-:lang(bn) { font-family: "Noto Sans Bengali", "Vrinda", ui-sans-serif, system-ui, sans-serif; }
-:lang(zh-Hans) { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif; }
-:lang(ja) { font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", ui-sans-serif, system-ui, sans-serif; }
-:lang(ko) { font-family: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", ui-sans-serif, system-ui, sans-serif; }
-
-/* RTL helpers, active only inside elements with dir="rtl" (Arabic and Urdu pages). */
-[dir="rtl"] .i18n-flip { transform: scaleX(-1); } /* mirror directional arrows/chevrons */
-.i18n-ltr { direction: ltr; unicode-bidi: isolate; } /* keep filenames, URLs, numbers and code left-to-right inside RTL text */
+/* Script-aware typography for published and future localized content. */
+:lang(ar), :lang(ur) {
+  font-family: "Noto Sans Arabic", "Noto Naskh Arabic", var(--font-geist-sans), sans-serif;
+}
+:lang(bn) {
+  font-family: "Noto Sans Bengali", var(--font-geist-sans), sans-serif;
+}
+[dir="rtl"] .i18n-flip { transform: scaleX(-1); }
+.i18n-ltr { direction: ltr; unicode-bidi: isolate; }

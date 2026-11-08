@@ -13,6 +13,21 @@ const configs: Record<NepaliDeveloperToolSlug, { title: string; description: str
   "lorem-ipsum-generator": { title: "Lorem Ipsum Generator", description: "डिजाइन तथा लेआउट परीक्षणका लागि नमुना placeholder पाठ बनाउनुहोस्।" },
   "html-encoder-decoder": { title: "HTML Encode / Decode", description: "HTML का विशेष अक्षर encode वा समर्थित entity decode गर्नुहोस्।" },
   "text-to-slug": { title: "Text to Slug Converter", description: "पाठलाई URL-friendly slug मा बदल्नुहोस्; नेपाली Unicode अक्षर सुरक्षित रहन्छन्।" },
+  "text-to-binary": { title: "Text to Binary", description: "पाठलाई UTF-8 बाइटको ८-बिट बाइनरी समूहमा बदल्नुहोस्।" },
+  "binary-to-text": { title: "Binary to Text", description: "वैध ८-बिट बाइनरी समूहलाई UTF-8 पाठमा बदल्नुहोस्।" },
+  "text-to-hex": { title: "Text to Hex", description: "पाठका UTF-8 बाइटलाई hexadecimal ढाँचामा बदल्नुहोस्।" },
+  "hex-to-text": { title: "Hex to Text", description: "वैध hexadecimal बाइटलाई UTF-8 पाठमा बदल्नुहोस्।" },
+  "morse-code-translator": { title: "Morse Code Translator", description: "अङ्ग्रेजी A–Z र 0–9 लाई Morse code मा वा Morse code बाट बदल्नुहोस्।" },
+  "camel-case-converter": { title: "Camel Case Converter", description: "शब्दहरूलाई camelCase शैलीमा जोड्नुहोस्।" },
+  "snake-case-converter": { title: "Snake Case Converter", description: "शब्दहरूलाई snake_case शैलीमा बदल्नुहोस्।" },
+  "kebab-case-converter": { title: "Kebab Case Converter", description: "शब्दहरूलाई kebab-case शैलीमा बदल्नुहोस्।" },
+  "html-tag-stripper": { title: "HTML Tag Stripper", description: "HTML tag हटाएर देखिने पाठ निकाल्नुहोस्; यसलाई सुरक्षा sanitizer नमान्नुहोस्।" },
+  "json-escape-unescape": { title: "JSON Escape / Unescape", description: "JSON string भित्रका quote, newline र विशेष चिन्ह escape वा unescape गर्नुहोस्।" },
+  "url-query-parser": { title: "URL Query Parser", description: "पूर्ण URL का query parameter निकालेर JSON मा देखाउनुहोस्।" },
+  "url-validator": { title: "URL Validator", description: "HTTP वा HTTPS URL को syntax जाँच्नुहोस्; वेबसाइट उपलब्धता जाँचिँदैन।" },
+  "email-validator": { title: "Email Validator", description: "इमेल ठेगानाको सामान्य syntax जाँच्नुहोस्; मेलबक्स अस्तित्व पुष्टि हुँदैन।" },
+  "password-strength-checker": { title: "Password Strength Checker", description: "पासवर्डको लम्बाइ र अक्षर विविधता स्थानीय रूपमा जाँच्नुहोस्; यो सुरक्षा प्रमाणीकरण होइन।" },
+  "uuid-generator": { title: "UUID Generator", description: "ब्राउजरको सुरक्षित randomUUID सुविधा प्रयोग गरी UUID v4 बनाउनुहोस्।" },
 };
 const labels: Record<string, string> = { text: "पाठ वा JSON", original: "पहिलो / पुरानो पाठ", modified: "दोस्रो / नयाँ पाठ" };
 
@@ -45,8 +60,8 @@ export default function NepaliDeveloperTextWorkspace({ slug }: { slug: string })
   return (
     <section className="space-y-4">
       <div><h2 className="text-xl font-black text-slate-950">{config.title}</h2><p className="mt-1 text-sm leading-6 text-slate-600">{config.description}</p></div>
-      {toolSlug === "text-diff-checker" ? <div className="grid gap-3 sm:grid-cols-2">{textarea("original")}{textarea("modified")}</div> : textarea("text")}
-      {toolSlug === "base64-encoder-decoder" || toolSlug === "url-encoder-decoder" || toolSlug === "html-encoder-decoder" ? select("mode", "कार्य", [["encode", "Encode (रूपान्तरण)"], ["decode", "Decode (फिर्ता रूपान्तरण)"]]) : null}
+      {toolSlug === "text-diff-checker" ? <div className="grid gap-3 sm:grid-cols-2">{textarea("original")}{textarea("modified")}</div> : toolSlug === "uuid-generator" ? <p className="rounded-xl bg-slate-50 p-3 text-sm text-slate-700">यो टुलले तपाईंको ब्राउजरमै नयाँ UUID बनाउँछ।</p> : textarea("text")}
+      {["base64-encoder-decoder", "url-encoder-decoder", "html-encoder-decoder", "morse-code-translator", "json-escape-unescape"].includes(toolSlug) ? select("mode", "कार्य", [["encode", "Encode (रूपान्तरण)"], ["decode", "Decode (फिर्ता रूपान्तरण)"]]) : null}
       {toolSlug === "json-formatter-validator" ? select("indent", "Indent आकार", [["2", "२ खाली स्थान"], ["4", "४ खाली स्थान"], ["0", "Compact"]]) : null}
       {toolSlug === "lorem-ipsum-generator" ? <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">अनुच्छेद संख्या (१–२०)</span><input className={field} type="number" min="1" max="20" value={values.count} onChange={(event) => update("count", event.target.value)} /></label> : null}
       {toolSlug === "hash-generator" ? select("algorithm", "Hash algorithm", [["SHA-256", "SHA-256"], ["SHA-384", "SHA-384"], ["SHA-512", "SHA-512"]]) : null}

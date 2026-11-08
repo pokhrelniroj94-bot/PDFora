@@ -1,4 +1,4 @@
-import { blogPosts, isCatalogGeneratedGuide } from "../lib/blog-posts";
+import { blogPosts, isCatalogGeneratedGuide, isGeneratedPdfGuide } from "../lib/blog-posts";
 import type { MetadataRoute } from "next";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
@@ -6,6 +6,7 @@ import { nepaliLocalizedBlogPosts } from "../lib/nepali-localized-blog-posts";
 import { nepaliLocalizedCareerSlugs, nepaliLocalizedFinancialSlugs, nepaliLocalizedUtilitySlugs } from "../lib/i18n/nepali-tool-routes";
 import { isLocalizedToolIndexable } from "../lib/tools/localized-verification";
 import { nepaliPdfRoutes } from "../lib/i18n/nepali-pdf-routes";
+import { isCatalogToolIndexable } from "../lib/tools/catalog-indexability";
 
 const baseUrl = "https://pd-fora.vercel.app";
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
@@ -17,10 +18,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: prioritySlugs.has(slug) ? 0.9 : 0.7,
   }));
 
-  // Every catalog tool gets exactly one sitemap URL. Existing PDF routes retain
-  // their established root URLs; all other tools use /tools/<slug>.
+  // Only catalogue tools with a dedicated, reviewed guide are eligible for Search.
+  // Other utilities remain available in the directory but are noindex and omitted.
+  // Established PDF routes retain their root URLs.
   const catalogEntries: MetadataRoute.Sitemap = toolCatalog
-    .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf" && !legacyToolSlugSet.has(tool.slug))
+    .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "resume-builder" && !legacyToolSlugSet.has(tool.slug) && isCatalogToolIndexable(tool.slug))
     .map((tool) => ({
       url: `${baseUrl}/tools/${tool.slug}`,
       changeFrequency: "monthly" as const,
@@ -63,10 +65,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
     { url: `${baseUrl}/tools`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/market`, changeFrequency: "daily", priority: 0.85 },
+    { url: `${baseUrl}/nepse-lab`, changeFrequency: "weekly", priority: 0.75 },
+    { url: `${baseUrl}/resume-builder`, changeFrequency: "monthly", priority: 0.75 },
     ...legacyPdfEntries,
     ...catalogEntries,
     { url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.8 },
-    ...blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug)).map((post) => ({
+    ...blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug) && !isGeneratedPdfGuide(post.slug)).map((post) => ({
       url: `${baseUrl}/blog/${post.slug}`,
       lastModified: new Date(post.updated),
       changeFrequency: "monthly" as const,

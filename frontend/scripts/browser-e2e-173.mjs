@@ -1,9 +1,10 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { spawn, execFileSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
+import { inflateRawSync } from "node:zlib";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
@@ -213,7 +214,7 @@ async function setFieldByLabel(page, labelText, value) {
 }
 
 
-async function seedPdfFields(page, slug) {
+async function seedPdfFields(page) {
   const expression = [
     "(() => {",
     "  const controls = [...document.querySelectorAll('input:not([type=\"file\"]), textarea')];",
@@ -252,21 +253,77 @@ async function validateDownloadedFile(filePath) {
     if (document.getPageCount() < 1) throw new Error("Downloaded PDF has no pages: " + path.basename(filePath));
   } else if ([".zip", ".docx", ".xlsx", ".pptx", ".odt", ".ods"].includes(extension)) {
     if (!hasPrefix(0x50, 0x4b)) throw new Error("Downloaded archive/Office file has no ZIP signature: " + path.basename(filePath));
-    const archiveCheck = execFileSync("python3", ["-c", [
-      "import json, os, sys, zipfile",
-      "p = sys.argv[1]",
-      "with zipfile.ZipFile(p) as z:",
-      "  infos = z.infolist()",
-      "  if not infos: raise SystemExit('Archive contains no entries')",
-      "  bad = z.testzip()",
-      "  if bad: raise SystemExit('CRC failure: ' + bad)",
-      "  names = set(z.namelist())",
-      "  ext = os.path.splitext(p)[1].lower()",
-      "  required = {'.docx': 'word/document.xml', '.xlsx': 'xl/workbook.xml', '.pptx': 'ppt/presentation.xml', '.odt': 'mimetype', '.ods': 'mimetype'}.get(ext)",
-      "  if required and required not in names: raise SystemExit('Missing required Office document part: ' + required)",
-      "  print(json.dumps({'entries': len(infos), 'uncompressedBytes': sum(x.file_size for x in infos), 'crc': 'ok', 'requiredPart': required}))",
-    ].join("\n"), filePath], { encoding: "utf8", timeout: 15000 }).trim();
-    return { file: path.basename(filePath), bytes: bytes.length, extension, valid: true, archiveCheck: JSON.parse(archiveCheck) };
+    const eocdSignature = 0x06054b50;
+    const centralSignature = 0x02014b50;
+    const localSignature = 0x04034b50;
+    const searchStart = Math.max(0, bytes.length - 22 - 0xffff);
+    let eocdOffset = -1;
+    for (let offset = bytes.length - 22; offset >= searchStart; offset -= 1) {
+      if (bytes.readUInt32LE(offset) === eocdSignature) { eocdOffset = offset; break; }
+    }
+    if (eocdOffset < 0) throw new Error("ZIP end-of-central-directory record is missing: " + path.basename(filePath));
+    const diskNumber = bytes.readUInt16LE(eocdOffset + 4);
+    const centralDisk = bytes.readUInt16LE(eocdOffset + 6);
+    const diskEntries = bytes.readUInt16LE(eocdOffset + 8);
+    const entryCount = bytes.readUInt16LE(eocdOffset + 10);
+    const centralSize = bytes.readUInt32LE(eocdOffset + 12);
+    const centralOffset = bytes.readUInt32LE(eocdOffset + 16);
+    if (diskNumber || centralDisk || diskEntries !== entryCount) throw new Error("Multi-disk ZIP archives are not supported.");
+    if (entryCount === 0xffff || centralOffset === 0xffffffff || centralSize === 0xffffffff) {
+      throw new Error("ZIP64 output needs a ZIP64-aware validator.");
+    }
+    if (!entryCount || centralOffset + centralSize > eocdOffset) throw new Error("ZIP central directory is empty or out of bounds.");
+    const crc32 = (input) => {
+      let crc = 0xffffffff;
+      for (const byte of input) {
+        crc ^= byte;
+        for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+      }
+      return (crc ^ 0xffffffff) >>> 0;
+    };
+    const names = new Set();
+    let cursor = centralOffset;
+    let uncompressedBytes = 0;
+    for (let index = 0; index < entryCount; index += 1) {
+      if (cursor + 46 > bytes.length || bytes.readUInt32LE(cursor) !== centralSignature) {
+        throw new Error("Invalid ZIP central directory entry " + index);
+      }
+      const method = bytes.readUInt16LE(cursor + 10);
+      const expectedCrc = bytes.readUInt32LE(cursor + 16);
+      const compressedSize = bytes.readUInt32LE(cursor + 20);
+      const uncompressedSize = bytes.readUInt32LE(cursor + 24);
+      const nameLength = bytes.readUInt16LE(cursor + 28);
+      const extraLength = bytes.readUInt16LE(cursor + 30);
+      const commentLength = bytes.readUInt16LE(cursor + 32);
+      const localOffset = bytes.readUInt32LE(cursor + 42);
+      const entryEnd = cursor + 46 + nameLength + extraLength + commentLength;
+      if (entryEnd > bytes.length || localOffset + 30 > bytes.length) throw new Error("ZIP entry is out of bounds.");
+      const name = bytes.subarray(cursor + 46, cursor + 46 + nameLength).toString("utf8");
+      names.add(name);
+      if (bytes.readUInt32LE(localOffset) !== localSignature) throw new Error("ZIP local header is invalid: " + name);
+      const localNameLength = bytes.readUInt16LE(localOffset + 26);
+      const localExtraLength = bytes.readUInt16LE(localOffset + 28);
+      const dataStart = localOffset + 30 + localNameLength + localExtraLength;
+      const dataEnd = dataStart + compressedSize;
+      if (dataEnd > bytes.length) throw new Error("ZIP entry data is truncated: " + name);
+      const compressed = bytes.subarray(dataStart, dataEnd);
+      let content;
+      if (method === 0) content = Buffer.from(compressed);
+      else if (method === 8) content = inflateRawSync(compressed);
+      else throw new Error("Unsupported ZIP compression method " + method + " for " + name);
+      if (content.length !== uncompressedSize) throw new Error("ZIP uncompressed size mismatch: " + name);
+      if (crc32(content) !== expectedCrc) throw new Error("ZIP CRC failure: " + name);
+      uncompressedBytes += content.length;
+      cursor = entryEnd;
+    }
+    if (cursor !== centralOffset + centralSize) throw new Error("ZIP central directory size mismatch.");
+    const required = {
+      ".docx": "word/document.xml", ".xlsx": "xl/workbook.xml",
+      ".pptx": "ppt/presentation.xml", ".odt": "mimetype", ".ods": "mimetype",
+    }[extension];
+    if (required && !names.has(required)) throw new Error("Missing required Office document part: " + required);
+    const archiveCheck = { entries: entryCount, uncompressedBytes, crc: "ok", requiredPart: required ?? null };
+    return { file: path.basename(filePath), bytes: bytes.length, extension, valid: true, archiveCheck };
   } else if (extension === ".png") {
     if (!hasPrefix(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) throw new Error("Downloaded PNG signature is invalid: " + path.basename(filePath));
   } else if ([".jpg", ".jpeg"].includes(extension)) {
@@ -293,6 +350,14 @@ async function runTool(tool, index) {
   let page;
   try {
     page = await openPage(tool.url);
+    // Client-rendered AI workspaces can hydrate after the document reaches
+    // "interactive". Wait for the semantic heading instead of racing hydration.
+    const headingDeadline = Date.now() + 8000;
+    while (Date.now() < headingDeadline) {
+      const headingCount = await page.evaluate("document.querySelectorAll('h1').length");
+      if (headingCount > 0) break;
+      await delay(250);
+    }
     const initial = await page.evaluate(`(() => ({
       title: document.title,
       heading: document.querySelector("h1")?.innerText?.trim() || "",
@@ -432,7 +497,7 @@ async function runTool(tool, index) {
       const attached = await page.evaluate("document.body.innerText.split(" + JSON.stringify(fixtureName) + ").length - 1");
       if (attached < expectedFileCount) throw new Error("PDF fixture selection was not reflected in the upload workspace.");
       row.checks.push("PDF file selected");
-      row.seededFields = await seedPdfFields(page, tool.slug);
+      row.seededFields = await seedPdfFields(page);
       if (tool.slug === "reorder-pdf") {
         await page.evaluate("(() => { const field = [...document.querySelectorAll('input:not([type=file]), textarea')].find((item) => item.type !== 'number'); if (!field) return false; const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype; const setter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set; setter?.call(field, '1,2'); field.dispatchEvent(new Event('input', { bubbles: true })); field.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
       }

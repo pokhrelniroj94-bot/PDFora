@@ -4,10 +4,11 @@ import { hreflangMap } from "../../lib/i18n/routing";
 const localizedAlternates = hreflangMap("/privacy");
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | PDFora Data and File Handling",
+  title: "Privacy Policy: PDF and Data Handling",
   description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and optional AI features.",
   alternates: { canonical: "https://pd-fora.vercel.app/privacy", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and optional AI features." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and optional AI features.", images: ["/opengraph-image"] },
+  twitter: { card: "summary_large_image", title: "PDFora Privacy Policy", description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and optional AI features.", images: ["/opengraph-image"] },
 };
 
 export default function PrivacyPage() {

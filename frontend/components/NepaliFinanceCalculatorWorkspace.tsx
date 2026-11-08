@@ -22,7 +22,7 @@ export default function NepaliFinanceCalculatorWorkspace({ slug }: { slug: strin
   const p = Number(principal), annual = Number(rate), term = Number(months);
   const emiValid = Number.isFinite(p) && Number.isFinite(annual) && Number.isInteger(term) && p > 0 && annual >= 0 && term > 0 && term <= 1200;
   let emi: number | null = null;
-  let emiError = "सकारात्मक ऋण रकम, मान्य ब्याज दर र पूर्ण महिनाको अवधि लेख्नुहोस्।";
+  let emiError = "ऋण अवधि पूर्ण महिनामा लेख्नुहोस्। सकारात्मक ऋण रकम र मान्य ब्याज दर पनि लेख्नुहोस्.";
   try {
     if (emiValid) emi = loanEmi(p, annual, term);
   } catch (error) {

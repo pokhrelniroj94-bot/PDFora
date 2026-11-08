@@ -355,7 +355,7 @@ export default function MarketIntelligence({ locale = "en" }: { locale?: "en" | 
   return <div className="space-y-6">
     <header>
       <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">{tr("PDFora Smart Market AI")}</p>
-      <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">{tr("Market Intelligence & Risk Analyzer")}</h1>
+      <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950">{tr("Market Intelligence & Risk Analyzer")}</h2>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{tr("Analyse NEPSE, Forex and Crypto price history with trend, momentum, volatility, support/resistance and rule-based entry/exit conditions. Optional free AI explains the calculated results.")}</p>
       <a href="/nepse-lab" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">{tr("Open NEPSE Quant Strategy Lab")} <span aria-hidden="true">→</span></a>
     </header>

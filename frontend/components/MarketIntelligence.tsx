@@ -273,7 +273,28 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
   async function loadNepse() {
     setBusy(true); setError(""); setAnalysis(null); setNewsReview(null);
     try {
-      const response = await fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", { cache: "no-store", signal: AbortSignal.timeout(15000) });
+      const controller = new AbortController();
+      let requestTimeout: ReturnType<typeof setTimeout> | undefined;
+      let response: Response;
+      try {
+        const timeout = new Promise<never>((_, reject) => {
+          requestTimeout = setTimeout(() => {
+            controller.abort();
+            const timeoutError = new Error("NEPSE market data request timed out.");
+            timeoutError.name = "TimeoutError";
+            reject(timeoutError);
+          }, 15000);
+        });
+        response = await Promise.race([
+          fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+          timeout,
+        ]);
+      } finally {
+        if (requestTimeout !== undefined) clearTimeout(requestTimeout);
+      }
       const responseText = await response.text();
       let data: {
         error?: unknown;

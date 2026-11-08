@@ -5,7 +5,7 @@ import NepseFundamentalReview from "./NepseFundamentalReview";
 import NepseMarketContext from "./NepseMarketContext";
 import NepseAdvancedIndicators from "./NepseAdvancedIndicators";
 import NepseMacroDrivers from "./NepseMacroDrivers";
-import { normalizeOhlcvBars } from "../lib/nepse-quant.mjs";
+import { detectLargePriceGaps, normalizeOhlcvBars } from "../lib/nepse-quant.mjs";
 
 
 type NewsStory = { title: string; link: string; publishedAt: string; source: string };
@@ -37,10 +37,17 @@ type Analysis = {
 const cls = "w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100";
 const card = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5";
 const avg = (values: number[]) => values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
-function ema(values: number[], period: number) {
+function ema(values: number[], period: number): (number | null)[] {
+  const result: (number | null)[] = Array(values.length).fill(null);
+  if (!Number.isInteger(period) || period < 1 || values.length < period || values.some(value => !Number.isFinite(value))) return result;
   const k = 2 / (period + 1);
-  let value = values[0] ?? 0;
-  return values.map((item, index) => { value = index === 0 ? item : item * k + value * (1 - k); return value; });
+  let value = avg(values.slice(0, period));
+  result[period - 1] = value;
+  for (let i = period; i < values.length; i++) {
+    value = values[i] * k + value * (1 - k);
+    result[i] = value;
+  }
+  return result;
 }
 function rsi(values: number[], period = 14) {
   if (values.length <= period) return 50;
@@ -59,20 +66,25 @@ function rsi(values: number[], period = 14) {
   const rs = averageGain / averageLoss;
   return 100 - 100 / (1 + rs);
 }
-function analyse(points: Point[], asset: string): Analysis | null {
+function analyse(points: Point[], asset: string, sourceMeta?: { quoteStale?: boolean; historyPriceBasis?: string; historySource?: string }): Analysis | null {
   const rows = normalizeOhlcvBars(points);
-  if (rows.length < 50) return null;
+  if (rows.length < 100) return null;
   const closes = rows.map((p) => p.close);
   const e20 = ema(closes, 20), e50 = ema(closes, 50);
   const fast = ema(closes, 12), slow = ema(closes, 26);
-  const macdLine = fast.map((v, i) => v - slow[i]);
-  const macdSignal = ema(macdLine, 9);
+  const macdLine: (number | null)[] = closes.map((_, index) => fast[index] !== null && slow[index] !== null ? fast[index]! - slow[index]! : null);
+  const validMacd = macdLine.filter((value): value is number => value !== null);
+  const validMacdSignal = ema(validMacd, 9);
+  const macdSignal: (number | null)[] = Array(closes.length).fill(null);
+  const macdStart = macdLine.findIndex(value => value !== null);
+  validMacdSignal.forEach((value, index) => { if (value !== null) macdSignal[macdStart + index] = value; });
   const last = rows[rows.length - 1];
   const i = closes.length - 1;
+  const ema20 = e20[i] ?? last.close, ema50 = e50[i] ?? last.close;
   const rsiValue = rsi(closes);
-  const trendUp = last.close > e20[i] && e20[i] > e50[i];
-  const trendDown = last.close < e20[i] && e20[i] < e50[i];
-  const macdHist = macdLine[i] - macdSignal[i];
+  const trendUp = last.close > ema20 && ema20 > ema50;
+  const trendDown = last.close < ema20 && ema20 < ema50;
+  const macdHist = (macdLine[i] ?? 0) - (macdSignal[i] ?? 0);
   const recentReturns = closes.slice(-21).slice(1).map((v, j) => (v / closes.slice(-21)[j]) - 1).filter(Number.isFinite);
   const dailyVol = Math.sqrt(avg(recentReturns.map((v) => (v - avg(recentReturns)) ** 2)));
   const annualizer = asset === "crypto" ? 365 : 252;
@@ -95,8 +107,23 @@ function analyse(points: Point[], asset: string): Analysis | null {
   else if (change5 < -2) { score -= 1; reasons.push("Five-session momentum is negative."); }
   if (volumeConfirm && last.close > rows[rows.length - 2].close) { score += 1; reasons.push("Latest volume is above its recent average while price is rising."); }
   if (volumeConfirm && last.close < rows[rows.length - 2].close) { score -= 1; reasons.push("Latest volume is above its recent average while price is falling."); }
-  const signal = distributionRisk && score >= 3 ? (trendUp ? "HOLD / WATCH" : "Wait / neutral") : score >= 3 ? "Potential BUY setup" : score <= -3 ? (asset === "nepse" ? "Potential SELL / EXIT setup" : "Potential SELL / SHORT setup") : score >= 1 && trendUp ? "HOLD / WATCH" : "Wait / neutral";
+  const technicalSignal = distributionRisk && score >= 3 ? (trendUp ? "HOLD / WATCH" : "Wait / neutral") : score >= 3 ? "Potential BUY setup" : score <= -3 ? (asset === "nepse" ? "Potential SELL / EXIT setup" : "Potential SELL / SHORT setup") : score >= 1 && trendUp ? "HOLD / WATCH" : "Wait / neutral";
   const recent = rows.slice(-20);
+  const qualityWindow = rows.slice(-60);
+  const ohlcCoverage = qualityWindow.filter(row => Number.isFinite(row.high) && Number.isFinite(row.low)).length / Math.max(1, qualityWindow.length);
+  const volumeCoverage = qualityWindow.filter(row => Number.isFinite(row.volume)).length / Math.max(1, qualityWindow.length);
+  const largeGaps = detectLargePriceGaps(rows.slice(-120), 20);
+  const stale = hasStaleMarketData(last.date, asset);
+  const qualityWarnings: string[] = [];
+  if (stale) qualityWarnings.push("Latest daily candle is stale for the market calendar.");
+  if (largeGaps.length) qualityWarnings.push("A 20%+ price gap exists in the latest 120 observations; corporate actions and source errors are not verified.");
+  if (asset === "nepse" && ohlcCoverage < 0.8) qualityWarnings.push("Fewer than 80% of recent candles have a complete valid OHLC range.");
+  if (asset === "nepse" && volumeCoverage < 0.7) qualityWarnings.push("Recent volume coverage is below 70%; participation confirmation is unreliable.");
+  if (asset === "nepse" && sourceMeta?.quoteStale !== false) qualityWarnings.push("The market quote snapshot is stale or has no verifiable fresh timestamp.");
+  if (asset === "nepse" && (!sourceMeta?.historyPriceBasis || /unadjusted|not independently verified/i.test(sourceMeta.historyPriceBasis))) qualityWarnings.push("Corporate-action adjustment status for the historical price series is not independently verified.");
+  const actionable = qualityWarnings.length === 0;
+  const dataQuality = !actionable ? (qualityWarnings.some(w => /corporate actions|adjustment status/i.test(w)) ? "Review required" : "Limited inputs") : "Verified inputs";
+  const signal = actionable ? technicalSignal : "Wait / neutral";
   const lows = recent.map((p) => p.low).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
   const highs = recent.map((p) => p.high).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
   const support = lows.length ? Math.min(...lows) : Math.min(...recent.map((p) => p.close));
@@ -105,8 +132,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
     : volatility > (asset === "crypto" ? 55 : asset === "forex" ? 14 : 32) ? "High"
     : volatility > (asset === "crypto" ? 30 : asset === "forex" ? 8 : 18) ? "Moderate" : "Lower";
   const risks: string[] = [];
-  const stale = hasStaleMarketData(last.date, asset);
-  const finalSignal = stale ? "Wait / neutral" : signal;
+  const finalSignal = signal;
   let stop: number | null = null, target: number | null = null;
   if (finalSignal === "Potential BUY setup") {
     stop = lows.length ? support * 0.995 : last.close * (1 - Math.max(0.015, dailyVol * 2));
@@ -115,7 +141,7 @@ function analyse(points: Point[], asset: string): Analysis | null {
     stop = highs.length ? resistance * 1.005 : last.close * (1 + Math.max(0.015, dailyVol * 2));
     target = last.close - 2 * (stop - last.close);
   }
-  if (stale) risks.push("The latest observation is stale for this market. New BUY/SELL signals are suppressed until fresh data is available.");
+  if (qualityWarnings.length) risks.push(...qualityWarnings.map(warning => "Decision gate: " + warning));
   if (risk === "High" || risk === "Very high") risks.push("Recent annualized volatility is elevated for this asset class.");
   if (rsiValue >= 68 && rsiValue < 72) risks.push("RSI is approaching the overbought zone; momentum is strong but a fresh entry may have limited room before a pullback.");
   if (rsiValue >= 72) risks.push("RSI is overbought; a pullback can occur even while the broader trend is positive.");
@@ -124,16 +150,16 @@ function analyse(points: Point[], asset: string): Analysis | null {
   if (rows.length < 100) risks.push("The history is limited; longer-term trend context may be incomplete.");
   if (!volumeConfirm) risks.push("No strong volume confirmation was detected, or volume data is unavailable.");
   if (!lows.length || !highs.length) risks.push("The file/source has no full OHLC range; support, resistance and risk levels are close-based estimates.");
-  const entry = stale
-    ? `No BUY/SELL signal: the latest daily observation is ${last.date}. Refresh or wait for a new completed trading session.`
+  const entry = !actionable
+    ? "No actionable BUY/SELL decision: the data-quality gate requires verification. " + qualityWarnings.join(" ")
     : finalSignal === "Potential BUY setup"
-    ? `Potential long setup only after a completed candle holds above EMA20 (${e20[i].toFixed(4)}) and the next session confirms. Avoid chasing a sharp gap.`
+    ? `Potential long setup only after a completed candle holds above EMA20 (${ema20.toFixed(4)}) and the next session confirms. Avoid chasing a sharp gap.`
     : finalSignal.includes("SELL")
-      ? (asset === "nepse" ? `Downside/exit pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). NEPSE short-selling availability is limited; treat this as an exit/risk-review condition, not an instruction to short.` : `Downside pressure is present while price remains below EMA20 (${e20[i].toFixed(4)}). A short position requires a separate risk plan and may not be suitable for every trader.`)
+      ? (asset === "nepse" ? `Downside/exit pressure is present while price remains below EMA20 (${ema20.toFixed(4)}). NEPSE short-selling availability is limited; treat this as an exit/risk-review condition, not an instruction to short.` : `Downside pressure is present while price remains below EMA20 (${ema20.toFixed(4)}). A short position requires a separate risk plan and may not be suitable for every trader.`)
       : finalSignal === "HOLD / WATCH"
-      ? `Existing holders may watch the uptrend while price remains above EMA20 (${e20[i].toFixed(4)}). This is not a fresh-entry confirmation; review position risk and invalidation levels.`
-      : `Wait for a confirmed close above EMA20 (${e20[i].toFixed(4)}) with improving momentum, or a confirmed breakdown below support. Current indicators are mixed.`;
-  return { count: rows.length, latestDate: last.date, close: last.close, ema20: e20[i], ema50: e50[i], rsi: rsiValue, macd: macdLine[i], macdSignal: macdSignal[i], score, signal: finalSignal, volatility, risk, support, resistance, stop, target, entry, risks, reasons, annualizer };
+      ? `Existing holders may watch the uptrend while price remains above EMA20 (${ema20.toFixed(4)}). This is not a fresh-entry confirmation; review position risk and invalidation levels.`
+      : `Wait for a confirmed close above EMA20 (${ema20.toFixed(4)}) with improving momentum, or a confirmed breakdown below support. Current indicators are mixed.`;
+  return { count: rows.length, latestDate: last.date, close: last.close, ema20, ema50, rsi: rsiValue, macd: macdLine[i] ?? 0, macdSignal: macdSignal[i] ?? 0, score, signal: finalSignal, volatility, risk, support, resistance, stop, target, entry, risks, reasons, annualizer, dataQuality, actionable, qualityWarnings };
 }
 function splitCsvLine(line: string) {
   const cells: string[] = [];
@@ -251,7 +277,7 @@ export default function MarketIntelligence() {
       if (!response.ok) throw new Error(data.error || "NEPSE data is unavailable.");
       const rows = normalizeOhlcvBars(data.points || []);
       setSelectedPoints(rows);
-      const result = analyse(rows, "nepse");
+      const result = analyse(rows, "nepse", { quoteStale: data.quoteStale, historyPriceBasis: data.historyPriceBasis, historySource: data.historySource });
       if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
 
       // The deterministic engine is the primary product. News is an optional,
@@ -339,9 +365,10 @@ export default function MarketIntelligence() {
       <section className={card}>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div><p className="text-xs font-bold uppercase tracking-widest text-slate-500">Computed technical setup</p><h2 className={"mt-2 text-2xl font-black " + scoreTone}>{analysis.signal}</h2><p className="mt-1 text-sm text-slate-500">{asset.toUpperCase()} · {asset === "nepse" ? symbol : marketSymbol} · {analysis.latestDate}</p></div>
-          <div className="rounded-xl bg-slate-100 px-4 py-3 text-center"><p className="text-xs text-slate-500">Confluence score</p><p className="text-2xl font-black tabular-nums">{analysis.score > 0 ? "+" : ""}{analysis.score}</p><p className="text-[10px] text-slate-500">Not a win probability</p></div>
+              <div className="rounded-xl bg-slate-100 px-4 py-3 text-center"><p className="text-xs text-slate-500">Technical confluence</p><p className="text-2xl font-black tabular-nums">{analysis.score > 0 ? "+" : ""}{analysis.score}</p><p className="text-[10px] text-slate-500">Not a win probability</p><p className="mt-1 text-[10px] font-bold">{analysis.dataQuality}</p></div>
         </div>
         <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{analysis.entry}</p>
+        {analysis.qualityWarnings.length > 0 && <div role="status" className="mt-3 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950"><strong>Decision quality gate · no actionable trade signal</strong><ul className="mt-2 list-disc space-y-1 pl-5">{analysis.qualityWarnings.map(warning => <li key={warning}>{warning}</li>)}</ul></div>}
         <p className="mt-3 text-xs text-slate-500">Data: {source} · {analysis.count} daily observations. Signals are rule-based technical conditions, not a prediction or a personal trade recommendation.</p>
       </section>
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

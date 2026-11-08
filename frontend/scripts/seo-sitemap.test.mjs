@@ -28,6 +28,7 @@ const catalogToolSeoContentSource = read("components/CatalogToolSEOContent.tsx")
 const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
 const pdfToolMetadataSource = read("lib/i18n/pdf-tool-seo-core.ts");
 const catalogIndexabilitySource = read("lib/tools/catalog-indexability.ts");
+const catalogSeoContentSource = read("components/CatalogToolSEOContent.tsx");
 
 const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
@@ -188,6 +189,10 @@ assert.match(sitemapSource, /isCatalogToolIndexable\(tool\.slug\)/, "Only review
 assert.match(catalogIndexabilitySource, /Default-deny indexability/, "Catalogue indexability must document the editorial gate");
 assert.ok(indexableCatalogToolSlugs.size > 0, "At least one reviewed catalogue tool should remain indexable");
 assert.equal(toolCatalog.filter((tool) => isCatalogToolIndexable(tool.slug)).length, indexableCatalogToolSlugs.size, "The indexability allowlist must contain only real catalogue slugs");
+for (const slug of indexableCatalogToolSlugs) {
+  const mentions = catalogSeoContentSource.match(new RegExp(slug, "g")) || [];
+  assert.ok(mentions.length >= 2, `Indexable catalogue tool must have a dedicated guide entry: ${slug}`);
+}
 assert.match(blogArticleSource, /alternates:\s*\{\s*canonical:\s*url/, "English articles must publish self-canonicals");
 assert.match(blogArticleSource, /robots:\s*(?:isCatalogGeneratedGuide\(post\.slug\)\s*\|\|\s*isGeneratedPdfGuide\(post\.slug\))\s*\?\s*\{\s*index:\s*false/, "All generated thin blog guides must remain noindex");
 assert.match(blogPostSource, /generatedPdfGuideSlugs = new Set\(additionalToolBlogPosts\.map/, "Generated PDF blog guide variants must be explicitly classified");

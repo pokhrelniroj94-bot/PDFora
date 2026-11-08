@@ -275,11 +275,20 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
     try {
       const response = await fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", { cache: "no-store" });
       const responseText = await response.text();
-      let data: Record<string, unknown>;
+      let data: {
+        error?: unknown;
+        points?: Point[];
+        quoteStale?: boolean;
+        historyPriceBasis?: string;
+        historySource?: string;
+        dataCoverage?: { historicalCharts?: string };
+        latestHistoryDate?: string;
+        source?: string;
+      };
       try {
         const parsed: unknown = JSON.parse(responseText);
         if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Invalid market response");
-        data = parsed as Record<string, unknown>;
+        data = parsed as typeof data;
       } catch {
         throw new Error("NEPSE data is temporarily unavailable because the market-data service returned an invalid response. Please retry later or use a verified historical CSV.");
       }

@@ -122,7 +122,7 @@ function analyse(points: Point[], asset: string, sourceMeta?: { quoteStale?: boo
   if (asset === "nepse" && sourceMeta?.quoteStale !== false) qualityWarnings.push("The market quote snapshot is stale or has no verifiable fresh timestamp.");
   if (asset === "nepse" && (!sourceMeta?.historyPriceBasis || /unadjusted|not independently verified/i.test(sourceMeta.historyPriceBasis))) qualityWarnings.push("Corporate-action adjustment status for the historical price series is not independently verified.");
   const actionable = qualityWarnings.length === 0;
-  const dataQuality = !actionable ? (qualityWarnings.some(w => /corporate actions|adjustment status/i.test(w)) ? "Review required" : "Limited inputs") : "Verified inputs";
+  const dataQuality: Analysis["dataQuality"] = !actionable ? (qualityWarnings.some(w => /corporate actions|adjustment status/i.test(w)) ? "Review required" : "Limited inputs") : "Verified inputs";
   const signal = actionable ? technicalSignal : "Wait / neutral";
   const lows = recent.map((p) => p.low).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);
   const highs = recent.map((p) => p.high).filter((v): v is number => typeof v === "number" && Number.isFinite(v) && v > 0);

@@ -147,7 +147,6 @@ function analyse(points: Point[], asset: string, sourceMeta?: { quoteStale?: boo
   if (rsiValue >= 72) risks.push("RSI is overbought; a pullback can occur even while the broader trend is positive.");
   if (distributionRisk) risks.push("Distribution warning: volume is unusually high while the latest close is lower. This weakens a bullish setup, so the engine blocks a BUY signal until price/volume behaviour improves.");
   if (rsiValue <= 28) risks.push("RSI is deeply oversold; this is not proof that a bottom has formed.");
-  if (rows.length < 100) risks.push("The history is limited; longer-term trend context may be incomplete.");
   if (!volumeConfirm) risks.push("No strong volume confirmation was detected, or volume data is unavailable.");
   if (!lows.length || !highs.length) risks.push("The file/source has no full OHLC range; support, resistance and risk levels are close-based estimates.");
   const entry = !actionable
@@ -180,7 +179,7 @@ function parseCsv(text: string): Point[] {
     throw new Error("CSV file is too large. Maximum supported size is 5 MB.");
   }
   const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).filter((line) => line.trim());
-  if (lines.length < 51) throw new Error("Upload at least 50 daily rows of historical data.");
+  if (lines.length < 101) throw new Error("Upload at least 100 daily rows of historical data.");
   if (lines.length > 20_001) throw new Error("CSV contains too many rows. Maximum supported history is 20,000 rows.");
   const headers = splitCsvLine(lines[0]).map((h) => h.toLowerCase().replace(/[^a-z0-9]/g, ""));
   const find = (...names: string[]) => headers.findIndex((h) => names.includes(h));
@@ -229,7 +228,7 @@ function parseCsv(text: string): Point[] {
   for (let i = 1; i < rows.length; i++) {
     if (rows[i].date === rows[i - 1].date) throw new Error("CSV contains duplicate dates. Keep one daily candle per date.");
   }
-  if (rows.length < 50) throw new Error("Fewer than 50 valid price rows were found in the CSV.");
+  if (rows.length < 100) throw new Error("Fewer than 100 valid price rows were found in the CSV.");
   return rows;
 }
 const fmt = (v: number) => v.toLocaleString(undefined, { maximumFractionDigits: 4 });
@@ -278,7 +277,7 @@ export default function MarketIntelligence() {
       const rows = normalizeOhlcvBars(data.points || []);
       setSelectedPoints(rows);
       const result = analyse(rows, "nepse", { quoteStale: data.quoteStale, historyPriceBasis: data.historyPriceBasis, historySource: data.historySource });
-      if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
+      if (!result) throw new Error("At least 100 valid historical daily prices are required for analysis.");
 
       // The deterministic engine is the primary product. News is an optional,
       // separately-labelled context feed and must never gate or rewrite its signal.
@@ -307,7 +306,7 @@ export default function MarketIntelligence() {
       if (file.size > 5 * 1024 * 1024) throw new Error("CSV file is too large. Maximum supported size is 5 MB.");
       const rows = parseCsv(await file.text());
       const result = analyse(rows, asset);
-      if (!result) throw new Error("At least 50 valid historical daily prices are required.");
+      if (!result) throw new Error("At least 100 valid historical daily prices are required.");
       setAnalysis(result); setSource(`Uploaded file: ${file.name} · ${rows.length} rows`);
     } catch (err) { setError(err instanceof Error ? err.message : "Could not read this CSV."); }
     finally { setBusy(false); }

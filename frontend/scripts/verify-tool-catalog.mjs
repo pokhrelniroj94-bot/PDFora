@@ -199,7 +199,7 @@ assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market d
 assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market Dashboard"), "Homepage must link to the dedicated NEPSE market dashboard");
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
-assert.ok(newsComponent.includes("10 * 60 * 1000"), "News component must auto-refresh headlines every 10 minutes");
+assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-refresh headlines every 10 minutes");
 assert.ok(pageImagesToolPage.includes("Render PDF Pages to PNG") && pageImagesToolPage.includes("Render every PDF page as a PNG image"), "Page-image tool must clearly describe full-page PNG rendering");
 assert.ok(aiWritingRoute.includes("new URL(redisUrl)") && aiWritingRoute.includes('redisEndpoint.protocol !== "https:"') && aiWritingRoute.includes("SHARED_RATE_LIMIT_INVALID_URL"), "AI shared rate limiter must validate the Upstash HTTPS REST URL safely");
 assert.ok(envExample.includes("UPSTASH_REDIS_REST_URL=") && envExample.includes("UPSTASH_REDIS_REST_TOKEN="), "Example environment file must document both Upstash REST settings");

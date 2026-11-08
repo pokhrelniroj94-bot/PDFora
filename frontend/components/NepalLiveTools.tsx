@@ -28,7 +28,7 @@ const holidays = [
   { name: "Labour Day · Buddha Jayanti · Ubhauli · Chandi Purnima", bs: "2083 Baisakh 18", ad: "2026-05-01", note: "National public holiday", type: "National" },
   { name: "Republic Day", bs: "2083 Jestha 15", ad: "2026-05-29", note: "National public holiday", type: "National" },
   { name: "Rakshya Bandhan", bs: "2083 Bhadra 12", ad: "2026-08-28", note: "National public holiday", type: "National" },
-  { name: "Gai Jatra", bs: "2083 Bhadra 13", ad: "2026-08-29", note: "Newar community nationwide", type: "Regional" },
+  { name: "Gai Jatra", bs: "2083 Bhadra 13", ad: "2026-08-29", note: "Newar community nationwide", type: "Community" },
   { name: "Krishna Janmashtami", bs: "2083 Bhadra 19", ad: "2026-09-04", note: "National public holiday", type: "National" },
   { name: "Gaura Parwa", bs: "2083 Bhadra 19", ad: "2026-09-04", note: "Far-western community observance", type: "Community" },
   { name: "Haritalika Teej", bs: "2083 Bhadra 29", ad: "2026-09-14", note: "Women employees only", type: "Community" },

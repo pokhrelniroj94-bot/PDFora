@@ -9,6 +9,7 @@ const read = (relative) => fs.readFileSync(path.join(frontendRoot, relative), "u
 const sitemapSource = read("app/sitemap.ts");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
+const homepageSource = read("app/page.tsx");
 const englishToolPageSource = read("app/tools/[slug]/page.tsx");
 const pdfToolWorkspaceSource = read("components/PDForaTool.tsx");
 const niroj77ToolWorkspaceSource = read("components/Niroj77Tool.tsx");

@@ -164,9 +164,11 @@ async function fetchCommunityHistory(symbol: string, period: string) {
     if (turnover !== undefined) point.turnover = turnover;
     rows.push(point);
   }
-  rows.sort((a, b) => a.date.localeCompare(b.date));
+  const deduplicated = new Map<string, (typeof rows)[number]>();
+  for (const row of rows) deduplicated.set(row.date, row);
+  const clean = [...deduplicated.values()].sort((a, b) => a.date.localeCompare(b.date));
   const limit = period === "1M" ? 22 : period === "3M" ? 66 : 252;
-  return rows.slice(-limit);
+  return clean.slice(-limit);
 }
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
@@ -175,7 +177,7 @@ export async function GET(request: Request) {
   if (!/^[A-Z0-9]{2,16}$/.test(symbol)) {
     return Response.json({ error: "Invalid stock symbol." }, { status: 400 });
   }
-  const [unofficialSnapshot, liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.all([
+  const [unofficialSnapshot, liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult] = await Promise.all([
     fetchNepsemanSnapshot().catch(() => null),
     Promise.allSettled([read<unknown[]>("/data/market/live.json", 60)]).then((items) => items[0]),
     Promise.allSettled([read<unknown[]>("/data/nepse_data.json", 60)]).then((items) => items[0]),
@@ -186,7 +188,6 @@ export async function GET(request: Request) {
     Promise.allSettled([read<unknown[]>("/data/market/sector_indices.json", 60)]).then((items) => items[0]),
     Promise.allSettled([read<Json>("/data/market/supply_demand.json", 60)]).then((items) => items[0]),
     Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json", 300)]).then((items) => items[0]),
-    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json", 300)]).then((items) => items[0]),
   ]);
   const liveStocks = liveStocksResult.status === "fulfilled" && Array.isArray(liveStocksResult.value) ? liveStocksResult.value : [];
   const fallbackStocks = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
@@ -210,10 +211,8 @@ export async function GET(request: Request) {
   }
   const manifest = manifestResult.status === "fulfilled" ? manifestResult.value : { availableMonths: [], latestDate: undefined };
   const isIndex = INDEX_SYMBOLS.has(symbol);
-  const historyKind = isIndex ? "indices" : "ltp";
-  const historyManifest = historyKind === "indices"
-    ? manifest
-    : ltpManifestResult.status === "fulfilled" ? ltpManifestResult.value : { availableMonths: [] };
+  const historyKind = "indices";
+  const historyManifest = manifest;
   const availableMonths = Array.isArray(historyManifest.availableMonths) ? historyManifest.availableMonths : [];
   const selectedMonths = isIndex ? availableMonths.slice(-monthCount(period)) : [];
   const historyResults = await Promise.allSettled(
@@ -351,7 +350,7 @@ export async function GET(request: Request) {
       supplyDemand: "YONEPSE public snapshot",
       historicalCharts: historySource,
     },
-    partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
+    partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {
     headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },

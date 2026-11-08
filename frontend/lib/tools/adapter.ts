@@ -6,8 +6,8 @@ import { legacyToolSlugSet } from "../legacy-tool-slugs";
  *
  * Scope (this migration): the catalog utilities served at /tools/[slug]. Every one of them
  * is rendered by the EXISTING `ToolWorkspace` (default export of components/AllTools.tsx),
- * which dispatches to its own specialized handlers (ResumeBuilder, AIWritingTools,
- * MarketIntelligence, NepalTools, NepalLiveTools, NepaliTypingTool, QuickUtilityTools,
+ * which dispatches to its own specialized handlers (ResumeBuilder, NepalTools,
+ * NepalLiveTools, NepaliTypingTool, QuickUtilityTools,
  * ExtraTools). This adapter does not render anything and does not replace those handlers;
  * it only decides whether a slug may be handed to ToolWorkspace at all.
  *

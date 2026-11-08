@@ -142,7 +142,7 @@ assert.ok(catalogSource.includes("20 professional templates"), "Resume Builder c
 assert.ok(!catalogSource.includes("ai-resume-writer") && !catalogSource.includes("ai-cover-letter-generator") && !catalogSource.includes("ai-humanizer") && !catalogSource.includes("market-ai"), "Retired AI tools must not appear in the public catalog");
 assert.ok(!directoryComponent.includes("AIWritingTools") && !directoryComponent.includes("MarketIntelligence"), "Retired AI components must not be wired into tool pages");
 assert.ok(!resumeBuilder.includes("/api/ai-writing") && !resumeBuilder.includes("Cloudflare Workers AI"), "Resume Builder must not send user content to an AI provider");
-assert.ok(!fs.existsSync(path.join(frontendRoot, "app", "api", "ai-writing", "route.ts")), "Retired AI API route must be deleted");
+assert.ok(!fs.existsSync(new URL("../app/api/ai-writing/route.ts", import.meta.url)), "Retired AI API route must be deleted");
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");

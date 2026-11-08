@@ -387,7 +387,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Why do spaces sometimes appear as plus signs?", a: "HTML form encoding commonly represents spaces as plus signs, while percent encoding often uses %20. Use the convention required by the destination." }
     ],
 "tip-calculator": [
-      { q: "How is a tip calculated?", a: "Multiply the bill amount by the tip percentage and divide by 100. For example, 10% of NPR 2,000 is NPR 200." },
+      { q: "How is a tip calculated?", a: "Multiply the bill amount by the tip percentage and divide by 100. For example, 10% of a 2,000 bill is 200 in the same currency." },
       { q: "Does the calculator include service charge?", a: "No. Check the bill first and avoid adding a second tip or service charge unintentionally." },
       { q: "How is the bill split?", a: "The calculator divides the bill plus tip equally by the number of people. It does not calculate different item-by-item shares." }
     ],

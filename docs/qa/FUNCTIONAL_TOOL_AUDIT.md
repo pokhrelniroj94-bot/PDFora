@@ -1,4 +1,4 @@
-> **STALE SNAPSHOT — superseded by the 2026-11-07 browser run.** This file was generated before the 173-route Chromium sweep and must not be used as the current tool status. The latest run recorded 172 browser PASS, 1 PARTIAL (`market-ai`), and 0 FAIL. See [BROWSER_E2E_173_RESULTS_2026-11-07.md](./BROWSER_E2E_173_RESULTS_2026-11-07.md) for methodology, limitations, run link and remaining release gates. This browser sweep is not full certification: mobile, accessibility, exhaustive input boundaries, independent downloaded-file parsing and live AI provider execution remain outstanding.
+> **Historical audit snapshot.** The original 173-tool audit predates the AI-free release. Three AI writing tools were removed and the deterministic market lab was renamed to `nepse-technical-analysis`. The current catalog contains 170 tools (49 PDF + 121 catalog). New Chromium evidence is pending; this report is not a claim that the revised 170-tool suite has passed.
 
 ---
 
@@ -8,7 +8,7 @@ Generated from commit `951a782db51848a49e1ad4764b32d2f92fc977e8` on 2026-11-07T0
 
 This report records executed evidence only. It does not treat route existence or static handler references as proof that a tool works.
 
-Summary: **49 PDF tools** and **124 catalog utilities** (173 total). Functional status: **60 partial**, **113 not tested**, **0 full PASS**.
+Summary: **49 PDF tools** and **121 catalog utilities** (170 total). Functional status: **60 partial**, **110 not tested**, **0 full PASS**.
 
 Evidence: backend PDF sweep `backend/tests/test_tool_api.py::test_all_available_pdf_tools_process_a_realistic_pdf`; frontend worker tests `frontend/__tests__/pdfWorker.test.ts`; catalog static verification `frontend/scripts/verify-tool-catalog.mjs`.
 
@@ -183,7 +183,4 @@ Evidence: backend PDF sweep `backend/tests/test_tool_api.py::test_all_available_
 | nepali-unicode-typing | Nepal | PARTIAL | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PARTIAL | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | nepse-market-news | Nepal | PARTIAL | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PARTIAL | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
 | nepse-dividend-calculator | Nepal | PARTIAL | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PARTIAL | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| ai-resume-writer | Career Tools | PARTIAL | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PARTIAL | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| ai-cover-letter-generator | Career Tools | PARTIAL | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PARTIAL | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| ai-humanizer | Text | PARTIAL | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PARTIAL | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
-| market-ai | Finance | PARTIAL | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PARTIAL | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |
+| nepse-technical-analysis | Finance | PARTIAL | PARTIAL | PARTIAL | NOT TESTED | NOT TESTED | NOT TESTED | NOT TESTED | PARTIAL | PARTIAL | Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests. |

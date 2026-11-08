@@ -16,6 +16,7 @@ export function generateStaticParams() {
 }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  if (slug === "market-ai") permanentRedirect("/tools/nepse-technical-analysis");
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (slug === "resume-builder") return { title: "Resume Builder", alternates: { canonical: `${site}/resume-builder` }, robots: { index: false, follow: true } };
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };

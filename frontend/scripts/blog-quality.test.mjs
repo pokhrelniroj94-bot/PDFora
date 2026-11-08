@@ -55,6 +55,7 @@ function field(body, name) {
 }
 
 const seenByCollection = new Map();
+const substantialParagraphsByCollection = new Map();
 for (const [label, file] of collections) {
   const source = read(file);
   const articles = articleBlocks(source);
@@ -62,6 +63,8 @@ for (const [label, file] of collections) {
   const slugs = new Set();
   const titles = new Set();
   const descriptions = new Set();
+  const intros = new Set();
+  const substantialParagraphs = new Map();
 
   for (const article of articles) {
     const { slug, body } = article;
@@ -89,10 +92,21 @@ for (const [label, file] of collections) {
     assert.ok(title.length >= 12 && !titles.has(title), label + ": duplicate or weak title for " + slug);
     assert.ok(description.length >= 55 && !descriptions.has(description), label + ": duplicate or weak description for " + slug);
     assert.ok(keyword.length >= 3, label + ": missing target topic for " + slug);
-    assert.ok(intro.length >= 80, label + ": missing useful introduction for " + slug);
+    assert.ok(intro.length >= 80 && !intros.has(intro.normalize("NFC").trim()), label + ": missing or duplicated introduction for " + slug);
     assert.ok(sections >= 3, label + ": needs at least three meaningful sections for " + slug);
     assert.ok(faqs >= 2, label + ": add useful reader questions for " + slug);
     assert.ok(toolLinks >= 1, label + ": add at least one relevant internal tool link for " + slug);
+    for (const paragraphArray of body.matchAll(/paragraphs:\s*\[([\s\S]*?)\]/g)) {
+      for (const paragraphMatch of paragraphArray[1].matchAll(/"((?:\\.|[^"\\])*)"/g)) {
+        const paragraph = paragraphMatch[1].normalize("NFC").replace(/\s+/gu, " ").trim();
+        if (paragraph.length >= 80) {
+          const normalized = paragraph.toLocaleLowerCase();
+          const previous = substantialParagraphs.get(normalized);
+          assert.ok(!previous || previous === slug, label + ": repeated substantial paragraph shared by " + previous + " and " + slug);
+          substantialParagraphs.set(normalized, slug);
+        }
+      }
+    }
     for (const match of body.matchAll(/href:\s*"([^"]+)"/g)) {
       const href = match[1];
       if (href.startsWith("/tools/")) {
@@ -118,8 +132,10 @@ for (const [label, file] of collections) {
     slugs.add(slug);
     titles.add(title);
     descriptions.add(description);
+    intros.add(intro.normalize("NFC").trim());
   }
   seenByCollection.set(label, articles.length);
+  substantialParagraphsByCollection.set(label, substantialParagraphs.size);
 }
 
 const enSlugs = new Set([

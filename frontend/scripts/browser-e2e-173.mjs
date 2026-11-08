@@ -1158,7 +1158,6 @@ const report = {
     fail: results.filter((row) => row.status === "FAIL").length,
     pdf: results.filter((row) => row.kind === "pdf").length,
     catalog: results.filter((row) => row.kind === "catalog").length,
-    aiExecutionSkipped: results.filter((row) => aiTools.has(row.slug)).length,
   },
   results,
 };

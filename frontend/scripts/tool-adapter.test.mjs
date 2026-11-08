@@ -179,7 +179,7 @@ test("scope guards: English tool execution stays independent while approved href
   const sitemap = read("app/sitemap.ts");
   assert.match(sitemap, /nepaliLocalizedUtilitySlugs/);
   assert.match(sitemap, /nepaliLocalizedFinancialSlugs/);
-  assert.match(sitemap, /nepaliLocalizedCareerSlugs/);
+  assert.match(sitemap, /nepaliLocalizedPublicInfoSlugs/);
   assert.match(sitemap, /\/ne\/tools\/\$\{slug\}/);
   assert.match(sitemap, /\/ne\/market/);
   assert.match(sitemap, /\/ne\/resume-builder/);

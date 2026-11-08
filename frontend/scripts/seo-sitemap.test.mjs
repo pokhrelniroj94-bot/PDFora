@@ -183,7 +183,13 @@ assert.doesNotMatch(read("app/resume-builder/page.tsx"), /keywords\s*:/, "Resume
 assert.doesNotMatch(read("lib/i18n/pdf-tool-seo-core.ts"), /keywords/, "PDF guide metadata must not emit ignored meta-keywords");
 assert.match(englishToolPageSource, /openGraph:\s*\{/, "Catalog tool pages must publish Open Graph metadata");
 assert.match(englishToolPageSource, /twitter:\s*\{/, "Catalog tool pages must publish Twitter metadata");
-assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*slug\s*!==\s*"ocr-pdf"/, "OCR must remain excluded from indexing");
+assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*isCatalogToolIndexable\(slug\)/, "Catalogue tool indexing must use the explicit editorial allowlist");
+assert.match(sitemapSource, /isCatalogToolIndexable\(tool\.slug\)/, "Only reviewed catalogue tools may enter the sitemap");
+assert.ok(indexableCatalogToolSlugs.size > 0, "At least one reviewed catalogue tool should remain indexable");
+assert.equal(toolCatalog.filter((tool) => isCatalogToolIndexable(tool.slug)).length, indexableCatalogToolSlugs.size, "The indexability allowlist must contain only real catalogue slugs");
+for (const tool of toolCatalog.filter((item) => item.slug !== "pdf-tools" && item.slug !== "resume-builder")) {
+  assert.equal(isCatalogToolIndexable(tool.slug), indexableCatalogToolSlugs.has(tool.slug), "Catalogue indexing must be explicit for " + tool.slug);
+}
 assert.match(blogArticleSource, /alternates:\s*\{\s*canonical:\s*url/, "English articles must publish self-canonicals");
 assert.match(blogArticleSource, /robots:\s*(?:isCatalogGeneratedGuide\(post\.slug\)\s*\|\|\s*isGeneratedPdfGuide\(post\.slug\))\s*\?\s*\{\s*index:\s*false/, "All generated thin blog guides must remain noindex");
 assert.match(blogPostSource, /generatedPdfGuideSlugs = new Set\(additionalToolBlogPosts\.map/, "Generated PDF blog guide variants must be explicitly classified");

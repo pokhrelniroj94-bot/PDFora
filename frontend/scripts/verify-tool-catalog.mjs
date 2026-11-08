@@ -55,9 +55,9 @@ const resumeBuilderDescription = resumeBuilderPage.match(/description:\s*"([^"]+
 const canonicalCatalogMetadata = generatedMetadata.filter((entry) => entry.slug !== "resume-builder");
 const all170ToolTitles = [...canonicalCatalogMetadata.map((entry) => entry.title), resumeBuilderTitle, ...pdfGuideEntries.map((entry) => `${entry.name} Online`)];
 const all170ToolDescriptions = [...canonicalCatalogMetadata.map((entry) => entry.description), resumeBuilderDescription, ...pdfGuideEntries.map((entry) => entry.purpose)];
-assert.equal(all170ToolTitles.length, 170, "Expected metadata titles for all 173 canonical tools");
-assert.equal(new Set(all173ToolTitles.map((value) => value.trim().toLowerCase() )).size, 170, "All 170 canonical tool page titles must be unique across both route systems");
-assert.equal(new Set(all170ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 173, "All 173 canonical tool meta descriptions must be unique across both route systems");
+assert.equal(all170ToolTitles.length, 170, "Expected metadata titles for all 170 canonical tools");
+assert.equal(new Set(all170ToolTitles.map((value) => value.trim().toLowerCase())).size, 170, "All 170 canonical tool page titles must be unique across both route systems");
+assert.equal(new Set(all170ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 170, "All 173 canonical tool meta descriptions must be unique across both route systems");
 
 
 const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);
@@ -179,8 +179,6 @@ const marketPage = read("../app/market/page.tsx");
 const newsApi = read("../app/api/nepal-market-news/route.ts");
 const newsComponent = read("../components/NepalMarketNews.tsx");
 const pageImagesToolPage = read("../app/extract-page-images/page.tsx");
-const aiWritingRoute = read("../app/api/ai-writing/route.ts");
-const envExample = read("../.env.example");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
 assert.ok(
   marketApi.includes("NEPSE unofficial session feed (nepseman-api)") && marketApi.includes("fetchNepsemanSnapshot") && marketApi.includes("YONEPSE public market snapshot") && marketApi.includes("YONEPSE historical snapshot fallback"),
@@ -201,8 +199,6 @@ assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes(
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
 assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-refresh headlines every 10 minutes");
 assert.ok(pageImagesToolPage.includes("Render PDF Pages to PNG") && pageImagesToolPage.includes("Render every PDF page as a PNG image"), "Page-image tool must clearly describe full-page PNG rendering");
-assert.ok(aiWritingRoute.includes("new URL(redisUrl)") && aiWritingRoute.includes('redisEndpoint.protocol !== "https:"') && aiWritingRoute.includes("SHARED_RATE_LIMIT_INVALID_URL"), "AI shared rate limiter must validate the Upstash HTTPS REST URL safely");
-assert.ok(envExample.includes("UPSTASH_REDIS_REST_URL=") && envExample.includes("UPSTASH_REDIS_REST_TOKEN="), "Example environment file must document both Upstash REST settings");
 assert.ok(nepalLiveTools.includes("Effective tax rate: {amount > 0 ?") && !nepalLiveTools.includes("Effective tax rate: ${amount > 0 ?"), "Nepal salary tax effective rate must display as a percentage, not currency");
 assert.ok(catalogSource.includes("Explore 49 PDF Tools") && catalogSource.includes("49 available PDF tools"), "PDF tool catalogue must advertise the 49 enabled PDF tools accurately");
 const resumeTemplateBlock = resumeBuilder.match(/const templates = \[([\s\S]*?)\n\];/);

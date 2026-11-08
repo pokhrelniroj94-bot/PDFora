@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import NepalMarketNews from "./NepalMarketNews";
+import { summarizeMarketBreadth } from "../lib/nepse-market-breadth";
 
 type Stock = { symbol: string; name: string; ltp: number; previous_close: number; change: number; percent_change: number; high: number; low: number; volume: number; turnover: number; trades: number; last_updated?: string };
 type Index = { index: string; currentValue?: number; close: number; high: number; low: number; previousClose: number; change: number; perChange: number; generatedTime?: string };
@@ -127,14 +128,7 @@ export default function NepseMarketDashboard() {
     const filtered=(data?.stocks??[]).filter(s=>(s.symbol+" "+s.name).toLowerCase().includes(query.toLowerCase()));
     return [...filtered].sort((a,b)=>sort==="gainers"?b.percent_change-a.percent_change:sort==="losers"?a.percent_change-b.percent_change:sort==="volume"?b.volume-a.volume:b.turnover-a.turnover).slice(0,40);
   },[data,query,sort]);
-  const breadth=useMemo(()=>{
-    const rows=(data?.stocks??[]).filter(stock=>Number.isFinite(stock.percent_change));
-    const advancing=rows.filter(stock=>stock.percent_change>0).length;
-    const declining=rows.filter(stock=>stock.percent_change<0).length;
-    const unchanged=rows.filter(stock=>stock.percent_change===0).length;
-    const turnover=rows.reduce((sum,stock)=>sum+(Number.isFinite(stock.turnover)?stock.turnover:0),0);
-    return {total:rows.length,advancing,declining,unchanged,turnover};
-  },[data]);
+  const breadth=useMemo(()=>summarizeMarketBreadth(data?.stocks??[]),[data]);
   const selectedIndex=data?.indices.find(i=>indexCodeByName[i.index]===symbol);
   const mainIndex=selectedIndex??data?.indices.find(i=>i.index.toLowerCase().includes("nepse index"))??data?.indices[0];
   const selectedStock=data?.stocks.find(s=>s.symbol===symbol);
@@ -168,7 +162,7 @@ export default function NepseMarketDashboard() {
           <div className="rounded-xl bg-slate-100 p-3"><p className="text-xs font-semibold text-slate-700">{isNepali?"स्थिर":"Unchanged"}</p><p className="mt-1 text-2xl font-black tabular-nums text-slate-800">{n(breadth.unchanged,0)}</p></div>
           <div className="rounded-xl bg-teal-50 p-3"><p className="text-xs font-semibold text-teal-800">{isNepali?"कुल कारोबार (quote snapshot)":"Quoted turnover"}</p><p className="mt-1 text-lg font-black tabular-nums text-teal-900">{money(breadth.turnover)}</p></div>
         </div>
-        {breadth.total>0&&<div className="mt-4"><div className="flex h-3 overflow-hidden rounded-full bg-slate-100" role="img" aria-label={`Market breadth: ${breadth.advancing} advancing, ${breadth.declining} declining, ${breadth.unchanged} unchanged`}><div className="bg-emerald-500" style={{width:(breadth.advancing/breadth.total*100)+"%"}}/><div className="bg-rose-500" style={{width:(breadth.declining/breadth.total*100)+"%"}}/><div className="bg-slate-400" style={{width:(breadth.unchanged/breadth.total*100)+"%"}}/></div><p className="mt-2 text-xs text-slate-500">{isNepali?"यो सूचक हाल उपलब्ध quote हरूको snapshot मा मात्र आधारित छ; अपूरो feed हुँदा सम्पूर्ण बजारको अवस्था नहुन सक्छ।":"Snapshot-only breadth: this is not a complete-market count when the upstream quote feed is partial or missing securities."}</p></div>}
+        {breadth.total>0&&<div className="mt-4"><div className="flex h-3 overflow-hidden rounded-full bg-slate-100" role="img" aria-label={`Market breadth: ${breadth.advancing} advancing, ${breadth.declining} declining, ${breadth.unchanged} unchanged`}><div className="bg-emerald-500" style={{width:breadth.advancingPercent+"%"}}/><div className="bg-rose-500" style={{width:breadth.decliningPercent+"%"}}/><div className="bg-slate-400" style={{width:breadth.unchangedPercent+"%"}}/></div><p className="mt-2 text-xs text-slate-500">{isNepali?"यो सूचक हाल उपलब्ध quote हरूको snapshot मा मात्र आधारित छ; अपूरो feed हुँदा सम्पूर्ण बजारको अवस्था नहुन सक्छ।":"Snapshot-only breadth: this is not a complete-market count when the upstream quote feed is partial or missing securities."}</p></div>}
       </section>
       <section className={card}>
         <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-wide text-teal-700">Price chart</p><h2 className="mt-1 text-xl font-black">{headline}</h2><p className="mt-1 text-sm text-slate-500">{symbol} · {period} history · Latest archive date: {data?.latestHistoryDate??"—"}</p></div><div className="text-right"><p className="text-2xl font-black tabular-nums">{money(value)}</p><p className={"text-sm font-bold "+pctClass(changePct)}>{change>0?"+":""}{n(change)} ({changePct>0?"+":""}{n(changePct)}%)</p></div></div>

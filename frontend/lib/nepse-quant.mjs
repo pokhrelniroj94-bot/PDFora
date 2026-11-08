@@ -33,7 +33,7 @@ export function normalizeOhlcvBars(input) {
   for (const row of Array.isArray(input) ? input : []) {
     const rawDate = typeof row?.date === "string" ? row.date.trim() : "";
     const date = rawDate.slice(0, 10), close = Number(row?.close);
-    if (!/^\\d{4}-\\d{2}-\\d{2}(?:$|T)/.test(rawDate) || !validTradingDate(date) || !Number.isFinite(close) || close <= 0) continue;
+    if (!/^\d{4}-\d{2}-\d{2}(?:$|T)/.test(rawDate) || !validTradingDate(date) || !Number.isFinite(close) || close <= 0) continue;
     const rawOpen = row.open, rawHigh = row.high, rawLow = row.low, rawVolume = row.volume;
     const open = rawOpen !== null && rawOpen !== undefined && rawOpen !== "" && Number.isFinite(Number(rawOpen)) && Number(rawOpen) > 0 ? Number(rawOpen) : undefined;
     let high = rawHigh !== null && rawHigh !== undefined && rawHigh !== "" && Number.isFinite(Number(rawHigh)) ? Number(rawHigh) : undefined;

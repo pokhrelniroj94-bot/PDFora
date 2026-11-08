@@ -32,6 +32,8 @@ type Analysis = {
   volatility: number; risk: "Lower" | "Moderate" | "High" | "Very high";
   support: number; resistance: number; stop: number | null; target: number | null;
   entry: string; risks: string[]; reasons: string[]; annualizer: number;
+  dataQuality: "Verified inputs" | "Limited inputs" | "Review required";
+  actionable: boolean; qualityWarnings: string[];
 };
 
 const cls = "w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-100";

@@ -13,7 +13,6 @@ const mathWorkspace = read("../components/NepaliMathUtilityWorkspace.tsx");
 const nepalWorkspace = read("../components/NepaliNepalToolsWorkspace.tsx");
 const specialWorkspace = read("../components/NepaliSpecialCatalogWorkspace.tsx");
 const extraWorkspace = read("../components/NepaliExtraTextWorkspace.tsx");
-const quickWorkspace = read("../components/QuickUtilityTools.tsx");
 const liveWorkspace = read("../components/NepalLiveTools.tsx");
 const financeWorkspace = read("../components/NepaliFinanceCalculatorWorkspace.tsx");
 const careerWorkspace = read("../components/AIWritingTools.tsx");
@@ -26,13 +25,6 @@ function exportedSlugs(name) {
   const open = routes.indexOf("[", start);
   const close = routes.indexOf("] as const", open);
   return [...routes.slice(open, close).matchAll(/"([^"]+)"/g)].map((match) => match[1]);
-}
-function pageSlugs(name) {
-  const start = page.indexOf("const " + name);
-  assert.notEqual(start, -1, name + " route dispatch is missing");
-  const open = page.indexOf("[", start);
-  const close = page.indexOf("];", open);
-  return [...page.slice(open, close).matchAll(/"([^"]+)"/g)].map((match) => match[1]);
 }
 function branchSlugs(source) {
   return [...source.matchAll(/if \(slug === "([^"]+)"/g)].map((match) => match[1]);

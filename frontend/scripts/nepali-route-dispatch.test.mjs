@@ -48,23 +48,18 @@ assert.equal(new Set(all).size, all.length, "Nepali tool registries must not con
 const explicit = [...page.matchAll(/if \(request\.locale === "ne" && \[([^\]]+)\]\.includes\(toolSlug\)\)/g)]
   .map((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1]));
 assert.equal(explicit.length, 7, "Seven explicit Nepali component groups should be routed");
-const special = pageSlugs("nepaliSpecialToolSlugs");
-const extra = pageSlugs("nepaliExtraToolSlugs");
-const quick = pageSlugs("nepaliQuickUtilitySlugs");
 const utilityFallback = branchSlugs(utilityWorkspace);
-const utilityDispatch = new Set([...special, ...extra, ...quick, ...explicit.flat(), ...utilityFallback]);
-assert.deepEqual(utility.filter((slug) => !utilityDispatch.has(slug)), [], "Utility routes must not fall through to an empty workspace");
+const utilityDispatch = new Set([...explicit.flat(), ...utilityFallback]);
+assert.ok(page.includes("nepaliLocalizedUtilitySlugs.includes(toolSlug") && page.includes("<NepaliUtilityWorkspace slug={toolSlug}"), "Registered utility routes must dispatch to the Nepali utility workspace");
+assert.deepEqual(utility.filter((slug) => !utilityDispatch.has(slug)), [], "Every Nepali utility route must have a dedicated component group or a real utility-workspace handler");
 
-const specialHandled = new Set([...specialWorkspace.matchAll(/"([^"]+)"/g)].map((match) => match[1]));
-assert.deepEqual(special.filter((slug) => !specialHandled.has(slug)), [], "Specialized routes must map to a real Nepali component");
-assert.deepEqual(extra.filter((slug) => !extraWorkspace.includes('"'+slug+'"')), [], "ExtraTools must implement every Nepali extra route");
-assert.deepEqual(quick.filter((slug) => !quickWorkspace.includes('"'+slug+'"')), [], "QuickUtilityTools must implement every Nepali quick route");
-assert.deepEqual(explicit[0].filter((slug) => !textWorkspace.includes('"'+slug+'"')), [], "Text tools need labels and a working handler");
-assert.deepEqual(explicit[1].filter((slug) => !developerWorkspace.includes('"'+slug+'"')), [], "Developer tools need labels and a working handler");
-assert.deepEqual(explicit[2].filter((slug) => !dateWorkspace.includes('"'+slug+'"')), [], "Date/time tools need labels and a working handler");
-assert.deepEqual(explicit[3].filter((slug) => !businessWorkspace.includes('"'+slug+'"')), [], "Business tools need labels and a working handler");
-assert.deepEqual(explicit[4].filter((slug) => !mathWorkspace.includes('"'+slug+'"')), [], "Math tools need labels and a working handler");
-assert.deepEqual(explicit[5].filter((slug) => !nepalWorkspace.includes('"'+slug+'"')), [], "Nepal utility tools need labels and a working handler");
+assert.deepEqual(explicit[0].filter((slug) => !extraWorkspace.includes('"'+slug+'"')), [], "Extractor tools need labels and a working handler");
+assert.deepEqual(explicit[1].filter((slug) => !textWorkspace.includes('"'+slug+'"')), [], "Text tools need labels and a working handler");
+assert.deepEqual(explicit[2].filter((slug) => !developerWorkspace.includes('"'+slug+'"')), [], "Developer tools need labels and a working handler");
+assert.deepEqual(explicit[3].filter((slug) => !dateWorkspace.includes('"'+slug+'"')), [], "Date/time tools need labels and a working handler");
+assert.deepEqual(explicit[4].filter((slug) => !businessWorkspace.includes('"'+slug+'"')), [], "Business tools need labels and a working handler");
+assert.deepEqual(explicit[5].filter((slug) => !mathWorkspace.includes('"'+slug+'"')), [], "Math tools need labels and a working handler");
+assert.deepEqual(explicit[6].filter((slug) => !nepalWorkspace.includes('"'+slug+'"')), [], "Nepal utility tools need labels and a working handler");
 
 const liveSlugs = new Set(branchSlugs(liveWorkspace));
 const financeSlugs = new Set(branchSlugs(financeWorkspace));

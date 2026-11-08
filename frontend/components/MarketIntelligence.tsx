@@ -274,8 +274,16 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
     setBusy(true); setError(""); setAnalysis(null); setNewsReview(null);
     try {
       const response = await fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", { cache: "no-store" });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "NEPSE data is unavailable.");
+      const responseText = await response.text();
+      let data: Record<string, unknown>;
+      try {
+        const parsed: unknown = JSON.parse(responseText);
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Invalid market response");
+        data = parsed as Record<string, unknown>;
+      } catch {
+        throw new Error("NEPSE data is temporarily unavailable because the market-data service returned an invalid response. Please retry later or use a verified historical CSV.");
+      }
+      if (!response.ok) throw new Error(typeof data.error === "string" ? data.error : "NEPSE market data is temporarily unavailable. Please retry later.");
       const rows = normalizeOhlcvBars(data.points || []);
       setSelectedPoints(rows);
       const result = analyse(rows, "nepse", { quoteStale: data.quoteStale, historyPriceBasis: data.historyPriceBasis, historySource: data.historySource });

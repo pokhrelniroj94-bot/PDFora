@@ -5,54 +5,6 @@ const BASE = "https://raw.githubusercontent.com/Shubhamnpk/yonepse/main";
 const INDEX_SYMBOLS = new Set(["NEPSE", "SENSIND", "FLOATIND", "SENSFLTIND", "BANKSUBIND", "DEVBANKIND", "FININD", "HOTELIND", "HYDPOWIND", "INVIDX", "LIFINSIND", "MANPROCIND", "MICRFININD", "MUTUALIND", "NONLIFIND", "OTHERSIND", "TRDIND"]);
 type Json = Record<string, unknown>;
 
-const SHAREHUB_DATA = "https://sharehubnepal.com/data/api/v1/nepse-data";
-const SHAREHUB_AUTH = "https://sharehubnepal.com/account/api/v1/auth/login";
-type ShareHubTokens = { accessToken: string; refreshToken: string; accessExpiresAt: number };
-let shareHubTokens: ShareHubTokens | null = null;
-let shareHubTokenFlight: Promise<string | null> | null = null;
-function shareHubEnabled() { return Boolean(process.env.SHAREHUB_EMAIL && process.env.SHAREHUB_PASSWORD); }
-async function getShareHubToken(forceRefresh = false): Promise<string | null> {
-  if (!shareHubEnabled()) return null;
-  if (!forceRefresh && shareHubTokens && shareHubTokens.accessExpiresAt > Date.now() + 60_000) return shareHubTokens.accessToken;
-  if (shareHubTokenFlight) return shareHubTokenFlight;
-  shareHubTokenFlight = (async () => {
-    const old = shareHubTokens; const useRefresh = Boolean(old?.refreshToken);
-    const login = () => fetch(SHAREHUB_AUTH + "/email", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ email: process.env.SHAREHUB_EMAIL, password: process.env.SHAREHUB_PASSWORD, useOnCookies: false }), cache: "no-store", signal: AbortSignal.timeout(9000) });
-    let response = useRefresh
-      ? await fetch(SHAREHUB_AUTH + "/refresh", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ accessToken: old!.accessToken, refreshToken: old!.refreshToken }), cache: "no-store", signal: AbortSignal.timeout(9000) })
-      : await login();
-    // A revoked/expired refresh token must not permanently disable the optional provider.
-    if (useRefresh && (response.status === 401 || response.status === 403)) { shareHubTokens = null; response = await login(); }
-    if (!response.ok) throw new Error("ShareHub authentication failed (" + response.status + ")");
-    const payload = await response.json() as { success?: boolean; data?: { accessToken?: string; refreshToken?: string; accessTokenExpiration?: string } };
-    const accessToken = payload.data?.accessToken, refreshToken = payload.data?.refreshToken;
-    if (!payload.success || !accessToken || !refreshToken) throw new Error("ShareHub returned an invalid authentication response.");
-    shareHubTokens = { accessToken, refreshToken, accessExpiresAt: Date.parse(payload.data?.accessTokenExpiration || "") || Date.now() + 25 * 60_000 }; return accessToken;
-  })().finally(() => { shareHubTokenFlight = null; }); return shareHubTokenFlight;
-}
-async function shareHubGet(path: string, retry = true): Promise<unknown> {
-  const token = await getShareHubToken(); if (!token) throw new Error("ShareHub credentials are not configured.");
-  const response = await fetch(SHAREHUB_DATA + path, { headers: { Accept: "application/json", Authorization: "Bearer " + token }, cache: "no-store", signal: AbortSignal.timeout(10_000) });
-  if (response.status === 401 && retry) { await getShareHubToken(true); return shareHubGet(path, false); }
-  if (!response.ok) throw new Error("ShareHub data request failed (" + response.status + ")");
-  const payload = await response.json() as { success?: boolean; data?: unknown; message?: string };
-  if (payload.success === false || payload.data === undefined) throw new Error(payload.message || "ShareHub returned no data."); return payload.data;
-}
-function shareHubRows(value: unknown): unknown[] { if (Array.isArray(value)) return value; const row = asRecord(value); if (!row) return []; for (const key of ["content", "items", "prices", "stocks", "history", "data", "records"]) if (Array.isArray(row[key])) return row[key] as unknown[]; return []; }
-async function fetchShareHubSnapshot(symbol: string, period: string) {
-  if (!shareHubEnabled()) return null;
-  try {
-    const time = period === "1M" ? "1M" : period === "3M" ? "3M" : "1Y";
-    const results = await Promise.all([shareHubGet("/market"), shareHubGet("/stock-prices" + (INDEX_SYMBOLS.has(symbol) ? "" : "?symbol=" + encodeURIComponent(symbol))), shareHubGet("/price-history/" + encodeURIComponent(symbol) + "?time=" + time).catch(() => null), shareHubGet("/sectors").catch(() => [])]);
-    const market = asRecord(results[0]) || {};
-    const stocks = shareHubRows(results[1]).flatMap(item => { const row = asRecord(item); if (!row) return []; const ticker = String(firstValue(row, ["symbol", "securitySymbol"]) || "").toUpperCase(); const ltp = Number(firstValue(row, ["ltp", "lastTradedPrice", "close"])); if (!ticker || !Number.isFinite(ltp) || ltp <= 0) return []; const updated = firstValue(row, ["lastUpdatedTime", "lastUpdatedDateTime", "updatedAt", "timestamp"]); return [{ ...row, symbol: ticker, name: String(firstValue(row, ["name", "securityName"]) || ticker), ltp, previous_close: Number(firstValue(row, ["previousClose", "previous_close"])) || null, change: Number(firstValue(row, ["change", "pointChange"])) || null, percent_change: Number(firstValue(row, ["changePercent", "percentChange", "percentageChange"])) || null, high: Number(firstValue(row, ["high", "highPrice"])) || 0, low: Number(firstValue(row, ["low", "lowPrice"])) || 0, volume: Number(firstValue(row, ["volume", "totalTradeQuantity"])) || 0, turnover: Number(firstValue(row, ["turnover", "totalTradeValue"])) || 0, trades: Number(firstValue(row, ["transactions", "totalTransactions"])) || 0, last_updated: normalizeNepalTimestamp(updated) }]; });
-    const points = shareHubRows(results[2]).flatMap(item => { const row = asRecord(item); if (!row) return []; const dateRaw = firstValue(row, ["date", "businessDate", "tradingDate", "time"]); const close = Number(firstValue(row, ["close", "closePrice", "ltp"])); if (!dateRaw || !Number.isFinite(close) || close <= 0) return []; return [{ date: String(dateRaw).slice(0, 10), close, open: Number(firstValue(row, ["open", "openPrice"])) || undefined, high: Number(firstValue(row, ["high", "highPrice"])) || undefined, low: Number(firstValue(row, ["low", "lowPrice"])) || undefined, volume: Number(firstValue(row, ["volume", "totalTradeQuantity"])) || undefined, turnover: Number(firstValue(row, ["turnover", "totalTradeValue"])) || undefined, trades: Number(firstValue(row, ["transactions", "totalTransactions"])) || undefined }]; }).sort((a,b) => a.date.localeCompare(b.date));
-    const indices = (Array.isArray(market.indices) ? market.indices : []).map(item => { const row = asRecord(item); return row ? { ...row, index: row.name, close: row.value ?? row.currentValue, generatedTime: normalizeNepalTimestamp(row.lastUpdatedDateTime ?? row.time) } : item; });
-    const updated = stocks.reduce((latest, row) => row.last_updated && row.last_updated > latest ? row.last_updated : latest, "");
-    const validFresh = stocks.length > 0 && Boolean(updated) && Number.isFinite(Date.parse(updated)) && Date.now() - Date.parse(updated) <= 30 * 60_000 && Date.now() - Date.parse(updated) >= -120_000; if (!validFresh) throw new Error("ShareHub quote timestamp is missing or stale.");
-    return { stocks, points, indices, sectors: shareHubRows(results[3]), status: asRecord(market.marketStatus) || {}, summary: market.marketSummary || [], stockSummary: market.stockSummary || {}, timestamp: updated, historyAvailable: points.length >= 50 };
-  } catch { return null; }
-}
 const NEPSEMAN = "https://nepseman-api-production.up.railway.app";
 const asRecord = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
@@ -160,8 +112,7 @@ export async function GET(request: Request) {
   if (!/^[A-Z0-9]{2,16}$/.test(symbol)) {
     return Response.json({ error: "Invalid stock symbol." }, { status: 400 });
   }
-  const [shareHubSnapshot, unofficialSnapshot, liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.all([
-    fetchShareHubSnapshot(symbol, period),
+  const [unofficialSnapshot, liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.all([
     fetchNepsemanSnapshot().catch(() => null),
     Promise.allSettled([read<unknown[]>("/data/market/live.json", 60)]).then((items) => items[0]),
     Promise.allSettled([read<unknown[]>("/data/nepse_data.json", 60)]).then((items) => items[0]),
@@ -176,17 +127,16 @@ export async function GET(request: Request) {
   ]);
   const liveStocks = liveStocksResult.status === "fulfilled" && Array.isArray(liveStocksResult.value) ? liveStocksResult.value : [];
   const fallbackStocks = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
-  const usingShareHub = Boolean(shareHubSnapshot);
-  const usingUnofficialLive = !usingShareHub && Boolean(unofficialSnapshot);
-  const usingLiveQuotes = usingShareHub || usingUnofficialLive || liveStocks.length > 0;
-  const stocks = usingShareHub ? shareHubSnapshot!.stocks : usingUnofficialLive ? unofficialSnapshot!.stocks : usingLiveQuotes ? liveStocks : fallbackStocks;
-  const indices = usingShareHub ? shareHubSnapshot!.indices : indicesResult.status === "fulfilled" && Array.isArray(indicesResult.value)
+  const usingUnofficialLive = Boolean(unofficialSnapshot);
+  const usingLiveQuotes = usingUnofficialLive || liveStocks.length > 0;
+  const stocks = usingUnofficialLive ? unofficialSnapshot!.stocks : usingLiveQuotes ? liveStocks : fallbackStocks;
+  const indices = indicesResult.status === "fulfilled" && Array.isArray(indicesResult.value)
     ? indicesResult.value.map((item) => {
         const row = asRecord(item);
         return row ? { ...row, generatedTime: normalizeNepalTimestamp(row.generatedTime) } : item;
       })
     : [];
-  const marketStatus = usingShareHub ? shareHubSnapshot!.status : statusResult.status === "fulfilled"
+  const marketStatus = statusResult.status === "fulfilled"
     ? { ...statusResult.value, last_checked: normalizeNepalTimestamp(statusResult.value.last_checked) }
     : {};
   if (!stocks.length && !indices.length) {
@@ -207,8 +157,7 @@ export async function GET(request: Request) {
     selectedMonths.map((month) => read<Json>("/data/" + historyKind + "/monthly/" + month + ".json")),
   );
   const points: Array<{ date: string; close: number; open?: number; high?: number; low?: number; volume?: number; turnover?: number; trades?: number }> = [];
-  if (usingShareHub && shareHubSnapshot!.historyAvailable) points.push(...shareHubSnapshot!.points);
-  for (const result of (usingShareHub && shareHubSnapshot!.historyAvailable ? [] : historyResults)) {
+  for (const result of historyResults) {
     if (result.status !== "fulfilled") continue;
     const shard = result.value;
     const dates = Array.isArray(shard.dates) ? shard.dates as string[] : [];
@@ -283,9 +232,7 @@ export async function GET(request: Request) {
     return { ...sector, currentValue: latest?.close ?? null, change, perChange, latestDate: latest?.date ?? null };
   });
   const pick = <T,>(result: PromiseSettledResult<T>, fallback: T): T => result.status === "fulfilled" ? result.value : fallback;
-  const sourceUpdatedAtRaw = usingShareHub
-    ? shareHubSnapshot!.timestamp
-    : usingUnofficialLive
+  const sourceUpdatedAtRaw = usingUnofficialLive
     ? unofficialSnapshot!.timestamp
     : (stocks as Array<{ last_updated?: string }>).reduce((latest, stock) => stock.last_updated && stock.last_updated > latest ? stock.last_updated : latest, "");
   // YONEPSE timestamps without an explicit offset are Nepal-local exchange times.
@@ -299,32 +246,32 @@ export async function GET(request: Request) {
     symbol,
     period,
     // YONEPSE documents an approximately hourly update cadence; do not label this as exchange-tick live data.
-    source: usingShareHub ? "ShareHub licensed NEPSE Data API" : usingUnofficialLive ? "NEPSE unofficial live API (nepseman-api)" : usingLiveQuotes ? "YONEPSE public market snapshot" : "YONEPSE historical snapshot fallback",
+    source: usingUnofficialLive ? "NEPSE unofficial session feed (nepseman-api)" : usingLiveQuotes ? "YONEPSE public market snapshot" : "YONEPSE historical snapshot fallback",
     sourceUpdatedAt: sourceUpdatedAt || null,
     fetchedAt: new Date().toISOString(),
     quoteAgeMinutes: Number.isFinite(quoteTimestamp) ? Math.max(0, Math.round((Date.now() - quoteTimestamp) / 60_000)) : null,
-    providerRefreshCadence: usingShareHub ? "Approximately 20 seconds during trading; 5 minutes when closed (provider documentation)" : usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Approximately hourly on weekdays during market hours (provider documentation)",
+    providerRefreshCadence: usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Community dataset refresh cadence; not exchange-tick live data",
     quoteStale,
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
     status: marketStatus,
     indices,
-    summary: usingShareHub ? shareHubSnapshot!.summary : pick(summaryResult, []),
-    stockSummary: usingShareHub ? shareHubSnapshot!.stockSummary : null,
+    summary: pick(summaryResult, []),
+    stockSummary: null,
     topStocks: pick(topResult, {}),
-    sectors: usingShareHub ? shareHubSnapshot!.sectors : sectors,
+    sectors,
     supplyDemand: pick(supplyDemandResult, {}),
     stocks,
     points,
     // The unofficial provider currently supplies stock quote rows only. The other panels
     // remain sourced from YONEPSE archives until their schemas and timestamps are verified.
     dataCoverage: {
-      stockQuotes: usingShareHub ? "ShareHub licensed live API (timestamp-checked)" : usingUnofficialLive ? "Unofficial NEPSE session feed (timestamp-checked)" : usingLiveQuotes ? "YONEPSE public snapshot" : "YONEPSE historical fallback",
-      indexCards: usingShareHub ? "ShareHub licensed live API" : "YONEPSE public snapshot",
-      marketSummary: usingShareHub ? "ShareHub licensed live API" : "YONEPSE public snapshot",
-      topMovers: usingShareHub ? "ShareHub live market snapshot" : "YONEPSE public snapshot",
-      sectorIndices: usingShareHub ? "ShareHub live sector snapshot" : "YONEPSE archived daily data",
+      stockQuotes: usingUnofficialLive ? "Unofficial NEPSE session feed (timestamp-checked)" : usingLiveQuotes ? "YONEPSE public snapshot" : "YONEPSE historical fallback",
+      indexCards: "YONEPSE public snapshot",
+      marketSummary: "YONEPSE public snapshot",
+      topMovers: "YONEPSE public snapshot",
+      sectorIndices: "YONEPSE archived daily data",
       supplyDemand: "YONEPSE public snapshot",
-      historicalCharts: usingShareHub && shareHubSnapshot!.historyAvailable ? "ShareHub licensed daily OHLCV history" : "YONEPSE archived daily data",
+      historicalCharts: "YONEPSE archived daily data",
     },
     partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };

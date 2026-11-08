@@ -143,7 +143,7 @@ assert.ok(!/SHAREHUB_|ShareHub licensed/i.test(marketApi), "Paid ShareHub creden
 assert.ok(marketApi.includes("validFreshSnapshot") && marketApi.includes("ageMs <= 20 * 60_000"), "Unofficial live quotes must be timestamp checked");
 assert.ok(marketApi.includes("fetchCommunityHistory") && marketApi.includes("Nepal Market Data public CSV archive") && marketApi.includes("historyPriceBasis"), "NEPSE history must have a zero-cost community CSV fallback with explicit unadjusted-price disclosure");
 assert.ok(!/SHAREHUB_/i.test(envExample), "Example environment must not advertise or require ShareHub credentials");
-assert.ok(marketApi.includes("const selectedMonths = isIndex ?") && marketApi.includes("symbol + ".csv""), "Stock history must use the non-ShareHub CSV archive, not YONEPSE LTP history");
+assert.ok(marketApi.includes("const selectedMonths = isIndex ?") && marketApi.includes('symbol + ".csv"'), "Stock history must use the non-ShareHub CSV archive, not YONEPSE LTP history");
 assert.ok(marketContext.includes("calculateMarketRegime") && (marketContext.includes("advancers") || marketContext.includes("let up=0,down=0,flat=0")), "NEPSE breadth calculation is missing");
 assert.ok(advancedIndicators.includes("ATR (14)") && advancedIndicators.includes("ADX (14)") && advancedIndicators.includes("OBV") && advancedIndicators.includes("calculateOhlcvIndicators"), "Advanced deterministic OHLCV diagnostics are incomplete");
 assert.ok(strategyLab.includes("runBacktest") && quantEngine.includes("rows[51].close") && quantEngine.includes("price * (1 - cost)"), "Backtest must align benchmark dates and include transaction costs");

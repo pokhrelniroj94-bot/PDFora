@@ -660,16 +660,32 @@ async function runTool(tool, index) {
       if (tool.slug === "nepal-forex-rates") await delay(20000);
       else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug)) await delay(5000);
       // The NEPSE analysis workspace has a larger client bundle; allow React hydration
-      // to attach its click handler before exercising the primary action.
-      if (tool.slug === "nepse-technical-analysis") await delay(2500);
+      // to attach its click handler, then use a real browser pointer event.
+      if (tool.slug === "nepse-technical-analysis") await delay(5000);
       const catalogDownloadsBefore = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
-      const clicked = tool.slug === "nepal-forex-rates" ? "" : await page.evaluate(`(() => {
-        const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
-        const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|analyse.*|analyze.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*|show calendar)$/i;
-        const button = buttons.find((b) => patterns.test(b.innerText.trim()));
-        if (button) { button.click(); return button.innerText.trim(); }
-        return "";
-      })()`);
+      let clicked = "";
+      if (tool.slug === "nepse-technical-analysis") {
+        const target = await page.evaluate(`(() => {
+          const button = [...document.querySelectorAll("button")].find((b) => /^analyse nepse$/i.test(b.innerText.trim()));
+          if (!button) return null;
+          const rect = button.getBoundingClientRect();
+          return { text: button.innerText.trim(), x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+        })()`);
+        if (target) {
+          await page.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: target.x, y: target.y });
+          await page.send("Input.dispatchMouseEvent", { type: "mousePressed", x: target.x, y: target.y, button: "left", clickCount: 1 });
+          await page.send("Input.dispatchMouseEvent", { type: "mouseReleased", x: target.x, y: target.y, button: "left", clickCount: 1 });
+          clicked = target.text;
+        }
+      } else if (tool.slug !== "nepal-forex-rates") {
+        clicked = await page.evaluate(`(() => {
+          const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
+          const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|analyse.*|analyze.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*|show calendar)$/i;
+          const button = buttons.find((b) => patterns.test(b.innerText.trim()));
+          if (button) { button.click(); return button.innerText.trim(); }
+          return "";
+        })()`);
+      }
       if (tool.slug === "nepal-forex-rates") {
         row.checks.push("initial official-rate fetch inspected without triggering a redundant refresh");
       } else if (clicked) {
@@ -708,7 +724,7 @@ async function runTool(tool, index) {
           row.output = analysisState.alert;
           return row;
         }
-        throw new Error("NEPSE analysis did not render a verifiable signal or a safe data-unavailable message. Diagnostics: " + JSON.stringify({ alert: analysisState?.alert || "", hasAnalysis: analysisState?.hasAnalysis || false, hasMetrics: analysisState?.hasMetrics || false, bodyTail: analysisState?.body?.slice(-1200) || "" }));
+        throw new Error("NEPSE analysis did not render a verifiable signal or a safe data-unavailable message. Diagnostics: " + JSON.stringify({ alert: analysisState?.alert || "", hasAnalysis: analysisState?.hasAnalysis || false, hasMetrics: analysisState?.hasMetrics || false, bodyTail: analysisState?.body?.slice(-1200) || "", analysisButton: (() => { const b = [...document.querySelectorAll("button")].find((button) => /analyse nepse|analysing/i.test(button.innerText.trim())); return b ? { text: b.innerText.trim(), disabled: b.disabled } : null; })() }));
       }
       if (["image-compressor", "image-format-converter", "loksewa-photo-resizer"].includes(tool.slug)) {
         const downloadStarted = Date.now();

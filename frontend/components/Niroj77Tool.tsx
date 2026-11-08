@@ -260,7 +260,7 @@ export default function NirojToolsTool({
 
           <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
             {displayTitle}
-          </h1>
+          </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
             {displayDescription}

@@ -55,7 +55,8 @@ assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf
 const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
-assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
+assert.ok(!toolPage.includes('"@type": "FAQPage"'), "Tool pages must not emit deprecated FAQ rich-result markup");
+assert.ok(seoContent.includes("Frequently asked questions"), "Tool pages must retain visible, user-facing FAQ content");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);

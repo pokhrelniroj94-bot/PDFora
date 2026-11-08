@@ -9,7 +9,7 @@ The NEPSE Market Intelligence tool combines deterministic price/volume indicator
 The model is instructed to separate facts from interpretation, report missing fields as unavailable, avoid inventing ratios or corporate actions, and disclose source/freshness limitations. The model cannot change the deterministic technical signal.
 
 ## Data provenance
-- The current market endpoint uses a NEPSE-session feed where available and YONEPSE public historical datasets as fallback.
+- The current market endpoint uses a timestamp-checked NEPSE session feed and YONEPSE public market snapshots. For historical prices, stock charts use the Nepal Market Data CSV archive; recent index charts may use YONEPSE index history.
 - YONEPSE documents its project as an independent community data project and attributes some data to NEPSE, ShareSansar, Merolagani and other open-data maintainers. It is not an official NEPSE developer API and must not be labelled as such.
 - Company research endpoint uses the YONEPSE public JSON files. It matches records by explicit symbol fields or symbol-keyed objects only. Missing records are not interpreted as zero, negative or a clean bill of health.
 - News headlines are a screening source only; the report must not claim to have read full articles unless the text is actually supplied.
@@ -69,11 +69,11 @@ For company-level work, use sector-aware fundamentals only when the underlying r
 ## Zero-investment data-source policy
 
 The NEPSE engine is designed to run with a Rs. 0 recurring software/data budget and has no ShareHub dependency:
-1. **YONEPSE public static dataset** is the primary no-auth source for market snapshots and historical archives. Its source notes identify the NEPSE Official API as the primary live source and community archives for longer history. YONEPSE is a community-maintained mirror, not an official NEPSE developer API and must never be described as exchange-tick real-time.
+1. **YONEPSE public static dataset** is a no-auth source for market snapshots and recent index history. Its source notes identify the NEPSE Official API as the primary live source. However, its repository README also lists ShareHub as an upstream for stock price history, so this application deliberately does not consume YONEPSE stock LTP history. YONEPSE is a community-maintained mirror, not an official NEPSE developer API and must never be described as exchange-tick real-time.
 2. **NEPSEman session feed** is an optional unofficial live-session fallback. Its snapshot is accepted only when timestamps and minimum coverage pass validation. It can break when upstream authentication or hosting changes.
-3. **Nepal Market Data public CSV archive** is an optional historical-chart fallback only when YONEPSE history is unavailable. The repository declares an MIT licence and publishes source-dated OHLCV CSVs, including a long NEPSE index series. Its data is community-maintained and includes upstream public-source history; it is not a live quote feed. The fallback labels prices as unadjusted and does not use it to overwrite a working YONEPSE result.
+3. **Nepal Market Data public CSV archive** is the historical source for individual stock charts and the fallback for the main NEPSE index. The repository declares an MIT licence and publishes source-dated OHLCV CSVs, including a long NEPSE index series. Its documented upstreams include ShareSansar and Aabishkar2, not ShareHub. It is community-maintained and not a live quote feed. Prices are explicitly labelled unadjusted.
 
-The live quote chain is NEPSEman (timestamp/coverage validated) then YONEPSE public snapshot, with YONEPSE historical snapshots as the final fallback. Historical chart fallback is Nepal Market Data CSV only when YONEPSE has no usable points. No ShareHub credentials, subscription, paid API key, fixed-egress service, or paid AI API is required. The market route must not read or require SHAREHUB_* environment variables. The deterministic indicators, market regime, breadth, backtest and risk calculations run locally in application code.
+The live quote chain is NEPSEman (timestamp/coverage validated) then YONEPSE public snapshot. Stock historical charts use Nepal Market Data CSV; recent index history may use YONEPSE where the upstream source is documented as NEPSE. The market route does not consume YONEPSE stock LTP history. No ShareHub credentials, subscription, paid API key, fixed-egress service, or paid AI API is required. The market route must not read or require SHAREHUB_* environment variables. The deterministic indicators, market regime, breadth, backtest and risk calculations run locally in application code.
 
 No source is guaranteed uptime, freshness, completeness or commercial redistribution rights. Keep provider attribution and timestamps visible. If a free provider fails or data is stale, show the last verified historical data with a stale label or return an explicit unavailable state; never fabricate live prices or silently promote old prices as current. Review upstream terms before commercial use. Raw historical prices are not corporate-action adjusted; large price gaps require review before return/backtest claims.
 
@@ -104,7 +104,7 @@ Official exchange reference: https://www.nepalstock.com/. A supported public una
 - Large daily price changes (20% or more) are flagged for manual corporate-action/source review. They may be real market moves, bonus/right-share/split effects or data errors. No automatic adjustment is made because an unverified adjustment factor could distort results.
 - Deterministic numerical fixtures cover Wilder RSI, invalid/duplicate date handling, 20/50-session market regime, Wilder ATR/ADX, volume ratio, OBV, price-gap flags, flat-price backtests, trend crossover, benchmark alignment and round-trip costs.
 
-Still not validated with provider credentials or exchange-adjusted source data: licensed ShareHub response schemas, corporate-action adjustment factors, circuit-limit fills, liquidity/market impact, taxes and out-of-sample performance. Those are production validation gates, not assumptions.
+Still not validated with live upstream runtime checks or exchange-adjusted source data: corporate-action adjustment factors, circuit-limit fills, liquidity/market impact, taxes and out-of-sample performance. Those are production validation gates, not assumptions.
 
 ## Official Nepal macro-data sources and integration boundary
 

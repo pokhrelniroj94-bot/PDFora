@@ -59,11 +59,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "px-rem-converter": { title: "PX to REM Converter – CSS Units with Root Font Size", description: "Convert CSS pixel values to rem and rem to pixels using an editable root font size. Useful for responsive typography and spacing." },
     "color-contrast-checker": { title: "Color Contrast Checker – WCAG Text Accessibility", description: "Check foreground and background colour contrast ratios and review WCAG guidance for normal and large text." },
     "word-character-counter": { title: "Word Counter – Count Words, Characters & Reading Time", description: "Count words, characters with or without spaces, sentences and paragraphs, and estimate reading time for pasted text." },
-"tip-calculator": [
-      { q: "How is a tip calculated?", a: "Multiply the bill amount by the tip percentage and divide by 100. For example, 10% of NPR 2,000 is NPR 200." },
-      { q: "Does the calculator include service charge?", a: "No. Check the bill first and avoid adding a second tip or service charge unintentionally." },
-      { q: "How is the bill split?", a: "The calculator divides the bill plus tip equally by the number of people. It does not calculate different item-by-item shares." }
-    ],
     "percentage-change-calculator": [
       { q: "What is the percentage change formula?", a: "Percentage change = (new value − original value) ÷ original value × 100, when the original value is not zero." },
       { q: "Is a 20% increase the same as a 20% decrease?", a: "No. A move from 100 to 120 is +20%, but a move from 120 to 100 is −16.67%, because the original value changes." },
@@ -396,6 +391,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Should I encode the entire URL?", a: "Usually no. Encode the query value or individual path component, not URL separators such as the scheme, slashes and query delimiters." },
       { q: "Why do spaces sometimes appear as plus signs?", a: "HTML form encoding commonly represents spaces as plus signs, while percent encoding often uses %20. Use the convention required by the destination." }
     ],
+"tip-calculator": [
+      { q: "How is a tip calculated?", a: "Multiply the bill amount by the tip percentage and divide by 100. For example, 10% of NPR 2,000 is NPR 200." },
+      { q: "Does the calculator include service charge?", a: "No. Check the bill first and avoid adding a second tip or service charge unintentionally." },
+      { q: "How is the bill split?", a: "The calculator divides the bill plus tip equally by the number of people. It does not calculate different item-by-item shares." }
+    ],
+
     "reading-time-calculator": [
       { q: "How is reading time estimated?", a: "The estimate divides the word count by an assumed reading speed, usually expressed in words per minute." },
       { q: "Is the reading time exact?", a: "No. Reading speed varies with topic, language, formatting, tables and reader familiarity." },

@@ -382,7 +382,7 @@ export default function MarketIntelligence() {
       {asset === "nepse" && <NepseMarketContext symbol={symbol.trim().toUpperCase()} selectedPoints={selectedPoints} />}
       {asset === "nepse" && <NepseAdvancedIndicators rows={selectedPoints} />}
       {asset === "nepse" && <NepseMacroDrivers />}
-      {asset === "nepse" && symbol.trim().toUpperCase() !== "NEPSE" && <NepseFundamentalReview symbol={symbol.trim().toUpperCase()} price={analysis.close} />}
+      {asset === "nepse" && symbol.trim().toUpperCase() !== "NEPSE" && <NepseFundamentalReview symbol={symbol.trim().toUpperCase()} price={analysis.close} priceAsOf={analysis.latestDate} />}
       <section className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">Optional AI research explanation</h3><p className="mt-1 text-xs text-slate-500">Optional AI-generated explanation of the already-computed report. The deterministic technical and fundamental snapshots above work without AI; AI cannot change their calculated values or signals.</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? "Researching…" : "Generate research report"}</button></div>
         {aiText && <p className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{aiText}</p>}

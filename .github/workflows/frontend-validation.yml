@@ -3,6 +3,7 @@ name: PDFora frontend validation
 on:
   pull_request:
     branches:
+      - master
       - niroj-tools-development
       - i18n/global-multilingual
       - feature/complete-12-language-platform
@@ -11,6 +12,7 @@ on:
       - ".github/workflows/frontend-validation.yml"
   push:
     branches:
+      - master
       - seo-tool-pages-800-1200
       - i18n/global-multilingual
       - fix/published-language-switcher

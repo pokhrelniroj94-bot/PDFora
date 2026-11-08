@@ -12,6 +12,17 @@ concurrency:
   group: pdfora-quality-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 jobs:
+  workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Strictly validate workflow YAML (duplicate keys, structure, referenced scripts)
+        run: pip install pyyaml && python scripts/validate-workflows.py
+      - name: Lint workflows with actionlint
+        run: docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:latest -shellcheck= -pyflakes=
   backend:
     runs-on: ubuntu-latest
     steps:
@@ -131,7 +142,6 @@ jobs:
         run: exit 1
       - name: Fail CI after reports when production smoke checks fail
         if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.production-smoke.outcome == 'failure'
-        run: exit 1
         run: exit 1
       - name: Fail CI after all reports when live-data checks fail
         if: always() && steps.live-data-smoke.outcome == 'failure'

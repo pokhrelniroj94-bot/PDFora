@@ -47,7 +47,7 @@ assert.equal(new Set(all).size, all.length, "Nepali tool registries must not con
 
 const explicit = [...page.matchAll(/if \(request\.locale === "ne" && \[([^\]]+)\]\.includes\(toolSlug\)\)/g)]
   .map((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1]));
-assert.equal(explicit.length, 7, "Seven explicit Nepali component groups should be routed");
+assert.equal(explicit.length, 8, "Eight explicit Nepali component groups should be routed, including the special catalog workspace");
 const special = ["currency-converter", "image-compressor", "image-format-converter", "color-picker-palette", "notes-to-pdf", "nepal-share-calculator", "preeti-unicode-converter", "nepali-unicode-typing"];
 const utilityFallback = branchSlugs(utilityWorkspace);
 const utilityDispatch = new Set([...explicit.flat(), ...utilityFallback, ...special]);

@@ -39,7 +39,6 @@ const names: Record<string, string> = {
   "nepse-dividend-calculator":"NEPSE लाभांश तथा बोनस शेयर हिसाब","nepse-market-news":"NEPSE तथा बजार समाचार",
   "loan-emi-calculator":"ऋण EMI हिसाब","compound-interest-sip-calculator":"चक्रवृद्धि ब्याज तथा SIP हिसाब","discount-percentage-calculator":"छुट प्रतिशत हिसाब",
   "nepal-electricity-bill-calculator":"विद्युत् बिल क्याल्कुलेटर","nepal-public-holidays-2083":"नेपालका सार्वजनिक बिदा २०८३",
-  "ai-resume-writer":"AI रिजुमे लेखक","ai-cover-letter-generator":"AI कभर लेटर लेखक","ai-humanizer":"AI पाठ परिष्कार",
 };
 
 const pdfTools = [

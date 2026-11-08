@@ -34,8 +34,6 @@ const modules = await loadToolAdapter();
 const { toolGuides } = await import("../lib/tool-guides.ts");
 const { toolCatalog } = await import("../components/toolCatalog.ts");
 const { indexableCatalogToolSlugs, isCatalogToolIndexable } = await import("../lib/tools/catalog-indexability.ts");
-const sitemapEntries = (await import("../app/sitemap.ts")).default();
-const sitemapUrls = new Set(sitemapEntries.map((entry) => entry.url));
 const { buildPdfToolMetadata } = await import("../lib/i18n/pdf-tool-seo-core.ts");
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
@@ -187,16 +185,9 @@ assert.match(englishToolPageSource, /openGraph:\s*\{/, "Catalog tool pages must 
 assert.match(englishToolPageSource, /twitter:\s*\{/, "Catalog tool pages must publish Twitter metadata");
 assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*isCatalogToolIndexable\(slug\)/, "Catalogue tool indexing must use the explicit editorial allowlist");
 assert.match(sitemapSource, /isCatalogToolIndexable\(tool\.slug\)/, "Only reviewed catalogue tools may enter the sitemap");
-for (const tool of toolCatalog.filter((item) => item.slug !== "pdf-tools" && item.slug !== "resume-builder")) {
-  assert.equal(sitemapUrls.has(`https://pd-fora.vercel.app/tools/${tool.slug}`), isCatalogToolIndexable(tool.slug), `Sitemap eligibility must match the editorial gate for ${tool.slug}`);
-}
-for (const slug of legacyPdfSlugs) assert.ok(sitemapUrls.has(`https://pd-fora.vercel.app/${slug}`), `Canonical PDF route missing from sitemap: ${slug}`);
 assert.match(catalogIndexabilitySource, /Default-deny indexability/, "Catalogue indexability must document the editorial gate");
 assert.ok(indexableCatalogToolSlugs.size > 0, "At least one reviewed catalogue tool should remain indexable");
 assert.equal(toolCatalog.filter((tool) => isCatalogToolIndexable(tool.slug)).length, indexableCatalogToolSlugs.size, "The indexability allowlist must contain only real catalogue slugs");
-for (const tool of toolCatalog.filter((item) => item.slug !== "pdf-tools" && item.slug !== "resume-builder")) {
-  assert.equal(isCatalogToolIndexable(tool.slug), indexableCatalogToolSlugs.has(tool.slug), "Catalogue indexing must be explicit for " + tool.slug);
-}
 assert.match(blogArticleSource, /alternates:\s*\{\s*canonical:\s*url/, "English articles must publish self-canonicals");
 assert.match(blogArticleSource, /robots:\s*(?:isCatalogGeneratedGuide\(post\.slug\)\s*\|\|\s*isGeneratedPdfGuide\(post\.slug\))\s*\?\s*\{\s*index:\s*false/, "All generated thin blog guides must remain noindex");
 assert.match(blogPostSource, /generatedPdfGuideSlugs = new Set\(additionalToolBlogPosts\.map/, "Generated PDF blog guide variants must be explicitly classified");

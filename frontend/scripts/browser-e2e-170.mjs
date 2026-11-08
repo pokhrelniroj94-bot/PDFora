@@ -466,7 +466,20 @@ async function runTool(tool, index) {
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));
-      const newDownloadNames = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name));
+      // A success status can render before Chromium finishes writing the downloaded file.
+      // Wait for the download to complete rather than recording a false PARTIAL result.
+      let newDownloadNames = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name));
+      const downloadWaitStarted = Date.now();
+      while (
+        newDownloadNames.length === 0 &&
+        /download started|download ready|completed successfully/i.test(
+          finalState?.statuses?.map((status) => status.text).join(" | ") || ""
+        ) &&
+        Date.now() - downloadWaitStarted < 10000
+      ) {
+        await delay(250);
+        newDownloadNames = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name));
+      }
       const validatedDownloads = [];
       for (const name of newDownloadNames) validatedDownloads.push(await validateDownloadedFile(path.join(downloadsDir, name)));
       row.downloadCount = validatedDownloads.length;

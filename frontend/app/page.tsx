@@ -34,22 +34,5 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  const applicationSchema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "@id": "https://pd-fora.vercel.app/#application",
-    name: "PDFora",
-    url: "https://pd-fora.vercel.app/",
-    applicationCategory: "UtilitiesApplication",
-    operatingSystem: "Any",
-    description: "Free browser-based tools for PDF, image, text and everyday productivity tasks.",
-    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-  };
-
-  return (
-    <>
-      <HomePageClient />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(applicationSchema) }} />
-    </>
-  );
+  return <HomePageClient />;
 }

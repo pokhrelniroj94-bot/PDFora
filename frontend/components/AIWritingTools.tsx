@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Props = { slug: string; locale?: "en" | "ne" };
+type Props = { slug: string; locale?: "en" | "ne"; nestedHeading?: boolean };
 type Values = Record<string, string>;
 
 const inputClass = "w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100";
 const labelClass = "mb-1.5 block text-sm font-semibold text-slate-700";
 const panelClass = "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7";
 
-export default function AIWritingTools({ slug, locale = "en" }: Props) {
+export default function AIWritingTools({ slug, locale = "en", nestedHeading = false }: Props) {
+  const Heading = nestedHeading ? "h2" : "h1";
   const ne = locale === "ne";
   const router = useRouter();
   const [values, setValues] = useState<Values>({});
@@ -104,7 +105,7 @@ export default function AIWritingTools({ slug, locale = "en" }: Props) {
     <div className="space-y-6">
       <header>
         <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">{ne ? "PDFora AI स्टुडियो · निःशुल्क AI" : "PDFora AI Studio · Free AI"}</p>
-        <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">{title}</h1>
+        <Heading className="mt-2 text-3xl font-black tracking-tight text-slate-950">{title}</Heading>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{description}</p>
       </header>
 

@@ -123,9 +123,6 @@ const howToUse: Record<string, string> = {
     "/remove-pdf-links": "Upload a PDF and strip clickable link annotations from its pages.",
     "/remove-pdf-metadata": "Upload a PDF and clear document metadata such as title and author.",
     "/split-by-bookmarks": "Upload a bookmarked PDF and split it into sections using bookmark destinations.",
-    "/tools/loan-emi-calculator": "Enter the loan principal, annual interest rate and repayment term to calculate monthly EMI, total interest and total repayment.",
-    "/tools/notes-to-pdf": "Type or paste your notes, format the page, then use your browser’s print dialog to save the document as a PDF.",
-    "/tools/nepal-share-calculator": "Enter share quantity and buy/sell prices, then review estimated charges, net proceeds and profit or loss using the editable fee assumptions.",
   };
 
 export default function HomePageClient() {
@@ -353,6 +350,19 @@ export default function HomePageClient() {
 
       {/* Non-intrusive ad after the main tool discovery area */}
 
+      {/* TRADITIONAL ASTROLOGY TOOLS */}
+      <section aria-labelledby="astrology-tools-heading" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-5">
+          <p className="text-xs font-black uppercase tracking-widest text-orange-600">Nepal & South Asia</p>
+          <h2 id="astrology-tools-heading" className="mt-1 text-2xl font-black">Traditional astrology tools</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">Explore a traditional Vedic birth-chart calculation and an Ashtakoota matching table. These are cultural reference tools, not scientific predictions or substitutes for professional advice.</p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <InfoLink href="/nepali-janma-kundali" title="Janma Kundali / जन्मकुण्डली" description="Create a birth chart from birth date, local time and birthplace. Supports Nepali, Hindi and English." />
+          <InfoLink href="/nepali-guna-milan" title="36 Guna Milan / अष्टकूट गुण मिलान" description="Compare two birth charts using documented traditional Ashtakoota reference tables." />
+        </div>
+      </section>
+
       {/* NEPAL MARKET UPDATES */}
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="mb-5">
@@ -450,13 +460,13 @@ export default function HomePageClient() {
         <div className="mb-6">
           <p className="text-xs font-black uppercase tracking-widest text-blue-700">Made for everyday tasks in Nepal</p>
           <h2 id="nepal-tools-heading" className="mt-2 text-2xl font-black sm:text-3xl">Popular Nepal online tools</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Check NRB exchange rates, estimate salary tax, use the official ERC electricity calculator, convert Nepali dates, type Unicode Nepali and find public holidays—all in one place.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Check NRB exchange rates, estimate salary tax and electricity bills, convert Nepali dates, type Unicode Nepali and find public holidays—all in one place.</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
             { href: "/tools/nepal-forex-rates", title: "NRB Exchange Rates", desc: "Daily official currency buying and selling rates." },
             { href: "/tools/nepal-salary-tax-calculator", title: "Nepal Salary Tax Calculator", desc: "Estimate FY 2083/84 annual and monthly income tax." },
-            { href: "/tools/nepal-electricity-bill-calculator", title: "Official ERC Electricity Calculator", desc: "Open the live official tool and check the current tariff." },
+            { href: "/tools/nepal-electricity-bill-calculator", title: "NEA Electricity Bill", desc: "Estimate a single-phase domestic electricity bill." },
             { href: "/tools/nepali-date-converter", title: "BS to AD Date Converter", desc: "Convert Bikram Sambat and Gregorian dates." },
             { href: "/tools/nepali-unicode-typing", title: "Nepali Unicode Typing", desc: "Type Romanized Nepali using an English keyboard." },
             { href: "/tools/nepal-public-holidays-2083", title: "Nepal Public Holidays 2083", desc: "Search national, regional and community holidays." },
@@ -720,7 +730,7 @@ function ToolCard({
       <div className="mt-auto pt-4">
         <p className="rounded-xl bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-600">
           <span className="font-extrabold text-blue-700">How to use:</span>{" "}
-          {howToUse[tool.href] || "Open this tool and follow its on-screen instructions. Enter the requested information, then review the result before using or downloading it."}
+          {howToUse[tool.href] || "Open this tool, upload the required file, follow the options and download the result."}
         </p>
         <div className="mt-4 flex items-center justify-between text-sm font-bold text-blue-700">
           <span>Open tool</span><span aria-hidden="true">→</span>

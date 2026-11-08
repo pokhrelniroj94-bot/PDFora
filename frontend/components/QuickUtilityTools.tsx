@@ -5,7 +5,7 @@ import { bmi, bmr, businessDaysInclusive, gcd } from "../lib/catalog-calculation
 import { addCalendarDays } from "../lib/date-time-calculations";
 import { jsonToYaml, parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
 import { csvToJson } from "../lib/catalog-text";
-import { convertRomanNumeral } from "../lib/roman-numerals";
+import { localizeNepaliToolError, localizeNepaliToolOutput, nepaliQuickFieldLabel } from "../lib/i18n/nepali-catalog-tool-copy";
 
 type Values = Record<string, string>;
 const defaults: Record<string, Values> = {
@@ -46,7 +46,10 @@ const numeric = new Set(["wpm","weight","height","age","bill","tip","people","ex
 const words=(s:string)=>s.trim().split(/\s+/).filter(Boolean);
 const tokens=(s:string)=>s.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/([a-z0-9])([A-Z])/g,"$1 $2").toLowerCase().match(/[a-z0-9]+/g)||[];
 const morse:Record<string,string>={a:".-",b:"-...",c:"-.-.",d:"-..",e:".",f:"..-.",g:"--.",h:"....",i:"..",j:".---",k:"-.-",l:".-..",m:"--",n:"-.",o:"---",p:".--.",q:"--.-",r:".-.",s:"...",t:"-",u:"..-",v:"...-",w:".--",x:"-..-",y:"-.--",z:"--..",0:"-----",1:".----",2:"..---",3:"...--",4:"....-",5:".....",6:"-....",7:"--...",8:"---..",9:"----."," ":"/"};
-export default function QuickUtilityTools({slug}:{slug:string}) {
+const romanPairs:[number,string][]=[[1000,"M"],[900,"CM"],[500,"D"],[400,"CD"],[100,"C"],[90,"XC"],[50,"L"],[40,"XL"],[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+function toRoman(value:number){let n=value,out="";for(const [v,s] of romanPairs)while(n>=v){out+=s;n-=v;}return out;}
+function fromRoman(s:string){const map:Record<string,number>={I:1,V:5,X:10,L:50,C:100,D:500,M:1000};let n=0;for(let i=0;i<s.length;i++){const v=map[s[i]],next=map[s[i+1]]||0;if(!v)throw Error("Invalid Roman numeral.");n+=v<next?-v:v;}if(n<1||n>3999||toRoman(n)!==s)throw Error("Use a canonical Roman numeral from I to MMMCMXCIX.");return n;}
+export default function QuickUtilityTools({slug,locale="en"}:{slug:string;locale?:"en"|"ne"}) {
  const initial=defaults[slug]||{text:""};const [v,setV]=useState<Values>(initial);const [out,setOut]=useState("");const [error,setError]=useState("");
  const get=(k:string)=>v[k]??"";const n=(k:string)=>parseRequiredNumber(get(k));
  const randomBelow=(max:number)=>randomIntegerBelow(max,()=>crypto.getRandomValues(new Uint32Array(1))[0]);
@@ -81,15 +84,15 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "email-validator":result=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(t.trim())?"Basic email syntax looks valid. No email was sent.":"Invalid email syntax.";break;
  case "password-strength-checker":{const score=[t.length>=12,/[A-Z]/.test(t),/[a-z]/.test(t),/\d/.test(t),/[^A-Za-z0-9]/.test(t)].filter(Boolean).length;result="Criteria met: "+score+"/5\nAssessment: "+(score>=5?"Strong":score>=3?"Moderate":"Weak")+"\nThis local check does not test breached-password databases.";break;}
  case "bmi-calculator":{const value=bmi(n("weight"),n("height"));result="BMI: "+value.toFixed(1)+"\nAdult screening category: "+(value<18.5?"Underweight":value<25?"Healthy range":value<30?"Overweight":"Obesity range")+"\nBMI is not a diagnosis.";break;}
- case "bmr-calculator":{const sex=get("sex").trim().toLowerCase();if(!["male","female"].includes(sex))throw Error("Choose male or female for the Mifflin–St Jeor equation.");const value=bmr(n("weight"),n("height"),n("age"),sex==="female");result="Estimated BMR: "+Math.round(value)+" kcal/day (Mifflin–St Jeor estimate).";break;}
- case "tip-calculator":{const b=n("bill"),r=n("tip"),p=n("people");if(b<0||r<0||p<1||!Number.isSafeInteger(p))throw Error("Enter a non-negative bill/tip and a whole number of people.");result="Tip: "+(b*r/100).toFixed(2)+"\nTotal: "+(b*(1+r/100)).toFixed(2)+"\nPer person: "+(b*(1+r/100)/p).toFixed(2);break;}
- case "split-bill-calculator":{const b=n("bill")+n("extra"),p=n("people");if(b<0||p<1||!Number.isSafeInteger(p))throw Error("Enter a non-negative bill and a whole number of people.");result="Total: "+b.toFixed(2)+"\nPer person: "+(b/p).toFixed(2);break;}
+ case "bmr-calculator":{const value=bmr(n("weight"),n("height"),n("age"),get("sex").toLowerCase()==="female");result="Estimated BMR: "+Math.round(value)+" kcal/day (Mifflin–St Jeor estimate).";break;}
+ case "tip-calculator":{const b=n("bill"),r=n("tip"),p=n("people");if(b<0||r<0||p<1)throw Error("Enter non-negative bill/tip and at least one person.");result="Tip: "+(b*r/100).toFixed(2)+"\nTotal: "+(b*(1+r/100)).toFixed(2)+"\nPer person: "+(b*(1+r/100)/p).toFixed(2);break;}
+ case "split-bill-calculator":{const b=n("bill")+n("extra"),p=n("people");if(b<0||p<1)throw Error("Enter a non-negative bill and at least one person.");result="Total: "+b.toFixed(2)+"\nPer person: "+(b/p).toFixed(2);break;}
  case "simple-interest-calculator":{const p=n("principal"),r=n("rate"),y=n("years");if(p<0||r<0||y<0)throw Error("Values cannot be negative.");const i=p*r*y/100;result="Simple interest: "+i.toFixed(2)+"\nTotal amount: "+(p+i).toFixed(2);break;}
  case "commission-calculator":{const s=n("sales"),r=n("rate");if(s<0||r<0)throw Error("Values cannot be negative.");result="Commission: "+(s*r/100).toFixed(2);break;}
  case "hourly-to-salary-calculator":{const w=n("wage"),h=n("hours");if(w<0||h<0||h>168)throw Error("Enter valid wage and 0–168 hours/week.");const y=w*h*52;result="Weekly: "+(w*h).toFixed(2)+"\nMonthly average: "+(y/12).toFixed(2)+"\nAnnual: "+y.toFixed(2)+"\nBefore tax; assumes 52 paid weeks.";break;}
  case "percentage-of-number-calculator":{const x=n("value"),r=n("rate");result=r+"% of "+x+" = "+(x*r/100).toFixed(4);break;}
- case "gcd-lcm-calculator":{const a=n("a"),b=n("b");if(!Number.isSafeInteger(a)||!Number.isSafeInteger(b)||(!a&&!b))throw Error("Enter integers; at least one must be non-zero.");const g=gcd(a,b),lcm=a&&b?Math.abs((a/g)*b):0;if(!Number.isSafeInteger(lcm))throw Error("LCM exceeds the safe integer range.");result="GCD: "+g+"\nLCM: "+lcm;break;}
- case "prime-number-checker":{const x=n("n");if(!Number.isSafeInteger(x)||x<0)throw Error("Enter a non-negative safe whole number.");let prime=x>=2;for(let i=2;i<=Math.sqrt(x)&&prime;i++)if(x%i===0)prime=false;result=x+" is "+(prime?"prime":"not prime");break;}
+ case "gcd-lcm-calculator":{const a=n("a"),b=n("b");if(!Number.isInteger(a)||!Number.isInteger(b)||(!a&&!b))throw Error("Enter integers; at least one must be non-zero.");const g=gcd(a,b);result="GCD: "+g+"\nLCM: "+(a&&b?Math.abs(a*b)/g:0);break;}
+ case "prime-number-checker":{const x=n("n");if(!Number.isInteger(x)||x<0)throw Error("Enter a non-negative integer.");let prime=x>=2;for(let i=2;i<=Math.sqrt(x)&&prime;i++)if(x%i===0)prime=false;result=x+" is "+(prime?"prime":"not prime");break;}
  case "random-number-generator":{const min=n("min"),max=n("max"),count=n("count");if(!Number.isInteger(min)||!Number.isInteger(max)||!Number.isInteger(count)||max<min||count<1||count>100||max-min+1>4294967296)throw Error("Use whole-number bounds, a range up to 2^32 values, and 1–100 results.");const range=max-min+1;const pick=()=>min+randomBelow(range);result=Array.from({length:count},pick).join("\n");break;}
  case "dice-roller":{const count=n("count");if(!Number.isInteger(count)||count<1||count>100)throw Error("Enter a whole number of dice from 1 to 100.");const rolls=Array.from({length:count},()=>randomBelow(6)+1);result="Rolls: "+rolls.join(", ")+"\nTotal: "+rolls.reduce((a,b)=>a+b,0);break;}
  case "unix-timestamp-converter":{if(!t.trim())throw Error("Enter a Unix timestamp.");const x=Number(t),d=new Date(Math.abs(x)<1e12?x*1000:x);if(!Number.isFinite(x)||isNaN(+d))throw Error("Enter a valid Unix timestamp.");result="UTC: "+d.toISOString()+"\nLocal: "+d.toString();break;}
@@ -99,17 +102,17 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "aspect-ratio-calculator":{const w=n("width"),h=n("height");if(w<=0||h<=0)throw Error("Width and height must be positive.");const g=gcd(Math.round(w*1000),Math.round(h*1000));result="Aspect ratio: "+Math.round(w*1000)/g+":"+Math.round(h*1000)/g+"\nDecimal: "+(w/h).toFixed(5);break;}
  case "color-converter":{const m=t.trim().match(/^#?([0-9a-f]{6})$/i);if(!m)throw Error("Enter a six-digit HEX colour.");const x=parseInt(m[1],16),r=x>>16,g=(x>>8)&255,b=x&255,rr=r/255,gg=g/255,bb=b/255,mx=Math.max(rr,gg,bb),mn=Math.min(rr,gg,bb),delta=mx-mn;let h=0;if(delta){if(mx===rr)h=60*(((gg-bb)/delta)%6);else if(mx===gg)h=60*((bb-rr)/delta+2);else h=60*((rr-gg)/delta+4);}if(h<0)h+=360;const l=(mx+mn)/2,s=delta?delta/(1-Math.abs(2*l-1)):0;result="HEX: #"+m[1].toUpperCase()+"\nRGB: "+r+", "+g+", "+b+"\nHSL: "+Math.round(h)+"°, "+Math.round(s*100)+"%, "+Math.round(l*100)+"%";break;}
  case "css-gradient-generator":if(!/^#[0-9a-f]{6}$/i.test(get("a"))||!/^#[0-9a-f]{6}$/i.test(get("b")))throw Error("Choose valid six-digit HEX colours.");result="background: linear-gradient("+n("angle")+"deg, "+get("a")+", "+get("b")+");";break;
- case "roman-numeral-converter":{result=convertRomanNumeral(t);break;}
+ case "roman-numeral-converter":{const x=t.trim();if(/^\d+$/.test(x)){const value=Number(x);if(value<1||value>3999)throw Error("Enter an integer from 1 to 3999.");result=toRoman(value);}else result=String(fromRoman(x.toUpperCase()));break;}
  default:throw Error("This utility is not available yet. Please use the directory to find another tool.");
  }
- setOut(result);
- }catch(e){setError(e instanceof Error?e.message:"Could not process this input.");}};
+ setOut(locale === "ne" ? localizeNepaliToolOutput(slug, result) : result);
+ }catch(e){const message=e instanceof Error?e.message:"Could not process this input.";setError(locale === "ne" ? localizeNepaliToolError(message) : message);}};
  if(!initial)return <p className="text-sm text-slate-600">This tool is not configured.</p>;
  return <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5">
-  <div className="grid gap-4 sm:grid-cols-2">{Object.entries(v).map(([key,value])=><label key={key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{labels[key]||key}</span><input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={key==="date"||key==="start"||key==="end"?"date":slug==="css-gradient-generator"&&(key==="a"||key==="b")?"color":"text"} inputMode={numeric.has(key)?"decimal":"text"} value={value} onChange={e=>setV(p=>({...p,[key]:e.target.value}))}/></label>)}</div>
-  <div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">Run tool</button><button onClick={()=>{setV(initial);setOut("");setError("");}} className="rounded-xl border px-4 py-2.5 text-sm">Reset</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">Copy result</button>}</div>
+  <div className="grid gap-4 sm:grid-cols-2">{Object.entries(v).map(([key,value])=><label key={key} className="block"><span className="mb-1 block text-sm font-semibold text-slate-700">{locale === "ne" ? nepaliQuickFieldLabel(key, labels[key]||key) : labels[key]||key}</span><input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900" type={key==="date"||key==="start"||key==="end"?"date":slug==="css-gradient-generator"&&(key==="a"||key==="b")?"color":"text"} inputMode={numeric.has(key)?"decimal":"text"} value={value} onChange={e=>setV(p=>({...p,[key]:e.target.value}))}/></label>)}</div>
+  <div className="flex flex-wrap gap-2"><button onClick={run} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white">{locale === "ne" ? "टुल चलाउनुहोस्" : "Run tool"}</button><button onClick={()=>{setV(initial);setOut("");setError("");}} className="rounded-xl border px-4 py-2.5 text-sm">{locale === "ne" ? "रिसेट" : "Reset"}</button>{out&&<button onClick={()=>navigator.clipboard?.writeText(out)} className="rounded-xl border px-4 py-2.5 text-sm">{locale === "ne" ? "नतिजा कपी गर्नुहोस्" : "Copy result"}</button>}</div>
   {error&&<p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{error}</p>}
   {out&&<div aria-live="polite" className="rounded-2xl border border-teal-200 bg-teal-50 p-4 text-base leading-7 text-teal-950 shadow-sm sm:p-5"><pre className="whitespace-pre-wrap break-words font-sans text-base leading-7">{out}</pre></div>}
-  <p className="text-xs leading-5 text-slate-500">Runs in your browser. Check important results independently. This tool does not send your input to a server.</p>
+  <p className="text-xs leading-5 text-slate-500">{locale === "ne" ? "यो टुल तपाईंको ब्राउजरमै चल्छ। महत्त्वपूर्ण नतिजा आफैं जाँच्नुहोस्। तपाईंको इनपुट सर्भरमा पठाइँदैन।" : "Runs in your browser. Check important results independently. This tool does not send your input to a server."}</p>
  </div>;
 }

@@ -8,14 +8,16 @@ import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
 import { hreflangMap } from "../../../lib/i18n/routing";
 import { isLocalizedToolIndexable } from "../../../lib/tools/localized-verification";
+import { isCatalogToolIndexable } from "../../../lib/tools/catalog-indexability";
 
 const site = "https://pd-fora.vercel.app";
 export function generateStaticParams() {
-  return toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ slug: tool.slug }));
+  return toolCatalog.filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "resume-builder").map((tool) => ({ slug: tool.slug }));
 }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
+  if (slug === "resume-builder") return { title: "Resume Builder", alternates: { canonical: `${site}/resume-builder` }, robots: { index: false, follow: true } };
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
@@ -71,28 +73,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "meta-title-checker": { title: "SEO Title Checker – Check Meta Title Length & Google Preview", description: "Check your SEO title length, review a Google-style search preview and improve page titles for clarity and search intent." },
   };
   const seo = seoOverrides[slug];
-  const title = seo?.title ?? `Free ${tool.name} Online`;
+  // Every catalog entry has a reviewed, unique description in toolCatalog.ts.
+  // Use that task-specific copy directly instead of appending generic category filler.
+  const title = seo?.title ?? `${tool.name} Online`;
   const socialTitle = `${tool.name} Online | PDFora`;
-  const categoryDescription: Record<string, string> = {
-    PDF: "Check page order, layout, text, forms and signatures in the exported document before sharing it.",
-    Finance: "Review the rate, period, fees and tax assumptions before relying on a financial estimate.",
-    Math: "Check input units and rounding, then compare a sample result with a known answer.",
-    Text: "Review punctuation, Unicode characters and line breaks before copying the processed text.",
-    Developer: "Test the output in the application that will use it; encoding and decoding do not provide encryption.",
-    Image: "Check the output format, dimensions, transparency and visual quality before downloading.",
-    SEO: "Use the result as a diagnostic and verify the rendered page, canonical and indexing status.",
-    Business: "Confirm the cost, price, margin and tax assumptions before using a figure in a quote or budget.",
-    Nepal: "Check the applicable fiscal year, date system, local units and official notices before relying on the result."
-  };
-  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")} ${categoryDescription[tool.category] ?? "Check the input and output carefully before using the result."}`.slice(0, 160);
-  const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
+  const description = seo?.description ?? tool.description.trim();
   const canonicalPath = legacyToolSlugSet.has(slug) ? `/${slug}` : `/tools/${slug}`;
   const canonical = `${site}${canonicalPath}`;
   const languages = isLocalizedToolIndexable("ne", slug) ? hreflangMap(canonicalPath) : undefined;
   return {
-    title, description, keywords,
+    title, description,
     alternates: { canonical, ...(languages ? { languages } : {}) },
-    robots: { index: slug !== "ocr-pdf", follow: true },
+    robots: { index: isCatalogToolIndexable(slug), follow: true },
     openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
     twitter: { card: "summary_large_image", title: socialTitle, description, images: [`/tools/${tool.slug}/opengraph-image`] },
   };
@@ -100,6 +92,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
+  if (slug === "resume-builder") permanentRedirect("/resume-builder");
   if (!tool || slug === "pdf-tools") notFound();
   if (legacyToolSlugSet.has(slug)) permanentRedirect(`/${slug}`);
   const related = toolCatalog.filter((item) => item.category === tool.category && item.slug !== slug && item.slug !== "pdf-tools").slice(0, 4);
@@ -430,11 +423,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { "@type": "ListItem", position: 3, name: tool.name, item: canonicalUrl },
     ],
   };
-  const faq = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
   return <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faq) }} />
     <ToolWorkspace slug={slug} />
     <CatalogToolSEOContent tool={tool} questions={questions} related={related} guideSlug={guide?.slug} />
   </>;

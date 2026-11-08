@@ -1,61 +1,140 @@
 # SEO audit status
 
-This is a factual implementation record for the current release candidate, not a
-ranking, indexing, traffic or Search Console claim.
+This is a factual implementation record for the current branch, not a ranking or
+traffic claim.
 
-## Verified in source and regression checks
+## Verified
 
-- English PDF and catalog tool routes have route-specific titles, descriptions and
-  self-referencing canonical URLs; legacy root PDF routes are redirected to their
-  canonical root paths.
-- The catalog sitemap includes the English homepage, tools directory, market page,
-  all registered English PDF routes, all catalog utility routes except the
-  `pdf-tools` collection and OCR route, the English blog index and curated editorial
-  articles, and English trust pages.
-- OCR is excluded from the sitemap and marked noindex.
-- Generated catalog-guide articles are excluded from the sitemap until editorial
-  review.
-- The Nepali tool-indexing policy is default-deny. Only the six explicitly reviewed
-  Nepali PDF tool routes may be indexed and receive reciprocal English/Nepali
-  hreflang. Other localized tool routes remain crawlable with noindex,follow and are
-  excluded from localized tool sitemap entries and hreflang.
-- The Nepali home, market, Resume Builder, blog, legal pages and curated localized
-  blog articles are listed as separate localized destinations; this is distinct
-  from the six approved localized tool pages.
-- `robots.txt` allows crawling of page HTML so Google can read noindex directives
-  and disallows API routes. It advertises the root sitemap.
-- Global layout structured data declares WebSite and Organization. The
-  SoftwareApplication entity is emitted only on the homepage, where the site is
-  described as an application; WebSite inLanguage follows the rendered language.
-- SEO regression tests check the default-deny localized indexability gate,
-  canonical and reciprocal hreflang mappings, generated-guide sitemap exclusion,
-  robots access to noindex pages and structured-data language.
+- English tool pages use shared `getPdfToolMetadata()` and retain unique titles,
+  descriptions and self-referencing canonicals.
+- Existing `/about`, `/privacy`, `/terms` and `/contact` metadata use their own
+  canonical URLs.
+- Published Nepali equivalents use self-referencing canonicals and reciprocal
+  English/Nepali hreflang.
+- Unpublished locales are not included in hreflang or the sitemap.
+- The sitemap contains English routes, curated Nepali home/blog/market/resume/policy routes, the NEPSE strategy lab and resume builder, and only the six reviewed Nepali localized tool routes.
+- Root `/en` redirects to the unprefixed English URL.
+- Page-relevant structured data and useful tool-guide content were preserved; FAQPage markup was removed from tool, blog, PDF-guide and Nepali-home templates because Google Search no longer shows FAQ rich results as of May 7, 2026; visible FAQ text remains.
 
-## Google Search guidance applied
+## Remaining validation
 
-- Sitemap entries are absolute canonical URLs intended for search results. URLs
-  marked noindex and generated unreviewed guides are not submitted as indexable
-  sitemap entries.
-- Sitemap priority and change-frequency fields are retained only as metadata;
-  Google documents that it ignores these fields. No fabricated `lastmod` dates are
-  added. Add `lastmod` only when a significant content change date can be verified.
-- Tool functionality is the primary value of a tool page. Supporting guidance,
-  examples, limitations and FAQs must be accurate and useful rather than duplicated
-  keyword text. Financial and Nepal-specific claims require current assumptions and
-  responsible-source verification.
-- SEO scores, schema markup, sitemap submission and canonical declarations do not
-  guarantee indexing or rankings.
-
-## Remaining validation before release
-
-- Run a deployed HTTP crawl for every sitemap URL and compare response status,
-  canonical, robots directives, title and description.
-- Validate rendered JSON-LD against visible page content for tool, blog and
-  localized pages.
-- Check Core Web Vitals and mobile rendering on representative tool categories.
-- Review catalog-page content quality and source accuracy; keep weak or unfinished
-  pages out of indexing until they provide distinct user value.
-- After production release, submit or refresh the sitemap in Search Console and
-  inspect representative URLs. Google decides whether and when to index them.
+- Run a deployed HTTP crawl for every sitemap URL and compare status, canonical and
+  robots output.
+- Validate JSON-LD against rendered page content for tools, blogs and localized
+  routes.
+- Add reciprocal hreflang only when a translated equivalent has been reviewed and
+  published.
+- Localize metadata together with each future page; do not promote dictionary-only
+  translations.
 
 No ranking, indexing, traffic or Search Console submission is claimed by this audit.
+
+
+## Live crawl findings — 2026-11-07
+
+A live crawl of `/merge-pdf` exposed the same PDF practical guide twice in the rendered page. Source inspection confirmed that the guide was rendered both by the route layout and again inside the shared `PDForaTool` and `Niroj77Tool` client components. This duplicated the full guide and its FAQ/schema output on standalone PDF tool pages that use both layers.
+
+The release branch `seo/duplicate-content-audit-fix-2026-11-07` removes the second render from both shared workspaces, leaving each route layout as the single owner of the English PDF SEO guide. A regression assertion now guards this ownership. The Nepali dynamic PDF route now renders the shared localized `ToolSEOContent` guide with `locale="ne"`, rather than falling back to the shorter generic `ToolGuide`.
+
+The same live crawl also found older, page-specific how-to and FAQ blocks on `/merge-pdf` and `/delete-pages` that overlap with the shared guide. Those blocks and 29 additional generic legacy guide sections have now been removed from 31 of the 49 PDF tool routes. The additional cleaned routes are `/add-background`, `/add-blank-pages`, `/add-bookmarks`, `/bates-numbering`, `/compress-pdf`, `/extract-bookmarks`, `/extract-fonts`, `/extract-page-images`, `/extract-pages`, `/images-to-pdf`, `/page-counter`, `/pdf-information`, `/pdf-to-bmp`, `/pdf-to-csv`, `/pdf-to-excel`, `/pdf-to-jpg`, `/pdf-to-json`, `/pdf-to-markdown`, `/pdf-to-tiff`, `/pdf-to-word`, `/remove-annotations`, `/remove-attachments`, `/remove-pdf-links`, `/remove-pdf-metadata`, `/rotate-pdf`, `/rotate-selected-pages`, `/split-by-bookmarks`, `/split-pdf` and `/watermark`. Each keeps its original title, description and actual tool workspace; the route layout owns the full practical guide. A source scan of the remaining 18 routes found no matching generic legacy how-to block; their distinct hero copy and tool-specific text were retained. A deployed rendered-page comparison is still pending.
+
+## Metadata inventory checks — 2026-11-07
+
+A source-level inventory of all 124 English catalogue tools found 124 unique tool names, 124 unique source descriptions and 124 unique keyword fields. The metadata generator has 50 explicit SEO overrides; all other tools now use their own catalog description directly rather than appending category-level boilerplate. The source descriptions range from 45 to 148 characters and are unique; no artificial minimum length is imposed because relevance is more important than padding. All 124 catalogue tools have an explicit advice entry with a task-specific example, accuracy note, workflow and common mistakes in `CatalogToolSEOContent.tsx`. Regression tests now check coverage and substantive field lengths.
+
+Regression checks in `verify-tool-catalog.mjs` now guard future catalogue edits against duplicate names, descriptions, titles, meta descriptions and repeated tool-specific guidance fields. A separate inventory of the 49 PDF route guides also found 49 unique names, target phrases and purposes; every guide has three task-specific steps and a caution of at least 60 characters. These source checks do not replace rendered-page QA.
+
+## Quality risks requiring page-level review
+
+- Catalog tool pages use shared category guidance and category-based FAQ fallbacks. This is useful baseline help, but it is not a substitute for tool-specific examples, supported-input details, edge cases and output limitations. Keep each page indexable only when its actual tool functionality and page content provide distinct value.
+- The English blog data includes 124 generated catalogue guides and 42 generated PDF guide variants. All remain noindex and outside the editorial blog index and sitemap; links from the corresponding tool pages have been removed. Preserve this gate until any guide is independently edited and verified.
+- Nepali publication is intentionally limited: the current indexable localized PDF allowlist contains six routes. The other localized tool interfaces remain noindex and out of sitemap/hreflang pending full translation, functional QA and human review.
+- Do not merge language variants into one canonical URL. Each genuinely translated page needs its own self-canonical and reciprocal hreflang only when both versions are complete and indexable.
+- Search Console indexing, impressions, clicks and query performance cannot be inferred from a code audit. Those require the connected Search Console property and post-deployment data.
+
+
+
+## Search Console content opportunities — 2026-11-07
+
+The connected Search Console property `https://pd-fora.vercel.app/` returned 860 search-analytics rows for the available 28-day window (2026-10-10 to 2026-11-06): 1,304 impressions, 1 click, 86 distinct landing pages and 414 distinct queries. These are small-sample observations, not a traffic forecast.
+
+The strongest immediate opportunity is `/tools/tip-calculator`: 120 impressions, including 115 for “tip calculator”, at an impression-weighted average position of about 6.2, but no clicks in the returned window. The live page title still displays “Free Tip Calculator Online | PDFora”, while the current repository source has a more descriptive title override (“Tip Calculator – Calculate Tip, Total & Split the Bill”). The production deployment is behind the current repository, so the source override is not yet live.
+
+The generated `/blog/tip-calculator-guide` received 102 impressions, mainly for “how to calculate tip”, at average position about 9.7. Its current live copy is a short shared-template guide and is noindex in the source. It is being replaced in the release branch by a genuinely editorial English guide plus a full Nepali translation at `/blog/how-to-calculate-tip-and-split-the-bill`, with the old generated URL redirected to the reviewed article. This converts an observed query opportunity into useful content rather than simply removing the page or making thin copy indexable.
+
+Other priorities from the same window:
+- `/delete-pages`: 205 impressions but average position about 74.5; needs a dedicated page-level content and SERP review.
+- `/blog/meta-title-checker-guide`: 212 impressions but average position about 80.8; it remains a generated noindex guide until it can be rewritten with original, accurate Google title-link guidance.
+- `/blog/split-pdf-and-extract-selected-pages`: 139 impressions at average position about 84.5; needs query-to-content relevance review before any rewrite.
+
+The Search Console connector data is delayed by several days, so the 28-day window is not a real-time report. Organic traffic and rankings are not guaranteed by these changes.
+
+
+## Search Console sitemap status — 2026-11-07
+
+The connected Search Console Sitemaps report shows `https://pd-fora.vercel.app/sitemap.xml` with 257 submitted URLs, zero reported errors and zero warnings. The deprecated sitemap `indexed` field is not used as an index-coverage measure. The sitemap report confirms successful retrieval, not that every submitted URL is indexed.
+
+The two reviewed bilingual articles increase the curated Nepali localized blog collection from 27 to 29 posts. The old generated `tip-calculator-guide` remains a noindex redirect source; the new reviewed article has a distinct slug and a self-canonical localized counterpart.
+
+## Google Search Central references
+
+- [Creating helpful, reliable, people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content) — original, useful content; no target word count; avoid mass-produced search-first pages.
+- [Canonicalization](https://developers.google.com/search/docs/crawling-indexing/canonicalization) and [consolidating duplicate URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls) — choose one representative URL and use redirects/canonicals consistently.
+- [Localized versions of pages](https://developers.google.com/search/docs/specialty/international/localized-versions) — fully translated language variants, reciprocal hreflang and distinct language URLs.
+- [Google Search Essentials](https://developers.google.com/search/docs/essentials) — crawlable links, descriptive page titles and appropriate search appearance controls.
+
+
+
+## Second Search Console-driven article — 2026-11-07
+
+The generated `/blog/meta-title-checker-guide` page received 212 impressions in the 28-day Search Console sample, mainly for “seo title check” (73 impressions) and “meta title check” (46 impressions), at average position about 80.8. Its prior copy was a generic shared-template guide and remained noindex. The release branch now redirects that old URL to a new original English article, `/blog/how-to-write-seo-page-titles-google-title-links`, with a full Nepali translation and links to Google's primary title-link documentation. It explains that Google can generate title links from multiple page signals, that Google does not publish a fixed title character limit, and that title/meta descriptions cannot guarantee ranking or display.
+
+The curated Nepali localized blog collection now contains 29 articles. The new English and Nepali versions have distinct language URLs, self-canonicals and reciprocal hreflang through the shared route registry.
+
+## Expanded 173-tool and site-page audit — 2026-11-07
+
+The unified catalogue is confirmed as 173 unique tools: 49 established PDF routes and 124 catalogue utilities. The 124 utility entries have unique names and descriptions, and each has four dedicated guidance fields (example, accuracy, workflow and mistakes). The shared utility page renderer also retains tool-specific questions where available and category-level fallback questions; visible FAQs remain on the page, but FAQPage JSON-LD has been removed from utility pages, English/Nepali articles, English/Nepali PDF guides and the Nepali homepage. Google announced in May 2026 that FAQ rich results are no longer shown in Search; FAQ text remains useful for readers and can still inform ordinary snippets.
+
+The utility metadata fallback now uses each tool's own catalogue description directly instead of appending a generic category paragraph. The fallback title identifies the actual tool; the root layout appends the single PDFora brand suffix. Page-level titles were normalized to avoid appending the brand twice; the About page uses an absolute title because its descriptive wording already includes the brand. Existing 50 reviewed title/description overrides are retained. The route continues to emit a self-canonical URL, Open Graph and Twitter metadata, BreadcrumbList and SoftwareApplication structured data. OCR remains excluded from indexing until its processing backend is available.
+
+The audit also found missing social preview metadata on the NEPSE market page, NEPSE strategy lab, resume builder and blog index; the all-tools directory now has preview images. The Nepali homepage now links to all six verified localized PDF tools. The sitemap was also missing the indexable /nepse-lab and /resume-builder landing pages; both are now included with their existing self-canonicals. The catalogue also contained a second resume-builder slug, so /tools/resume-builder now permanently redirects to /resume-builder, all internal links use the dedicated page, and only the root canonical URL is listed. Open Graph/Twitter metadata has been added to those landing pages. The About title was made more descriptive. Main landing-page and article regression tests now cover canonical, Open Graph, Twitter and indexing metadata.
+
+Nepali catalogue tool routes remain default-deny for indexing. The current explicit localized utility route list is not itself an indexing approval: only the six reviewed Nepali PDF equivalents are indexable and included in hreflang/sitemap. Nepali home, blog, policy, market and resume routes use the shared locale metadata builder. Generated catalogue blog guides remain excluded from the sitemap and noindex until individually edited and reviewed.
+
+
+The generated PDF guide variants were also identified as a duplicate-content risk: 42 of the 49 PDF guide records produced templated blog articles in addition to the canonical tool pages. Those 42 variants now remain accessible but are `noindex`, excluded from the editorial blog index and XML sitemap, and no longer linked from the main PDF tool guides. The seven PDF tasks with reviewed editorial articles retain their blog links; Nepali PDF pages now link to the matching Nepali article route rather than the English route. This preserves useful editorial content while consolidating repetitive generated pages around the canonical tool URLs.
+
+## Google Search Central standards used
+
+- [Helpful, reliable, people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content): prioritize original, complete, useful content; there is no preferred word count.
+- [Spam policies — scaled content abuse](https://developers.google.com/search/docs/essentials/spam-policies): exclude large volumes of unoriginal, low-value generated pages from Search.
+- [Title links](https://developers.google.com/search/docs/appearance/title-link) and [snippets/meta descriptions](https://developers.google.com/search/docs/appearance/snippet): use concise, accurate page-specific titles and useful descriptions; Google may generate titles/snippets from visible content.
+- [Localized versions](https://developers.google.com/search/docs/specialty/international/localized-versions): publish reciprocal hreflang only for genuinely translated equivalents.
+- [Canonicalization](https://developers.google.com/search/docs/crawling-indexing/canonicalization): choose one preferred URL for duplicate content and maintain consistent canonical signals.
+- [Google Search documentation updates](https://developers.google.com/search/updates): FAQ rich results stopped appearing in Search on May 7, 2026.
+
+## Remaining work after source changes
+
+- **CI passed for the SEO source/test commit `c1d823fd9d3c7e00e1f2037e9d64443d6cddbef6` in workflow run `42392049032`; frontend and backend jobs succeeded and the live-production job was skipped. The localized blog title was also corrected to rely on the root metadata template for one brand suffix.
+- A fresh Vercel Preview deployment could not be created because the Vercel API deployment quota reported more than 100 deployments in the rolling day and a 24-hour retry window. No Production deployment or protection change was attempted. The Preview build and deployed HTTP crawl therefore remain unverified.
+- Run an HTTP crawl of all 173 tool URLs and the rest of the sitemap against a new Preview; compare rendered title, description, canonical, robots, hreflang, JSON-LD, response status and page content.
+- Verify every tool's actual rendered instructions and output against its implementation, including edge cases and mobile behavior. Source-level advice coverage is not proof that a tool works.
+- Reconcile sitemap URLs with Search Console indexed/not-indexed reports after an approved deployment. Do not claim indexing or traffic improvement before Google recrawls the pages.
+- The source scan now covers all 49 standalone PDF routes: 31 duplicated legacy how-to sections were removed, and the remaining 18 retain distinct hero/tool copy without the duplicated generic section. Verify the rendered result on a new Preview before release.
+- Review all non-generated editorial articles for first-hand value, accurate references, dates and non-overlapping search intent.
+
+## Catalogue indexability correction — 2026-11-08
+
+A stricter review found a mismatch between the documented quality rule and the implementation: catalogue tool pages used index=true for nearly every utility even when their visible guide still relied on a shared category template, generic workflow steps and fallback FAQs. Unique titles/descriptions and per-tool advice fields alone do not prove that each page offers enough distinct value for Search.
+
+The release branch now applies a default-deny indexability gate to catalogue utility routes. Only 17 pages with dedicated task-specific guides, concrete workflows/examples and explicit limitations remain eligible for indexing at this stage. The remaining catalogue utilities continue to work and remain reachable through the tools directory, but emit noindex,follow and are omitted from the XML sitemap until an individual editorial review confirms distinct value, accurate supported-input details, useful examples and functional behaviour. OCR remains excluded. This is a quality-control decision, not a claim that the remaining utilities are poor products.
+
+Regression checks verify that the allowlist contains only real catalogue slugs, that catalogue metadata uses the gate, and that the sitemap applies the same gate. Expanding the allowlist requires a reviewed page, not merely adding a unique meta title or description.
+
+This aligns the implementation more closely with Google's people-first and scaled-content guidance: do not publish large volumes of repetitive, low-value pages for search visibility; keep pages out of Search until they independently help users. References: [Google people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content), [Google spam policies — scaled content abuse](https://developers.google.com/search/docs/essentials/spam-policies).
+
+Still required before calling the SEO release complete: rendered Preview crawl of every sitemap URL; HTTP status/canonical/robots/hreflang verification; structured-data validation against visible content; page-by-page English and Nepali editorial review; and Search Console review after deployment and recrawl. No ranking, indexing or traffic outcome is guaranteed.
+
+## Nepali editorial internal-link correction — 2026-11-08
+
+A route-level review found that Nepali blog article tool links were only localized when the source href began with /tools/. Root-level PDF tool links such as /pdf-to-excel therefore remained English links inside Nepali articles. The localized article renderer now maps catalogue links to /ne/tools/... and root-level tool links to /ne/..., while preserving already-localized /ne/... links. A regression assertion covers both route families. This prevents avoidable language switching and keeps internal navigation consistent with the article locale.

@@ -9,7 +9,8 @@ function sma(values, period, index) {
   return index + 1 < period ? null : average(values.slice(index - period + 1, index + 1));
 }
 export function rsi(values, index, period = 14) {
-  if (index < period || period < 1) return null;
+  if (!Array.isArray(values) || !Number.isInteger(index) || !Number.isInteger(period) || period < 1 || index < period || index >= values.length) return null;
+  if (values.slice(0, index + 1).some(value => !Number.isFinite(value))) return null;
   let averageGain = 0, averageLoss = 0;
   for (let i = 1; i <= period; i++) {
     const delta = values[i] - values[i - 1];
@@ -30,13 +31,14 @@ export function rsi(values, index, period = 14) {
 export function normalizeOhlcvBars(input) {
   const byDate = new Map();
   for (const row of Array.isArray(input) ? input : []) {
-    const date = String(row?.date ?? "").slice(0, 10), close = Number(row?.close);
-    if (!validTradingDate(date) || !Number.isFinite(close) || close <= 0) continue;
+    const rawDate = typeof row?.date === "string" ? row.date.trim() : "";
+    const date = rawDate.slice(0, 10), close = Number(row?.close);
+    if (!/^\\d{4}-\\d{2}-\\d{2}(?:$|T)/.test(rawDate) || !validTradingDate(date) || !Number.isFinite(close) || close <= 0) continue;
     const rawOpen = row.open, rawHigh = row.high, rawLow = row.low, rawVolume = row.volume;
     const open = rawOpen !== null && rawOpen !== undefined && rawOpen !== "" && Number.isFinite(Number(rawOpen)) && Number(rawOpen) > 0 ? Number(rawOpen) : undefined;
     let high = rawHigh !== null && rawHigh !== undefined && rawHigh !== "" && Number.isFinite(Number(rawHigh)) ? Number(rawHigh) : undefined;
     let low = rawLow !== null && rawLow !== undefined && rawLow !== "" && Number.isFinite(Number(rawLow)) ? Number(rawLow) : undefined;
-    if (high === undefined || low === undefined || high < low || high < close || low > close) { high = undefined; low = undefined; }
+    if (high === undefined || low === undefined || high < low || high < close || low > close || (open !== undefined && (open > high || open < low))) { high = undefined; low = undefined; }
     const volume = rawVolume !== null && rawVolume !== undefined && rawVolume !== "" && Number.isFinite(Number(rawVolume)) && Number(rawVolume) >= 0 ? Number(rawVolume) : undefined;
     byDate.set(date, { date, close, ...(open === undefined ? {} : { open }), ...(high === undefined ? {} : { high }), ...(low === undefined ? {} : { low }), ...(volume === undefined ? {} : { volume }) });
   }
@@ -53,9 +55,12 @@ export function detectLargePriceGaps(rows, thresholdPct = 20) {
   }
   return gaps;
 }
-export function runBacktest(rows, mode, costPct) {
-  if (!Array.isArray(rows) || rows.length < 52) throw new Error("At least 52 valid daily observations are required.");
-  if (rows.some(row => !Number.isFinite(row.close) || row.close <= 0)) throw new Error("Backtest input contains an invalid closing price.");
+export function runBacktest(input, mode, costPct) {
+  if (!["sma", "rsi", "breakout"].includes(mode)) throw new Error("Choose a supported backtest strategy.");
+  const rows = normalizeDailyBars(input);
+  if (rows.length < 52) throw new Error("At least 52 unique, valid and non-future daily observations are required.");
+  const largeGaps = detectLargePriceGaps(rows, 20);
+  if (largeGaps.length) throw new Error("Backtest paused: price gaps of 20% or more require corporate-action/source verification before returns can be trusted.");
   const trades = [], closes = rows.map(row => row.close);
   let cash = 1, units = 0, entry = 0, entryCapital = 0, entryDate = "", entryIndex = 0;
   const equity = [], cost = Math.max(0, Math.min(5, Number(costPct) || 0)) / 100;
@@ -155,7 +160,11 @@ export function calculateOhlcvIndicators(input) {
     if (tr.length >= n) {
       let smoothTr = average(tr.slice(0, n)), smoothPlus = average(plus.slice(0, n)), smoothMinus = average(minus.slice(0, n));
       const dx = [];
-      const push = () => { const p = smoothTr ? 100 * smoothPlus / smoothTr : 0, m = smoothTr ? 100 * smoothMinus / smoothTr : 0; dx.push(p + m ? 100 * Math.abs(p - m) / (p + m) : 0); };
+      const push = () => {
+        const p = smoothTr > 0 ? 100 * smoothPlus / smoothTr : 0;
+        const m = smoothTr > 0 ? 100 * smoothMinus / smoothTr : 0;
+        dx.push(p + m > 0 ? 100 * Math.abs(p - m) / (p + m) : 0);
+      };
       push();
       for (let i = n; i < tr.length; i++) {
         smoothTr = smoothTr - smoothTr / n + tr[i] / n;
@@ -164,7 +173,12 @@ export function calculateOhlcvIndicators(input) {
         push();
       }
       atr = smoothTr;
-      if (dx.length >= n) adx = average(dx.slice(-n));
+      // ADX is Wilder-smoothed DX: seed with the first 14 DX values,
+      // then apply Wilder smoothing to each subsequent DX observation.
+      if (dx.length >= n) {
+        adx = average(dx.slice(0, n));
+        for (let i = n; i < dx.length; i++) adx = (adx * (n - 1) + dx[i]) / n;
+      }
     }
   }
   const priorVolumes = rows.slice(-21, -1).map(row => row.volume).filter(value => Number.isFinite(value) && value >= 0);

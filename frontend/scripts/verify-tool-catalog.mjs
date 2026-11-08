@@ -113,7 +113,6 @@ const marketPage = read("../app/market/page.tsx");
 const newsApi = read("../app/api/nepal-market-news/route.ts");
 const newsComponent = read("../components/NepalMarketNews.tsx");
 const pageImagesToolPage = read("../app/extract-page-images/page.tsx");
-const envExample = read("../.env.example");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
 assert.ok(
   marketApi.includes('"NEPSE unofficial live API (nepseman-api)"') && marketApi.includes('"YONEPSE public market snapshot"') && marketApi.includes('"YONEPSE historical snapshot fallback"'),
@@ -140,6 +139,10 @@ const resumeTemplateBlock = resumeBuilder.match(/const templates = \[([\s\S]*?)\
 assert.ok(resumeTemplateBlock, "Resume Builder template list is missing");
 assert.equal([...resumeTemplateBlock[1].matchAll(/\bid:\s*"/g)].length, 20, "Resume Builder must expose 20 templates");
 assert.ok(catalogSource.includes("20 professional templates"), "Resume Builder catalogue must advertise the 20 available templates");
+assert.ok(!catalogSource.includes("ai-resume-writer") && !catalogSource.includes("ai-cover-letter-generator") && !catalogSource.includes("ai-humanizer") && !catalogSource.includes("market-ai"), "Retired AI tools must not appear in the public catalog");
+assert.ok(!directoryComponent.includes("AIWritingTools") && !directoryComponent.includes("MarketIntelligence"), "Retired AI components must not be wired into tool pages");
+assert.ok(!resumeBuilder.includes("/api/ai-writing") && !resumeBuilder.includes("Cloudflare Workers AI"), "Resume Builder must not send user content to an AI provider");
+assert.ok(!fs.existsSync(path.join(frontendRoot, "app", "api", "ai-writing", "route.ts")), "Retired AI API route must be deleted");
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");

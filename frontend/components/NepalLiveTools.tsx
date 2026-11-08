@@ -226,54 +226,25 @@ function SalaryTaxTool({ ne = false }: { ne?: boolean }) {
   </div>;
 }
 
-function ElectricityTool() {
-  const [units, setUnits] = useState("100");
-  const [meter, setMeter] = useState("5A");
-  const [rebate, setRebate] = useState(true);
-  const u = Number(units);
-  const valid = units.trim() !== "" && Number.isFinite(u) && u >= 0 && u <= 100000;
-  const meterIndex = ["5A", "15A", "30A", "60A"].indexOf(meter);
-  const minimumByBand = [
-    [30, 50, 50, 75, 100, 150],
-    [50, 75, 75, 100, 125, 175],
-    [75, 100, 100, 125, 150, 200],
-    [125, 125, 125, 150, 200, 250],
-  ];
-  const bands = [
-    { max: 20, rate: [0, 4, 5, 6][meterIndex] },
-    { max: 30, rate: 6.5 },
-    { max: 50, rate: 8 },
-    { max: 100, rate: 9.5 },
-    { max: 250, rate: 9.5 },
-    { max: Infinity, rate: 11 },
-  ];
-  let prior = 0, energy = 0, above50Energy = 0;
-  for (const band of bands) {
-    const inBand = Math.max(0, Math.min(u, band.max) - prior);
-    energy += inBand * band.rate;
-    if (band.max > 50) above50Energy += inBand * band.rate;
-    prior = band.max;
-    if (u <= band.max) break;
-  }
-  // For a 5A meter, the first 20 units are charged at NPR 3/unit only when total use exceeds 20.
-  if (meter === "5A" && u > 20) energy += 20 * 3;
-  const bandIndex = u <= 20 ? 0 : u <= 30 ? 1 : u <= 50 ? 2 : u <= 100 ? 3 : u <= 250 ? 4 : 5;
-  const minimum = minimumByBand[Math.max(0, meterIndex)][bandIndex];
-  const subtotal = energy + minimum;
-  const rebateAmount = rebate ? subtotal * 0.02 : 0;
-  const vat = above50Energy * 0.05;
-  const total = subtotal - rebateAmount + vat;
+function ElectricityTool({ locale = "en" }: { locale?: "en" | "ne" }) {
+  const ne = locale === "ne";
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">NEA Domestic Electricity Bill Estimator</h2><p className="mt-1 text-sm text-slate-600">Estimate a single-phase domestic bill from monthly units and meter capacity.</p></div>
-    <div className="grid gap-3 sm:grid-cols-2"><Field title="Monthly consumption (units / kWh)" value={units} onChange={setUnits}/><label><span className={label}>Meter capacity</span><select className={field} value={meter} onChange={(e) => setMeter(e.target.value)}>{["5A","15A","30A","60A"].map((m) => <option key={m}>{m}</option>)}</select></label></div>
-    <label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={rebate} onChange={(e) => setRebate(e.target.checked)}/> Assume 2% early-payment rebate (within 7 days)</label>
-    {valid ? <><Result>Energy charge: {npr(energy)}\nMonthly minimum charge: {npr(minimum)}\nEarly-payment rebate: −{npr(rebateAmount)}\nVAT estimate (5% on energy above 50 units): {npr(vat)}\nEstimated bill: {npr(total)}</Result><p className="text-xs text-slate-500">Energy is calculated progressively by consumption block. Minimum charge depends on the total-use band and meter capacity.</p></> : <p role="alert" className="text-sm text-red-700">Enter monthly units from 0 to 100,000.</p>}
-    <p className="text-xs leading-5 text-slate-500">Domestic single-phase estimate only. Excludes arrears, meter rent or other account-specific adjustments. Tariffs, VAT treatment and rebates may change; your NEA bill is final. For commercial, three-phase or official bill calculations, use the ERC calculator.</p>
-    <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/electricity-calculator" target="_blank" rel="noreferrer">Official ERC electricity calculator</a><a className="font-semibold text-teal-700 underline" href="https://www.nea.org.np/en/pages/consumer-tariff-rates" target="_blank" rel="noreferrer">NEA consumer tariff rates</a></div>
+    <div>
+      <h2 className="text-lg font-bold">{ne ? "आधिकारिक विद्युत महसुल क्याल्कुलेटर" : "Official Electricity Tariff Calculator"}</h2>
+      <p className="mt-1 text-sm text-slate-600">{ne ? "विद्युत महसुल दर, न्यूनतम शुल्क, कर तथा छुट परिवर्तन हुन सक्ने भएकाले PDFora ले अनुमानित बिल निकाल्दैन। सही र अद्यावधिक हिसाबका लागि विद्युत नियमन आयोगको आधिकारिक क्याल्कुलेटर प्रयोग गर्नुहोस्।" : "Electricity tariffs, minimum charges, taxes and rebates can change. PDFora does not estimate a bill using fixed tariff assumptions. Use the Electricity Regulatory Commission's official calculator for current calculations."}</p>
+    </div>
+    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+      {ne ? "नोट: अन्तिम महसुल तपाईंको मिटर, खपत, लागू निर्देशन र नेपाल विद्युत प्राधिकरणको बिलअनुसार फरक हुन सक्छ।" : "Note: Your final charge depends on your meter, consumption, applicable directives and the Nepal Electricity Authority bill."}
+    </div>
+    <div className="flex flex-wrap gap-4 text-sm">
+      <a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/electricity-calculator" target="_blank" rel="noreferrer">{ne ? "आधिकारिक ERC बिजुली बिल क्याल्कुलेटर खोल्नुहोस्" : "Open official ERC electricity calculator"}</a>
+      <a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/detail/314" target="_blank" rel="noreferrer">{ne ? "आ.व. २०८३ को महसुल निर्देशन हेर्नुहोस्" : "View the current 2083 ERC tariff directive"}</a>
+      <a className="font-semibold text-teal-700 underline" href="https://www.nea.org.np/en/pages/consumer-tariff-rates" target="_blank" rel="noreferrer">{ne ? "NEA उपभोक्ता महसुल दर" : "NEA consumer tariff rates"}</a>
+    </div>
   </div>;
 }
 
-function HolidayTool() {
+function HolidayTool({ locale = "en" }: { locale?: "en" | "ne" }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All");
   const shown = useMemo(() => holidays.filter((item) => {
@@ -316,8 +287,8 @@ export default function NepalLiveTools({ slug }: { slug: string }) {
   const ne = pathname?.startsWith("/ne/") ?? false;
   if (slug === "nepal-forex-rates") return <ForexTool ne={ne}/>;
   if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool ne={ne}/>;
-  if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool/>;
-  if (slug === "nepal-public-holidays-2083") return <HolidayTool/>;
+  if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool locale={ne ? "ne" : "en"}/>;
+  if (slug === "nepal-public-holidays-2083") return <HolidayTool locale={ne ? "ne" : "en"}/>;
   if (slug === "nepse-dividend-calculator") return <NepseDividendTool ne={ne}/>;
   if (slug === "nepse-market-news") return <NepalMarketNews/>;
   return <p className="text-sm text-slate-600">Nepal tool not found.</p>;

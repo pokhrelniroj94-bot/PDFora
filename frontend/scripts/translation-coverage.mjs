@@ -9,6 +9,7 @@ const nepaliUtilityRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).
 const nepaliFinancialRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedFinancialSlugs;
 const nepaliPublicInfoRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedPublicInfoSlugs;
 const nepaliCareerRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedCareerSlugs;
+const nepaliCatalogRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedCatalogSlugs;
 const nepaliBlogArticleCount = (fs.readFileSync(path.join(frontendRoot, "lib", "nepali-localized-blog-posts.ts"), "utf8").match(/^\s*slug:\s*"/gm) ?? []).length;
 
 const repoRoot = path.resolve(frontendRoot, "..");
@@ -51,12 +52,15 @@ const nepalBlogCount = (nepalBlogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepaliLocalizedBlogCount = nepaliBlogArticleCount;
 const nepaliLocalizedStaticCount = routing.nepaliLocalizedNonToolPaths.filter((route) => ["/privacy", "/terms", "/about", "/contact"].includes(route)).length;
 const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);
-const expectedNepaliLocalizedRouteCount = routing.nepaliLocalizedNonToolPaths.length
-  + nepaliPdfRouteSlugs.length
-  + nepaliUtilityRoutes.length
-  + nepaliFinancialRoutes.length
-  + nepaliPublicInfoRoutes.length
-  + nepaliCareerRoutes.length;
+const expectedNepaliLocalizedRouteCount = new Set([
+  ...routing.nepaliLocalizedNonToolPaths,
+  ...nepaliPdfRouteSlugs.map((slug) => `/${slug}`),
+  ...nepaliCatalogRoutes.map((slug) => `/tools/${slug}`),
+  ...nepaliUtilityRoutes.map((slug) => `/tools/${slug}`),
+  ...nepaliFinancialRoutes.map((slug) => `/tools/${slug}`),
+  ...nepaliPublicInfoRoutes.map((slug) => `/tools/${slug}`),
+  ...nepaliCareerRoutes.map((slug) => `/tools/${slug}`),
+]).size;
 const nepaliLocalizedRouteCount = routing.nepaliLocalizedRoutePaths.size;
 if (nepaliLocalizedRouteCount !== expectedNepaliLocalizedRouteCount) {
   throw new Error(`Nepali route registry mismatch: routing exposes ${nepaliLocalizedRouteCount} routes, but the current source registries describe ${expectedNepaliLocalizedRouteCount}.`);
@@ -150,6 +154,7 @@ const report = {
     editorialBlogArticles: editorialBlogCount,
     nepalBlogArticles: nepalBlogCount,
     publishedNepaliPdfRoutes: nepaliPdfRouteSlugs.length,
+    publishedNepaliCatalogToolRoutes: nepaliCatalogRoutes.length,
     publishedNepaliUtilityRoutes: nepaliUtilityRoutes.length,
     publishedNepaliFinancialRoutes: nepaliFinancialRoutes.length,
     publishedNepaliPublicInfoRoutes: nepaliPublicInfoRoutes.length,
@@ -187,7 +192,7 @@ Inventory: ${pageSourceFiles.length} frontend page source files, ${apiRouteSourc
 |---|---|---|---:|---:|---:|---:|---:|
 ${rows.join("\n")}
 
-Nepali currently has ${nepaliHomeExists ? "the homepage" : "no localized homepage"}, ${nepaliPdfRouteSlugs.length} localized PDF routes, ${nepaliUtilityRoutes.length} localized utility routes, ${nepaliFinancialRoutes.length} finance/news routes, ${nepaliPublicInfoRoutes.length} public-information routes, ${nepaliCareerRoutes.length} AI-writing routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, ${nepaliLocalizedBlogCount} curated editorial articles and ${nepaliLocalizedStaticCount} localized legal/static pages. The complete route registry contains ${nepaliLocalizedRouteCount} distinct Nepali route equivalents. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has ${nepaliHomeExists ? "the homepage" : "no localized homepage"}, ${nepaliPdfRouteSlugs.length} localized PDF routes and ${nepaliCatalogRoutes.length} localized catalog-tool routes. The category-specific registries currently list ${nepaliUtilityRoutes.length} utility, ${nepaliFinancialRoutes.length} financial, ${nepaliPublicInfoRoutes.length} public-information and ${nepaliCareerRoutes.length} AI-writing slugs; these subsets overlap with the 123 catalog-tool routes and are not added twice. The localized NEPSE market dashboard, Resume Builder, blog index, ${nepaliLocalizedBlogCount} curated editorial articles and ${nepaliLocalizedStaticCount} legal/static pages are tracked separately. The complete route registry contains ${nepaliLocalizedRouteCount} distinct Nepali route equivalents. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
 `;
 fs.writeFileSync(path.join(outputDir, "TRANSLATION_COVERAGE.md"), markdown);
 console.log(markdown);

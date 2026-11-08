@@ -103,6 +103,14 @@ const nepaliTitles: Record<string, string> = {
   "sitemap-generator": "XML Sitemap बनाउने",
   "open-graph-preview": "Social Sharing Preview जाँच",
   "css-gradient-generator": "CSS Gradient बनाउने",
+  "currency-converter": "मुद्रा रूपान्तरण क्याल्कुलेटर",
+  "image-compressor": "तस्बिर आकार घटाउने उपकरण",
+  "image-format-converter": "तस्बिर ढाँचा रूपान्तरण",
+  "color-picker-palette": "रङ छनोट तथा प्यालेट निर्माता",
+  "notes-to-pdf": "नोटबाट PDF बनाउने उपकरण",
+  "nepal-share-calculator": "NEPSE शेयर खरिद तथा बिक्री क्याल्कुलेटर",
+  "preeti-unicode-converter": "Preeti Unicode रूपान्तरण",
+  "nepali-unicode-typing": "नेपाली Unicode टाइपिङ उपकरण",
 };
 const nepaliDescriptions: Record<string, string> = {
   "nepali-digit-converter": "अङ्ग्रेजी अंकलाई नेपाली देवनागरी अंकमा र नेपाली अंकलाई अङ्ग्रेजी अंकमा रूपान्तरण गर्नुहोस्।",
@@ -179,6 +187,14 @@ const nepaliDescriptions: Record<string, string> = {
   "ai-cover-letter-generator": "वास्तविक अनुभव र कामको विवरणबाट व्यावसायिक कभर लेटर तयार गर्नुहोस्।",
   "ai-humanizer": "अर्थ र तथ्य जोगाउँदै पाठलाई स्वाभाविक र स्पष्ट शैलीमा पुनर्लेखन गर्नुहोस्।",
   "market-ai": "NEPSE को उपलब्ध ऐतिहासिक डेटा वा आफ्नै Forex/Crypto दैनिक OHLCV CSV बाट trend, momentum, volatility, support र resistance विश्लेषण गर्नुहोस्। कुनै संकेत नाफाको ग्यारेन्टी वा लगानी सल्लाह होइन।",
+  "currency-converter": "उपलब्ध विनिमय दर प्रयोग गरी रकमलाई एक मुद्राबाट अर्को मुद्रामा रूपान्तरण गर्नुहोस्। दरको स्रोत र अद्यावधिक समय जाँचेर मात्र कारोबारको निर्णय गर्नुहोस्।",
+  "image-compressor": "गुणस्तर र फाइल आकारबीच सन्तुलन मिलाउँदै ब्राउजरमै तस्बिर कम्प्रेस गर्नुहोस्। अपलोड गर्नुअघि फाइल आकार र आउटपुट पूर्वावलोकन जाँच्नुहोस्।",
+  "image-format-converter": "PNG, JPEG र WebP जस्ता समर्थित ढाँचाबीच तस्बिर रूपान्तरण गर्नुहोस्। पारदर्शिता र आउटपुट गुणस्तर जाँच्नुहोस्।",
+  "color-picker-palette": "रङ छानेर HEX, RGB र HSL मान हेर्नुहोस् तथा डिजाइनका लागि रङ प्यालेट तयार गर्नुहोस्।",
+  "notes-to-pdf": "आफ्ना नोटलाई व्यवस्थित गरी PDF फाइलमा निर्यात गर्नुहोस्। डाउनलोड गर्नुअघि पृष्ठ र पाठको पूर्वावलोकन जाँच्नुहोस्।",
+  "nepal-share-calculator": "NEPSE शेयर खरिद तथा बिक्रीको अनुमानित लागत, कमिसन र नाफा/नोक्सान हिसाब गर्नुहोस्। वास्तविक ब्रोकर शुल्क र कर फरक हुन सक्छन्।",
+  "preeti-unicode-converter": "Preeti फन्टमा लेखिएको समर्थित नेपाली पाठलाई Unicode मा वा Unicode बाट Preeti मा रूपान्तरण गर्नुहोस्। रूपान्तरणपछि अक्षर जाँच्नुहोस्।",
+  "nepali-unicode-typing": "Romanized input प्रयोग गरी नेपाली Unicode पाठ टाइप गर्नुहोस्। यो लिप्यन्तरण हो, अनुवाद होइन; अन्तिम पाठ आफैं जाँच्नुहोस्।",
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

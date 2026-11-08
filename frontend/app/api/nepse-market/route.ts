@@ -62,7 +62,9 @@ async function fetchNepsemanSnapshot() {
       return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
     };
     const previous = optionalNumber(["previous_close", "previousClose", "previousClosingPrice"]);
-    const explicitChange = optionalNumber(["change", "pointChange", "difference"]);
+    const rawChange = firstValue(row, ["change", "pointChange", "difference"]);
+    const parsedChange = rawChange === undefined ? Number.NaN : Number(rawChange);
+    const explicitChange = Number.isFinite(parsedChange) ? parsedChange : null;
     const explicitPercent = Number(firstValue(row, ["percent_change", "percentageChange", "percentage_change"]));
     const change = explicitChange ?? (previous !== null ? ltp - previous : null);
     const percent = Number.isFinite(explicitPercent)

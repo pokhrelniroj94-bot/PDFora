@@ -87,7 +87,7 @@ export async function GET(request: Request) {
     const rows: Json[] = [];
     collectMatching(result.value, symbol, rows);
     const unique = Array.from(new Map(rows.map((row) => [JSON.stringify(row), row])).values()).slice(0, 20);
-    sections[label] = compact(unique, 1600);
+    sections[label] = compact(unique, label === "company financials" ? 12_000 : 4_000);
     matchedRecords += unique.length;
     sourceStatus.push({ source: label, available: true });
   });

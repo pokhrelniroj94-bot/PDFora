@@ -55,30 +55,49 @@ async function fetchNepsemanSnapshot() {
     const ltp = Number(firstValue(row, ["ltp", "lastTradedPrice", "last_traded_price", "closePrice", "price", "closingPrice"]));
     if (!/^[A-Z0-9]{2,16}$/.test(symbol) || !Number.isFinite(ltp) || ltp <= 0) return [];
     const updated = firstValue(row, ["last_updated", "updated_at", "timestamp", "lastTradedTime", "businessDate"]) ?? globalTimestamp;
-    const previous = Number(firstValue(row, ["previous_close", "previousClose", "previousClosingPrice", "closePrice"]));
-    const change = Number(firstValue(row, ["change", "pointChange", "difference"]));
-    const percent = Number(firstValue(row, ["percent_change", "percentageChange", "percentage_change"]));
+    const optionalNumber = (keys: string[]) => {
+      const rawValue = firstValue(row, keys);
+      if (rawValue === undefined) return null;
+      const parsed = Number(rawValue);
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+    };
+    const previous = optionalNumber(["previous_close", "previousClose", "previousClosingPrice"]);
+    const rawChange = firstValue(row, ["change", "pointChange", "difference"]);
+    const parsedChange = rawChange === undefined ? Number.NaN : Number(rawChange);
+    const explicitChange = Number.isFinite(parsedChange) ? parsedChange : null;
+    const explicitPercent = Number(firstValue(row, ["percent_change", "percentageChange", "percentage_change"]));
+    const change = explicitChange ?? (previous !== null ? ltp - previous : null);
+    const percent = Number.isFinite(explicitPercent)
+      ? explicitPercent
+      : previous !== null && previous > 0 ? (ltp / previous - 1) * 100 : null;
     return [{
       ...row,
       symbol,
       name: String(firstValue(row, ["name", "securityName", "companyName"]) || symbol),
       ltp,
-      previous_close: Number.isFinite(previous) ? previous : null,
-      change: Number.isFinite(change) ? change : null,
-      percent_change: Number.isFinite(percent) ? percent : null,
-      high: Number(firstValue(row, ["high", "highPrice", "maxPrice"]) || 0),
-      low: Number(firstValue(row, ["low", "lowPrice", "minPrice"]) || 0),
-      volume: Number(firstValue(row, ["volume", "totalTradeQuantity", "tradedShares"]) || 0),
-      turnover: Number(firstValue(row, ["turnover", "totalTradeValue", "amount"]) || 0),
-      trades: Number(firstValue(row, ["trades", "totalTrades", "totalTransactions"]) || 0),
+      previous_close: previous,
+      change,
+      percent_change: percent,
+      high: optionalNumber(["high", "highPrice", "maxPrice"]),
+      low: optionalNumber(["low", "lowPrice", "minPrice"]),
+      volume: optionalNumber(["volume", "totalTradeQuantity", "tradedShares"]),
+      turnover: optionalNumber(["turnover", "totalTradeValue", "amount"]),
+      trades: optionalNumber(["trades", "totalTrades", "totalTransactions"]),
       last_updated: normalizeNepalTimestamp(updated),
     }];
   });
-  const timestamp = stocks.reduce((latest, stock) => stock.last_updated > latest ? stock.last_updated : latest, "");
-  const timestampMs = timestamp ? Date.parse(timestamp) : Number.NaN;
+  const rowTimestamps = stocks.map(stock => Date.parse(stock.last_updated)).filter(Number.isFinite).sort((a, b) => a - b);
+  const globalTimestampMs = Date.parse(normalizeNepalTimestamp(String(globalTimestamp ?? "")));
+  const timestampMs = Number.isFinite(globalTimestampMs)
+    ? globalTimestampMs
+    : rowTimestamps.length >= Math.ceil(stocks.length * 0.9)
+      ? rowTimestamps[Math.floor(rowTimestamps.length / 2)]
+      : Number.NaN;
+  const timestamp = Number.isFinite(timestampMs) ? new Date(timestampMs).toISOString() : "";
   const ageMs = Number.isFinite(timestampMs) ? Date.now() - timestampMs : Number.NaN;
   const ageMinutes = Number.isFinite(ageMs) ? Math.max(0, ageMs / 60_000) : Number.POSITIVE_INFINITY;
-  // Reject timestamps materially in the future as well as stale/missing timestamps.
+  // Require a recent snapshot-level timestamp or timestamps on at least 90% of rows.
+  // One recently traded stock must not make an otherwise stale snapshot look fresh.
   const validFreshSnapshot = stocks.length > 20 && Number.isFinite(ageMs) && ageMs >= -120_000 && ageMs <= 20 * 60_000;
   const status = statusResult.status === "fulfilled" ? statusResult.value : null;
   const index = indexResult.status === "fulfilled" ? indexResult.value : null;
@@ -99,11 +118,65 @@ function normalizeNepalTimestamp(value: unknown): string {
   if (/(?:Z|[+-]\d{2}:?\d{2})$/i.test(timestamp)) return timestamp;
   return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/.test(timestamp)
     ? timestamp + "+05:45"
-    : value.trim();
+    : "";
+}
+function nepalToday(): string {
+  const parts = new Intl.DateTimeFormat("en", {
+    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(new Date());
+  const part = (type: string) => parts.find(item => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
 function monthCount(period: string) {
   return period === "1M" ? 1 : period === "3M" ? 3 : 12;
+}
+async function fetchCommunityHistory(symbol: string, period: string) {
+  const file = symbol === "NEPSE" ? "NEPSE_INDEX.csv" : symbol + ".csv";
+  const url = "https://raw.githubusercontent.com/binayabaral/nepal-market-data/main/data/nepse/" + encodeURIComponent(file);
+  const response = await fetch(url, {
+    headers: { Accept: "text/csv" },
+    next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!response.ok) throw new Error("Community history archive returned HTTP " + response.status);
+  const csv = await response.text();
+  const lines = csv.split(/\r?\n/);
+  const headers = (lines.shift() || "").split(",").map((value) => value.trim());
+  const column = (name: string) => headers.indexOf(name);
+  const dateIndex = column("published_date");
+  const closeIndex = column("close");
+  const today = nepalToday();
+  const rows: Array<{ date: string; close: number; open?: number; high?: number; low?: number; volume?: number; turnover?: number }> = [];
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cells = line.split(",").map((value) => value.trim());
+    const date = cells[dateIndex] || "";
+    const parsedDate = /^\d{4}-\d{2}-\d{2}$/.test(date) ? new Date(date + "T00:00:00Z") : null;
+    const close = Number(cells[closeIndex]);
+    if (!parsedDate || !Number.isFinite(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== date || date > today || !Number.isFinite(close) || close <= 0) continue;
+    const numeric = (name: string) => {
+      const index = column(name);
+      const value = index >= 0 && cells[index] !== "" ? Number(cells[index]) : Number.NaN;
+      return Number.isFinite(value) && value > 0 ? value : undefined;
+    };
+    const point: { date: string; close: number; open?: number; high?: number; low?: number; volume?: number; turnover?: number } = { date, close };
+    const open = numeric("open"), high = numeric("high"), low = numeric("low");
+    if (open !== undefined) point.open = open;
+    if (high !== undefined) point.high = high;
+    if (low !== undefined) point.low = low;
+    const volumeIndex = column("traded_quantity");
+    const volume = volumeIndex >= 0 && cells[volumeIndex] !== "" ? Number(cells[volumeIndex]) : Number.NaN;
+    if (Number.isFinite(volume) && volume >= 0) point.volume = volume;
+    const turnover = numeric("traded_amount");
+    if (turnover !== undefined) point.turnover = turnover;
+    rows.push(point);
+  }
+  const deduplicated = new Map<string, (typeof rows)[number]>();
+  for (const row of rows) deduplicated.set(row.date, row);
+  const clean = [...deduplicated.values()].sort((a, b) => a.date.localeCompare(b.date));
+  const limit = period === "1M" ? 22 : period === "3M" ? 66 : 252;
+  return clean.slice(-limit);
 }
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
@@ -112,7 +185,7 @@ export async function GET(request: Request) {
   if (!/^[A-Z0-9]{2,16}$/.test(symbol)) {
     return Response.json({ error: "Invalid stock symbol." }, { status: 400 });
   }
-  const [unofficialSnapshot, liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult] = await Promise.all([
+  const [unofficialSnapshot, liveStocksResult, stocksResult, indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult] = await Promise.all([
     fetchNepsemanSnapshot().catch(() => null),
     Promise.allSettled([read<unknown[]>("/data/market/live.json", 60)]).then((items) => items[0]),
     Promise.allSettled([read<unknown[]>("/data/nepse_data.json", 60)]).then((items) => items[0]),
@@ -123,7 +196,6 @@ export async function GET(request: Request) {
     Promise.allSettled([read<unknown[]>("/data/market/sector_indices.json", 60)]).then((items) => items[0]),
     Promise.allSettled([read<Json>("/data/market/supply_demand.json", 60)]).then((items) => items[0]),
     Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/indices/manifest.json", 300)]).then((items) => items[0]),
-    Promise.allSettled([read<{ availableMonths?: string[]; latestDate?: string }>("/data/ltp/manifest.json", 300)]).then((items) => items[0]),
   ]);
   const liveStocks = liveStocksResult.status === "fulfilled" && Array.isArray(liveStocksResult.value) ? liveStocksResult.value : [];
   const fallbackStocks = stocksResult.status === "fulfilled" && Array.isArray(stocksResult.value) ? stocksResult.value : [];
@@ -147,12 +219,10 @@ export async function GET(request: Request) {
   }
   const manifest = manifestResult.status === "fulfilled" ? manifestResult.value : { availableMonths: [], latestDate: undefined };
   const isIndex = INDEX_SYMBOLS.has(symbol);
-  const historyKind = isIndex ? "indices" : "ltp";
-  const historyManifest = historyKind === "indices"
-    ? manifest
-    : ltpManifestResult.status === "fulfilled" ? ltpManifestResult.value : { availableMonths: [] };
+  const historyKind = "indices";
+  const historyManifest = manifest;
   const availableMonths = Array.isArray(historyManifest.availableMonths) ? historyManifest.availableMonths : [];
-  const selectedMonths = availableMonths.slice(-monthCount(period));
+  const selectedMonths = isIndex ? availableMonths.slice(-monthCount(period)) : [];
   const historyResults = await Promise.allSettled(
     selectedMonths.map((month) => read<Json>("/data/" + historyKind + "/monthly/" + month + ".json")),
   );
@@ -167,7 +237,9 @@ export async function GET(request: Request) {
       const index = Number(row[0]);
       const date = dates[index];
       const close = Number(row[1]);
-      if (!date || !Number.isFinite(close)) continue;
+      const parsedDate = typeof date === "string" && /^\\d{4}-\\d{2}-\\d{2}$/.test(date) ? new Date(date + "T00:00:00Z") : null;
+      const todayNepal = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu" }).format(new Date());
+      if (!parsedDate || !Number.isFinite(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== date || date > todayNepal || !Number.isFinite(close) || close <= 0) continue;
       if (isIndex) {
         points.push({ date, close, open: Number(row[2]), high: Number(row[3]), low: Number(row[4]), turnover: Number(row[5]), volume: Number(row[6]), trades: Number(row[7]) });
       } else {
@@ -175,34 +247,23 @@ export async function GET(request: Request) {
       }
     }
   }
-  // The archived NEPSE index series can lag behind the current market snapshot.
-  // Append the latest dated index close so the chart does not stop at an older archive date.
-  if (isIndex) {
-    const indexNameBySymbol: Record<string, string> = {
-      NEPSE: "NEPSE Index", SENSIND: "Sensitive Index", FLOATIND: "Float Index",
-      SENSFLTIND: "Sensitive Float Index", BANKSUBIND: "Banking SubIndex", DEVBANKIND: "Development Bank Index",
-      FININD: "Finance Index", HOTELIND: "Hotels And Tourism Index", HYDPOWIND: "HydroPower Index",
-      INVIDX: "Investment Index", LIFINSIND: "Life Insurance Index", MANPROCIND: "Manufacturing And Processing",
-      MICRFININD: "Microfinance Index", MUTUALIND: "Mutual Fund Index", NONLIFIND: "Non Life Insurance Index",
-      OTHERSIND: "Others Index", TRDIND: "Trading Index",
-    };
-    const latestIndex = indices.map(asRecord).find((row) => row && row.index === indexNameBySymbol[symbol]);
-    const rawDate = latestIndex?.generatedTime;
-    const latestDate = typeof rawDate === "string" && rawDate
-      ? new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(rawDate))
-      : "";
-    const latestClose = Number(latestIndex?.close);
-    if (latestDate && Number.isFinite(latestClose) && latestClose > 0 && !points.some((point) => point.date === latestDate)) {
-      points.push({
-        date: latestDate,
-        close: latestClose,
-        open: Number(latestIndex?.open),
-        high: Number(latestIndex?.high),
-        low: Number(latestIndex?.low),
-      });
+  // Keep the intraday index snapshot separate from daily history; it is not a completed candle.
+  const pointsByDate = new Map<string, (typeof points)[number]>();
+  for (const point of points) pointsByDate.set(point.date, point);
+  points.splice(0, points.length, ...[...pointsByDate.values()].sort((a, b) => a.date.localeCompare(b.date)));
+  let historySource = points.length ? "YONEPSE public historical archive" : "Unavailable";
+  const minimumHistoryPoints = period === "1M" ? 10 : period === "3M" ? 30 : 100;
+  if (points.length < minimumHistoryPoints) {
+    try {
+      const communityHistory = await fetchCommunityHistory(symbol, period);
+      if (communityHistory.length > points.length) {
+        points.splice(0, points.length, ...communityHistory);
+        historySource = "Nepal Market Data public CSV archive (community-maintained; unadjusted)";
+      }
+    } catch {
+      // Keep the best available source result; never replace missing history with invented prices.
     }
   }
-  points.sort((a, b) => a.date.localeCompare(b.date));
   const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)
     ? sectorsResult.value as Array<{ indexCode?: string; indexName?: string; description?: string }>
     : [];
@@ -240,22 +301,26 @@ export async function GET(request: Request) {
   const sourceUpdatedAt = normalizeNepalTimestamp(sourceUpdatedAtRaw) || sourceUpdatedAtRaw;
   const quoteTimestamp = Date.parse(sourceUpdatedAt);
   const quoteAgeHours = Number.isFinite(quoteTimestamp) ? (Date.now() - quoteTimestamp) / 3_600_000 : Number.POSITIVE_INFINITY;
-  // Weekends/holidays can legitimately pause NEPSE updates; four days is a conservative stale-data warning.
-  const quoteStale = !usingLiveQuotes || !Number.isFinite(quoteTimestamp) || quoteAgeHours > 96;
+  // Reject future timestamps as well as stale/missing ones. Weekends/holidays can pause NEPSE updates.
+  const quoteTimestampValid = Number.isFinite(quoteTimestamp) && quoteAgeHours >= -(2 / 60) && quoteAgeHours <= 96;
+  const quoteStale = !usingLiveQuotes || !quoteTimestampValid;
   const response = {
     symbol,
     period,
     // YONEPSE documents an approximately hourly update cadence; do not label this as exchange-tick live data.
-    source: usingUnofficialLive ? "NEPSE unofficial live API (nepseman-api)" : usingLiveQuotes ? "YONEPSE public market snapshot" : "YONEPSE historical snapshot fallback",
+    source: usingUnofficialLive ? "NEPSE unofficial session feed (nepseman-api)" : usingLiveQuotes ? "YONEPSE public market snapshot" : "YONEPSE historical snapshot fallback",
     sourceUpdatedAt: sourceUpdatedAt || null,
     fetchedAt: new Date().toISOString(),
-    quoteAgeMinutes: Number.isFinite(quoteTimestamp) ? Math.max(0, Math.round((Date.now() - quoteTimestamp) / 60_000)) : null,
-    providerRefreshCadence: usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Approximately hourly on weekdays during market hours (provider documentation)",
+    quoteAgeMinutes: quoteTimestampValid ? Math.max(0, Math.round((Date.now() - quoteTimestamp) / 60_000)) : null,
+    providerRefreshCadence: usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Community dataset refresh cadence; not exchange-tick live data",
     quoteStale,
-    latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
+    latestHistoryDate: points.length ? points[points.length - 1].date : isIndex ? historyManifest.latestDate ?? null : null,
+    historySource,
+    historyPriceBasis: historySource.includes("Nepal Market Data") ? "Unadjusted source-reported prices; corporate actions require separate adjustment" : "Source-reported historical values; adjustment status not independently verified",
     status: marketStatus,
     indices,
     summary: pick(summaryResult, []),
+    stockSummary: null,
     topStocks: pick(topResult, {}),
     sectors,
     supplyDemand: pick(supplyDemandResult, {}),
@@ -270,9 +335,9 @@ export async function GET(request: Request) {
       topMovers: "YONEPSE public snapshot",
       sectorIndices: "YONEPSE archived daily data",
       supplyDemand: "YONEPSE public snapshot",
-      historicalCharts: "YONEPSE archived daily data",
+      historicalCharts: historySource,
     },
-    partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
+    partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };
   return Response.json(response, {
     headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" },

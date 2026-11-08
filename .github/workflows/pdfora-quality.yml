@@ -3,7 +3,7 @@ on:
   pull_request:
     branches: [main, master, feat/free-market-data-fallbacks, feat/pdf-ora-ai-help-market-signals]
   push:
-    branches: [master, niroj77-seo-ux-security]
+    branches: [master, niroj77-seo-ux-security, feat/nepse-offline-quant-engine-2026-11-07]
   workflow_dispatch:
 permissions:
   contents: read

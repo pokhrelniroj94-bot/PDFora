@@ -89,7 +89,7 @@ jobs:
           exit 1
       - name: Check browser and live-data smoke runner syntax
         run: |
-          node --check scripts/browser-e2e-173.mjs
+          node --check scripts/browser-e2e-170.mjs
           node --check scripts/live-data-smoke.mjs
           node --check scripts/production-security-smoke.mjs
       - name: Verify live NRB, NEPSE and Nepal news freshness/fallback
@@ -112,7 +112,7 @@ jobs:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
           E2E_BASE_URL: http://127.0.0.1:3000
           E2E_TOOL_TIMEOUT_MS: "45000"
-        run: node scripts/browser-e2e-173.mjs
+        run: node scripts/browser-e2e-170.mjs
       - name: Regenerate audit with browser evidence
         if: always()
         run: npm run audit:functional

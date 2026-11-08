@@ -206,25 +206,21 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
 }
 
 export async function POST(request: Request) {
-  // Reject cross-origin browser submissions before reading or parsing the body.
+  // Browser POST requests carry Origin. Reject mismatches before reading the body;
+  // allow origin-less server-to-server clients, which do not use browser cookies.
   const origin = request.headers.get("origin");
-  if (!origin) {
-    return Response.json({ error: "A same-origin request is required." }, { status: 403, headers: NO_STORE });
-  }
-  let requestOrigin: string;
-  try {
-    requestOrigin = new URL(request.url).origin;
-  } catch {
-    return Response.json({ error: "Invalid request origin." }, { status: 400, headers: NO_STORE });
-  }
-  let suppliedOrigin: string;
-  try {
-    suppliedOrigin = new URL(origin).origin;
-  } catch {
-    return Response.json({ error: "Invalid request origin." }, { status: 403, headers: NO_STORE });
-  }
-  if (suppliedOrigin !== requestOrigin || request.headers.get("sec-fetch-site") === "cross-site") {
-    return Response.json({ error: "Cross-origin requests are not allowed." }, { status: 403, headers: NO_STORE });
+  if (origin) {
+    let requestOrigin: string;
+    let suppliedOrigin: string;
+    try {
+      requestOrigin = new URL(request.url).origin;
+      suppliedOrigin = new URL(origin).origin;
+    } catch {
+      return Response.json({ error: "Invalid request origin.", code: "ORIGIN_NOT_ALLOWED" }, { status: 403, headers: NO_STORE });
+    }
+    if (suppliedOrigin !== requestOrigin || request.headers.get("sec-fetch-site") === "cross-site") {
+      return Response.json({ error: "Cross-origin requests are not allowed.", code: "ORIGIN_NOT_ALLOWED" }, { status: 403, headers: NO_STORE });
+    }
   }
   const contentType = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
   if (contentType !== "application/json") {

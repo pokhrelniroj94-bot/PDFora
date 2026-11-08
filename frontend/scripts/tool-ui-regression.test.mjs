@@ -36,7 +36,7 @@ assert.ok(quickUtilities.includes("randomBelow(6)+1"), "Dice rolls must use unbi
 assert.ok(extraTools.includes("chars[randomBelow(chars.length)]"), "Password characters must use unbiased random integers");
 assert.ok(inputHelpers.includes("value >= limit"), "Random helper must reject the incomplete modulo bucket");
 assert.ok(utilities.includes('raw.trim()===""?Number.NaN:Number(raw)'), "PDF/calculator workspace must reject blank and malformed numeric fields instead of coercing them to zero");
-assert.ok(utilities.includes("wordCount>=8&&wordCount<=500"), "Lorem Ipsum generator must enforce its advertised word-count bounds");
+assert.ok(utilities.includes("wordCount<8||wordCount>500") && utilities.includes("count<1||count>20"), "Lorem Ipsum generator must reject values outside its advertised paragraph and word-count bounds");
 
 assert.ok(nepalTools.includes('amount.trim()!==""&&rate.trim()!==""'), "Nepal VAT must reject blank amount and rate fields");
 assert.ok(nepalTools.includes('number.trim()!==""&&Number.isSafeInteger(n)'), "Nepali number conversion must not treat blank input as zero");

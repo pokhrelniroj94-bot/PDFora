@@ -57,7 +57,7 @@ const all170ToolTitles = [...canonicalCatalogMetadata.map((entry) => entry.title
 const all170ToolDescriptions = [...canonicalCatalogMetadata.map((entry) => entry.description), resumeBuilderDescription, ...pdfGuideEntries.map((entry) => entry.purpose)];
 assert.equal(all170ToolTitles.length, 170, "Expected metadata titles for all 170 canonical tools");
 assert.equal(new Set(all170ToolTitles.map((value) => value.trim().toLowerCase())).size, 170, "All 170 canonical tool page titles must be unique across both route systems");
-assert.equal(new Set(all170ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 170, "All 173 canonical tool meta descriptions must be unique across both route systems");
+assert.equal(new Set(all170ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 170, "All 170 canonical tool meta descriptions must be unique across both route systems");
 
 
 const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);

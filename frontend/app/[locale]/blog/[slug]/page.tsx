@@ -31,13 +31,8 @@ export default async function NepaliBlogArticle({ params }: Props) {
     dateModified: `${post.updated}T00:00:00+05:45`,
     inLanguage: "ne",
     mainEntityOfPage: `${baseUrl}/ne/blog/${post.slug}`,
-    author: { "@type": "Organization", name: "PDFora Editorial Team", url: `${baseUrl}/ne/about` },
+    author: { "@type": "Organization", name: "PDFora", url: `${baseUrl}/ne/about` },
     publisher: { "@type": "Organization", name: "PDFora", url: baseUrl },
-  };
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: post.faqs.map((faq) => ({ "@type": "Question", name: faq.question, acceptedAnswer: { "@type": "Answer", text: faq.answer } })),
   };
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -94,7 +89,6 @@ export default async function NepaliBlogArticle({ params }: Props) {
       </article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </main>
   );
 }

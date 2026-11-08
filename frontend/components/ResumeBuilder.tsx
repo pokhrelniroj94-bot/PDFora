@@ -157,7 +157,7 @@ export default function ResumeBuilder({ locale = "en" }: { locale?: "en" | "ne" 
       </div>}
     </div>
     <div className="no-print mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {templates.map(t => <button key={t.id} onClick={() => setTemplate(t.id)} className={"rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md " + (template === t.id ? "border-teal-600 bg-teal-50 ring-2 ring-teal-100" : "border-slate-200 bg-white")}>
+      {templates.map(t => <button key={t.id} type="button" aria-label={`Choose ${t.name} template`} aria-pressed={template === t.id} onClick={() => setTemplate(t.id)} className={"rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md " + (template === t.id ? "border-teal-600 bg-teal-50 ring-2 ring-teal-100" : "border-slate-200 bg-white")}>
         <div className="mb-2 flex h-20 overflow-hidden rounded-lg border border-slate-200 bg-white"><div className="w-[28%]" style={{ background: t.id === "modern" || t.id === "creative" ? t.color : "#f1f5f9" }} /><div className="flex-1 p-2"><div className="mb-2 h-2 w-2/3 rounded" style={{ background: t.color }} /><div className="mb-1 h-1 w-full rounded bg-slate-200" /><div className="mb-1 h-1 w-4/5 rounded bg-slate-200" /><div className="mt-3 h-1 w-1/2 rounded bg-slate-300" /></div></div><span className="block text-sm font-extrabold text-slate-900">{t.name}</span><span className="text-xs text-slate-500">{t.note}</span>{template === t.id && <span className="ml-2 text-xs font-bold text-teal-700">Selected ✓</span>}
       </button>)}
     </div>

@@ -134,11 +134,10 @@ test("shared UI coverage: all twelve locales have complete translated site chrom
 test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools", "ne"), "/ne/tools");
   assert.equal(routing.localizedOrFallbackPath("/tools/loan-emi-calculator", "ne"), "/ne/tools/loan-emi-calculator");
-  assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/nepse-technical-analysis", "ne"), "/ne/nepse-technical-analysis");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 159, "All localized routes must be represented in the route registry");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 156, "All localized routes must be represented in the route registry");
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -185,17 +184,6 @@ test("Nepali market and finance surfaces contain localized rendered UI", () => {
   }
   for (const phrase of ["विश्व समाचार र नेपाल बजार समाचार", "समाचार अद्यावधिक गर्नुहोस्", "NEPSE तथा बजार अद्यावधिक"]) {
     assert.ok(news.includes(phrase), `Nepali market news UI must include: ${phrase}`);
-  }
-});
-
-test("Nepali AI writing routes contain localized rendered UI", () => {
-  const source = fs.readFileSync(path.join(frontendRoot, "components", "AIWritingTools.tsx"), "utf8");
-  const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
-  for (const phrase of ["AI रिजुमे लेखक", "AI कभर लेटर जेनेरेटर", "AI पाठ परिष्कार तथा पुनर्लेखन", "तपाईंको नतिजा", "गोपनीयता:"]) {
-    assert.ok(source.includes(phrase), `Nepali AI writing UI must include: ${phrase}`);
-  }
-  for (const slug of ["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer"]) {
-    assert.ok(routeSource.includes(`"${slug}"`), `${slug} must retain its localized route`);
   }
 });
 

@@ -64,7 +64,6 @@ const reciprocalEnglishPages = [
   ["app/contact/page.tsx", "/contact"],
   ["app/blog/page.tsx", "/blog"],
   ["app/market/page.tsx", "/market"],
-  ["app/resume-builder/page.tsx", "/resume-builder"],
 ];
 for (const [relativePath, localeFreePath] of reciprocalEnglishPages) {
   const source = read(relativePath);

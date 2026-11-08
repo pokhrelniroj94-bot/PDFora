@@ -107,6 +107,17 @@ for (const [label, file] of collections) {
         }
       }
     }
+    for (const paragraphArray of body.matchAll(/paragraphs:\s*\[([\s\S]*?)\]/g)) {
+      for (const paragraphMatch of paragraphArray[1].matchAll(/"((?:\\.|[^"\\])*)"/g)) {
+        const paragraph = paragraphMatch[1].normalize("NFC").replace(/\s+/gu, " ").trim();
+        if (paragraph.length >= 80) {
+          const normalized = paragraph.toLocaleLowerCase();
+          const previous = substantialParagraphs.get(normalized);
+          assert.ok(!previous || previous === slug, label + ": repeated substantial paragraph shared by " + previous + " and " + slug);
+          substantialParagraphs.set(normalized, slug);
+        }
+      }
+    }
     for (const match of body.matchAll(/href:\s*"([^"]+)"/g)) {
       const href = match[1];
       if (href.startsWith("/tools/")) {

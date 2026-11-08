@@ -7,6 +7,7 @@ import { getTranslator } from "../../../../lib/i18n/messages";
 import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../../../../lib/tools/localized-metadata";
 import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-route";
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
+import NepaliSpecialCatalogWorkspace from "../../../../components/NepaliSpecialCatalogWorkspace";
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
@@ -248,6 +249,9 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && ["nepal-phone-validator", "gold-tola-gram-converter", "nepali-calendar", "loksewa-photo-resizer"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाल उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliNepalToolsWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["currency-converter", "image-compressor", "image-format-converter", "color-picker-palette", "notes-to-pdf", "nepal-share-calculator", "preeti-unicode-converter", "nepali-unicode-typing"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली विशेष उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliSpecialCatalogWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;

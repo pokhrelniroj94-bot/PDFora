@@ -256,9 +256,9 @@ export default function PDForaTool({
             {ui.toolLabel}
           </p>
 
-          <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
+          <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
             {displayTitle}
-          </h2>
+          </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
             {displayDescription}
@@ -455,12 +455,12 @@ export default function PDForaTool({
           <p className="mt-2 text-sm leading-6 text-slate-600">
             {ui.privacyAnswer}
           </p>
-        </main>
+        </section>
 
         {/* Advertisement is intentionally outside the upload and processing flow. */}
         <div className="mt-8 border-t border-slate-200 pt-2">
         </div>
-      </section>
+      </main>
     </div>
   );
 }

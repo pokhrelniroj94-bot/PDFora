@@ -55,30 +55,47 @@ async function fetchNepsemanSnapshot() {
     const ltp = Number(firstValue(row, ["ltp", "lastTradedPrice", "last_traded_price", "closePrice", "price", "closingPrice"]));
     if (!/^[A-Z0-9]{2,16}$/.test(symbol) || !Number.isFinite(ltp) || ltp <= 0) return [];
     const updated = firstValue(row, ["last_updated", "updated_at", "timestamp", "lastTradedTime", "businessDate"]) ?? globalTimestamp;
-    const previous = Number(firstValue(row, ["previous_close", "previousClose", "previousClosingPrice", "closePrice"]));
-    const change = Number(firstValue(row, ["change", "pointChange", "difference"]));
-    const percent = Number(firstValue(row, ["percent_change", "percentageChange", "percentage_change"]));
+    const optionalNumber = (keys: string[]) => {
+      const rawValue = firstValue(row, keys);
+      if (rawValue === undefined) return null;
+      const parsed = Number(rawValue);
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+    };
+    const previous = optionalNumber(["previous_close", "previousClose", "previousClosingPrice"]);
+    const explicitChange = optionalNumber(["change", "pointChange", "difference"]);
+    const explicitPercent = Number(firstValue(row, ["percent_change", "percentageChange", "percentage_change"]));
+    const change = explicitChange ?? (previous !== null ? ltp - previous : null);
+    const percent = Number.isFinite(explicitPercent)
+      ? explicitPercent
+      : previous !== null && previous > 0 ? (ltp / previous - 1) * 100 : null;
     return [{
       ...row,
       symbol,
       name: String(firstValue(row, ["name", "securityName", "companyName"]) || symbol),
       ltp,
-      previous_close: Number.isFinite(previous) ? previous : null,
-      change: Number.isFinite(change) ? change : null,
-      percent_change: Number.isFinite(percent) ? percent : null,
-      high: Number(firstValue(row, ["high", "highPrice", "maxPrice"]) || 0),
-      low: Number(firstValue(row, ["low", "lowPrice", "minPrice"]) || 0),
-      volume: Number(firstValue(row, ["volume", "totalTradeQuantity", "tradedShares"]) || 0),
-      turnover: Number(firstValue(row, ["turnover", "totalTradeValue", "amount"]) || 0),
-      trades: Number(firstValue(row, ["trades", "totalTrades", "totalTransactions"]) || 0),
+      previous_close: previous,
+      change,
+      percent_change: percent,
+      high: optionalNumber(["high", "highPrice", "maxPrice"]),
+      low: optionalNumber(["low", "lowPrice", "minPrice"]),
+      volume: optionalNumber(["volume", "totalTradeQuantity", "tradedShares"]),
+      turnover: optionalNumber(["turnover", "totalTradeValue", "amount"]),
+      trades: optionalNumber(["trades", "totalTrades", "totalTransactions"]),
       last_updated: normalizeNepalTimestamp(updated),
     }];
   });
-  const timestamp = stocks.reduce((latest, stock) => stock.last_updated > latest ? stock.last_updated : latest, "");
-  const timestampMs = timestamp ? Date.parse(timestamp) : Number.NaN;
+  const rowTimestamps = stocks.map(stock => Date.parse(stock.last_updated)).filter(Number.isFinite).sort((a, b) => a - b);
+  const globalTimestampMs = Date.parse(normalizeNepalTimestamp(String(globalTimestamp ?? "")));
+  const timestampMs = Number.isFinite(globalTimestampMs)
+    ? globalTimestampMs
+    : rowTimestamps.length >= Math.ceil(stocks.length * 0.9)
+      ? rowTimestamps[Math.floor(rowTimestamps.length / 2)]
+      : Number.NaN;
+  const timestamp = Number.isFinite(timestampMs) ? new Date(timestampMs).toISOString() : "";
   const ageMs = Number.isFinite(timestampMs) ? Date.now() - timestampMs : Number.NaN;
   const ageMinutes = Number.isFinite(ageMs) ? Math.max(0, ageMs / 60_000) : Number.POSITIVE_INFINITY;
-  // Reject timestamps materially in the future as well as stale/missing timestamps.
+  // Require a recent snapshot-level timestamp or timestamps on at least 90% of rows.
+  // One recently traded stock must not make an otherwise stale snapshot look fresh.
   const validFreshSnapshot = stocks.length > 20 && Number.isFinite(ageMs) && ageMs >= -120_000 && ageMs <= 20 * 60_000;
   const status = statusResult.status === "fulfilled" ? statusResult.value : null;
   const index = indexResult.status === "fulfilled" ? indexResult.value : null;

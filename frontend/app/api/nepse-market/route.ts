@@ -250,15 +250,16 @@ export async function GET(request: Request) {
   }
   points.sort((a, b) => a.date.localeCompare(b.date));
   let historySource = points.length ? "YONEPSE public historical archive" : "Unavailable";
-  if (!points.length) {
+  const minimumHistoryPoints = period === "1M" ? 10 : period === "3M" ? 30 : 100;
+  if (points.length < minimumHistoryPoints) {
     try {
       const communityHistory = await fetchCommunityHistory(symbol, period);
-      if (communityHistory.length) {
-        points.push(...communityHistory);
+      if (communityHistory.length > points.length) {
+        points.splice(0, points.length, ...communityHistory);
         historySource = "Nepal Market Data public CSV archive (community-maintained; unadjusted)";
       }
     } catch {
-      // Keep the explicit unavailable state; never replace missing history with invented prices.
+      // Keep the best available source result; never replace missing history with invented prices.
     }
   }
   const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)

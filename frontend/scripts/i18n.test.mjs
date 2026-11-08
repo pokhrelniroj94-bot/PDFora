@@ -141,6 +141,16 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
+test("manual Nepali Resume Builder has a real localized route and stays noindex pending review", async () => {
+  const page = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "resume-builder", "page.tsx"), "utf8");
+  const source = fs.readFileSync(path.join(frontendRoot, "components", "ResumeBuilder.tsx"), "utf8");
+  assert.ok(page.includes('return <ResumeBuilder locale="ne" />'), "Nepali route must render the manual CV builder in Nepali");
+  assert.ok(page.includes('index: false'), "Nepali CV builder must remain noindex until native-language review");
+  assert.ok(source.includes('locale === "ne"'), "CV builder must select Nepali UI copy");
+  assert.ok(!source.includes("/api/ai-writing"), "CV builder must not call a generative AI endpoint");
+  assert.equal(routing.hasIndexableLocalizedPage("/resume-builder", "ne"), false);
+});
+
 test("Nepali PDF tool form placeholders are translated for every configured route", async () => {
   const { getNepaliPdfFieldText } = await import("../lib/i18n/pdf-tool-fields-ne.ts");
   const routes = fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "nepali-pdf-routes.ts"), "utf8");

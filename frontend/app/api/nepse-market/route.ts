@@ -105,6 +105,52 @@ function normalizeNepalTimestamp(value: unknown): string {
 function monthCount(period: string) {
   return period === "1M" ? 1 : period === "3M" ? 3 : 12;
 }
+async function fetchCommunityHistory(symbol: string, period: string) {
+  const file = symbol === "NEPSE" ? "NEPSE_INDEX.csv" : symbol.replace(/\\//g, "-") + ".csv";
+  const url = "https://raw.githubusercontent.com/binayabaral/nepal-market-data/main/data/nepse/" + encodeURIComponent(file);
+  const response = await fetch(url, {
+    headers: { Accept: "text/csv" },
+    next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!response.ok) throw new Error("Community history archive returned HTTP " + response.status);
+  const csv = await response.text();
+  const lines = csv.split(/\\r?\\n/);
+  const headers = (lines.shift() || "").split(",").map((value) => value.trim());
+  const column = (name: string) => headers.indexOf(name);
+  const dateIndex = column("published_date");
+  const closeIndex = column("close");
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+  }).format(new Date());
+  const rows: Array<{ date: string; close: number; open?: number; high?: number; low?: number; volume?: number; turnover?: number }> = [];
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cells = line.split(",").map((value) => value.trim());
+    const date = cells[dateIndex] || "";
+    const close = Number(cells[closeIndex]);
+    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date) || date > today || !Number.isFinite(Date.parse(date)) || !Number.isFinite(close) || close <= 0) continue;
+    const numeric = (name: string) => {
+      const index = column(name);
+      const value = index >= 0 && cells[index] !== "" ? Number(cells[index]) : Number.NaN;
+      return Number.isFinite(value) && value > 0 ? value : undefined;
+    };
+    const point: { date: string; close: number; open?: number; high?: number; low?: number; volume?: number; turnover?: number } = { date, close };
+    const open = numeric("open"), high = numeric("high"), low = numeric("low");
+    if (open !== undefined) point.open = open;
+    if (high !== undefined) point.high = high;
+    if (low !== undefined) point.low = low;
+    const volumeIndex = column("traded_quantity");
+    const volume = volumeIndex >= 0 && cells[volumeIndex] !== "" ? Number(cells[volumeIndex]) : Number.NaN;
+    if (Number.isFinite(volume) && volume >= 0) point.volume = volume;
+    const turnover = numeric("traded_amount");
+    if (turnover !== undefined) point.turnover = turnover;
+    rows.push(point);
+  }
+  rows.sort((a, b) => a.date.localeCompare(b.date));
+  const limit = period === "1M" ? 22 : period === "3M" ? 66 : 252;
+  return rows.slice(-limit);
+}
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;
   const symbol = (params.get("symbol") || "NEPSE").toUpperCase();
@@ -203,6 +249,18 @@ export async function GET(request: Request) {
     }
   }
   points.sort((a, b) => a.date.localeCompare(b.date));
+  let historySource = points.length ? "YONEPSE public historical archive" : "Unavailable";
+  if (!points.length) {
+    try {
+      const communityHistory = await fetchCommunityHistory(symbol, period);
+      if (communityHistory.length) {
+        points.push(...communityHistory);
+        historySource = "Nepal Market Data public CSV archive (community-maintained; unadjusted)";
+      }
+    } catch {
+      // Keep the explicit unavailable state; never replace missing history with invented prices.
+    }
+  }
   const sectorMeta = sectorsResult.status === "fulfilled" && Array.isArray(sectorsResult.value)
     ? sectorsResult.value as Array<{ indexCode?: string; indexName?: string; description?: string }>
     : [];
@@ -253,6 +311,8 @@ export async function GET(request: Request) {
     providerRefreshCadence: usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Community dataset refresh cadence; not exchange-tick live data",
     quoteStale,
     latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
+    historySource,
+    historyPriceBasis: historySource.includes("Nepal Market Data") ? "Unadjusted source-reported prices; corporate actions require separate adjustment" : "Source-reported historical values; adjustment status not independently verified",
     status: marketStatus,
     indices,
     summary: pick(summaryResult, []),

@@ -265,7 +265,7 @@ async function validateDownloadedFile(filePath) {
       "  required = {'.docx': 'word/document.xml', '.xlsx': 'xl/workbook.xml', '.pptx': 'ppt/presentation.xml', '.odt': 'mimetype', '.ods': 'mimetype'}.get(ext)",
       "  if required and required not in names: raise SystemExit('Missing required Office document part: ' + required)",
       "  print(json.dumps({'entries': len(infos), 'uncompressedBytes': sum(x.file_size for x in infos), 'crc': 'ok', 'requiredPart': required}))",
-    ].join("\\n"), filePath], { encoding: "utf8", timeout: 15000 }).trim();
+    ].join("\n"), filePath], { encoding: "utf8", timeout: 15000 }).trim();
     return { file: path.basename(filePath), bytes: bytes.length, extension, valid: true, archiveCheck: JSON.parse(archiveCheck) };
   } else if (extension === ".png") {
     if (!hasPrefix(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a)) throw new Error("Downloaded PNG signature is invalid: " + path.basename(filePath));

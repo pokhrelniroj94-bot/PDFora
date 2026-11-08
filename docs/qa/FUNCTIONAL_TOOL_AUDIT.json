@@ -14,12 +14,12 @@
     "frontendTestCommand": "npm test -- --runInBand"
   },
   "counts": {
-    "tools": 173,
+    "tools": 170,
     "pdfTools": 49,
-    "catalogUtilities": 124,
+    "catalogUtilities": 121,
     "functionalPass": 0,
     "functionalPartial": 60,
-    "functionalNotTested": 113
+    "functionalNotTested": 110
   },
   "tools": [
     {
@@ -3065,61 +3065,7 @@
       "evidence": "frontend/scripts/verify-tool-catalog.mjs"
     },
     {
-      "slug": "ai-resume-writer",
-      "category": "Career Tools",
-      "kind": "catalog",
-      "routeStatus": "PARTIAL",
-      "interfaceStatus": "PARTIAL",
-      "handlerStatus": "PARTIAL",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
-      "mobileStatus": "NOT TESTED",
-      "accessibilityStatus": "NOT TESTED",
-      "languageStatus": "PARTIAL",
-      "seoStatus": "PARTIAL",
-      "defectsFound": "",
-      "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
-    },
-    {
-      "slug": "ai-cover-letter-generator",
-      "category": "Career Tools",
-      "kind": "catalog",
-      "routeStatus": "PARTIAL",
-      "interfaceStatus": "PARTIAL",
-      "handlerStatus": "PARTIAL",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
-      "mobileStatus": "NOT TESTED",
-      "accessibilityStatus": "NOT TESTED",
-      "languageStatus": "PARTIAL",
-      "seoStatus": "PARTIAL",
-      "defectsFound": "",
-      "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
-    },
-    {
-      "slug": "ai-humanizer",
-      "category": "Text",
-      "kind": "catalog",
-      "routeStatus": "PARTIAL",
-      "interfaceStatus": "PARTIAL",
-      "handlerStatus": "PARTIAL",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
-      "mobileStatus": "NOT TESTED",
-      "accessibilityStatus": "NOT TESTED",
-      "languageStatus": "PARTIAL",
-      "seoStatus": "PARTIAL",
-      "defectsFound": "",
-      "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
-    },
-    {
-      "slug": "market-ai",
+      "slug": "nepse-technical-analysis",
       "category": "Finance",
       "kind": "catalog",
       "routeStatus": "PARTIAL",
@@ -3134,7 +3080,8 @@
       "defectsFound": "",
       "fixesApplied": "",
       "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
+      "evidence": "frontend/scripts/verify-tool-catalog.mjs",
+      "name": "NEPSE Technical Analysis & Risk Lab"
     }
   ]
 }

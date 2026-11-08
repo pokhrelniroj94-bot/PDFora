@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
     "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate percentage increase or decrease between an original value and a new value with a clear direction and percentage result." },
-    "tip-calculator": { title: "Tip Calculator – Calculate Tip, Total & Split the Bill", description: "Calculate a restaurant tip by percentage, split the bill between people and see the total per person. Adjust the tip rate and bill amount before paying." },
+    "tip-calculator": { title: "Tip Calculator – Tip, Bill Total & Per-Person Split", description: "Calculate a tip from the bill amount and percentage, then see the total and equal share per person. Check whether service charge is already included." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 
@@ -58,7 +58,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "px-rem-converter": { title: "PX to REM Converter – CSS Units with Root Font Size", description: "Convert CSS pixel values to rem and rem to pixels using an editable root font size. Useful for responsive typography and spacing." },
     "color-contrast-checker": { title: "Color Contrast Checker – WCAG Text Accessibility", description: "Check foreground and background colour contrast ratios and review WCAG guidance for normal and large text." },
     "word-character-counter": { title: "Word Counter – Count Words, Characters & Reading Time", description: "Count words, characters with or without spaces, sentences and paragraphs, and estimate reading time for pasted text." },
-    "reading-time-calculator": { title: "Reading Time Calculator – Estimate Article Reading Minutes", description: "Estimate how many minutes an article takes to read from its word count and reading-speed assumption." },
+"tip-calculator": [
+      { q: "How is a tip calculated?", a: "Multiply the bill amount by the tip percentage and divide by 100. For example, 10% of NPR 2,000 is NPR 200." },
+      { q: "Does the calculator include service charge?", a: "No. Check the bill first and avoid adding a second tip or service charge unintentionally." },
+      { q: "How is the bill split?", a: "The calculator divides the bill plus tip equally by the number of people. It does not calculate different item-by-item shares." }
+    ],
+    "percentage-change-calculator": [
+      { q: "What is the percentage change formula?", a: "Percentage change = (new value − original value) ÷ original value × 100, when the original value is not zero." },
+      { q: "Is a 20% increase the same as a 20% decrease?", a: "No. A move from 100 to 120 is +20%, but a move from 120 to 100 is −16.67%, because the original value changes." },
+      { q: "Can I calculate percentage change from zero?", a: "No. The original value is the baseline, and division by zero is undefined." }
+    ],
+    "reading-time-calculator": { title: "Reading Time Calculator – Words to Minutes & WPM", description: "Estimate article reading time from its word count. Adjust reading speed in words per minute (WPM); the result is an estimate, not a guaranteed duration." },
     "json-formatter-validator": { title: "JSON Formatter & Validator – Pretty Print or Minify JSON", description: "Format, minify and validate JSON syntax with readable indentation. Check malformed JSON before using it in an application." },
     "base64-encoder-decoder": { title: "Base64 Encoder & Decoder – Convert Text Online", description: "Encode text to Base64 or decode Base64 back to text in your browser. Base64 is an encoding, not encryption." },
     "url-encoder-decoder": { title: "URL Encoder & Decoder – Percent Encode URL Components", description: "Encode or decode URL query values and components with percent encoding. Avoid double-encoding and preserve URL structure." },
@@ -230,6 +240,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does it round the required units?", a: "Yes. It rounds the calculated break-even quantity up to the next whole unit and also shows estimated break-even revenue." }
     ],
     "salary-breakdown-calculator": [
+    "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly Savings Target", description: "Calculate how much to save each month to reach a target by your deadline. Enter current savings, target amount and months remaining; excludes interest and inflation." },
       { q: "Is this Nepal's official salary tax calculator?", a: "No. It applies a simple editable deduction percentage and is not a statutory payroll or progressive income-tax calculation." },
       { q: "Can I convert monthly salary into annual take-home?", a: "Yes. The tool estimates monthly gross, deduction, monthly take-home and annual take-home based on the same simple deduction assumption." },
       { q: "Should I use this for a final payslip?", a: "No. Compare with your employer's payroll statement and use the dedicated Nepal salary-tax calculator for a separate FY-specific tax estimate." }

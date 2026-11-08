@@ -23,6 +23,56 @@ export type BlogPost = {
 
 const editorialBlogPosts: BlogPost[] = [
   {
+    slug: "how-to-write-seo-page-titles-google-title-links",
+    title: "How to Write SEO Page Titles: Google's Title Link Best Practices",
+    description: "Learn to write unique, clear page titles, align them with visible headings and avoid keyword stuffing, using Google's guidance on title links.",
+    keyword: "how to write SEO page titles and meta titles",
+    updated: "2026-11-07",
+    readTime: "6 min read",
+    intro: "A page title helps people and search engines understand what a page is about, but the title shown in Google results is not always copied exactly from the HTML title tag. Google can also use the visible heading, prominent page text, links and other signals. The practical goal is to write a clear, accurate title that matches the page itself and helps a searcher decide whether it is relevant.",
+    sections: [
+      { heading: "1. Understand the HTML title and Google's title link", paragraphs: ["The HTML title is the text provided in the page's <title> element. It commonly appears in the browser tab and is one of the sources Google can use when creating a search-result title link. A title link is the clickable headline shown in Google Search.", "Google generates title links automatically. It may use the HTML title, the main visible heading, other prominent text, Open Graph title text, anchor text and references from links. That is why a title tag and the title shown in a search result can differ."] },
+      { heading: "2. Write a clear, unique title for each page", paragraphs: ["Describe the page's actual purpose in natural language. Put the most useful topic first, then add a short differentiator such as the main task or product name. Make titles distinct across pages so users can tell similar tools or articles apart.", "Google does not publish a fixed character limit for title elements. Search result title links are shortened as needed to fit the available display width. Aim for concise wording because it is easier to scan, not because a particular character count guarantees ranking or display."] },
+      { heading: "3. Match the title to the visible heading and page content", paragraphs: ["The HTML title, the first visible H1 and the main content should describe the same page. If the title promises a calculator but the page is only a general article, or the H1 names a different tool, Google may choose other text when generating the title link.", "For example, a useful title for a bill-splitting tool could be “Tip Calculator: Calculate Tip, Total and Split the Bill”. The visible H1 and the tool itself should support that exact promise."] },
+      { heading: "4. Avoid keyword stuffing and repeated boilerplate", paragraphs: ["Do not repeat the same keyword in several variations just to fit more phrases into a title. Avoid vague titles such as “Home”, long strings of categories, outdated dates and the same generic title copied across many pages. Include the site name only when it adds useful context; repeating it several times makes titles harder to scan.", "Use the same language and writing system as the main page content. An English title on a fully Nepali article can be confusing to readers and may not be the title Google chooses."] },
+      { heading: "5. Write a useful meta description, but understand snippets", paragraphs: ["A meta description is a short summary that may help Google understand the page and may be used as the search snippet. Google can also create a snippet from visible page text when that better matches the query, so the description is not guaranteed to appear exactly as written.", "Write a distinct, readable summary that tells the user what they can do or learn on the page. Avoid keyword lists, repeated boilerplate and claims that the page does not fulfil. Put the most useful information in the visible page content too."] },
+      { heading: "6. Check a title before publishing", paragraphs: ["Open the page and compare its HTML title, visible H1, first paragraph and actual tool or article. Check that the wording is accurate, unique and in the page's primary language. Use the PDFora Meta Title Checker to inspect title length and a preview, then read the result as an editorial check rather than a ranking score.", "After publishing a meaningful change, allow Google time to recrawl the page. Google says title-link updates can take days or weeks to be reflected. Search Console can help you monitor the page's impressions, clicks and queries, but no title can guarantee a ranking or click."] }
+    ],
+    faqs: [
+      { question: "Is Google's title link always the same as the HTML title tag?", answer: "No. The HTML title is an important source, but Google can also use the visible heading, prominent text, links and other page signals to generate a title link." },
+      { question: "How many characters should an SEO title have?", answer: "Google does not specify a fixed character limit for title elements. Search result title links are shortened to fit the device and display width, so write concise, descriptive titles rather than targeting a guaranteed number." },
+      { question: "Should I repeat my main keyword in the title?", answer: "Use the main topic naturally once when it accurately describes the page. Repeating the same phrase or listing close variations is keyword stuffing and makes the title less useful." },
+      { question: "Does Google always show my meta description?", answer: "No. Google may use the meta description or generate a query-specific snippet from the visible page content. Write a unique summary, but make the page itself useful and clear." },
+      { question: "Can a title checker guarantee higher rankings?", answer: "No. A checker can review length and wording, but it cannot guarantee how Google will display the title, whether a page will be indexed or where it will rank." }
+    ],
+    toolLinks: [{ label: "Meta Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }],
+    sources: [{ label: "Google Search Central: Influencing title links in Google Search", url: "https://developers.google.com/search/docs/appearance/title-link" }, { label: "Google Search Essentials", url: "https://developers.google.com/search/docs/essentials" }, { label: "Google SEO Starter Guide", url: "https://developers.google.com/search/docs/fundamentals/seo-starter-guide" }]
+  },
+  {
+    slug: "how-to-calculate-tip-and-split-the-bill",
+    title: "How to Calculate a Tip: Percentage, Total Bill and Per-Person Split",
+    description: "Calculate a tip amount, the final bill and an equal share per person with clear formulas, worked examples and checks for service charges and rounding.",
+    keyword: "how to calculate a tip and split a bill",
+    updated: "2026-11-07",
+    readTime: "5 min read",
+    intro: "To calculate a tip, multiply the bill amount you choose to tip on by the tip percentage, then add the tip to the bill. If the group is splitting the bill equally, divide the final total by the number of people. The steps are simple, but choosing the right bill amount and checking an included service charge can prevent common mistakes.",
+    sections: [
+      { heading: "1. Choose the bill amount you want to calculate from", paragraphs: ["Start with the amount that you intend to use as the tip base. Depending on local custom, the receipt and your preference, that may be the pre-tax amount or the amount after tax. There is no single rule that applies to every country or restaurant, so check the receipt and use one consistent amount.", "If the receipt already includes a service charge or gratuity, check what it covers before adding another tip. A service charge may be handled differently from an optional tip."] },
+      { heading: "2. Calculate the tip percentage", paragraphs: ["Convert the percentage to a decimal by dividing it by 100, then multiply it by the chosen bill amount. For example, 18% becomes 0.18. The tip formula is: tip = bill amount × tip percentage ÷ 100.", "For a $80 bill and an 18% tip, the tip is $80 × 18 ÷ 100 = $14.40. Add the tip to the bill to get a total of $94.40."] },
+      { heading: "3. Split the total between people", paragraphs: ["For an equal split, divide the bill plus tip by the number of people. Using the $94.40 total above, four people would each pay $94.40 ÷ 4 = $23.60.", "An equal split assumes everyone is sharing the cost evenly. If people ordered different items, paid separate deposits or want to contribute different tip amounts, calculate each person's share separately instead of treating the equal-split result as exact."] },
+      { heading: "4. Check service charges, tax and rounding", paragraphs: ["Before paying, look for a service charge, gratuity or tip already added to the receipt. Do not add the same charge twice. If you are unsure whether a charge is mandatory or optional, ask the restaurant rather than guessing.", "Rounding can create a small difference when a total is divided among several people. Agree how to handle the remaining cents, and make sure the individual payments add back up to the amount due."] },
+      { heading: "5. Common tip-calculation mistakes", paragraphs: ["A calculator can give the correct arithmetic while still using the wrong base amount. Check the receipt and the assumptions before relying on the result."], bullets: ["Using the wrong bill amount or mixing pre-tax and after-tax totals.", "Adding a second tip without checking an included service charge or gratuity.", "Entering 18 instead of 0.18 in a tool that specifically asks for a decimal rate.", "Dividing only the tip instead of the full bill-plus-tip total.", "Ignoring rounding differences or assuming every person has an equal share."] }
+    ],
+    faqs: [
+      { question: "What is the formula for calculating a tip?", answer: "Tip amount = chosen bill amount × tip percentage ÷ 100. Add the tip amount to the bill to get the total including tip." },
+      { question: "How much is an 18% tip on $80?", answer: "An 18% tip on $80 is $14.40. The total including the tip is $94.40." },
+      { question: "How do I split a bill with tip between four people?", answer: "Add the tip to the bill, then divide the final total by four. For a $94.40 total, each person pays $23.60 if the split is equal." },
+      { question: "Should I tip on the amount before or after tax?", answer: "Practices vary by location and personal preference. Check local custom and the receipt, choose the amount you intend to use, and apply the percentage consistently." },
+      { question: "Does the calculator account for service charges?", answer: "The calculator performs the percentage and split arithmetic. It cannot determine whether a restaurant's service charge or gratuity is already included, so check the receipt first." }
+    ],
+    toolLinks: [{ label: "Tip Calculator", href: "/tools/tip-calculator" }, { label: "Split Bill Calculator", href: "/tools/split-bill-calculator" }]
+  },
+  {
     slug: "compress-pdf-to-under-1mb-online",
     title: "How to Compress a PDF to Under 1MB Online",
     description: "Learn practical ways to reduce a PDF to under 1MB for online forms, email and document uploads, and find out why some files cannot reach an exact size.",
@@ -201,6 +251,8 @@ const editorialBlogPosts: BlogPost[] = [
 ];
 
 
+const catalogToolHref = (slug: string) => slug === "resume-builder" ? "/resume-builder" : `/tools/${slug}`;
+
 const existingArticleSlugs = new Set([...editorialBlogPosts, ...additionalToolBlogPosts].map((post) => post.slug));
 const catalogGuides: BlogPost[] = toolCatalog
   .filter((tool) => tool.slug !== "pdf-tools" && !existingArticleSlugs.has(`${tool.slug}-guide`))
@@ -285,12 +337,20 @@ const catalogGuides: BlogPost[] = toolCatalog
         { question: `How do I use the ${tool.name} online?`, answer: steps.join(" ") },
         { question: "Is the result guaranteed to be correct?", answer: "No online utility can guarantee every result for every input. Check the format, assumptions and output, and independently verify anything important." }
       ],
-      toolLinks: [{ label: tool.name, href: `/tools/${tool.slug}` }, ...toolCatalog.filter((related) => related.category === tool.category && related.slug !== tool.slug && related.slug !== "pdf-tools").slice(0,3).map((related) => ({ label: related.name, href: `/tools/${related.slug}` }))]
+      toolLinks: [{ label: tool.name, href: catalogToolHref(tool.slug) }, ...toolCatalog.filter((related) => related.category === tool.category && related.slug !== tool.slug && related.slug !== "pdf-tools").slice(0,3).map((related) => ({ label: related.name, href: catalogToolHref(related.slug) }))]
     };
   });
 
 
 export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides];
+
+// Tool-specific PDF guides are also rendered on the canonical tool pages. Keep the
+// generated blog variants accessible for existing links, but do not index them as duplicate editorial pages.
+const generatedPdfGuideSlugs = new Set(additionalToolBlogPosts.map((post) => post.slug));
+export function isGeneratedPdfGuide(slug: string): boolean {
+  return generatedPdfGuideSlugs.has(slug);
+}
+
 
 // Catalog-wide guide pages are generated from a shared template. Keep them
 // accessible from their relevant tools, but do not expose them as indexable

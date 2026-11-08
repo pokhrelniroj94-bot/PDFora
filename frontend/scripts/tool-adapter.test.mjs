@@ -133,7 +133,7 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
       assert.notEqual(m.alternates.canonical, absoluteUrl(`/tools/${entry.slug}`, "en"), "must not canonicalize to English");
       assert.notEqual(m.alternates.canonical, absoluteUrl("/", l), "must not canonicalize to the homepage");
       assert.equal(m.alternates.languages, undefined, "no hreflang until a translation genuinely exists");
-      assert.equal(m.title, `${entry.name} | PDFora`);
+      assert.equal(m.title, entry.name, "root layout appends the single PDFora suffix");
       assert.equal(m.description, entry.description);
     }
   }

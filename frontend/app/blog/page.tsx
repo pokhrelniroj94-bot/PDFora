@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { hreflangMap } from "../../lib/i18n/routing";
-import { blogPosts, isCatalogGeneratedGuide } from "../../lib/blog-posts";
+import { blogPosts, isCatalogGeneratedGuide, isGeneratedPdfGuide } from "../../lib/blog-posts";
 import AdsterraNative from "../components/AdsterraNative";
 
 const localizedAlternates = hreflangMap("/blog");
@@ -16,6 +16,13 @@ export const metadata: Metadata = {
     url: "https://pd-fora.vercel.app/blog",
     siteName: "PDFora",
     type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora practical guides" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Practical PDF & Nepal Guides | PDFora",
+    description: "Read practical guides for PDF workflows, Nepal calculators, dates, tax estimates and everyday online tools.",
+    images: ["/opengraph-image"],
   },
 };
 
@@ -27,7 +34,7 @@ export default function BlogIndexPage() {
         <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Tools, Tutorials & Practical Guides</h1>
         <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">Practical Nepal how-to guides for NRB rates, income tax, electricity bills, public holidays, Nepali Unicode typing, Bikram Sambat dates, land units and everyday document tasks.</p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug)).map((post) => (
+          {blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug) && !isGeneratedPdfGuide(post.slug)).map((post) => (
             <article key={post.slug} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <p className="text-xs font-bold uppercase tracking-wider text-teal-700">{post.readTime} · Practical guide</p>
               <h2 className="mt-3 text-xl font-black leading-snug text-slate-950">

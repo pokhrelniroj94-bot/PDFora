@@ -106,7 +106,7 @@ function monthCount(period: string) {
   return period === "1M" ? 1 : period === "3M" ? 3 : 12;
 }
 async function fetchCommunityHistory(symbol: string, period: string) {
-  const file = symbol === "NEPSE" ? "NEPSE_INDEX.csv" : symbol.replace(/\\//g, "-") + ".csv";
+  const file = symbol === "NEPSE" ? "NEPSE_INDEX.csv" : symbol + ".csv";
   const url = "https://raw.githubusercontent.com/binayabaral/nepal-market-data/main/data/nepse/" + encodeURIComponent(file);
   const response = await fetch(url, {
     headers: { Accept: "text/csv" },
@@ -115,7 +115,7 @@ async function fetchCommunityHistory(symbol: string, period: string) {
   });
   if (!response.ok) throw new Error("Community history archive returned HTTP " + response.status);
   const csv = await response.text();
-  const lines = csv.split(/\\r?\\n/);
+  const lines = csv.split(/\r?\n/);
   const headers = (lines.shift() || "").split(",").map((value) => value.trim());
   const column = (name: string) => headers.indexOf(name);
   const dateIndex = column("published_date");
@@ -129,7 +129,7 @@ async function fetchCommunityHistory(symbol: string, period: string) {
     const cells = line.split(",").map((value) => value.trim());
     const date = cells[dateIndex] || "";
     const close = Number(cells[closeIndex]);
-    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(date) || date > today || !Number.isFinite(Date.parse(date)) || !Number.isFinite(close) || close <= 0) continue;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || date > today || !Number.isFinite(Date.parse(date)) || !Number.isFinite(close) || close <= 0) continue;
     const numeric = (name: string) => {
       const index = column(name);
       const value = index >= 0 && cells[index] !== "" ? Number(cells[index]) : Number.NaN;
@@ -198,7 +198,7 @@ export async function GET(request: Request) {
     ? manifest
     : ltpManifestResult.status === "fulfilled" ? ltpManifestResult.value : { availableMonths: [] };
   const availableMonths = Array.isArray(historyManifest.availableMonths) ? historyManifest.availableMonths : [];
-  const selectedMonths = availableMonths.slice(-monthCount(period));
+  const selectedMonths = isIndex ? availableMonths.slice(-monthCount(period)) : [];
   const historyResults = await Promise.allSettled(
     selectedMonths.map((month) => read<Json>("/data/" + historyKind + "/monthly/" + month + ".json")),
   );

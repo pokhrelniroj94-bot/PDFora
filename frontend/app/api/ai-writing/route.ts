@@ -194,7 +194,7 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
     "",
     "COMPANY RESEARCH RECORDS (source-labelled; may be incomplete):",
     "<company_research>",
-    safe("research", 9000),
+    safe("research", 6000),
     "</company_research>",
     "",
     "User's research question: " + safe("question", 700),
@@ -203,6 +203,17 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
 }
 
 export async function POST(request: Request) {
+  // Browser-origin guard must run before reading or parsing the request body.
+  // Requests without Origin remain available to trusted server-side callers and are still rate-limited.
+  const origin = request.headers.get("origin");
+  if (origin) {
+    let expectedOrigin = "";
+    try { expectedOrigin = new URL(request.url).origin; } catch { /* malformed request URL is rejected below */ }
+    if (!expectedOrigin || origin !== expectedOrigin) {
+      return Response.json({ error: "This request origin is not allowed.", code: "ORIGIN_NOT_ALLOWED" }, { status: 403, headers: NO_STORE });
+    }
+  }
+
   const contentType = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
   if (contentType !== "application/json") {
     return Response.json({ error: "Send a JSON request." }, { status: 415, headers: NO_STORE });

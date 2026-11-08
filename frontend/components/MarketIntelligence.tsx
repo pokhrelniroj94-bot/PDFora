@@ -284,7 +284,7 @@ export default function MarketIntelligence() {
       const response = await fetch("/api/ai-writing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
         kind: "market-explain",
         analysis: JSON.stringify({ asset, symbol: asset === "nepse" ? symbol : marketSymbol, ...analysis, reasons: analysis.reasons, risks: analysis.risks, newsReview: asset === "nepse" ? newsReview : null }),
-        research: research ? JSON.stringify(research).slice(0, 8500) : "",
+        research: research ? JSON.stringify(research).slice(0, 6000) : "",
         question: "Prepare a Nepal-focused research note for this selected symbol. Explain the evidence, data gaps, valuation/fundamentals only if provided, technical setup, catalysts and risks.",
       }) });
       const payload = await response.json();

@@ -9,6 +9,7 @@ const read = (relative) => fs.readFileSync(path.join(frontendRoot, relative), "u
 const sitemapSource = read("app/sitemap.ts");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
+const homepageSource = read("app/page.tsx");
 const englishToolPageSource = read("app/tools/[slug]/page.tsx");
 const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;
@@ -36,6 +37,8 @@ assert.match(sitemapSource, /!isCatalogGeneratedGuide\(post\.slug\)/, "Unreviewe
 assert.match(robotsSource, /disallow:\s*\["\/api\/"\]/, "API endpoints should stay excluded from crawling");
 assert.match(layoutSource, /inLanguage:\s*htmlLang/, "Structured data must reflect the server-rendered page language");
 assert.match(layoutSource, /publisher:\s*\{\s*"@id":\s*"https:\/\/pd-fora\.vercel\.app\/#organization"\s*\}/, "WebSite structured data should reference the canonical publisher entity");
+assert.doesNotMatch(layoutSource, /SoftwareApplication/, "SoftwareApplication schema must not be injected into unrelated blog, legal and utility pages");
+assert.match(homepageSource, /"@type":\s*"SoftwareApplication"/, "SoftwareApplication schema should appear on the homepage that describes the application");
 assert.doesNotMatch(robotsSource, /disallow:[^\]]*noindex|disallow:[^\]]*\/ne\//, "Do not block crawlers from reading noindex directives on localized pages");
 
 const reciprocalEnglishPages = [

@@ -198,6 +198,36 @@ def test_all_available_pdf_tools_process_a_realistic_pdf():
         response = request()
         if response.status_code != 200 or not response.content:
             failures.append(f"{name}: HTTP {response.status_code}: {response.text[:250]}")
+            continue
+
+        # Validate the actual response bytes, not only HTTP status and Content-Length.
+        content_type = response.headers.get("content-type", "").split(";", 1)[0].lower()
+        payload = response.content
+        try:
+            if content_type == "application/pdf" or payload.startswith(b"%PDF-"):
+                reader = PdfReader(io.BytesIO(payload))
+                if reader.is_encrypted:
+                    if name != "protect" or not reader.decrypt("PDFora-Test-Password"):
+                        raise AssertionError("Encrypted PDF output could not be decrypted with the expected test password")
+                if not reader.pages:
+                    raise AssertionError("PDF contains no pages")
+            elif zipfile.is_zipfile(io.BytesIO(payload)):
+                with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+                    bad_member = archive.testzip()
+                    if bad_member:
+                        raise AssertionError(f"ZIP CRC check failed for {bad_member}")
+                    members = [info for info in archive.infolist() if not info.is_dir()]
+                    if not members:
+                        raise AssertionError("ZIP archive contains no files")
+                    if any(info.file_size == 0 for info in members):
+                        raise AssertionError("ZIP archive contains an empty output file")
+            elif content_type.startswith("image/"):
+                with Image.open(io.BytesIO(payload)) as image:
+                    image.verify()
+            elif not payload.strip():
+                raise AssertionError("Output bytes are empty")
+        except Exception as error:
+            failures.append(f"{name}: invalid output bytes ({type(error).__name__}: {error})")
     assert not failures, "\n".join(failures)
 
 
@@ -386,6 +416,33 @@ def test_premium_redesign_preview_origin_is_allowed_by_cors():
     )
     assert response.status_code == 200
     assert response.headers.get("access-control-allow-origin") == origin
+
+
+def test_current_and_future_project_vercel_preview_origins_are_allowed_by_cors():
+    from fastapi.testclient import TestClient
+
+    allowed_origin = "https://pd-fora-k13ztdyzf-pokhrelniroj94-7012s-projects.vercel.app"
+    response = TestClient(app).options(
+        "/api/merge",
+        headers={
+            "Origin": allowed_origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers.get("access-control-allow-origin") == allowed_origin
+
+    hostile_origin = "https://pd-fora-preview-pokhrelniroj94-7012s-projects.vercel.app.attacker.test"
+    hostile = TestClient(app).options(
+        "/api/merge",
+        headers={
+            "Origin": hostile_origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert hostile.headers.get("access-control-allow-origin") != hostile_origin
 
 
 def test_backend_security_headers_are_present():

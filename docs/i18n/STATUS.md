@@ -1,5 +1,21 @@
 # PDFora i18n rollout: status
 
+## Authoritative localization counts — 2026-11-07
+
+The generated `TOOL_LANGUAGE_COVERAGE_MATRIX.json` is the current machine-readable source for per-tool locale status. It was generated at `2026-11-07T09:39:50.763Z` from source commit `c13a9fbbc2f8f70b3b0de82e9bf8640e48844d33` (the matrix must be regenerated on the final QA commit before release).
+
+- Inventory: **173 tools** (49 PDF + 124 catalog utilities).
+- Nepali route resolution: **173/173 routes resolve**. This means route shells/URLs exist; it does not mean the full UI is translated.
+- Nepali interfaces: **70/173 present**; **103/173 not implemented**.
+- Nepali indexing eligibility: **6/173 eligible**, **167/173 excluded** by the default-deny policy.
+- Locales: English and Nepali are the only published locales. The other ten registered locales remain unpublished and must not appear as translated hreflang/sitemap destinations.
+- Functional browser status, human/native-speaker review and content review are separate dimensions; route existence must never be reported as translation completion.
+
+This resolves the misleading PR #104 claim of "173/173 Nepali tools" as a route-equivalence count, not complete Nepali interface coverage. The older "105 Nepali route equivalents" counts in this document are historical content-route counts and are not comparable to the 173-tool route inventory.
+
+Release rule: do not mark the remaining 103 interfaces complete from route shells, translated names or catalog metadata. Each needs translated labels, inputs, validation/error states, help text, outputs and functional verification. Keep them noindex and out of hreflang/sitemap until editorial review and tests are complete.
+
+
 ## Current continuation status — 2026-11-07 (refreshed after PR #90)
 
 Production branch: `master`, latest merged work includes PRs #90, #92, #94, #95 and #96. PR #95 added catalog input validation, CSV parsing, YAML serialization and unbiased random-number handling; PR #96 corrected fraction/date calculation behavior.

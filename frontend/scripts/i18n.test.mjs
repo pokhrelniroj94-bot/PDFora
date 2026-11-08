@@ -37,7 +37,7 @@ test("AI Help resets and aborts pending conversations when the locale changes", 
   assert.ok(source.includes("useRef<AbortController | null>(null)"), "AI Help must retain the active request controller");
   assert.ok(source.includes("requestController.current?.abort()"), "locale changes must abort the previous language request");
   assert.ok(source.includes("setMessages([{ role: \"assistant\", text: locale === \"ne\""), "locale changes must reset the conversation with an active-language greeting");
-  assert.ok(source.includes("useEffect(() => () => {") && source.includes("requestController.current = null;"), "unmounting the old locale must abort and clear its pending request");
+  assert.ok(source.includes("return () => {") && source.includes("requestController.current = null;"), "unmounting the old locale must abort and clear its pending request");
   assert.ok(source.includes("signal: controller.signal"), "AI requests must be cancellable");
   assert.ok(source.includes("if (!controller.signal.aborted) setError("), "aborted requests must not surface stale errors");
 });
@@ -45,7 +45,7 @@ test("AI Help resets and aborts pending conversations when the locale changes", 
 test("AI help derives locale prefixes from the central locale registry", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");
   assert.ok(source.includes('import { localeFromPathname } from "../lib/i18n/shared-ui"'));
-  assert.ok(source.includes('const locale = localeFromPathname(pathname)'));
+  assert.ok(source.includes('const locale = localeFromPathname(pathname || "/")'));
   assert.ok(source.includes('new RegExp(`^/${locale}(?=/|$)`)'), "page context must strip the configured locale prefix");
   assert.ok(!source.includes("|id|"), "the AI help locale list must not contain an unsupported locale");
 });

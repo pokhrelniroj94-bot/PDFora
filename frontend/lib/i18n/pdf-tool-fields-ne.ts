@@ -1,6 +1,8 @@
 const nepaliFieldCopy: Record<string, string> = {
   "Background text": "पृष्ठभूमिको पाठ",
   "DRAFT": "मस्यौदा",
+  "1,3,5": "१,३,५",
+  "90": "९०",
   "Background color (preset)": "पृष्ठभूमिको रङ (पूर्वनिर्धारित)",
   "Number of blank pages to add": "थप्नुपर्ने खाली पृष्ठ संख्या",
   "Bookmarks (one per line: page:title)": "बुकमार्क (प्रत्येक लाइनमा: पृष्ठ:शीर्षक)",

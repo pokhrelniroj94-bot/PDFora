@@ -11,7 +11,7 @@ const sitemap = fs.readFileSync(new URL("../app/sitemap.ts", import.meta.url), "
 assert.ok(routes.includes('"market-ai"'), "Market AI must be in the Nepali financial route registry");
 assert.ok(page.includes('"market-ai": "बजार विश्लेषण तथा जोखिम परीक्षक"'), "Market AI must have a Nepali SEO title");
 assert.ok(page.includes('"market-ai": "NEPSE को उपलब्ध ऐतिहासिक डेटा'), "Market AI must have an accurate Nepali SEO description");
-assert.ok(page.includes('<MarketIntelligence locale="ne" />'), "Nepali route must pass locale to the existing market engine");
+assert.ok(page.includes('<MarketIntelligence locale="ne"'), "Nepali route must pass locale to the existing market engine");
 assert.ok(!verification.includes('"market-ai"'), "Market AI must remain outside the explicit indexing allowlist until human and browser review");
 assert.ok(metadata.includes("isLocalizedToolIndexable(locale, entry.slug)") && metadata.includes("alternates: { canonical: base.alternates?.canonical }"), "Unverified Market AI must remain noindex and without hreflang");
 assert.ok(sitemap.includes('filter((slug) => isLocalizedToolIndexable("ne", slug))'), "Only explicitly verified Nepali tools may enter the sitemap");

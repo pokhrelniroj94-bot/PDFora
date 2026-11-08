@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { localeFromPathname } from "../lib/i18n/shared-ui";
 import { usePathname } from "next/navigation";
 
 type Message = { role: "user" | "assistant"; text: string };
@@ -23,6 +24,20 @@ export default function SiteAIHelp() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [pageContext, setPageContext] = useState("");
+  const requestController = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    requestController.current?.abort();
+    requestController.current = null;
+    setBusy(false);
+    setError("");
+    setQuestion("");
+    setMessages([{ role: "assistant", text: locale === "ne" ? "नमस्ते! PDFora को AI Help मा स्वागत छ। कुन टुल वा नतिजाबारे सहयोग चाहिन्छ?" : "Hello! I’m PDFora AI Help. What would you like help with on this page?" }]);
+    return () => {
+      requestController.current?.abort();
+      requestController.current = null;
+    };
+  }, [locale]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -58,9 +73,12 @@ export default function SiteAIHelp() {
     setQuestion("");
     setError("");
     setBusy(true);
+    const controller = new AbortController();
+    requestController.current = controller;
     try {
       const response = await fetch("/api/ai-writing", {
         method: "POST",
+        signal: controller.signal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           kind: "site-help",
@@ -76,9 +94,12 @@ export default function SiteAIHelp() {
       if (!answer) throw new Error("AI returned an empty answer. Please try again.");
       setMessages((old) => [...old, { role: "assistant", text: answer }]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "AI help is temporarily unavailable.");
+      if (!controller.signal.aborted) setError(err instanceof Error ? err.message : "AI help is temporarily unavailable.");
     } finally {
-      setBusy(false);
+      if (requestController.current === controller) {
+        requestController.current = null;
+        setBusy(false);
+      }
     }
   }
 

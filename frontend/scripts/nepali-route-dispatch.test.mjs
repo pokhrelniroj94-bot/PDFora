@@ -47,7 +47,7 @@ assert.equal(new Set(all).size, all.length, "Nepali tool registries must not con
 
 const explicit = [...page.matchAll(/if \(request\.locale === "ne" && \[([^\]]+)\]\.includes\(toolSlug\)\)/g)]
   .map((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1]));
-assert.equal(explicit.length, 6, "Six explicit Nepali component groups should be routed");
+assert.equal(explicit.length, 7, "Seven explicit Nepali component groups should be routed");
 const special = pageSlugs("nepaliSpecialToolSlugs");
 const extra = pageSlugs("nepaliExtraToolSlugs");
 const quick = pageSlugs("nepaliQuickUtilitySlugs");

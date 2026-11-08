@@ -26,16 +26,10 @@ describe("summarizeMarketBreadth", () => {
       { percent_change: -1, turnover: -50 },
       { percent_change: 0, turnover: 200 },
     ]);
-    expect(result).toEqual({
-      total: 3,
-      advancing: 1,
-      declining: 1,
-      unchanged: 1,
-      turnover: 200,
-      advancingPercent: 100 / 3,
-      decliningPercent: 100 / 3,
-      unchangedPercent: 100 / 3,
-    });
+    const { advancingPercent, decliningPercent, unchangedPercent, ...counts } = result;
+    expect(counts).toEqual({ total: 3, advancing: 1, declining: 1, unchanged: 1, turnover: 200 });
+    // One third is a repeating decimal; compare to 10 decimal places instead of the last floating-point bit.
+    for (const value of [advancingPercent, decliningPercent, unchangedPercent]) expect(value).toBeCloseTo(100 / 3, 10);
   });
 
   it("returns zero-safe percentages for an empty or invalid snapshot", () => {

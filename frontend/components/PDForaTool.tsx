@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import ToolSEOContent from "./ToolSEOContent";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
@@ -462,7 +461,6 @@ export default function PDForaTool({
         <div className="mt-8 border-t border-slate-200 pt-2">
         </div>
       </section>
-      <ToolSEOContent slug={currentSlug} locale={locale} />
     </main>
   );
 }

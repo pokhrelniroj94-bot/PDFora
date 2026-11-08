@@ -165,7 +165,7 @@ export const catalogTools: Tool[] = toolCatalog
     description: tool.description,
     icon: tool.category,
     category: tool.category,
-    href: "/tools/" + tool.slug,
+    href: tool.slug === "resume-builder" ? "/resume-builder" : "/tools/" + tool.slug,
     kind: "utility",
     slug: tool.slug,
     keywords: [tool.keywords, catalogSearchAliases[tool.slug] ?? ""].join(" "),

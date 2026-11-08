@@ -4,7 +4,7 @@ const extraLabels: Record<string, Record<string, string>> = {
   "url-query-parser": { text: "पूरा URL" },
   "html-encoder-decoder": { text: "HTML वा साधारण पाठ", mode: "कार्य (encode वा decode)" },
   "regex-tester": { pattern: "Regular expression", flags: "Flags (g, i, m)", text: "परीक्षण गर्ने पाठ" },
-  "jwt-decoder": { text: "JWT token" },
+  "jwt-decoder": { text: "JWT टोकन" },
   "hash-generator": { algorithm: "Hash algorithm" },
   "color-contrast-checker": { fg: "अक्षरको रङ", bg: "पृष्ठभूमिको रङ" },
   "css-minifier": { text: "CSS कोड" },

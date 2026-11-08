@@ -12,6 +12,7 @@ export default function NepaliJanmaKundaliPage() {
   return (
     <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-950 sm:py-12">
       <div className="mx-auto max-w-5xl">
+        <h1 className="mb-5 text-center text-2xl font-black">नेपाली जन्मकुण्डली</h1>
         <KundaliTool />
         <p className="mx-auto mt-6 max-w-3xl text-xs leading-6 text-slate-600">
           Traditional astrology is a cultural and interpretive practice, not a scientifically validated prediction. Birth-time or birthplace errors can change chart calculations. Do not use this tool as the sole basis for medical, financial, marriage or other consequential decisions.

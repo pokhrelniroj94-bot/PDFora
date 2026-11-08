@@ -43,7 +43,7 @@ const nepalTools = [
   { href: "/ne/tools/nepali-unicode-typing", title: "नेपाली युनिकोड टाइपिङ", description: "रोमन अक्षरमा नेपाली लेखेर देवनागरी युनिकोड पाठ तयार गर्नुहोस्।" },
   { href: "/ne/tools/nepal-forex-rates", title: "नेपाल राष्ट्र बैंकको विनिमय दर", description: "उपलब्ध पछिल्लो प्रकाशित विदेशी मुद्रा खरिद तथा बिक्री दर हेर्नुहोस्।" },
   { href: "/ne/tools/nepal-salary-tax-calculator", title: "नेपाल तलब तथा आयकर हिसाब", description: "आम्दानीका आधारमा अनुमानित कर गणना गर्नुहोस्; अन्तिम कर निर्धारण होइन।" },
-  { href: "/ne/tools/nepal-electricity-bill-calculator", title: "बिजुली महसुल क्याल्कुलेटर", description: "उपलब्ध आधिकारिक महसुल विवरणअनुसार बिलको अनुमान हेर्नुहोस्।" },
+  { href: "/ne/tools/nepal-electricity-bill-calculator", title: "आधिकारिक ERC बिजुली बिल क्याल्कुलेटर", description: "विद्युत् नियमन आयोगको अद्यावधिक आधिकारिक क्याल्कुलेटर खोल्नुहोस्।" },
   { href: "/ne/tools/nepal-public-holidays-2083", title: "नेपालका सार्वजनिक बिदा २०८३", description: "२०८३ सालका राष्ट्रिय तथा क्षेत्रगत सार्वजनिक बिदाको विवरण हेर्नुहोस्।" },
   { href: "/ne/tools/nepse-technical-analysis", title: "NEPSE प्राविधिक विश्लेषण", description: "उपलब्ध बजार तथ्याङ्कका सूचक हेर्नुहोस्; कुनै पनि संकेत लगानीको सुनिश्चित सल्लाह होइन।" },
 ];

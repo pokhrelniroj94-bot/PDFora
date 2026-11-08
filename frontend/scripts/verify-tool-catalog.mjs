@@ -193,7 +193,11 @@ assert.ok(marketApi.includes("summary: pick(summaryResult, [])"), "NEPSE summary
 assert.ok(marketApi.includes('s-maxage=60'), "NEPSE API response cache must allow frequent quote updates");
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
 assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
-assert.ok(marketDashboard.includes("pdfora-nepse-watchlist") && marketDashboard.includes("localStorage") && marketDashboard.includes("slice(0,20)"), "NEPSE dashboard must provide a browser-local watchlist capped at 20 symbols");
+const watchlistModule = read("../lib/nepse-watchlist.ts");
+assert.ok(marketDashboard.includes("watchlistStore") && marketDashboard.includes("useSyncExternalStore"), "NEPSE dashboard must use the browser-local watchlist store");
+assert.ok(watchlistModule.includes('"pdfora-nepse-watchlist"') && watchlistModule.includes("localStorage") && /WATCHLIST_LIMIT\s*=\s*20/.test(watchlistModule), "NEPSE watchlist must be browser-local and capped at 20 symbols");
+assert.ok(!/\bfetch\(|XMLHttpRequest|sendBeacon/.test(watchlistModule), "NEPSE watchlist must never upload symbols to a server");
+assert.ok(!/\bsetWatchlist\b/.test(marketDashboard), "NEPSE dashboard must not copy watchlist storage into component state via an effect");
 const marketIntelligence = read("../components/MarketIntelligence.tsx");
 assert.ok(marketIntelligence.includes("EMA20/EMA50") && marketIntelligence.includes("At least 100 valid daily bars") && marketIntelligence.includes("corporate-action adjustments block actionable BUY/SELL signals"), "NEPSE technical analysis must disclose its deterministic indicators and data-quality gates");
 assert.ok(catalogSource.includes('slug:"nepse-technical-analysis"') && !/slug:"ai-[^"]+"/.test(catalogSource), "Catalog must expose the non-AI NEPSE lab and contain no AI-specific tools");

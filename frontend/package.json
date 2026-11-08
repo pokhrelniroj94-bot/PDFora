@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:tools": "node scripts/verify-tool-catalog.mjs && node scripts/verify-panchang.mjs && node scripts/verify-ashtakoota.mjs && node scripts/test-nepse-quant.mjs && node scripts/test-nepse-portfolio.mjs",
+    "verify:tools": "node scripts/verify-tool-catalog.mjs && node scripts/verify-panchang.mjs && node scripts/verify-ashtakoota.mjs && node scripts/test-nepse-quant.mjs && node scripts/test-nepse-portfolio.mjs && node scripts/test-nepse-watchlist.mjs",
     "test": "jest",
     "tools:test": "node scripts/tool-adapter.test.mjs && node scripts/tool-ui-regression.test.mjs",
     "audit:functional": "node scripts/functional-audit.mjs",
@@ -19,7 +19,7 @@
     "blog:test": "node scripts/blog-quality.test.mjs",
     "verify:panchang": "node scripts/verify-panchang.mjs",
     "verify:ashtakoota": "node scripts/verify-ashtakoota.mjs",
-    "test:quant": "node scripts/test-nepse-quant.mjs && node scripts/test-nepse-portfolio.mjs"
+    "test:quant": "node scripts/test-nepse-quant.mjs && node scripts/test-nepse-portfolio.mjs && node scripts/test-nepse-watchlist.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.1",

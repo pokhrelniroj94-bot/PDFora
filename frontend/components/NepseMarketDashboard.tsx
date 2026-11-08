@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import NepalMarketNews from "./NepalMarketNews";
 import { summarizeMarketBreadth } from "../lib/nepse-market-breadth";
+import { parseWatchlist, watchlistStore } from "../lib/nepse-watchlist";
 
 type Stock = { symbol: string; name: string; ltp: number; previous_close: number; change: number; percent_change: number; high: number; low: number; volume: number; turnover: number; trades: number; last_updated?: string };
 type Index = { index: string; currentValue?: number; close: number; high: number; low: number; previousClose: number; change: number; perChange: number; generatedTime?: string };
@@ -75,27 +76,14 @@ export default function NepseMarketDashboard() {
   const [chartStyle,setChartStyle]=useState<"line"|"candles">("candles");
   const [query,setQuery]=useState("");
   const [sort,setSort]=useState("turnover");
-  const [watchlist,setWatchlist]=useState<string[]>([]);
+  const watchlistRaw=useSyncExternalStore(watchlistStore.subscribe,watchlistStore.getSnapshot,watchlistStore.getServerSnapshot);
+  const watchlist=useMemo(()=>parseWatchlist(watchlistRaw),[watchlistRaw]);
   const [watchlistInput,setWatchlistInput]=useState("");
-  const [watchlistLoaded,setWatchlistLoaded]=useState(false);
   const [data,setData]=useState<MarketData|null>(null);
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState("");
-  useEffect(()=>{
-    try {
-      const stored=JSON.parse(window.localStorage.getItem("pdfora-nepse-watchlist")||"[]");
-      if(Array.isArray(stored)) setWatchlist([...new Set(stored.filter((item):item is string=>typeof item==="string"&&/^[A-Z0-9]{2,16}$/.test(item)))].slice(0,20));
-    } catch { setWatchlist([]); }
-    setWatchlistLoaded(true);
-  },[]);
-  useEffect(()=>{
-    if(watchlistLoaded) window.localStorage.setItem("pdfora-nepse-watchlist",JSON.stringify(watchlist));
-  },[watchlist,watchlistLoaded]);
   const addWatchlistSymbol=(raw:string)=>{
-    const next=raw.trim().toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,16);
-    if(next.length<2||watchlist.includes(next)||watchlist.length>=20) return;
-    setWatchlist(items=>[...items,next]);
-    setWatchlistInput("");
+    if(watchlistStore.add(raw)==="added") setWatchlistInput("");
   };
   const load=useCallback(async (nextSymbol=symbol,nextPeriod=period) => {
     try {
@@ -189,7 +177,7 @@ export default function NepseMarketDashboard() {
         {watchlist.length===0?<p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">{isNepali?"माथि कम्पनी संकेत लेखेर वाचलिस्ट सुरु गर्नुहोस्।":"Add a listed-company symbol to start your watchlist."}</p>:<div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {watchlist.map(code=>{const stock=data?.stocks.find(item=>item.symbol===code);return <div key={code} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3">
             <button type="button" onClick={()=>chooseSymbol(code)} className="min-w-0 flex-1 text-left"><span className="block font-black text-teal-800">{code}</span><span className="block truncate text-xs text-slate-500">{stock?.name|| (isNepali?"हालको स्न्यापसटमा मूल्य उपलब्ध छैन":"No quote in the current snapshot")}</span>{stock&&<span className="mt-1 block text-sm font-bold tabular-nums">{money(stock.ltp)} <span className={pctClass(stock.percent_change)}>{stock.percent_change>0?"+":""}{n(stock.percent_change)}%</span></span>}</button>
-            <button type="button" onClick={()=>setWatchlist(items=>items.filter(item=>item!==code))} aria-label={(isNepali?"वाचलिस्टबाट हटाउनुहोस् ":"Remove from watchlist ")+code} className="rounded-lg border border-slate-200 px-2.5 py-2 text-xs font-bold text-rose-700 hover:bg-rose-50">×</button>
+            <button type="button" onClick={()=>watchlistStore.remove(code)} aria-label={(isNepali?"वाचलिस्टबाट हटाउनुहोस् ":"Remove from watchlist ")+code} className="rounded-lg border border-slate-200 px-2.5 py-2 text-xs font-bold text-rose-700 hover:bg-rose-50">×</button>
           </div>;})}
         </div>}
         <p className="mt-3 text-xs text-slate-500">{isNepali?"सूची यस ब्राउजरको local storage मा मात्र रहन्छ।":"Stored locally in this browser only; displayed prices still depend on the upstream snapshot and its timestamp."}</p>

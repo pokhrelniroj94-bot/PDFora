@@ -11,6 +11,8 @@ const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
 const homepageSource = read("app/page.tsx");
 const blogArticleSource = read("app/blog/[slug]/page.tsx");
+const englishNepalBlogSource = read("lib/nepal-blog-posts.ts");
+const nepaliLocalizedBlogSource = read("lib/nepali-localized-blog-posts.ts");
 const nepaliBlogArticleSource = read("app/[locale]/blog/[slug]/page.tsx");
 const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
 const pdfToolSeoSource = read("components/ToolSEOContent.tsx");
@@ -72,6 +74,15 @@ for (const [relativePath, localeFreePath] of reciprocalEnglishPages) {
   assert.equal(alternates?.en, `https://pd-fora.vercel.app${localeFreePath}`);
   assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne${localeFreePath}`);
   assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
+}
+
+const englishBlogSlugs = new Set([...englishNepalBlogSource.matchAll(/slug:\\s*"([^"]+)"/g)].map((match) => match[1]));
+const nepaliBlogSlugs = [...nepaliLocalizedBlogSource.matchAll(/slug:\\s*"([^"]+)"/g)].map((match) => match[1]);
+for (const slug of nepaliBlogSlugs) {
+  assert.ok(englishBlogSlugs.has(slug) || blogArticleSource.includes(`slug === "${slug}"`), `Nepali blog ${slug} must have a real English equivalent before publishing hreflang`);
+  const alternates = hreflangMap(`/blog/${slug}`);
+  assert.equal(alternates?.en, `https://pd-fora.vercel.app/blog/${slug}`);
+  assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne/blog/${slug}`);
 }
 
 assert.match(englishToolPageSource, /isLocalizedToolIndexable\("ne", slug\)/, "English tool pages must gate Nepali hreflang on explicit indexing approval");

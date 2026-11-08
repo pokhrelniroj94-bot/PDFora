@@ -185,6 +185,7 @@ assert.match(englishToolPageSource, /openGraph:\s*\{/, "Catalog tool pages must 
 assert.match(englishToolPageSource, /twitter:\s*\{/, "Catalog tool pages must publish Twitter metadata");
 assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*isCatalogToolIndexable\(slug\)/, "Catalogue tool indexing must use the explicit editorial allowlist");
 assert.match(sitemapSource, /isCatalogToolIndexable\(tool\.slug\)/, "Only reviewed catalogue tools may enter the sitemap");
+assert.match(catalogIndexabilitySource, /Default-deny indexability/, "Catalogue indexability must document the editorial gate");
 assert.ok(indexableCatalogToolSlugs.size > 0, "At least one reviewed catalogue tool should remain indexable");
 assert.equal(toolCatalog.filter((tool) => isCatalogToolIndexable(tool.slug)).length, indexableCatalogToolSlugs.size, "The indexability allowlist must contain only real catalogue slugs");
 for (const tool of toolCatalog.filter((item) => item.slug !== "pdf-tools" && item.slug !== "resume-builder")) {

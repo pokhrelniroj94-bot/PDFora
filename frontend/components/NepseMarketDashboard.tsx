@@ -74,9 +74,28 @@ export default function NepseMarketDashboard() {
   const [chartStyle,setChartStyle]=useState<"line"|"candles">("candles");
   const [query,setQuery]=useState("");
   const [sort,setSort]=useState("turnover");
+  const [watchlist,setWatchlist]=useState<string[]>([]);
+  const [watchlistInput,setWatchlistInput]=useState("");
+  const [watchlistLoaded,setWatchlistLoaded]=useState(false);
   const [data,setData]=useState<MarketData|null>(null);
   const [loading,setLoading]=useState(true);
   const [error,setError]=useState("");
+  useEffect(()=>{
+    try {
+      const stored=JSON.parse(window.localStorage.getItem("pdfora-nepse-watchlist")||"[]");
+      if(Array.isArray(stored)) setWatchlist([...new Set(stored.filter((item):item is string=>typeof item==="string"&&/^[A-Z0-9]{2,16}$/.test(item)))].slice(0,20));
+    } catch { setWatchlist([]); }
+    setWatchlistLoaded(true);
+  },[]);
+  useEffect(()=>{
+    if(watchlistLoaded) window.localStorage.setItem("pdfora-nepse-watchlist",JSON.stringify(watchlist));
+  },[watchlist,watchlistLoaded]);
+  const addWatchlistSymbol=(raw:string)=>{
+    const next=raw.trim().toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,16);
+    if(next.length<2||watchlist.includes(next)||watchlist.length>=20) return;
+    setWatchlist(items=>[...items,next]);
+    setWatchlistInput("");
+  };
   const load=useCallback(async (nextSymbol=symbol,nextPeriod=period) => {
     try {
       const response=await fetch("/api/nepse-market?symbol="+encodeURIComponent(nextSymbol)+"&period="+nextPeriod,{cache:"no-store"});
@@ -145,6 +164,23 @@ export default function NepseMarketDashboard() {
       </section>
       <section className="grid gap-4 lg:grid-cols-2">
         {([["demandList",isNepali?"उच्च माग":"Highest demand","text-emerald-700"],["supplyList","Highest supply","text-rose-700"]] as const).map(([key,title,tone])=><div className={card} key={key}><h2 className="text-lg font-black">{title}</h2><p className="mt-1 text-xs text-slate-500">Aggregated queued quantity and order count by security</p><div className="mt-3 space-y-2">{(data?.supplyDemand?.[key]??[]).slice(0,10).map(row=><button type="button" key={row.symbol} onClick={()=>chooseSymbol(row.symbol)} className="flex w-full items-center justify-between gap-3 border-b border-slate-100 py-2 text-left text-sm last:border-0"><span><span className="font-bold">{row.symbol}</span><span className="ml-2 text-xs text-slate-500">{row.securityName}</span></span><span className={"shrink-0 text-right font-bold tabular-nums "+tone}>{n(row.totalQuantity,0)}<span className="block text-[10px] font-medium text-slate-400">{n(row.totalOrder,0)} orders</span></span></button>)}{!data?.supplyDemand?.[key]?.length&&<p className="text-sm text-slate-500">Supply/demand data is unavailable in this snapshot.</p>}</div></div>)}
+      </section>
+      <section className={card} aria-labelledby="nepse-watchlist-title">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div><h2 id="nepse-watchlist-title" className="text-xl font-black">{isNepali?"मेरो NEPSE वाचलिस्ट":"My NEPSE watchlist"}</h2><p className="mt-1 text-sm text-slate-500">{isNepali?"आफ्ना मनपर्ने सूचक र कम्पनी ब्राउजरमै सुरक्षित राख्नुहोस्।":"Save up to 20 symbols in this browser. Your list is not uploaded to a server."}</p></div>
+          <form className="flex w-full max-w-sm gap-2" onSubmit={event=>{event.preventDefault();addWatchlistSymbol(watchlistInput);}}>
+            <label className="sr-only" htmlFor="nepse-watchlist-symbol">{isNepali?"कम्पनी संकेत":"Add a symbol"}</label>
+            <input id="nepse-watchlist-symbol" value={watchlistInput} onChange={event=>setWatchlistInput(event.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,16))} placeholder="e.g. NABIL" maxLength={16} className="min-w-0 flex-1 rounded-xl border border-slate-300 px-3 py-2.5 text-sm"/>
+            <button type="submit" disabled={watchlist.length>=20||watchlistInput.trim().length<2||watchlist.includes(watchlistInput.trim().toUpperCase())} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40">{isNepali?"थप्नुहोस्":"Add"}</button>
+          </form>
+        </div>
+        {watchlist.length===0?<p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">{isNepali?"माथि कम्पनी संकेत लेखेर वाचलिस्ट सुरु गर्नुहोस्।":"Add a listed-company symbol to start your watchlist."}</p>:<div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {watchlist.map(code=>{const stock=data?.stocks.find(item=>item.symbol===code);return <div key={code} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 p-3">
+            <button type="button" onClick={()=>chooseSymbol(code)} className="min-w-0 flex-1 text-left"><span className="block font-black text-teal-800">{code}</span><span className="block truncate text-xs text-slate-500">{stock?.name|| (isNepali?"हालको स्न्यापसटमा मूल्य उपलब्ध छैन":"No quote in the current snapshot")}</span>{stock&&<span className="mt-1 block text-sm font-bold tabular-nums">{money(stock.ltp)} <span className={pctClass(stock.percent_change)}>{stock.percent_change>0?"+":""}{n(stock.percent_change)}%</span></span>}</button>
+            <button type="button" onClick={()=>setWatchlist(items=>items.filter(item=>item!==code))} aria-label={(isNepali?"वाचलिस्टबाट हटाउनुहोस् ":"Remove from watchlist ")+code} className="rounded-lg border border-slate-200 px-2.5 py-2 text-xs font-bold text-rose-700 hover:bg-rose-50">×</button>
+          </div>;})}
+        </div>}
+        <p className="mt-3 text-xs text-slate-500">{isNepali?"सूची यस ब्राउजरको local storage मा मात्र रहन्छ।":"Stored locally in this browser only; displayed prices still depend on the upstream snapshot and its timestamp."}</p>
       </section>
       <section className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-xl font-black">{isNepali?"सूचीबद्ध कम्पनीहरू":"Listed companies"}</h2><p className="mt-1 text-sm text-slate-500">Search by symbol or company name. Select a row to load its price chart.</p></div><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search NABIL, NICA, bank…" className="w-full max-w-sm rounded-xl border border-slate-300 px-3 py-2.5 text-sm"/></div>

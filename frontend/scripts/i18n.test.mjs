@@ -148,7 +148,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/loan-emi-calculator", "ne"), "/ne/tools/loan-emi-calculator");
   assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
-  assert.equal(routing.localizedOrFallbackPath("/tools/nepse-technical-analysis", "ne"), "/ne/tools/nepse-technical-analysis");
+  assert.equal(routing.localizedOrFallbackPath("/nepse-technical-analysis", "ne"), "/ne/nepse-technical-analysis");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
   assert.equal(routing.nepaliLocalizedRoutePaths.size, 159, "All localized routes must be represented in the route registry");
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");

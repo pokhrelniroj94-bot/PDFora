@@ -20,7 +20,7 @@ export default function SiteAIHelp() {
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", text: "Namaste! Ma PDFora ko AI Help ho. Kun tool use garna, result bujhna, wa problem solve garna help chahiyo?" },
+    { role: "assistant", text: locale === "ne" ? "नमस्ते! PDFora को AI Help मा स्वागत छ। कुन टुल वा नतिजाबारे सहयोग चाहिन्छ?" : "Hello! I’m PDFora AI Help. What would you like help with on this page?" },
   ]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -30,10 +30,6 @@ export default function SiteAIHelp() {
   useEffect(() => {
     requestController.current?.abort();
     requestController.current = null;
-    setBusy(false);
-    setError("");
-    setQuestion("");
-    setMessages([{ role: "assistant", text: locale === "ne" ? "नमस्ते! PDFora को AI Help मा स्वागत छ। कुन टुल वा नतिजाबारे सहयोग चाहिन्छ?" : "Hello! I’m PDFora AI Help. What would you like help with on this page?" }]);
     return () => {
       requestController.current?.abort();
       requestController.current = null;

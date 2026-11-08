@@ -39,7 +39,7 @@ The script stops at the first failing check and prints the exact stage. The firs
 
 - Local checks do not change GitHub Actions status or billing.
 - A successful local build is not a substitute for production smoke tests or full browser QA.
-- Do not commit `.env`, API tokens, passwords, or generated secrets. Keep Cloudflare credentials server-side only.
+- Do not commit `.env`, API tokens, passwords, or generated secrets. Keep any integration credentials server-side only.
 - Do not merge or deploy to Production until local validation, NRB/NEPSE/Forex smoke tests, and browser QA have passed.
 - OCR remains excluded from the available tools until backend OCR language data is installed and its end-to-end test passes.
-- AI endpoints must remain disabled unless the Cloudflare Workers AI setup, least-privilege token, explicit enablement, and shared rate-limit controls have actually been configured and verified.
+- Generative AI features and their API endpoint have been retired from the application; do not reintroduce AI provider credentials or routes without a separate security and product review.

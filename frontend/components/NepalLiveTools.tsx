@@ -263,7 +263,7 @@ const holidayNamesNe: Record<string, string> = {
 };
 const holidayNotesNe: Record<string, string> = {
   "National public holiday": "राष्ट्रिय सार्वजनिक बिदा", "Kathmandu Valley and Newar community": "काठमाडौं उपत्यका तथा नेवार समुदाय",
-  "Women only": "महिलाका लागि मात्र", "Kathmandu Valley only": "काठमाडौं उपत्यकामा मात्र",
+  "Women only": "महिला कर्मचारीका लागि मात्र", "Kathmandu Valley only": "काठमाडौं उपत्यकामा मात्र",
   "Women celebrating Jitiya Parwa": "जितिया पर्व मनाउने महिलाहरू", "Seven-day Dashain holiday: 17–23 October": "सात दिने दशैँ बिदा: अक्टोबर १७–२३",
   "Five-day Tihar holiday: 8–12 November": "पाँच दिने तिहार बिदा: नोभेम्बर ८–१२", "Kirant community": "किरात समुदाय",
   "Persons with disabilities": "अपाङ्गता भएका व्यक्तिहरू", "Date depends on moon sighting": "चन्द्रदर्शनमा निर्भर मिति",
@@ -274,6 +274,7 @@ const holidayNotesNe: Record<string, string> = {
 const holidayTypeNe: Record<string, string> = {
   National: "राष्ट्रिय", Regional: "क्षेत्रीय", Community: "समुदाय-विशेष", "To be announced": "घोषणा हुन बाँकी"
 };
+const nepaliNumberText = "०१२३४५६७८९";
 const holidayMonthNe: Record<string, string> = {
   Baisakh: "वैशाख", Jestha: "जेठ", Asar: "असार", Shrawan: "साउन", Bhadra: "भदौ", Asoj: "असोज",
   Kartik: "कार्तिक", Mangsir: "मंसिर", Poush: "पुस", Magh: "माघ", Falgun: "फागुन", Chaitra: "चैत"

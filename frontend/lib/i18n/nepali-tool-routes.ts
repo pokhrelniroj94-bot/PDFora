@@ -65,6 +65,7 @@ export const nepaliLocalizedUtilitySlugs = [
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];
 
 export const nepaliLocalizedFinancialSlugs = [
+  "market-ai",
   "nepal-forex-rates",
   "nepal-salary-tax-calculator",
   "nepse-dividend-calculator",

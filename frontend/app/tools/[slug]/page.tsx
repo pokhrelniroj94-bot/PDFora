@@ -8,6 +8,7 @@ import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
 import { hreflangMap } from "../../../lib/i18n/routing";
 import { isLocalizedToolIndexable } from "../../../lib/tools/localized-verification";
+import { isCatalogToolIndexable } from "../../../lib/tools/catalog-indexability";
 
 const site = "https://pd-fora.vercel.app";
 export function generateStaticParams() {
@@ -83,7 +84,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title, description,
     alternates: { canonical, ...(languages ? { languages } : {}) },
-    robots: { index: slug !== "ocr-pdf", follow: true },
+    robots: { index: isCatalogToolIndexable(slug), follow: true },
     openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
     twitter: { card: "summary_large_image", title: socialTitle, description, images: [`/tools/${tool.slug}/opengraph-image`] },
   };

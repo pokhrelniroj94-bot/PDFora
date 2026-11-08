@@ -45,7 +45,6 @@ const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedUtilitySlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedFinancialSlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedPublicInfoSlugs,
-  ...modules["nepali-tool-routes"].nepaliLocalizedCareerSlugs,
 ];
 
 assert.deepEqual(
@@ -61,8 +60,9 @@ assert.match(mergePdfLayoutSource, /<ToolSEOContent slug="merge-pdf" \/>/, "The 
 assert.equal(legacyPdfSlugs.length, 49, "Expected all 49 established PDF routes in the canonical registry");
 
 const catalogueToolSlugs = toolCatalog.map((tool) => tool.slug).filter((slug) => slug !== "pdf-tools");
-assert.equal(catalogueToolSlugs.length, 124, "Expected 124 catalogue utilities");
-assert.equal(new Set([...legacyPdfSlugs, ...catalogueToolSlugs]).size, 173, "All 173 tools must have one unique canonical route identity");
+assert.equal(catalogueToolSlugs.length, 121, "Expected 121 catalogue utilities");
+for (const retired of ["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer", "market-ai"]) assert.ok(!catalogueToolSlugs.includes(retired), `Retired AI tool must not be in the catalogue: ${retired}`);
+assert.equal(new Set([...legacyPdfSlugs, ...catalogueToolSlugs]).size, 170, "All 170 tools must have one unique canonical route identity");
 
 const pdfMetadataTitles = new Set();
 const pdfMetadataDescriptions = new Set();

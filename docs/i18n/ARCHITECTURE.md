@@ -69,7 +69,7 @@ Not covered yet: the 49 PDF tools (separate root pages with inline `PDForaTool` 
 
 Known limits of this route:
 1. The root layout's site-wide `WebSite`/`Organization`/`SoftwareApplication` JSON-LD (`inLanguage: "en"`) still appears on every page, including localized ones.
-2. English chrome (footer, cookie banner, AI help) still wraps localized routes; the tool's own "All tools" links go to the English directory.
+2. English chrome (footer, cookie banner) still wraps localized routes; the tool's own "All tools" links go to the English directory.
 3. Static checks (`npm run tools:test`) cover logic and source contracts only; real status codes need the HTTP checks below.
 
 HTTP checks (preview on, `npm run dev`): `/ne/tools/loan-emi-calculator` 200, `noindex`, canonical `https://pd-fora.vercel.app/ne/tools/loan-emi-calculator`, no `hreflang` links; `/ne/tools/not-a-tool`, `/ne/tools/pdf-tools`, `/ne/tools/compress-pdf`, `/xx/tools/loan-emi-calculator`, `/en/tools/loan-emi-calculator` (301 to `/tools/loan-emi-calculator`) behave as described. Without preview, `/ne/tools/loan-emi-calculator` is 404.

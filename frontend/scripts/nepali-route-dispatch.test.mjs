@@ -15,7 +15,6 @@ const specialWorkspace = read("../components/NepaliSpecialCatalogWorkspace.tsx")
 const extraWorkspace = read("../components/NepaliExtraTextWorkspace.tsx");
 const liveWorkspace = read("../components/NepalLiveTools.tsx");
 const financeWorkspace = read("../components/NepaliFinanceCalculatorWorkspace.tsx");
-const careerWorkspace = read("../components/AIWritingTools.tsx");
 const marketWorkspace = read("../components/MarketIntelligence.tsx");
 const resumeRoute = read("../app/[locale]/[slug]/page.tsx");
 
@@ -33,8 +32,8 @@ function branchSlugs(source) {
 const utility = exportedSlugs("nepaliLocalizedUtilitySlugs");
 const financial = exportedSlugs("nepaliLocalizedFinancialSlugs");
 const publicInfo = exportedSlugs("nepaliLocalizedPublicInfoSlugs");
-const career = exportedSlugs("nepaliLocalizedCareerSlugs");
-const all = [...utility, ...financial, ...publicInfo, ...career];
+assert.ok(!routes.includes("nepaliLocalizedCareerSlugs"), "Retired AI career route registry must not return");
+const all = [...utility, ...financial, ...publicInfo];
 assert.equal(new Set(all).size, all.length, "Nepali tool registries must not contain duplicate slugs");
 
 const explicit = [...page.matchAll(/if \(request\.locale === "ne" && \[([^\]]+)\]\.includes\(toolSlug\)\)/g)]
@@ -58,11 +57,10 @@ assert.deepEqual(explicit[6].filter((slug) => !nepalWorkspace.includes('"'+slug+
 
 const liveSlugs = new Set(branchSlugs(liveWorkspace));
 const financeSlugs = new Set(branchSlugs(financeWorkspace));
-const financeHandled = new Set([...special, ...financeSlugs, ...liveSlugs, "market-ai"]);
+const financeHandled = new Set([...special, ...financeSlugs, ...liveSlugs, "nepse-technical-analysis"]);
 assert.deepEqual(financial.filter((slug) => !financeHandled.has(slug)), [], "Every financial route must have a localized handler");
 assert.deepEqual(publicInfo.filter((slug) => !liveSlugs.has(slug)), [], "Every public-information route must have a localized handler");
-assert.ok(page.includes("nepaliLocalizedCareerSlugs.includes(toolSlug"), "Career route group must dispatch to the localized AI-writing workspace");
-assert.ok(careerWorkspace.includes('const humanizer = slug === "ai-humanizer"') && careerWorkspace.includes('const cover = slug === "ai-cover-letter-generator"'), "Career workspace must distinguish humanizer and cover-letter tools and support resume writer as the default");
+assert.ok(!page.includes("nepaliLocalizedCareerSlugs") && !page.includes("AIWritingTools"), "Retired AI career dispatch must not return");
 
 const titleStart = page.indexOf("const nepaliTitles");
 const descriptionStart = page.indexOf("const nepaliDescriptions");
@@ -73,9 +71,10 @@ const descriptions = new Set([...page.slice(descriptionStart, metadataStart).mat
 assert.deepEqual(all.filter((slug) => !titles.has(slug)), [], "Nepali tool titles are missing");
 assert.deepEqual(all.filter((slug) => !descriptions.has(slug)), [], "Nepali tool descriptions are missing");
 assert.ok(resumeRoute.includes('slug === "resume-builder"') && resumeRoute.includes('<ResumeBuilder locale="ne" />'), "Resume Builder must retain its dedicated Nepali route");
-assert.ok(financial.includes("market-ai"), "Market AI must be registered for Nepali localization");
-assert.ok(page.includes('toolSlug === "market-ai"') && page.includes('<MarketIntelligence locale="ne" nestedHeading />'), "Market AI must dispatch to its Nepali workspace");
-assert.ok(marketWorkspace.includes('locale = "en"') && marketWorkspace.includes('बजार विश्लेषण तथा जोखिम परीक्षक'), "Market AI must expose its localized workspace and title");
-assert.ok(marketWorkspace.includes('यो शैक्षिक प्रयोजनको प्राविधिक विश्लेषण सहायता हो'), "Market AI must translate the financial-risk disclosure");
+assert.ok(financial.includes("nepse-technical-analysis"), "NEPSE Technical Analysis must be registered for Nepali localization");
+assert.ok(!financial.includes("market-ai"), "The retired market-ai slug must not be a Nepali route");
+assert.ok(page.includes('toolSlug === "nepse-technical-analysis"') && page.includes('<MarketIntelligence locale="ne" nestedHeading />'), "NEPSE Technical Analysis must dispatch to its Nepali workspace");
+assert.ok(marketWorkspace.includes('locale = "en"') && marketWorkspace.includes('बजार विश्लेषण तथा जोखिम परीक्षक'), "NEPSE Technical Analysis must expose its localized workspace and title");
+assert.ok(marketWorkspace.includes('यो शैक्षिक प्रयोजनको प्राविधिक विश्लेषण सहायता हो'), "NEPSE Technical Analysis must translate the financial-risk disclosure");
 
 console.log("Nepali route dispatch, metadata and workspace coverage passed for " + all.length + " registered catalog routes.");

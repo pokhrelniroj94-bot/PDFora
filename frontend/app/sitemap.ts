@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
 import { nepaliLocalizedBlogPosts } from "../lib/nepali-localized-blog-posts";
-import { nepaliLocalizedCareerSlugs, nepaliLocalizedFinancialSlugs, nepaliLocalizedUtilitySlugs } from "../lib/i18n/nepali-tool-routes";
+import { nepaliLocalizedFinancialSlugs, nepaliLocalizedUtilitySlugs } from "../lib/i18n/nepali-tool-routes";
 import { isLocalizedToolIndexable } from "../lib/tools/localized-verification";
 import { nepaliPdfRoutes } from "../lib/i18n/nepali-pdf-routes";
 import { isCatalogToolIndexable } from "../lib/tools/catalog-indexability";
@@ -35,7 +35,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...Object.keys(nepaliPdfRoutes),
     ...nepaliLocalizedUtilitySlugs,
     ...nepaliLocalizedFinancialSlugs,
-    ...nepaliLocalizedCareerSlugs,
   ].filter((slug) => isLocalizedToolIndexable("ne", slug));
 
   return [

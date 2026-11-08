@@ -7,7 +7,7 @@
  * category advice. Add slugs only after editorial and functional review.
  */
 export const indexableCatalogToolSlugs: ReadonlySet<string> = new Set([
-  "market-ai",
+  "nepse-technical-analysis",
   "nepali-date-converter",
   "nepali-vat-calculator",
   "nepali-number-converter",

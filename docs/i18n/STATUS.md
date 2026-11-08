@@ -156,5 +156,5 @@ Unchanged by this work (git diff vs HEAD empty): `app/tools`, `app/sitemap.ts`, 
 Status: adapter PARTIALLY COMPLETE (catalog utilities only; PDF tools deferred); localized route WRITTEN, NOT BUILT; indexing: DISABLED by default (nothing verified); sitemap: UNCHANGED.
 Latest verified Nepali route evidence (commit `ba93eeb`): 24 route equivalents are
 measured, including three AI writing routes (Resume Writer, Cover Letter Generator and
-Humanizer). This does not include the Resume Builder, blogs, legal/static pages or
+Humanizer) that have since been removed from the product (historical evidence; see the current 170-tool status above). This does not include the Resume Builder, blogs, legal/static pages or
 remaining utilities; those remain unpublished through fallback routing until reviewed.

@@ -118,7 +118,14 @@ function normalizeNepalTimestamp(value: unknown): string {
   if (/(?:Z|[+-]\d{2}:?\d{2})$/i.test(timestamp)) return timestamp;
   return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/.test(timestamp)
     ? timestamp + "+05:45"
-    : value.trim();
+    : "";
+}
+function nepalToday(): string {
+  const parts = new Intl.DateTimeFormat("en", {
+    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(new Date());
+  const part = (type: string) => parts.find(item => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
 function monthCount(period: string) {
@@ -139,9 +146,7 @@ async function fetchCommunityHistory(symbol: string, period: string) {
   const column = (name: string) => headers.indexOf(name);
   const dateIndex = column("published_date");
   const closeIndex = column("close");
-  const today = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit",
-  }).format(new Date());
+  const today = nepalToday();
   const rows: Array<{ date: string; close: number; open?: number; high?: number; low?: number; volume?: number; turnover?: number }> = [];
   for (const line of lines) {
     if (!line.trim()) continue;

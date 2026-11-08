@@ -79,6 +79,12 @@ No source is guaranteed uptime, freshness, completeness or commercial redistribu
 
 Official exchange reference: https://www.nepalstock.com/. A supported public unauthenticated developer API for third-party commercial use was not established in this review. Reverse-engineered authentication is brittle and is not a required dependency.
 
+### Alternatives reviewed but not enabled
+
+- **SocrateAI NEPSE Open Data** contains useful OHLC and floorsheet archives, but its dataset terms state CC BY-NC 4.0 unless a dataset-specific licence says otherwise. It is excluded from this commercial-capable tool until written commercial permission or a different licence is confirmed.
+- **NEPSE All Scraper** advertises public CSV/JSON endpoints, but its own README labels the project educational-use and identifies ShareSansar/Merolagani as upstream sources. It is not used as a production dependency.
+- **Direct NEPSE website endpoints** remain the preferred authoritative origin where available, but NEPSE does not publish a supported public third-party developer API contract in this review. Reimplementing undocumented token/WASM authentication would be brittle, so the app consumes the YONEPSE community mirror rather than pretending a private endpoint is stable.
+
 ## Additional deterministic context panels
 
 - Market regime: calculate 20/50-session index returns, EMA alignment and realized volatility from index history.

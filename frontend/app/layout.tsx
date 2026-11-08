@@ -66,7 +66,7 @@ export default async function RootLayout({
           <CookieSettingsLink />
         </footer>
         <ToolDirectory />
-        <SiteAIHelp />
+        <SiteAIHelp key={htmlLang} />
         <Script
           id="pdfora-structured-data"
           type="application/ld+json"

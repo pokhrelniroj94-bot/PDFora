@@ -20,6 +20,8 @@ const normalized = normalizeDailyBars([
 ]);
 assert.equal(normalized.length, 2, "invalid rows must be dropped and duplicate dates deduplicated");
 assert.equal(normalized[1].close, 102, "latest duplicate observation wins");
+assert.equal(normalizeDailyBars([{date:"2026-03-01",close:100}]).length, 1, "valid ISO dates must survive normalization");
+assert.equal(normalizeDailyBars([{date:"\\\\d2026-03-01",close:100}]).length, 0, "date strings with escaped digit markers must be rejected");
 const normalizedOhlcv = normalizeOhlcvBars([{date:"2026-01-01",close:100,high:105,low:95,volume:10},{date:"2026-01-02",close:101,high:90,low:95,volume:null}]);
 assert.equal(normalizedOhlcv[0].high, 105);
 assert.equal(normalizedOhlcv[1].high, undefined, "inconsistent OHLC range must be discarded without dropping valid close");

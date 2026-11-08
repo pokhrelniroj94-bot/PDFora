@@ -122,3 +122,15 @@ The generated PDF guide variants were also identified as a duplicate-content ris
 - Reconcile sitemap URLs with Search Console indexed/not-indexed reports after an approved deployment. Do not claim indexing or traffic improvement before Google recrawls the pages.
 - The source scan now covers all 49 standalone PDF routes: 31 duplicated legacy how-to sections were removed, and the remaining 18 retain distinct hero/tool copy without the duplicated generic section. Verify the rendered result on a new Preview before release.
 - Review all non-generated editorial articles for first-hand value, accurate references, dates and non-overlapping search intent.
+
+## Catalogue indexability correction — 2026-11-08
+
+A stricter review found a mismatch between the documented quality rule and the implementation: catalogue tool pages used index=true for nearly every utility even when their visible guide still relied on a shared category template, generic workflow steps and fallback FAQs. Unique titles/descriptions and per-tool advice fields alone do not prove that each page offers enough distinct value for Search.
+
+The release branch now applies a default-deny indexability gate to catalogue utility routes. Only 17 pages with dedicated task-specific guides, concrete workflows/examples and explicit limitations remain eligible for indexing at this stage. The remaining catalogue utilities continue to work and remain reachable through the tools directory, but emit noindex,follow and are omitted from the XML sitemap until an individual editorial review confirms distinct value, accurate supported-input details, useful examples and functional behaviour. OCR remains excluded. This is a quality-control decision, not a claim that the remaining utilities are poor products.
+
+Regression checks verify that the allowlist contains only real catalogue slugs, that catalogue metadata uses the gate, and that the sitemap applies the same gate. Expanding the allowlist requires a reviewed page, not merely adding a unique meta title or description.
+
+This aligns the implementation more closely with Google's people-first and scaled-content guidance: do not publish large volumes of repetitive, low-value pages for search visibility; keep pages out of Search until they independently help users. References: [Google people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content), [Google spam policies — scaled content abuse](https://developers.google.com/search/docs/essentials/spam-policies).
+
+Still required before calling the SEO release complete: rendered Preview crawl of every sitemap URL; HTTP status/canonical/robots/hreflang verification; structured-data validation against visible content; page-by-page English and Nepali editorial review; and Search Console review after deployment and recrawl. No ranking, indexing or traffic outcome is guaranteed.

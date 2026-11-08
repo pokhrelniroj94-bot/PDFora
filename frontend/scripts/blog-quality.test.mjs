@@ -131,6 +131,7 @@ for (const slug of enSlugs) assert.ok(neSlugs.has(slug), "Missing Nepali article
 
 const englishArticlePage = read("app/blog/[slug]/page.tsx");
 const nepaliArticlePage = read("app/[locale]/blog/[slug]/page.tsx");
+assert.match(nepaliArticlePage, /tool\.href\.startsWith\("\/tools\/"\)[\s\S]*?`\/ne\$\{tool\.href\}`/, "Nepali blog links must localize both catalogue and root-level PDF tool routes");
 
 const tipGuideSlug = "how-to-calculate-tip-and-split-the-bill";
 const englishTipGuide = articleBlocks(read("lib/blog-posts.ts")).find((item) => item.slug === tipGuideSlug);

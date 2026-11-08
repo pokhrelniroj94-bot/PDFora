@@ -13,7 +13,7 @@ type Props = { params: Promise<{ locale: string }> };
 export const metadata: Metadata = {
   title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
   description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
-  alternates: { canonical: "https://pd-fora.vercel.app/ne/tools", languages: { ne: "https://pd-fora.vercel.app/ne/tools", en: "https://pd-fora.vercel.app/tools", "x-default": "https://pd-fora.vercel.app/tools" } },
+  alternates: { canonical: "https://pd-fora.vercel.app/ne/tools" },
   robots: { index: false, follow: true },
 };
 

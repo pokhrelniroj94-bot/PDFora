@@ -320,7 +320,7 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
     <header>
       <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora NEPSE Quant Engine</p>
       <Heading className="mt-2 text-3xl font-black tracking-tight text-slate-950">{locale === "ne" ? "बजार विश्लेषण तथा जोखिम परीक्षक" : "Market Intelligence & Risk Analyzer"}</Heading>
-      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{locale === "ne" ? "नियममा आधारित trend, momentum, volume, data-quality र risk checks बाट NEPSE को ऐतिहासिक मूल्य विश्लेषण गर्नुहोस्। सबै सूचक र संकेत पारदर्शी सूत्रबाट स्थानीय रूपमा गणना हुन्छन्।" : "Analyse NEPSE price history using transparent, deterministic trend, momentum, volume, data-quality and risk checks. All indicators and signals are calculated from the supplied market data; no AI service is used."}</p>
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{locale === "ne" ? "नियममा आधारित trend, momentum, volume, data-quality र risk checks बाट NEPSE को ऐतिहासिक मूल्य विश्लेषण गर्नुहोस्। सबै सूचक र संकेत पारदर्शी सूत्रबाट स्थानीय रूपमा गणना हुन्छन्।" : "Analyse NEPSE price history using transparent, deterministic trend, momentum, volume, data-quality and risk checks. All indicators and signals are calculated transparently from the supplied market data using fixed formulas."}</p>
       <a href="/nepse-lab" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">{locale === "ne" ? "NEPSE Quant Strategy Lab खोल्नुहोस्" : "Open NEPSE Quant Strategy Lab"} <span aria-hidden="true">→</span></a>
     </header>
 

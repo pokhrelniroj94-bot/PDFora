@@ -250,7 +250,7 @@ export default async function LocalizedToolPage({ params }: Props) {
         </p>
       </div>
       <div lang="en" dir="ltr">
-        <ToolWorkspace slug={toolSlug} />
+        <ToolWorkspace slug={toolSlug} locale={request.locale} />
       </div>
     </>
   );

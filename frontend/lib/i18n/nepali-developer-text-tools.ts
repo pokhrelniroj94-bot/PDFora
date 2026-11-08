@@ -86,7 +86,7 @@ export function runNepaliDeveloperTool(slug: NepaliDeveloperToolSlug, values: Va
     return Array.from(new TextEncoder().encode(text), (byte) => byte.toString(2).padStart(8, "0")).join(" ");
   }
   if (slug === "binary-to-text") {
-    const tokens = text.trim().split(/\\s+/).filter(Boolean);
+    const tokens = text.trim().split(/\s+/).filter(Boolean);
     if (!tokens.length || tokens.some((token) => !/^[01]{8}$/.test(token))) return "प्रत्येक बाइनरी समूह ठीक ८ बिटको हुनुपर्छ।";
     try { return new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(tokens, (token) => Number.parseInt(token, 2))); }
     catch { return "बाइनरी डेटा मान्य UTF-8 पाठ होइन।"; }
@@ -95,24 +95,24 @@ export function runNepaliDeveloperTool(slug: NepaliDeveloperToolSlug, values: Va
     return Array.from(new TextEncoder().encode(text), (byte) => byte.toString(16).padStart(2, "0")).join(" ");
   }
   if (slug === "hex-to-text") {
-    const compact = text.replace(/\\s+/g, "");
-    if (!compact || compact.length % 2 || !/^[\\da-f]+$/i.test(compact)) return "Hex डेटा सम जोडीमा ०–९ र A–F अक्षरबाट बनेको हुनुपर्छ।";
+    const compact = text.replace(/\s+/g, "");
+    if (!compact || compact.length % 2 || !/^[\da-f]+$/i.test(compact)) return "Hex डेटा सम जोडीमा ०–९ र A–F अक्षरबाट बनेको हुनुपर्छ।";
     try { return new TextDecoder("utf-8", { fatal: true }).decode(Uint8Array.from(compact.match(/.{2}/g) ?? [], (pair) => Number.parseInt(pair, 16))); }
     catch { return "Hex डेटा मान्य UTF-8 पाठ होइन।"; }
   }
   if (slug === "morse-code-translator") {
     const alphabet: Record<string, string> = { a:".-", b:"-...", c:"-.-.", d:"-..", e:".", f:"..-.", g:"--.", h:"....", i:"..", j:".---", k:"-.-", l:".-..", m:"--", n:"-.", o:"---", p:".--.", q:"--.-", r:".-.", s:"...", t:"-", u:"..-", v:"...-", w:".--", x:"-..-", y:"-.--", z:"--..", "0":"-----", "1":".----", "2":"..---", "3":"...--", "4":"....-", "5":".....", "6":"-....", "7":"--...", "8":"---..", "9":"----." };
     const reverse = Object.fromEntries(Object.entries(alphabet).map(([key, value]) => [value, key])) as Record<string, string>;
-    if (values.mode === "decode") return text.trim().split(" / ").map((word) => word.split(/\\s+/).map((token) => reverse[token] ?? "?").join("")).join(" ");
-    return text.toLowerCase().split(/\\s+/).map((word) => [...word].map((char) => alphabet[char] ?? (char === " " ? "/" : "?")).join(" ")).join(" / ");
+    if (values.mode === "decode") return text.trim().split(" / ").map((word) => word.split(/\s+/).map((token) => reverse[token] ?? "?").join("")).join(" ");
+    return text.toLowerCase().split(/\s+/).map((word) => [...word].map((char) => alphabet[char] ?? (char === " " ? "/" : "?")).join(" ")).join(" / ");
   }
   if (["camel-case-converter", "snake-case-converter", "kebab-case-converter"].includes(slug)) {
-    const words = text.normalize("NFKC").replace(/([a-z0-9])([A-Z])/g, "$1 $2").match(/[\\p{L}\\p{M}\\p{N}]+/gu) ?? [];
+    const words = text.normalize("NFKC").replace(/([a-z0-9])([A-Z])/g, "$1 $2").match(/[\p{L}\p{M}\p{N}]+/gu) ?? [];
     const lower = words.map((word) => word.toLocaleLowerCase());
     if (slug === "camel-case-converter") return lower.map((word, index) => index === 0 ? word : word.charAt(0).toLocaleUpperCase() + word.slice(1)).join("");
     return lower.join(slug === "snake-case-converter" ? "_" : "-");
   }
-  if (slug === "html-tag-stripper") return text.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi, " ").replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi, " ").replace(/<[^>]*>/g, " ").replace(/\\s+/g, " ").trim();
+  if (slug === "html-tag-stripper") return text.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ").replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
   if (slug === "json-escape-unescape") {
     try { return values.mode === "decode" ? JSON.parse("\"" + text + "\"") : JSON.stringify(text).slice(1, -1); }
     catch { return "JSON escaped पाठ मान्य छैन। उद्धरण र backslash जाँच्नुहोस्।"; }

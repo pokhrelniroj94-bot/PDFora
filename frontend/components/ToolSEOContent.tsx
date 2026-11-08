@@ -41,7 +41,6 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
     { q: localizedFaqs[locale]?.[4] || "Can I use this PDF tool on a phone?", a: locale === "ne" ? "यो टुल आधुनिक मोबाइल ब्राउजरमा उपलब्ध छ। फाइल छान्ने र डाउनलोड गर्ने तरिका तपाईंको डिभाइस, ब्राउजर र उपलब्ध स्टोरेजअनुसार फरक हुन सक्छ।" : "The tool is available in modern mobile browsers. File selection and download behaviour can vary by device, browser and available storage." },
     { q: localizedFaqs[locale]?.[5] || "Should I keep a copy of the original PDF?", a: locale === "ne" ? "हो। अन्तिम फाइल खोलेर जाँच नगरेसम्म र आवश्यक पृष्ठ तथा जानकारी भएको पुष्टि नगरेसम्म मूल PDF को नबदलिएको प्रतिलिपि राख्नुहोस्।" : "Yes. Keep an untouched copy until you have opened and checked the final file and confirmed that it contains the pages and information you need." }
   ];
-  const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faqs.map((item) => ({ "@type": "Question", name: item.q, acceptedAnswer: { "@type": "Answer", text: item.a } })) };
   const pageUrl = `https://pd-fora.vercel.app${locale === "en" ? "" : `/${locale}`}/${slug}`;
   const softwareSchema = {
     "@context": "https://schema.org",

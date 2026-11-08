@@ -311,7 +311,7 @@ export async function GET(request: Request) {
     quoteAgeMinutes: Number.isFinite(quoteTimestamp) ? Math.max(0, Math.round((Date.now() - quoteTimestamp) / 60_000)) : null,
     providerRefreshCadence: usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Community dataset refresh cadence; not exchange-tick live data",
     quoteStale,
-    latestHistoryDate: points.length ? points[points.length - 1].date : historyManifest.latestDate ?? null,
+    latestHistoryDate: points.length ? points[points.length - 1].date : isIndex ? historyManifest.latestDate ?? null : null,
     historySource,
     historyPriceBasis: historySource.includes("Nepal Market Data") ? "Unadjusted source-reported prices; corporate actions require separate adjustment" : "Source-reported historical values; adjustment status not independently verified",
     status: marketStatus,
@@ -332,7 +332,7 @@ export async function GET(request: Request) {
       topMovers: "YONEPSE public snapshot",
       sectorIndices: "YONEPSE archived daily data",
       supplyDemand: "YONEPSE public snapshot",
-      historicalCharts: "YONEPSE archived daily data",
+      historicalCharts: historySource,
     },
     partial: !usingLiveQuotes || [indicesResult, statusResult, summaryResult, topResult, sectorsResult, supplyDemandResult, manifestResult, ltpManifestResult].some((item) => item.status === "rejected") || historyResults.some((item) => item.status === "rejected") || indexHistoryResults.some((item) => item.status === "rejected"),
   };

@@ -82,7 +82,7 @@ assert.deepEqual(all.filter((slug) => !titles.has(slug)), [], "Nepali tool title
 assert.deepEqual(all.filter((slug) => !descriptions.has(slug)), [], "Nepali tool descriptions are missing");
 assert.ok(resumeRoute.includes('slug === "resume-builder"') && resumeRoute.includes('<ResumeBuilder locale="ne" />'), "Resume Builder must retain its dedicated Nepali route");
 assert.ok(financial.includes("market-ai"), "Market AI must be registered for Nepali localization");
-assert.ok(page.includes('toolSlug === "market-ai"') && page.includes('<MarketIntelligence locale="ne" />'), "Market AI must dispatch to its Nepali workspace");
+assert.ok(page.includes('toolSlug === "market-ai"') && page.includes('<MarketIntelligence locale="ne" nestedHeading />'), "Market AI must dispatch to its Nepali workspace");
 assert.ok(marketWorkspace.includes('locale = "en"') && marketWorkspace.includes('बजार विश्लेषण तथा जोखिम परीक्षक'), "Market AI must expose its localized workspace and title");
 assert.ok(marketWorkspace.includes('यो शैक्षिक प्रयोजनको प्राविधिक विश्लेषण सहायता हो'), "Market AI must translate the financial-risk disclosure");
 

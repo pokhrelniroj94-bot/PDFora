@@ -109,7 +109,7 @@ assert.match(nepaliBlogArticle, /post\.title/, "Nepali articles need localized t
 assert.match(nepaliBlogArticle, /post\.description/, "Nepali articles need localized descriptions");
 assert.doesNotMatch(nepaliBlogArticle, /title:\s*`\$\{post\.title\} \| PDFora`/, "Localized article titles must rely on the root metadata template for a single brand suffix");
 assert.match(sitemap, /nepaliLocalizedBlogPosts\.map/, "Nepali editorial articles must be represented in the sitemap");
-assert.match(sitemap, /blogPosts\.filter\(\(post\) => !isCatalogGeneratedGuide\(post\.slug\)\)/, "Only curated English editorial articles should enter the sitemap");
+assert.match(sitemap, /blogPosts\.filter\(\(post\) => !isCatalogGeneratedGuide\(post\.slug\) && !isGeneratedPdfGuide\(post\.slug\)\)/, "Only curated English editorial articles should enter the sitemap; generated catalog and PDF guides must stay excluded");
 
 const englishPdfGuides = [...englishPdfGuidesSource.matchAll(/"slug":\s*"([^"]+)"[\s\S]*?"name":\s*"([^"]+)"[\s\S]*?"purpose":\s*"([^"]+)"/g)]
   .map((match) => ({ slug: match[1], title: `${match[2]} Online`, description: match[3].replace(/\s+/g, " ").trim().length <= 160 ? match[3].replace(/\s+/g, " ").trim() : (() => { const clean = match[3].replace(/\s+/g, " ").trim(); const shortened = clean.slice(0, 159); const boundary = shortened.lastIndexOf(" "); return `${shortened.slice(0, boundary > 110 ? boundary : 159).replace(/[,:;–-]+$/, "")}.`; })() }));

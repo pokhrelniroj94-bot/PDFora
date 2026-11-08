@@ -230,7 +230,9 @@ export async function GET(request: Request) {
       const index = Number(row[0]);
       const date = dates[index];
       const close = Number(row[1]);
-      if (!date || !Number.isFinite(close)) continue;
+      const parsedDate = typeof date === "string" && /^\\d{4}-\\d{2}-\\d{2}$/.test(date) ? new Date(date + "T00:00:00Z") : null;
+      const todayNepal = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu" }).format(new Date());
+      if (!parsedDate || !Number.isFinite(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== date || date > todayNepal || !Number.isFinite(close) || close <= 0) continue;
       if (isIndex) {
         points.push({ date, close, open: Number(row[2]), high: Number(row[3]), low: Number(row[4]), turnover: Number(row[5]), volume: Number(row[6]), trades: Number(row[7]) });
       } else {
@@ -265,7 +267,9 @@ export async function GET(request: Request) {
       });
     }
   }
-  points.sort((a, b) => a.date.localeCompare(b.date));
+  const pointsByDate = new Map<string, (typeof points)[number]>();
+  for (const point of points) pointsByDate.set(point.date, point);
+  points.splice(0, points.length, ...[...pointsByDate.values()].sort((a, b) => a.date.localeCompare(b.date)));
   let historySource = points.length ? "YONEPSE public historical archive" : "Unavailable";
   const minimumHistoryPoints = period === "1M" ? 10 : period === "3M" ? 30 : 100;
   if (points.length < minimumHistoryPoints) {
@@ -316,8 +320,9 @@ export async function GET(request: Request) {
   const sourceUpdatedAt = normalizeNepalTimestamp(sourceUpdatedAtRaw) || sourceUpdatedAtRaw;
   const quoteTimestamp = Date.parse(sourceUpdatedAt);
   const quoteAgeHours = Number.isFinite(quoteTimestamp) ? (Date.now() - quoteTimestamp) / 3_600_000 : Number.POSITIVE_INFINITY;
-  // Weekends/holidays can legitimately pause NEPSE updates; four days is a conservative stale-data warning.
-  const quoteStale = !usingLiveQuotes || !Number.isFinite(quoteTimestamp) || quoteAgeHours > 96;
+  // Reject future timestamps as well as stale/missing ones. Weekends/holidays can pause NEPSE updates.
+  const quoteTimestampValid = Number.isFinite(quoteTimestamp) && quoteAgeHours >= -(2 / 60) && quoteAgeHours <= 96;
+  const quoteStale = !usingLiveQuotes || !quoteTimestampValid;
   const response = {
     symbol,
     period,
@@ -325,7 +330,7 @@ export async function GET(request: Request) {
     source: usingUnofficialLive ? "NEPSE unofficial session feed (nepseman-api)" : usingLiveQuotes ? "YONEPSE public market snapshot" : "YONEPSE historical snapshot fallback",
     sourceUpdatedAt: sourceUpdatedAt || null,
     fetchedAt: new Date().toISOString(),
-    quoteAgeMinutes: Number.isFinite(quoteTimestamp) ? Math.max(0, Math.round((Date.now() - quoteTimestamp) / 60_000)) : null,
+    quoteAgeMinutes: quoteTimestampValid ? Math.max(0, Math.round((Date.now() - quoteTimestamp) / 60_000)) : null,
     providerRefreshCadence: usingUnofficialLive ? "NEPSE trading-session feed; verify timestamp on every response" : "Community dataset refresh cadence; not exchange-tick live data",
     quoteStale,
     latestHistoryDate: points.length ? points[points.length - 1].date : isIndex ? historyManifest.latestDate ?? null : null,

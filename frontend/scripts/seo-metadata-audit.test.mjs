@@ -86,7 +86,7 @@ for (const item of nepaliMetadata) {
 assert.match(englishPage, /alternates:\s*\{\s*canonical/, "English tool pages must have self-referencing canonical metadata");
 assert.match(englishPage, /openGraph:\s*\{[^}]*title:/s, "English tool pages must define Open Graph titles");
 assert.match(englishPage, /twitter:\s*\{[^}]*title:/s, "English tool pages must define Twitter titles");
-assert.match(englishPage, /robots:\s*\{\s*index:\s*slug !== "ocr-pdf"/, "OCR remains excluded from indexing");
+assert.match(englishPage, /robots:\s*\{ index: isCatalogToolIndexable\(slug\), follow: true \}/, "Catalog indexing must use the explicit allowlist and keep OCR excluded by default");
 assert.match(nepaliPage, /buildLocalizedToolMetadata/, "Nepali tool pages must use the shared locale-aware metadata builder");
 assert.match(rootLayout, /template:\s*"%s \| PDFora"/, "The root layout must append the single PDFora brand suffix to localized titles");
 assert.match(nepaliPage, /title:\s*nepaliTitles\[request\.implementation\.slug\]/, "Nepali titles must use the translated dictionary without repeating the root layout brand suffix");

@@ -3,6 +3,17 @@ if (!base) {
   console.log(JSON.stringify({ status: "NOT_CONFIGURED", reason: "PDFORA_AI_PREVIEW_URL was not supplied; no provider request was sent." }));
   process.exit(0);
 }
+// Protected Preview requires the Vercel automation bypass secret.
+// Do not send unauthenticated requests that only test the login wall.
+// Keep the result explicitly BLOCKED, not PASS.
+if (!process.env.VERCEL_AUTOMATION_BYPASS_SECRET) {
+  console.log(JSON.stringify({
+    status: "BLOCKED",
+    reason: "Protected Preview requires the GitHub Actions secret VERCEL_AUTOMATION_BYPASS_SECRET. No AI provider requests were sent.",
+  }));
+  process.exit(0);
+}
+
 const cases = [
   { kind: "ai-resume-writer", payload: { name: "QA Sample", role: "Junior Analyst", experience: "Completed a fictional classroom spreadsheet exercise.", education: "BBA student", skills: "Excel, PowerPoint", jobDescription: "Entry-level analyst" } },
   { kind: "ai-cover-letter-generator", payload: { name: "QA Sample", role: "Junior Analyst", company: "Example Company", experience: "Completed a fictional classroom spreadsheet exercise.", skills: "Excel, PowerPoint", education: "BBA student", jobDescription: "Entry-level analyst" } },

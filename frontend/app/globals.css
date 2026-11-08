@@ -103,3 +103,9 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 
 
 /* Use explicit .pdfora-enter and .pdfora-stagger classes for predictable page motion. */
+
+/* Keep Arabic, Urdu and Bengali glyphs readable with script-aware system fallbacks. */
+:lang(ar), :lang(ur) { font-family: "Noto Naskh Arabic", "Noto Sans Arabic", "Noto Sans", sans-serif; }
+:lang(bn) { font-family: "Noto Sans Bengali", "Noto Sans", sans-serif; }
+[dir="rtl"] .i18n-flip { transform: scaleX(-1); }
+.i18n-ltr { direction: ltr; unicode-bidi: isolate; }

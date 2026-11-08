@@ -77,8 +77,8 @@ for (const [relativePath, localeFreePath] of reciprocalEnglishPages) {
   assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
 }
 
-const englishBlogSlugs = new Set([...englishNepalBlogSource.matchAll(/slug:\\s*"([^"]+)"/g), ...englishEditorialBlogSource.matchAll(/slug:\\s*"([^"]+)"/g)].map((match) => match[1]));
-const nepaliBlogSlugs = [...nepaliLocalizedBlogSource.matchAll(/slug:\\s*"([^"]+)"/g)].map((match) => match[1]);
+const englishBlogSlugs = new Set([...englishNepalBlogSource.matchAll(/slug:\s*"([^"]+)"/g), ...englishEditorialBlogSource.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]));
+const nepaliBlogSlugs = [...nepaliLocalizedBlogSource.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]);
 for (const slug of nepaliBlogSlugs) {
   assert.ok(englishBlogSlugs.has(slug), `Nepali blog ${slug} must have a real English equivalent before publishing hreflang`);
   const alternates = hreflangMap(`/blog/${slug}`);

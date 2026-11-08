@@ -1,6 +1,7 @@
 import { SITE_URL, defaultLocale, isLocale, isPublished, localeInfo, locales, type Locale } from "./config";
 import {
   nepaliLocalizedCareerSlugs,
+  nepaliLocalizedCatalogSlugs,
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedPublicInfoSlugs,
   nepaliLocalizedUtilitySlugs,
@@ -70,6 +71,7 @@ export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
     ...nepaliLocalizedFinancialSlugs,
     ...nepaliLocalizedPublicInfoSlugs,
     ...nepaliLocalizedCareerSlugs,
+    ...nepaliLocalizedCatalogSlugs,
   ].map((slug) => `/tools/${slug}`),
 ]);
 

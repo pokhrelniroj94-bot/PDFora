@@ -206,6 +206,16 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
 }
 
 export async function POST(request: Request) {
+  const origin = request.headers.get("origin");
+  if (origin) {
+    let trustedOrigin = "";
+    try { trustedOrigin = new URL(request.url).origin; } catch { trustedOrigin = ""; }
+    let suppliedOrigin = "";
+    try { suppliedOrigin = new URL(origin).origin; } catch { suppliedOrigin = ""; }
+    if (!trustedOrigin || suppliedOrigin !== trustedOrigin) {
+      return Response.json({ error: "Cross-origin AI requests are not allowed." }, { status: 403, headers: NO_STORE });
+    }
+  }
   const contentType = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
   if (contentType !== "application/json") {
     return Response.json({ error: "Send a JSON request." }, { status: 415, headers: NO_STORE });

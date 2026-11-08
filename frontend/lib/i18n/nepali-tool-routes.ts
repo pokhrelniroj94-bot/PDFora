@@ -79,8 +79,4 @@ export const nepaliLocalizedPublicInfoSlugs = [
   "nepal-public-holidays-2083",
 ] as const;
 
-export const nepaliLocalizedCareerSlugs = [
-  "ai-resume-writer",
-  "ai-cover-letter-generator",
-  "ai-humanizer",
-] as const;
+export const nepaliLocalizedCareerSlugs = [] as const;

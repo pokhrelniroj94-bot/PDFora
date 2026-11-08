@@ -69,7 +69,7 @@ const localizedSlugs = [
   ...modules["nepali-tool-routes"].nepaliLocalizedCareerSlugs,
 ];
 assert.equal(new Set(localizedSlugs).size, localizedSlugs.length, "Nepali localized route registries must not contain duplicate slugs");
-assert.equal(localizedSlugs.length, 123, "Update Nepali metadata coverage expectation when routes change");
+assert.equal(localizedSlugs.length, 82, "69 utility, 8 financial, 2 public-information and 3 career routes require Nepali metadata");
 for (const slug of localizedSlugs) {
   assert.ok(slugs.has(slug), "Nepali SEO metadata references a non-catalog slug: " + slug);
   assert.ok(nepaliTitles.has(slug), "Missing Nepali title: " + slug);

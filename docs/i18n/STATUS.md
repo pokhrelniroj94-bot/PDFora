@@ -104,7 +104,7 @@ historical limitations are superseded by the verification results above and in
 ## Inventory (static parse, see inventory.json)
 - Page routes 63, API routes 6, catalog entries 125 (10 categories), 49 legacy root-level PDF slugs.
 - Hand-written blog slugs: 8 (blog-posts.ts) + 19 (nepal-blog-posts.ts); tool-guides.ts adds posts at runtime (count to confirm at build time).
-- Branch-specific features to preserve: NEPSE market/research/lab, forex, news APIs, AI writing (`/api/ai-writing`, Upstash + Cloudflare rate limiting), SiteAIHelp, SmartToolCenter, MarketIntelligence.
+- Branch-specific features to preserve: NEPSE market/research/lab, forex, news APIs, AI writing (`/api/ai-writing`, Upstash + Cloudflare rate limiting), SmartToolCenter, MarketIntelligence. The sitewide floating AI help widget has been removed.
 
 ## Status table
 | Phase | Status |

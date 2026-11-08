@@ -251,16 +251,16 @@ export default function NirojToolsTool({
       </header>
 
       {/* Main */}
-      <section className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">
             {ui.toolLabel}
           </p>
 
-          <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
+          <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
             {displayTitle}
-          </h2>
+          </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
             {displayDescription}
@@ -443,7 +443,7 @@ export default function NirojToolsTool({
             description={ui.mobileDescription}
           />
         </div>
-      </section>
+      </main>
     </div>
   );
 }

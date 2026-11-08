@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { spawn, execFileSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 import { inflateRawSync } from "node:zlib";

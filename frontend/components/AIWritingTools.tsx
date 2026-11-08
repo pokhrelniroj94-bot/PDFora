@@ -104,7 +104,7 @@ export default function AIWritingTools({ slug, locale = "en" }: Props) {
     <div className="space-y-6">
       <header>
         <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">{ne ? "PDFora AI स्टुडियो · निःशुल्क AI" : "PDFora AI Studio · Free AI"}</p>
-        <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">{title}</h1>
+        <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950">{title}</h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{description}</p>
       </header>
 

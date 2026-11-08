@@ -73,12 +73,12 @@ export default function CatalogToolSEOContent({
   guideSlug?: string;
 }) {
   const uniqueFaqItems = questions.slice(0, 4);
-  if (tool.slug === "market-ai") {
+  if (tool.slug === "nepse-technical-analysis") {
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Market analysis guide</p>
-        <h2 className="mt-2 text-2xl font-black text-slate-950">What does PDFora Smart Market AI analyse?</h2>
-        <p className="mt-4 leading-8 text-slate-700">Review historical NEPSE prices or upload your own Forex and Crypto daily OHLCV CSV. The engine calculates EMA trend alignment, RSI momentum, MACD direction, recent volume behaviour, annualized historical volatility and estimated 20-session support and resistance. It then displays a rule-based market condition and risk warnings. Optional free AI explains those calculations; it does not generate or override the signal.</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">What does NEPSE Technical Analysis & Risk Lab analyse?</h2>
+        <p className="mt-4 leading-8 text-slate-700">Review historical NEPSE prices or upload your own Forex and Crypto daily OHLCV CSV. The engine calculates EMA trend alignment, RSI momentum, MACD direction, recent volume behaviour, annualized historical volatility and estimated 20-session support and resistance. It then displays a rule-based market condition and risk warnings. Every indicator and signal is calculated by transparent fixed rules from the displayed historical inputs; no AI provider or prediction model is used.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">How to use the Market Intelligence & Risk Analyzer</h2>
@@ -88,7 +88,7 @@ export default function CatalogToolSEOContent({
           <li>Use one daily candle per date and keep dates in YYYY-MM-DD format. The tool requires at least 50 valid observations and accepts files up to 5 MB.</li>
           <li>Check the latest data date and source before interpreting the result. A stale history suppresses new BUY/SELL setups.</li>
           <li>Read the signal together with the confluence score, EMA trend, RSI, MACD, volume warning, volatility and key levels. The score is not a win probability.</li>
-          <li>Use Explain with free AI only after reviewing the computed result. The explanation is optional and cannot change the technical signal.</li>
+          <li>Read the displayed calculation methodology, data-quality warnings and source timestamps before interpreting the result.</li>
         </ol>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
@@ -108,7 +108,7 @@ export default function CatalogToolSEOContent({
         <p className="mt-4 leading-8 text-slate-700">This is an educational technical-analysis aid, not personal investment advice. It does not know your financial circumstances and cannot forecast prices with certainty.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">Frequently asked questions about PDFora Smart Market AI</h2>
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions about NEPSE Technical Analysis</h2>
         <div className="mt-5 space-y-5">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}</div>
       </section>
       <section className="rounded-2xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
@@ -499,10 +499,7 @@ export default function CatalogToolSEOContent({
     "nepal-public-holidays-2083": { example: "Browse the listed 2083 BS holidays and check each Gregorian date, regional note and category before planning an appointment or work schedule.", accuracy: "The list is a reference and may omit institution-specific, regional or newly amended notices. Holiday applicability can vary by province, community and employer.", workflow: "Use the BS and AD date together, then confirm the latest Cabinet or responsible authority notice before booking travel or assuming an office is closed.", mistakes: "Do not assume every listed holiday applies nationwide or that a static list overrides a later official notice." },
     "nepali-unicode-typing": { example: "Type Romanized Nepali using an English keyboard and review the suggested Devanagari text before copying it into a document or message.", accuracy: "Romanized typing is transliteration, not translation. A Roman spelling can map to multiple Nepali words, names or conjuncts, so the output may require correction.", workflow: "Type a short phrase, choose the intended word where alternatives appear and proofread matras, halants, names and punctuation before using the text.", mistakes: "Do not assume the tool translates English sentences or that every Romanized spelling has only one correct Nepali equivalent." },
 
-    "ai-resume-writer": { example: "Enter the target role, real experience, education, skills and job description. Review the generated summary and bullet points, then copy accurate content into the PDFora Resume Builder.", accuracy: "The model cannot verify employment, qualifications, dates or achievements. Review every claim before using the draft.", workflow: "Use specific facts, tailor the draft to one vacancy, remove anything you cannot prove, then choose a template and proofread the exported PDF.", mistakes: "Do not add invented metrics, employers, degrees, certificates or skills. Avoid confidential personal information." },
-    "ai-cover-letter-generator": { example: "Provide the real job title, company, relevant experience and job description to create a focused letter.", accuracy: "The draft is based only on supplied details and may contain generic wording or factual errors. It does not verify the employer or vacancy.", workflow: "Replace placeholders, check company and role names, add a genuine example that demonstrates fit, and proofread the final letter.", mistakes: "Do not claim experience or company knowledge you do not have. Avoid sending the same unedited letter to every employer." },
-    "ai-humanizer": { example: "Paste a paragraph and choose a natural, professional, academic or simple-English style. Compare the rewrite with the original.", accuracy: "The rewrite may alter nuance, tone or factual details. It cannot reliably determine who wrote a text or guarantee how a detector will classify it.", workflow: "Keep the original, rewrite a short sample, compare names, figures, citations and meaning, then edit the result in your own voice.", mistakes: "Do not remove required citations or change factual claims. Always review the rewrite." },
-    "market-ai": { example: "Select a NEPSE index or listed symbol to analyse available history, or upload at least 50 daily Forex/Crypto price rows in CSV format.", accuracy: "The engine uses rule-based EMA, RSI, MACD and volatility calculations. NEPSE data comes from the existing third-party dataset; Forex/Crypto results depend on the quality and freshness of the uploaded CSV. No signal guarantees profit.", workflow: "Check the latest data date, inspect trend and momentum together, define a maximum loss, and test any entry/exit rule on separate historical data including fees and slippage.", mistakes: "Do not treat a confluence score as a win probability, rely on stale or incomplete data, or trade with leverage based only on one signal." },
+    "nepse-technical-analysis": { example: "Select a NEPSE index or listed symbol to analyse available history, or upload at least 50 daily Forex/Crypto price rows in CSV format.", accuracy: "The engine uses rule-based EMA, RSI, MACD and volatility calculations. NEPSE data comes from the existing third-party dataset; Forex/Crypto results depend on the quality and freshness of the uploaded CSV. No signal guarantees profit.", workflow: "Check the latest data date, inspect trend and momentum together, define a maximum loss, and test any entry/exit rule on separate historical data including fees and slippage.", mistakes: "Do not treat a confluence score as a win probability, rely on stale or incomplete data, or trade with leverage based only on one signal." },
 
   };
   const title = tool.name;

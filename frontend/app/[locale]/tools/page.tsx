@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  nepaliLocalizedCareerSlugs,
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedPublicInfoSlugs,
   nepaliLocalizedUtilitySlugs,
@@ -12,7 +11,7 @@ type Props = { params: Promise<{ locale: string }> };
 
 export const metadata: Metadata = {
   title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
-  description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
+  description: "PDF, नेपाली मिति, लेखन, गणना, वित्त र नेपालका दैनिक उपयोगिताका नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
   alternates: { canonical: "https://pd-fora.vercel.app/ne/tools" },
   robots: { index: false, follow: true },
 };
@@ -52,7 +51,6 @@ const groups = [
   { title: "नेपाली लेखन तथा पाठ उपकरण", slugs: ["nepali-unicode-typing", ...nepaliLocalizedUtilitySlugs.filter((slug) => ["word-character-counter","case-converter","remove-duplicate-lines","sort-lines","reverse-text","whitespace-cleaner","character-frequency","word-frequency-counter","reading-time-calculator","line-counter","sentence-counter","email-extractor","url-extractor","phone-number-extractor","number-extractor","hashtag-extractor","remove-duplicate-words","find-replace-text","palindrome-checker","acronym-generator"].includes(slug))] },
   { title: "गणना तथा मिति उपकरण", slugs: nepaliLocalizedUtilitySlugs.filter((slug) => ["nepali-digit-converter","nepali-number-converter","nepali-date-converter","nepal-land-area-converter","nepali-vat-calculator","neb-gpa-calculator","percentage-change-calculator","average-calculator","ratio-simplifier","fraction-calculator","percentage-of-number-calculator","gcd-lcm-calculator","prime-number-checker","unit-converter","age-calculator","date-difference-calculator","time-duration-calculator","bmi-calculator","bmr-calculator","tip-calculator","split-bill-calculator","simple-interest-calculator","profit-margin-calculator","markup-calculator","break-even-calculator","sales-tax-calculator","salary-breakdown-calculator","commission-calculator","hourly-to-salary-calculator"].includes(slug)) },
   { title: "डेभलपर उपकरण", slugs: nepaliLocalizedUtilitySlugs.filter((slug) => ["json-formatter-validator","base64-encoder-decoder","url-encoder-decoder","hash-generator","text-diff-checker","lorem-ipsum-generator","html-encoder-decoder","text-to-slug"].includes(slug)) },
-  { title: "करियर तथा AI उपकरण", slugs: [...nepaliLocalizedCareerSlugs] },
 ];
 
 function ToolLink({ slug, title }: { slug: string; title?: string }) {

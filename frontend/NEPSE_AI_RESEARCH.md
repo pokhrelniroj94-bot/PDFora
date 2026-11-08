@@ -66,16 +66,18 @@ For company-level work, use sector-aware fundamentals only when the underlying r
 - Keep a hard no-signal state when required price history is insufficient, stale, malformed or materially inconsistent.
 
 
-## Live-data provider hierarchy and licensing
+## Zero-investment data-source policy
 
-The market endpoint supports this provider order:
-1. **ShareHub NEPSE Data API**, when server-side `SHAREHUB_EMAIL` and `SHAREHUB_PASSWORD` are configured and its live services work. It provides a documented licensed REST API; its documentation states approximately 20-second refresh during trading and 5-minute refresh while closed. It requires a Data API licence, enabled endpoint packages and an allow-listed server IP. Never put credentials in browser code or `NEXT_PUBLIC_*` variables.
-2. **NEPSEman unofficial session API**, when it returns a sufficiently broad, timestamp-verified snapshot.
-3. **YONEPSE public open dataset**, used for archived OHLCV/history and as the public fallback. YONEPSE attributes its live snapshot upstream to the official NEPSE API, but remains an independent community project and is not an official NEPSE developer service.
+The NEPSE engine is designed to run with a Rs. 0 recurring software/data budget:
+1. **YONEPSE public static dataset** is the primary no-auth source for market snapshots and historical archives. It is a community-maintained project; its own documentation attributes upstream data to NEPSE and other sources. It is not an official NEPSE developer API and must never be described as exchange-tick real-time.
+2. **NEPSEman session feed** is an optional unofficial live-session fallback. Its snapshot is accepted only when timestamps and minimum coverage pass validation. It can break when upstream authentication or hosting changes.
+3. **ShareSansar-derived public historical archive** is an additional candidate for historical cross-checks/backfill. It publishes free JSON/CSV archives without authentication, but is unofficial and inherits upstream accuracy and terms limitations. Integrate only after schema and licence/redistribution review; do not assume it is an official or guaranteed source.
 
-ShareHub integration is conditional, not automatically active: no licence or credentials are assumed. Its API may be paid/licensed; confirm current pricing, redistribution/display rights, enabled package, server egress IP allow-list and terms with ShareHub before enabling it. Its documented API uses bearer authentication with short-lived access tokens; this server route keeps credentials out of the client and refreshes tokens in process memory. Serverless cold starts may authenticate again. If a stable outbound IP is required and the deployment platform cannot provide one, use an approved fixed-egress backend or ask ShareHub about test mode; do not bypass the IP allow-list.
+Paid/licensed feeds (including ShareHub Data API) are deliberately excluded from the runtime provider chain. No ShareHub credentials, subscription, paid API key, fixed-egress service, or paid AI API is required. The market route must not read or require SHAREHUB_* environment variables. The deterministic indicators, market regime, breadth, backtest and risk calculations run locally in application code.
 
-NEPSE itself operates the primary exchange data service at https://www.nepalstock.com/. A public, supported developer API suitable for unauthenticated third-party commercial use was not identified in this review. Some open-source projects reverse-engineer its client authentication, but that is brittle and can break when NEPSE changes its web application. Do not build a production dependency on reverse-engineered authentication without reviewing the exchange terms and operational risk.
+No source is guaranteed uptime, freshness, completeness or commercial redistribution rights. Keep provider attribution and timestamps visible. If a free provider fails or data is stale, show the last verified historical data with a stale label or return an explicit unavailable state; never fabricate live prices or silently promote old prices as current. Review upstream terms before commercial use.
+
+Official exchange reference: https://www.nepalstock.com/. A supported public unauthenticated developer API for third-party commercial use was not established in this review. Reverse-engineered authentication is brittle and is not a required dependency.
 
 ## Additional deterministic context panels
 

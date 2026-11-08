@@ -13,7 +13,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.counts.tools, 169);
   assert.equal(report.counts.matrixRows, 12 * 169);
   assert.equal(report.rows.length, 2028);
-  assert.equal(report.counts.localizedNepaliTools, 119, "49 Nepali PDF routes plus 70 Nepali catalog routes");
+  assert.equal(report.counts.localizedNepaliTools, 129, "49 Nepali PDF routes plus 80 Nepali catalog routes");
   assert.equal(report.counts.indexableNepaliTools, 6);
   assert.ok(!report.tools.some((tool) => ["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer", "market-ai"].includes(tool.slug)), "retired AI tools must not appear in the language matrix");
   assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 169);

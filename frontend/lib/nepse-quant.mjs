@@ -1,5 +1,9 @@
 const average = (values) => values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
-const nepalToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu" }).format(new Date());
+const nepalToday = () => {
+  const parts = new Intl.DateTimeFormat("en", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  const part = type => parts.find(item => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
+};
 function validTradingDate(date) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
   const parsed = new Date(date + "T00:00:00Z");

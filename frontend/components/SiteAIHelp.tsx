@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { localeFromPathname } from "../lib/i18n/shared-ui";
 import { usePathname } from "next/navigation";
 
 type Message = { role: "user" | "assistant"; text: string };
@@ -23,6 +24,20 @@ export default function SiteAIHelp() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [pageContext, setPageContext] = useState("");
+  const requestController = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    requestController.current?.abort();
+    requestController.current = null;
+    setMessages([{ role: "assistant", text: locale === "ne" ? "नमस्ते! म PDFora AI Help हुँ। कुन टुल वा नतिजाबारे सहयोग चाहिन्छ?" : "Hello! I’m PDFora AI Help. What would you like help with?" }]);
+    setQuestion("");
+    setError("");
+    setBusy(false);
+    return () => {
+      requestController.current?.abort();
+      requestController.current = null;
+    };
+  }, [locale]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -58,6 +73,9 @@ export default function SiteAIHelp() {
     setQuestion("");
     setError("");
     setBusy(true);
+    const controller = new AbortController();
+    requestController.current?.abort();
+    requestController.current = controller;
     try {
       const response = await fetch("/api/ai-writing", {
         method: "POST",

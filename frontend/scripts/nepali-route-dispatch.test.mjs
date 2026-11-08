@@ -48,10 +48,13 @@ assert.equal(new Set(all).size, all.length, "Nepali tool registries must not con
 const explicit = [...page.matchAll(/if \(request\.locale === "ne" && \[([^\]]+)\]\.includes\(toolSlug\)\)/g)]
   .map((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1]));
 assert.equal(explicit.length, 7, "Seven explicit Nepali component groups should be routed");
+const special = ["currency-converter", "image-compressor", "image-format-converter", "color-picker-palette", "notes-to-pdf", "nepal-share-calculator", "preeti-unicode-converter", "nepali-unicode-typing"];
 const utilityFallback = branchSlugs(utilityWorkspace);
-const utilityDispatch = new Set([...explicit.flat(), ...utilityFallback]);
+const utilityDispatch = new Set([...explicit.flat(), ...utilityFallback, ...special]);
 assert.ok(page.includes("nepaliLocalizedUtilitySlugs.includes(toolSlug") && page.includes("<NepaliUtilityWorkspace slug={toolSlug}"), "Registered utility routes must dispatch to the Nepali utility workspace");
-assert.deepEqual(utility.filter((slug) => !utilityDispatch.has(slug)), [], "Every Nepali utility route must have a dedicated component group or a real utility-workspace handler");
+assert.ok(page.includes("<NepaliSpecialCatalogWorkspace slug={toolSlug}"), "Special catalog routes must dispatch to their specialized Nepali workspace");
+assert.deepEqual(utility.filter((slug) => !utilityDispatch.has(slug)), [], "Every Nepali utility route must have a dedicated component group or a real workspace handler");
+assert.deepEqual(special.filter((slug) => !specialWorkspace.includes('"'+slug+'"')), [], "Every special catalog route must have a working specialized handler");
 
 assert.deepEqual(explicit[0].filter((slug) => !extraWorkspace.includes('"'+slug+'"')), [], "Extractor tools need labels and a working handler");
 assert.deepEqual(explicit[1].filter((slug) => !textWorkspace.includes('"'+slug+'"')), [], "Text tools need labels and a working handler");

@@ -273,7 +273,7 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
   async function loadNepse() {
     setBusy(true); setError(""); setAnalysis(null); setNewsReview(null);
     try {
-      const response = await fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", { cache: "no-store" });
+      const response = await fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", { cache: "no-store", signal: AbortSignal.timeout(15000) });
       const responseText = await response.text();
       let data: {
         error?: unknown;
@@ -314,7 +314,7 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
 
       setAnalysis(combined);
       setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
-    } catch (err) { setError(err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
+    } catch (err) { setError(err instanceof Error && err.name === "TimeoutError" ? "NEPSE market data request timed out. No signal was generated. Please retry later or upload a verified historical CSV." : err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
     finally { setBusy(false); }
   }
 

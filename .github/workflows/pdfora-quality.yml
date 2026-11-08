@@ -103,7 +103,7 @@ jobs:
           PDFORA_PRODUCTION_URL: http://127.0.0.1:3000
           PDFORA_EXPECT_CANONICAL_ORIGIN: https://pd-fora.vercel.app
         run: node scripts/production-security-smoke.mjs
-      - name: Run individual Chromium E2E checks for all 173 tools
+      - name: Run individual Chromium E2E checks for all 169 tools
         id: browser-e2e
         continue-on-error: true
         env:
@@ -111,13 +111,6 @@ jobs:
           E2E_BASE_URL: http://127.0.0.1:3000
           E2E_TOOL_TIMEOUT_MS: "45000"
         run: node scripts/browser-e2e-173.mjs
-      - name: Run real Cloudflare Workers AI and Upstash checks when Preview access is configured
-        id: preview-ai-smoke
-        continue-on-error: true
-        env:
-          PDFORA_AI_PREVIEW_URL: https://pd-fora-git-qa-173-tool-br-168b6d-pokhrelniroj94-7012s-projects.vercel.app
-          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
-        run: node scripts/preview-ai-smoke.mjs
       - name: Regenerate audit with browser evidence
         if: always()
         run: npm run audit:functional
@@ -137,9 +130,6 @@ jobs:
       - name: Fail CI after reports when production smoke checks fail
         if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.production-smoke.outcome == 'failure'
         run: exit 1
-      - name: Fail CI when live Preview AI provider checks fail
-        if: always() && steps.preview-ai-smoke.outcome == 'failure'
-        run: exit 1
       - name: Fail CI after all reports when live-data checks fail
         if: always() && steps.live-data-smoke.outcome == 'failure'
         run: exit 1
@@ -155,24 +145,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Wait for the new production Origin guard before frontend smoke tests
+      - name: Wait for retired AI endpoint removal before frontend smoke tests
         env:
           PDFORA_PRODUCTION_URL: https://pd-fora.vercel.app
         run: |
           for attempt in {1..60}; do
-            status=$(curl --silent --show-error --max-time 15 -o /dev/null -w "%{http_code}" \
-              -X POST "$PDFORA_PRODUCTION_URL/api/ai-writing" \
-              -H "Origin: https://attacker.example" \
-              -H "Content-Type: application/json" \
-              --data "not-json" || true)
-            if [ "$status" = "403" ]; then
-              echo "New production Origin guard is active."
+            status=$(curl --silent --show-error --max-time 15 -o /dev/null -w "%{http_code}" "$PDFORA_PRODUCTION_URL/api/ai-writing" || true)
+            if [ "$status" = "404" ] || [ "$status" = "410" ]; then
+              echo "Retired AI endpoint is unavailable."
               exit 0
             fi
             echo "Waiting for updated production deployment (attempt $attempt/60; HTTP $status)."
             sleep 5
           done
-          echo "Updated production Origin guard did not become active within five minutes."
+          echo "Retired AI endpoint did not return 404/410 within five minutes."
           exit 1
       - name: Verify deployed frontend security, privacy and SEO
         env:

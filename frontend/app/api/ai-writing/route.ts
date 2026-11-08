@@ -206,6 +206,26 @@ function buildPrompt(kind: WritingKind, input: Record<string, unknown>) {
 }
 
 export async function POST(request: Request) {
+  // Reject cross-origin browser submissions before reading or parsing the body.
+  const origin = request.headers.get("origin");
+  if (!origin) {
+    return Response.json({ error: "A same-origin request is required." }, { status: 403, headers: NO_STORE });
+  }
+  let requestOrigin: string;
+  try {
+    requestOrigin = new URL(request.url).origin;
+  } catch {
+    return Response.json({ error: "Invalid request origin." }, { status: 400, headers: NO_STORE });
+  }
+  let suppliedOrigin: string;
+  try {
+    suppliedOrigin = new URL(origin).origin;
+  } catch {
+    return Response.json({ error: "Invalid request origin." }, { status: 403, headers: NO_STORE });
+  }
+  if (suppliedOrigin !== requestOrigin || request.headers.get("sec-fetch-site") === "cross-site") {
+    return Response.json({ error: "Cross-origin requests are not allowed." }, { status: 403, headers: NO_STORE });
+  }
   const contentType = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
   if (contentType !== "application/json") {
     return Response.json({ error: "Send a JSON request." }, { status: 415, headers: NO_STORE });

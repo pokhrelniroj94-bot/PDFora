@@ -350,6 +350,14 @@ async function runTool(tool, index) {
   let page;
   try {
     page = await openPage(tool.url);
+    // Client-rendered AI workspaces can hydrate after the document reaches
+    // "interactive". Wait for the semantic heading instead of racing hydration.
+    const headingDeadline = Date.now() + 8000;
+    while (Date.now() < headingDeadline) {
+      const headingCount = await page.evaluate("document.querySelectorAll('h1').length");
+      if (headingCount > 0) break;
+      await delay(250);
+    }
     const initial = await page.evaluate(`(() => ({
       title: document.title,
       heading: document.querySelector("h1")?.innerText?.trim() || "",

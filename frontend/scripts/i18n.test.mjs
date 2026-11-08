@@ -7,20 +7,10 @@ import { ensureTypeStripping, frontendRoot, loadI18n } from "./lib/load-i18n.mjs
 
 ensureTypeStripping();
 const {
-  config, routing, translate, format, preference, switcher, metadata,
-  "shared-ui": sharedUi, "nepali-pdf-routes": nepaliRoutes,
-  "pdf-tool-names-ne": nepaliNames, "tool-guides-ne": nepaliGuides,
-  "pdf-tool-ui": pdfToolUi, "tool-guides": toolGuidesModule,
-  "pdf-tool-seo-core": pdfToolSeoCore, "pdf-tool-fields-ne": pdfToolFields,
+  config, routing, translate, "shared-ui": sharedUi,
   "nepali-localized-blog-posts": localizedBlogModule,
 } = await loadI18n();
-const { getPdfToolCopy } = pdfToolUi;
 const { createTranslator } = translate;
-const { nepaliToolGuides } = nepaliGuides;
-const { nepaliToolNames } = nepaliNames;
-const { toolGuides } = toolGuidesModule;
-const { buildPdfToolMetadata } = pdfToolSeoCore;
-const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
 test("every curated Nepali blog article is a real localized route with hreflang", () => {

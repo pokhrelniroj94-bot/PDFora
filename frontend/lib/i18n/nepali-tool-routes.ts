@@ -1,4 +1,12 @@
 export const nepaliLocalizedUtilitySlugs = [
+  "currency-converter",
+  "image-compressor",
+  "image-format-converter",
+  "color-picker-palette",
+  "notes-to-pdf",
+  "nepal-share-calculator",
+  "preeti-unicode-converter",
+  "nepali-unicode-typing",
   "nepali-digit-converter",
   "nepali-number-converter",
   "nepali-date-converter",

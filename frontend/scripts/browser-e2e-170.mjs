@@ -662,7 +662,7 @@ async function runTool(tool, index) {
       const catalogDownloadsBefore = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
       const clicked = tool.slug === "nepal-forex-rates" ? "" : await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
-        const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*|show calendar)$/i;
+        const patterns = /^(run tool|calculate.*|convert.*|generate.*|check.*|analyse.*|analyze.*|format json|minify|encode|decode|create pdf|create.*|compress image|convert image|get latest exchange rate|refresh.*|resize.*|process.*|show calendar)$/i;
         const button = buttons.find((b) => patterns.test(b.innerText.trim()));
         if (button) { button.click(); return button.innerText.trim(); }
         return "";
@@ -675,6 +675,37 @@ async function runTool(tool, index) {
         await delay(["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug) ? 1500 : 800);
       } else {
         row.checks.push("reactive output/controls inspected (no submit button by design)");
+      }
+      if (tool.slug === "nepse-technical-analysis") {
+        const analysisStarted = Date.now();
+        let analysisState = null;
+        while (Date.now() - analysisStarted < 25000) {
+          analysisState = await page.evaluate(`(() => ({
+            body: document.querySelector("main")?.innerText || "",
+            alert: document.querySelector("main [role=alert]")?.innerText || "",
+            hasAnalysis: /Computed technical setup/.test(document.querySelector("main")?.innerText || ""),
+            hasMetrics: /EMA20/.test(document.querySelector("main")?.innerText || "") && /RSI/.test(document.querySelector("main")?.innerText || "") && /MACD/.test(document.querySelector("main")?.innerText || "")
+          }))()`);
+          if (analysisState.hasAnalysis || analysisState.alert) break;
+          await delay(500);
+        }
+        if (analysisState?.hasAnalysis && analysisState.hasMetrics && !/NaN|Infinity|undefined/.test(analysisState.body)) {
+          row.checks.push("NEPSE history analysis returned a signal with EMA20, RSI and MACD values; no invalid numeric output");
+          row.outputVerified = true;
+          row.status = "PASS";
+          row.evidenceLevel = "live-nepse-analysis-output-verified";
+          row.output = analysisState.body.slice(-1600);
+          return row;
+        }
+        if (analysisState?.alert && /unavailable|at least 100 valid|history|data/i.test(analysisState.alert)) {
+          row.checks.push("NEPSE analysis safely reports unavailable/insufficient source data without fabricating a signal");
+          row.outputVerified = true;
+          row.status = "PASS";
+          row.evidenceLevel = "safe-no-data-fallback-verified";
+          row.output = analysisState.alert;
+          return row;
+        }
+        throw new Error("NEPSE analysis did not render a verifiable signal or a safe data-unavailable message.");
       }
       if (["image-compressor", "image-format-converter", "loksewa-photo-resizer"].includes(tool.slug)) {
         const downloadStarted = Date.now();

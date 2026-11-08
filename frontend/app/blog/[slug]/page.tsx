@@ -52,16 +52,6 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       { "@type": "ListItem", position: 3, name: post.title, item: `${baseUrl}/blog/${post.slug}` },
     ],
   };
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: post.faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: { "@type": "Answer", text: faq.answer },
-    })),
-  };
-
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
       <article className="mx-auto max-w-3xl">
@@ -74,7 +64,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora Guide · {post.readTime}</p>
           <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
-          <p className="mt-5 text-xs text-slate-500">By PDFora Editorial Team · Last updated {new Date(post.updated + "T00:00:00Z").toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</p>
+          <p className="mt-5 text-xs text-slate-500">Published by PDFora · Last updated {new Date(post.updated + "T00:00:00Z").toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</p>
         </header>
 
         <div className="mt-6 space-y-6">
@@ -116,7 +106,6 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
       </article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </main>
   );
 }

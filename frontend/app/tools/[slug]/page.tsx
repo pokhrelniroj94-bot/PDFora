@@ -59,11 +59,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "px-rem-converter": { title: "PX to REM Converter – CSS Units with Root Font Size", description: "Convert CSS pixel values to rem and rem to pixels using an editable root font size. Useful for responsive typography and spacing." },
     "color-contrast-checker": { title: "Color Contrast Checker – WCAG Text Accessibility", description: "Check foreground and background colour contrast ratios and review WCAG guidance for normal and large text." },
     "word-character-counter": { title: "Word Counter – Count Words, Characters & Reading Time", description: "Count words, characters with or without spaces, sentences and paragraphs, and estimate reading time for pasted text." },
-    "percentage-change-calculator": [
-      { q: "What is the percentage change formula?", a: "Percentage change = (new value − original value) ÷ original value × 100, when the original value is not zero." },
-      { q: "Is a 20% increase the same as a 20% decrease?", a: "No. A move from 100 to 120 is +20%, but a move from 120 to 100 is −16.67%, because the original value changes." },
-      { q: "Can I calculate percentage change from zero?", a: "No. The original value is the baseline, and division by zero is undefined." }
-    ],
     "reading-time-calculator": { title: "Reading Time Calculator – Words to Minutes & WPM", description: "Estimate article reading time from its word count. Adjust reading speed in words per minute (WPM); the result is an estimate, not a guaranteed duration." },
     "json-formatter-validator": { title: "JSON Formatter & Validator – Pretty Print or Minify JSON", description: "Format, minify and validate JSON syntax with readable indentation. Check malformed JSON before using it in an application." },
     "base64-encoder-decoder": { title: "Base64 Encoder & Decoder – Convert Text Online", description: "Encode text to Base64 or decode Base64 back to text in your browser. Base64 is an encoding, not encryption." },
@@ -396,6 +391,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Does the calculator include service charge?", a: "No. Check the bill first and avoid adding a second tip or service charge unintentionally." },
       { q: "How is the bill split?", a: "The calculator divides the bill plus tip equally by the number of people. It does not calculate different item-by-item shares." }
     ],
+    "percentage-change-calculator": [
+      { q: "What is the percentage change formula?", a: "Percentage change = (new value − original value) ÷ original value × 100, when the original value is not zero." },
+      { q: "Is a 20% increase the same as a 20% decrease?", a: "No. A move from 100 to 120 is +20%, but a move from 120 to 100 is −16.67%, because the original value changes." },
+      { q: "Can I calculate percentage change from zero?", a: "No. The original value is the baseline, and division by zero is undefined." }
+    ],
+
 
     "reading-time-calculator": [
       { q: "How is reading time estimated?", a: "The estimate divides the word count by an assumed reading speed, usually expressed in words per minute." },

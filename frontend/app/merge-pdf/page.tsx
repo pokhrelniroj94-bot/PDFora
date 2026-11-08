@@ -11,9 +11,9 @@ export default function Page() {
           <p className="text-xs font-black uppercase tracking-[0.2em] text-blue-600">
             PDFora PDF Tools
           </p>
-          <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+          <h2 className="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
             Merge PDF Online
-          </h1>
+          </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
             Combine multiple PDF files into one document. Select your files,
             arrange their order, and download the merged PDF.

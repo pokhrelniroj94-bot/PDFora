@@ -15,7 +15,8 @@ const quickQuestions = [
 
 export default function SiteAIHelp() {
   const pathname = usePathname();
-  const pagePath = (pathname || "/").replace(/^\/(ne|hi|es|fr|de|pt|ar|bn|id|zh|ja)(?=\/|$)/, "") || "/";
+  const locale = localeFromPathname(pathname || "/");
+  const pagePath = (pathname || "/").replace(new RegExp(`^/${locale}(?=/|$)`), "") || "/";
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([

@@ -134,3 +134,7 @@ Regression checks verify that the allowlist contains only real catalogue slugs, 
 This aligns the implementation more closely with Google's people-first and scaled-content guidance: do not publish large volumes of repetitive, low-value pages for search visibility; keep pages out of Search until they independently help users. References: [Google people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content), [Google spam policies — scaled content abuse](https://developers.google.com/search/docs/essentials/spam-policies).
 
 Still required before calling the SEO release complete: rendered Preview crawl of every sitemap URL; HTTP status/canonical/robots/hreflang verification; structured-data validation against visible content; page-by-page English and Nepali editorial review; and Search Console review after deployment and recrawl. No ranking, indexing or traffic outcome is guaranteed.
+
+## Nepali editorial internal-link correction — 2026-11-08
+
+A route-level review found that Nepali blog article tool links were only localized when the source href began with /tools/. Root-level PDF tool links such as /pdf-to-excel therefore remained English links inside Nepali articles. The localized article renderer now maps catalogue links to /ne/tools/... and root-level tool links to /ne/..., while preserving already-localized /ne/... links. A regression assertion covers both route families. This prevents avoidable language switching and keeps internal navigation consistent with the article locale.

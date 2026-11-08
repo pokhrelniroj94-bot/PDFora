@@ -60,8 +60,8 @@ assert.ok(liveSource.includes('function HolidayTool({ locale = "en" }'), "Holida
 assert.ok(pageSource.includes("nepaliLocalizedPublicInfoSlugs.includes"), "Public information tools must have their own route category, not appear as finance tools");
 assert.ok(pageSource.includes("nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug"), "Public information pages must receive their Nepali title and description metadata");
 assert.ok(pageSource.includes("नेपालका आधिकारिक सेवा तथा सार्वजनिक सूचना"), "Public information pages must use an accurate localized category heading");
-assert.ok(liveSource.includes('return <ElectricityTool locale={locale}/>'), "Electricity tool must receive the selected locale");
-assert.ok(liveSource.includes('return <HolidayTool locale={locale}/>'), "Holiday tool must receive the selected locale");
+assert.ok(liveSource.includes('const ne = locale ? locale === "ne" : pathname?.startsWith("/ne/") ?? false;') && liveSource.includes('return <ElectricityTool locale={ne ? "ne" : "en"}/>'), "Electricity tool must receive an explicit or pathname-derived route locale");
+assert.ok(liveSource.includes('return <HolidayTool locale={ne ? "ne" : "en"}/>'), "Holiday tool must receive the selected route locale");
 for (const required of ["नेपाली नयाँ वर्ष", "हरितालिका तीज", "शहीद दिवस", "महिला कर्मचारीका लागि मात्र", "आधिकारिक गृह मन्त्रालय"]) {
   assert.ok(liveSource.includes(required) || pageSource.includes(required), `Expected Nepali holiday copy: ${required}`);
 }

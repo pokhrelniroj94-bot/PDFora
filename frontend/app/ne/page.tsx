@@ -24,13 +24,15 @@ const pdfTools = [
 ];
 
 const nepalTools = [
-  { href: "/ne/tools/nepali-date-converter", title: "विक्रम संवत् मिति रूपान्तरण", description: "वि.सं. र ई.सं. बीच समर्थित मिति रूपान्तरण गर्नुहोस्।" },
+  { href: "/ne/nepali-janma-kundali", title: "वैदिक जन्मकुण्डली", description: "जन्म मिति, समय र स्थानका आधारमा परम्परागत कुण्डली विवरण तयार गर्नुहोस्। ज्योतिषीय व्याख्या निश्चित भविष्यवाणी होइन।" },
+  { href: "/ne/nepali-guna-milan", title: "३६ गुण मिलान", description: "दुई जनाको जन्म विवरणबाट परम्परागत अष्टकूट गुण मिलान हेर्नुहोस्। यसलाई सम्बन्धको एकमात्र आधार नबनाउनुहोस्।" },
+  { href: "/ne/tools/nepali-date-converter", title: "विक्रम संवत् मिति रूपान्तरण", description: "विक्रम संवत् (वि.सं.) र इस्वी संवत् (ई.सं.) बीच मिति परिवर्तन गर्नुहोस्।" },
   { href: "/ne/tools/nepali-unicode-typing", title: "नेपाली युनिकोड टाइपिङ", description: "रोमन अक्षरमा नेपाली लेखेर देवनागरी युनिकोड पाठ तयार गर्नुहोस्।" },
   { href: "/ne/tools/nepal-forex-rates", title: "नेपाल राष्ट्र बैंकको विनिमय दर", description: "उपलब्ध पछिल्लो प्रकाशित विदेशी मुद्रा खरिद तथा बिक्री दर हेर्नुहोस्।" },
   { href: "/ne/tools/nepal-salary-tax-calculator", title: "नेपाल तलब तथा आयकर हिसाब", description: "आम्दानीका आधारमा अनुमानित कर गणना गर्नुहोस्; अन्तिम कर निर्धारण होइन।" },
   { href: "/ne/tools/nepal-electricity-bill-calculator", title: "आधिकारिक ERC बिजुली बिल क्याल्कुलेटर", description: "विद्युत् नियमन आयोगको अद्यावधिक आधिकारिक क्याल्कुलेटर खोल्नुहोस्।" },
   { href: "/ne/tools/nepal-public-holidays-2083", title: "नेपालका सार्वजनिक बिदा २०८३", description: "२०८३ सालका राष्ट्रिय तथा क्षेत्रगत सार्वजनिक बिदाको विवरण हेर्नुहोस्।" },
-  { href: "/ne/nepse-technical-analysis", title: "NEPSE प्राविधिक विश्लेषण", description: "उपलब्ध ऐतिहासिक बजार तथ्याङ्कबाट सूचक, जोखिम र समर्थन तथा प्रतिरोध स्तर हेर्नुहोस्। यो लगानी सल्लाह होइन।" },
+  { href: "/ne/tools/nepse-technical-analysis", title: "NEPSE प्राविधिक विश्लेषण", description: "उपलब्ध बजार तथ्याङ्कका सूचक हेर्नुहोस्; कुनै पनि संकेत लगानीको सुनिश्चित सल्लाह होइन।" },
 ];
 
 const faqs = [

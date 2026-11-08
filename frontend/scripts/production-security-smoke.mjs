@@ -13,16 +13,18 @@ function check(name, condition, detail = "") {
   checks.push({ name, status: condition ? "PASS" : "FAIL", detail });
   if (!condition) failures.push(name + (detail ? ": " + detail : ""));
 }
-const [home, robots, sitemap, privacy] = await Promise.all([
+const [home, robots, sitemap, privacy, nepseLab] = await Promise.all([
   get("/"),
   get("/robots.txt"),
   get("/sitemap.xml"),
   get("/privacy"),
+  get("/tools/nepse-technical-analysis"),
 ]);
 check("homepage HTTP 200", home.status === 200, String(home.status));
 check("robots.txt HTTP 200", robots.status === 200, String(robots.status));
 check("sitemap.xml HTTP 200", sitemap.status === 200, String(sitemap.status));
 check("privacy policy HTTP 200", privacy.status === 200, String(privacy.status));
+check("non-AI NEPSE technical analysis route HTTP 200", nepseLab.status === 200, String(nepseLab.status));
 
 const headers = home.headers;
 const hsts = headers.get("strict-transport-security") || "";
@@ -53,16 +55,16 @@ check("sitemap excludes unpublished language routes", !sitemapUrls.some((url) =>
 
 const privacyText = (await privacy.text()).toLowerCase();
 check("privacy policy discloses advertising provider", privacyText.includes("adsterra") && privacyText.includes("advertising"));
-check("privacy policy discloses Cloudflare AI processing", privacyText.includes("cloudflare workers ai") && privacyText.includes("ai"));
+check("privacy policy no longer discloses removed AI processing", !privacyText.includes("cloudflare workers ai") && !privacyText.includes("ai resume writer"));
 check("privacy policy describes temporary upload processing", privacyText.includes("temporarily") && privacyText.includes("after processing"));
-const hostileAi = await fetch(new URL("/api/ai-writing", base), {
+const removedAiEndpoint = await fetch(new URL("/api/ai-writing", base), {
   method: "POST",
-  headers: { Origin: "https://attacker.example", "Content-Type": "application/json" },
-  body: "not-json",
+  headers: { Origin: new URL(base).origin, "Content-Type": "application/json" },
+  body: JSON.stringify({ kind: "site-help", question: "This endpoint must no longer exist." }),
   cache: "no-store",
   signal: AbortSignal.timeout(15000),
 });
-check("AI endpoint rejects untrusted browser Origin before parsing", hostileAi.status === 403, String(hostileAi.status));
+check("removed AI generation endpoint returns 404", removedAiEndpoint.status === 404, String(removedAiEndpoint.status));
 
 const html = await home.text();
 const canonicalTag = html.match(/<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/i)?.[0] || "";

@@ -15,8 +15,8 @@ for (const [name, source] of [["Niroj77Tool", niroj], ["PDForaTool", pdfora]]) {
   assert.ok(source.includes("locale === \"ne\""), name + " must retain Nepali feedback");
 }
 
-assert.ok(utilities.includes("window.setTimeout(()=>URL.revokeObjectURL(outputUrl),1000)"), "Image downloads must retain the generated object URL long enough to start");
-assert.ok(utilities.includes("if(sourceUrl) URL.revokeObjectURL(sourceUrl)"), "Image source object URLs must be cleaned up");
+assert.ok(utilities.includes("const u=URL.createObjectURL(new Blob([text],{type}))") && utilities.includes("window.setTimeout(()=>URL.revokeObjectURL(u),1000)"), "Image downloads must retain the generated object URL long enough to start");
+assert.ok(utilities.includes("if(sourceUrl)URL.revokeObjectURL(sourceUrl)") && utilities.includes("if(outputUrl)URL.revokeObjectURL(outputUrl)"), "Image source and output object URLs must be cleaned up on success and failure");
 assert.ok(utilities.includes("if(file.size>50*1024*1024)"), "Image tools must reject files over the advertised size limit");
 assert.ok(!homepage.includes("upload the required file"), "Homepage utility cards must not give generic PDF-upload instructions");
 assert.ok(homepage.includes("review the result before using or downloading it"), "Homepage cards must show neutral, tool-appropriate guidance");
@@ -35,8 +35,8 @@ assert.ok(catalogText.includes("CSV row ") && catalogText.includes("unclosed quo
 assert.ok(quickUtilities.includes("randomBelow(6)+1"), "Dice rolls must use unbiased random integers");
 assert.ok(extraTools.includes("chars[randomBelow(chars.length)]"), "Password characters must use unbiased random integers");
 assert.ok(inputHelpers.includes("value >= limit"), "Random helper must reject the incomplete modulo bucket");
-assert.ok(utilities.includes("if(!raw.trim())return Number.NaN"), "PDF/calculator workspace must not coerce blank or malformed numeric fields to zero");
-assert.ok(utilities.includes("wordCount>=8&&wordCount<=500"), "Lorem Ipsum generator must enforce its advertised word-count bounds");
+assert.ok(utilities.includes('raw.trim()===""?Number.NaN:Number(raw)'), "PDF/calculator workspace must reject blank and malformed numeric fields instead of coercing them to zero");
+assert.ok(utilities.includes("wordCount<8||wordCount>500") && utilities.includes("count<1||count>20"), "Lorem Ipsum generator must reject values outside its advertised paragraph and word-count bounds");
 
 assert.ok(nepalTools.includes('amount.trim()!==""&&rate.trim()!==""'), "Nepal VAT must reject blank amount and rate fields");
 assert.ok(nepalTools.includes('number.trim()!==""&&Number.isSafeInteger(n)'), "Nepali number conversion must not treat blank input as zero");

@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import ToolSEOContent from "./ToolSEOContent";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
@@ -250,16 +249,16 @@ export default function PDForaTool({
       </header>
 
       {/* Main */}
-      <section className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">
             {ui.toolLabel}
           </p>
 
-          <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
+          <h1 className="mt-2 text-3xl font-black tracking-tight sm:text-5xl">
             {displayTitle}
-          </h2>
+          </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
             {displayDescription}
@@ -461,8 +460,7 @@ export default function PDForaTool({
         {/* Advertisement is intentionally outside the upload and processing flow. */}
         <div className="mt-8 border-t border-slate-200 pt-2">
         </div>
-      </section>
-      <ToolSEOContent slug={currentSlug} locale={locale} />
+      </main>
     </div>
   );
 }

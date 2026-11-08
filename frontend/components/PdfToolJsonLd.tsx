@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 
 export interface PdfToolFaq { question: string; answer: string; }
-export interface PdfToolJsonLdProps { name: string; description: string; url: string; locale: "en" | "ne"; faqs?: PdfToolFaq[]; price?: string; }
+export interface PdfToolJsonLdProps { name: string; description: string; url: string; locale: "en" | "ne"; price?: string; }
 
 function safeJsonLd(value: unknown): string {
   return JSON.stringify(value).replace(/</g, "\\u003c");

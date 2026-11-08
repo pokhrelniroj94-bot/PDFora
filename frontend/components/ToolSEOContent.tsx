@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AdsterraNative from "../app/components/AdsterraNative";
 import { getToolGuide } from "../lib/tool-guides";
+import { isGeneratedPdfGuide } from "../lib/blog-posts";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 const seoLabels = {
@@ -124,7 +125,7 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
         <h2 className="text-xl font-black text-slate-950">{locale === "ne" ? "सम्बन्धित PDF टुल र मार्गदर्शिका" : "Related PDF tools and guides"}</h2>
         <p className="mt-3 text-sm leading-8 text-slate-700">{locale === "ne" ? "केही PDF काम सही क्रममा गर्दा सजिलो हुन्छ। पहिले कागजात व्यवस्थित गर्नुहोस्, त्यसपछि मुख्य प्रक्रिया पूरा गरी अन्तिम नतिजा जाँच्नुहोस्। आवश्यक काम मात्र गर्नुहोस्; उपलब्ध सबै प्रक्रिया अनावश्यक रूपमा लागू नगर्नुहोस्।" : "Some PDF tasks are easier when completed in a sensible order. You may want to organise or prepare a document first, complete the main operation, and then inspect the final result. Use only the steps required for your document rather than applying every available operation."}</p>
         <div className="mt-4 flex flex-wrap gap-3">
-          <Link href={`/blog/${guide.blogSlug}`} className="rounded-xl bg-violet-700 px-4 py-2 text-sm font-bold text-white hover:bg-violet-800">{locale === "ne" ? `${toolName} को विस्तृत मार्गदर्शिका पढ्नुहोस्` : `Read the complete ${toolName} guide`}</Link>
+          {!isGeneratedPdfGuide(guide.blogSlug) ? <Link href={`${locale === "en" ? "" : `/${locale}`}/blog/${guide.blogSlug}`} className="rounded-xl bg-violet-700 px-4 py-2 text-sm font-bold text-white hover:bg-violet-800">{locale === "ne" ? `${toolName} को विस्तृत मार्गदर्शिका पढ्नुहोस्` : `Read the complete ${toolName} guide`}</Link> : null}
           {guide.related.map((slug) => { const related = getToolGuide(slug); return related ? <Link key={slug} href={`${locale === "en" ? "" : `/${locale}`}/${slug}`} className="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-bold text-violet-800 hover:bg-violet-100">{(locale === "ne" ? nepaliToolNames[slug] : undefined) || related.name}</Link> : null; })}
         </div>
       </section>

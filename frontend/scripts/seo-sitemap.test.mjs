@@ -18,9 +18,31 @@ const nepaliBlogArticleSource = read("app/[locale]/blog/[slug]/page.tsx");
 const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
 const pdfToolSeoSource = read("components/ToolSEOContent.tsx");
 const nepaliToolsDirectorySource = read("app/[locale]/tools/page.tsx");
-const nepaliNepseSource = read("app/ne/nepse-technical-analysis/page.tsx");
+const nextConfigSource = read("next.config.ts");
 const englishToolPageSource = read("app/tools/[slug]/page.tsx");
+const pdfToolWorkspaceSource = read("components/PDForaTool.tsx");
+const niroj77ToolWorkspaceSource = read("components/Niroj77Tool.tsx");
+const mergePdfLayoutSource = read("app/merge-pdf/layout.tsx");
+
+const englishHomeSource = read("app/page.tsx");
+const nepaliHomeSource = read("app/ne/page.tsx");
+const englishBlogIndexSource = read("app/blog/page.tsx");
+const toolsIndexSource = read("app/tools/page.tsx");
+const toolDirectorySource = read("lib/tool-directory.ts");
+const blogPostSource = read("lib/blog-posts.ts");
+const localeMetadataSource = read("lib/i18n/metadata.ts");
+const toolSeoContentSource = read("components/ToolSEOContent.tsx");
+const catalogToolSeoContentSource = read("components/CatalogToolSEOContent.tsx");
+const pdfToolMetadataSource = read("lib/i18n/pdf-tool-seo-core.ts");
+const catalogIndexabilitySource = read("lib/tools/catalog-indexability.ts");
+const catalogSeoContentSource = read("components/CatalogToolSEOContent.tsx");
+
+const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
+const { toolGuides } = await import("../lib/tool-guides.ts");
+const { toolCatalog } = await import("../components/toolCatalog.ts");
+const { indexableCatalogToolSlugs, isCatalogToolIndexable } = await import("../lib/tools/catalog-indexability.ts");
+const { buildPdfToolMetadata } = await import("../lib/i18n/pdf-tool-seo-core.ts");
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
 const isLocalizedToolIndexable = modules["localized-verification"].isLocalizedToolIndexable;
@@ -29,7 +51,6 @@ const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedUtilitySlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedFinancialSlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedPublicInfoSlugs,
-  ...modules["nepali-tool-routes"].nepaliLocalizedCareerSlugs,
 ];
 
 assert.deepEqual(
@@ -37,6 +58,46 @@ assert.deepEqual(
   [...pdfRoutes.filter((slug) => isLocalizedToolIndexable("ne", slug))].sort(),
   "The explicit Nepali PDF allowlist must match exactly the PDF routes approved for indexing",
 );
+
+assert.doesNotMatch(pdfToolWorkspaceSource, /ToolSEOContent/, "PDForaTool must not render a second SEO guide");
+assert.doesNotMatch(niroj77ToolWorkspaceSource, /ToolSEOContent/, "Niroj77Tool must not render a second SEO guide");
+assert.match(read("app/[locale]/[slug]/page.tsx"), /<ToolSEOContent slug=\{slug\} locale="ne" \/>/, "Nepali PDF routes must render their localized SEO guide explicitly");
+assert.match(mergePdfLayoutSource, /<ToolSEOContent slug="merge-pdf" \/>/, "The PDF page layout must remain the single owner of its SEO guide");
+assert.equal(legacyPdfSlugs.length, 49, "Expected all 49 established PDF routes in the canonical registry");
+
+const catalogueToolSlugs = toolCatalog.map((tool) => tool.slug).filter((slug) => slug !== "pdf-tools");
+assert.equal(catalogueToolSlugs.length, 121, "Expected 121 catalogue utilities");
+for (const retired of ["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer", "market-ai"]) assert.ok(!catalogueToolSlugs.includes(retired), `Retired AI tool must not be in the catalogue: ${retired}`);
+assert.equal(new Set([...legacyPdfSlugs, ...catalogueToolSlugs]).size, 170, "All 170 tools must have one unique canonical route identity");
+
+const pdfMetadataTitles = new Set();
+const pdfMetadataDescriptions = new Set();
+for (const slug of legacyPdfSlugs) {
+  const metadata = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === slug), slug);
+  assert.equal(metadata.alternates?.canonical, `https://pd-fora.vercel.app/${slug}`, `${slug} must have a self-canonical URL`);
+  assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} must remain indexable only with its dedicated guide`);
+  assert.ok(metadata.openGraph?.title && metadata.openGraph?.description, `${slug} must have Open Graph metadata`);
+  assert.ok(metadata.twitter?.title && metadata.twitter?.description, `${slug} must have Twitter metadata`);
+  pdfMetadataTitles.add(String(metadata.title));
+  pdfMetadataDescriptions.add(String(metadata.description));
+}
+assert.equal(pdfMetadataTitles.size, legacyPdfSlugs.length, "All PDF tools must have unique metadata titles");
+assert.equal(pdfMetadataDescriptions.size, legacyPdfSlugs.length, "All PDF tools must have unique metadata descriptions");
+
+for (const slug of legacyPdfSlugs) {
+  const layout = read(`app/${slug}/layout.tsx`);
+  assert.equal((layout.match(/<ToolSEOContent\b/g) ?? []).length, 1, `${slug} must render exactly one shared PDF SEO guide from its layout`);
+  const page = read(`app/${slug}/page.tsx`);
+  assert.doesNotMatch(page, /ToolGuide|Frequently asked questions|How it works|More PDF tools/, `${slug} must not duplicate guide or promotional sections outside its shared layout`);
+}
+
+const consolidatedPdfPages = ["merge-pdf", "delete-pages", "compress-pdf", "extract-pages", "images-to-pdf", "pdf-to-excel", "pdf-to-jpg", "pdf-to-word", "split-pdf", "watermark", "rotate-pdf"];
+for (const slug of consolidatedPdfPages) {
+  const page = read(`app/${slug}/page.tsx`);
+  assert.equal((page.match(/<section\b/g) ?? []).length, 1, `${slug} should retain one clear tool hero and workspace section`);
+  assert.doesNotMatch(page, /ToolGuide|Frequently asked questions|How it works|More PDF tools/, `${slug} should not repeat the detailed guide or legacy promotional sections`);
+}
+
 
 assert.match(sitemapSource, /Object\.keys\(nepaliPdfRoutes\)/, "Sitemap must derive PDF URLs from the canonical route registry");
 assert.match(sitemapSource, /isLocalizedToolIndexable\("ne", slug\)/, "Localized sitemap entries must pass the same default-deny gate as metadata");
@@ -55,7 +116,10 @@ assert.doesNotMatch(pdfToolSeoSource, /FAQPage/, "Localized PDF tool pages must 
 assert.doesNotMatch(blogArticleSource, /"@type":\s*"FAQPage"/, "Do not emit obsolete FAQ rich-result markup");
 assert.match(blogArticleSource, /"@type":\s*"BlogPosting"/, "Blog articles must retain accurate Article structured data");
 assert.match(nepaliToolsDirectorySource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "The partially translated Nepali directory must stay noindex");
-assert.match(nepaliNepseSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "The not-yet-reviewed Nepali NEPSE page must stay noindex");
+assert.ok(!fs.existsSync(new URL("../app/ne/nepse-technical-analysis/page.tsx", import.meta.url)), "The duplicate standalone Nepali NEPSE page must not return; the shared localized tool route is canonical");
+assert.match(nextConfigSource, /source: "\/ne\/nepse-technical-analysis", destination: "\/ne\/tools\/nepse-technical-analysis", permanent: true/, "The old standalone Nepali NEPSE URL must permanently redirect to the canonical route");
+assert.match(nextConfigSource, /"ai-resume-writer", "ai-cover-letter-generator"/, "Retired AI resume/cover-letter URLs must redirect to the manual Resume Builder");
+assert.doesNotMatch(nextConfigSource, /ai-humanizer/, "The humanizer has no relevant replacement and must not redirect to an unrelated page");
 assert.doesNotMatch(sitemapSource, /nepaliLocalizedPublicInfoSlugs/, "Unreviewed public-info translations must not be added to the indexable sitemap automatically");
 
 const reciprocalEnglishPages = [
@@ -121,5 +185,107 @@ for (const slug of approvedNepali) {
   assert.equal(metadata.alternates?.languages?.ne, `https://pd-fora.vercel.app/ne${pathName}`);
   assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app${pathName}`);
 }
+
+
+assert.match(read("app/layout.tsx"), /metadataBase:\s*new URL\("https:\/\/pd-fora\.vercel\.app"\)/, "The site must have one consistent metadata base");
+assert.match(read("app/about/page.tsx"), /title:\s*\{\s*absolute:\s*"About PDFora \| Free Online PDF Tools & Nepal Utilities"/, "About page must use an absolute descriptive title without duplicating the root brand template");
+
+assert.match(layoutSource, /title:\s*\{\s*default:[\s\S]*?template:\s*"%s \| PDFora"/, "The root layout must own the single PDFora title suffix");
+for (const relativePath of ["app/tools/page.tsx", "app/market/page.tsx", "app/nepse-lab/page.tsx", "app/resume-builder/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx", "app/contact/page.tsx", "app/[locale]/blog/page.tsx", "app/[locale]/[slug]/page.tsx"]) {
+  const source = read(relativePath);
+  const pageMetadata = source.split("openGraph:")[0];
+  // Social card titles may include the brand; only the page title inherits the root template.
+  assert.doesNotMatch(pageMetadata, /title:\s*"[^"]*\|\s*PDFora"/, relativePath + " must not repeat the root title-template brand suffix");
+}
+assert.match(read("lib/tools/localized-metadata.ts"), /title: entry\.name/, "Localized tool titles must rely on the shared root brand suffix");
+assert.match(read("lib/i18n/pdf-tool-seo-core.ts"), /const title = `\$\{guide\.name\} Online`/, "PDF guide titles must rely on the shared root brand suffix");
+
+for (const [source, label] of [[englishHomeSource, "English home"], [nepaliHomeSource, "Nepali home"]]) {
+  assert.match(source, /alternates:\s*\{[\s\S]*?canonical:/, `${label} must declare a self-canonical URL`);
+  assert.match(source, /openGraph:\s*\{/, `${label} must provide Open Graph metadata`);
+  assert.match(source, /twitter:\s*\{/, `${label} must provide social preview metadata`);
+}
+assert.match(englishToolPageSource, /alternates:\s*\{\s*canonical/, "Catalog tool pages must publish self-canonical URLs");
+assert.ok(englishToolPageSource.includes("const title = seo?.title ?? `${tool.name} Online`"), "Fallback metadata title must rely on the root brand template exactly once");
+assert.doesNotMatch(englishToolPageSource, /keywords\s*[:,]/, "Utility pages must not emit ignored meta-keywords");
+assert.doesNotMatch(read("app/tools/page.tsx"), /keywords\s*:/, "The tools directory must not emit ignored meta-keywords");
+assert.doesNotMatch(read("app/resume-builder/page.tsx"), /keywords\s*:/, "Resume builder must not emit ignored meta-keywords");
+assert.doesNotMatch(read("lib/i18n/pdf-tool-seo-core.ts"), /keywords/, "PDF guide metadata must not emit ignored meta-keywords");
+assert.match(englishToolPageSource, /openGraph:\s*\{/, "Catalog tool pages must publish Open Graph metadata");
+assert.match(englishToolPageSource, /twitter:\s*\{/, "Catalog tool pages must publish Twitter metadata");
+assert.match(englishToolPageSource, /robots:\s*\{\s*index:\s*isCatalogToolIndexable\(slug\)/, "Catalogue tool indexing must use the explicit editorial allowlist");
+assert.match(sitemapSource, /isCatalogToolIndexable\(tool\.slug\)/, "Only reviewed catalogue tools may enter the sitemap");
+assert.match(catalogIndexabilitySource, /Default-deny indexability/, "Catalogue indexability must document the editorial gate");
+assert.ok(indexableCatalogToolSlugs.size > 0, "At least one reviewed catalogue tool should remain indexable");
+assert.equal(toolCatalog.filter((tool) => isCatalogToolIndexable(tool.slug)).length, indexableCatalogToolSlugs.size, "The indexability allowlist must contain only real catalogue slugs");
+for (const slug of indexableCatalogToolSlugs) {
+  const mentions = catalogSeoContentSource.match(new RegExp(slug, "g")) || [];
+  assert.ok(mentions.length >= 2, `Indexable catalogue tool must have a dedicated guide entry: ${slug}`);
+}
+assert.match(blogArticleSource, /alternates:\s*\{\s*canonical:\s*url/, "English articles must publish self-canonicals");
+assert.match(blogArticleSource, /robots:\s*(?:isCatalogGeneratedGuide\(post\.slug\)\s*\|\|\s*isGeneratedPdfGuide\(post\.slug\))\s*\?\s*\{\s*index:\s*false/, "All generated thin blog guides must remain noindex");
+assert.match(blogPostSource, /generatedPdfGuideSlugs = new Set\(additionalToolBlogPosts\.map/, "Generated PDF blog guide variants must be explicitly classified");
+assert.match(blogArticleSource, /isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide articles must remain noindex");
+assert.match(englishBlogIndexSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must not appear as editorial blog cards");
+assert.match(englishBlogIndexSource, /twitter:\s*\{/, "Editorial blog index must provide Twitter preview metadata");
+assert.match(englishBlogIndexSource, /openGraph:\s*\{[\s\S]*?images:/, "Editorial blog index must provide an Open Graph image");
+assert.match(englishBlogIndexSource, /twitter:\s*\{[\s\S]*?images:/, "Editorial blog index must provide a Twitter image");
+assert.match(toolsIndexSource, /openGraph:\s*\{[\s\S]*?images:/, "All-tools directory must provide an Open Graph image");
+assert.match(toolsIndexSource, /twitter:\s*\{[\s\S]*?images:/, "All-tools directory must provide a Twitter preview image");
+for (const slug of approvedNepali) assert.ok(nepaliHomeSource.includes(`href: "/ne/${slug}"`), `Nepali homepage must link to its reviewed localized PDF tool: ${slug}`);
+assert.match(sitemapSource, /!isGeneratedPdfGuide\(post\.slug\)/, "Generated PDF guide variants must be excluded from the sitemap");
+assert.match(sitemapSource, /baseUrl\}\/nepse-lab/, "NEPSE strategy lab must be included in the sitemap");
+assert.match(sitemapSource, /baseUrl\}\/resume-builder/, "Resume builder must be included in the sitemap");
+
+assert.match(sitemapSource, /tool\.slug !== "resume-builder"/, "Duplicate /tools/resume-builder must be excluded from the sitemap");
+assert.match(englishToolPageSource, /slug === "resume-builder"\) permanentRedirect\("\/resume-builder"\)/, "The duplicate utility route must permanently redirect to the dedicated resume builder");
+assert.match(englishToolPageSource, /tool\.slug !== "resume-builder"/, "The duplicate utility route must not be generated as a static catalog page");
+assert.match(toolDirectorySource, /tool\.slug === "resume-builder" \? "\/resume-builder"/, "Tool directory links must use the canonical resume builder URL");
+assert.match(catalogToolSeoContentSource, /item\.slug === "resume-builder" \? "\/resume-builder"/, "Related-tool links must use the canonical resume builder URL");
+assert.match(blogPostSource, /catalogToolHref = \(slug: string\) => slug === "resume-builder" \? "\/resume-builder"/, "Generated guide references must use the canonical resume builder URL");
+
+assert.match(toolSeoContentSource, /!isGeneratedPdfGuide\(guide\.blogSlug\)/, "PDF tool pages must link only to reviewed editorial guides");
+assert.match(catalogToolSeoContentSource, /guideSlug && !isCatalogGeneratedGuide\(guideSlug\)/, "Utility pages must not link to generated noindex catalog guide duplicates");
+assert.match(blogArticleSource, /openGraph:\s*\{\s*type:\s*"article"/, "English articles must publish article Open Graph metadata");
+assert.match(blogArticleSource, /twitter:\s*\{/, "English articles must publish Twitter metadata");
+assert.match(blogArticleSource, /openGraph:\s*\{[\s\S]*?images:/, "English articles must publish an Open Graph image");
+assert.match(blogArticleSource, /twitter:\s*\{[\s\S]*?images:/, "English articles must publish a Twitter image");
+assert.match(pdfToolMetadataSource, /openGraph:\s*\{[\s\S]*?images:/, "PDF tools must publish an Open Graph image");
+assert.match(pdfToolMetadataSource, /twitter:\s*\{[\s\S]*?images:/, "PDF tools must publish a Twitter image");
+assert.match(nepaliBlogArticleSource, /buildLocaleMetadata\(/, "Nepali articles must use the shared canonical and locale metadata builder");
+assert.match(localeMetadataSource, /alternates:\s*\{\s*canonical,/, "Localized pages must self-canonicalize");
+assert.match(localeMetadataSource, /openGraph:\s*\{/, "Localized pages must publish locale-aware Open Graph metadata");
+assert.match(localeMetadataSource, /twitter:\s*\{/, "Localized pages must publish locale-aware Twitter metadata");
+
+assert.match(localeMetadataSource, /openGraph:\s*\{[\s\S]*?images:/, "Localized pages must publish Open Graph images");
+assert.match(localeMetadataSource, /twitter:\s*\{[\s\S]*?images:/, "Localized pages must publish Twitter images");
+for (const relativePath of ["app/tools/page.tsx", "app/market/page.tsx", "app/nepse-lab/page.tsx", "app/resume-builder/page.tsx"]) {
+  const source = read(relativePath);
+  assert.match(source, /openGraph:\s*\{[\s\S]*?images:/, `${relativePath} must provide an Open Graph image`);
+  assert.match(source, /twitter:\s*\{[\s\S]*?images:/, `${relativePath} must provide a Twitter image`);
+}
+
+for (const relativePath of ["app/about/page.tsx", "app/contact/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx"]) {
+  const source = read(relativePath);
+  assert.match(source, /openGraph:\s*\{[\s\S]*?images:/, `${relativePath} must provide an Open Graph image`);
+  assert.match(source, /twitter:\s*\{[\s\S]*?images:/, `${relativePath} must provide a Twitter image`);
+}
+
+assert.match(localeMetadataSource, /robots:\s*!published\s*\?/, "Unpublished locales must remain excluded from indexing");
+
+assert.doesNotMatch(blogArticleSource, /"@type": "FAQPage"/, "English blog pages must not carry obsolete FAQ rich-result markup");
+assert.doesNotMatch(toolSeoContentSource, /"@type": "FAQPage"/, "English and Nepali PDF guides must not emit obsolete FAQ rich-result markup");
+assert.doesNotMatch(nepaliHomeSource, /"@type": "FAQPage"/, "Nepali homepage must not emit obsolete FAQ rich-result markup");
+assert.doesNotMatch(pdfToolJsonLdSource, /"@type": "FAQPage"/, "Shared PDF JSON-LD must not emit obsolete FAQ rich-result markup");
+assert.doesNotMatch(nepaliBlogArticleSource, /"@type": "FAQPage"/, "Nepali blog pages must not carry obsolete FAQ rich-result markup");
+assert.match(blogArticleSource, /post\.faqs\.map/, "English article FAQs must remain visible to readers");
+assert.match(nepaliBlogArticleSource, /post\.faqs\.map/, "Nepali article FAQs must remain visible to readers");
+for (const relativePath of ["app/market/page.tsx", "app/nepse-lab/page.tsx", "app/resume-builder/page.tsx"]) {
+  const source = read(relativePath);
+  assert.match(source, /alternates:\s*\{\s*canonical:/, `${relativePath} must have a self-canonical URL`);
+  assert.match(source, /openGraph:\s*\{/, `${relativePath} must have Open Graph metadata`);
+  assert.match(source, /twitter:\s*\{/, `${relativePath} must have social preview metadata`);
+}
+
 
 console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} approved Nepali tool URLs; ${toolRoutes.length} unapproved localized catalog tools remain noindex.`);

@@ -4,10 +4,11 @@ import { hreflangMap } from "../../lib/i18n/routing";
 const localizedAlternates = hreflangMap("/terms");
 
 export const metadata: Metadata = {
-  title: "Terms of Service | PDFora Online Tools",
+  title: "Terms of Service for Online Tools",
   description: "Read the terms for using PDFora online PDF, document, calculator and other browser-based tools, including user responsibilities and service limitations.",
   alternates: { canonical: "https://pd-fora.vercel.app/terms", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms for using PDFora online tools, including user responsibilities and service limitations." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/terms", siteName: "PDFora", title: "PDFora Terms of Service", description: "Terms for using PDFora online tools, including user responsibilities and service limitations.", images: ["/opengraph-image"] },
+  twitter: { card: "summary_large_image", title: "PDFora Terms of Service", description: "Terms for using PDFora online tools, including user responsibilities and service limitations.", images: ["/opengraph-image"] },
 };
 
 export default function TermsPage() {
@@ -42,14 +43,14 @@ export default function TermsPage() {
 
           <section>
             <h2 className="mb-2 text-2xl font-semibold text-gray-900">4. Files, privacy and security</h2>
-            <p>Files submitted to processing tools may be transmitted to the service infrastructure needed to perform the requested operation. The handling of temporary files, technical information, cookies, advertising and optional AI features is described in our <a className="font-semibold text-violet-700 underline" href="/privacy">Privacy Policy</a>. Do not upload passwords, payment-card details, government identity numbers, private keys or highly confidential information unless you have assessed the risks and the feature is appropriate for that data.</p>
+            <p>Files submitted to processing tools may be transmitted to the service infrastructure needed to perform the requested operation. The handling of temporary files, technical information, cookies, advertising and public market-data services is described in our <a className="font-semibold text-violet-700 underline" href="/privacy">Privacy Policy</a>. Do not upload passwords, payment-card details, government identity numbers, private keys or highly confidential information unless you have assessed the risks and the feature is appropriate for that data.</p>
             <p className="mt-2">No website or internet transmission can be guaranteed completely secure. You remain responsible for deciding whether a file is suitable for online processing.</p>
           </section>
 
           <section>
-            <h2 className="mb-2 text-2xl font-semibold text-gray-900">5. Calculators, AI and informational outputs</h2>
+            <h2 className="mb-2 text-2xl font-semibold text-gray-900">5. Calculators and informational outputs</h2>
             <p>Calculator results, generated text, market explanations, conversions and other outputs are provided for general informational or productivity purposes. They may contain errors, depend on the information you enter, or become outdated. They are not legal, medical, tax, investment or other professional advice, and should not be the sole basis for important decisions. Independently verify important results with an appropriate qualified source.</p>
-            <p className="mt-2">AI-generated content may be inaccurate, incomplete or unsuitable for your circumstances. Review and edit it before use. Market data and analysis, where available, are not a promise of future performance or a recommendation to buy or sell securities.</p>
+            <p className="mt-2">Calculator results and market analysis may be inaccurate, incomplete or unsuitable for your circumstances. Review inputs, formulas, source timestamps and assumptions before use. Market data and analysis are not a promise of future performance or a recommendation to buy or sell securities.</p>
           </section>
 
           <section>
@@ -64,7 +65,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="mb-2 text-2xl font-semibold text-gray-900">8. Third-party services and links</h2>
-            <p>The website may rely on third-party hosting, infrastructure, analytics, advertising, AI providers or external websites. Those services are operated by their respective providers and may have separate terms and privacy policies. PDFora does not control third-party websites or guarantee their content, availability or practices.</p>
+            <p>The website may rely on third-party hosting, infrastructure, analytics, advertising, public-data providers or external websites. Those services are operated by their respective providers and may have separate terms and privacy policies. PDFora does not control third-party websites or guarantee their content, availability or practices.</p>
           </section>
 
           <section>

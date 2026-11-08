@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import HomePageClient from "../components/HomePageClient";
 
 const site = "https://pd-fora.vercel.app";
@@ -34,22 +35,31 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
-  const applicationSchema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "@id": "https://pd-fora.vercel.app/#application",
-    name: "PDFora",
-    url: "https://pd-fora.vercel.app/",
-    applicationCategory: "UtilitiesApplication",
-    operatingSystem: "Any",
-    description: "Free browser-based tools for PDF, image, text and everyday productivity tasks.",
-    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-  };
-
   return (
     <>
+      <Script
+        id="pdfora-home-application-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "@id": "https://pd-fora.vercel.app/#application",
+            name: "PDFora",
+            url: "https://pd-fora.vercel.app/",
+            applicationCategory: "UtilitiesApplication",
+            operatingSystem: "Any",
+            inLanguage: "en",
+            description: "Free browser-based PDF, image, text and productivity tools, with practical Nepal calculators and utilities.",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "USD",
+            },
+          }),
+        }}
+      />
       <HomePageClient />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(applicationSchema) }} />
     </>
   );
 }

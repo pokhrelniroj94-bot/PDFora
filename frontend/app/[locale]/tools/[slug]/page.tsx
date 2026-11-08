@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import ToolWorkspace from "../../../../components/AllTools";
 import { isPublished } from "../../../../lib/i18n/config";
 import { getTranslator } from "../../../../lib/i18n/messages";
 import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../../../../lib/tools/localized-metadata";
 import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-route";
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
+import NepaliSpecialCatalogWorkspace from "../../../../components/NepaliSpecialCatalogWorkspace";
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
@@ -16,8 +17,8 @@ import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloper
 import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWorkspace";
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
-import AIWritingTools from "../../../../components/AIWritingTools";
-import { nepaliLocalizedCareerSlugs, nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
+import MarketIntelligence from "../../../../components/MarketIntelligence";
+import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const nepaliTitles: Record<string, string> = {
@@ -77,14 +78,13 @@ const nepaliTitles: Record<string, string> = {
   "commission-calculator": "कमिसन क्याल्कुलेटर",
   "hourly-to-salary-calculator": "घण्टाको ज्यालाबाट तलब क्याल्कुलेटर",
   "json-formatter-validator": "JSON फर्म्याट तथा जाँच",
-  "base64-encoder-decoder": "Base64 Encode / Decode",
-  "url-encoder-decoder": "URL Encode / Decode",
-  "hash-generator": "Hash Generator",
-  "text-diff-checker": "Text Diff Checker",
-  "lorem-ipsum-generator": "Lorem Ipsum Generator",
-  "html-encoder-decoder": "HTML Encode / Decode",
-  "text-to-slug": "Text to Slug Converter",
-  "nepse-technical-analysis": "NEPSE प्राविधिक विश्लेषण",
+  "base64-encoder-decoder": "Base64 रूपान्तरण",
+  "url-encoder-decoder": "URL रूपान्तरण",
+  "hash-generator": "पाठको Hash बनाउने",
+  "text-diff-checker": "दुई पाठको फरक जाँच",
+  "lorem-ipsum-generator": "नमुना Lorem Ipsum पाठ निर्माता",
+  "html-encoder-decoder": "HTML रूपान्तरण",
+  "text-to-slug": "पाठबाट URL Slug बनाउने",
   "nepal-forex-rates": "नेपाल राष्ट्र बैंक विनिमय दर",
   "nepal-salary-tax-calculator": "नेपाल तलब तथा आयकर क्याल्कुलेटर",
   "nepse-dividend-calculator": "NEPSE लाभांश तथा बोनस शेयर क्याल्कुलेटर",
@@ -92,9 +92,22 @@ const nepaliTitles: Record<string, string> = {
   "loan-emi-calculator": "ऋण EMI क्याल्कुलेटर",
   "compound-interest-sip-calculator": "चक्रवृद्धि ब्याज तथा SIP क्याल्कुलेटर",
   "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",
-  "ai-resume-writer": "AI रिजुमे लेखक",
-  "ai-cover-letter-generator": "AI कभर लेटर जेनेरेटर",
-  "ai-humanizer": "AI पाठ परिष्कार तथा पुनर्लेखन",
+  "nepse-technical-analysis": "NEPSE प्राविधिक विश्लेषण",
+  "uuid-generator": "UUID बनाउने उपकरण",
+  "jwt-decoder": "JWT Token खोल्ने उपकरण",
+  "css-minifier": "CSS कोड सानो बनाउने",
+  "robots-txt-generator": "Robots.txt फाइल बनाउने",
+  "sitemap-generator": "XML Sitemap बनाउने",
+  "open-graph-preview": "Social Sharing Preview जाँच",
+  "css-gradient-generator": "CSS Gradient बनाउने",
+  "currency-converter": "मुद्रा रूपान्तरण क्याल्कुलेटर",
+  "image-compressor": "तस्बिर आकार घटाउने उपकरण",
+  "image-format-converter": "तस्बिर ढाँचा रूपान्तरण",
+  "color-picker-palette": "रङ छनोट तथा प्यालेट निर्माता",
+  "notes-to-pdf": "नोटबाट PDF बनाउने उपकरण",
+  "nepal-share-calculator": "NEPSE शेयर खरिद तथा बिक्री क्याल्कुलेटर",
+  "preeti-unicode-converter": "Preeti Unicode रूपान्तरण",
+  "nepali-unicode-typing": "नेपाली Unicode टाइपिङ उपकरण",
 };
 const nepaliDescriptions: Record<string, string> = {
   "nepali-digit-converter": "अङ्ग्रेजी अंकलाई नेपाली देवनागरी अंकमा र नेपाली अंकलाई अङ्ग्रेजी अंकमा रूपान्तरण गर्नुहोस्।",
@@ -160,7 +173,6 @@ const nepaliDescriptions: Record<string, string> = {
   "lorem-ipsum-generator": "डिजाइन तथा लेआउट परीक्षणका लागि नमुना placeholder पाठ बनाउनुहोस्।",
   "html-encoder-decoder": "HTML का विशेष अक्षर encode वा समर्थित entity decode गर्नुहोस्।",
   "text-to-slug": "पाठलाई URL-friendly slug मा बदल्नुहोस्; नेपाली Unicode अक्षर सुरक्षित रहन्छन्।",
-  "nepse-technical-analysis": "NEPSE को उपलब्ध ऐतिहासिक मूल्य तथ्याङ्कबाट प्रवृत्ति, RSI, EMA, MACD, जोखिम र समर्थन तथा प्रतिरोध स्तरको नियममा आधारित विश्लेषण गर्नुहोस्। बजार तथ्याङ्क अपूर्ण वा पुरानो भएमा नतिजा उपलब्ध नहुन सक्छ।",
   "nepal-forex-rates": "नेपाल राष्ट्र बैंकबाट उपलब्ध खरिद तथा बिक्री विनिमय दर हेर्नुहोस् र NPR रूपान्तरणको अनुमान जाँच्नुहोस्।",
   "nepal-salary-tax-calculator": "नेपालको लागू कर-ब्यान्ड र प्रविष्ट गरिएको आम्दानीका आधारमा तलब करको अनुमान निकाल्नुहोस्।",
   "nepse-dividend-calculator": "शेयर संख्याबाट नगद लाभांश, withholding tax र बोनस शेयरको अनुमान निकाल्नुहोस्।",
@@ -168,20 +180,27 @@ const nepaliDescriptions: Record<string, string> = {
   "loan-emi-calculator": "ऋण रकम, ब्याजदर र अवधिबाट मासिक EMI, कुल ब्याज र कुल भुक्तानीको अनुमान निकाल्नुहोस्।",
   "compound-interest-sip-calculator": "मासिक SIP, अवधि र अपेक्षित प्रतिफलबाट लगानीको अनुमानित भविष्य मूल्य र लाभ जाँच्नुहोस्।",
   "discount-percentage-calculator": "मूल्य र छुट प्रतिशतबाट छुट रकम, अन्तिम मूल्य र प्रतिशत परिवर्तन निकाल्नुहोस्।",
-  "ai-resume-writer": "तपाईंको वास्तविक अनुभवबाट ATS-अनुकूल रिजुमे सामग्री तयार गर्नुहोस्।",
-  "ai-cover-letter-generator": "वास्तविक अनुभव र कामको विवरणबाट व्यावसायिक कभर लेटर तयार गर्नुहोस्।",
-  "ai-humanizer": "अर्थ र तथ्य जोगाउँदै पाठलाई स्वाभाविक र स्पष्ट शैलीमा पुनर्लेखन गर्नुहोस्।",
+  "nepse-technical-analysis": "NEPSE को उपलब्ध ऐतिहासिक दैनिक डेटा प्रयोग गरी EMA, RSI, MACD, volume, volatility, support, resistance र data-quality जाँच गर्नुहोस्। कुनै संकेत नाफाको ग्यारेन्टी वा लगानी सल्लाह होइन।",
+  "currency-converter": "उपलब्ध विनिमय दर प्रयोग गरी रकमलाई एक मुद्राबाट अर्को मुद्रामा रूपान्तरण गर्नुहोस्। दरको स्रोत र अद्यावधिक समय जाँचेर मात्र कारोबारको निर्णय गर्नुहोस्।",
+  "image-compressor": "गुणस्तर र फाइल आकारबीच सन्तुलन मिलाउँदै ब्राउजरमै तस्बिर कम्प्रेस गर्नुहोस्। अपलोड गर्नुअघि फाइल आकार र आउटपुट पूर्वावलोकन जाँच्नुहोस्।",
+  "image-format-converter": "PNG, JPEG र WebP जस्ता समर्थित ढाँचाबीच तस्बिर रूपान्तरण गर्नुहोस्। पारदर्शिता र आउटपुट गुणस्तर जाँच्नुहोस्।",
+  "color-picker-palette": "रङ छानेर HEX, RGB र HSL मान हेर्नुहोस् तथा डिजाइनका लागि रङ प्यालेट तयार गर्नुहोस्।",
+  "notes-to-pdf": "आफ्ना नोटलाई व्यवस्थित गरी PDF फाइलमा निर्यात गर्नुहोस्। डाउनलोड गर्नुअघि पृष्ठ र पाठको पूर्वावलोकन जाँच्नुहोस्।",
+  "nepal-share-calculator": "NEPSE शेयर खरिद तथा बिक्रीको अनुमानित लागत, कमिसन र नाफा/नोक्सान हिसाब गर्नुहोस्। वास्तविक ब्रोकर शुल्क र कर फरक हुन सक्छन्।",
+  "preeti-unicode-converter": "Preeti फन्टमा लेखिएको समर्थित नेपाली पाठलाई Unicode मा वा Unicode बाट Preeti मा रूपान्तरण गर्नुहोस्। रूपान्तरणपछि अक्षर जाँच्नुहोस्।",
+  "nepali-unicode-typing": "Romanized input प्रयोग गरी नेपाली Unicode पाठ टाइप गर्नुहोस्। यो लिप्यन्तरण हो, अनुवाद होइन; अन्तिम पाठ आफैं जाँच्नुहोस्।",
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
+  if (slug === "market-ai") permanentRedirect(`/${locale}/tools/nepse-technical-analysis`);
   const request = resolveLocalizedToolRequest(locale, slug);
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
-  if (request.locale === "ne" && (nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number]) || nepaliLocalizedFinancialSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedFinancialSlugs)[number]) || nepaliLocalizedCareerSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedCareerSlugs)[number]) || nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedPublicInfoSlugs)[number]))) {
+  if (request.locale === "ne" && (nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number]) || nepaliLocalizedFinancialSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedFinancialSlugs)[number]) || nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedPublicInfoSlugs)[number]))) {
     return {
       ...metadata,
-      title: `${nepaliTitles[request.implementation.slug]} | PDFora`,
+      title: nepaliTitles[request.implementation.slug],
       description: nepaliDescriptions[request.implementation.slug] ?? metadata.description,
     };
   }
@@ -225,11 +244,14 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.locale === "ne" && ["nepal-phone-validator", "gold-tola-gram-converter", "nepali-calendar", "loksewa-photo-resizer"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाल उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliNepalToolsWorkspace slug={toolSlug} /></section></main>;
   }
+  if (request.locale === "ne" && ["currency-converter", "image-compressor", "image-format-converter", "color-picker-palette", "notes-to-pdf", "nepal-share-calculator", "preeti-unicode-converter", "nepali-unicode-typing"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली विशेष उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliSpecialCatalogWorkspace slug={toolSlug} /></section></main>;
+  }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;
   }
-  if (request.locale === "ne" && nepaliLocalizedCareerSlugs.includes(toolSlug as (typeof nepaliLocalizedCareerSlugs)[number])) {
-    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली करियर तथा AI टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">वास्तविक विवरण प्रयोग गर्नुहोस्, AI नतिजा जाँच गर्नुहोस् र गोप्य जानकारी नपठाउनुहोस्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><AIWritingTools slug={toolSlug} locale="ne" /></section></main>;
+  if (request.locale === "ne" && toolSlug === "nepse-technical-analysis") {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-6xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली NEPSE प्राविधिक विश्लेषण टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 max-w-3xl text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><MarketIntelligence locale="ne" nestedHeading /></section></main>;
   }
   if (request.locale === "ne" && nepaliLocalizedPublicInfoSlugs.includes(toolSlug as (typeof nepaliLocalizedPublicInfoSlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपालका आधिकारिक सेवा तथा सार्वजनिक सूचना</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepalLiveTools slug={toolSlug} locale="ne" /></section></main>;

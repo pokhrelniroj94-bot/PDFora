@@ -12,10 +12,54 @@ const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
 const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
 const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
+const pdfToolGuidesSource = read("../lib/tool-guides.ts");
 const toolPage = read("../app/tools/[slug]/page.tsx");
+const rootLayout = read("../app/layout.tsx");
+const localizedBlogArticle = read("../app/[locale]/blog/[slug]/page.tsx");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
+
+const metadataEntries = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"([^"]+)",category:"([^"]+)",description:"([^"]+)",keywords:"([^"]+)"\}/g)]
+  .map((match) => ({ slug: match[1], name: match[2], category: match[3], description: match[4] }))
+  .filter((entry) => entry.slug !== "pdf-tools");
+assert.equal(metadataEntries.length, 121, "Every catalog tool must have a metadata source entry");
+assert.equal(new Set(metadataEntries.map((entry) => entry.name.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool names must be unique");
+assert.equal(new Set(metadataEntries.map((entry) => entry.description.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool descriptions must be unique");
+
+const pdfGuideEntries = [...pdfToolGuidesSource.matchAll(/"slug":\s*"([^"]+)"[\s\S]*?"name":\s*"([^"]+)"[\s\S]*?"keyword":\s*"([^"]+)"[\s\S]*?"purpose":\s*"([^"]+)"[\s\S]*?"steps":\s*\[([\s\S]*?)\][\s\S]*?"caution":\s*"([^"]+)"/g)]
+  .map((match) => ({ slug: match[1], name: match[2], keyword: match[3], purpose: match[4], steps: [...match[5].matchAll(/"([^"]+)"/g)].map((step) => step[1]), caution: match[6] }));
+assert.equal(pdfGuideEntries.length, 49, "All 49 established PDF routes need a dedicated guide record");
+for (const field of ["name", "keyword", "purpose"]) {
+  assert.equal(new Set(pdfGuideEntries.map((entry) => entry[field].trim().toLowerCase())).size, 49, `PDF guide ${field} values must be unique`);
+}
+assert.ok(pdfGuideEntries.every((entry) => entry.steps.length === 3 && entry.caution.length >= 60), "Every PDF guide needs three task-specific steps and a useful caution");
+
+
+const seoOverridesBlock = toolPage.match(/const seoOverrides:[\s\S]*?= \{([\s\S]*?)\n  \};/)?.[1] ?? "";
+const seoOverrides = new Map([...seoOverridesBlock.matchAll(/"([^"]+)": \{ title: "([^"]+)", description: "([^"]+)" \}/g)]
+  .map((match) => [match[1], { title: match[2], description: match[3] }]));
+const generatedMetadata = metadataEntries.map((entry) => ({
+  slug: entry.slug,
+  title: seoOverrides.get(entry.slug)?.title ?? `Free ${entry.name} Online`,
+  description: seoOverrides.get(entry.slug)?.description ?? entry.description.trim(),
+}));
+assert.equal(new Set(generatedMetadata.map((entry) => entry.title.trim().toLowerCase())).size, generatedMetadata.length, "Generated English tool SEO titles must be unique");
+assert.equal(new Set(generatedMetadata.map((entry) => entry.description.trim().toLowerCase())).size, generatedMetadata.length, "Generated English tool meta descriptions must be unique");
+assert.ok(generatedMetadata.every((entry) => entry.title.length >= 20 && entry.description.length >= 40), "Tool metadata must be descriptive rather than empty or placeholder copy");
+assert.ok(generatedMetadata.every((entry) => !/\|\s*PDFora$/i.test(entry.title)), "Page titles must not duplicate the root PDFora title template");
+
+const resumeBuilderPage = read("../app/resume-builder/page.tsx");
+const resumeBuilderTitle = resumeBuilderPage.match(/title:\s*"([^"]+)"/)?.[1] ?? "";
+const resumeBuilderDescription = resumeBuilderPage.match(/description:\s*"([^"]+)"/)?.[1] ?? "";
+const canonicalCatalogMetadata = generatedMetadata.filter((entry) => entry.slug !== "resume-builder");
+const all170ToolTitles = [...canonicalCatalogMetadata.map((entry) => entry.title), resumeBuilderTitle, ...pdfGuideEntries.map((entry) => `${entry.name} Online`)];
+const all170ToolDescriptions = [...canonicalCatalogMetadata.map((entry) => entry.description), resumeBuilderDescription, ...pdfGuideEntries.map((entry) => entry.purpose)];
+assert.equal(all170ToolTitles.length, 170, "Expected metadata titles for all 170 canonical tools");
+assert.equal(new Set(all170ToolTitles.map((value) => value.trim().toLowerCase())).size, 170, "All 170 canonical tool page titles must be unique across both route systems");
+assert.equal(new Set(all170ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 170, "All 170 canonical tool meta descriptions must be unique across both route systems");
+
+
 const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);
 assert.ok(quickBlock, "Quick utility dispatch list is missing");
 const quickSlugs = [...quickBlock[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
@@ -55,7 +99,15 @@ assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf
 const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
-assert.ok(!toolPage.includes('"@type": "FAQPage"'), "Tool pages must not emit deprecated FAQ rich-result markup");
+assert.doesNotMatch(toolPage, /"@type": "FAQPage"/, "Do not emit FAQ rich-result markup on generic utility pages");
+assert.doesNotMatch(seoContent, /"@type": "FAQPage"/, "PDF guide content must not emit obsolete FAQ rich-result markup");
+assert.doesNotMatch(read("../components/PdfToolJsonLd.tsx"), /"@type": "FAQPage"/, "Shared PDF schema must not emit obsolete FAQ rich-result markup");
+assert.match(toolPage, /const description = seo\?\.description \?\? tool\.description\.trim\(\)/, "Fallback metadata must use the actual task-specific catalog description");
+assert.ok(toolPage.includes("const title = seo?.title ?? `${tool.name} Online`"), "Fallback metadata title must identify the actual tool; the root metadata template supplies the site name");
+assert.ok(rootLayout.includes('template: "%s | PDFora"'), "Root layout must append one PDFora brand suffix");
+assert.ok(localizedBlogArticle.includes("title: post.title"), "Localized blog articles must pass unbranded titles to the root template");
+assert.ok(!localizedBlogArticle.includes('title: `${post.title} | PDFora`'), "Localized blog article titles must not duplicate the PDFora suffix");
+assert.match(seoContent, /uniqueFaqItems\.map/, "Visible tool FAQs must remain available in page content");
 assert.ok(seoContent.includes("Frequently asked questions"), "Tool pages must retain visible, user-facing FAQ content");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 
@@ -64,6 +116,21 @@ assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
 const advisedSlugs = [...adviceBlock[1].matchAll(/^\s{4}"([^"]+)":\s*\{/gm)].map((m) => m[1]);
 const missingToolAdvice = catalog.filter((slug) => !advisedSlugs.includes(slug));
 assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO guidance: " + missingToolAdvice.join(", "));
+assert.equal(advisedSlugs.length, catalog.length, "Every catalog tool must have one and only one dedicated SEO advice record");
+const uniqueAdviceFields = new Map(["example", "accuracy", "workflow", "mistakes"].map((field) => [field, new Set()]));
+for (const slug of catalog) {
+  const marker = `"${slug}": {`;
+  const start = adviceBlock[1].indexOf(marker);
+  const next = adviceBlock[1].indexOf('\n    "', start + marker.length);
+  const entry = adviceBlock[1].slice(start, next < 0 ? undefined : next);
+  for (const field of ["example", "accuracy", "workflow", "mistakes"]) {
+    const match = entry.match(new RegExp(field + ': "((?:\\\\.|[^"\\\\])*)"'));
+    assert.ok(match && match[1].trim().length >= 50, `${slug} needs substantive tool-specific ${field} guidance`);
+    const seen = uniqueAdviceFields.get(field);
+    assert.ok(!seen.has(match[1]), `${slug} repeats another tool's ${field} guidance`);
+    seen.add(match[1]);
+  }
+}
 
 assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weighted grade points");
 assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");
@@ -82,8 +149,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 124, "Expected 124 catalog utilities");
-assert.equal(allHrefs.length, 173, "Expected 173 available tools (49 PDF tools + 124 catalog utilities)");
+assert.equal(catalog.length, 121, "Expected 121 catalog utilities");
+assert.equal(allHrefs.length, 170, "Expected 170 available tools (49 PDF tools + 121 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
@@ -105,7 +172,7 @@ assert.ok(["emi", "calculator"].every((token) => loanSearchText.includes(token))
 const notesToolLine = catalogSource.split("\n").find((line) => line.includes('slug:"notes-to-pdf"'));
 assert.ok(notesToolLine, "Notes to PDF is missing from the catalog");
 assert.ok(notesToolLine.includes('category:"PDF"'), "Notes to PDF must be grouped under the PDF category");
-assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesToPDF />'), "Notes to PDF handler is missing");
+assert.ok(directoryComponent.includes('if(slug==="notes-to-pdf") return <NotesToPDF locale={locale} />;') && directoryComponent.includes("function NotesToPDF({locale="), "Notes to PDF locale-aware handler is missing");
 
 const marketApi = read("../app/api/nepse-market/route.ts");
 const marketDashboard = read("../components/NepseMarketDashboard.tsx");
@@ -113,11 +180,9 @@ const marketPage = read("../app/market/page.tsx");
 const newsApi = read("../app/api/nepal-market-news/route.ts");
 const newsComponent = read("../components/NepalMarketNews.tsx");
 const pageImagesToolPage = read("../app/extract-page-images/page.tsx");
-const aiWritingRoute = read("../app/api/ai-writing/route.ts");
-const envExample = read("../.env.example");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
 assert.ok(
-  marketApi.includes('"NEPSE unofficial live API (nepseman-api)"') && marketApi.includes('"YONEPSE public market snapshot"') && marketApi.includes('"YONEPSE historical snapshot fallback"'),
+  marketApi.includes("NEPSE unofficial session feed (nepseman-api)") && marketApi.includes("fetchNepsemanSnapshot") && marketApi.includes("YONEPSE public market snapshot") && marketApi.includes("YONEPSE historical snapshot fallback"),
   "NEPSE API must identify the live, snapshot and fallback quote sources",
 );
 assert.ok(marketApi.includes('read<Json>("/data/market/status.json", 60)'), "NEPSE status source must be mapped correctly");
@@ -129,14 +194,31 @@ assert.ok(marketApi.includes("summary: pick(summaryResult, [])"), "NEPSE summary
 assert.ok(marketApi.includes('s-maxage=60'), "NEPSE API response cache must allow frequent quote updates");
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
 assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
+const watchlistModule = read("../lib/nepse-watchlist.ts");
+assert.ok(marketDashboard.includes("watchlistStore") && marketDashboard.includes("useSyncExternalStore"), "NEPSE dashboard must use the browser-local watchlist store");
+assert.ok(watchlistModule.includes('"pdfora-nepse-watchlist"') && watchlistModule.includes("localStorage") && /WATCHLIST_LIMIT\s*=\s*20/.test(watchlistModule), "NEPSE watchlist must be browser-local and capped at 20 symbols");
+{
+  // The engine rejects fewer than 100 valid daily bars; user-facing instructions must say the same number.
+  const engine = read("../components/MarketIntelligence.tsx");
+  assert.ok(/rows\.length < 100\) return null/.test(engine), "NEPSE analysis engine minimum must stay at 100 bars (update the user-facing copy if this changes)");
+  for (const [name, source] of [["workspace", engine], ["catalog SEO guide", read("../components/CatalogToolSEOContent.tsx")], ["English tool page FAQ", read("../app/tools/[slug]/page.tsx")]]) {
+    assert.ok(!/at least 50 (valid|daily)/i.test(source), `${name} must not tell users 50 rows are enough for NEPSE technical analysis`);
+  }
+}
+assert.ok(!/\bfetch\(|XMLHttpRequest|sendBeacon/.test(watchlistModule), "NEPSE watchlist must never upload symbols to a server");
+assert.ok(!/\bsetWatchlist\b/.test(marketDashboard), "NEPSE dashboard must not copy watchlist storage into component state via an effect");
+const marketIntelligence = read("../components/MarketIntelligence.tsx");
+assert.ok(marketIntelligence.includes("EMA20/EMA50") && marketIntelligence.includes("At least 100 valid daily bars") && marketIntelligence.includes("corporate-action adjustments block actionable BUY/SELL signals"), "NEPSE technical analysis must disclose its deterministic indicators and data-quality gates");
+assert.ok(catalogSource.includes('slug:"nepse-technical-analysis"') && !/slug:"ai-[^"]+"/.test(catalogSource), "Catalog must expose the non-AI NEPSE lab and contain no AI-specific tools");
+assert.ok(!fs.existsSync(new URL("../app/api/ai-writing/route.ts", import.meta.url)), "AI generation API route must be removed");
+assert.ok(!rootLayout.includes("SiteAIHelp") && !allTools.includes("AIWritingTools") && !resumeBuilder.includes("/api/ai-writing"), "Global AI help, AI writer routes and Resume Builder AI integration must be removed");
+
 assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market dashboard route is missing");
 assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market Dashboard"), "Homepage must link to the dedicated NEPSE market dashboard");
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
-assert.ok(newsComponent.includes("10 * 60 * 1000"), "News component must auto-refresh headlines every 10 minutes");
+assert.ok(newsComponent.includes("15 * 60 * 1000"), "News component must auto-refresh headlines every 10 minutes");
 assert.ok(pageImagesToolPage.includes("Render PDF Pages to PNG") && pageImagesToolPage.includes("Render every PDF page as a PNG image"), "Page-image tool must clearly describe full-page PNG rendering");
-assert.ok(aiWritingRoute.includes("new URL(redisUrl)") && aiWritingRoute.includes('redisEndpoint.protocol !== "https:"') && aiWritingRoute.includes("SHARED_RATE_LIMIT_INVALID_URL"), "AI shared rate limiter must validate the Upstash HTTPS REST URL safely");
-assert.ok(envExample.includes("UPSTASH_REDIS_REST_URL=") && envExample.includes("UPSTASH_REDIS_REST_TOKEN="), "Example environment file must document both Upstash REST settings");
 assert.ok(nepalLiveTools.includes("Effective tax rate: {amount > 0 ?") && !nepalLiveTools.includes("Effective tax rate: ${amount > 0 ?"), "Nepal salary tax effective rate must display as a percentage, not currency");
 assert.ok(catalogSource.includes("Explore 49 PDF Tools") && catalogSource.includes("49 available PDF tools"), "PDF tool catalogue must advertise the 49 enabled PDF tools accurately");
 const resumeTemplateBlock = resumeBuilder.match(/const templates = \[([\s\S]*?)\n\];/);

@@ -2,9 +2,9 @@
   "generatedFrom": "static source parse (no build)",
   "counts": {
     "pageRoutes": 63,
-    "apiRoutes": 6,
-    "catalogEntries": 125,
-    "categories": 10,
+    "apiRoutes": 5,
+    "catalogEntries": 122,
+    "categories": 9,
     "legacyRootPdfSlugs": 49,
     "blogSlugLiterals": {
       "lib/blog-posts.ts": 8,
@@ -13,10 +13,9 @@
     }
   },
   "categories": {
-    "Career Tools": 3,
     "PDF": 2,
     "Finance": 6,
-    "Text": 25,
+    "Text": 24,
     "Developer": 31,
     "Image": 5,
     "Math": 20,
@@ -49,11 +48,6 @@
       "url": "/add-page-numbers",
       "file": "app/add-page-numbers/page.tsx",
       "kind": "page"
-    },
-    {
-      "url": "/api/ai-writing",
-      "file": "app/api/ai-writing/route.ts",
-      "kind": "api"
     },
     {
       "url": "/api/global-news",
@@ -978,23 +972,8 @@
       "category": "Nepal"
     },
     {
-      "slug": "ai-resume-writer",
-      "name": "AI Resume & CV Writer",
-      "category": "Career Tools"
-    },
-    {
-      "slug": "ai-cover-letter-generator",
-      "name": "AI Cover Letter Generator",
-      "category": "Career Tools"
-    },
-    {
-      "slug": "ai-humanizer",
-      "name": "AI Humanizer & Text Rewriter",
-      "category": "Text"
-    },
-    {
-      "slug": "market-ai",
-      "name": "PDFora Smart Market AI",
+      "slug": "nepse-technical-analysis",
+      "name": "NEPSE Technical Analysis & Risk Lab",
       "category": "Finance"
     }
   ],

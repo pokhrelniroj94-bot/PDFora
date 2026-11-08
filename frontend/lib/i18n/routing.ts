@@ -1,6 +1,5 @@
 import { SITE_URL, defaultLocale, isLocale, isPublished, localeInfo, locales, type Locale } from "./config";
 import {
-  nepaliLocalizedCareerSlugs,
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedPublicInfoSlugs,
   nepaliLocalizedUtilitySlugs,
@@ -54,7 +53,6 @@ export function absoluteUrl(path: string, locale: Locale): string {
 export const nepaliLocalizedNonToolPaths = [
   "/",
   "/market",
-  "/nepse-technical-analysis",
   "/tools",
   "/resume-builder",
   "/blog",
@@ -72,7 +70,6 @@ export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
     ...nepaliLocalizedUtilitySlugs,
     ...nepaliLocalizedFinancialSlugs,
     ...nepaliLocalizedPublicInfoSlugs,
-    ...nepaliLocalizedCareerSlugs,
   ].map((slug) => `/tools/${slug}`),
 ]);
 

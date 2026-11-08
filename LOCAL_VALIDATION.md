@@ -1,45 +1,37 @@
-# PDFora local validation
+# PDFora local validation (no GitHub Actions billing)
 
-Use this script to validate the audit-fix branch on Windows without relying on GitHub Actions runner availability.
+GitHub Actions is currently blocked by the repository owner's billing/spending-limit status. You do not need to pay GitHub Actions to run the project checks: run them on a Windows computer with Node.js and Python installed.
 
 ## Requirements
 
 - Git
-- Node.js 22 (Node.js 20.9+ is the minimum for the current Next.js version; Node 22 is required by the i18n check script)
+- Node.js 22 (Node.js 20.9+ is the minimum for the current Next.js version)
 - Python 3.12
 - Internet access to install npm and Python dependencies
 
-## Get the exact audit-fix branch
+## Run all checks on Windows
 
 Open PowerShell in the repository root and run:
 
 ```powershell
-git fetch origin fix/168-tool-audit-followups-2026-11-05
-git checkout -B fix/168-tool-audit-followups-2026-11-05 origin/fix/168-tool-audit-followups-2026-11-05
+git fetch origin
+git checkout integration/master-release-reconciled-2026-11-08
+git pull origin integration/master-release-reconciled-2026-11-08
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\scripts\validate-local.ps1
+.\\scripts\\validate-local.ps1
 ```
 
-If you already have the branch checked out, use `git pull origin fix/168-tool-audit-followups-2026-11-05` before running the script.
+This release branch removes AI writing, AI help, AI market explanations and all AI provider endpoints. The NEPSE technical-analysis lab and NRB rate explainer use deterministic formulas and published data only.
 
-## What the script checks
-
-- Legacy Express server syntax.
-- Backend dependency installation, Python compilation, and backend regression tests.
-- Python dependency audit.
-- Frontend dependency installation.
-- Unified tool catalogue and handler consistency.
-- i18n runtime unit tests and translation-file consistency.
-- TypeScript type-check, ESLint, and production Next.js build.
-- Production npm dependency audit.
-
-The script stops at the first failing check and prints the exact stage. The first run can take several minutes and requires internet access.
+The script checks the legacy Express server syntax, installs backend dependencies into a repository-local `backend/.venv`, compiles Python, runs backend tests, audits Python dependencies, installs frontend dependencies, verifies the tool catalog, runs ESLint, builds Next.js, and audits production npm dependencies.
 
 ## Important
 
-- Local checks do not change GitHub Actions status or billing.
-- A successful local build is not a substitute for production smoke tests or full browser QA.
-- Do not commit `.env`, API tokens, passwords, or generated secrets. Keep Cloudflare credentials server-side only.
-- Do not merge or deploy to Production until local validation, NRB/NEPSE/Forex smoke tests, and browser QA have passed.
-- OCR remains excluded from the available tools until backend OCR language data is installed and its end-to-end test passes.
-- AI endpoints must remain disabled unless the Cloudflare Workers AI setup, least-privilege token, explicit enablement, and shared rate-limit controls have actually been configured and verified.
+- This runs checks on your computer; it does not make GitHub Actions green or change GitHub billing.
+- The first run can take several minutes and needs internet access.
+- If a check fails, copy the complete PowerShell output from the first failure and share it before attempting a deployment.
+- A successful local build is not a substitute for production smoke tests or a full security review.
+- Do not commit `.env`, API tokens, passwords, or generated secrets.
+- GitHub Actions workflows are intentionally retained. They can run again if GitHub restores runner access.
+- AI features and the `/api/ai-writing` endpoint have been removed. The release must not send user prompts or personal text to an AI provider.
+- Do not merge or deploy to Production until local validation, NRB/NEPSE/Forex smoke tests and browser QA have passed.

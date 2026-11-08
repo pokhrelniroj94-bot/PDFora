@@ -13,26 +13,18 @@ function fitDescription(value: string, max = 160): string {
 
 /** Pure metadata builder shared by the route helper and unit tests. */
 export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string): Metadata {
-  if (!guide) return { title: "PDF Tool | PDFora", robots: { index: false, follow: true } };
+  if (!guide) return { title: "PDF Tool", robots: { index: false, follow: true } };
 
   const url = `${SITE}/${slug}`;
   const title = `${guide.name} Online`;
   const brandedTitle = `${title} | PDFora`;
   const description = fitDescription(guide.purpose);
-  const keywords = [
-    guide.name,
-    guide.keyword,
-    `${guide.name.toLowerCase()} online`,
-    "PDFora PDF tool"
-  ];
-
   return {
     title,
     description,
-    keywords,
     alternates: { canonical: url },
     robots: { index: true, follow: true },
-    openGraph: { type: "website", title: brandedTitle, description, url, siteName: "PDFora" },
-    twitter: { card: "summary", title: brandedTitle, description }
+    openGraph: { type: "website", title: brandedTitle, description, url, siteName: "PDFora", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: brandedTitle }] },
+    twitter: { card: "summary_large_image", title: brandedTitle, description, images: ["/opengraph-image"] }
   };
 }

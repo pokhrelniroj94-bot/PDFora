@@ -17,7 +17,7 @@ export function buildLocalizedToolMetadata(locale: Locale, entry: ToolInfo): Met
   const base = buildLocaleMetadata({
     locale,
     path: `/tools/${entry.slug}`,
-    title: `${entry.name} | PDFora`,
+    title: entry.name,
     description: entry.description,
   });
   const indexable = isPublished(locale) && isLocalizedToolIndexable(locale, entry.slug);

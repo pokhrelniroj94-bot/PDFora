@@ -8,7 +8,6 @@ const { config, routing, "shared-ui": sharedUi, "tool-guides": guidesModule, "to
 const nepaliUtilityRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedUtilitySlugs;
 const nepaliFinancialRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedFinancialSlugs;
 const nepaliPublicInfoRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedPublicInfoSlugs;
-const nepaliCareerRoutes = (await import("../lib/i18n/nepali-tool-routes.ts")).nepaliLocalizedCareerSlugs;
 const nepaliBlogArticleCount = (fs.readFileSync(path.join(frontendRoot, "lib", "nepali-localized-blog-posts.ts"), "utf8").match(/^\s*slug:\s*"/gm) ?? []).length;
 
 const repoRoot = path.resolve(frontendRoot, "..");
@@ -51,9 +50,22 @@ const nepalBlogCount = (nepalBlogSource.match(/^\s*slug:\s*"/gm) ?? []).length;
 const nepaliLocalizedBlogCount = nepaliBlogArticleCount;
 const nepaliLocalizedStaticCount = routing.nepaliLocalizedNonToolPaths.filter((route) => ["/privacy", "/terms", "/about", "/contact"].includes(route)).length;
 const nepaliPdfRouteSlugs = Object.keys(nepaliRoutesModule.nepaliPdfRoutes);
+const expectedNepaliLocalizedRouteCount = routing.nepaliLocalizedNonToolPaths.length
+  + nepaliPdfRouteSlugs.length
+  + nepaliUtilityRoutes.length
+  + nepaliFinancialRoutes.length
+  + nepaliPublicInfoRoutes.length;
 const nepaliLocalizedRouteCount = routing.nepaliLocalizedRoutePaths.size;
+if (nepaliLocalizedRouteCount !== expectedNepaliLocalizedRouteCount) {
+  throw new Error(`Nepali route registry mismatch: routing exposes ${nepaliLocalizedRouteCount} routes, but the current source registries describe ${expectedNepaliLocalizedRouteCount}.`);
+}
 const sharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("en"));
-const nepaliSharedUiLeafCount = countLeaves(sharedUi.getSharedUiCopy("ne"));
+const sharedUiCoverage = Object.fromEntries(config.locales.map((locale) => {
+  const translatedLeafCount = countLeaves(sharedUi.getSharedUiCopy(locale));
+  return [locale, sharedUiLeafCount
+    ? Math.round((translatedLeafCount / sharedUiLeafCount) * 10000) / 100
+    : 0];
+}));
 const nepaliGuideCount = Object.keys(nepaliGuidesModule.nepaliToolGuides).length;
 const englishGuideCount = guidesModule.toolGuides.length;
 
@@ -70,7 +82,7 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
       sourceRouteFiles: pageSourceFiles.length,
       translatedRoutes: null,
       routeCoveragePercent: null,
-      sharedUiModuleCoveragePercent: 100,
+      sharedUiModuleCoveragePercent: sharedUiCoverage[locale],
       pdfGuideCoverage: { translated: englishGuideCount, total: englishGuideCount, percent: 100 },
       blogCoverage: { translated: editorialBlogCount + nepalBlogCount, total: editorialBlogCount + nepalBlogCount, percent: 100, note: "English source content; editorial review is not independently measured." },
       namespaceFiles: namespaceFiles.length,
@@ -86,9 +98,7 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
       translatedRoutes: nepaliLocalizedRouteCount,
       // Dynamic route handlers serve many slugs; do not divide route equivalents by source-file count.
       routeCoveragePercent: null,
-      sharedUiModuleCoveragePercent: sharedUiLeafCount
-        ? Math.round((nepaliSharedUiLeafCount / sharedUiLeafCount) * 10000) / 100
-        : 0,
+      sharedUiModuleCoveragePercent: sharedUiCoverage[locale],
       pdfGuideCoverage: {
         translated: nepaliGuideCount,
         total: englishGuideCount,
@@ -111,11 +121,11 @@ const locales = Object.fromEntries(config.locales.map((locale) => {
     sourceRouteFiles: pageSourceFiles.length,
     translatedRoutes: 0,
     routeCoveragePercent: 0,
-    sharedUiModuleCoveragePercent: 0,
+    sharedUiModuleCoveragePercent: sharedUiCoverage[locale],
     pdfGuideCoverage: { translated: 0, total: englishGuideCount, percent: 0 },
     blogCoverage: { translated: 0, total: editorialBlogCount + nepalBlogCount, percent: 0 },
     namespaceFiles: namespaceFiles.length,
-    reviewStatus: "No published localized page content",
+    reviewStatus: "Shared shell copy is translated; locale-specific pages and tool content remain unpublished; human review is not assessed",
   }];
 }));
 
@@ -141,7 +151,6 @@ const report = {
     publishedNepaliUtilityRoutes: nepaliUtilityRoutes.length,
     publishedNepaliFinancialRoutes: nepaliFinancialRoutes.length,
     publishedNepaliPublicInfoRoutes: nepaliPublicInfoRoutes.length,
-    publishedNepaliCareerRoutes: nepaliCareerRoutes.length,
     publishedNepaliMarketDashboardRoute: true,
     publishedNepaliResumeBuilderRoute: true,
     publishedNepaliBlogRoutes: nepaliLocalizedBlogCount + 1,
@@ -175,7 +184,7 @@ Inventory: ${pageSourceFiles.length} frontend page source files, ${apiRouteSourc
 |---|---|---|---:|---:|---:|---:|---:|
 ${rows.join("\n")}
 
-Nepali currently has the homepage, 49 localized PDF routes, 61 localized utility routes, seven finance/news routes, two public-information routes, three AI-writing routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, ${nepaliLocalizedBlogCount} curated editorial articles and four localized legal/static pages. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has ${nepaliHomeExists ? "the homepage" : "no localized homepage"}, ${nepaliPdfRouteSlugs.length} localized PDF routes, ${nepaliUtilityRoutes.length} localized utility routes, ${nepaliFinancialRoutes.length} finance/news routes, ${nepaliPublicInfoRoutes.length} public-information routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, ${nepaliLocalizedBlogCount} curated editorial articles and ${nepaliLocalizedStaticCount} localized legal/static pages. The complete route registry contains ${nepaliLocalizedRouteCount} distinct Nepali route equivalents. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
 `;
 fs.writeFileSync(path.join(outputDir, "TRANSLATION_COVERAGE.md"), markdown);
 console.log(markdown);

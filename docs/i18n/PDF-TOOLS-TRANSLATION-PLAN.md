@@ -71,7 +71,7 @@ No locale should be marked published until all localized PDF pages pass the chec
 
 - Added a shared metadata helper that generates a distinct title, concise description, relevant keywords, self-canonical URL, Open Graph fields and Twitter card fields from each tool's reviewed guide.
 - Replaced the standalone metadata blocks on all 49 PDF tool route pages with the shared helper, keeping existing English canonical URL paths.
-- Added SoftwareApplication and BreadcrumbList JSON-LD to the per-tool guide alongside the visible FAQPage schema. Schema uses the actual tool name, purpose and canonical page URL; no ratings or unsupported claims are fabricated.
+- Added SoftwareApplication and BreadcrumbList JSON-LD to the per-tool guide using the actual tool name, purpose and canonical page URL. FAQPage markup was subsequently removed because Google no longer shows FAQ rich results in Search; visible FAQs remain for readers.
 - Added automated checks for title/tool-name matching, 80–160 character descriptions, canonical URL and indexability for all 49 English tool pages.
 - The non-English locale routes remain unpublished. This metadata work does not publish translations or add hreflang for incomplete localized routes.
 

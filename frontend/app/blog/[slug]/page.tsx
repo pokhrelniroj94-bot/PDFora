@@ -1,8 +1,8 @@
 import Link from "next/link";
 import AdsterraNative from "../../components/AdsterraNative";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
+import { notFound, permanentRedirect } from "next/navigation";
+import { blogPosts, getBlogPost, isCatalogGeneratedGuide, isGeneratedPdfGuide } from "../../../lib/blog-posts";
 import { hreflangMap } from "../../../lib/i18n/routing";
 
 const baseUrl = "https://pd-fora.vercel.app";
@@ -21,14 +21,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.title,
     description: post.description,
     alternates: { canonical: url, ...(languages ? { languages } : {}) },
-    robots: isCatalogGeneratedGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
-    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, modifiedTime: `${post.updated}T00:00:00+05:45` },
-    twitter: { card: "summary", title: post.title, description: post.description },
+    robots: isCatalogGeneratedGuide(post.slug) || isGeneratedPdfGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
+    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, modifiedTime: `${post.updated}T00:00:00+05:45`, images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: post.title }] },
+    twitter: { card: "summary_large_image", title: post.title, description: post.description, images: ["/opengraph-image"] },
   };
 }
 
 export default async function BlogArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  if (slug === "tip-calculator-guide") permanentRedirect("/blog/how-to-calculate-tip-and-split-the-bill");
+  if (slug === "meta-title-checker-guide") permanentRedirect("/blog/how-to-write-seo-page-titles-google-title-links");
   const post = getBlogPost(slug);
   if (!post) notFound();
 

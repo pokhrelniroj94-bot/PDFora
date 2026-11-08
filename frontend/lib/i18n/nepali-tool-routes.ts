@@ -1,4 +1,12 @@
 export const nepaliLocalizedUtilitySlugs = [
+  "currency-converter",
+  "image-compressor",
+  "image-format-converter",
+  "color-picker-palette",
+  "notes-to-pdf",
+  "nepal-share-calculator",
+  "preeti-unicode-converter",
+  "nepali-unicode-typing",
   "nepali-digit-converter",
   "nepali-number-converter",
   "nepali-date-converter",
@@ -65,6 +73,7 @@ export const nepaliLocalizedUtilitySlugs = [
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];
 
 export const nepaliLocalizedFinancialSlugs = [
+  "nepse-technical-analysis",
   "nepal-forex-rates",
   "nepal-salary-tax-calculator",
   "nepse-dividend-calculator",
@@ -79,8 +88,3 @@ export const nepaliLocalizedPublicInfoSlugs = [
   "nepal-public-holidays-2083",
 ] as const;
 
-export const nepaliLocalizedCareerSlugs = [
-  "ai-resume-writer",
-  "ai-cover-letter-generator",
-  "ai-humanizer",
-] as const;

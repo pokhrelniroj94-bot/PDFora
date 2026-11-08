@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import ToolSEOContent from "./ToolSEOContent";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
@@ -252,7 +251,7 @@ export default function NirojToolsTool({
       </header>
 
       {/* Main */}
-      <section className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">
@@ -444,8 +443,7 @@ export default function NirojToolsTool({
             description={ui.mobileDescription}
           />
         </div>
-      </section>
-      <ToolSEOContent slug={currentSlug} locale={locale} />
+      </main>
     </div>
   );
 }

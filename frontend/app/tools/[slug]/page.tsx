@@ -8,17 +8,20 @@ import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
 import { hreflangMap } from "../../../lib/i18n/routing";
 import { isLocalizedToolIndexable } from "../../../lib/tools/localized-verification";
+import { isCatalogToolIndexable } from "../../../lib/tools/catalog-indexability";
 
 const site = "https://pd-fora.vercel.app";
 export function generateStaticParams() {
-  return toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ slug: tool.slug }));
+  return toolCatalog.filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "resume-builder").map((tool) => ({ slug: tool.slug }));
 }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  if (slug === "market-ai") permanentRedirect("/tools/nepse-technical-analysis");
   const tool = toolCatalog.find((item) => item.slug === slug);
+  if (slug === "resume-builder") return { title: "Resume Builder", alternates: { canonical: `${site}/resume-builder` }, robots: { index: false, follow: true } };
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
-    "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly Savings Target", description: "Calculate how much to save each month to reach a target by your deadline. Enter current savings, target amount and months remaining; excludes interest and inflation." },
+    "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly Savings Target", description: "Calculate how much to save each month to reach a target by your deadline from current savings, target and months left. Excludes interest and inflation." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
@@ -72,28 +75,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "meta-title-checker": { title: "SEO Title Checker – Check Meta Title Length & Google Preview", description: "Check your SEO title length, review a Google-style search preview and improve page titles for clarity and search intent." },
   };
   const seo = seoOverrides[slug];
-  const title = seo?.title ?? `Free ${tool.name} Online`;
+  // Every catalog entry has a reviewed, unique description in toolCatalog.ts.
+  // Use that task-specific copy directly instead of appending generic category filler.
+  const title = seo?.title ?? `${tool.name} Online`;
   const socialTitle = `${tool.name} Online | PDFora`;
-  const categoryDescription: Record<string, string> = {
-    PDF: "Check page order, layout, text, forms and signatures in the exported document before sharing it.",
-    Finance: "Review the rate, period, fees and tax assumptions before relying on a financial estimate.",
-    Math: "Check input units and rounding, then compare a sample result with a known answer.",
-    Text: "Review punctuation, Unicode characters and line breaks before copying the processed text.",
-    Developer: "Test the output in the application that will use it; encoding and decoding do not provide encryption.",
-    Image: "Check the output format, dimensions, transparency and visual quality before downloading.",
-    SEO: "Use the result as a diagnostic and verify the rendered page, canonical and indexing status.",
-    Business: "Confirm the cost, price, margin and tax assumptions before using a figure in a quote or budget.",
-    Nepal: "Check the applicable fiscal year, date system, local units and official notices before relying on the result."
-  };
-  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")} ${categoryDescription[tool.category] ?? "Check the input and output carefully before using the result."}`.slice(0, 160);
-  const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
+  const description = seo?.description ?? tool.description.trim();
   const canonicalPath = legacyToolSlugSet.has(slug) ? `/${slug}` : `/tools/${slug}`;
   const canonical = `${site}${canonicalPath}`;
   const languages = isLocalizedToolIndexable("ne", slug) ? hreflangMap(canonicalPath) : undefined;
   return {
-    title, description, keywords,
+    title, description,
     alternates: { canonical, ...(languages ? { languages } : {}) },
-    robots: { index: slug !== "ocr-pdf", follow: true },
+    robots: { index: isCatalogToolIndexable(slug), follow: true },
     openGraph: { type: "website", title: socialTitle, description, url: canonical, siteName: "PDFora", images: [{ url: `/tools/${tool.slug}/opengraph-image`, width: 1200, height: 630, alt: `${tool.name} on PDFora` }] },
     twitter: { card: "summary_large_image", title: socialTitle, description, images: [`/tools/${tool.slug}/opengraph-image`] },
   };
@@ -101,6 +94,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const tool = toolCatalog.find((item) => item.slug === slug);
+  if (slug === "resume-builder") permanentRedirect("/resume-builder");
   if (!tool || slug === "pdf-tools") notFound();
   if (legacyToolSlugSet.has(slug)) permanentRedirect(`/${slug}`);
   const related = toolCatalog.filter((item) => item.category === tool.category && item.slug !== slug && item.slug !== "pdf-tools").slice(0, 4);
@@ -174,12 +168,11 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: "Does the tool replace official advice or verification?", a: "No. Confirm important legal, financial, government or compliance matters with the responsible authority." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
-    "market-ai": [
+    "nepse-technical-analysis": [
       { q: "Which markets can I analyse?", a: "You can analyse available historical daily NEPSE data or upload your own Forex and Crypto CSV. Forex and Crypto results depend on the accuracy and freshness of your file; they are not live market feeds." },
-      { q: "Which CSV columns are required?", a: "Date and Close are required. Open, High, Low and Volume are recommended. Use one daily candle per date, ISO dates (YYYY-MM-DD), at least 50 valid rows and a file no larger than 5 MB." },
+      { q: "Which CSV columns are required?", a: "Date and Close are required. Open, High, Low and Volume are recommended. Use one daily candle per date, ISO dates (YYYY-MM-DD), at least 100 valid rows and a file no larger than 5 MB." },
       { q: "Does a BUY signal mean the trade will be profitable?", a: "No. Signals are rule-based technical conditions, not predictions or win probabilities. Test strategies on separate historical data and include fees, spread, slippage and liquidity." },
       { q: "Why can the tool show HOLD / WATCH instead of BUY?", a: "Mixed indicators, unusual selling volume, elevated risk or stale historical data can weaken or suppress a potential BUY setup. A stale dataset suppresses new BUY/SELL signals." },
-      { q: "What does the free AI explanation do?", a: "It explains the calculated indicators and warnings. It does not calculate a separate trading signal and must not override the rule-based result." }
     ],
     "neb-gpa-calculator": [
       { q: "How is GPA calculated?", a: "Multiply each subject's grade point by its credit hours, add those weighted points, then divide by the total credit hours. GPA = Σ(credit × grade point) ÷ Σ(credit hours)." },

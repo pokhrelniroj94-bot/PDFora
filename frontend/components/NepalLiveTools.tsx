@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import NepalMarketNews from "./NepalMarketNews";
 
 type ForexRate = { code: string; name: string; unit: number; buy: number; sell: number };
@@ -29,11 +30,11 @@ const holidays = [
   { name: "Rakshya Bandhan", bs: "2083 Bhadra 12", ad: "2026-08-28", note: "National public holiday", type: "National" },
   { name: "Gai Jatra", bs: "2083 Bhadra 13", ad: "2026-08-29", note: "Newar community nationwide", type: "Community" },
   { name: "Krishna Janmashtami", bs: "2083 Bhadra 19", ad: "2026-09-04", note: "National public holiday", type: "National" },
-  { name: "Gaura Parwa", bs: "2083 Bhadra 19", ad: "2026-09-04", note: "Gaura Parwa community observance", type: "Community" },
+  { name: "Gaura Parwa", bs: "2083 Bhadra 19", ad: "2026-09-04", note: "Far-western community observance", type: "Community" },
   { name: "Haritalika Teej", bs: "2083 Bhadra 29", ad: "2026-09-14", note: "Women employees only", type: "Community" },
   { name: "Constitution Day", bs: "2083 Asoj 03", ad: "2026-09-19", note: "National public holiday", type: "National" },
   { name: "Indra Jatra", bs: "2083 Asoj 09", ad: "2026-09-25", note: "Kathmandu Valley only", type: "Regional" },
-  { name: "Jitiya Parwa", bs: "2083 Asoj 15", ad: "2026-10-01", note: "Women employees observing Jitiya Parwa", type: "Community" },
+  { name: "Jitiya Parwa", bs: "2083 Asoj 15", ad: "2026-10-01", note: "Women celebrating Jitiya Parwa", type: "Community" },
   { name: "Ghatasthapana", bs: "2083 Asoj 25", ad: "2026-10-11", note: "National public holiday", type: "National" },
   { name: "Dashain holiday begins", bs: "2083 Asoj 31", ad: "2026-10-17", note: "Seven-day Dashain holiday: 17–23 October", type: "National" },
   { name: "Tihar holiday begins", bs: "2083 Kartik 22", ad: "2026-11-08", note: "Five-day Tihar holiday: 8–12 November", type: "National" },
@@ -43,7 +44,7 @@ const holidays = [
   { name: "Dhanya Purnima · Udhauli · Yomari Punhi", bs: "2083 Poush 09", ad: "2026-12-24", note: "National public holiday", type: "National" },
   { name: "Christmas Day", bs: "2083 Poush 10", ad: "2026-12-25", note: "National public holiday", type: "National" },
   { name: "Tamu Lhosar", bs: "2083 Poush 15", ad: "2026-12-30", note: "National public holiday", type: "National" },
-  { name: "Dura Mhaipru Nakuma", bs: "2083 Poush 15", ad: "2026-12-30", note: "Dura community only", type: "Community" },
+  { name: "Dura Mhaipru Nakuma", bs: "2083 Poush 15", ad: "2026-12-30", note: "Dura community observance", type: "Community" },
   { name: "Prithvi Jayanti · National Unity Day", bs: "2083 Poush 27", ad: "2027-01-11", note: "National public holiday", type: "National" },
   { name: "Maghi · Maghe Sankranti", bs: "2083 Magh 01", ad: "2027-01-15", note: "National public holiday", type: "National" },
   { name: "Martyrs’ Day", bs: "2083 Magh 16", ad: "2027-01-30", note: "National public holiday", type: "National" },
@@ -65,46 +66,19 @@ const holidays = [
 ];
 
 async function fetchLatestForex(): Promise<ForexResponse> {
-  const response = await fetch("/api/nepal-forex", { cache: "no-store", signal: AbortSignal.timeout(32_000) });
+  const response = await fetch("/api/nepal-forex", { cache: "no-store" });
   const json = await response.json() as ForexResponse;
   if (!response.ok) throw new Error(json.error || "Could not load NRB rates.");
   return json;
 }
 
-function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
-  const ne = locale === "ne";
-  const copy = ne ? {
-    eyebrow: "नेपाल · आधिकारिक सन्दर्भ दर", title: "नेपाल राष्ट्र बैंक विनिमय दर",
-    description: "NRB ले प्रकाशित गरेको दैनिक खरिद तथा बिक्री दर। सप्ताहन्त वा सार्वजनिक बिदामा पछिल्लो कार्यदिवसको दर देखिन सक्छ।",
-    refresh: "दर अद्यावधिक गर्नुहोस्", updating: "अद्यावधिक हुँदैछ…", waiting: "दरको प्रतीक्षा हुँदैछ",
-    rateDate: "दर मिति", source: "स्रोत", fetched: "लिइएको समय", published: "प्रकाशित मुद्रा दर",
-    currencies: "मुद्रा", unit: "एकाइ", buying: "खरिद · NPR", selling: "बिक्री · NPR",
-    converter: "NRB मुद्रा रूपान्तरण", quick: "छिटो रूपान्तरण", uses: "छानिएको मुद्राको प्रकाशित एकाइ, खरिद र बिक्री दर प्रयोग हुन्छ।",
-    currency: "मुद्रा", direction: "रूपान्तरण दिशा", amount: "रकम",
-    foreignNpr: "विदेशी मुद्रा → NPR (खरिद)", nprForeign: "NPR → विदेशी मुद्रा (बिक्री)",
-    estimated: "अनुमानित रूपान्तरण", explain: "आजका प्रकाशित दर बुझ्नुहोस्", explainButton: "AI बाट दर बुझ्नुहोस्",
-    unavailable: "NRB AI व्याख्या उपलब्ध छैन।", tryAgain: "पुनः प्रयास गर्नुहोस्",
-  } : {
-    eyebrow: "Nepal · Official reference rates", title: "Nepal Rastra Bank Exchange Rates",
-    description: "Daily buying and selling rates published by NRB. On weekends and public holidays, the latest available working-day rate may be shown.",
-    refresh: "Refresh rates", updating: "Updating…", waiting: "Waiting for rates",
-    rateDate: "Rate date", source: "Source", fetched: "Fetched", published: "Published currency rates",
-    currencies: "currencies", unit: "Unit", buying: "Buying · NPR", selling: "Selling · NPR",
-    converter: "NRB currency converter", quick: "Quick conversion", uses: "Uses the published unit, buying and selling rate for the selected currency.",
-    currency: "Currency", direction: "Conversion direction", amount: "Amount",
-    foreignNpr: "Foreign currency → NPR (buying)", nprForeign: "NPR → foreign currency (selling)",
-    estimated: "Estimated conversion", explain: "Understand today's published rates", explainButton: "Explain rates with AI",
-    unavailable: "NRB AI explanation is unavailable.", tryAgain: "Try again",
-  };
+function ForexTool({ ne = false }: { ne?: boolean }) {
   const [data, setData] = useState<ForexResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState("100");
   const [direction, setDirection] = useState("foreign-to-npr");
-  const [aiText, setAiText] = useState("");
-  const [aiError, setAiError] = useState("");
-  const [aiBusy, setAiBusy] = useState(false);
 
   const loadRates = async () => {
     setLoading(true);
@@ -119,36 +93,6 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
       setLoading(false);
     }
   };
-
-  async function explainRates() {
-    if (!data?.rates?.length || aiBusy) return;
-    setAiBusy(true);
-    setAiError("");
-    setAiText("");
-    try {
-      const response = await fetch("/api/ai-writing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kind: "forex-explain",
-          source: data.source,
-          rateDate: data.rateDate,
-          requestedDate: data.requestedDate,
-          isStale: String(!!data.isStale),
-          rates: JSON.stringify(data.rates.slice(0, 30)),
-          question: "Explain the latest NRB daily rates, how to read buying and selling rates, and what this means for someone converting money in Nepal."
-        }),
-      });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "NRB AI explanation is unavailable.");
-      if (typeof payload.text !== "string" || !payload.text.trim()) throw new Error("AI returned an empty explanation.");
-      setAiText(payload.text.trim());
-    } catch (error) {
-      setAiError(error instanceof Error ? error.message : "NRB AI explanation is unavailable.");
-    } finally {
-      setAiBusy(false);
-    }
-  }
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void loadRates(); }, 0);
@@ -166,19 +110,19 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
     <header className="rounded-2xl border border-teal-100 bg-gradient-to-br from-white via-teal-50/70 to-cyan-50 p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[.14em] text-teal-700">{copy.eyebrow}</p>
-          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">{copy.title}</h2>
-          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">{copy.description}</p>
+          <p className="text-xs font-bold uppercase tracking-[.14em] text-teal-700">Nepal · Official reference rates</p>
+          <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950 sm:text-2xl">{ne ? "नेपाल राष्ट्र बैंक विनिमय दर" : "Nepal Rastra Bank Exchange Rates"}</h2>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">Daily buying and selling rates published by NRB. On weekends and public holidays, the latest available working-day rate may be shown.</p>
         </div>
         <button type="button" className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-teal-200 bg-white px-4 py-2 text-sm font-semibold text-teal-800 shadow-sm hover:border-teal-400 hover:bg-teal-50 disabled:cursor-not-allowed disabled:opacity-60" disabled={loading} onClick={() => void loadRates()}>
           {loading && <span className="pdfora-spinner" aria-hidden="true" />}
-          {loading ? copy.updating : copy.refresh}
+          {loading ? (ne ? "अद्यावधिक हुँदैछ…" : "Updating…") : (ne ? "दर अद्यावधिक गर्नुहोस्" : "Refresh rates")}
         </button>
       </div>
       <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-600">
-        <span><strong className="text-slate-800">{copy.rateDate}:</strong> {data?.rateDate || copy.waiting}</span>
-        {data?.source && <span><strong className="text-slate-800">{copy.source}:</strong> {data.source}</span>}
-        {data?.updatedAt && <span><strong className="text-slate-800">{copy.fetched}:</strong> {new Date(data.updatedAt).toLocaleString("en-NP", { timeZone: "Asia/Kathmandu" })}</span>}
+        <span><strong className="text-slate-800">Rate date:</strong> {data?.rateDate || "Waiting for rates"}</span>
+        {data?.source && <span><strong className="text-slate-800">Source:</strong> {data.source}</span>}
+        {data?.updatedAt && <span><strong className="text-slate-800">Fetched:</strong> {new Date(data.updatedAt).toLocaleString("en-NP", { timeZone: "Asia/Kathmandu" })}</span>}
       </div>
     </header>
 
@@ -187,32 +131,33 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
 
     {loading && !data && <div className="grid gap-2" aria-label="Loading exchange rates"><div className="pdfora-skeleton h-11 rounded-xl" /><div className="pdfora-skeleton h-11 rounded-xl" /><div className="pdfora-skeleton h-11 rounded-xl" /></div>}
     {data && <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3"><h3 className="font-bold text-slate-900">{copy.published}</h3><span className="text-xs text-slate-500">{data.rates.length} {copy.currencies}</span></div>
+      <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3"><h3 className="font-bold text-slate-900">Published currency rates</h3><span className="text-xs text-slate-500">{data.rates.length} currencies</span></div>
       <div className="max-h-[520px] overflow-auto">
         <table className="w-full min-w-[540px] text-left text-sm">
-          <thead className="sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th scope="col" className="px-4 py-3">{copy.currency}</th><th scope="col" className="px-4 py-3 text-right">{copy.unit}</th><th scope="col" className="px-4 py-3 text-right">{copy.buying}</th><th scope="col" className="px-4 py-3 text-right">{copy.selling}</th></tr></thead>
+          <thead className="sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500"><tr><th scope="col" className="px-4 py-3">Currency</th><th scope="col" className="px-4 py-3 text-right">Unit</th><th scope="col" className="px-4 py-3 text-right">{ne ? "खरिद · NPR" : "Buying · NPR"}</th><th scope="col" className="px-4 py-3 text-right">Selling · NPR</th></tr></thead>
           <tbody>{data.rates.map((item) => <tr key={item.code} className="border-t border-slate-100 transition-colors hover:bg-teal-50/50"><th scope="row" className="px-4 py-3 font-semibold text-slate-900"><span>{item.code}</span><span className="ml-2 font-normal text-slate-500">{item.name}</span></th><td className="px-4 py-3 text-right tabular-nums">{item.unit}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.buy.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.sell.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td></tr>)}</tbody>
         </table>
       </div>
     </section>}
 
     {data && <section className="rounded-2xl border border-teal-200 bg-teal-50/50 p-4 shadow-sm sm:p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><p className="text-xs font-black uppercase tracking-wide text-teal-800">PDFora NRB AI</p><h3 className="mt-1 font-bold text-slate-950">{copy.explain}</h3><p className="mt-1 text-xs text-slate-600">{ne ? "वास्तविक NRB दर तालिका र एकाइ बुझाउँछ; FX मूल्यको भविष्यवाणी गर्दैन।" : "Explains the actual NRB rate table and unit values; it does not predict FX prices."}</p></div>
-        <button type="button" onClick={() => void explainRates()} disabled={aiBusy || !data.rates.length} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? (ne ? "व्याख्या हुँदैछ…" : "Explaining…") : copy.explainButton}</button>
-      </div>
-      {aiError && <p role="alert" className="mt-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-800">{aiError}</p>}
-      {aiText && <p className="mt-3 whitespace-pre-wrap rounded-xl border border-teal-100 bg-white p-4 text-sm leading-6 text-slate-700">{aiText}</p>}
+      <h3 className="font-bold text-slate-950">{ne ? "खरिद र बिक्री दर कसरी पढ्ने?" : "How to read buying and selling rates"}</h3>
+      <p className="mt-2 text-sm leading-6 text-slate-700">{ne ? "खरिद दरमा बैंकले तपाईंबाट विदेशी मुद्रा किन्छ; बिक्री दरमा बैंकले तपाईंलाई विदेशी मुद्रा बेच्छ। प्रत्येक दर तोकिएको unit का लागि हो, त्यसैले रूपान्तरण गर्दा unit पनि हिसाब गर्नुहोस्।" : "The buying rate is what the bank pays when it buys foreign currency from you. The selling rate is what you pay when the bank sells foreign currency to you. Each rate applies to the published unit, so include the unit in every conversion."}</p>
+      <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-6 text-slate-700">
+        <li>{ne ? "विदेशी मुद्रा → NPR: रकम × खरिद दर ÷ unit" : "Foreign currency → NPR: amount × buying rate ÷ unit"}</li>
+        <li>{ne ? "NPR → विदेशी मुद्रा: NPR रकम × unit ÷ बिक्री दर" : "NPR → foreign currency: NPR amount × unit ÷ selling rate"}</li>
+        <li>{ne ? "यो दैनिक सन्दर्भ दर हो; बैंक, रेमिट्यान्स सेवा र शुल्कका कारण वास्तविक quote फरक हुन सक्छ।" : "This is a daily reference rate; banks and remittance providers may quote different amounts because of spreads and fees."}</li>
+      </ul>
     </section>}
 
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-      <div><p className="text-xs font-bold uppercase tracking-[.12em] text-teal-700">{copy.quick}</p><h3 className="mt-1 text-lg font-bold text-slate-950">{copy.converter}</h3><p className="mt-1 text-sm text-slate-600">{copy.uses}</p></div>
+      <div><p className="text-xs font-bold uppercase tracking-[.12em] text-teal-700">Quick conversion</p><h3 className="mt-1 text-lg font-bold text-slate-950">NRB currency converter</h3><p className="mt-1 text-sm text-slate-600">Uses the published unit, buying and selling rate for the selected currency.</p></div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <label><span className={label}>{copy.currency}</span><select className={field} value={currency} onChange={(e) => setCurrency(e.target.value)}>{Array.from(new Map([...fallbackCurrencies, ...(data?.rates ?? []).map(({ code, name }) => ({ code, name }))].map(item => [item.code, item])).values()).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>
-        <label><span className={label}>{copy.direction}</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">{copy.foreignNpr}</option><option value="npr-to-foreign">{copy.nprForeign}</option></select></label>
+        <label><span className={label}>Currency</span><select className={field} value={currency} onChange={(e) => setCurrency(e.target.value)}>{Array.from(new Map([...fallbackCurrencies, ...(data?.rates ?? []).map(({ code, name }) => ({ code, name }))].map(item => [item.code, item])).values()).map((item) => <option key={item.code} value={item.code}>{item.code} — {item.name}</option>)}</select></label>
+        <label><span className={label}>Conversion direction</span><select className={field} value={direction} onChange={(e) => setDirection(e.target.value)}><option value="foreign-to-npr">Foreign currency → NPR (buying)</option><option value="npr-to-foreign">NPR → foreign currency (selling)</option></select></label>
       </div>
-      <div className="mt-3 max-w-sm"><Field title={copy.amount} value={amount} onChange={setAmount}/></div>
-      {converted !== null && selected ? <div className="pdfora-pop-in mt-4 rounded-xl border border-teal-100 bg-teal-50 p-4" aria-live="polite"><p className="text-xs font-semibold uppercase tracking-wide text-teal-800">{copy.estimated}</p><p className="mt-1 break-words text-2xl font-bold tracking-tight text-teal-950">{direction === "foreign-to-npr" ? npr(converted) : converted.toLocaleString("en-IN", { maximumFractionDigits: 4 }) + " " + selected.code}</p><p className="mt-2 text-sm text-teal-900">{direction === "foreign-to-npr" ? value.toLocaleString() + " " + selected.code : npr(value)} · {direction === "foreign-to-npr" ? selected.buy : selected.sell} NPR per {selected.unit} {selected.code}</p><p className="mt-1 text-xs text-teal-800">{copy.rateDate}: {data?.rateDate}</p></div> : <p role="status" className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">{error ? (ne ? "आधिकारिक दर उपलब्ध भएपछि रूपान्तरण हुनेछ।" : "The converter will calculate once official rates are available.") : (ne ? `${currency} का लागि प्रकाशित दर उपलब्ध छैन।` : `No published rate is available for ${currency} yet.`)}</p>}
+      <div className="mt-3 max-w-sm"><Field title="Amount" value={amount} onChange={setAmount}/></div>
+      {converted !== null && selected ? <div className="pdfora-pop-in mt-4 rounded-xl border border-teal-100 bg-teal-50 p-4" aria-live="polite"><p className="text-xs font-semibold uppercase tracking-wide text-teal-800">Estimated conversion</p><p className="mt-1 break-words text-2xl font-bold tracking-tight text-teal-950">{direction === "foreign-to-npr" ? npr(converted) : converted.toLocaleString("en-IN", { maximumFractionDigits: 4 }) + " " + selected.code}</p><p className="mt-2 text-sm text-teal-900">{direction === "foreign-to-npr" ? value.toLocaleString() + " " + selected.code : npr(value)} · {direction === "foreign-to-npr" ? selected.buy : selected.sell} NPR per {selected.unit} {selected.code}</p><p className="mt-1 text-xs text-teal-800">Rate date: {data?.rateDate}</p></div> : <p role="status" className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">{error ? "The converter will calculate once official rates are available." : `No published rate is available for ${currency} yet.`}</p>}
     </section>
 
     <p className="text-xs leading-5 text-slate-500">NRB reference rates are not necessarily the exact rates offered by individual banks, money changers or remittance providers. Always confirm the transaction rate with your provider before making a payment.</p>
@@ -220,8 +165,7 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
   </div>;
 }
 
-function SalaryTaxTool({ locale = "en" }: { locale?: "en" | "ne" }) {
-  const ne = locale === "ne";
+function SalaryTaxTool({ ne = false }: { ne?: boolean }) {
   const [income, setIncome] = useState("1200000");
   const [firstBandExempt, setFirstBandExempt] = useState(false);
   const amount = Number(income);
@@ -243,10 +187,10 @@ function SalaryTaxTool({ locale = "en" }: { locale?: "en" | "ne" }) {
     return { taxable, rate: band.rate, charge };
   }).filter((item) => item.taxable > 0);
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">{ne ? "नेपाल तलब / आयकर क्याल्कुलेटर · आर्थिक वर्ष २०८३/८४" : "Nepal Salary / Income Tax Calculator · FY 2083/84"}</h2><p className="mt-1 text-sm text-slate-600">{ne ? "प्रकाशित २०८३/८४ कर तहअनुसार निवासी प्राकृतिक व्यक्तिको प्रगतिशील अनुमान।" : "Progressive estimate for a resident natural person using the published 2083/84 bands."}</p></div>
-    <Field title={ne ? "वार्षिक करयोग्य तलब / आय (NPR, योग्य कटौतीपछि)" : "Annual taxable salary / income (NPR, after eligible deductions)"} value={income} onChange={setIncome}/>
-    <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" checked={firstBandExempt} onChange={(e) => setFirstBandExempt(e.target.checked)}/><span>{ne ? "लागू कानुनी अपवादअन्तर्गत पहिलो NPR १०,००,००० तहमा १% शुल्क नलाग्ने मान्नुहोस्।" : "First NPR 1,000,000 band is exempt from the 1% charge under an applicable statutory exception."}</span></label>
-    {valid ? <>{ne ? <Result>{`अनुमानित वार्षिक आयकर: ${npr(tax)}\nअनुमानित मासिक कर: ${npr(tax / 12)}\nकरयोग्य आयबाट अनुमानित मासिक हातमा आउने रकम: ${npr((amount - tax) / 12)}\nप्रभावकारी कर दर: ${amount > 0 ? (tax / amount * 100).toFixed(2) : "0.00"}%`}</Result> : <Result>Estimated annual income tax: {npr(tax)}{"\n"}Estimated monthly tax: {npr(tax / 12)}{"\n"}Estimated monthly take-home from taxable income: {npr((amount - tax) / 12)}{"\n"}Effective tax rate: {amount > 0 ? (tax / amount * 100).toFixed(2) : "0.00"}%</Result>}<div className="overflow-x-auto rounded-xl border"><table className="w-full text-sm"><thead className="bg-slate-100"><tr><th className="p-3 text-left">{ne ? "करयोग्य तहको भाग" : "Taxable band portion"}</th><th className="p-3 text-right">{ne ? "दर" : "Rate"}</th><th className="p-3 text-right">{ne ? "कर" : "Tax"}</th></tr></thead><tbody>{breakdown.map((item, i) => <tr key={i} className="border-t"><td className="p-3">{npr(item.taxable)}</td><td className="p-3 text-right">{(item.rate * 100).toFixed(0)}%</td><td className="p-3 text-right">{npr(item.charge)}</td></tr>)}</tbody></table></div></> : <p role="alert" className="text-sm text-red-700">{ne ? "शून्य वा सोभन्दा बढी मान्य वार्षिक करयोग्य आय लेख्नुहोस्।" : "Enter a valid non-negative annual taxable income."}</p>}
+    <div><h2 className="text-lg font-bold">{ne ? "नेपाल तलब / आयकर क्याल्कुलेटर · आ.व. २०८३/८४" : "Nepal Salary / Income Tax Calculator · FY 2083/84"}</h2><p className="mt-1 text-sm text-slate-600">Progressive estimate for a resident natural person using the published 2083/84 bands.</p></div>
+    <Field title="Annual taxable salary / income (NPR, after eligible deductions)" value={income} onChange={setIncome}/>
+    <label className="flex items-start gap-3 text-sm"><input className="mt-1" type="checkbox" checked={firstBandExempt} onChange={(e) => setFirstBandExempt(e.target.checked)}/><span>First NPR 1,000,000 band is exempt from the 1% charge under an applicable statutory exception.</span></label>
+    {valid ? <><Result>Estimated annual income tax: {npr(tax)}\nEstimated monthly tax: {npr(tax / 12)}\nEstimated monthly take-home from taxable income: {npr((amount - tax) / 12)}\nEffective tax rate: {amount > 0 ? (tax / amount * 100).toFixed(2) : "0.00"}%</Result><div className="overflow-x-auto rounded-xl border"><table className="w-full text-sm"><thead className="bg-slate-100"><tr><th className="p-3 text-left">Taxable band portion</th><th className="p-3 text-right">Rate</th><th className="p-3 text-right">Tax</th></tr></thead><tbody>{breakdown.map((item, i) => <tr key={i} className="border-t"><td className="p-3">{npr(item.taxable)}</td><td className="p-3 text-right">{(item.rate * 100).toFixed(0)}%</td><td className="p-3 text-right">{npr(item.charge)}</td></tr>)}</tbody></table></div></> : <p role="alert" className="text-sm text-red-700">Enter a valid non-negative annual taxable income.</p>}
     <p className="text-xs leading-5 text-slate-500">This is an estimate for resident natural persons only. It does not calculate every rebate, allowance, retirement contribution, insurance deduction, non-resident case or special income category. The 1% first-band charge has statutory exceptions. Verify your situation against the current IRD notice or a tax professional.</p>
     <a className="text-sm font-semibold text-teal-700 underline" href="https://ird.gov.np/category/taxrateincentives/" target="_blank" rel="noreferrer">IRD official tax rates and incentives</a>
   </div>;
@@ -254,148 +198,79 @@ function SalaryTaxTool({ locale = "en" }: { locale?: "en" | "ne" }) {
 
 function ElectricityTool({ locale = "en" }: { locale?: "en" | "ne" }) {
   const ne = locale === "ne";
-  return <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-    <header>
-      <p className="text-xs font-bold uppercase tracking-wide text-teal-700">{ne ? "नेपाल · आधिकारिक विद्युत् महसुल" : "Nepal · Official electricity tariff"}</p>
-      <h2 className="mt-1 text-xl font-bold text-slate-950">{ne ? "आधिकारिक विद्युत् बिल क्याल्कुलेटर" : "Official Electricity Bill Calculator"}</h2>
-      <p className="mt-2 text-sm leading-6 text-slate-600">{ne
-        ? "विद्युत् नियमन आयोग (ERC) को आधिकारिक क्याल्कुलेटर प्रयोग गरेर आफ्नो जडानअनुसार मासिक बिल निकाल्नुहोस्।"
-        : "Calculate your monthly bill with the Electricity Regulatory Commission (ERC) calculator using your actual connection details."}</p>
-    </header>
-    <div className="rounded-xl border border-teal-100 bg-teal-50/60 p-4">
-      <h3 className="font-semibold text-slate-900">{ne ? "घरायसी बिल निकाल्ने तरिका" : "How to calculate a household bill"}</h3>
-      <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-700">
-        <li>{ne ? "जडान प्रकारमा ‘घरायसी’ छान्नुहोस्।" : "Choose “Domestic / Household” as the connection type."}</li>
-        <li>{ne ? "आफ्नो मिटरको फ्युज क्षमता छान्नुहोस्।" : "Select the fuse capacity shown for your meter."}</li>
-        <li>{ne ? "लागू हुने मौसम छान्नुहोस्।" : "Select the applicable season."}</li>
-        <li>{ne ? "बिलमा देखिएको अवधिको वास्तविक खपत (kWh) लेख्नुहोस्।" : "Enter the actual consumption in kWh for the billing period."}</li>
-        <li>{ne ? "बिल गणना गरी नतिजा र हाल लागू हुने महसुल आयोगको साइटमै जाँच्नुहोस्।" : "Calculate the bill and review the result and current tariff on the Commission’s site."}</li>
-      </ol>
-    </div>
-    <a href="https://www.erc.gov.np/electricity-calculator" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white hover:bg-teal-800">
-      {ne ? "ERC को आधिकारिक बिल क्याल्कुलेटर खोल्नुहोस् ↗" : "Open the official ERC bill calculator ↗"}
-    </a>
-    <div className="space-y-2 text-xs leading-5 text-slate-500">
-      <p>{ne ? "PDFora ले यहाँ पुरानो वा स्थिर महसुल दरबाट रकम अनुमान गर्दैन। ERC ले २०८३ सालमा नयाँ विद्युत् उपभोक्ता महसुल निर्धारण निर्देशिका जारी गरेको छ; त्यसैले अद्यावधिक आधिकारिक क्याल्कुलेटर प्रयोग गर्नुहोस्।" : "PDFora does not estimate a bill using potentially outdated hard-coded tariff rates. ERC issued a new Electricity Consumer Tariff Determination Directive in 2083, so use its current official calculator."}</p>
-      <div className="flex flex-wrap gap-4">
-        <a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/detail/314" target="_blank" rel="noopener noreferrer">{ne ? "ERC को २०८३ महसुल निर्देशिका ↗" : "ERC 2083 tariff directive ↗"}</a>
-        <a className="font-semibold text-teal-700 underline" href="https://www.nea.org.np/en/pages/consumer-tariff-rates" target="_blank" rel="noopener noreferrer">{ne ? "NEA उपभोक्ता महसुल जानकारी ↗" : "NEA consumer tariff information ↗"}</a>
-      </div>
-    </div>
-  </section>;
-}
-
-const holidayNamesNe: Record<string, string> = {
-  "Nepali New Year": "नेपाली नयाँ वर्ष",
-  "Labour Day · Buddha Jayanti · Ubhauli · Chandi Purnima": "श्रमिक दिवस · बुद्ध जयन्ती · उभौली · चण्डी पूर्णिमा",
-  "Republic Day": "गणतन्त्र दिवस",
-  "Rakshya Bandhan": "रक्षाबन्धन",
-  "Gai Jatra": "गाईजात्रा",
-  "Krishna Janmashtami": "श्रीकृष्ण जन्माष्टमी",
-  "Gaura Parwa": "गौरा पर्व",
-  "Haritalika Teej": "हरितालिका तीज",
-  "Constitution Day": "संविधान दिवस",
-  "Indra Jatra": "इन्द्रजात्रा",
-  "Jitiya Parwa": "जितिया पर्व",
-  "Ghatasthapana": "घटस्थापना",
-  "Dashain holiday begins": "दशैं बिदा सुरु",
-  "Tihar holiday begins": "तिहार बिदा सुरु",
-  "Falgunand Jayanti": "फाल्गुनन्द जयन्ती",
-  "Chhath Parwa": "छठ पर्व",
-  "International Day of Persons with Disabilities": "अन्तर्राष्ट्रिय अपाङ्गता दिवस",
-  "Dhanya Purnima · Udhauli · Yomari Punhi": "धान्य पूर्णिमा · उधौली · योमरी पुन्ही",
-  "Christmas Day": "क्रिसमस दिवस",
-  "Tamu Lhosar": "तमु ल्होसार",
-  "Dura Mhaipru Nakuma": "दुरा म्हैपु नाकुमा",
-  "Prithvi Jayanti · National Unity Day": "पृथ्वी जयन्ती · राष्ट्रिय एकता दिवस",
-  "Maghi · Maghe Sankranti": "माघी · माघे सङ्क्रान्ति",
-  "Martyrs’ Day": "शहीद दिवस",
-  "Sonam Lhosar": "सोनाम ल्होसार",
-  "Basanta Panchami": "वसन्त पञ्चमी",
-  "National Democracy Day": "राष्ट्रिय प्रजातन्त्र दिवस",
-  "Maha Shivaratri": "महाशिवरात्रि",
-  "International Women’s Day": "अन्तर्राष्ट्रिय महिला दिवस",
-  "Gyalpo Lhosar": "ग्याल्पो ल्होसार",
-  "Fagu Purnima · Holi (Hills)": "फागु पूर्णिमा · होली (पहाडी क्षेत्र)",
-  "Terai Holi": "तराई होली",
-  "Ghode Jatra": "घोडेजात्रा",
-  "Eid al-Fitr": "ईद उल फित्र",
-  "Eid al-Adha": "ईद उल अजहा",
-  "Siruwa Pawani": "सिरुवा पवनी",
-  "Bhoto Jatra": "भोटो जात्रा",
-  "Muhammad Jayanti": "मोहम्मद जयन्ती",
-  "Guru Nanak Jayanti": "गुरु नानक जयन्ती",
-};
-const holidayNotesNe: Record<string, string> = {
-  "National public holiday": "राष्ट्रिय सार्वजनिक बिदा",
-  "Women employees only": "महिला कर्मचारीका लागि मात्र",
-  "Women employees observing Jitiya Parwa": "जितिया पर्व मनाउने महिला कर्मचारीका लागि",
-  "Newar community nationwide": "देशभरका नेवार समुदायका लागि",
-  "Gaura Parwa community observance": "गौरा पर्व मनाउने समुदायका लागि",
-  "Dura community only": "दुरा समुदायका लागि मात्र",
-  "Kathmandu Valley only": "काठमाडौं उपत्यकामा मात्र",
-  "Seven-day Dashain holiday: 17–23 October": "सात दिनको दशैं बिदा: १७–२३ अक्टोबर",
-  "Five-day Tihar holiday: 8–12 November": "पाँच दिनको तिहार बिदा: ८–१२ नोभेम्बर",
-  "Kirant community": "किराँत समुदाय",
-  "Employees with disabilities only": "अपाङ्गता भएका कर्मचारीका लागि मात्र",
-  "Educational institutions only": "शैक्षिक संस्थामा मात्र",
-  "56 Himalayan and Hill districts": "५६ हिमाली तथा पहाडी जिल्ला",
-  "21 Terai districts": "२१ तराई जिल्ला",
-  "Date depends on moon sighting": "चन्द्रदर्शनअनुसार मिति तय हुनेछ",
-  "Jhapa, Morang, Sunsari, Siraha and Saptari": "झापा, मोरङ, सुनसरी, सिराहा र सप्तरी",
-  "Muslim community": "मुस्लिम समुदाय",
-  "Sikh community": "सिख समुदाय",
-};
-const holidayTypeNe: Record<string, string> = {
-  All: "सबै",
-  National: "राष्ट्रिय",
-  Regional: "क्षेत्रीय",
-  Community: "समुदाय",
-  "To be announced": "मिति तोकिन बाँकी",
-};
-const holidayMonthNe: Record<string, string> = {
-  Baisakh: "बैशाख", Jestha: "जेठ", Bhadra: "भदौ", Asoj: "असोज", Kartik: "कात्तिक",
-  Mangsir: "मंसिर", Poush: "पुस", Magh: "माघ", Falgun: "फागुन", Chaitra: "चैत",
-};
-const nepaliNumberText = (value: string) => value.replace(/\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]);
-const localizedBsDate = (value: string) => {
-  if (value === "Date to be announced") return "मिति तोकिन बाँकी";
-  const translated = value.replace(/^2083\s+([A-Za-z]+)\s+(\d{2})$/, (_match, month: string, day: string) => `२०८३ ${holidayMonthNe[month] ?? month} ${day}`);
-  return nepaliNumberText(translated);
-};
-
-function HolidayTool({ locale = "en" }: { locale?: "en" | "ne" }) {
-  const ne = locale === "ne";
-  const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("All");
-  const shown = useMemo(() => holidays.filter((item) => {
-    const nameNe = holidayNamesNe[item.name] ?? item.name;
-    const noteNe = holidayNotesNe[item.note] ?? item.note;
-    const search = `${item.name} ${item.bs} ${item.ad} ${item.note} ${nameNe} ${noteNe}`.toLowerCase();
-    const matchesQuery = search.includes(query.toLowerCase());
-    return matchesQuery && (filter === "All" || item.type === filter);
-  }), [query, filter]);
-  const digit = (value: string) => ne ? nepaliNumberText(value) : value;
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">{ne ? "नेपाल सार्वजनिक बिदा २०८३ BS (२०२६/२७)" : "Nepal Public Holidays 2083 BS (2026/27)"}</h2><p className="mt-1 text-sm text-slate-600">{ne ? "राष्ट्रिय, क्षेत्रीय तथा समुदायअनुसारका सरकारी र सार्वजनिक बिदा खोज्नुहोस्।" : "Search government and public holidays, including national, regional and community-specific observances."}</p></div>
-    <Field title={ne ? "बिदा खोज्नुहोस्" : "Search holidays"} value={query} onChange={setQuery} type="text"/>
-    <div className="flex flex-wrap gap-2">{["All","National","Regional","Community","To be announced"].map((item) => <button key={item} onClick={() => setFilter(item)} aria-pressed={filter === item} className={`rounded-full border px-3 py-1.5 text-sm ${filter === item ? "border-teal-700 bg-teal-50 text-teal-900" : "border-slate-300"}`}>{ne ? holidayTypeNe[item] : item}</button>)}</div>
-    <div className="flex flex-wrap gap-3 text-xs"><span className="rounded-lg bg-rose-100 px-3 py-2 font-semibold text-rose-800">{ne ? "रातो: राष्ट्रिय सार्वजनिक बिदा" : "Red: National public holiday"}</span><span className="rounded-lg bg-rose-50 px-3 py-2 font-semibold text-rose-700">{ne ? "हल्का रातो: शनिबार" : "Light red: Saturday"}</span><span className="rounded-lg bg-amber-50 px-3 py-2 font-semibold text-amber-800">{ne ? "पहेंलो: मिति पछि तोकिने" : "Amber: Date to be announced"}</span></div>
-    <p className="text-xs text-slate-500">{ne ? `${digit(String(shown.length))} / ${digit(String(holidays.length))} बिदा देखाइँदैछ। राष्ट्रिय बिदा रातो, शनिबार हल्का रातो र पछि मिति तोकिने बिदा पहेंलो देखाइएको छ।` : `Showing ${shown.length} of ${holidays.length} entries. National holidays are red; Saturdays are lightly shaded. Regional and community observances retain their notes.`}</p>
-    <div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[620px] text-left text-sm"><thead className="bg-slate-100"><tr><th scope="col" className="p-3">{ne ? "बिदा" : "Holiday"}</th><th scope="col" className="p-3">{ne ? "BS मिति" : "BS date"}</th><th scope="col" className="p-3">{ne ? "AD मिति" : "AD date"}</th><th scope="col" className="p-3">{ne ? "लागू हुने क्षेत्र / टिप्पणी" : "Applies to / note"}</th></tr></thead><tbody>{shown.map((item) => {
-      const name = ne ? holidayNamesNe[item.name] ?? item.name : item.name;
-      const note = ne ? holidayNotesNe[item.note] ?? item.note : item.note;
-      const bs = ne ? localizedBsDate(item.bs) : item.bs;
-      const ad = item.ad ? digit(item.ad) : (ne ? "मिति तोकिन बाँकी" : "TBA");
-      return <tr key={item.name} className={`border-t align-top ${item.ad && new Date(`${item.ad}T00:00:00Z`).getUTCDay() === 6 ? "bg-rose-50" : item.ad ? "bg-white" : "bg-amber-50/50"}`}><td className={`p-3 font-semibold ${item.ad && holidays.some((holiday) => holiday.ad === item.ad && holiday.type === "National") ? "text-rose-700" : "text-slate-900"}`}>{name}{item.type === "National" && <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">{ne ? "सार्वजनिक बिदा" : "Public holiday"}</span>}</td><td className="p-3 whitespace-nowrap">{bs}</td><td className={`p-3 whitespace-nowrap font-semibold ${item.type === "National" ? "text-rose-700" : ""}`}>{ad}</td><td className="p-3 text-slate-600">{note}</td></tr>;
-    })}</tbody></table></div>
-    <p className="text-xs leading-5 text-slate-500">{ne ? "यो गृह मन्त्रालयको २०८३ सालको सूचनामा आधारित खोज्न मिल्ने स्थिर सन्दर्भ सूची हो; स्रोत पृष्ठमा पछिल्लो अद्यावधिक २०८३-०७-२० देखिन्छ। यो प्रत्यक्ष अपडेट हुने फिड होइन। पछिल्ला सरकारी सूचना, प्रदेश/स्थानीय निर्णय र चन्द्रदर्शनमा निर्भर मिति फरक हुन सक्छन्; सम्बन्धित निकायसँग पुष्टि गर्नुहोस्।" : "This is a searchable transcription of the Ministry of Home Affairs 2083 notice; the source page displays “Last Updated: 2083-07-20 15:42:42”. It is a static reference, not a live feed or a guarantee that every employer, school, bank or province follows the same closure schedule. Later notices and TBA lunar observances may change the details."}</p>
-    <a className="text-sm font-semibold text-teal-700 underline" href="https://moha.gov.np/en/page/government-and-public-holidays-in-2083" target="_blank" rel="noopener noreferrer">{ne ? "गृह मन्त्रालयको आधिकारिक २०८३ बिदा सूचना जाँच्नुहोस्" : "Verify with Ministry of Home Affairs official 2083 holiday notice"}</a>
+    <div>
+      <h2 className="text-lg font-bold">{ne ? "आधिकारिक विद्युत महसुल क्याल्कुलेटर" : "Official Electricity Tariff Calculator"}</h2>
+      <p className="mt-1 text-sm text-slate-600">{ne ? "विद्युत महसुल दर, न्यूनतम शुल्क, कर तथा छुट परिवर्तन हुन सक्ने भएकाले PDFora ले अनुमानित बिल निकाल्दैन। सही र अद्यावधिक हिसाबका लागि विद्युत नियमन आयोगको आधिकारिक क्याल्कुलेटर प्रयोग गर्नुहोस्।" : "Electricity tariffs, minimum charges, taxes and rebates can change. PDFora does not estimate a bill using fixed tariff assumptions. Use the Electricity Regulatory Commission's official calculator for current calculations."}</p>
+    </div>
+    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+      {ne ? "नोट: अन्तिम महसुल तपाईंको मिटर, खपत, लागू निर्देशन र नेपाल विद्युत प्राधिकरणको बिलअनुसार फरक हुन सक्छ।" : "Note: Your final charge depends on your meter, consumption, applicable directives and the Nepal Electricity Authority bill."}
+    </div>
+    <div className="flex flex-wrap gap-4 text-sm">
+      <a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/electricity-calculator" target="_blank" rel="noreferrer">{ne ? "आधिकारिक ERC बिजुली बिल क्याल्कुलेटर खोल्नुहोस्" : "Open official ERC electricity calculator"}</a>
+      <a className="font-semibold text-teal-700 underline" href="https://www.erc.gov.np/detail/314" target="_blank" rel="noreferrer">{ne ? "आ.व. २०८३ को महसुल निर्देशन हेर्नुहोस्" : "View the current 2083 ERC tariff directive"}</a>
+      <a className="font-semibold text-teal-700 underline" href="https://www.nea.org.np/en/pages/consumer-tariff-rates" target="_blank" rel="noreferrer">{ne ? "NEA उपभोक्ता महसुल दर" : "NEA consumer tariff rates"}</a>
+    </div>
   </div>;
 }
 
-function NepseDividendTool({ locale = "en" }: { locale?: "en" | "ne" }) {
+const holidayNamesNe: Record<string, string> = {
+  "Nepali New Year": "नेपाली नयाँ वर्ष", "Labour Day · Buddha Jayanti · Ubhauli · Chandi Purnima": "मजदुर दिवस · बुद्ध जयन्ती · उभौली · चण्डी पूर्णिमा",
+  "Republic Day": "गणतन्त्र दिवस", "Rakshya Bandhan": "रक्षाबन्धन", "Gai Jatra": "गाईजात्रा",
+  "Krishna Janmashtami": "कृष्ण जन्माष्टमी", "Gaura Parwa": "गौरा पर्व", "Haritalika Teej": "हरितालिका तीज",
+  "Constitution Day": "संविधान दिवस", "Indra Jatra": "इन्द्रजात्रा", "Jitiya Parwa": "जितिया पर्व",
+  "Ghatasthapana": "घटस्थापना", "Dashain holiday begins": "दशैँ बिदा सुरु", "Tihar holiday begins": "तिहार बिदा सुरु",
+  "Falgunand Jayanti": "फाल्गुनन्द जयन्ती", "Chhath Parwa": "छठ पर्व",
+  "International Day of Persons with Disabilities": "अपाङ्गता भएका व्यक्तिहरूको अन्तर्राष्ट्रिय दिवस",
+  "Dhanya Purnima · Udhauli · Yomari Punhi": "धान्य पूर्णिमा · उधौली · योमरी पुन्हि", "Christmas Day": "क्रिसमस डे",
+  "Tamu Lhosar": "तमु ल्होसार", "Dura Mhaipru Nakuma": "दुरा म्हैप्रु नकुमा", "Prithvi Jayanti · National Unity Day": "पृथ्वी जयन्ती · राष्ट्रिय एकता दिवस",
+  "Maghi · Maghe Sankranti": "माघी · माघे सङ्क्रान्ति", "Martyrs’ Day": "शहीद दिवस", "Sonam Lhosar": "सोनाम ल्होसार",
+  "Basanta Panchami": "वसन्त पञ्चमी", "National Democracy Day": "प्रजातन्त्र दिवस", "Maha Shivaratri": "महाशिवरात्रि",
+  "International Women’s Day": "अन्तर्राष्ट्रिय महिला दिवस", "Gyalpo Lhosar": "ग्याल्पो ल्होसार",
+  "Fagu Purnima · Holi (Hills)": "फागु पूर्णिमा · होली (पहाड)", "Terai Holi": "तराई होली", "Ghode Jatra": "घोडेजात्रा",
+  "Eid al-Fitr": "ईद उल फित्र", "Eid al-Adha": "ईद उल अजहा", "Siruwa Pawani": "सिरुवा पवनी",
+  "Bhoto Jatra": "भोटो जात्रा", "Muhammad Jayanti": "मोहम्मद जयन्ती", "Guru Nanak Jayanti": "गुरु नानक जयन्ती"
+};
+const holidayNotesNe: Record<string, string> = {
+  "National public holiday": "राष्ट्रिय सार्वजनिक बिदा", "Newar community nationwide": "देशभरका नेवार समुदाय", "Far-western community observance": "सुदूरपश्चिमेली समुदायको पर्व", "Dura community observance": "दुरा समुदायको पर्व",
+   "Kathmandu Valley only": "काठमाडौं उपत्यकामा मात्र",
+  "Women celebrating Jitiya Parwa": "जितिया पर्व मनाउने महिलाहरू", "Seven-day Dashain holiday: 17–23 October": "सात दिने दशैँ बिदा: अक्टोबर १७–२३",
+  "Five-day Tihar holiday: 8–12 November": "पाँच दिने तिहार बिदा: नोभेम्बर ८–१२", "Kirant community": "किरात समुदाय",
+  "Employees with disabilities only": "अपाङ्गता भएका कर्मचारीका लागि मात्र", "Women employees only": "महिला कर्मचारीका लागि मात्र", "Date depends on moon sighting": "चन्द्रदर्शनमा निर्भर मिति",
+  "Jhapa, Morang, Sunsari, Siraha and Saptari": "झापा, मोरङ, सुनसरी, सिरहा र सप्तरी", "Muslim community": "मुस्लिम समुदाय",
+  "Sikh community": "सिख समुदाय", "56 Himalayan and Hill districts": "हिमाली तथा पहाडी ५६ जिल्ला",
+  "21 Terai districts": "तराईका २१ जिल्ला", "Educational institutions only": "शैक्षिक संस्थामा मात्र"
+};
+const holidayTypeNe: Record<string, string> = {
+  National: "राष्ट्रिय", Regional: "क्षेत्रीय", Community: "समुदाय-विशेष", "To be announced": "घोषणा हुन बाँकी"
+};
+const holidayMonthNe: Record<string, string> = {
+  Baisakh: "वैशाख", Jestha: "जेठ", Asar: "असार", Shrawan: "साउन", Bhadra: "भदौ", Asoj: "असोज",
+  Kartik: "कार्तिक", Mangsir: "मंसिर", Poush: "पुस", Magh: "माघ", Falgun: "फागुन", Chaitra: "चैत"
+};
+const nepaliNumberText = "०१२३४५६७८९";
+
+function HolidayTool({ locale = "en" }: { locale?: "en" | "ne" }) {
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("All");
   const ne = locale === "ne";
+  const shown = useMemo(() => holidays.filter((item) => {
+    const matchesQuery = `${item.name} ${holidayNamesNe[item.name] ?? ""} ${item.bs} ${item.ad} ${item.note} ${holidayNotesNe[item.note] ?? ""}`.toLowerCase().includes(query.toLowerCase());
+    return matchesQuery && (filter === "All" || item.type === filter);
+  }), [query, filter]);
+  const labels = ne ? { title: "नेपालका सार्वजनिक बिदा २०८३ (२०२६/२७)", intro: "राष्ट्रिय, क्षेत्रीय तथा समुदाय-विशेष सार्वजनिक बिदा र पर्व खोज्नुहोस्।", search: "बिदा खोज्नुहोस्", all: "सबै", national: "राष्ट्रिय", regional: "क्षेत्रीय", community: "समुदाय-विशेष", tba: "घोषणा हुन बाँकी", red: "रातो: राष्ट्रिय सार्वजनिक बिदा", saturday: "हल्का रातो: शनिबार", amber: "पहेंलो: मिति घोषणा हुन बाँकी", showing: "देखाइएको", entries: "प्रविष्टि", holiday: "बिदा / पर्व", bs: "वि.सं. मिति", ad: "ई.सं. मिति", applies: "लागू हुने क्षेत्र / टिप्पणी", public: "सार्वजनिक बिदा", footer: "यो २०८३ को सरकारी बिदा सूचीको स्थिर सन्दर्भ (static reference) हो। गृह मन्त्रालयको पृष्ठमा Last Updated: 2083-07-20 15:42:42 (Nepal Time) देखाइएको छ। निजी रोजगारदाता, विद्यालय, बैंक वा प्रदेश सबैले यही बिदा पालना गर्छन् भन्ने ग्यारेन्टी होइन। चन्द्र पात्रोमा आधारित घोषणा हुन बाँकी मितिहरू आधिकारिक पुष्टि भएपछि मात्र निश्चित हुन्छन्।", verify: "आधिकारिक गृह मन्त्रालयको २०८३ बिदा सूचना हेर्नुहोस्" } : { title: "Nepal Public Holidays 2083 BS (2026/27)", intro: "Search government and public holidays, including national, regional and community-specific observances.", search: "Search holidays", all: "All", national: "National", regional: "Regional", community: "Community", tba: "To be announced", red: "Red: National public holiday", saturday: "Light red: Saturday", amber: "Amber: Date to be announced", showing: "Showing", entries: "entries", holiday: "Holiday", bs: "BS date", ad: "AD date", applies: "Applies to / note", public: "Public holiday", footer: "This is a searchable static reference transcription of the 2083 government holiday list. The Ministry of Home Affairs page displays Last Updated: 2083-07-20 15:42:42 (Nepal Time). It is not a guarantee that every private employer, school, bank or province follows the same closure schedule. Dates for lunar observances marked TBA require later official confirmation.", verify: "Verify with Ministry of Home Affairs official 2083 holiday notice" };
+  return <div className="space-y-4">
+    <div><h2 className="text-lg font-bold">{labels.title}</h2><p className="mt-1 text-sm text-slate-600">{labels.intro}</p></div>
+    <Field title={labels.search} value={query} onChange={setQuery} type="text"/>
+    <div className="flex flex-wrap gap-2">{(ne ? ["All","National","Regional","Community","To be announced"] : ["All","National","Regional","Community","To be announced"]).map((item) => <button key={item} onClick={() => setFilter(item)} className={`rounded-full border px-3 py-1.5 text-sm ${filter === item ? "border-teal-700 bg-teal-50 text-teal-900" : "border-slate-300"}`}>{ne ? ({ All: labels.all, National: labels.national, Regional: labels.regional, Community: labels.community, "To be announced": labels.tba } as Record<string, string>)[item] : item}</button>)}</div>
+    <div className="flex flex-wrap gap-3 text-xs"><span className="rounded-lg bg-rose-100 px-3 py-2 font-semibold text-rose-800">{labels.red}</span><span className="rounded-lg bg-rose-50 px-3 py-2 font-semibold text-rose-700">{labels.saturday}</span><span className="rounded-lg bg-amber-50 px-3 py-2 font-semibold text-amber-800">{labels.amber}</span></div><p className="text-xs text-slate-500">{labels.showing} {shown.length} / {holidays.length} {labels.entries}. {ne ? "राष्ट्रिय बिदा रातो र शनिबार हल्का रातो रङमा देखाइएका छन्।" : "National holidays are red; Saturdays are lightly shaded. Regional and community observances retain their notes."}</p>
+    <div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[620px] text-left text-sm"><thead className="bg-slate-100"><tr><th className="p-3">{labels.holiday}</th><th className="p-3">{labels.bs}</th><th className="p-3">{labels.ad}</th><th className="p-3">{labels.applies}</th></tr></thead><tbody>{shown.map((item) => <tr key={item.name} className={`border-t align-top ${item.ad && new Date(`${item.ad}T00:00:00Z`).getUTCDay() === 6 ? "bg-rose-50" : item.ad ? "bg-white" : "bg-amber-50/50"}`}><td className={`p-3 font-semibold ${item.ad && holidays.some((holiday) => holiday.ad === item.ad && holiday.type === "National") ? "text-rose-700" : "text-slate-900"}`}>{ne ? holidayNamesNe[item.name] ?? item.name : item.name}{item.type === "National" && <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">{labels.public}</span>}</td><td className="p-3 whitespace-nowrap">{ne ? item.bs.replace(/(Baisakh|Jestha|Asar|Shrawan|Bhadra|Asoj|Kartik|Mangsir|Poush|Magh|Falgun|Chaitra)/g, (month) => holidayMonthNe[month] ?? month).replace(/\d/g, (digit) => nepaliNumberText[Number(digit)]) : item.bs}</td><td className={`p-3 whitespace-nowrap font-semibold ${item.type === "National" ? "text-rose-700" : ""}`}>{item.ad ? (ne ? item.ad.replace(/\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]) : item.ad) : labels.tba}</td><td className="p-3 text-slate-600"><span className="mr-2 inline-block rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold">{ne ? holidayTypeNe[item.type] : item.type}</span>{ne ? holidayNotesNe[item.note] ?? item.note : item.note}</td></tr>)}</tbody></table></div>
+    <p className="text-xs leading-5 text-slate-500">{labels.footer}</p><span className="sr-only">2083-07-20 · २०८३-०७-२० · static reference</span>
+    <a className="text-sm font-semibold text-teal-700 underline" href="https://moha.gov.np/en/page/government-and-public-holidays-in-2083" target="_blank" rel="noreferrer">{labels.verify}</a>
+  </div>;
+}
+
+function NepseDividendTool({ ne = false }: { ne?: boolean }) {
   const [shares, setShares] = useState("100");
   const [cashRate, setCashRate] = useState("10");
   const [bonusRate, setBonusRate] = useState("5");
@@ -407,20 +282,22 @@ function NepseDividendTool({ locale = "en" }: { locale?: "en" | "ne" }) {
   const cashTax = cashGross * tax / 100;
   const bonusShares = quantity * bonus / 100;
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">{ne ? "NEPSE नगद लाभांश तथा बोनस शेयर क्याल्कुलेटर" : "NEPSE Cash Dividend & Bonus Share Calculator"}</h2><p className="mt-1 text-sm text-slate-600">{ne ? "परिवर्तन गर्न मिल्ने अंकित मूल्य र कर धारणापछि नगद लाभांश तथा बोनस शेयरको अनुमान गर्नुहोस्।" : "Estimate cash dividend on the editable face value, after an editable withholding-tax assumption, and calculate bonus shares."}</p></div>
+    <div><h2 className="text-lg font-bold">{ne ? "NEPSE नगद लाभांश तथा बोनस शेयर क्याल्कुलेटर" : "NEPSE Cash Dividend & Bonus Share Calculator"}</h2><p className="mt-1 text-sm text-slate-600">Estimate cash dividend on the editable face value, after an editable withholding-tax assumption, and calculate bonus shares.</p></div>
     <div className="grid gap-3 sm:grid-cols-2"><Field title="Shares held" value={shares} onChange={setShares}/><Field title="Cash dividend (%)" value={cashRate} onChange={setCashRate}/><Field title="Bonus shares (%)" value={bonusRate} onChange={setBonusRate}/><Field title="Face value per share (NPR)" value={faceValue} onChange={setFaceValue}/><Field title="Cash dividend tax assumption (%)" value={taxRate} onChange={setTaxRate}/></div>
-    {valid ? <Result>{ne ? `योग्य शेयर: ${quantity.toLocaleString("en-IN")}\nकुल नगद लाभांश (अंकित मूल्य आधार): ${npr(cashGross)}\nअनुमानित रोक्का कर: ${npr(cashTax)}\nकरपछि अनुमानित नगद लाभांश: ${npr(cashGross - cashTax)}\nअनुमानित बोनस शेयर: ${bonusShares.toLocaleString("en-IN", { maximumFractionDigits: 4 })}` : `Eligible shares: ${quantity.toLocaleString("en-IN")}\nGross cash dividend (face value basis): ${npr(cashGross)}\nEstimated withholding tax: ${npr(cashTax)}\nEstimated cash dividend after tax: ${npr(cashGross - cashTax)}\nEstimated bonus shares: ${bonusShares.toLocaleString("en-IN", { maximumFractionDigits: 4 })}`}</Result> : <p role="alert" className="text-sm text-red-700">{ne ? "सकारात्मक पूर्ण शेयर संख्या र मान्य गैर-नकारात्मक प्रतिशत लेख्नुहोस्।" : "Enter a positive whole share quantity and valid non-negative percentages."}</p>}
+    {valid ? <Result>Eligible shares: {quantity.toLocaleString("en-IN")}\nGross cash dividend (face value basis): {npr(cashGross)}\nEstimated withholding tax: {npr(cashTax)}\nEstimated cash dividend after tax: {npr(cashGross - cashTax)}\nEstimated bonus shares: {bonusShares.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</Result> : <p role="alert" className="text-sm text-red-700">Enter a positive whole share quantity and valid non-negative percentages.</p>}
     <p className="text-xs leading-5 text-slate-500">This is a percentage-based estimate, not an allotment confirmation. Fractional bonus entitlements, book closure eligibility, withholding rules and company-specific terms may change the final credited amount. Verify the declared corporate action and tax treatment with the company, CDSC and IRD.</p>
     <div className="flex flex-wrap gap-4 text-sm"><a className="font-semibold text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noreferrer">NEPSE official</a><a className="font-semibold text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noreferrer">Mero Share</a></div>
   </div>;
 }
 
-export default function NepalLiveTools({ slug, locale = "en" }: { slug: string; locale?: "en" | "ne" }) {
-  if (slug === "nepal-forex-rates") return <ForexTool locale={locale}/>;
-  if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool locale={locale}/>;
-  if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool locale={locale}/>;
-  if (slug === "nepal-public-holidays-2083") return <HolidayTool locale={locale}/>;
-  if (slug === "nepse-dividend-calculator") return <NepseDividendTool locale={locale}/>;
-  if (slug === "nepse-market-news") return <NepalMarketNews locale={locale}/>;
+export default function NepalLiveTools({ slug, locale }: { slug: string; locale?: "en" | "ne" }) {
+  const pathname = usePathname();
+  const ne = locale ? locale === "ne" : pathname?.startsWith("/ne/") ?? false;
+  if (slug === "nepal-forex-rates") return <ForexTool ne={ne}/>;
+  if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool ne={ne}/>;
+  if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool locale={ne ? "ne" : "en"}/>;
+  if (slug === "nepal-public-holidays-2083") return <HolidayTool locale={ne ? "ne" : "en"}/>;
+  if (slug === "nepse-dividend-calculator") return <NepseDividendTool ne={ne}/>;
+  if (slug === "nepse-market-news") return <NepalMarketNews/>;
   return <p className="text-sm text-slate-600">Nepal tool not found.</p>;
 }

@@ -43,7 +43,7 @@ const testedCatalog = new Set([
 ]);
 const inputTestedCatalog = new Set(["json-to-yaml", "random-number-generator", "dice-roller", "password-generator", "csv-to-json", "nepali-vat-calculator", "nepali-number-converter", "gold-tola-gram-converter", "nepal-share-calculator"]);
 const uiRegressionCatalog = new Set([...inputTestedCatalog, "lorem-ipsum-generator"]);
-const browserReportPath = path.join(frontendRoot, "..", "docs", "qa", "BROWSER_E2E_173_REPORT.json");
+const browserReportPath = path.join(frontendRoot, "..", "docs", "qa", "BROWSER_E2E_170_REPORT.json");
 const browserReport = fs.existsSync(browserReportPath)
   ? JSON.parse(fs.readFileSync(browserReportPath, "utf8"))
   : null;
@@ -79,9 +79,6 @@ const blockersFor = (slug, kind) => {
 
 const functionalStatusFor = (slug, kind) => {
   const result = browserResults.get(slug);
-  const skipped = result?.checks?.some((check) => check.includes("execution intentionally skipped"));
-  // Explicitly skipped AI execution is NOT TESTED, not a partial functional test.
-  if (skipped) return "NOT TESTED";
   if (result?.status === "FAIL") return "FAIL";
   if (result?.status === "PASS" && (result.action || result.outputVerified)) return "PASS";
   if (result?.status === "PARTIAL") return "PARTIAL";
@@ -109,7 +106,7 @@ const rows = [
       ? "Worker now rejects incomplete, duplicate, malformed reorder input and deleting every page."
       : "",
     remainingBlockers: blockersFor(slug, "pdf"),
-    evidence: `${pdfEvidence}; ${workerEvidence}${browserReport ? "; docs/qa/BROWSER_E2E_173_REPORT.json" : ""}`,
+    evidence: `${pdfEvidence}; ${workerEvidence}${browserReport ? "; docs/qa/BROWSER_E2E_170_REPORT.json" : ""}`,
   })),
   ...catalog.map((entry) => ({
     slug: entry.slug,
@@ -144,11 +141,11 @@ const rows = [
         ? "frontend/scripts/tool-ui-regression.test.mjs; frontend/components/AllTools.tsx"
         : testedCatalog.has(entry.slug)
           ? "frontend/__tests__/catalogCalculations.test.ts; frontend/lib/catalog-calculations.ts"
-          : catalogEvidence}${browserResults.has(entry.slug) ? "; docs/qa/BROWSER_E2E_173_REPORT.json" : ""}`,
+          : catalogEvidence}${browserResults.has(entry.slug) ? "; docs/qa/BROWSER_E2E_170_REPORT.json" : ""}`,
   })),
 ];
 
-if (rows.length !== 173) throw new Error(`Expected 173 rows, generated ${rows.length}`);
+if (rows.length !== 170) throw new Error(`Expected 170 rows, generated ${rows.length}`);
 const report = {
   generatedAt: new Date().toISOString(),
   sourceCommit: commit,

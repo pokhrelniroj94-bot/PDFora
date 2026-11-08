@@ -4,10 +4,11 @@ import { hreflangMap } from "../../lib/i18n/routing";
 const localizedAlternates = hreflangMap("/privacy");
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | PDFora Data and File Handling",
-  description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and optional AI features.",
+  title: "Privacy Policy: PDF and Data Handling",
+  description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and public market data.",
   alternates: { canonical: "https://pd-fora.vercel.app/privacy", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and optional AI features." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and public market data.", images: ["/opengraph-image"] },
+  twitter: { card: "summary_large_image", title: "PDFora Privacy Policy", description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and public market data.", images: ["/opengraph-image"] },
 };
 
 export default function PrivacyPage() {
@@ -95,30 +96,29 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              6. AI Writing and Market Explanation Tools
+              6. Public Market Data and Calculations
             </h2>
             <p>
-              If you choose to use AI Resume Writer, Cover Letter Generator,
-              Humanizer, or the optional Market AI explanation, the text and
-              details you submit are sent to Cloudflare Workers AI to generate
-              a response. These features require your confirmation before
-              submitting text. Do not submit passwords, government identity
-              numbers, bank or broker credentials, private keys, or confidential
-              employer or client information.
+              The NEPSE dashboard and technical-analysis tools display public
+              market datasets and historical observations from the sources
+              identified on each page. These sources may be delayed, incomplete,
+              archived or independently unverified. The page shows available
+              source and update timestamps; refreshing PDFora does not force an
+              upstream provider to publish new data.
             </p>
             <p className="mt-2">
-              PDFora does not intentionally save AI prompts or generated
-              responses in its own application database. The AI provider
-              processes requests under its own terms and privacy practices.
-              Review the <a className="underline" href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noreferrer">Cloudflare Privacy Policy</a>
-              before using these features. AI-generated content may be
-              inaccurate and should be reviewed before use.
+              Market indicators and calculator results are produced by
+              deterministic formulas from the displayed inputs. They are
+              educational estimates, not forecasts, investment advice or
+              exchange-authorized trading quotes. Verify prices, disclosures,
+              corporate actions and fees with the relevant official source.
             </p>
             <p className="mt-2">
               Resume Builder details and profile photos are handled in your
-              browser to create the preview and PDF. AI-generated resume text
-              is transferred to the builder only within the current browser
-              tab session and is removed after import.
+              browser to create the preview and PDF. NEPSE watchlist symbols
+              are stored in your browser&apos;s local storage on this device and are
+              not sent to PDFora&apos;s server by the watchlist feature. You can
+              remove them from the dashboard or clear this site&apos;s browser data.
             </p>
           </div>
 

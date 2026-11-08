@@ -36,7 +36,9 @@ test("AI Help resets and aborts pending conversations when the locale changes", 
   const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");
   assert.ok(source.includes("useRef<AbortController | null>(null)"), "AI Help must retain the active request controller");
   assert.ok(source.includes("requestController.current?.abort()"), "locale changes must abort the previous language request");
-  assert.ok(source.includes('setMessages([{ role: "assistant", text: locale === "ne"'), "locale changes must reset the conversation with an active-language greeting");
+  assert.ok(source.includes('{ role: "assistant", text: locale === "ne" ? "नमस्ते! PDFora को AI Help मा स्वागत छ। कुन टुल वा नतिजाबारे सहयोग चाहिन्छ?"'), "the initial conversation greeting must use the active language");
+  const layout = fs.readFileSync(path.join(frontendRoot, "app", "layout.tsx"), "utf8");
+  assert.ok(layout.includes("<SiteAIHelp key={htmlLang} />"), "changing the server-resolved document language must remount and reset the AI Help conversation");
   assert.ok(source.includes("return () => {") && source.includes("requestController.current = null;"), "unmounting or changing locale must abort and clear its pending request");
   assert.ok(source.includes("signal: controller.signal"), "AI requests must be cancellable");
   assert.ok(source.includes("if (!controller.signal.aborted) setError("), "aborted requests must not surface stale errors");

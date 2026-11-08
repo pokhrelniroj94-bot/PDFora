@@ -14,6 +14,7 @@ export default function NepseAlphaLab(){
   try{const res=await fetch("/api/nepse-market?symbol="+encodeURIComponent(symbol.trim().toUpperCase())+"&period=1Y",{cache:"no-store"});const data=await res.json();if(!res.ok)throw new Error(data.error||"Historical prices unavailable.");
    const clean=normalizeDailyBars(data.points||[]);
    if(clean.length<80)throw new Error("At least 80 daily price observations are required. This symbol has "+clean.length+".");
+   if(detectLargePriceGaps(clean,20).length)throw new Error("Backtest paused: a 20%+ historical price gap requires corporate-action/source verification before performance can be trusted.");
    setRows(clean);setHistoryAgeDays(Math.floor((Date.now()-Date.parse(clean[clean.length-1].date+"T00:00:00Z"))/86400000));setSource(String(data.source||"Historical NEPSE data")+" · "+clean[0].date+" to "+clean[clean.length-1].date);
   }catch(e){setError(e instanceof Error?e.message:"Could not load stock history.");}finally{setBusy(false);}
  }

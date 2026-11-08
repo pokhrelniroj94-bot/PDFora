@@ -27,11 +27,13 @@ const toolSeoContentSource = read("components/ToolSEOContent.tsx");
 const catalogToolSeoContentSource = read("components/CatalogToolSEOContent.tsx");
 const pdfToolJsonLdSource = read("components/PdfToolJsonLd.tsx");
 const pdfToolMetadataSource = read("lib/i18n/pdf-tool-seo-core.ts");
+const catalogIndexabilitySource = read("lib/tools/catalog-indexability.ts");
 
 const legacyPdfSlugs = [...read("lib/legacy-tool-slugs.ts").matchAll(/^\s*"([^"]+)",?$/gm)].map((match) => match[1]);
 const modules = await loadToolAdapter();
 const { toolGuides } = await import("../lib/tool-guides.ts");
 const { toolCatalog } = await import("../components/toolCatalog.ts");
+const { indexableCatalogToolSlugs, isCatalogToolIndexable } = await import("../lib/tools/catalog-indexability.ts");
 const { buildPdfToolMetadata } = await import("../lib/i18n/pdf-tool-seo-core.ts");
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];

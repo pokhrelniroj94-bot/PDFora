@@ -78,7 +78,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
           <section className="rounded-3xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">सम्बन्धित टुल</h2>
             <div className="mt-4 flex flex-wrap gap-3">
-              {post.toolLinks.map((tool) => <Link key={tool.href} href={tool.href.replace(/^\/tools/, "/ne/tools")} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
+              {post.toolLinks.map((tool) => <Link key={tool.href} href={tool.href.startsWith("/ne/") ? tool.href : tool.href.startsWith("/tools/") ? tool.href.replace(/^\/tools/, "/ne/tools") : tool.href.startsWith("/") ? `/ne${tool.href}` : tool.href} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
             </div>
           </section>
         </div>

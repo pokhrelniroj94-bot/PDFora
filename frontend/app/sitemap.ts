@@ -6,6 +6,7 @@ import { nepaliLocalizedBlogPosts } from "../lib/nepali-localized-blog-posts";
 import { nepaliLocalizedCareerSlugs, nepaliLocalizedFinancialSlugs, nepaliLocalizedUtilitySlugs } from "../lib/i18n/nepali-tool-routes";
 import { isLocalizedToolIndexable } from "../lib/tools/localized-verification";
 import { nepaliPdfRoutes } from "../lib/i18n/nepali-pdf-routes";
+import { isCatalogToolIndexable } from "../lib/tools/catalog-indexability";
 
 const baseUrl = "https://pd-fora.vercel.app";
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
@@ -17,10 +18,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: prioritySlugs.has(slug) ? 0.9 : 0.7,
   }));
 
-  // Every catalog tool gets exactly one sitemap URL. Existing PDF routes retain
-  // their established root URLs; all other tools use /tools/<slug>.
+  // Only catalogue tools with a dedicated, reviewed guide are eligible for Search.
+  // Other utilities remain available in the directory but are noindex and omitted.
+  // Established PDF routes retain their root URLs.
   const catalogEntries: MetadataRoute.Sitemap = toolCatalog
-    .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf" && tool.slug !== "resume-builder" && !legacyToolSlugSet.has(tool.slug))
+    .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "resume-builder" && !legacyToolSlugSet.has(tool.slug) && isCatalogToolIndexable(tool.slug))
     .map((tool) => ({
       url: `${baseUrl}/tools/${tool.slug}`,
       changeFrequency: "monthly" as const,

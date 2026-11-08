@@ -16,7 +16,7 @@ for (const [name, source] of [["Niroj77Tool", niroj], ["PDForaTool", pdfora]]) {
 }
 
 assert.ok(utilities.includes("const u=URL.createObjectURL(new Blob([text],{type}))") && utilities.includes("window.setTimeout(()=>URL.revokeObjectURL(u),1000)"), "Image downloads must retain the generated object URL long enough to start");
-assert.ok(utilities.includes("URL.revokeObjectURL(url)"), "Image source object URLs must be cleaned up");
+assert.ok(utilities.includes("if(sourceUrl)URL.revokeObjectURL(sourceUrl)") && utilities.includes("if(outputUrl)URL.revokeObjectURL(outputUrl)"), "Image source and output object URLs must be cleaned up on success and failure");
 assert.ok(utilities.includes("if(file.size>50*1024*1024)"), "Image tools must reject files over the advertised size limit");
 assert.ok(!homepage.includes("upload the required file"), "Homepage utility cards must not give generic PDF-upload instructions");
 assert.ok(homepage.includes("review the result before using or downloading it"), "Homepage cards must show neutral, tool-appropriate guidance");

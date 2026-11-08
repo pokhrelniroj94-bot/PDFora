@@ -17,6 +17,7 @@ import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWo
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
 import AIWritingTools from "../../../../components/AIWritingTools";
+import MarketIntelligence from "../../../../components/MarketIntelligence";
 import { nepaliLocalizedCareerSlugs, nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -84,6 +85,7 @@ const nepaliTitles: Record<string, string> = {
   "lorem-ipsum-generator": "Lorem Ipsum Generator",
   "html-encoder-decoder": "HTML Encode / Decode",
   "text-to-slug": "Text to Slug Converter",
+  "nepse-technical-analysis": "NEPSE प्राविधिक विश्लेषण",
   "nepal-forex-rates": "नेपाल राष्ट्र बैंक विनिमय दर",
   "nepal-salary-tax-calculator": "नेपाल तलब तथा आयकर क्याल्कुलेटर",
   "nepse-dividend-calculator": "NEPSE लाभांश तथा बोनस शेयर क्याल्कुलेटर",
@@ -231,6 +233,17 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && nepaliLocalizedPublicInfoSlugs.includes(toolSlug as (typeof nepaliLocalizedPublicInfoSlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपालका आधिकारिक सेवा तथा सार्वजनिक सूचना</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepalLiveTools slug={toolSlug} locale="ne" /></section></main>;
+  }
+  if (request.locale === "ne" && toolSlug === "nepse-technical-analysis") {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-6xl px-4 py-10 sm:px-6">
+      <div className="mb-7">
+        <p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली वित्तीय तथा बजार विश्लेषण</p>
+        <h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1>
+        <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">{nepaliDescriptions[toolSlug]}</p>
+        <p className="mt-2 text-xs leading-6 text-amber-800">यो शैक्षिक विश्लेषण उपकरण हो। उपलब्ध तथ्याङ्कमा आधारित सूचक मात्र देखाइन्छ; खरिद वा बिक्रीको व्यक्तिगत सल्लाह होइन।</p>
+      </div>
+      <section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><MarketIntelligence /></section>
+    </main>;
   }
   if (request.locale === "ne" && nepaliLocalizedFinancialSlugs.includes(toolSlug as (typeof nepaliLocalizedFinancialSlugs)[number])) {
     if (["loan-emi-calculator", "compound-interest-sip-calculator", "discount-percentage-calculator"].includes(toolSlug)) {

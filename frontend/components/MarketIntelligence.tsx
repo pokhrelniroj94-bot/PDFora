@@ -242,17 +242,31 @@ export default function MarketIntelligence() {
         low: Number(p.low) || undefined, close: Number(p.close), volume: Number(p.volume) || undefined,
       })).filter((p: Point) => p.date && Number.isFinite(p.close) && p.close > 0);
       const result = analyse(rows, "nepse");
-      if (!result) throw new Error("At least 50 valid historical daily prices are required for analysis.");
-      const newsResponse = await fetch(`/api/nepal-market-news?symbol=${encodeURIComponent(symbol)}`, { cache: "no-store" });
-      if (!newsResponse.ok) throw new Error("News service unavailable; a news-verified signal cannot be issued.");
-      const newsPayload = await newsResponse.json();
-      const reviewed = reviewNews(newsPayload, symbol);
+      if (!result) throw new Error("उपलब्ध तथ्याङ्कमा कम्तीमा ५० वटा मान्य दैनिक मूल्य छैनन्। पर्याप्त इतिहास उपलब्ध भएपछि पुनः प्रयास गर्नुहोस्।");
+      // Render the deterministic technical result before requesting optional news.
+      // A slow or unavailable news provider must not leave the analysis panel blank.
+      const pendingNews: NewsReview = { stories: [], sentiment: "Mixed / neutral", impact: 0, note: "समाचार सेवा जाँच हुँदैछ; समाचार पुष्टि नभएसम्म नयाँ खरिद संकेत रोकिएको छ।" };
+      const initial: Analysis = { ...result, signal: result.signal === "Potential BUY setup" ? "HOLD / WATCH" : result.signal, risks: [...result.risks, "समाचार पुष्टि बाँकी छ; समाचार सेवा उपलब्ध नभएसम्म नयाँ खरिद संकेत देखाइँदैन।"] };
+      setNewsReview(pendingNews);
+      setAnalysis(initial);
+      setSource(`ऐतिहासिक दैनिक तथ्याङ्क · पछिल्लो मिति ${data.latestHistoryDate || result.latestDate} · स्रोत ${data.source || "YONEPSE dataset"}`);
+      let reviewed = pendingNews;
+      try {
+        const newsResponse = await fetch(`/api/nepal-market-news?symbol=${encodeURIComponent(symbol)}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
+        if (!newsResponse.ok) throw new Error("समाचार सेवा अहिले उपलब्ध छैन।");
+        const newsPayload = await newsResponse.json();
+        reviewed = reviewNews(newsPayload, symbol);
+      } catch {
+        // Keep a visible, conservative technical result and explicitly mark news as unavailable.
+        reviewed = { stories: [], sentiment: "Mixed / neutral", impact: 0, note: "समाचार सेवा उपलब्ध भएन। यो प्राविधिक तथ्याङ्कमा आधारित प्रारम्भिक विश्लेषण मात्र हो; समाचार पुष्टि नभएसम्म खरिद संकेत रोकिएको छ।" };
+      }
       setNewsReview(reviewed);
-      const combined: Analysis = { ...result };
+      const combined: Analysis = { ...initial, risks: [...initial.risks.filter((risk) => !risk.startsWith("समाचार पुष्टि बाँकी")),] };
       if (reviewed.sentiment === "Negative" && combined.signal === "Potential BUY setup") { combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "Negative recent headlines block a fresh BUY until original announcements are reviewed."]; }
       else if (reviewed.sentiment === "Positive" && combined.signal.includes("SELL")) { combined.signal = "Wait / neutral"; combined.risks = [...combined.risks, "Positive headlines conflict with technical downside; wait for confirmation."]; }
       else if (reviewed.sentiment === "Mixed / neutral") { if (combined.signal === "Potential BUY setup") combined.signal = "HOLD / WATCH"; combined.risks = [...combined.risks, "News is mixed or insufficient; a fresh BUY is blocked until there is clearer news context and technical confirmation."]; }
       combined.reasons = [...combined.reasons, `News review: ${reviewed.sentiment}. ${reviewed.note}`];
+      if (reviewed.sentiment === "Mixed / neutral" && !reviewed.stories.length) combined.risks = [...combined.risks, "समाचार पुष्टि उपलब्ध छैन; नयाँ खरिद निर्णय गर्नुअघि आधिकारिक सूचना जाँच्नुहोस्।"];
       setAnalysis(combined); setSource(`${data.dataCoverage?.historicalCharts || "Historical daily data"} · latest history ${data.latestHistoryDate || result.latestDate} · stock quote freshness: ${data.quoteStale ? "stale / unavailable" : "timestamp available"} · dashboard source: ${data.source || "YONEPSE dataset"}`);
     } catch (err) { setError(err instanceof Error ? err.message : "Unable to analyse NEPSE data."); }
     finally { setBusy(false); }

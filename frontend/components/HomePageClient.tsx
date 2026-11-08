@@ -350,6 +350,19 @@ export default function HomePageClient() {
 
       {/* Non-intrusive ad after the main tool discovery area */}
 
+      {/* TRADITIONAL ASTROLOGY TOOLS */}
+      <section aria-labelledby="astrology-tools-heading" className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mb-5">
+          <p className="text-xs font-black uppercase tracking-widest text-orange-600">Nepal & South Asia</p>
+          <h2 id="astrology-tools-heading" className="mt-1 text-2xl font-black">Traditional astrology tools</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">Explore a traditional Vedic birth-chart calculation and an Ashtakoota matching table. These are cultural reference tools, not scientific predictions or substitutes for professional advice.</p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <InfoLink href="/nepali-janma-kundali" title="Janma Kundali / जन्मकुण्डली" description="Create a birth chart from birth date, local time and birthplace. Supports Nepali, Hindi and English." />
+          <InfoLink href="/nepali-guna-milan" title="36 Guna Milan / अष्टकूट गुण मिलान" description="Compare two birth charts using documented traditional Ashtakoota reference tables." />
+        </div>
+      </section>
+
       {/* NEPAL MARKET UPDATES */}
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="mb-5">

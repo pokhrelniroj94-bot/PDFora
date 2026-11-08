@@ -5,6 +5,7 @@ const extraLabels: Record<string, Record<string, string>> = {
   "html-encoder-decoder": { text: "HTML वा साधारण पाठ", mode: "कार्य (encode वा decode)" },
   "regex-tester": { pattern: "Regular expression", flags: "Flags (g, i, m)", text: "परीक्षण गर्ने पाठ" },
   "jwt-decoder": { text: "JWT token" },
+  "hash-generator": { algorithm: "Hash algorithm" },
   "color-contrast-checker": { fg: "अक्षरको रङ", bg: "पृष्ठभूमिको रङ" },
   "css-minifier": { text: "CSS कोड" },
   "json-to-csv": { text: "JSON object array" },

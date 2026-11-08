@@ -12,10 +12,54 @@ const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
 const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
 const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
+const pdfToolGuidesSource = read("../lib/tool-guides.ts");
 const toolPage = read("../app/tools/[slug]/page.tsx");
+const rootLayout = read("../app/layout.tsx");
+const localizedBlogArticle = read("../app/[locale]/blog/[slug]/page.tsx");
 const catalog = [...catalogSource.matchAll(/\{slug:"([^"]+)"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
 assert.ok(catalog.length >= 100, `Expected at least 100 catalog tools, found ${catalog.length}`);
 assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist");
+
+const metadataEntries = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"([^"]+)",category:"([^"]+)",description:"([^"]+)",keywords:"([^"]+)"\}/g)]
+  .map((match) => ({ slug: match[1], name: match[2], category: match[3], description: match[4] }))
+  .filter((entry) => entry.slug !== "pdf-tools");
+assert.equal(metadataEntries.length, 124, "Every catalog tool must have a metadata source entry");
+assert.equal(new Set(metadataEntries.map((entry) => entry.name.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool names must be unique");
+assert.equal(new Set(metadataEntries.map((entry) => entry.description.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool descriptions must be unique");
+
+const pdfGuideEntries = [...pdfToolGuidesSource.matchAll(/"slug":\s*"([^"]+)"[\s\S]*?"name":\s*"([^"]+)"[\s\S]*?"keyword":\s*"([^"]+)"[\s\S]*?"purpose":\s*"([^"]+)"[\s\S]*?"steps":\s*\[([\s\S]*?)\][\s\S]*?"caution":\s*"([^"]+)"/g)]
+  .map((match) => ({ slug: match[1], name: match[2], keyword: match[3], purpose: match[4], steps: [...match[5].matchAll(/"([^"]+)"/g)].map((step) => step[1]), caution: match[6] }));
+assert.equal(pdfGuideEntries.length, 49, "All 49 established PDF routes need a dedicated guide record");
+for (const field of ["name", "keyword", "purpose"]) {
+  assert.equal(new Set(pdfGuideEntries.map((entry) => entry[field].trim().toLowerCase())).size, 49, `PDF guide ${field} values must be unique`);
+}
+assert.ok(pdfGuideEntries.every((entry) => entry.steps.length === 3 && entry.caution.length >= 60), "Every PDF guide needs three task-specific steps and a useful caution");
+
+
+const seoOverridesBlock = toolPage.match(/const seoOverrides:[\s\S]*?= \{([\s\S]*?)\n  \};/)?.[1] ?? "";
+const seoOverrides = new Map([...seoOverridesBlock.matchAll(/"([^"]+)": \{ title: "([^"]+)", description: "([^"]+)" \}/g)]
+  .map((match) => [match[1], { title: match[2], description: match[3] }]));
+const generatedMetadata = metadataEntries.map((entry) => ({
+  slug: entry.slug,
+  title: seoOverrides.get(entry.slug)?.title ?? `Free ${entry.name} Online`,
+  description: seoOverrides.get(entry.slug)?.description ?? entry.description.trim(),
+}));
+assert.equal(new Set(generatedMetadata.map((entry) => entry.title.trim().toLowerCase())).size, generatedMetadata.length, "Generated English tool SEO titles must be unique");
+assert.equal(new Set(generatedMetadata.map((entry) => entry.description.trim().toLowerCase())).size, generatedMetadata.length, "Generated English tool meta descriptions must be unique");
+assert.ok(generatedMetadata.every((entry) => entry.title.length >= 20 && entry.description.length >= 40), "Tool metadata must be descriptive rather than empty or placeholder copy");
+assert.ok(generatedMetadata.every((entry) => !/\|\s*PDFora$/i.test(entry.title)), "Page titles must not duplicate the root PDFora title template");
+
+const resumeBuilderPage = read("../app/resume-builder/page.tsx");
+const resumeBuilderTitle = resumeBuilderPage.match(/title:\s*"([^"]+)"/)?.[1] ?? "";
+const resumeBuilderDescription = resumeBuilderPage.match(/description:\s*"([^"]+)"/)?.[1] ?? "";
+const canonicalCatalogMetadata = generatedMetadata.filter((entry) => entry.slug !== "resume-builder");
+const all173ToolTitles = [...canonicalCatalogMetadata.map((entry) => entry.title), resumeBuilderTitle, ...pdfGuideEntries.map((entry) => `${entry.name} Online`)];
+const all173ToolDescriptions = [...canonicalCatalogMetadata.map((entry) => entry.description), resumeBuilderDescription, ...pdfGuideEntries.map((entry) => entry.purpose)];
+assert.equal(all173ToolTitles.length, 173, "Expected metadata titles for all 173 canonical tools");
+assert.equal(new Set(all173ToolTitles.map((value) => value.trim().toLowerCase())).size, 173, "All 173 canonical tool page titles must be unique across both route systems");
+assert.equal(new Set(all173ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 173, "All 173 canonical tool meta descriptions must be unique across both route systems");
+
+
 const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);
 assert.ok(quickBlock, "Quick utility dispatch list is missing");
 const quickSlugs = [...quickBlock[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
@@ -55,7 +99,15 @@ assert.ok(blogPostsSource.indexOf("...nepalBlogPosts") < blogPostsSource.indexOf
 const nepalSeoSlugs = ["nepali-date-converter","nepali-vat-calculator","nepal-land-area-converter","nepali-number-converter","nepal-phone-validator","gold-tola-gram-converter","nepali-calendar","nepali-digit-converter","loksewa-photo-resizer","neb-gpa-calculator","nepal-share-calculator","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news","nepse-dividend-calculator"];
 const missingNepalSeo = nepalSeoSlugs.filter((slug) => !seoContent.includes('"'+slug+'"'));
 assert.deepEqual(missingNepalSeo, [], "Nepal tools without tool-specific SEO content: " + missingNepalSeo.join(", "));
-assert.ok(toolPage.includes('"@type": "FAQPage"'), "Tool pages must include FAQ structured data");
+assert.doesNotMatch(toolPage, /"@type": "FAQPage"/, "Do not emit FAQ rich-result markup on generic utility pages");
+assert.doesNotMatch(seoContent, /"@type": "FAQPage"/, "PDF guide content must not emit obsolete FAQ rich-result markup");
+assert.doesNotMatch(read("../components/PdfToolJsonLd.tsx"), /"@type": "FAQPage"/, "Shared PDF schema must not emit obsolete FAQ rich-result markup");
+assert.match(toolPage, /const description = seo\?\.description \?\? tool\.description\.trim\(\)/, "Fallback metadata must use the actual task-specific catalog description");
+assert.ok(toolPage.includes("const title = seo?.title ?? `${tool.name} Online`"), "Fallback metadata title must identify the actual tool; the root metadata template supplies the site name");
+assert.ok(rootLayout.includes('template: "%s | PDFora"'), "Root layout must append one PDFora brand suffix");
+assert.ok(localizedBlogArticle.includes("title: post.title"), "Localized blog articles must pass unbranded titles to the root template");
+assert.ok(!localizedBlogArticle.includes('title: `${post.title} | PDFora`'), "Localized blog article titles must not duplicate the PDFora suffix");
+assert.match(seoContent, /uniqueFaqItems\.map/, "Visible tool FAQs must remain available in page content");
 assert.ok(toolPage.includes("seoOverrides"), "Tool-specific metadata overrides are missing");
 
 const adviceBlock = seoContent.match(/const toolAdvice:[\s\S]*?=\s*\{([\s\S]*?)\n\s*\};/);
@@ -63,6 +115,21 @@ assert.ok(adviceBlock, "Tool-specific SEO advice map is missing");
 const advisedSlugs = [...adviceBlock[1].matchAll(/^\s{4}"([^"]+)":\s*\{/gm)].map((m) => m[1]);
 const missingToolAdvice = catalog.filter((slug) => !advisedSlugs.includes(slug));
 assert.deepEqual(missingToolAdvice, [], "Catalog tools without tool-specific SEO guidance: " + missingToolAdvice.join(", "));
+assert.equal(advisedSlugs.length, catalog.length, "Every catalog tool must have one and only one dedicated SEO advice record");
+const uniqueAdviceFields = new Map(["example", "accuracy", "workflow", "mistakes"].map((field) => [field, new Set()]));
+for (const slug of catalog) {
+  const marker = `"${slug}": {`;
+  const start = adviceBlock[1].indexOf(marker);
+  const next = adviceBlock[1].indexOf('\n    "', start + marker.length);
+  const entry = adviceBlock[1].slice(start, next < 0 ? undefined : next);
+  for (const field of ["example", "accuracy", "workflow", "mistakes"]) {
+    const match = entry.match(new RegExp(field + ': "((?:\\\\.|[^"\\\\])*)"'));
+    assert.ok(match && match[1].trim().length >= 50, `${slug} needs substantive tool-specific ${field} guidance`);
+    const seen = uniqueAdviceFields.get(field);
+    assert.ok(!seen.has(match[1]), `${slug} repeats another tool's ${field} guidance`);
+    seen.add(match[1]);
+  }
+}
 
 assert.ok(nepalTools.includes("weighted/total"), "NEB GPA must use credit-weighted grade points");
 assert.ok(nepalTools.includes("5476") && nepalTools.includes("72900"), "Nepal land converter reference factors are missing");

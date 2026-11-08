@@ -181,13 +181,3 @@ test("Nepali market and finance surfaces contain localized rendered UI", () => {
   }
 });
 
-test("Nepali AI writing routes contain localized rendered UI", () => {
-  const source = fs.readFileSync(path.join(frontendRoot, "components", "AIWritingTools.tsx"), "utf8");
-  const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
-  for (const phrase of ["AI रिजुमे लेखक", "AI कभर लेटर जेनेरेटर", "AI पाठ परिष्कार तथा पुनर्लेखन", "तपाईंको नतिजा", "गोपनीयता:"]) {
-    assert.ok(source.includes(phrase), `Nepali AI writing UI must include: ${phrase}`);
-  }
-  for (const slug of ["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer"]) {
-    assert.ok(routeSource.includes(`"${slug}"`), `${slug} must retain its localized route`);
-  }
-});

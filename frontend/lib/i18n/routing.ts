@@ -53,6 +53,7 @@ export function absoluteUrl(path: string, locale: Locale): string {
 export const nepaliLocalizedNonToolPaths = [
   "/",
   "/market",
+  "/tools",
   "/resume-builder",
   "/blog",
   ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),

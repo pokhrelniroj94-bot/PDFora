@@ -116,9 +116,9 @@ export default function PrivacyPage() {
             <p className="mt-2">
               Resume Builder details and profile photos are handled in your
               browser to create the preview and PDF. NEPSE watchlist symbols
-              are stored in your browser's local storage on this device and are
-              not sent to PDFora's server by the watchlist feature. You can
-              remove them from the dashboard or clear this site's browser data.
+              are stored in your browser&apos;s local storage on this device and are
+              not sent to PDFora&apos;s server by the watchlist feature. You can
+              remove them from the dashboard or clear this site&apos;s browser data.
             </p>
           </div>
 

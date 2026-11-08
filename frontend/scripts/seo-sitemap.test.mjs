@@ -54,7 +54,7 @@ assert.doesNotMatch(pdfToolSeoSource, /FAQPage/, "Localized PDF tool pages must 
 assert.doesNotMatch(blogArticleSource, /"@type":\s*"FAQPage"/, "Do not emit obsolete FAQ rich-result markup");
 assert.match(blogArticleSource, /"@type":\s*"BlogPosting"/, "Blog articles must retain accurate Article structured data");
 assert.match(nepaliToolsDirectorySource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "The partially translated Nepali directory must stay noindex");
-assert.match(nepaliNepseSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "The not-yet-reviewed Nepali NEPSE page must stay noindex");
+assert.match(nepaliNepseSource, /redirect\("\/market"\)/, "The legacy Nepali NEPSE route must redirect to the canonical market page rather than publish a duplicate page");
 assert.match(sitemapSource, /nepaliLocalizedPublicInfoSlugs/, "Localized public-info routes must be included in the candidate list and then pass through the explicit default-deny indexability gate");
 
 const reciprocalEnglishPages = [

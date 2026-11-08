@@ -56,6 +56,16 @@ export const nepaliLocalizedUtilitySlugs = [
   "lorem-ipsum-generator",
   "html-encoder-decoder",
   "text-to-slug",
+  "text-to-binary",
+  "binary-to-text",
+  "text-to-hex",
+  "hex-to-text",
+  "morse-code-translator",
+  "camel-case-converter",
+  "snake-case-converter",
+  "kebab-case-converter",
+  "html-tag-stripper",
+  "json-escape-unescape",
   "nepal-phone-validator",
   "gold-tola-gram-converter",
   "nepali-calendar",
@@ -77,10 +87,4 @@ export const nepaliLocalizedFinancialSlugs = [
 export const nepaliLocalizedPublicInfoSlugs = [
   "nepal-electricity-bill-calculator",
   "nepal-public-holidays-2083",
-] as const;
-
-export const nepaliLocalizedCareerSlugs = [
-  "ai-resume-writer",
-  "ai-cover-letter-generator",
-  "ai-humanizer",
 ] as const;

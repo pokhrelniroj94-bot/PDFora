@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  nepaliLocalizedCareerSlugs,
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedPublicInfoSlugs,
   nepaliLocalizedUtilitySlugs,
@@ -12,7 +11,7 @@ type Props = { params: Promise<{ locale: string }> };
 
 export const metadata: Metadata = {
   title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
-  description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
+  description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, CV निर्माण र नेपालका दैनिक उपयोगिताका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
   alternates: { canonical: "https://pd-fora.vercel.app/ne/tools" },
   robots: { index: false, follow: true },
 };
@@ -20,6 +19,7 @@ export const metadata: Metadata = {
 const names: Record<string, string> = {
   "nepali-digit-converter":"नेपाली अंक रूपान्तरण","nepali-number-converter":"नेपाली संख्या रूपान्तरण","nepali-date-converter":"वि.सं. र ई.सं. मिति रूपान्तरण",
   "nepal-land-area-converter":"रोपनी–आना–पैसा–दाम रूपान्तरण","nepali-vat-calculator":"नेपाल VAT हिसाब","neb-gpa-calculator":"NEB GPA हिसाब",
+  "resume-builder":"व्यावसायिक रिजुमे बिल्डर",
   "word-character-counter":"शब्द तथा अक्षर गणक","case-converter":"अक्षर शैली रूपान्तरण","remove-duplicate-lines":"दोहोरो लाइन हटाउने","sort-lines":"लाइन क्रम मिलाउने",
   "reverse-text":"पाठ उल्ट्याउने","whitespace-cleaner":"खाली स्थान सफा गर्ने","character-frequency":"अक्षर आवृत्ति गणक","word-frequency-counter":"शब्द आवृत्ति गणक",
   "reading-time-calculator":"पढ्ने समय गणक","line-counter":"लाइन गणक","sentence-counter":"वाक्य गणक","email-extractor":"इमेल ठेगाना निकाल्ने",
@@ -39,7 +39,6 @@ const names: Record<string, string> = {
   "nepse-dividend-calculator":"NEPSE लाभांश तथा बोनस शेयर हिसाब","nepse-market-news":"NEPSE तथा बजार समाचार",
   "loan-emi-calculator":"ऋण EMI हिसाब","compound-interest-sip-calculator":"चक्रवृद्धि ब्याज तथा SIP हिसाब","discount-percentage-calculator":"छुट प्रतिशत हिसाब",
   "nepal-electricity-bill-calculator":"विद्युत् बिल क्याल्कुलेटर","nepal-public-holidays-2083":"नेपालका सार्वजनिक बिदा २०८३",
-  "ai-resume-writer":"AI रिजुमे लेखक","ai-cover-letter-generator":"AI कभर लेटर लेखक","ai-humanizer":"AI पाठ परिष्कार",
 };
 
 const pdfTools = [
@@ -52,12 +51,12 @@ const groups = [
   { title: "नेपालका सेवा तथा वित्तीय उपकरण", slugs: [...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs, "nepal-phone-validator", "gold-tola-gram-converter", "nepali-calendar"] },
   { title: "नेपाली लेखन तथा पाठ उपकरण", slugs: ["nepali-unicode-typing", ...nepaliLocalizedUtilitySlugs.filter((slug) => ["word-character-counter","case-converter","remove-duplicate-lines","sort-lines","reverse-text","whitespace-cleaner","character-frequency","word-frequency-counter","reading-time-calculator","line-counter","sentence-counter","email-extractor","url-extractor","phone-number-extractor","number-extractor","hashtag-extractor","remove-duplicate-words","find-replace-text","palindrome-checker","acronym-generator"].includes(slug))] },
   { title: "गणना तथा मिति उपकरण", slugs: nepaliLocalizedUtilitySlugs.filter((slug) => ["nepali-digit-converter","nepali-number-converter","nepali-date-converter","nepal-land-area-converter","nepali-vat-calculator","neb-gpa-calculator","percentage-change-calculator","average-calculator","ratio-simplifier","fraction-calculator","percentage-of-number-calculator","gcd-lcm-calculator","prime-number-checker","unit-converter","age-calculator","date-difference-calculator","time-duration-calculator","bmi-calculator","bmr-calculator","tip-calculator","split-bill-calculator","simple-interest-calculator","profit-margin-calculator","markup-calculator","break-even-calculator","sales-tax-calculator","salary-breakdown-calculator","commission-calculator","hourly-to-salary-calculator"].includes(slug)) },
-  { title: "डेभलपर उपकरण", slugs: nepaliLocalizedUtilitySlugs.filter((slug) => ["json-formatter-validator","base64-encoder-decoder","url-encoder-decoder","hash-generator","text-diff-checker","lorem-ipsum-generator","html-encoder-decoder","text-to-slug"].includes(slug)) },
-  { title: "करियर तथा AI उपकरण", slugs: [...nepaliLocalizedCareerSlugs] },
+  { title: "डेभलपर उपकरण", slugs: nepaliLocalizedUtilitySlugs.filter((slug) => ["json-formatter-validator","base64-encoder-decoder","url-encoder-decoder","hash-generator","text-diff-checker","lorem-ipsum-generator","html-encoder-decoder","text-to-slug","text-to-binary","binary-to-text","text-to-hex","hex-to-text","morse-code-translator","camel-case-converter","snake-case-converter","kebab-case-converter","html-tag-stripper","json-escape-unescape"].includes(slug)) },
+  { title: "करियर तथा कागजात तयारी", slugs: ["resume-builder"] },
 ];
 
 function ToolLink({ slug, title }: { slug: string; title?: string }) {
-  return <Link href={slug === "nepse-technical-analysis" ? "/ne/nepse-technical-analysis" : slug.startsWith("nepali-janma") || slug === "nepali-guna-milan" ? `/ne/${slug}` : `/ne/tools/${slug}`} className="group rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-teal-300 hover:shadow-sm">
+  return <Link href={slug === "resume-builder" ? "/ne/resume-builder" : slug === "nepse-technical-analysis" ? "/ne/nepse-technical-analysis" : slug.startsWith("nepali-janma") || slug === "nepali-guna-milan" ? `/ne/${slug}` : `/ne/tools/${slug}`} className="group rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-teal-300 hover:shadow-sm">
     <span className="font-bold text-slate-900 group-hover:text-teal-800">{title ?? names[slug] ?? slug.replaceAll("-", " ")}</span>
     <span className="mt-2 block text-xs font-semibold text-teal-700">उपकरण खोल्नुहोस् →</span>
   </Link>;

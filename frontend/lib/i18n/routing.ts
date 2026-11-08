@@ -1,6 +1,5 @@
 import { SITE_URL, defaultLocale, isLocale, isPublished, localeInfo, locales, type Locale } from "./config";
 import {
-  nepaliLocalizedCareerSlugs,
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedPublicInfoSlugs,
   nepaliLocalizedUtilitySlugs,
@@ -72,7 +71,6 @@ export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
     ...nepaliLocalizedUtilitySlugs,
     ...nepaliLocalizedFinancialSlugs,
     ...nepaliLocalizedPublicInfoSlugs,
-    ...nepaliLocalizedCareerSlugs,
   ].map((slug) => `/tools/${slug}`),
 ]);
 
@@ -82,7 +80,7 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
 // Existing localized routes such as the full tools directory and the NEPSE
 // analysis shell intentionally remain noindex until their content is fully reviewed.
 const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set([
-  "/", "/market", "/resume-builder", "/blog",
+  "/", "/market", "/blog",
   ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),
   "/privacy", "/terms", "/about", "/contact",
 ]);

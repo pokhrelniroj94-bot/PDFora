@@ -341,14 +341,14 @@ export default function MarketIntelligence() {
   return <div className="space-y-6">
     <header>
       <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora NEPSE Quant Engine</p>
-      <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">Market Intelligence & Risk Analyzer</h1>
+      <h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950">Market Intelligence & Risk Analyzer</h2>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Analyse NEPSE price history with deterministic, rule-based trend, momentum, volume and risk checks. The core signal works without AI; AI research is an optional explanation layer.</p>
       <a href="/nepse-lab" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">Open NEPSE Quant Strategy Lab <span aria-hidden="true">→</span></a>
     </header>
 
     <section className={card}>
       <div className="mb-4 flex flex-wrap gap-2">
-        {([["nepse","NEPSE"],["forex","Forex"],["crypto","Crypto"]] as const).map(([key,label]) => <button type="button" key={key} onClick={() => { setAsset(key); if (key === "crypto") setMarketSymbol("BTC/USD"); else if (key === "forex") setMarketSymbol("EUR/USD"); setAnalysis(null); setError(""); setAiText(""); }} className={"rounded-full px-4 py-2 text-sm font-bold " + (asset === key ? "bg-teal-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-teal-50")}>{label}</button>)}
+        {([["nepse",tr("NEPSE")],["forex",tr("Forex")],["crypto",tr("Crypto")]] as const).map(([key,label]) => <button type="button" key={key} onClick={() => { setAsset(key); if (key === "crypto") setMarketSymbol("BTC/USD"); else if (key === "forex") setMarketSymbol("EUR/USD"); setAnalysis(null); setError(""); setAiText(""); }} className={"rounded-full px-4 py-2 text-sm font-bold " + (asset === key ? "bg-teal-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-teal-50")}>{label}</button>)}
       </div>
       {asset === "nepse" ? <div className="flex flex-col gap-3 sm:flex-row">
         <label className="flex-1"><span className="mb-1.5 block text-sm font-semibold text-slate-700">NEPSE symbol / index</span><input className={cls} value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} placeholder="NEPSE, NABIL, NICA…" /></label>

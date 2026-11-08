@@ -183,7 +183,7 @@ const aiWritingRoute = read("../app/api/ai-writing/route.ts");
 const envExample = read("../.env.example");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
 assert.ok(
-  marketApi.includes('"NEPSE unofficial session feed (nepseman-api)"') && marketApi.includes("fetchNepsemanSnapshot") && marketApi.includes('"YONEPSE public market snapshot"') && marketApi.includes('"YONEPSE historical snapshot fallback"'),
+  marketApi.includes("NEPSE unofficial session feed (nepseman-api)") && marketApi.includes("fetchNepsemanSnapshot") && marketApi.includes("YONEPSE public market snapshot") && marketApi.includes("YONEPSE historical snapshot fallback"),
   "NEPSE API must identify the live, snapshot and fallback quote sources",
 );
 assert.ok(marketApi.includes('read<Json>("/data/market/status.json", 60)'), "NEPSE status source must be mapped correctly");

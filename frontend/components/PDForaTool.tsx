@@ -249,7 +249,7 @@ export default function PDForaTool({
       </header>
 
       {/* Main */}
-      <section className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
+      <main id="main-content" className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
         {/* Heading */}
         <div className="text-center">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">
@@ -455,7 +455,7 @@ export default function PDForaTool({
           <p className="mt-2 text-sm leading-6 text-slate-600">
             {ui.privacyAnswer}
           </p>
-        </section>
+        </main>
 
         {/* Advertisement is intentionally outside the upload and processing flow. */}
         <div className="mt-8 border-t border-slate-200 pt-2">

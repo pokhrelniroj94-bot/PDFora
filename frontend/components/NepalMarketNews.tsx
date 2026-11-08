@@ -17,6 +17,8 @@ function StoryList({ title, stories }: { title: string; stories: Story[] }) {
 }
 
 export default function NepalMarketNews() {
+  const pathname = usePathname();
+  const isNepali = pathname?.startsWith("/ne/") ?? false;
   const [feed, setFeed] = useState<Feed | null>(null);
   const [globalFeed, setGlobalFeed] = useState<GlobalFeed | null>(null);
   const [activeTab, setActiveTab] = useState<"world" | "nepal">("world");
@@ -77,8 +79,8 @@ export default function NepalMarketNews() {
   const selectedWorld = worldGroups.find((group) => group.id === "world")?.stories ?? [];
   return <div className="space-y-4">
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <div><h2 className="text-xl font-black text-slate-950">World News & Nepal Market News</h2><p className="mt-1 text-sm text-slate-600">Free RSS headlines from global news searches and Nepal market disclosures. Headlines link to their original publishers; feeds refresh every 10 minutes.</p></div>
-      <button type="button" onClick={refresh} disabled={loading} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-60">{loading ? "Refreshing…" : "Refresh news"}</button>
+      <div><h2 className="text-xl font-black text-slate-950">{isNepali ? "विश्व समाचार र नेपाल बजार समाचार" : "World News & Nepal Market News"}</h2><p className="mt-1 text-sm text-slate-600">Free RSS headlines from global news searches and Nepal market disclosures. Headlines link to their original publishers; feeds refresh every 10 minutes.</p></div>
+      <button type="button" onClick={refresh} disabled={loading} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800 disabled:opacity-60">{loading ? (isNepali ? "अद्यावधिक हुँदैछ…" : "Refreshing…") : (isNepali ? "समाचार अद्यावधिक गर्नुहोस्" : "Refresh news")}</button>
     </div>
     <div className="flex flex-wrap gap-2" role="tablist" aria-label="News region">
       <button type="button" role="tab" aria-selected={activeTab === "world"} onClick={() => setActiveTab("world")} className={"rounded-full px-4 py-2 text-sm font-bold " + (activeTab === "world" ? "bg-teal-700 text-white" : "border border-slate-300 bg-white text-slate-700")}>World news</button>
@@ -93,7 +95,7 @@ export default function NepalMarketNews() {
       <p className="text-xs text-slate-500">Feed checked: {new Date(globalFeed.updatedAt).toLocaleString("en-NP")}. Headlines are aggregated from Google News RSS searches; verify important information with the original publisher. Only the latest 7 days are included.</p>
     </div>}
     {activeTab === "nepal" && feed?.warning && <p role="status" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{feed.warning}</p>}
-    {activeTab === "nepal" && feed && <><div className="grid gap-4 lg:grid-cols-2"><StoryList title="NEPSE & Market Updates" stories={feed.market}/><StoryList title="IPO, FPO & Allotment Updates" stories={feed.ipo}/></div><p className="text-xs text-slate-500">Feed checked: {new Date(feed.updatedAt).toLocaleString("en-NP")}. Verify market-sensitive information with NEPSE, SEBON, CDSC or the issuing company.</p></>}
+    {activeTab === "nepal" && feed && <><div className="grid gap-4 lg:grid-cols-2"><StoryList title={isNepali ? "NEPSE तथा बजार अद्यावधिक" : "NEPSE & Market Updates"} stories={feed.market}/><StoryList title="IPO, FPO & Allotment Updates" stories={feed.ipo}/></div><p className="text-xs text-slate-500">Feed checked: {new Date(feed.updatedAt).toLocaleString("en-NP")}. Verify market-sensitive information with NEPSE, SEBON, CDSC or the issuing company.</p></>}
     <div className="flex flex-wrap gap-4 text-sm font-semibold"><a className="text-teal-700 underline" href="https://www.nepalstock.com/" target="_blank" rel="noopener noreferrer">NEPSE official</a><a className="text-teal-700 underline" href="https://www.sebon.gov.np/" target="_blank" rel="noopener noreferrer">SEBON official</a><a className="text-teal-700 underline" href="https://meroshare.cdsc.com.np/" target="_blank" rel="noopener noreferrer">Mero Share</a></div>
   </div>;
 }

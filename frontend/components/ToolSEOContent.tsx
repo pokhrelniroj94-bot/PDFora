@@ -128,6 +128,6 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
           {guide.related.map((slug) => { const related = getToolGuide(slug); return related ? <Link key={slug} href={`${locale === "en" ? "" : `/${locale}`}/${slug}`} className="rounded-xl border border-violet-200 bg-white px-4 py-2 text-sm font-bold text-violet-800 hover:bg-violet-100">{(locale === "ne" ? nepaliToolNames[slug] : undefined) || related.name}</Link> : null; })}
         </div>
       </section>
-    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /></article>
+    </div><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} /><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} /></article>
   );
 }

@@ -23,7 +23,7 @@ assert.equal(new Set(catalog).size, catalog.length, "Duplicate tool slugs exist"
 const metadataEntries = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"([^"]+)",category:"([^"]+)",description:"([^"]+)",keywords:"([^"]+)"\}/g)]
   .map((match) => ({ slug: match[1], name: match[2], category: match[3], description: match[4] }))
   .filter((entry) => entry.slug !== "pdf-tools");
-assert.equal(metadataEntries.length, 124, "Every catalog tool must have a metadata source entry");
+assert.equal(metadataEntries.length, 121, "Every catalog tool must have a metadata source entry");
 assert.equal(new Set(metadataEntries.map((entry) => entry.name.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool names must be unique");
 assert.equal(new Set(metadataEntries.map((entry) => entry.description.trim().toLowerCase())).size, metadataEntries.length, "Catalog tool descriptions must be unique");
 
@@ -53,11 +53,11 @@ const resumeBuilderPage = read("../app/resume-builder/page.tsx");
 const resumeBuilderTitle = resumeBuilderPage.match(/title:\s*"([^"]+)"/)?.[1] ?? "";
 const resumeBuilderDescription = resumeBuilderPage.match(/description:\s*"([^"]+)"/)?.[1] ?? "";
 const canonicalCatalogMetadata = generatedMetadata.filter((entry) => entry.slug !== "resume-builder");
-const all173ToolTitles = [...canonicalCatalogMetadata.map((entry) => entry.title), resumeBuilderTitle, ...pdfGuideEntries.map((entry) => `${entry.name} Online`)];
-const all173ToolDescriptions = [...canonicalCatalogMetadata.map((entry) => entry.description), resumeBuilderDescription, ...pdfGuideEntries.map((entry) => entry.purpose)];
-assert.equal(all173ToolTitles.length, 173, "Expected metadata titles for all 173 canonical tools");
-assert.equal(new Set(all173ToolTitles.map((value) => value.trim().toLowerCase())).size, 173, "All 173 canonical tool page titles must be unique across both route systems");
-assert.equal(new Set(all173ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 173, "All 173 canonical tool meta descriptions must be unique across both route systems");
+const all170ToolTitles = [...canonicalCatalogMetadata.map((entry) => entry.title), resumeBuilderTitle, ...pdfGuideEntries.map((entry) => `${entry.name} Online`)];
+const all170ToolDescriptions = [...canonicalCatalogMetadata.map((entry) => entry.description), resumeBuilderDescription, ...pdfGuideEntries.map((entry) => entry.purpose)];
+assert.equal(all170ToolTitles.length, 170, "Expected metadata titles for all 173 canonical tools");
+assert.equal(new Set(all173ToolTitles.map((value) => value.trim().toLowerCase() )).size, 170, "All 170 canonical tool page titles must be unique across both route systems");
+assert.equal(new Set(all170ToolDescriptions.map((value) => value.trim().toLowerCase())).size, 173, "All 173 canonical tool meta descriptions must be unique across both route systems");
 
 
 const quickBlock = allTools.match(/const quickUtilitySlugs = \[([\s\S]*?)\];/);
@@ -148,8 +148,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 124, "Expected 124 catalog utilities");
-assert.equal(allHrefs.length, 173, "Expected 173 available tools (49 PDF tools + 124 catalog utilities)");
+assert.equal(catalog.length, 121, "Expected 121 catalog utilities");
+assert.equal(allHrefs.length, 170, "Expected 170 available tools (49 PDF tools + 121 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");

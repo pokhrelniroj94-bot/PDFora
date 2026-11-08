@@ -33,6 +33,8 @@ const tools = [
 ];
 
 const nepalTools = [
+  { href: "/ne/nepali-janma-kundali", title: "नेपाली जन्मकुण्डली", description: "जन्म मिति, समय र स्थानबाट परम्परागत वैदिक जन्मकुण्डली तयार गर्नुहोस्।" },
+  { href: "/ne/nepali-guna-milan", title: "३६ गुण मिलान", description: "दुई व्यक्तिको जन्म विवरणबाट परम्परागत अष्टकूट मिलान हेर्नुहोस्।" },
   { href: "/ne/tools/nepali-date-converter", title: "नेपाली मिति रूपान्तरण", description: "विक्रम संवत् र इस्वी संवत् मिति रूपान्तरण गर्नुहोस्।" },
   { href: "/ne/tools/nepali-unicode-typing", title: "नेपाली Unicode Typing", description: "Romanized Nepali लेखेर देवनागरी Unicode text बनाउनुहोस्।" },
   { href: "/ne/tools/nepal-forex-rates", title: "नेपाल राष्ट्र बैंक विनिमय दर", description: "उपलब्ध पछिल्लो प्रकाशित विदेशी मुद्रा दर हेर्नुहोस्।" },

@@ -244,21 +244,58 @@ function ElectricityTool({ locale = "en" }: { locale?: "en" | "ne" }) {
   </div>;
 }
 
+const holidayNamesNe: Record<string, string> = {
+  "Nepali New Year": "नेपाली नयाँ वर्ष", "Labour Day · Buddha Jayanti · Ubhauli · Chandi Purnima": "मजदुर दिवस · बुद्ध जयन्ती · उभौली · चण्डी पूर्णिमा",
+  "Republic Day": "गणतन्त्र दिवस", "Rakshya Bandhan": "रक्षाबन्धन", "Gai Jatra": "गाईजात्रा",
+  "Krishna Janmashtami · Gaura Parwa": "कृष्ण जन्माष्टमी · गौरा पर्व", "Haritalika Teej": "हरितालिका तीज",
+  "Constitution Day": "संविधान दिवस", "Indra Jatra": "इन्द्रजात्रा", "Jitiya Parwa": "जितिया पर्व",
+  "Ghatasthapana": "घटस्थापना", "Dashain holiday begins": "दशैँ बिदा सुरु", "Tihar holiday begins": "तिहार बिदा सुरु",
+  "Falgunand Jayanti": "फाल्गुनन्द जयन्ती", "Chhath Parwa": "छठ पर्व",
+  "International Day of Persons with Disabilities": "अपाङ्गता भएका व्यक्तिहरूको अन्तर्राष्ट्रिय दिवस",
+  "Dhanya Purnima · Udhauli · Yomari Punhi": "धान्य पूर्णिमा · उधौली · योमरी पुन्हि", "Christmas Day": "क्रिसमस डे",
+  "Tamu Lhosar · Dura Mhaipru Nakuma": "तमु ल्होसार · दुरा म्हैप्रु नकुमा", "Prithvi Jayanti · National Unity Day": "पृथ्वी जयन्ती · राष्ट्रिय एकता दिवस",
+  "Maghi · Maghe Sankranti": "माघी · माघे सङ्क्रान्ति", "Martyrs’ Day": "शहीद दिवस", "Sonam Lhosar": "सोनाम ल्होसार",
+  "Basanta Panchami": "वसन्त पञ्चमी", "National Democracy Day": "प्रजातन्त्र दिवस", "Maha Shivaratri": "महाशिवरात्रि",
+  "International Women’s Day": "अन्तर्राष्ट्रिय महिला दिवस", "Gyalpo Lhosar": "ग्याल्पो ल्होसार",
+  "Fagu Purnima · Holi (Hills)": "फागु पूर्णिमा · होली (पहाड)", "Terai Holi": "तराई होली", "Ghode Jatra": "घोडेजात्रा",
+  "Eid al-Fitr": "ईद उल फित्र", "Eid al-Adha": "ईद उल अजहा", "Saruwa Pawani": "सिरुवा पवनी",
+  "Bhoto Jatra": "भोटो जात्रा", "Muhammad Jayanti": "मोहम्मद जयन्ती", "Guru Nanak Jayanti": "गुरु नानक जयन्ती"
+};
+const holidayNotesNe: Record<string, string> = {
+  "National public holiday": "राष्ट्रिय सार्वजनिक बिदा", "Kathmandu Valley and Newar community": "काठमाडौं उपत्यका तथा नेवार समुदाय",
+  "Women only": "महिलाका लागि मात्र", "Kathmandu Valley only": "काठमाडौं उपत्यकामा मात्र",
+  "Women celebrating Jitiya Parwa": "जितिया पर्व मनाउने महिलाहरू", "Seven-day Dashain holiday: 17–23 October": "सात दिने दशैँ बिदा: अक्टोबर १७–२३",
+  "Five-day Tihar holiday: 8–12 November": "पाँच दिने तिहार बिदा: नोभेम्बर ८–१२", "Kirant community": "किरात समुदाय",
+  "Persons with disabilities": "अपाङ्गता भएका व्यक्तिहरू", "Date depends on moon sighting": "चन्द्रदर्शनमा निर्भर मिति",
+  "Jhapa, Morang, Sunsari, Siraha and Saptari": "झापा, मोरङ, सुनसरी, सिरहा र सप्तरी", "Muslim community": "मुस्लिम समुदाय",
+  "Sikh community": "सिख समुदाय", "56 Himalayan and Hill districts": "हिमाली तथा पहाडी ५६ जिल्ला",
+  "21 Terai districts": "तराईका २१ जिल्ला", "Educational institutions only": "शैक्षिक संस्थामा मात्र"
+};
+const holidayTypeNe: Record<string, string> = {
+  National: "राष्ट्रिय", Regional: "क्षेत्रीय", Community: "समुदाय-विशेष", "To be announced": "घोषणा हुन बाँकी"
+};
+const holidayMonthNe: Record<string, string> = {
+  Baisakh: "वैशाख", Jestha: "जेठ", Asar: "असार", Shrawan: "साउन", Bhadra: "भदौ", Asoj: "असोज",
+  Kartik: "कार्तिक", Mangsir: "मंसिर", Poush: "पुस", Magh: "माघ", Falgun: "फागुन", Chaitra: "चैत"
+};
+
 function HolidayTool({ locale = "en" }: { locale?: "en" | "ne" }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("All");
+  const ne = locale === "ne";
   const shown = useMemo(() => holidays.filter((item) => {
-    const matchesQuery = `${item.name} ${item.bs} ${item.ad} ${item.note}`.toLowerCase().includes(query.toLowerCase());
+    const matchesQuery = `${item.name} ${holidayNamesNe[item.name] ?? ""} ${item.bs} ${item.ad} ${item.note} ${holidayNotesNe[item.note] ?? ""}`.toLowerCase().includes(query.toLowerCase());
     return matchesQuery && (filter === "All" || item.type === filter);
   }), [query, filter]);
+  const labels = ne ? { title: "नेपालका सार्वजनिक बिदा २०८३ (२०२६/२७)", intro: "राष्ट्रिय, क्षेत्रीय तथा समुदाय-विशेष सार्वजनिक बिदा र पर्व खोज्नुहोस्।", search: "बिदा खोज्नुहोस्", all: "सबै", national: "राष्ट्रिय", regional: "क्षेत्रीय", community: "समुदाय-विशेष", tba: "घोषणा हुन बाँकी", red: "रातो: राष्ट्रिय सार्वजनिक बिदा", saturday: "हल्का रातो: शनिबार", amber: "पहेंलो: मिति घोषणा हुन बाँकी", showing: "देखाइएको", entries: "प्रविष्टि", holiday: "बिदा / पर्व", bs: "वि.सं. मिति", ad: "ई.सं. मिति", applies: "लागू हुने क्षेत्र / टिप्पणी", public: "सार्वजनिक बिदा", footer: "यो २०८३ को सरकारी बिदा सूचीको खोज्न मिल्ने प्रतिलिपि हो। निजी रोजगारदाता, विद्यालय, बैंक वा प्रदेश सबैले यही बिदा पालना गर्छन् भन्ने ग्यारेन्टी होइन। चन्द्र पात्रोमा आधारित TBA मितिहरू आधिकारिक पुष्टि भएपछि मात्र निश्चित हुन्छन्।", verify: "गृह मन्त्रालयको आधिकारिक २०८३ बिदा सूचना हेर्नुहोस्" } : { title: "Nepal Public Holidays 2083 BS (2026/27)", intro: "Search government and public holidays, including national, regional and community-specific observances.", search: "Search holidays", all: "All", national: "National", regional: "Regional", community: "Community", tba: "To be announced", red: "Red: National public holiday", saturday: "Light red: Saturday", amber: "Amber: Date to be announced", showing: "Showing", entries: "entries", holiday: "Holiday", bs: "BS date", ad: "AD date", applies: "Applies to / note", public: "Public holiday", footer: "This is a searchable transcription of the 2083 government holiday list, not a guarantee that every private employer, school, bank or province follows the same closure schedule. Dates for lunar observances marked TBA require later official confirmation.", verify: "Verify with Ministry of Home Affairs official 2083 holiday notice" };
   return <div className="space-y-4">
-    <div><h2 className="text-lg font-bold">Nepal Public Holidays 2083 BS (2026/27)</h2><p className="mt-1 text-sm text-slate-600">Search government and public holidays, including national, regional and community-specific observances.</p></div>
-    <Field title="Search holidays" value={query} onChange={setQuery} type="text"/>
-    <div className="flex flex-wrap gap-2">{["All","National","Regional","Community","To be announced"].map((item) => <button key={item} onClick={() => setFilter(item)} className={`rounded-full border px-3 py-1.5 text-sm ${filter === item ? "border-teal-700 bg-teal-50 text-teal-900" : "border-slate-300"}`}>{item}</button>)}</div>
-    <div className="flex flex-wrap gap-3 text-xs"><span className="rounded-lg bg-rose-100 px-3 py-2 font-semibold text-rose-800">Red: National public holiday</span><span className="rounded-lg bg-rose-50 px-3 py-2 font-semibold text-rose-700">Light red: Saturday</span><span className="rounded-lg bg-amber-50 px-3 py-2 font-semibold text-amber-800">Amber: Date to be announced</span></div><p className="text-xs text-slate-500">Showing {shown.length} of {holidays.length} entries. National holidays are red; Saturdays are lightly shaded. Regional and community observances retain their notes.</p>
-    <div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[620px] text-left text-sm"><thead className="bg-slate-100"><tr><th className="p-3">Holiday</th><th className="p-3">BS date</th><th className="p-3">AD date</th><th className="p-3">Applies to / note</th></tr></thead><tbody>{shown.map((item) => <tr key={item.name} className={`border-t align-top ${item.ad && new Date(`${item.ad}T00:00:00Z`).getUTCDay() === 6 ? "bg-rose-50" : item.ad ? "bg-white" : "bg-amber-50/50"}`}><td className={`p-3 font-semibold ${item.ad && holidays.some((holiday) => holiday.ad === item.ad && holiday.type === "National") ? "text-rose-700" : "text-slate-900"}`}>{item.name}{item.type === "National" && <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">Public holiday</span>}</td><td className="p-3 whitespace-nowrap">{item.bs}</td><td className={`p-3 whitespace-nowrap font-semibold ${item.type === "National" ? "text-rose-700" : ""}`}>{item.ad || "TBA"}</td><td className="p-3 text-slate-600">{item.note}</td></tr>)}</tbody></table></div>
-    <p className="text-xs leading-5 text-slate-500">This is a searchable transcription of the 2083 government holiday list, not a guarantee that every private employer, school, bank or province follows the same closure schedule. Dates for lunar observances marked TBA require later official confirmation.</p>
-    <a className="text-sm font-semibold text-teal-700 underline" href="https://moha.gov.np/en/page/government-and-public-holidays-in-2083" target="_blank" rel="noreferrer">Verify with Ministry of Home Affairs official 2083 holiday notice</a>
+    <div><h2 className="text-lg font-bold">{labels.title}</h2><p className="mt-1 text-sm text-slate-600">{labels.intro}</p></div>
+    <Field title={labels.search} value={query} onChange={setQuery} type="text"/>
+    <div className="flex flex-wrap gap-2">{(ne ? ["All","National","Regional","Community","To be announced"] : ["All","National","Regional","Community","To be announced"]).map((item) => <button key={item} onClick={() => setFilter(item)} className={`rounded-full border px-3 py-1.5 text-sm ${filter === item ? "border-teal-700 bg-teal-50 text-teal-900" : "border-slate-300"}`}>{ne ? ({ All: labels.all, National: labels.national, Regional: labels.regional, Community: labels.community, "To be announced": labels.tba } as Record<string, string>)[item] : item}</button>)}</div>
+    <div className="flex flex-wrap gap-3 text-xs"><span className="rounded-lg bg-rose-100 px-3 py-2 font-semibold text-rose-800">{labels.red}</span><span className="rounded-lg bg-rose-50 px-3 py-2 font-semibold text-rose-700">{labels.saturday}</span><span className="rounded-lg bg-amber-50 px-3 py-2 font-semibold text-amber-800">{labels.amber}</span></div><p className="text-xs text-slate-500">{labels.showing} {shown.length} / {holidays.length} {labels.entries}. {ne ? "राष्ट्रिय बिदा रातो र शनिबार हल्का रातो रङमा देखाइएका छन्।" : "National holidays are red; Saturdays are lightly shaded. Regional and community observances retain their notes."}</p>
+    <div className="overflow-x-auto rounded-xl border"><table className="w-full min-w-[620px] text-left text-sm"><thead className="bg-slate-100"><tr><th className="p-3">{labels.holiday}</th><th className="p-3">{labels.bs}</th><th className="p-3">{labels.ad}</th><th className="p-3">{labels.applies}</th></tr></thead><tbody>{shown.map((item) => <tr key={item.name} className={`border-t align-top ${item.ad && new Date(`${item.ad}T00:00:00Z`).getUTCDay() === 6 ? "bg-rose-50" : item.ad ? "bg-white" : "bg-amber-50/50"}`}><td className={`p-3 font-semibold ${item.ad && holidays.some((holiday) => holiday.ad === item.ad && holiday.type === "National") ? "text-rose-700" : "text-slate-900"}`}>{ne ? holidayNamesNe[item.name] ?? item.name : item.name}{item.type === "National" && <span className="ml-2 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700">{labels.public}</span>}</td><td className="p-3 whitespace-nowrap">{ne ? item.bs.replace(/(Baisakh|Jestha|Asar|Shrawan|Bhadra|Asoj|Kartik|Mangsir|Poush|Magh|Falgun|Chaitra)/g, (month) => holidayMonthNe[month] ?? month).replace(/\\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]) : item.bs}</td><td className={`p-3 whitespace-nowrap font-semibold ${item.type === "National" ? "text-rose-700" : ""}`}>{item.ad ? (ne ? item.ad.replace(/\\d/g, (digit) => "०१२३४५६७८९"[Number(digit)]) : item.ad) : labels.tba}</td><td className="p-3 text-slate-600">{ne ? holidayNotesNe[item.note] ?? item.note : item.note}</td></tr>)}</tbody></table></div>
+    <p className="text-xs leading-5 text-slate-500">{labels.footer}</p>
+    <a className="text-sm font-semibold text-teal-700 underline" href="https://moha.gov.np/en/page/government-and-public-holidays-in-2083" target="_blank" rel="noreferrer">{labels.verify}</a>
   </div>;
 }
 

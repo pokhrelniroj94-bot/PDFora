@@ -184,7 +184,7 @@ function parseCsv(text: string): Point[] {
   const headers = splitCsvLine(lines[0]).map((h) => h.toLowerCase().replace(/[^a-z0-9]/g, ""));
   const find = (...names: string[]) => headers.findIndex((h) => names.includes(h));
   const dateIndex = find("date", "time", "datetime", "timestamp");
-  const closeIndex = find("close", "adjclose", "last");
+  const closeIndex = find("close", "last");
   const openIndex = find("open"), highIndex = find("high"), lowIndex = find("low"), volumeIndex = find("volume", "vol");
   if (dateIndex < 0 || closeIndex < 0) throw new Error("CSV needs Date/Time and Close columns. OHLCV columns are recommended.");
 

@@ -193,6 +193,13 @@ assert.ok(marketApi.includes("summary: pick(summaryResult, [])"), "NEPSE summary
 assert.ok(marketApi.includes('s-maxage=60'), "NEPSE API response cache must allow frequent quote updates");
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
 assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
+assert.ok(marketDashboard.includes("pdfora-nepse-watchlist") && marketDashboard.includes("localStorage") && marketDashboard.includes("slice(0,20)"), "NEPSE dashboard must provide a browser-local watchlist capped at 20 symbols");
+const marketIntelligence = read("../components/MarketIntelligence.tsx");
+assert.ok(marketIntelligence.includes("EMA20/EMA50") && marketIntelligence.includes("At least 100 valid daily bars") && marketIntelligence.includes("corporate-action adjustments block actionable BUY/SELL signals"), "NEPSE technical analysis must disclose its deterministic indicators and data-quality gates");
+assert.ok(catalogSource.includes('slug:"nepse-technical-analysis"') && !/slug:"ai-[^"]+"/.test(catalogSource), "Catalog must expose the non-AI NEPSE lab and contain no AI-specific tools");
+assert.ok(!fs.existsSync(new URL("../app/api/ai-writing/route.ts", import.meta.url)), "AI generation API route must be removed");
+assert.ok(!rootLayout.includes("SiteAIHelp") && !allTools.includes("AIWritingTools") && !resumeBuilder.includes("/api/ai-writing"), "Global AI help, AI writer routes and Resume Builder AI integration must be removed");
+
 assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market dashboard route is missing");
 assert.ok(homepage.includes('href="/market"') && homepage.includes("NEPSE Market Dashboard"), "Homepage must link to the dedicated NEPSE market dashboard");
 assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes('/data/ipo/upcoming.json'), "News API must include official NEPSE disclosures and IPO data");

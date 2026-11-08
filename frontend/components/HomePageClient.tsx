@@ -730,7 +730,7 @@ function ToolCard({
       <div className="mt-auto pt-4">
         <p className="rounded-xl bg-slate-50 px-3 py-3 text-xs leading-5 text-slate-600">
           <span className="font-extrabold text-blue-700">How to use:</span>{" "}
-          {howToUse[tool.href] || "Open this tool, upload the required file, follow the options and download the result."}
+          {howToUse[tool.href] || "Open this tool, follow its on-screen steps, and review the result before using or downloading it."}
         </p>
         <div className="mt-4 flex items-center justify-between text-sm font-bold text-blue-700">
           <span>Open tool</span><span aria-hidden="true">→</span>

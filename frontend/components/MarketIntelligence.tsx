@@ -267,13 +267,11 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
   const [source, setSource] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [aiText, setAiText] = useState("");
-  const [aiBusy, setAiBusy] = useState(false);
   const [newsReview, setNewsReview] = useState<NewsReview | null>(null);
   const [selectedPoints, setSelectedPoints] = useState<Point[]>([]);
 
   async function loadNepse() {
-    setBusy(true); setError(""); setAnalysis(null); setAiText(""); setNewsReview(null);
+    setBusy(true); setError(""); setAnalysis(null); setNewsReview(null);
     try {
       const response = await fetch("/api/nepse-market?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()) + "&period=1Y", { cache: "no-store" });
       const data = await response.json();
@@ -305,7 +303,7 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
 
   async function loadCsv(file?: File) {
     if (!file) return;
-    setBusy(true); setError(""); setAnalysis(null); setAiText("");
+    setBusy(true); setError(""); setAnalysis(null);
     try {
       if (file.size > 5 * 1024 * 1024) throw new Error("CSV file is too large. Maximum supported size is 5 MB.");
       const rows = parseCsv(await file.text());
@@ -316,42 +314,19 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
     finally { setBusy(false); }
   }
 
-  async function explainWithAI() {
-    if (!analysis) return;
-    setAiBusy(true); setError(""); setAiText("");
-    try {
-      let research: unknown = null;
-      if (asset === "nepse" && symbol.trim().toUpperCase() !== "NEPSE") {
-        const researchResponse = await fetch("/api/nepse-research?symbol=" + encodeURIComponent(symbol.trim().toUpperCase()), { cache: "no-store" });
-        const researchPayload = await researchResponse.json();
-        if (researchResponse.ok) research = researchPayload;
-      }
-      const response = await fetch("/api/ai-writing", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-        kind: "market-explain",
-        analysis: JSON.stringify({ asset, symbol: asset === "nepse" ? symbol : marketSymbol, ...analysis, reasons: analysis.reasons, risks: analysis.risks, newsReview: asset === "nepse" ? newsReview : null }),
-        research: research ? JSON.stringify(research).slice(0, 8500) : "",
-        question: "Prepare a Nepal-focused research note for this selected symbol. Explain the evidence, data gaps, valuation/fundamentals only if provided, technical setup, catalysts and risks.",
-      }) });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "Free AI research is unavailable.");
-      setAiText(String(payload.text || ""));
-    } catch (err) { setError(err instanceof Error ? err.message : "AI research unavailable."); }
-    finally { setAiBusy(false); }
-  }
-
   const scoreTone = analysis?.signal.includes("BUY") ? "text-emerald-700" : analysis?.signal.includes("SELL") ? "text-rose-700" : "text-amber-700";
   const displaySignal = (signal: Analysis["signal"]) => locale === "ne" ? ({ "Potential BUY setup": "सम्भावित खरिद अवस्था", "HOLD / WATCH": "होल्ड / निगरानी", "Potential SELL / EXIT setup": "सम्भावित बिक्री / बाहिरिने अवस्था", "Potential SELL / SHORT setup": "सम्भावित बिक्री / सर्ट अवस्था", "Wait / neutral": "पर्खनुहोस् / तटस्थ" } as Record<Analysis["signal"], string>)[signal] : signal;
   return <div className="space-y-6">
     <header>
       <p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">PDFora NEPSE Quant Engine</p>
       <Heading className="mt-2 text-3xl font-black tracking-tight text-slate-950">{locale === "ne" ? "बजार विश्लेषण तथा जोखिम परीक्षक" : "Market Intelligence & Risk Analyzer"}</Heading>
-      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{locale === "ne" ? "नियममा आधारित trend, momentum, volume र जोखिम जाँचबाट NEPSE को ऐतिहासिक मूल्य विश्लेषण गर्नुहोस्। मुख्य संकेत AI बिना गणना हुन्छ; AI अनुसन्धान वैकल्पिक व्याख्या मात्र हो।" : "Analyse NEPSE price history with deterministic, rule-based trend, momentum, volume and risk checks. The core signal works without AI; AI research is an optional explanation layer."}</p>
+      <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{locale === "ne" ? "नियममा आधारित trend, momentum, volume, data-quality र risk checks बाट NEPSE को ऐतिहासिक मूल्य विश्लेषण गर्नुहोस्। सबै सूचक र संकेत पारदर्शी सूत्रबाट स्थानीय रूपमा गणना हुन्छन्।" : "Analyse NEPSE price history using transparent, deterministic trend, momentum, volume, data-quality and risk checks. All indicators and signals are calculated from the supplied market data; no AI service is used."}</p>
       <a href="/nepse-lab" className="mt-4 inline-flex items-center gap-2 rounded-xl border border-teal-200 bg-teal-50 px-4 py-2.5 text-sm font-bold text-teal-800 transition hover:-translate-y-0.5 hover:bg-teal-100">{locale === "ne" ? "NEPSE Quant Strategy Lab खोल्नुहोस्" : "Open NEPSE Quant Strategy Lab"} <span aria-hidden="true">→</span></a>
     </header>
 
     <section className={card}>
       <div className="mb-4 flex flex-wrap gap-2">
-        {([["nepse",tr("NEPSE")],["forex",tr("Forex")],["crypto",tr("Crypto")]] as const).map(([key,label]) => <button type="button" key={key} onClick={() => { setAsset(key); if (key === "crypto") setMarketSymbol("BTC/USD"); else if (key === "forex") setMarketSymbol("EUR/USD"); setAnalysis(null); setError(""); setAiText(""); }} className={"rounded-full px-4 py-2 text-sm font-bold " + (asset === key ? "bg-teal-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-teal-50")}>{label}</button>)}
+        {([["nepse",tr("NEPSE")],["forex",tr("Forex")],["crypto",tr("Crypto")]] as const).map(([key,label]) => <button type="button" key={key} onClick={() => { setAsset(key); if (key === "crypto") setMarketSymbol("BTC/USD"); else if (key === "forex") setMarketSymbol("EUR/USD"); setAnalysis(null); setError(""); }} className={"rounded-full px-4 py-2 text-sm font-bold " + (asset === key ? "bg-teal-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-teal-50")}>{label}</button>)}
       </div>
       {asset === "nepse" ? <div className="flex flex-col gap-3 sm:flex-row">
         <label className="flex-1"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{locale === "ne" ? "NEPSE संकेत / सूचक" : "NEPSE symbol / index"}</span><input className={cls} value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} placeholder="NEPSE, NABIL, NICA…" /></label>
@@ -383,15 +358,21 @@ export default function MarketIntelligence({ locale = "en", nestedHeading = fals
         <div className={card}><h3 className="font-extrabold text-slate-900">Why the engine reached this view</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-slate-700">{analysis.reasons.map((reason) => <li key={reason}>{reason}</li>)}</ul></div>
       </section>
       <section className={card}><h3 className="font-extrabold text-slate-900">{locale === "ne" ? "जोखिमसम्बन्धी चेतावनी" : "Risk warnings"}</h3><ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-5 text-amber-900">{analysis.risks.map((risk) => <li key={risk}>{risk}</li>)}</ul></section>
+      <section className={card}>
+        <h3 className="font-extrabold text-slate-900">{locale === "ne" ? "गणना विधि र संकेतको सीमा" : "Calculation method & signal limits"}</h3>
+        <p className="mt-2 text-sm leading-6 text-slate-600">{locale === "ne" ? "यो प्रतिवेदन ऐतिहासिक दैनिक OHLCV डेटा र निश्चित नियमबाट तयार हुन्छ। स्कोर नाफा हुने सम्भावना होइन र भविष्यको मूल्य अनुमान होइन।" : "This report is calculated from historical daily OHLCV data using fixed rules. The confluence score is not a probability of profit and is not a forecast."}</p>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-700">
+          <li>{locale === "ne" ? "EMA20/EMA50 trend alignment: +2 वा −2; RSI(14), MACD histogram, 5-session momentum र volume confirmation ले थप स्कोर दिन्छन्।" : "EMA20/EMA50 trend alignment contributes +2 or −2; RSI(14), MACD histogram, five-session momentum and volume confirmation add or subtract points."}</li>
+          <li>{locale === "ne" ? "कम्तीमा 100 valid daily bars चाहिन्छ। stale quote, अपूरो OHLC/volume वा corporate-action adjustment अस्पष्ट भए BUY/SELL संकेत रोकिन्छ।" : "At least 100 valid daily bars are required. Stale quotes, incomplete OHLC/volume coverage or unclear corporate-action adjustments block actionable BUY/SELL signals."}</li>
+          <li>{locale === "ne" ? "Support/resistance पछिल्ला 20 कारोबार सत्रका दायराबाट निकालिन्छ; शुल्क, slippage, liquidity र circuit limits अलग जाँच्नुहोस्।" : "Support/resistance use the latest 20 observations; separately account for fees, slippage, liquidity and circuit limits."}</li>
+        </ul>
+      </section>
       <section className={card}><h3 className="font-extrabold text-slate-900">{locale === "ne" ? "समाचार तथा खुलासा सन्दर्भ (संकेतबाट अलग)" : "News & disclosure context (separate from signal)"}</h3><p className="mt-2 text-sm text-slate-600">{locale === "ne" ? "समाचारको धारणा:" : "Headline screening:"} <strong>{newsReview?.sentiment || "Unavailable"}</strong> · {newsReview?.stories.length || 0} relevant headlines</p><p className="mt-2 text-sm text-slate-600">{newsReview?.note || "News checked alongside technical indicators."}</p>{newsReview?.stories.length ? <ul className="mt-3 space-y-3">{newsReview.stories.map(story=><li key={story.link} className="border-t border-slate-100 pt-3"><a href={story.link} target="_blank" rel="noreferrer" className="text-sm font-semibold text-teal-800 underline">{story.title}</a><p className="mt-1 text-xs text-slate-500">{story.source} · {new Date(story.publishedAt).toLocaleString()}</p></li>)}</ul> : <p className="mt-3 text-xs text-amber-700">No relevant headlines were returned. This does not change the technical signal; verify official disclosures separately.</p>}</section>
       {asset === "nepse" && <NepseMarketContext symbol={symbol.trim().toUpperCase()} selectedPoints={selectedPoints} />}
       {asset === "nepse" && <NepseAdvancedIndicators rows={selectedPoints} />}
       {asset === "nepse" && <NepseMacroDrivers />}
       {asset === "nepse" && symbol.trim().toUpperCase() !== "NEPSE" && <NepseFundamentalReview symbol={symbol.trim().toUpperCase()} price={analysis.close} priceAsOf={analysis.latestDate} />}
-      <section className={card}>
-        <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold text-slate-900">{locale === "ne" ? "NEPSE AI अनुसन्धान प्रतिवेदन" : "Optional AI research explanation"}</h3><p className="mt-1 text-xs text-slate-500">{locale === "ne" ? "पहिले नै गणना गरिएको प्रतिवेदनको वैकल्पिक AI व्याख्या। AI ले गणना वा संकेत परिवर्तन गर्न सक्दैन।" : "Optional AI-generated explanation of the already-computed report. The deterministic technical and fundamental snapshots above work without AI; AI cannot change their calculated values or signals."}</p></div><button type="button" onClick={() => void explainWithAI()} disabled={aiBusy} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? (locale === "ne" ? "अनुसन्धान हुँदैछ…" : "Researching…") : (locale === "ne" ? "अनुसन्धान प्रतिवेदन तयार गर्नुहोस्" : "Generate research report")}</button></div>
-        {aiText && <p className="mt-4 whitespace-pre-wrap rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700">{aiText}</p>}
-      </section>
+
     </div>}
 
     <aside className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs leading-5 text-slate-600">

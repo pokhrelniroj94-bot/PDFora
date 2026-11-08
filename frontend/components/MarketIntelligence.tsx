@@ -222,6 +222,7 @@ function hasStaleMarketData(latestDate: string, asset: string) {
 const neCopy: Record<string,string> = {
 "PDFora Smart Market AI":"PDFora स्मार्ट बजार AI",
 "Market Intelligence & Risk Analyzer":"बजार विश्लेषण तथा जोखिम परीक्षक",
+"NEPSE":"नेप्से","Forex":"विदेशी मुद्रा","Crypto":"क्रिप्टो",
 "Analyse NEPSE, Forex and Crypto price history with trend, momentum, volatility, support/resistance and rule-based entry/exit conditions. Optional free AI explains the calculated results.":"NEPSE, Forex र Crypto को ऐतिहासिक मूल्यबाट trend, momentum, volatility, support/resistance र नियममा आधारित entry/exit अवस्था विश्लेषण गर्नुहोस्। वैकल्पिक निःशुल्क AI ले गणना गरिएको नतिजा व्याख्या गर्छ।",
 "Open NEPSE Quant Strategy Lab":"NEPSE Quant Strategy Lab खोल्नुहोस्",
 "NEPSE symbol / index":"NEPSE कम्पनी संकेत / सूचक",
@@ -362,7 +363,7 @@ export default function MarketIntelligence({ locale = "en" }: { locale?: "en" | 
 
     <section className={card}>
       <div className="mb-4 flex flex-wrap gap-2">
-        {([["nepse","NEPSE"],["forex","Forex"],["crypto","Crypto"]] as const).map(([key,label]) => <button type="button" key={key} onClick={() => { setAsset(key); if (key === "crypto") setMarketSymbol("BTC/USD"); else if (key === "forex") setMarketSymbol("EUR/USD"); setAnalysis(null); setError(""); setAiText(""); }} className={"rounded-full px-4 py-2 text-sm font-bold " + (asset === key ? "bg-teal-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-teal-50")}>{label}</button>)}
+        {([["nepse",tr("NEPSE")],["forex",tr("Forex")],["crypto",tr("Crypto")]] as const).map(([key,label]) => <button type="button" key={key} onClick={() => { setAsset(key); if (key === "crypto") setMarketSymbol("BTC/USD"); else if (key === "forex") setMarketSymbol("EUR/USD"); setAnalysis(null); setError(""); setAiText(""); }} className={"rounded-full px-4 py-2 text-sm font-bold " + (asset === key ? "bg-teal-700 text-white" : "bg-slate-100 text-slate-700 hover:bg-teal-50")}>{label}</button>)}
       </div>
       {asset === "nepse" ? <div className="flex flex-col gap-3 sm:flex-row">
         <label className="flex-1"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{tr("NEPSE symbol / index")}</span><input className={cls} value={symbol} onChange={(e) => setSymbol(e.target.value.toUpperCase())} placeholder="NEPSE, NABIL, NICA…" /></label>

@@ -271,7 +271,7 @@ const holidayNotesNe: Record<string, string> = {
   "Employees with disabilities only": "अपाङ्गता भएका कर्मचारीका लागि मात्र", "Women employees only": "महिला कर्मचारीका लागि मात्र", "Date depends on moon sighting": "चन्द्रदर्शनमा निर्भर मिति",
   "Jhapa, Morang, Sunsari, Siraha and Saptari": "झापा, मोरङ, सुनसरी, सिरहा र सप्तरी", "Muslim community": "मुस्लिम समुदाय",
   "Sikh community": "सिख समुदाय", "56 Himalayan and Hill districts": "हिमाली तथा पहाडी ५६ जिल्ला",
-  "21 Terai districts": "तराईका २१ जिल्ला", "Educational institutions only": "शैक्षिक संस्थामा मात्र", "National public holiday": "राष्ट्रिय सार्वजनिक बिदा"
+  "21 Terai districts": "तराईका २१ जिल्ला", "Educational institutions only": "शैक्षिक संस्थामा मात्र"
 };
 const holidayTypeNe: Record<string, string> = {
   National: "राष्ट्रिय", Regional: "क्षेत्रीय", Community: "समुदाय-विशेष", "To be announced": "घोषणा हुन बाँकी"
@@ -322,9 +322,9 @@ function NepseDividendTool({ ne = false }: { ne?: boolean }) {
   </div>;
 }
 
-export default function NepalLiveTools({ slug }: { slug: string }) {
+export default function NepalLiveTools({ slug, locale }: { slug: string; locale?: "en" | "ne" }) {
   const pathname = usePathname();
-  const ne = pathname?.startsWith("/ne/") ?? false;
+  const ne = locale ? locale === "ne" : pathname?.startsWith("/ne/") ?? false;
   if (slug === "nepal-forex-rates") return <ForexTool ne={ne}/>;
   if (slug === "nepal-salary-tax-calculator") return <SalaryTaxTool ne={ne}/>;
   if (slug === "nepal-electricity-bill-calculator") return <ElectricityTool locale={ne ? "ne" : "en"}/>;

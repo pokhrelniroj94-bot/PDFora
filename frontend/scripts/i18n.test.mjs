@@ -141,6 +141,17 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
+test("Nepali PDF tool form placeholders are translated for every configured route", async () => {
+  const { getNepaliPdfFieldText } = await import("../lib/i18n/pdf-tool-fields-ne.ts");
+  const routes = fs.readFileSync(path.join(frontendRoot, "lib", "i18n", "nepali-pdf-routes.ts"), "utf8");
+  const placeholders = [...routes.matchAll(/"(?:formPlaceholder|label|placeholder)":\\s*"([^"]+)"/g)]
+    .map((match) => match[1])
+    .filter((value) => value.length > 3 && !/^#[0-9A-F]{6}$/i.test(value));
+  const unique = [...new Set(placeholders)];
+  const missing = unique.filter((value) => getNepaliPdfFieldText(value) === value);
+  assert.deepEqual(missing, [], "Every user-facing PDF field label and placeholder must have a Nepali translation");
+});
+
 test("Nepali PDF tool back navigation stays in the active locale", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "PDForaTool.tsx"), "utf8");
   assert.ok(source.includes("href={homeHref}"), "the tool back link must use the locale-aware home destination");

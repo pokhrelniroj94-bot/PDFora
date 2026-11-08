@@ -14,9 +14,5 @@ export default function PdfToolJsonLd({ name, description, url, locale, faqs = [
     applicationCategory: "UtilitiesApplication", operatingSystem: "Any", inLanguage: locale,
     ...(price !== undefined ? { offers: { "@type": "Offer", price, priceCurrency: "USD" } } : {}),
   }];
-  if (faqs.length) graph.push({
-    "@type": "FAQPage", inLanguage: locale,
-    mainEntity: faqs.map(({ question, answer }) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })),
-  });
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({ "@context": "https://schema.org", "@graph": graph }) }} />;
 }

@@ -63,7 +63,7 @@
 - [ ] Reciprocal en, ne and x-default alternates are emitted only when BOTH translations are complete and reviewed.
 - [ ] Incomplete locale returns noindex,nofollow and is absent from the indexable sitemap.
 - [ ] Final rendered title is under 60 characters and description under 160 characters; check after title templates.
-- [ ] JSON-LD matches visible page content; omit FAQPage if there are no visible FAQs.
+- [ ] JSON-LD matches visible page content; do not emit FAQPage markup (Google no longer shows FAQ rich results in Search).
 - [ ] Nepali font uses Noto Sans Devanagari with font-display: swap; preload only the used weight on Nepali routes.
 - [ ] No automatic IP-based redirect; language switcher links only to real equivalent pages.
 - [ ] All 49 tools pass mobile and desktop upload, options, processing, error and download smoke tests.

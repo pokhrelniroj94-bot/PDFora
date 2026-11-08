@@ -18,4 +18,28 @@ assert.equal(runNepaliDeveloperTool("text-diff-checker", { original: "a\nb", mod
 assert.match(runNepaliDeveloperTool("text-diff-checker", { original: "x\n".repeat(501), modified: "y" }), /अधिकतम ५००/);
 assert.equal(await runNepaliHashTool("abc", "SHA-256"), "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
 assert.match(await runNepaliHashTool("abc", "MD5"), /SHA-256/);
-console.log("Nepali developer/text utility functional tests passed (17 assertions).");
+
+assert.equal(runNepaliDeveloperTool("text-to-binary", { text: "A" }), "01000001");
+assert.equal(runNepaliDeveloperTool("binary-to-text", { text: "01000001" }), "A");
+assert.match(runNepaliDeveloperTool("binary-to-text", { text: "0101" }), /८-बिट समूह/);
+assert.equal(runNepaliDeveloperTool("text-to-hex", { text: "A" }), "41");
+assert.equal(runNepaliDeveloperTool("hex-to-text", { text: "e0 a4 a8" }), "न");
+assert.match(runNepaliDeveloperTool("hex-to-text", { text: "xyz" }), /hexadecimal/);
+assert.equal(runNepaliDeveloperTool("morse-code-translator", { text: "SOS" }), "... --- ...");
+assert.equal(runNepaliDeveloperTool("morse-code-translator", { text: "... --- ...", mode: "decode" }), "SOS");
+assert.equal(runNepaliDeveloperTool("camel-case-converter", { text: "Hello world PDFora" }), "helloWorldPdfora");
+assert.equal(runNepaliDeveloperTool("snake-case-converter", { text: "Hello world PDFora" }), "hello_world_pdfora");
+assert.equal(runNepaliDeveloperTool("kebab-case-converter", { text: "Hello world PDFora" }), "hello-world-pdfora");
+assert.equal(runNepaliDeveloperTool("html-tag-stripper", { text: "<p>Hello <b>world</b></p><script>alert(1)</script>" }), "Hello world");
+assert.equal(runNepaliDeveloperTool("json-escape-unescape", { text: "hello\nworld" }), "hello\\nworld");
+assert.equal(runNepaliDeveloperTool("json-escape-unescape", { text: "hello\\nworld", mode: "decode" }), "hello\nworld");
+assert.deepEqual(JSON.parse(runNepaliDeveloperTool("url-query-parser", { text: "https://example.com/?a=1&a=2&b=3" })), { a: ["1", "2"], b: "3" });
+assert.match(runNepaliDeveloperTool("url-validator", { text: "https://example.com/path" }), /ढाँचा मान्य छ/);
+assert.match(runNepaliDeveloperTool("url-validator", { text: "javascript:alert(1)" }), /मान्य छैन/);
+assert.match(runNepaliDeveloperTool("email-validator", { text: "hello@example.com" }), /ढाँचा मान्य छ/);
+assert.match(runNepaliDeveloperTool("email-validator", { text: "not-an-email" }), /मान्य छैन/);
+assert.match(runNepaliDeveloperTool("password-strength-checker", { text: "StrongPass123!" }), /बलियो/);
+assert.match(runNepaliDeveloperTool("password-strength-checker", { text: "short" }), /कमजोर/);
+assert.match(runNepaliDeveloperTool("uuid-generator", {}), /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+
+console.log("Nepali developer/text utility functional tests passed (39 assertions).");

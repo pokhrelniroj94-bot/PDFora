@@ -24,6 +24,8 @@ These standards govern English and Nepali editorial guides on PDFora / Niroj Too
 
 - Give each article a unique, concise title that accurately describes its content.
 - Write a distinct summary for each article; do not use keyword-stuffed templates.
+- Audit articles within the same language for repeated titles, descriptions, introductions and substantial body paragraphs. A shared subject or tool link is not automatically duplicate content, but pages targeting the same task must provide clearly different reader outcomes, examples and guidance; otherwise consolidate them rather than publishing near-identical variants.
+- Do not compare a genuine Nepali translation with its English source as if it were a same-language duplicate. Keep language versions as separate URLs with reciprocal hreflang only when both main bodies are genuinely localized.
 - Use one clear H1, descriptive H2 sections and meaningful link text.
 - Use the reader's natural vocabulary in titles and headings without forced repetition.
 - Provide a useful introduction, practical body, relevant FAQs and at least one genuinely relevant internal link.

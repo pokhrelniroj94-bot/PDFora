@@ -92,7 +92,7 @@ Use a properly subsetted Noto Sans Devanagari font for Nepali, with only require
 Emit JSON-LD only when it matches visible page content:
 - `SoftwareApplication` only for the actual tool/application.
 - `BreadcrumbList` for visible navigation.
-- `FAQPage` only for FAQs displayed on the page.
+- Do not emit `FAQPage` JSON-LD. Keep useful FAQs visible to readers, but Google no longer shows FAQ rich results in Search (May 2026 update).
 
 Do not add fabricated ratings, reviews, aggregate ratings, endorsements, or feature claims.
 

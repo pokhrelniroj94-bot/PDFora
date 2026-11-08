@@ -5,10 +5,15 @@ import ResumeBuilder from "../../components/ResumeBuilder";
 const localizedAlternates = hreflangMap("/resume-builder");
 
 export const metadata: Metadata = {
-  title: "Free Resume Builder – Professional CV Templates & PDF Download | PDFora",
+  title: "Free Resume Builder – Professional CV Templates & PDF Download",
   description: "Create a professional resume online with 20 professional CV templates, live A4 preview, editable sections, custom colours and free PDF export. No signup required.",
   alternates: { canonical: "https://pd-fora.vercel.app/resume-builder", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
-  keywords: ["free resume builder", "CV maker", "resume templates", "professional CV", "download resume PDF", "ATS friendly resume", "Europass CV"],
-  openGraph: { title: "Free Resume Builder – Professional CV Templates | PDFora", description: "Build a polished CV with live preview and free PDF export.", url: "https://pd-fora.vercel.app/resume-builder", siteName: "PDFora", type: "website" },
+  openGraph: { title: "Free Resume Builder – Professional CV Templates | PDFora", description: "Build a polished CV with live preview and free PDF export.", url: "https://pd-fora.vercel.app/resume-builder", siteName: "PDFora", type: "website", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Free resume builder" }] },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Resume Builder – Professional CV Templates | PDFora",
+    description: "Build a polished CV with 20 templates, live A4 preview and free PDF export.",
+    images: ["/opengraph-image"],
+  },
 };
 export default function Page() { return <ResumeBuilder />; }

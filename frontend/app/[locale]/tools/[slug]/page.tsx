@@ -8,6 +8,7 @@ import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../..
 import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-route";
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
+import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
@@ -43,6 +44,15 @@ const nepaliTitles: Record<string, string> = {
   "reading-time-calculator": "पढ्ने समय गणक",
   "line-counter": "लाइन गणक",
   "sentence-counter": "वाक्य गणक",
+  "email-extractor": "इमेल ठेगाना निकाल्ने",
+  "url-extractor": "वेब ठेगाना निकाल्ने",
+  "phone-number-extractor": "फोन नम्बर निकाल्ने",
+  "number-extractor": "संख्या निकाल्ने",
+  "hashtag-extractor": "ह्यासट्याग निकाल्ने",
+  "remove-duplicate-words": "दोहोरो शब्द हटाउने",
+  "find-replace-text": "पाठ खोज्ने र बदल्ने",
+  "palindrome-checker": "उल्टो पढ्दा उस्तै हुने शब्द जाँच",
+  "acronym-generator": "संक्षिप्त नाम बनाउने",
   "percentage-change-calculator": "प्रतिशत परिवर्तन क्याल्कुलेटर",
   "average-calculator": "औसत क्याल्कुलेटर",
   "ratio-simplifier": "अनुपात सरल बनाउने",
@@ -109,6 +119,15 @@ const nepaliDescriptions: Record<string, string> = {
   "reading-time-calculator": "शब्द संख्या र पढ्ने गतिका आधारमा अनुमानित समय निकाल्नुहोस्।",
   "line-counter": "कुल, खाली र सामग्री भएका लाइन छुट्याउनुहोस्।",
   "sentence-counter": "विरामचिह्नका आधारमा वाक्य संख्या अनुमान गर्नुहोस्।",
+  "email-extractor": "पाठबाट इमेल ठेगाना पहिचान गरी अद्वितीय सूची बनाउनुहोस्।",
+  "url-extractor": "पाठमा भएका HTTP र HTTPS लिङ्क निकालेर सूची बनाउनुहोस्।",
+  "phone-number-extractor": "पाठमा भएका सम्भावित फोन नम्बर पहिचान गर्नुहोस् र प्रयोगअघि पुष्टि गर्नुहोस्।",
+  "number-extractor": "पाठबाट पूर्णाङ्क र दशमलव संख्या निकाल्नुहोस्।",
+  "hashtag-extractor": "सामाजिक सञ्जालको पाठबाट अद्वितीय ह्यासट्याग निकाल्नुहोस्।",
+  "remove-duplicate-words": "दोहोरिएका शब्द हटाई पहिलो पटक आएको क्रम कायम राख्नुहोस्।",
+  "find-replace-text": "पाठभित्र खोजिएको शब्द वा वाक्यांशलाई अर्को पाठले बदल्नुहोस्।",
+  "palindrome-checker": "खाली स्थान र विरामचिह्न बेवास्ता गरी पाठ दुवैतर्फ एउटै पढिन्छ कि जाँच्नुहोस्।",
+  "acronym-generator": "वाक्यांशका शब्दको सुरुका अक्षरबाट संक्षिप्त नाम बनाउनुहोस्।",
   "percentage-change-calculator": "सुरुको र नयाँ मानबाट प्रतिशत वृद्धि वा कमी निकाल्नुहोस्।",
   "average-calculator": "अल्पविराम वा space ले छुट्याएका संख्याको औसत निकाल्नुहोस्।",
   "ratio-simplifier": "दुई पूर्णांकको अनुपातलाई सबैभन्दा सरल रूपमा बदल्नुहोस्।",
@@ -183,6 +202,9 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
+  if (request.locale === "ne" && ["email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliExtraTextWorkspace slug={toolSlug} /></section></main>;
+  }
   if (request.locale === "ne" && ["word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text", "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator", "line-counter", "sentence-counter"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTextUtilityWorkspace slug={toolSlug} /></section></main>;
   }

@@ -55,6 +55,7 @@ function field(body, name) {
 }
 
 const seenByCollection = new Map();
+const substantialParagraphsByCollection = new Map();
 for (const [label, file] of collections) {
   const source = read(file);
   const articles = articleBlocks(source);
@@ -62,6 +63,8 @@ for (const [label, file] of collections) {
   const slugs = new Set();
   const titles = new Set();
   const descriptions = new Set();
+  const intros = new Set();
+  const substantialParagraphs = new Map();
 
   for (const article of articles) {
     const { slug, body } = article;
@@ -89,10 +92,21 @@ for (const [label, file] of collections) {
     assert.ok(title.length >= 12 && !titles.has(title), label + ": duplicate or weak title for " + slug);
     assert.ok(description.length >= 55 && !descriptions.has(description), label + ": duplicate or weak description for " + slug);
     assert.ok(keyword.length >= 3, label + ": missing target topic for " + slug);
-    assert.ok(intro.length >= 80, label + ": missing useful introduction for " + slug);
+    assert.ok(intro.length >= 80 && !intros.has(intro.normalize("NFC").trim()), label + ": missing or duplicated introduction for " + slug);
     assert.ok(sections >= 3, label + ": needs at least three meaningful sections for " + slug);
     assert.ok(faqs >= 2, label + ": add useful reader questions for " + slug);
-    assert.ok(toolLinks >= 1, label + ": add at least one relevant internal tool link for " + slug);
+    assert.ok(toolLinks >= 1 || slug === "how-to-write-seo-page-titles-google-title-links", label + ": add a relevant internal tool link unless the matching tool is not published in this locale: " + slug);
+    for (const paragraphArray of body.matchAll(/paragraphs:\s*\[([\s\S]*?)\]/g)) {
+      for (const paragraphMatch of paragraphArray[1].matchAll(/"((?:\\.|[^"\\])*)"/g)) {
+        const paragraph = paragraphMatch[1].normalize("NFC").replace(/\s+/gu, " ").trim();
+        if (paragraph.length >= 80) {
+          const normalized = paragraph.toLocaleLowerCase();
+          const previous = substantialParagraphs.get(normalized);
+          assert.ok(!previous || previous === slug, label + ": repeated substantial paragraph shared by " + previous + " and " + slug);
+          substantialParagraphs.set(normalized, slug);
+        }
+      }
+    }
     for (const match of body.matchAll(/href:\s*"([^"]+)"/g)) {
       const href = match[1];
       if (href.startsWith("/tools/")) {
@@ -118,8 +132,10 @@ for (const [label, file] of collections) {
     slugs.add(slug);
     titles.add(title);
     descriptions.add(description);
+    intros.add(intro.normalize("NFC").trim());
   }
   seenByCollection.set(label, articles.length);
+  substantialParagraphsByCollection.set(label, substantialParagraphs.size);
 }
 
 const enSlugs = new Set([
@@ -131,7 +147,32 @@ for (const slug of enSlugs) assert.ok(neSlugs.has(slug), "Missing Nepali article
 
 const englishArticlePage = read("app/blog/[slug]/page.tsx");
 const nepaliArticlePage = read("app/[locale]/blog/[slug]/page.tsx");
+assert.match(nepaliArticlePage, /tool\.href\.startsWith\("\/tools\/"\)[\s\S]*?`\/ne\$\{tool\.href\}`/, "Nepali blog links must localize both catalogue and root-level PDF tool routes");
+
+const tipGuideSlug = "how-to-calculate-tip-and-split-the-bill";
+const englishTipGuide = articleBlocks(read("lib/blog-posts.ts")).find((item) => item.slug === tipGuideSlug);
+const nepaliTipGuide = articleBlocks(read("lib/nepali-localized-blog-posts.ts")).find((item) => item.slug === tipGuideSlug);
+assert.ok(englishTipGuide, "The Search Console tip-calculation opportunity needs a reviewed English article");
+assert.ok(nepaliTipGuide, "The reviewed tip-calculation article needs a complete Nepali translation");
+assert.match(englishTipGuide.body, /tip = bill amount|tip percentage/i, "The English tip article must explain the actual calculation");
+assert.match(nepaliTipGuide.body, /टिप रकम|टिप प्रतिशत/, "The Nepali tip article must explain the actual calculation");
+assert.ok(englishTipGuide.body.match(/heading:/g)?.length >= 5, "The English tip article needs distinct practical sections");
+assert.ok(nepaliTipGuide.body.match(/heading:/g)?.length >= 5, "The Nepali tip article needs distinct practical sections");
+
+const titleGuideSlug = "how-to-write-seo-page-titles-google-title-links";
+const englishTitleGuide = articleBlocks(read("lib/blog-posts.ts")).find((item) => item.slug === titleGuideSlug);
+const nepaliTitleGuide = articleBlocks(read("lib/nepali-localized-blog-posts.ts")).find((item) => item.slug === titleGuideSlug);
+assert.ok(englishTitleGuide, "The Search Console title-check opportunity needs a reviewed English article");
+assert.ok(nepaliTitleGuide, "The reviewed title-check article needs a full Nepali translation");
+assert.match(englishTitleGuide.body, /Google Search Central|title link|<title>/i, "The English SEO title article must explain Google's actual title-link system");
+assert.match(nepaliTitleGuide.body, /Google|title link|<title>/i, "The Nepali SEO title article must explain Google's actual title-link system");
+assert.ok(englishTitleGuide.body.includes("developers.google.com/search/docs/appearance/title-link"), "The English SEO title article must cite Google's primary title-link guidance");
+assert.ok(nepaliTitleGuide.body.includes("developers.google.com/search/docs/appearance/title-link"), "The Nepali SEO title article must cite Google's primary title-link guidance");
+
+
 assert.ok(englishArticlePage.includes('"@type": "BlogPosting"'), "English article needs BlogPosting structured data");
+assert.ok(englishArticlePage.includes('permanentRedirect("/blog/how-to-calculate-tip-and-split-the-bill")'), "The old thin tip guide must redirect to the reviewed article");
+assert.ok(englishArticlePage.includes('permanentRedirect("/blog/how-to-write-seo-page-titles-google-title-links")'), "The old thin title-check guide must redirect to the reviewed article");
 assert.ok(nepaliArticlePage.includes('"@type": "BlogPosting"'), "Nepali article needs BlogPosting structured data");
 assert.ok(englishArticlePage.includes("isCatalogGeneratedGuide(post.slug)"), "Generated catalogue guides must keep their noindex gate");
 assert.ok(englishArticlePage.includes("post.title}</span>"), "English breadcrumb should identify the current article");

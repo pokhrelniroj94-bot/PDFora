@@ -104,7 +104,7 @@ historical limitations are superseded by the verification results above and in
 ## Inventory (static parse, see inventory.json)
 - Page routes 63, API routes 6, catalog entries 125 (10 categories), 49 legacy root-level PDF slugs.
 - Hand-written blog slugs: 8 (blog-posts.ts) + 19 (nepal-blog-posts.ts); tool-guides.ts adds posts at runtime (count to confirm at build time).
-- Branch-specific features to preserve: NEPSE market/research/lab, forex, news APIs, AI writing (`/api/ai-writing`, Upstash + Cloudflare rate limiting), SmartToolCenter, MarketIntelligence. The sitewide floating AI help widget has been removed.
+- Features to preserve: NEPSE market/research/lab, forex, news APIs and SmartToolCenter. Generative AI interfaces, components and API routes have been retired.
 
 ## Status table
 | Phase | Status |
@@ -143,7 +143,6 @@ Not yet tested by anyone: runtime behavior of /ar, /de etc. in preview mode, 404
 Pre-existing findings fixed with minimal edits, no behavior change:
 - NepalLiveTools.tsx:175 `today's` -> `today&apos;s` (renders identically).
 - NepseAlphaLab.tsx: removed `result`/`setResult` state that was only ever set to null and never read (displayed results come from the `metrics` useMemo).
-- SiteAIHelp.tsx: effect deps `[pathname]` -> `[pathname, pagePath]`; pagePath is derived from pathname, so run timing is unchanged.
 Authoring sandbox re-ran verify:tools, i18n:test (14/14), i18n:check: PASS. lint/tsc/build: NOT RUN here; pending owner's local run.
 
 ## Local verification at 4591021 (owner's Windows run, output reviewed)

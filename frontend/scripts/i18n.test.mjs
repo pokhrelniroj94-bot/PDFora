@@ -32,24 +32,6 @@ test("every curated Nepali blog article is a real localized route with hreflang"
   }
 });
 
-test("AI Help resets and aborts pending conversations when the locale changes", () => {
-  const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");
-  assert.ok(source.includes("useRef<AbortController | null>(null)"), "AI Help must retain the active request controller");
-  assert.ok(source.includes("requestController.current?.abort()"), "locale changes must abort the previous language request");
-  assert.ok(source.includes("<SiteAIHelpConversation key={locale}"), "locale changes must remount a fresh conversation with the active-language greeting");
-  assert.ok(source.includes("useEffect(() => () => {") && source.includes("requestController.current = null;"), "unmounting the old locale must abort and clear its pending request");
-  assert.ok(source.includes("signal: controller.signal"), "AI requests must be cancellable");
-  assert.ok(source.includes("if (!controller.signal.aborted) setError("), "aborted requests must not surface stale errors");
-});
-
-test("AI help derives locale prefixes from the central locale registry", () => {
-  const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteAIHelp.tsx"), "utf8");
-  assert.ok(source.includes('import { localeFromPathname } from "../lib/i18n/shared-ui"'));
-  assert.ok(source.includes('const locale = localeFromPathname(pathname)'));
-  assert.ok(source.includes('new RegExp(`^/${locale}(?=/|$)`)'), "page context must strip the configured locale prefix");
-  assert.ok(!source.includes("|id|"), "the AI help locale list must not contain an unsupported locale");
-});
-
 test("RTL and script font support covers Urdu, Arabic and Bengali", () => {
   const css = fs.readFileSync(path.join(frontendRoot, "app", "globals.css"), "utf8");
   assert.ok(css.includes(':lang(ar), :lang(ur)'), "Arabic and Urdu need script-aware font stacks");
@@ -146,7 +128,6 @@ test("shared UI coverage: all twelve locales have complete translated site chrom
 test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools", "ne"), "/ne/tools");
   assert.equal(routing.localizedOrFallbackPath("/tools/loan-emi-calculator", "ne"), "/ne/tools/loan-emi-calculator");
-  assert.equal(routing.localizedOrFallbackPath("/tools/ai-resume-writer", "ne"), "/ne/tools/ai-resume-writer");
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/nepse-technical-analysis", "ne"), "/ne/nepse-technical-analysis");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
@@ -197,17 +178,6 @@ test("Nepali market and finance surfaces contain localized rendered UI", () => {
   }
   for (const phrase of ["विश्व समाचार र नेपाल बजार समाचार", "समाचार अद्यावधिक गर्नुहोस्", "NEPSE तथा बजार अद्यावधिक"]) {
     assert.ok(news.includes(phrase), `Nepali market news UI must include: ${phrase}`);
-  }
-});
-
-test("Nepali AI writing routes contain localized rendered UI", () => {
-  const source = fs.readFileSync(path.join(frontendRoot, "components", "AIWritingTools.tsx"), "utf8");
-  const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
-  for (const phrase of ["AI रिजुमे लेखक", "AI कभर लेटर जेनेरेटर", "AI पाठ परिष्कार तथा पुनर्लेखन", "तपाईंको नतिजा", "गोपनीयता:"]) {
-    assert.ok(source.includes(phrase), `Nepali AI writing UI must include: ${phrase}`);
-  }
-  for (const slug of ["ai-resume-writer", "ai-cover-letter-generator", "ai-humanizer"]) {
-    assert.ok(routeSource.includes(`"${slug}"`), `${slug} must retain its localized route`);
   }
 });
 

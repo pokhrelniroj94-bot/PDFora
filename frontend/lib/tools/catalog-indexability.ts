@@ -8,6 +8,9 @@
  */
 export const indexableCatalogToolSlugs: ReadonlySet<string> = new Set([
   "nepse-technical-analysis",
+  "meta-title-checker",
+  "meta-description-checker",
+  "tip-calculator",
   "nepali-date-converter",
   "nepali-vat-calculator",
   "nepali-number-converter",

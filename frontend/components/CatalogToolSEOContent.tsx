@@ -154,7 +154,8 @@ export default function CatalogToolSEOContent({
         </div>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">Related calculators</h2>
+        <h2 className="text-xl font-black text-slate-950">Related calculators and guide</h2>
+        <p className="mt-2 leading-7 text-slate-700">For a worked explanation of the percentage formula, bill total and equal split, read the <Link href="/blog/how-to-calculate-tip-and-split-the-bill" className="font-semibold text-teal-800 underline">step-by-step tip calculation guide</Link>.</p>
         <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
       </section>
     </div></article>;
@@ -194,7 +195,8 @@ export default function CatalogToolSEOContent({
         </div>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">Related SEO tools</h2>
+        <h2 className="text-xl font-black text-slate-950">Related SEO tools and guidance</h2>
+        <p className="mt-2 leading-7 text-slate-700">For Google’s guidance on title links and how the visible heading relates to the HTML title, read <Link href="/blog/how-to-write-seo-page-titles-google-title-links" className="font-semibold text-teal-800 underline">how to write useful SEO page titles</Link>.</p>
         <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
       </section>
     </div></article>;

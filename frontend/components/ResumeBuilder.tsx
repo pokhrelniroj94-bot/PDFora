@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 type Entry = { id: string; school: string; degree: string; place: string; dates: string };
 type Job = { id: string; role: string; company: string; dates: string; details: string };
@@ -62,19 +62,7 @@ export default function ResumeBuilder({ locale = "en" }: ResumeBuilderProps) {
     studio: ne ? "PDFora करियर स्टुडियो" : "PDFora Career Studio",
     title: ne ? "व्यावसायिक रिजुमे बिल्डर" : "Professional Resume Builder",
     description: ne ? "२० व्यावसायिक टेम्प्लेट, प्रत्यक्ष पूर्वावलोकन र A4 PDF निर्यातसहित तयार CV बनाउनुहोस्।" : "Build a polished, job-ready CV with 20 professional templates, live preview and print-ready A4 PDF export.",
-    aiWrite: ne ? "AI बाट CV सामग्री लेख्नुहोस् ↗" : "AI write CV content ↗",
-    cover: ne ? "कभर लेटर ↗" : "Cover letter ↗",
     download: ne ? "CV PDF डाउनलोड गर्नुहोस् ↗" : "Download CV as PDF ↗",
-    assistant: ne ? "AI CV सहायक" : "AI CV Assistant",
-    improveTitle: ne ? "AI बाट आफ्नो CV सुधार्नुहोस्" : "Improve your CV with AI",
-    improveDescription: ne ? "तपाईंको लक्षित पद, सीप, शिक्षा र अनुभव प्रयोग गरी बलियो सारांश र ATS-अनुकूल बुँदा तयार गर्छ। तपाईंको सम्पर्क विवरण र फोटो पठाइँदैन।" : "Uses your target role, skills, education and experience to draft a stronger summary and ATS-friendly bullet points. Your contact details and photo are not sent.",
-    improving: ne ? "CV सुधार हुँदैछ…" : "Improving CV…",
-    improve: ne ? "AI बाट CV सुधार्नुहोस्" : "Improve CV with AI",
-    consent: ne ? "मेरो लक्षित पद, सीप, शिक्षा र अनुभवको पाठ प्रशोधनका लागि कन्फिगर गरिएको AI प्रदायकलाई पठाउन सहमत छु। म गोप्य जानकारी समावेश गर्ने छैन।" : "I agree to send my target role, skills, education and experience text to the configured AI provider for processing. I will not include confidential information.",
-    suggestions: ne ? "लागू गर्नुअघि AI सुझाव जाँच गर्नुहोस्" : "Review AI suggestions before applying",
-    useSummary: ne ? "यो सारांश प्रयोग गर्नुहोस्" : "Use this summary",
-    useSkills: ne ? "यी सीप प्रयोग गर्नुहोस्" : "Use these skills",
-    useBullets: ne ? "यी बुँदा प्रयोग गर्नुहोस्" : "Use these bullets",
     personal: ne ? "१. व्यक्तिगत विवरण" : "1. Personal details",
     identity: ne ? "सम्पर्क र पहिचान" : "Contact & identity",
     summary: ne ? "२. व्यावसायिक सारांश" : "2. Professional summary",

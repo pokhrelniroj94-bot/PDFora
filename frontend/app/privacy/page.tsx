@@ -95,7 +95,7 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              7. Data Security
+              6. Data Security
             </h2>
             <p>
               We take reasonable measures to protect information processed
@@ -106,7 +106,7 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              8. Children&apos;s Privacy
+              7. Children&apos;s Privacy
             </h2>
             <p>
               PDFora is not intentionally designed to collect personal
@@ -118,7 +118,7 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              9. Changes to This Policy
+              8. Changes to This Policy
             </h2>
             <p>
               We may update this Privacy Policy from time to time as our
@@ -128,7 +128,7 @@ export default function PrivacyPage() {
           </div>
 
           <div>
-            <h2 className="mb-2 text-2xl font-semibold">10. Contact</h2>
+            <h2 className="mb-2 text-2xl font-semibold">9. Contact</h2>
             <p>
               If you have questions about this Privacy Policy or PDFora&apos;s
               privacy practices, email us at{" "}

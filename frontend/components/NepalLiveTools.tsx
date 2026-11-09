@@ -82,8 +82,7 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
     converter: "NRB मुद्रा रूपान्तरण", quick: "छिटो रूपान्तरण", uses: "छानिएको मुद्राको प्रकाशित एकाइ, खरिद र बिक्री दर प्रयोग हुन्छ।",
     currency: "मुद्रा", direction: "रूपान्तरण दिशा", amount: "रकम",
     foreignNpr: "विदेशी मुद्रा → NPR (खरिद)", nprForeign: "NPR → विदेशी मुद्रा (बिक्री)",
-    estimated: "अनुमानित रूपान्तरण", explain: "आजका प्रकाशित दर बुझ्नुहोस्", explainButton: "AI बाट दर बुझ्नुहोस्",
-    unavailable: "NRB AI व्याख्या उपलब्ध छैन।", tryAgain: "पुनः प्रयास गर्नुहोस्",
+    estimated: "अनुमानित रूपान्तरण",
   } : {
     eyebrow: "Nepal · Official reference rates", title: "Nepal Rastra Bank Exchange Rates",
     description: "Daily buying and selling rates published by NRB. On weekends and public holidays, the latest available working-day rate may be shown.",
@@ -93,8 +92,7 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
     converter: "NRB currency converter", quick: "Quick conversion", uses: "Uses the published unit, buying and selling rate for the selected currency.",
     currency: "Currency", direction: "Conversion direction", amount: "Amount",
     foreignNpr: "Foreign currency → NPR (buying)", nprForeign: "NPR → foreign currency (selling)",
-    estimated: "Estimated conversion", explain: "Understand today's published rates", explainButton: "Explain rates with AI",
-    unavailable: "NRB AI explanation is unavailable.", tryAgain: "Try again",
+    estimated: "Estimated conversion",
   };
   const [data, setData] = useState<ForexResponse | null>(null);
   const [loading, setLoading] = useState(true);

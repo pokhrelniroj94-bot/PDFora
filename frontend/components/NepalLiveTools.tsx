@@ -114,7 +114,6 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
       setLoading(false);
     }
   };
-  }
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void loadRates(); }, 0);

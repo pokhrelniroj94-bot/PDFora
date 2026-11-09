@@ -121,7 +121,7 @@ export default function CatalogToolSEOContent({
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Restaurant bill calculator</p>
-        <h2 className="mt-2 text-2xl font-black text-slate-950">Calculate a restaurant tip, the final bill and each person's share</h2>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Calculate a restaurant tip, the final bill and each person&apos;s share</h2>
         <p className="mt-4 leading-8 text-slate-700">Enter the bill amount, the tip percentage and the number of people sharing equally. The calculator shows the tip amount, bill plus tip, and the amount each person pays. It uses the same currency as the amount you enter and does not convert currencies.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
@@ -171,7 +171,7 @@ export default function CatalogToolSEOContent({
           <li>Open the page you want to improve and copy its actual HTML title text.</li>
           <li>Paste that title into the Page title field and run the checker.</li>
           <li>Review the character count and the approximate search preview.</li>
-          <li>Rewrite the title so it identifies the page's main purpose in natural language.</li>
+          <li>Rewrite the title so it identifies the page&apos;s main purpose in natural language.</li>
           <li>Compare the proposed title with the visible H1 and page content, then publish only a version that accurately describes the page.</li>
         </ol>
       </section>
@@ -181,7 +181,7 @@ export default function CatalogToolSEOContent({
       </section>
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Accuracy and limitations</h2>
-        <p className="mt-3 leading-8 text-slate-700">The preview is an estimate and cannot reproduce Google's full title-link systems, query context, device layout or future rewrites. Google can generate title links from the HTML title, visible headings, prominent page text, links and other signals. Character count alone is not a ranking factor or a reliable measure of pixel width. Review the live page and monitor Search Console after publishing changes.</p>
+        <p className="mt-3 leading-8 text-slate-700">The preview is an estimate and cannot reproduce Google&apos;s full title-link systems, query context, device layout or future rewrites. Google can generate title links from the HTML title, visible headings, prominent page text, links and other signals. Character count alone is not a ranking factor or a reliable measure of pixel width. Review the live page and monitor Search Console after publishing changes.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>

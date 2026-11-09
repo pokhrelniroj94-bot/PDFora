@@ -7,7 +7,7 @@ import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
-const reportPath = path.resolve("../docs/qa/BROWSER_E2E_173_REPORT.json");
+const reportPath = path.resolve("../docs/qa/BROWSER_E2E_169_REPORT.json");
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
 const downloadsDir = path.join(tempDir, "downloads");
@@ -1149,7 +1149,6 @@ const report = {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each PDF route, attach a generated one-page PDF, click the processing action and inspect completion/output state.",
     catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A separate second pass verifies every Nepali route and its visible controls.",
-    ai: "AI tools are route-smoke-tested only; execution is intentionally skipped per project scope and is always PARTIAL.",
     limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 173 tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },
   counts: {

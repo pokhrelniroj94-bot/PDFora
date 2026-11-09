@@ -117,6 +117,87 @@ export default function CatalogToolSEOContent({
       </section>
     </div></article>;
   }
+  if (tool.slug === "tip-calculator") {
+    return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Restaurant bill calculator</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Calculate a restaurant tip, the final bill and each person&apos;s share</h2>
+        <p className="mt-4 leading-8 text-slate-700">Enter the bill amount, the tip percentage and the number of people sharing equally. The calculator shows the tip amount, bill plus tip, and the amount each person pays. It uses the same currency as the amount you enter and does not convert currencies.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to use the tip calculator</h2>
+        <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
+          <li>Enter the bill amount before adding any extra tip.</li>
+          <li>Enter the tip percentage as a number, such as 10 for a 10% tip.</li>
+          <li>Enter the number of people who will split the bill equally.</li>
+          <li>Select Run tool and review the tip, total bill and per-person amount.</li>
+          <li>Check the restaurant receipt for any service charge or gratuity already included before paying.</li>
+        </ol>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Tip calculator formula and worked example</h2>
+        <p className="mt-3 rounded-xl bg-slate-50 p-4 font-semibold leading-7 text-slate-900">Tip = bill amount × tip percentage ÷ 100. Total = bill amount + tip. Per-person share = total ÷ number of people.</p>
+        <p className="mt-4 leading-8 text-slate-700">For a bill of 2,000 and a 10% tip, the tip is 200 and the total is 2,200. If four people split the total equally, each person pays 550. The figures remain in the currency used on the original bill.</p>
+      </section>
+      <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Service charges, unequal splits and limitations</h2>
+        <p className="mt-3 leading-8 text-slate-700">This calculator does not decide what tip is customary in a particular country, restaurant or situation. It does not detect taxes, service charges or gratuities printed on a receipt. If a service charge or tip is already included, check the receipt and adjust the amount you enter to avoid adding it twice. The split is equal; it does not calculate separate shares for people who ordered different items.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">
+          <div><h3 className="font-bold text-slate-900">How do I calculate a 10% tip?</h3><p className="mt-1 leading-7 text-slate-700">Multiply the bill by 10 and divide by 100. For a bill of 2,000, a 10% tip is 200.</p></div>
+          <div><h3 className="font-bold text-slate-900">Can I split the bill between several people?</h3><p className="mt-1 leading-7 text-slate-700">Yes. Enter the number of people and the calculator divides the bill plus tip into equal shares.</p></div>
+          <div><h3 className="font-bold text-slate-900">Does the calculator include service charge or tax?</h3><p className="mt-1 leading-7 text-slate-700">No. Check your receipt and include only the amount that should be used as the tip base.</p></div>
+          <div><h3 className="font-bold text-slate-900">Can it split different orders separately?</h3><p className="mt-1 leading-7 text-slate-700">No. It calculates an equal split, not item-by-item or percentage-based shares.</p></div>
+        </div>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Related calculators</h2>
+        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
+      </section>
+    </div></article>;
+  }
+  if (tool.slug === "meta-title-checker") {
+    return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">SEO title preview and review</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Check a page title and preview how it may appear in Google Search</h2>
+        <p className="mt-4 leading-8 text-slate-700">Paste the exact title used for one page. The checker reports its character count and displays an approximate search-result preview so you can review whether the wording is clear and concise. It is a writing aid, not a Google ranking test or a guarantee that Google will display the same title.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to check and improve a page title</h2>
+        <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
+          <li>Open the page you want to improve and copy its actual HTML title text.</li>
+          <li>Paste that title into the Page title field and run the checker.</li>
+          <li>Review the character count and the approximate search preview.</li>
+          <li>Rewrite the title so it identifies the page&apos;s main purpose in natural language.</li>
+          <li>Compare the proposed title with the visible H1 and page content, then publish only a version that accurately describes the page.</li>
+        </ol>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">What makes a useful SEO title?</h2>
+        <p className="mt-3 leading-8 text-slate-700">Write a unique, descriptive title for each important page. Put the main topic first when that makes the page easier to understand, and add a concise brand name only when it helps identify the source. Avoid repeating near-identical keyword variations, generic boilerplate and promises that the page does not fulfil. There is no universal character limit that guarantees a full title will appear: Google may truncate or rewrite title links to fit the device and query.</p>
+      </section>
+      <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Accuracy and limitations</h2>
+        <p className="mt-3 leading-8 text-slate-700">The preview is an estimate and cannot reproduce Google&apos;s full title-link systems, query context, device layout or future rewrites. Google can generate title links from the HTML title, visible headings, prominent page text, links and other signals. Character count alone is not a ranking factor or a reliable measure of pixel width. Review the live page and monitor Search Console after publishing changes.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">
+          <div><h3 className="font-bold text-slate-900">What is an SEO title?</h3><p className="mt-1 leading-7 text-slate-700">It is the page title specified in the HTML title element. Search engines may use it when creating the clickable title link in results.</p></div>
+          <div><h3 className="font-bold text-slate-900">Is there a perfect title character limit?</h3><p className="mt-1 leading-7 text-slate-700">No fixed character count guarantees display. Search results can be truncated based on available width and may vary by query and device.</p></div>
+          <div><h3 className="font-bold text-slate-900">Does a title checker improve rankings?</h3><p className="mt-1 leading-7 text-slate-700">No. It helps review wording and length, but it cannot predict rankings or replace useful page content and technical SEO.</p></div>
+          <div><h3 className="font-bold text-slate-900">Why can Google show a different title?</h3><p className="mt-1 leading-7 text-slate-700">Google may use the visible heading, prominent text, links and other page signals when it considers another title more useful for the search.</p></div>
+        </div>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Related SEO tools</h2>
+        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
+      </section>
+    </div></article>;
+  }
   if (tool.slug === "nepali-date-converter") {
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">

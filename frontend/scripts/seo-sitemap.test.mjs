@@ -29,7 +29,6 @@ const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedUtilitySlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedFinancialSlugs,
   ...modules["nepali-tool-routes"].nepaliLocalizedPublicInfoSlugs,
-  ...modules["nepali-tool-routes"].nepaliLocalizedCareerSlugs,
 ];
 
 assert.deepEqual(

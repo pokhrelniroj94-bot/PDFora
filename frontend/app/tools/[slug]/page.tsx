@@ -182,13 +182,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Why does Google show different text from my description?", a: "Google may select page text that better matches the search query. Make sure the visible page content clearly answers the same intent and that the description accurately summarises the page." },
       { q: "Should every page have a unique meta description?", a: "Write a distinct description for important indexable pages when it helps users understand the difference between them. Avoid repeating one generic description across unrelated tools, articles and landing pages." }
     ],
-    "market-ai": [
-      { q: "Which markets can I analyse?", a: "You can analyse available historical daily NEPSE data or upload your own Forex and Crypto CSV. Forex and Crypto results depend on the accuracy and freshness of your file; they are not live market feeds." },
-      { q: "Which CSV columns are required?", a: "Date and Close are required. Open, High, Low and Volume are recommended. Use one daily candle per date, ISO dates (YYYY-MM-DD), at least 50 valid rows and a file no larger than 5 MB." },
-      { q: "Does a BUY signal mean the trade will be profitable?", a: "No. Signals are rule-based technical conditions, not predictions or win probabilities. Test strategies on separate historical data and include fees, spread, slippage and liquidity." },
-      { q: "Why can the tool show HOLD / WATCH instead of BUY?", a: "Mixed indicators, unusual selling volume, elevated risk or stale historical data can weaken or suppress a potential BUY setup. A stale dataset suppresses new BUY/SELL signals." },
-      { q: "What does the free AI explanation do?", a: "It explains the calculated indicators and warnings. It does not calculate a separate trading signal and must not override the rule-based result." }
-    ],
     "neb-gpa-calculator": [
       { q: "How is GPA calculated?", a: "Multiply each subject's grade point by its credit hours, add those weighted points, then divide by the total credit hours. GPA = Σ(credit × grade point) ÷ Σ(credit hours)." },
       { q: "Should I enter marks or grade points?", a: "Enter the grade point from your official grade sheet, not raw marks. Select the matching letter grade and enter the subject's credit hours." },

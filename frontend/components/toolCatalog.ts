@@ -40,7 +40,7 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"css-minifier",name:"CSS Minifier",category:"Developer",description:"Remove comments and unnecessary whitespace from CSS.",keywords:"css minifier compress css"},
 {slug:"json-to-csv",name:"JSON to CSV Converter",category:"Developer",description:"Convert an array of JSON objects into downloadable CSV.",keywords:"json to csv converter"},
 {slug:"meta-title-checker",name:"SEO Meta Title Checker",category:"SEO",description:"Check title length and preview how a page title may appear in search.",keywords:"seo title length checker meta title"},
-{slug:"meta-description-checker",name:"Meta Description Checker",category:"SEO",description:"Check meta description length and preview its search snippet.",keywords:"meta description length checker seo"},
+{slug:"meta-description-checker",name:"Meta Description Checker",category:"SEO",description:"Check meta description character count and preview a search snippet. Write a unique, accurate summary for each page.",keywords:"meta description checker meta description length checker google snippet preview seo description"},
 {slug:"keyword-density-checker",name:"Keyword Density Checker",category:"SEO",description:"Measure keyword frequency and density in pasted content.",keywords:"keyword density checker seo content"},
 {slug:"robots-txt-generator",name:"Robots.txt Generator",category:"SEO",description:"Generate a robots.txt file from crawl rules and sitemap URL.",keywords:"robots txt generator sitemap"},
 {slug:"sitemap-generator",name:"XML Sitemap Generator",category:"SEO",description:"Generate a basic XML sitemap from a list of URLs.",keywords:"xml sitemap generator url list"},

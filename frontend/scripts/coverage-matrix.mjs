@@ -16,7 +16,7 @@ const pdfTools = legacyPdfSlugs.map((slug) => ({ slug, name: slug, category: "PD
 const tools = [...pdfTools, ...catalog];
 const uniqueSlugs = new Set(tools.map((tool) => tool.slug));
 if (tools.length !== 173 || uniqueSlugs.size !== 173) {
-  throw new Error(`Expected 173 unique tools, found ${tools.length} entries and ${uniqueSlugs.size} unique slugs`);
+  throw new Error(`Expected 169 non-AI tools, found ${tools.length} entries and ${uniqueSlugs.size} unique slugs`);
 }
 
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);

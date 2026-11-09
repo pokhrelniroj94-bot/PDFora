@@ -155,11 +155,11 @@ jobs:
               -H "Origin: https://attacker.example" \
               -H "Content-Type: application/json" \
               --data "not-json" || true)
-            if [ "$status" = "403" ]; then
-              echo "New production Origin guard is active."
+            if [ "$status" = "404" ]; then
+              echo "Removed AI API route returns 404."
               exit 0
             fi
-            echo "Waiting for updated production deployment (attempt $attempt/60; HTTP $status)."
+            echo "Waiting for AI API removal to reach production (attempt $attempt/60; HTTP $status)."
             sleep 5
           done
           echo "Removed AI API route did not return 404 within five minutes."

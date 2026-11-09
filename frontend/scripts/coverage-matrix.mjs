@@ -15,7 +15,7 @@ const legacyPdfSlugs = parseSlugs(read("lib/legacy-tool-slugs.ts"), /"([a-z0-9-]
 const pdfTools = legacyPdfSlugs.map((slug) => ({ slug, name: slug, category: "PDF", kind: "pdf" }));
 const tools = [...pdfTools, ...catalog];
 const uniqueSlugs = new Set(tools.map((tool) => tool.slug));
-if (tools.length !== 173 || uniqueSlugs.size !== 173) {
+if (tools.length !== 169 || uniqueSlugs.size !== 169) {
   throw new Error(`Expected 169 non-AI tools, found ${tools.length} entries and ${uniqueSlugs.size} unique slugs`);
 }
 

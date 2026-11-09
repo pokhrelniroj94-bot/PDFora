@@ -51,11 +51,6 @@
       "kind": "page"
     },
     {
-      "url": "/api/ai-writing",
-      "file": "app/api/ai-writing/route.ts",
-      "kind": "api"
-    },
-    {
       "url": "/api/global-news",
       "file": "app/api/global-news/route.ts",
       "kind": "api"
@@ -977,26 +972,6 @@
       "name": "NEPSE Dividend & Bonus Share Calculator",
       "category": "Nepal"
     },
-    {
-      "slug": "ai-resume-writer",
-      "name": "AI Resume & CV Writer",
-      "category": "Career Tools"
-    },
-    {
-      "slug": "ai-cover-letter-generator",
-      "name": "AI Cover Letter Generator",
-      "category": "Career Tools"
-    },
-    {
-      "slug": "ai-humanizer",
-      "name": "AI Humanizer & Text Rewriter",
-      "category": "Text"
-    },
-    {
-      "slug": "market-ai",
-      "name": "PDFora Smart Market AI",
-      "category": "Finance"
-    }
   ],
   "legacy": [
     "add-background",

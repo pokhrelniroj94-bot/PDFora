@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
     "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate percentage increase or decrease between an original value and a new value with a clear direction and percentage result." },
-    "tip-calculator": { title: "Tip Calculator – Tip, Bill Total & Per-Person Split", description: "Calculate a tip from the bill amount and percentage, then see the total and equal share per person. Check whether service charge is already included." },
+    "tip-calculator": { title: "Tip Calculator – Calculate Tip, Total Bill & Split", description: "Calculate a tip by percentage, add it to the bill and split the total per person. See the formula and check for included service charges." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 

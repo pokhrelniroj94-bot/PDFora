@@ -78,7 +78,7 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
   } : {
     home: "← PDFora home", eyebrow: "PDFora Market Desk", title: "NEPSE Market Dashboard",
     description: "Market snapshot, index and stock charts, sector performance, top movers and company price history.",
-    ai: "Open PDFora Smart Market AI →", open: "Market reported open", closed: "Market reported closed / snapshot",
+    open: "Market reported open", closed: "Market reported closed / snapshot",
     status: "Dashboard checks for quote updates every 60 seconds; source timestamps are shown below",
     refresh: "Refresh market data", loading: "Loading…", source: "Stock quote source",
     chart: "Price chart", load: "Load chart", candles: "Candles", line: "Line",

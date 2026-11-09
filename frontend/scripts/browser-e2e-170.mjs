@@ -661,7 +661,22 @@ async function runTool(tool, index) {
       else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug)) await delay(5000);
       // The NEPSE analysis workspace has a larger client bundle; allow React hydration
       // to attach its click handler, then use a real browser pointer event.
-      if (tool.slug === "nepse-technical-analysis") await delay(5000);
+      if (tool.slug === "nepse-technical-analysis") {
+        // Wait for React to attach the actual click handler. A rendered server
+        // component can be visible before this larger client workspace hydrates.
+        const hydrationStarted = Date.now();
+        let hydrated = false;
+        while (Date.now() - hydrationStarted < 20000) {
+          hydrated = await page.evaluate(`(() => {
+            const button = [...document.querySelectorAll("button")].find((b) => /^analyse nepse$/i.test(b.innerText.trim()));
+            if (!button) return false;
+            return Object.keys(button).some((key) => key.startsWith("__reactProps$") && typeof button[key]?.onClick === "function");
+          })()`);
+          if (hydrated) break;
+          await delay(250);
+        }
+        if (!hydrated) throw new Error("NEPSE analysis button did not hydrate with a React click handler within 20 seconds.");
+      }
       const catalogDownloadsBefore = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
       let clicked = "";
       if (tool.slug === "nepse-technical-analysis") {

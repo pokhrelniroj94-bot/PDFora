@@ -231,7 +231,7 @@ export default function CatalogToolSEOContent({
           <div><h3 className="font-bold text-slate-900">What is a meta description?</h3><p className="mt-1 leading-7 text-slate-700">It is a page-level HTML summary that search engines may use when generating a result snippet.</p></div>
           <div><h3 className="font-bold text-slate-900">Does Google have a 160-character limit?</h3><p className="mt-1 leading-7 text-slate-700">No. Google has no fixed character limit; snippets are shortened according to the available display space and query.</p></div>
           <div><h3 className="font-bold text-slate-900">Can a meta description improve rankings?</h3><p className="mt-1 leading-7 text-slate-700">It is not a direct ranking factor. A useful summary can help searchers assess whether a result matches their needs when it is shown.</p></div>
-          <div><h3 className="font-bold text-slate-900">Why does Google show different snippet text?</h3><p className="mt-1 leading-7 text-slate-700">Google may select visible page text that better matches the user's query instead of the supplied meta description.</p></div>
+          <div><h3 className="font-bold text-slate-900">Why does Google show different snippet text?</h3><p className="mt-1 leading-7 text-slate-700">Google may select visible page text that better matches the user&apos;s query instead of the supplied meta description.</p></div>
         </div>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">

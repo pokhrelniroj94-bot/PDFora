@@ -25,7 +25,7 @@ Production branch: `master`, latest merged work includes PRs #90, #92, #94, #95 
 - Do not treat a successful live-production smoke job as evidence that the full frontend test suite passed.
 - 12 locales are registered: English, Nepali, Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese. Only English and Nepali are published. The other ten remain unpublished and excluded from indexing; Arabic and Urdu require RTL visual QA before publication.
 - Current translation-coverage report: 68 frontend page source files, 105 Nepali localized route equivalents (reported as a count, not divided by source-file count), 49/49 Nepali PDF guide entries, and 27 curated Nepali editorial articles (19 Nepal-focused guides and 8 PDF workflow tutorials). These counts do not certify complete UI-string coverage or native-speaker review.
-- The current Nepali tool registry contains 70 of 173 localized tool interfaces (103 tool pages still need Nepali implementation) across six PDF routes, 52 utility routes, seven financial routes, two public-information routes and no AI-writing routes. Only six PDF routes are approved by the explicit default-deny indexability allowlist. Other localized tool pages remain noindex and excluded from sitemap/hreflang until their interfaces, messages, errors, help content and locale-specific behavior are fully reviewed and tested.
+- The current Nepali tool registry contains 70 of 169 localized tool interfaces (99 tool pages still need Nepali implementation) across six PDF routes, 52 utility routes, seven financial routes, two public-information routes and no AI-writing routes. Only six PDF routes are approved by the explicit default-deny indexability allowlist. Other localized tool pages remain noindex and excluded from sitemap/hreflang until their interfaces, messages, errors, help content and locale-specific behavior are fully reviewed and tested.
 - Generated catalogue guides remain noindex until individually reviewed. Automated coverage does not certify native-speaker review or prove every tool's runtime behavior.
 - The Nepal electricity page and both English/Nepali guide articles hand off to the live ERC calculator and link the 2083 tariff directive; fixed-rate estimator copy was removed because static rates can become outdated. The external ERC handoff still requires a live browser check.
 - The 2083 public-holiday list was checked against the 12-page Ministry of Home Affairs gazette PDF (Part 75, no. 67, published Falgun 18, 2082) and the MoHA page's displayed last-updated timestamp (2083-07-20 15:42:42). The transcription now distinguishes Gaura Parwa from Janmashtami, Dura Mhaipru Nakuma from Tamu Lhosar, preserves employee/community eligibility, corrects Jitiya to Asoj 15 (2026-10-01), and uses the official Siruwa Pawani spelling. It remains a static reference, not a live feed; later notices must be checked.
@@ -46,7 +46,7 @@ The release branch `release/nepali-batch2-quality` adds six dedicated Nepali too
 - Official ERC electricity calculator handoff with Nepali instructions and current 2083 tariff-directive link; no stale fixed-rate bill estimate is presented
 - Nepal public holidays 2083 searchable list (Nepali names, BS months, category labels and official MoHA source)
 
-The release candidate records 70 localized tool interfaces out of 173 (6 PDF + 64 catalog) and 105 Nepali route equivalents: 52 utilities, 7 finance/news tools, 2 public-information tools and 3 AI-writing tools. The remaining untranslated tool inventory is 103. The six new catalog pages stay `noindex`, have no hreflang, and remain out of the sitemap until native-language review and explicit approval; the six existing PDF routes remain the only index-approved Nepali tool pages.
+The release candidate records 70 localized tool interfaces out of 173 (6 PDF + 64 catalog) and 102 Nepali route equivalents: 52 utilities, 7 finance/news tools and 2 public-information tools. The remaining untranslated tool inventory is 99. The six new catalog pages stay `noindex`, have no hreflang, and remain out of the sitemap until native-language review and explicit approval; the six existing PDF routes remain the only index-approved Nepali tool pages.
 
 The new test suite covers mobile format normalization, Devanagari digits, international prefix handling, tola/gram arithmetic, route registration and the default-deny metadata gate. The BS calendar, public-holiday list and photo-resizer workflows still require individual browser QA and native-language review before any indexing approval. The electricity page hands users to the official ERC calculator instead of estimating from potentially outdated rates. PR #102 full CI run #1610 passed before this documentation correction; a fresh run is required for the latest commit. PR #101 separately adds a Chromium sweep over all 173 routes; that browser run is still pending. Neither branch is deployed.
 
@@ -129,7 +129,7 @@ Local run by the project owner on Windows, commit 2131ace (output reviewed):
 | `npm run i18n:check` | PASS (English valid; 9 locales unpublished) |
 | `npx tsc --noEmit` | PASS (no output) |
 | `npm run build` | PASS (Next 16.4.3 Turbopack; `/[locale]` dynamic, `/ne` static, existing routes intact) |
-| `npm run lint` | FAIL: 2 errors, 3 warnings. 2 in LanguageSwitcher.tsx were caused by this work (fixed afterwards, see below); 3 are pre-existing in NepalLiveTools.tsx (error), NepseAlphaLab.tsx and SiteAIHelp.tsx (warnings) |
+| `npm run lint` | FAIL: 2 errors, 3 warnings. 2 in LanguageSwitcher.tsx were caused by this work (fixed afterwards, see below); 2 are pre-existing in NepalLiveTools.tsx (error) and NepseAlphaLab.tsx (warning) |
 
 After the lint fix (authoring sandbox only; lint/tsc/build must be re-run locally):
 | Check | Result |
@@ -143,7 +143,6 @@ Not yet tested by anyone: runtime behavior of /ar, /de etc. in preview mode, 404
 Pre-existing findings fixed with minimal edits, no behavior change:
 - NepalLiveTools.tsx:175 `today's` -> `today&apos;s` (renders identically).
 - NepseAlphaLab.tsx: removed `result`/`setResult` state that was only ever set to null and never read (displayed results come from the `metrics` useMemo).
-- SiteAIHelp.tsx: effect deps `[pathname]` -> `[pathname, pagePath]`; pagePath is derived from pathname, so run timing is unchanged.
 Authoring sandbox re-ran verify:tools, i18n:test (14/14), i18n:check: PASS. lint/tsc/build: NOT RUN here; pending owner's local run.
 
 ## Local verification at 4591021 (owner's Windows run, output reviewed)
@@ -162,6 +161,6 @@ Browser/HTTP checks remain pending; build, lint and TypeScript have since been r
 Unchanged by this work (git diff vs HEAD empty): `app/tools`, `app/sitemap.ts`, `app/robots.ts`, all of `components/`.
 Status: adapter PARTIALLY COMPLETE (catalog utilities only; PDF tools deferred); localized route WRITTEN, NOT BUILT; indexing: DISABLED by default (nothing verified); sitemap: UNCHANGED.
 Latest verified Nepali route evidence (commit `ba93eeb`): 24 route equivalents are
-measured, including three AI writing routes (Resume Writer, Cover Letter Generator and
+measured, excluding the removed AI writing routes (Resume Writer, Cover Letter Generator and
 Humanizer). This does not include the Resume Builder, blogs, legal/static pages or
 remaining utilities; those remain unpublished through fallback routing until reviewed.

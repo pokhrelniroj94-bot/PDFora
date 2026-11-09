@@ -132,18 +132,6 @@ export default function ResumeBuilder({ locale = "en" }: ResumeBuilderProps) {
   const label = "mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500";
   const field = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{title}</span><input className={input} value={value} onChange={e => setter(e.target.value)} placeholder={placeholder} /></label>;
   const area = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{title}</span><textarea className={input + " min-h-24 resize-y"} value={value} onChange={e => setter(e.target.value)} placeholder={placeholder} /></label>;
-      const nextSummary = extract("Professional Summary");
-      const nextSkills = extract("Core Skills");
-      const nextExperience = extract("Experience Bullets");
-      if (!nextSummary && !nextSkills && !nextExperience) throw new Error(ne ? "AI ले अपेक्षित ढाँचामा नतिजा पठाएन। छुट्टै AI रिजुमे लेखक प्रयोग गरी नतिजा जाँच गर्नुहोस्।" : "AI returned an unexpected format. Please use the separate AI Resume Writer and review its output.");
-      setAiSuggestions({ summary: nextSummary, skills: nextSkills, experience: nextExperience });
-      setAiDraftNotice(ne ? "AI मस्यौदा तल तयार छ। लागू गर्ने सुझाव छान्नुहोस्; तपाईंका विद्यमान CV फिल्डहरू परिवर्तन भएका छैनन्।" : "AI draft is ready below. Choose which suggestions to apply; your existing CV fields have not been overwritten.");
-    } catch (error) {
-      setAiError(error instanceof Error ? error.message : (ne ? "AI CV सहायता अस्थायी रूपमा उपलब्ध छैन।" : "AI CV assistance is temporarily unavailable."));
-    } finally {
-      setAiBusy(false);
-    }
-  };
   const print = () => window.print();
   const heading = (title: string) => <h3 className="mb-3 mt-6 border-b pb-2 text-sm font-extrabold uppercase tracking-widest" style={{ color: accent, borderColor: accent + "55" }}>{title}</h3>;
   const section = (en: string, nepali: string) => ne ? nepali : en;

@@ -72,7 +72,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepse-market-news": { title: "Nepal Stock Market News – NEPSE & IPO Updates", description: "Browse recent Nepal stock market and IPO headlines with publication dates and links to the original publishers. Verify notices with official sources." },
     "nepali-unicode-typing": { title: "Nepali Unicode Typing Tool – Type in Devanagari", description: "Convert Romanized Nepali typing into Unicode Devanagari text. Review spelling, conjuncts and punctuation before using the text in a document." },
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
-    "meta-title-checker": { title: "SEO Title Checker – Check Meta Title Length & Google Preview", description: "Check your SEO title length, review a Google-style search preview and improve page titles for clarity and search intent." },
+    "meta-title-checker": { title: "SEO Title Checker – Meta Title Length & Google Preview", description: "Check SEO title length, preview a Google-style title link and compare the wording with your page heading. Review clarity without ranking promises." },
+    "meta-description-checker": { title: "Meta Description Checker – Length & Google Snippet Preview", description: "Check meta description length, count characters and preview a search snippet. Write a clear, page-specific summary; Google may choose different text." },
   };
   const seo = seoOverrides[slug];
   // Every catalog entry has a reviewed, unique description in toolCatalog.ts.

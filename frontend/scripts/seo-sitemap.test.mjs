@@ -46,7 +46,7 @@ assert.deepEqual(
 );
 
 const reportedNepaliLongTitleSlugs = [
-  "nepali-date-converter-bs-to-ad-guide", "nepal-vat-calculator-13-percent-guide",
+  "nepali-date-converter-bs-to-ad-guide", "neb-gpa-calculator-nepal-guide", "nepal-vat-calculator-13-percent-guide",
   "ropani-aana-paisa-daam-land-measurement-guide", "tola-to-gram-gold-weight-conversion-nepal",
   "nepali-number-to-words-lakh-crore-guide", "nepal-mobile-number-format-checker-guide",
   "nepal-public-holidays-2083-calendar-guide", "nepal-rastra-bank-daily-exchange-rates-guide",

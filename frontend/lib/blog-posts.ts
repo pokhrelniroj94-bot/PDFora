@@ -197,11 +197,8 @@ const editorialBlogPosts: BlogPost[] = [
       { question: "Is the converted Word document ready to submit?", answer: "Check the complete document against the source PDF, correct formatting and proofread the text before submitting or sharing it." }
     ],
     toolLinks: [{ label: "PDF to Word", href: "/pdf-to-word" }, { label: "PDF to Text", href: "/pdf-to-text" }, { label: "PDF to Excel", href: "/pdf-to-excel" }]
-  }
-];
-
-
-  {
+  },
+{
     slug: "repair-pdf-guide-online",
     title: "How to Repair a Damaged PDF Online: What to Check",
     description: "Try a best-effort repair for a PDF that will not open. Learn how to protect the original file and verify the recovered copy.",
@@ -247,6 +244,7 @@ const editorialBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "PDF to Text", href: "/pdf-to-text" }, { label: "PDF to Word", href: "/pdf-to-word" }, { label: "PDF to HTML", href: "/pdf-to-html" }]
   },
+];
 
 const existingArticleSlugs = new Set([...editorialBlogPosts, ...additionalToolBlogPosts].map((post) => post.slug));
 const catalogGuides: BlogPost[] = toolCatalog

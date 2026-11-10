@@ -7,6 +7,8 @@ ensureTypeStripping();
 
 const read = (relative) => fs.readFileSync(path.join(frontendRoot, relative), "utf8");
 const sitemapSource = read("app/sitemap.ts");
+const nextConfigSource = read("next.config.ts");
+const nepaliPdfPageSource = read("app/[locale]/[slug]/page.tsx");
 const catalogToolSeoSource = read("components/CatalogToolSEOContent.tsx");
 const pdfToExcelLayoutSource = read("app/pdf-to-excel/layout.tsx");
 const nepseLabPageSource = read("app/nepse-lab/page.tsx");
@@ -143,5 +145,15 @@ for (const slug of approvedNepali) {
   assert.equal(metadata.alternates?.languages?.ne, `https://pd-fora.vercel.app/ne${pathName}`);
   assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app${pathName}`);
 }
+
+// Search Console's November 10 export contained these legacy localized URLs.
+// They are real routes, but only the six explicitly reviewed Nepali PDF pages may be indexed.
+for (const slug of ["pdf-information", "pdf-to-png", "pdf-to-html", "pdf-to-excel", "add-blank-pages"]) {
+  assert.ok(pdfRoutes.includes(slug), `Historical localized URL /ne/${slug} must resolve to its registered page, not a 404`);
+  assert.equal(isLocalizedToolIndexable("ne", slug), false, `/ne/${slug} must remain noindex until its Nepali implementation is reviewed`);
+}
+assert.match(nepaliPdfPageSource, /Object\.keys\(nepaliPdfRoutes\)/, "All registered Nepali PDF routes must be generated so legacy URLs resolve");
+assert.ok(nextConfigSource.includes('{ source: "/nepali-date-converter", destination: "/tools/nepali-date-converter", permanent: true }'), "Legacy /nepali-date-converter must permanently redirect to the catalog canonical URL");
+assert.ok(robotsSource.includes('disallow: ["/api/"]'), "The 27 API endpoints in the Search Console robots export must remain intentionally blocked");
 
 console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} approved Nepali tool URLs; ${toolRoutes.length} unapproved localized catalog tools remain noindex.`);

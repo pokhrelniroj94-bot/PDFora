@@ -109,7 +109,7 @@ assert.doesNotMatch(sitemapSource, /\/api\//, "API endpoints must never be submi
 assert.match(sitemapSource, /tool\.slug !== "ocr-pdf"/, "Unavailable OCR must be explicitly filtered out of the sitemap");
 assert.match(ocrPageSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unavailable OCR page must remain intentionally noindex");
 assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unreviewed generated guide pages must remain noindex until editorial review");
-const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide"];
+const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);
   assert.ok(nepaliLocalizedBlogSource.includes(`slug: "${slug}"`), `${slug} must have a reviewed Nepali translation before hreflang is published`);

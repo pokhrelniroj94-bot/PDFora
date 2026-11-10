@@ -56,6 +56,7 @@ function localWallTimeToUtc(date: string, time: string, timeZone = "Asia/Kathman
   const offsetAt = (instant: Date) => {
     const parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "longOffset" }).formatToParts(instant);
     const offsetText = parts.find((part) => part.type === "timeZoneName")?.value ?? "";
+    if (offsetText === "GMT" || offsetText === "UTC") return 0;
     const match = offsetText.match(/^GMT([+-])(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
     if (!match) throw new Error("जन्मस्थानको समय क्षेत्र पत्ता लगाउन सकिएन।");
     const sign = match[1] === "-" ? -1 : 1;

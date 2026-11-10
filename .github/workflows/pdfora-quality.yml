@@ -118,9 +118,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pdfora-browser-e2e-173-report
+          name: pdfora-browser-e2e-171-report
           path: |
-            docs/qa/BROWSER_E2E_173_REPORT.json
+            docs/qa/BROWSER_E2E_171_REPORT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.md
           if-no-files-found: warn

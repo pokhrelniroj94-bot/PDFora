@@ -25,6 +25,7 @@ type Props = {
   queryField?: string;
   queryDefault?: string;
   extraFields?: { name: string; label: string; placeholder?: string; defaultValue?: string; multiline?: boolean }[];
+  showSeoContent?: boolean;
 };
 
 export default function NirojToolsTool({
@@ -40,6 +41,7 @@ export default function NirojToolsTool({
   queryField,
   queryDefault = "",
   extraFields = [],
+  showSeoContent = true,
 }: Props) {
   const pathname = usePathname();
   const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
@@ -445,7 +447,7 @@ export default function NirojToolsTool({
           />
         </div>
       </section>
-      <ToolSEOContent slug={currentSlug} locale={locale} />
+      {showSeoContent && <ToolSEOContent slug={currentSlug} locale={locale} />}
     </div>
   );
 }

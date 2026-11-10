@@ -11,6 +11,8 @@ const baseUrl = "https://pd-fora.vercel.app";
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  // Legacy PDF slugs are canonical root routes only. Redirect-only routes such as
+  // /nepali-date-converter are intentionally absent from this registry.
   const legacyPdfEntries: MetadataRoute.Sitemap = legacyToolSlugs.map((slug) => ({
     url: `${baseUrl}/${slug}`,
     changeFrequency: "monthly",

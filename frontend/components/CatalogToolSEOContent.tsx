@@ -577,6 +577,52 @@ export default function CatalogToolSEOContent({
     "nepali-unicode-typing": { example: "Type Romanized Nepali using an English keyboard and review the suggested Devanagari text before copying it into a document or message.", accuracy: "Romanized typing is transliteration, not translation. A Roman spelling can map to multiple Nepali words, names or conjuncts, so the output may require correction.", workflow: "Type a short phrase, choose the intended word where alternatives appear and proofread matras, halants, names and punctuation before using the text.", mistakes: "Do not assume the tool translates English sentences or that every Romanized spelling has only one correct Nepali equivalent." },
 
   };
+  const toolIntroductions: Record<string, string> = {
+    "case-converter": "Choose a case style for the text you have already written. The converter changes letter casing; it does not proofread, translate or rewrite the meaning.",
+    "prime-number-checker": "Prime numbers are integers greater than 1 with exactly two positive factors. The page distinguishes prime inputs from composite values and identifies factors for composite integers.",
+    "json-to-yaml": "Use this converter when a configuration or data workflow expects YAML but your source data is already valid JSON. Conversion changes the representation; it does not validate the target application's configuration schema.",
+    "date-difference-calculator": "Compare two calendar dates to calculate their elapsed difference. The day count is the base result; the displayed weeks and average months are derived values rather than counts of whole calendar months.",
+    "json-formatter-validator": "Inspect JSON syntax, make a document easier to read with indentation, or minify it for compact transfer. Syntax validation does not check whether the data matches an API schema.",
+    "base64-encoder-decoder": "Convert text to Base64 or decode a Base64 value back to text. Base64 is a transport encoding, not a way to protect confidential information.",
+  };
+  const toolSpecificSteps: Record<string, string[]> = {
+    "case-converter": [
+      "Paste the text you want to change into the input area.",
+      "Choose UPPERCASE, lowercase, Title Case or Sentence case.",
+      "Read the converted text and check acronyms, names, headings and language-specific letters.",
+      "Use Copy only after confirming that the result preserves the wording and punctuation you need."
+    ],
+    "prime-number-checker": [
+      "Enter one whole-number integer; do not enter a decimal or a fraction.",
+      "Run the check and read whether the value is prime or composite.",
+      "For a composite value, inspect the factor list to see which integers divide it exactly.",
+      "Treat 0, 1 and negative integers as not prime, and verify any result used in a maths assignment."
+    ],
+    "json-to-yaml": [
+      "Start with a complete JSON object or array that parses without syntax errors.",
+      "Paste the JSON into the input field and run the conversion.",
+      "Review indentation, list markers, quoted strings, booleans, numbers and empty values in the YAML output.",
+      "Parse the output with the YAML parser used by your application before committing a configuration change."
+    ],
+    "date-difference-calculator": [
+      "Enter the start date in the first date field.",
+      "Enter the end date in the second field, using the same calendar and date format.",
+      "Run the calculation and review the elapsed day count alongside the derived week and average-month values.",
+      "Check whether your task needs elapsed days or an inclusive count that includes both calendar endpoints."
+    ],
+    "json-formatter-validator": [
+      "Paste the complete JSON document, including its outer object or array brackets.",
+      "Run validation or formatting and read any syntax error before copying the result.",
+      "Choose readable formatting for review or minification for compact storage and transfer.",
+      "Test valid output against the receiving application's schema and never paste production secrets into a public utility."
+    ],
+    "base64-encoder-decoder": [
+      "Choose whether you want to encode plain text or decode an existing Base64 value.",
+      "Paste the input using the expected text/Base64 format and run the selected operation.",
+      "For a round-trip check, encode a harmless sample such as Hello and decode the result back to the original text.",
+      "Do not use Base64 as encryption or as password protection; anyone can decode a Base64 string."
+    ]
+  };
   const title = tool.name;
   const taskDescription = tool.description.replace(/[.!?]$/, "");
   const categoryFallback = categoryAdvice[tool.category] ?? categoryAdvice.Math;
@@ -606,18 +652,22 @@ export default function CatalogToolSEOContent({
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Complete tool guide</p>
           <h2 className="mt-2 text-2xl font-black text-slate-950">What is the {title}?</h2>
-          <p className="mt-4 leading-8 text-slate-700">{tool.description} This page explains the purpose of the tool, the information to prepare, how to interpret the result and the checks worth making before you use it. The aim is to help you complete one clear task without installing extra software or guessing which settings to choose.</p>
+          <p className="mt-4 leading-8 text-slate-700">{tool.description} {toolIntroductions[tool.slug] ?? "Use the instructions below with a representative input, then verify the output against the requirements of the application or document where you plan to use it."}</p>
           
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">How to use the {title} step by step</h2>
           <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
-            <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
-            <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>
-            <li><strong>Enter a representative sample.</strong> If the task is unfamiliar, start with a small sample or values whose expected result you can check. This helps reveal input mistakes early.</li>
-            <li><strong>Use the available control.</strong> Some tools update automatically as you type; others require a Convert, Calculate or Process action. Follow the control shown in the workspace.</li>
-            <li><strong>Review the output.</strong> Check the result, compare it with the original or a known answer, and look for missing content, unexpected formatting or implausible values.</li>
-            <li><strong>Save or copy only after checking.</strong> Use the output only when it meets the requirements of your task. Keep the original until you no longer need it.</li>
+            {toolSpecificSteps[tool.slug]
+              ? toolSpecificSteps[tool.slug].map((step) => <li key={step}>{step}</li>)
+              : <>
+                  <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
+                  <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>
+                  <li><strong>Enter a representative sample.</strong> If the task is unfamiliar, start with a small sample or values whose expected result you can check. This helps reveal input mistakes early.</li>
+                  <li><strong>Use the available control.</strong> Some tools update automatically as you type; others require a Convert, Calculate or Process action. Follow the control shown in the workspace.</li>
+                  <li><strong>Review the output.</strong> Check the result, compare it with the original or a known answer, and look for missing content, unexpected formatting or implausible values.</li>
+                  <li><strong>Save or copy only after checking.</strong> Use the output only when it meets the requirements of your task. Keep the original until you no longer need it.</li>
+                </>}
           </ol>
           
         </section>

@@ -74,6 +74,11 @@ jobs:
           done
           cat /tmp/pdfora-next.log
           exit 1
+      - name: Check every sitemap URL and robots policy
+        env:
+          E2E_BASE_URL: http://127.0.0.1:3000
+          PDFORA_EXPECT_CANONICAL_ORIGIN: https://pd-fora.vercel.app
+        run: node scripts/sitemap-route-smoke.mjs
       - name: Warm the Render PDF backend before browser processing tests
         run: |
           for attempt in {1..45}; do
@@ -90,6 +95,7 @@ jobs:
           node --check scripts/browser-e2e-173.mjs
           node --check scripts/live-data-smoke.mjs
           node --check scripts/production-security-smoke.mjs
+          node --check scripts/sitemap-route-smoke.mjs
       - name: Verify live NRB, NEPSE and Nepal news freshness/fallback
         id: live-data-smoke
         continue-on-error: true

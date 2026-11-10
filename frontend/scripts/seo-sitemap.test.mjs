@@ -7,6 +7,7 @@ ensureTypeStripping();
 
 const read = (relative) => fs.readFileSync(path.join(frontendRoot, relative), "utf8");
 const sitemapSource = read("app/sitemap.ts");
+const catalogToolSeoSource = read("components/CatalogToolSEOContent.tsx");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
 const homepageSource = read("app/page.tsx");
@@ -41,6 +42,11 @@ assert.match(sitemapSource, /Object\.keys\(nepaliPdfRoutes\)/, "Sitemap must der
 assert.match(sitemapSource, /isLocalizedToolIndexable\("ne", slug\)/, "Localized sitemap entries must pass the same default-deny gate as metadata");
 assert.match(sitemapSource, /\$\{baseUrl\}\/nepse-lab/, "The canonical NEPSE Strategy Lab page must be discoverable in the sitemap");
 assert.match(sitemapSource, /\$\{baseUrl\}\/resume-builder/, "The canonical Resume Builder page must be discoverable in the sitemap");
+for (const slug of ["case-converter", "prime-number-checker", "json-to-yaml", "date-difference-calculator", "json-formatter-validator", "base64-encoder-decoder"]) {
+  assert.match(catalogToolSeoSource, new RegExp('"' + slug + '"'), `${slug} must have page-specific Search Console recovery guidance`);
+}
+assert.match(catalogToolSeoSource, /toolSpecificSteps\[tool\.slug\]/, "Reviewed tools must render their own instructions instead of repeated generic steps");
+
 assert.match(sitemapSource, /nepaliPdfRoutes\[slug\]/, "PDF URLs must retain their established root-level paths");
 assert.doesNotMatch(sitemapSource, /\.\.\.\["merge-pdf",\s*"split-pdf",\s*"compress-pdf",\s*"rotate-pdf",\s*"pdf-to-word",\s*"pdf-to-jpg"\]/, "Do not maintain a second hard-coded localized PDF allowlist");
 assert.match(sitemapSource, /!isCatalogGeneratedGuide\(post\.slug\)/, "Unreviewed generated catalogue guides must stay out of the sitemap");

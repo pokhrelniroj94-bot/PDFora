@@ -627,6 +627,30 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "Percentage change र percentage points एउटै हुन्?", answer: "होइन। Percentage change सुरुको मानको तुलनामा सापेक्ष परिवर्तन हो; percentage points दुई प्रतिशतबीचको सीधा अन्तर हो। 10% बाट 12% हुँदा 2 percentage points हुन्छ।" }
     ],
     toolLinks: [{ label: "Percentage Change Calculator", href: "/tools/percentage-change-calculator" }, { label: "Percentage of Number Calculator", href: "/tools/percentage-of-number-calculator" }, { label: "Tip Calculator", href: "/tools/tip-calculator" }]
+  },
+  },
+  {
+    slug: "meta-title-checker-guide",
+    title: "SEO Title Checker: Google का लागि पेज शीर्षक कसरी जाँच्ने?",
+    description: "SEO title जाँच्ने, पेजको H1 सँग तुलना गर्ने र Google ले title link किन छोट्याउन वा बदल्न सक्छ भन्ने बुझ्ने व्यावहारिक मार्गदर्शिका।",
+    keyword: "SEO title checker पेज शीर्षक जाँच",
+    updated: "2026-11-10",
+    readTime: "५ मिनेट",
+    intro: "पेजको शीर्षकले पाठक र search engine लाई पेजको विषय बुझ्न मद्दत गर्छ। HTML title element, पेजमा देखिने H1 heading र Google Search मा देखिने title link फरक हुन सक्छन्। यो मार्गदर्शिकाले प्रकाशित शीर्षक जाँच्ने, स्पष्ट बनाउने र निश्चित character limit को भ्रमबाट बच्ने तरिका बताउँछ।",
+    sections: [
+      { heading: "HTML title, H1 र Google title link बीचको फरक", paragraphs: ["HTML title भनेको पेजको title element भित्र राखिएको text हो। यो browser tab मा देखिन्छ र Google ले search-result title link बनाउन प्रयोग गर्न सक्ने स्रोतहरूमध्ये एक हो। H1 भनेको पेजमा देखिने मुख्य heading हो। दुवैले एउटै विषय सही रूपमा वर्णन गर्नुपर्छ, तर शब्दशः एउटै हुन आवश्यक छैन।", "Google ले title element, देखिने heading, पेजको प्रमुख text, link text र अन्य संकेतका आधारमा फरक title link बनाउन सक्छ। Title checker ले तपाईंले राखेको text जाँच्न सक्छ, तर Google ले हरेक query मा कुन शीर्षक देखाउँछ भनेर ग्यारेन्टी गर्न सक्दैन।"] },
+      { heading: "SEO title कसरी जाँच्ने?", paragraphs: ["वास्तविक पेज खोल्नुहोस् र browser मा देखिएको URL होइन, HTML title element को text copy गर्नुहोस्। SEO Title Checker मा paste गरेर character count र अनुमानित search preview हेर्नुहोस्। त्यसपछि H1 र पेजको मुख्य सामग्रीसँग शीर्षक मिल्छ कि मिल्दैन जाँच्नुहोस्।", "शीर्षक अस्पष्ट, दोहोरिएको वा धेरै फराकिलो छ भने पेजको मुख्य विषय र उद्देश्य स्पष्ट हुने गरी लेख्नुहोस्। स्वाभाविक लागेमा मुख्य शब्द सुरुमा राख्नुहोस् र स्रोत चिनाउन आवश्यक भए मात्र brand नाम थप्नुहोस्।"] },
+      { heading: "SEO title को सही लम्बाइ कति हो?", paragraphs: ["Google ले पूरा शीर्षक देखिने निश्चित character limit प्रकाशित गरेको छैन। Search result मा उपलब्ध ठाउँ device र context अनुसार फरक हुन सक्छ, त्यसैले लामो शीर्षक छोटिन सक्छ। Character count ले असामान्य रूपमा लामो draft पहिचान गर्न मद्दत गर्छ, तर यो ranking score वा पास/फेल नियम होइन।", "ठ्याक्कै कुनै संख्या पुर्‍याउनुभन्दा छोटो र अर्थपूर्ण शीर्षक लेख्नुहोस्। दोहोरिएका शब्द र अनावश्यक boilerplate हटाउनुहोस्, तर केवल निश्चित लम्बाइमा पुग्न आवश्यक जानकारी नहटाउनुहोस्।"] },
+      { heading: "शीर्षक लेख्दा हुने सामान्य गल्ती", paragraphs: ["धेरै पेजमा एउटै शीर्षक राख्ने, keyword variation बारम्बार दोहोर्‍याउने, brand नाम धेरै पटक राख्ने वा पेजमा नभएको कुरा वाचा गर्ने गल्ती नगर्नुहोस्। शीर्षकले click गरेपछि खुल्ने पेजबारे सही अपेक्षा दिनुपर्छ।", "महत्त्वपूर्ण परिवर्तन प्रकाशित गरेपछि live HTML title र canonical URL जाँच्नुहोस्। Search Console ले query र page अनुसार impressions देखाउन सक्छ, तर Google ले नयाँ शीर्षक देखाउन पेज फेरि crawl र process गर्नुपर्छ।"] }
+    ],
+    faqs: [
+      { question: "मेरो SEO title कसरी जाँच्ने?", answer: "वास्तविक पेजको HTML title element copy गरेर SEO title checker मा paste गर्नुहोस्। Character count र preview हेरेपछि H1 तथा पेजको सामग्रीसँग तुलना गर्नुहोस्।" },
+      { question: "SEO title को सही character limit कति हो?", answer: "पूरा शीर्षक देखिने निश्चित character limit Google ले तोकेको छैन। स्पष्ट र छोटो शीर्षक लेख्नुहोस्; device र query अनुसार Google ले यसलाई छोट्याउन सक्छ।" },
+      { question: "SEO title र H1 एउटै हुन्?", answer: "होइन। SEO title HTML title element हो भने H1 पेजको मुख्य देखिने heading हो। दुवैले एउटै विषय वर्णन गर्नुपर्छ, तर शब्दशः समान हुन आवश्यक छैन।" },
+      { question: "के title checker ले Google ranking वा देखिने शीर्षक ग्यारेन्टी गर्छ?", answer: "गर्दैन। यसले character count र अनुमानित preview दिन्छ। Google ले title link आफैँ चयन वा परिवर्तन गर्न सक्छ; checker ले ranking भविष्यवाणी गर्दैन।" }
+    ],
+    toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }, { label: "SEO Tools", href: "/tools" }],
+    sources: [{ label: "Google Search Central: Title links", url: "https://developers.google.com/search/docs/appearance/title-link" }]
   }
 ];
 

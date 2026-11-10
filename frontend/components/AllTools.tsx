@@ -4,6 +4,8 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { toolCatalog } from "./toolCatalog";
 import ResumeBuilder from "./ResumeBuilder";
+import KundaliTool from "./KundaliTool";
+import GunaMilanTool from "./GunaMilanTool";
 import { allTools } from "../lib/tool-directory";
 import { discountedPrice, loanEmi, sipFutureValue } from "../lib/catalog-calculations";
 
@@ -67,6 +69,8 @@ export function ToolsDirectory() {
 export default function ToolWorkspace({slug}:{slug:string}) {
  const tool=toolCatalog.find(t=>t.slug===slug);
  if(slug==="resume-builder") return <ResumeBuilder />;
+ if(slug==="janma-kundali") return <KundaliTool />;
+ if(slug==="36-guna-milan") return <GunaMilanTool />;
  if(slug==="nepali-janma-kundali"||slug==="nepali-guna-milan") return <main className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><div className="mb-7 mt-5"><p className="text-xs font-black uppercase tracking-widest text-teal-700">Kundali & Astrology</p><h1 className="mt-2 text-3xl font-black text-slate-950">{tool?.name}</h1><p className="mt-2 text-slate-600">{tool?.description}</p></div><section className={panel}>{slug==="nepali-janma-kundali"?<KundaliTool/>:<GunaMilanTool/>}</section><p className="mt-6 text-xs leading-5 text-slate-500">Uses a documented astronomical and traditional Jyotisha convention. Birth-time, location, ayanamsha and text-specific matching conventions can change results. Astrological interpretations are not scientifically validated predictions.</p><AdsterraNative /></main>;
  if(["nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepse-dividend-calculator","nepse-market-news"].includes(slug)) return <main className="mx-auto min-h-screen w-full max-w-5xl px-4 py-12 sm:px-6"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><div className="mb-7 mt-5"><p className="text-xs font-black uppercase tracking-widest text-teal-700">Nepal utility</p><div className="mt-2 flex items-center gap-3"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal-50 text-2xl" aria-hidden="true">{getToolIcon(slug, tool?.category ?? "PDF")}</span><h1 className="text-3xl font-black text-slate-950">{tool?.name}</h1></div><p className="mt-2 text-slate-600">{tool?.description}</p></div><section className={panel}><NepalLiveTools slug={slug}/></section><p className="mt-6 text-xs leading-5 text-slate-500">Official rates and notices can change. Check the linked authority before making financial or legal decisions.</p>{slug !== "nepal-forex-rates" && <AdsterraNative />}</main>;
  if(slug==="nepali-unicode-typing") return <main className="mx-auto min-h-screen w-full max-w-5xl px-4 py-12 sm:px-6"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><div className="mb-7 mt-5"><p className="text-xs font-black uppercase tracking-widest text-teal-700">Nepal utility</p><div className="mt-2 flex items-center gap-3"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal-50 text-2xl" aria-hidden="true">{getToolIcon(slug, tool?.category ?? "PDF")}</span><h1 className="text-3xl font-black text-slate-950">{tool?.name}</h1></div><p className="mt-2 text-slate-600">{tool?.description}</p></div><section className={panel}><NepaliTypingTool/></section><AdsterraNative /></main>;

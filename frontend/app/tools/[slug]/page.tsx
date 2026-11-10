@@ -18,6 +18,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
+    "nepali-janma-kundali": { title: "Janma Kundali – Vedic Birth Chart, D1 & D9", description: "Calculate a Vedic birth chart with geocentric sidereal planetary positions, ascendant, Nakshatra, D1, D9 Navamsa and Vimshottari Dasha. Exact local birth time and place are important." },
+    "nepali-guna-milan": { title: "36 Guna Milan – Ashtakoota Kundali Matching", description: "Compare two birth charts across all eight Ashtakoota categories and review the raw score out of 36 with separately explained traditional exceptions." },
     "janma-kundali": { title: "Janma Kundali – Vedic Birth Chart, D1 & D9", description: "Calculate a Vedic birth chart with Lahiri sidereal planetary positions, ascendant, Nakshatra, D1, D9 Navamsa and Vimshottari Dasha. Exact local birth time and place are important." },
     "36-guna-milan": { title: "36 Guna Milan – Ashtakoota Kundali Matching", description: "Compare two birth charts across all eight Ashtakoota categories and review the raw score out of 36 with separately explained traditional exceptions." },
     "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly Savings Target", description: "Calculate how much to save each month to reach a target by your deadline. Enter current savings, target amount and months remaining; excludes interest and inflation." },

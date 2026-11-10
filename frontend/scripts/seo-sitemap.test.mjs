@@ -68,6 +68,10 @@ for (const slug of reportedNepaliLongTitleSlugs) {
   assert.match(nepaliBlogPageSource, new RegExp('"' + slug + '"\\s*:'), "Search Console title recovery missing for " + slug);
 }
 assert.match(nepaliBlogPageSource, /title: searchTitle/, "Nepali blog metadata must use concise search titles without changing visible article headlines");
+for (const [slug, title] of [["percentage-change-calculator-guide", "Percentage Change: प्रतिशत कसरी निकाल्ने?"], ["tip-calculator-guide", "Tip Calculator: टिप र बिल कसरी बाँड्ने?"]]) {
+  assert.ok(title.length <= 60, `${slug} search title must stay within 60 characters`);
+  assert.ok(nepaliBlogPageSource.includes(`"${slug}": "${title}"`), `${slug} must retain its reviewed concise search title`);
+}
 
 const generatedArticleSlugs = toolGuidesSource.match(/const existingBlogSlugs = new Set\(\[([\s\S]*?)\]\);/)?.[1] ?? "";
 for (const slug of ["repair-pdf-guide-online", "pdf-to-text-guide-online"]) {

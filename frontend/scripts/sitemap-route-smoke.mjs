@@ -15,10 +15,10 @@ if (robotsResponse.status !== 200) {
   throw new Error("robots.txt returned HTTP " + robotsResponse.status);
 }
 const robotsText = await robotsResponse.text();
-if (!/Disallow:\\s*\\/api\\//i.test(robotsText)) {
+if (!/Disallow:\s*\/api\//i.test(robotsText)) {
   throw new Error("robots.txt must keep non-page API endpoints disallowed");
 }
-if (/Disallow:\\s*\\/(?!api\\/)/i.test(robotsText)) {
+if (/Disallow:\s*\/(?!api\/)/i.test(robotsText)) {
   throw new Error("robots.txt contains a broad page-level disallow rule; review before deployment");
 }
 
@@ -27,7 +27,7 @@ if (sitemapResponse.status !== 200) {
   throw new Error("sitemap.xml returned HTTP " + sitemapResponse.status);
 }
 const xml = await sitemapResponse.text();
-const locs = [...xml.matchAll(/<loc>\\s*([^<]+?)\\s*<\\/loc>/gi)].map((match) => match[1].trim());
+const locs = [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map((match) => match[1].trim());
 if (locs.length === 0) throw new Error("sitemap.xml contains no <loc> URLs");
 
 const seen = new Set();

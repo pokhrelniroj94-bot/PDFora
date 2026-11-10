@@ -82,8 +82,7 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
     converter: "NRB मुद्रा रूपान्तरण", quick: "छिटो रूपान्तरण", uses: "छानिएको मुद्राको प्रकाशित एकाइ, खरिद र बिक्री दर प्रयोग हुन्छ।",
     currency: "मुद्रा", direction: "रूपान्तरण दिशा", amount: "रकम",
     foreignNpr: "विदेशी मुद्रा → NPR (खरिद)", nprForeign: "NPR → विदेशी मुद्रा (बिक्री)",
-    estimated: "अनुमानित रूपान्तरण", explain: "आजका प्रकाशित दर बुझ्नुहोस्", explainButton: "AI बाट दर बुझ्नुहोस्",
-    unavailable: "NRB AI व्याख्या उपलब्ध छैन।", tryAgain: "पुनः प्रयास गर्नुहोस्",
+    estimated: "अनुमानित रूपान्तरण",
   } : {
     eyebrow: "Nepal · Official reference rates", title: "Nepal Rastra Bank Exchange Rates",
     description: "Daily buying and selling rates published by NRB. On weekends and public holidays, the latest available working-day rate may be shown.",
@@ -93,8 +92,7 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
     converter: "NRB currency converter", quick: "Quick conversion", uses: "Uses the published unit, buying and selling rate for the selected currency.",
     currency: "Currency", direction: "Conversion direction", amount: "Amount",
     foreignNpr: "Foreign currency → NPR (buying)", nprForeign: "NPR → foreign currency (selling)",
-    estimated: "Estimated conversion", explain: "Understand today's published rates", explainButton: "Explain rates with AI",
-    unavailable: "NRB AI explanation is unavailable.", tryAgain: "Try again",
+    estimated: "Estimated conversion",
   };
   const [data, setData] = useState<ForexResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -102,9 +100,6 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
   const [currency, setCurrency] = useState("USD");
   const [amount, setAmount] = useState("100");
   const [direction, setDirection] = useState("foreign-to-npr");
-  const [aiText, setAiText] = useState("");
-  const [aiError, setAiError] = useState("");
-  const [aiBusy, setAiBusy] = useState(false);
 
   const loadRates = async () => {
     setLoading(true);
@@ -119,36 +114,6 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
       setLoading(false);
     }
   };
-
-  async function explainRates() {
-    if (!data?.rates?.length || aiBusy) return;
-    setAiBusy(true);
-    setAiError("");
-    setAiText("");
-    try {
-      const response = await fetch("/api/ai-writing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kind: "forex-explain",
-          source: data.source,
-          rateDate: data.rateDate,
-          requestedDate: data.requestedDate,
-          isStale: String(!!data.isStale),
-          rates: JSON.stringify(data.rates.slice(0, 30)),
-          question: "Explain the latest NRB daily rates, how to read buying and selling rates, and what this means for someone converting money in Nepal."
-        }),
-      });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "NRB AI explanation is unavailable.");
-      if (typeof payload.text !== "string" || !payload.text.trim()) throw new Error("AI returned an empty explanation.");
-      setAiText(payload.text.trim());
-    } catch (error) {
-      setAiError(error instanceof Error ? error.message : "NRB AI explanation is unavailable.");
-    } finally {
-      setAiBusy(false);
-    }
-  }
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void loadRates(); }, 0);
@@ -194,15 +159,6 @@ function ForexTool({ locale = "en" }: { locale?: "en" | "ne" }) {
           <tbody>{data.rates.map((item) => <tr key={item.code} className="border-t border-slate-100 transition-colors hover:bg-teal-50/50"><th scope="row" className="px-4 py-3 font-semibold text-slate-900"><span>{item.code}</span><span className="ml-2 font-normal text-slate-500">{item.name}</span></th><td className="px-4 py-3 text-right tabular-nums">{item.unit}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.buy.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td><td className="px-4 py-3 text-right font-medium tabular-nums">{item.sell.toLocaleString("en-IN", { maximumFractionDigits: 4 })}</td></tr>)}</tbody>
         </table>
       </div>
-    </section>}
-
-    {data && <section className="rounded-2xl border border-teal-200 bg-teal-50/50 p-4 shadow-sm sm:p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div><p className="text-xs font-black uppercase tracking-wide text-teal-800">PDFora NRB AI</p><h3 className="mt-1 font-bold text-slate-950">{copy.explain}</h3><p className="mt-1 text-xs text-slate-600">{ne ? "वास्तविक NRB दर तालिका र एकाइ बुझाउँछ; FX मूल्यको भविष्यवाणी गर्दैन।" : "Explains the actual NRB rate table and unit values; it does not predict FX prices."}</p></div>
-        <button type="button" onClick={() => void explainRates()} disabled={aiBusy || !data.rates.length} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{aiBusy ? (ne ? "व्याख्या हुँदैछ…" : "Explaining…") : copy.explainButton}</button>
-      </div>
-      {aiError && <p role="alert" className="mt-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-800">{aiError}</p>}
-      {aiText && <p className="mt-3 whitespace-pre-wrap rounded-xl border border-teal-100 bg-white p-4 text-sm leading-6 text-slate-700">{aiText}</p>}
     </section>}
 
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">

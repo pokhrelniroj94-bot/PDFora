@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
     "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate percentage increase or decrease between an original value and a new value with a clear direction and percentage result." },
-    "tip-calculator": { title: "Tip Calculator – Tip, Bill Total & Per-Person Split", description: "Calculate a tip from the bill amount and percentage, then see the total and equal share per person. Check whether service charge is already included." },
+    "tip-calculator": { title: "Tip Calculator – Calculate Tip, Total Bill & Split", description: "Calculate a tip by percentage, add it to the bill and split the total per person. See the formula and check for included service charges." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 
@@ -69,7 +69,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepse-market-news": { title: "Nepal Stock Market News – NEPSE & IPO Updates", description: "Browse recent Nepal stock market and IPO headlines with publication dates and links to the original publishers. Verify notices with official sources." },
     "nepali-unicode-typing": { title: "Nepali Unicode Typing Tool – Type in Devanagari", description: "Convert Romanized Nepali typing into Unicode Devanagari text. Review spelling, conjuncts and punctuation before using the text in a document." },
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
-    "meta-title-checker": { title: "SEO Title Checker – Check Meta Title Length & Google Preview", description: "Check your SEO title length, review a Google-style search preview and improve page titles for clarity and search intent." },
+    "meta-title-checker": { title: "SEO Title Checker – Meta Title Length & Google Preview", description: "Check SEO title length, preview a Google-style title link and compare the wording with your page heading. Review clarity without ranking promises." },
+    "meta-description-checker": { title: "Meta Description Checker – Length & Google Snippet Preview", description: "Check meta description length, count characters and preview a search snippet. Write a clear, page-specific summary; Google may choose different text." },
   };
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;
@@ -174,12 +175,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: "Does the tool replace official advice or verification?", a: "No. Confirm important legal, financial, government or compliance matters with the responsible authority." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
-    "market-ai": [
-      { q: "Which markets can I analyse?", a: "You can analyse available historical daily NEPSE data or upload your own Forex and Crypto CSV. Forex and Crypto results depend on the accuracy and freshness of your file; they are not live market feeds." },
-      { q: "Which CSV columns are required?", a: "Date and Close are required. Open, High, Low and Volume are recommended. Use one daily candle per date, ISO dates (YYYY-MM-DD), at least 50 valid rows and a file no larger than 5 MB." },
-      { q: "Does a BUY signal mean the trade will be profitable?", a: "No. Signals are rule-based technical conditions, not predictions or win probabilities. Test strategies on separate historical data and include fees, spread, slippage and liquidity." },
-      { q: "Why can the tool show HOLD / WATCH instead of BUY?", a: "Mixed indicators, unusual selling volume, elevated risk or stale historical data can weaken or suppress a potential BUY setup. A stale dataset suppresses new BUY/SELL signals." },
-      { q: "What does the free AI explanation do?", a: "It explains the calculated indicators and warnings. It does not calculate a separate trading signal and must not override the rule-based result." }
+    "meta-description-checker": [
+      { q: "What is a meta description?", a: "A meta description is a short summary of a page that may be used as the descriptive text in a search result. It should accurately explain what the visitor will find on that specific page." },
+      { q: "How long should a meta description be?", a: "Google does not set a fixed character limit. A practical 120–160 character range can help with drafting, but snippets are shortened or rewritten according to the device, query and available display space. Do not add filler just to reach a number." },
+      { q: "Does a meta description directly improve Google rankings?", a: "No. A meta description is not a direct ranking factor. A clear, relevant description may help a searcher decide whether to click when Google uses it, but Google can generate a different snippet from the page." },
+      { q: "Why does Google show different text from my description?", a: "Google may select page text that better matches the search query. Make sure the visible page content clearly answers the same intent and that the description accurately summarises the page." },
+      { q: "Should every page have a unique meta description?", a: "Write a distinct description for important indexable pages when it helps users understand the difference between them. Avoid repeating one generic description across unrelated tools, articles and landing pages." }
     ],
     "neb-gpa-calculator": [
       { q: "How is GPA calculated?", a: "Multiply each subject's grade point by its credit hours, add those weighted points, then divide by the total credit hours. GPA = Σ(credit × grade point) ÷ Σ(credit hours)." },

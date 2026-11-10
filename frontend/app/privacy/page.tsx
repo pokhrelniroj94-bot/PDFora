@@ -5,9 +5,9 @@ const localizedAlternates = hreflangMap("/privacy");
 
 export const metadata: Metadata = {
   title: "Privacy Policy | PDFora Data and File Handling",
-  description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and optional AI features.",
+  description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners, technical services and file processing.",
   alternates: { canonical: "https://pd-fora.vercel.app/privacy", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners and optional AI features." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/privacy", siteName: "PDFora", title: "PDFora Privacy Policy", description: "Understand how PDFora handles uploaded files, technical information, cookies, advertising partners, technical services and file processing." },
 };
 
 export default function PrivacyPage() {
@@ -95,36 +95,7 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              6. AI Writing and Market Explanation Tools
-            </h2>
-            <p>
-              If you choose to use AI Resume Writer, Cover Letter Generator,
-              Humanizer, or the optional Market AI explanation, the text and
-              details you submit are sent to Cloudflare Workers AI to generate
-              a response. These features require your confirmation before
-              submitting text. Do not submit passwords, government identity
-              numbers, bank or broker credentials, private keys, or confidential
-              employer or client information.
-            </p>
-            <p className="mt-2">
-              PDFora does not intentionally save AI prompts or generated
-              responses in its own application database. The AI provider
-              processes requests under its own terms and privacy practices.
-              Review the <a className="underline" href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noreferrer">Cloudflare Privacy Policy</a>
-              before using these features. AI-generated content may be
-              inaccurate and should be reviewed before use.
-            </p>
-            <p className="mt-2">
-              Resume Builder details and profile photos are handled in your
-              browser to create the preview and PDF. AI-generated resume text
-              is transferred to the builder only within the current browser
-              tab session and is removed after import.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="mb-2 text-2xl font-semibold">
-              7. Data Security
+              6. Data Security
             </h2>
             <p>
               We take reasonable measures to protect information processed
@@ -135,7 +106,7 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              8. Children&apos;s Privacy
+              7. Children&apos;s Privacy
             </h2>
             <p>
               PDFora is not intentionally designed to collect personal
@@ -147,7 +118,7 @@ export default function PrivacyPage() {
 
           <div>
             <h2 className="mb-2 text-2xl font-semibold">
-              9. Changes to This Policy
+              8. Changes to This Policy
             </h2>
             <p>
               We may update this Privacy Policy from time to time as our
@@ -157,7 +128,7 @@ export default function PrivacyPage() {
           </div>
 
           <div>
-            <h2 className="mb-2 text-2xl font-semibold">10. Contact</h2>
+            <h2 className="mb-2 text-2xl font-semibold">9. Contact</h2>
             <p>
               If you have questions about this Privacy Policy or PDFora&apos;s
               privacy practices, email us at{" "}

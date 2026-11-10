@@ -82,8 +82,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 124, "Expected 124 catalog utilities");
-assert.equal(allHrefs.length, 173, "Expected 173 available tools (49 PDF tools + 124 catalog utilities)");
+assert.equal(catalog.length, 120, "Expected 120 non-AI catalog utilities");
+assert.equal(allHrefs.length, 169, "Expected 169 available tools (49 PDF tools + 120 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");
@@ -113,8 +113,6 @@ const marketPage = read("../app/market/page.tsx");
 const newsApi = read("../app/api/nepal-market-news/route.ts");
 const newsComponent = read("../components/NepalMarketNews.tsx");
 const pageImagesToolPage = read("../app/extract-page-images/page.tsx");
-const aiWritingRoute = read("../app/api/ai-writing/route.ts");
-const envExample = read("../.env.example");
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/live.json", 60)'), "NEPSE API must use the latest YONEPSE live quote file with a short cache");
 assert.ok(
   marketApi.includes('"NEPSE unofficial live API (nepseman-api)"') && marketApi.includes('"YONEPSE public market snapshot"') && marketApi.includes('"YONEPSE historical snapshot fallback"'),
@@ -135,8 +133,6 @@ assert.ok(newsApi.includes('/data/notify/disclosures.json') && newsApi.includes(
 assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve working feeds when another provider fails");
 assert.ok(newsComponent.includes("10 * 60 * 1000"), "News component must auto-refresh headlines every 10 minutes");
 assert.ok(pageImagesToolPage.includes("Render PDF Pages to PNG") && pageImagesToolPage.includes("Render every PDF page as a PNG image"), "Page-image tool must clearly describe full-page PNG rendering");
-assert.ok(aiWritingRoute.includes("new URL(redisUrl)") && aiWritingRoute.includes('redisEndpoint.protocol !== "https:"') && aiWritingRoute.includes("SHARED_RATE_LIMIT_INVALID_URL"), "AI shared rate limiter must validate the Upstash HTTPS REST URL safely");
-assert.ok(envExample.includes("UPSTASH_REDIS_REST_URL=") && envExample.includes("UPSTASH_REDIS_REST_TOKEN="), "Example environment file must document both Upstash REST settings");
 assert.ok(nepalLiveTools.includes("Effective tax rate: {amount > 0 ?") && !nepalLiveTools.includes("Effective tax rate: ${amount > 0 ?"), "Nepal salary tax effective rate must display as a percentage, not currency");
 assert.ok(catalogSource.includes("Explore 49 PDF Tools") && catalogSource.includes("49 available PDF tools"), "PDF tool catalogue must advertise the 49 enabled PDF tools accurately");
 const resumeTemplateBlock = resumeBuilder.match(/const templates = \[([\s\S]*?)\n\];/);

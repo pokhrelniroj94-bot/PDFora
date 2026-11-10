@@ -34,7 +34,7 @@ export interface LocaleInfo {
 
 export const localeInfo: Record<Locale, LocaleInfo> = {
   en: { code: "en", englishName: "English", nativeName: "English", dir: "ltr", htmlLang: "en", hreflang: "en", intl: "en-US", status: "published" },
-  // Nepali has reviewed, dedicated homepage, PDF, utility, finance, AI-writing and
+  // Nepali has reviewed, dedicated homepage, PDF, utility and finance
   // selected editorial routes. Other destinations use an explicit Nepali fallback rather
   // than pretending that the entire English site has been translated.
   ne: { code: "ne", englishName: "Nepali", nativeName: "नेपाली", dir: "ltr", htmlLang: "ne", hreflang: "ne", intl: "ne-NP", status: "published" },

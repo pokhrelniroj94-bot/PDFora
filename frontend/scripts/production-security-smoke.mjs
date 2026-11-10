@@ -53,16 +53,7 @@ check("sitemap excludes unpublished language routes", !sitemapUrls.some((url) =>
 
 const privacyText = (await privacy.text()).toLowerCase();
 check("privacy policy discloses advertising provider", privacyText.includes("adsterra") && privacyText.includes("advertising"));
-check("privacy policy discloses Cloudflare AI processing", privacyText.includes("cloudflare workers ai") && privacyText.includes("ai"));
 check("privacy policy describes temporary upload processing", privacyText.includes("temporarily") && privacyText.includes("after processing"));
-const hostileAi = await fetch(new URL("/api/ai-writing", base), {
-  method: "POST",
-  headers: { Origin: "https://attacker.example", "Content-Type": "application/json" },
-  body: "not-json",
-  cache: "no-store",
-  signal: AbortSignal.timeout(15000),
-});
-check("AI endpoint rejects untrusted browser Origin before parsing", hostileAi.status === 403, String(hostileAi.status));
 
 const html = await home.text();
 const canonicalTag = html.match(/<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/i)?.[0] || "";

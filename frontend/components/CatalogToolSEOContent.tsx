@@ -72,48 +72,126 @@ export default function CatalogToolSEOContent({
   guideSlug?: string;
 }) {
   const uniqueFaqItems = questions.slice(0, 4);
-  if (tool.slug === "market-ai") {
+  if (tool.slug === "tip-calculator") {
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Market analysis guide</p>
-        <h2 className="mt-2 text-2xl font-black text-slate-950">What does PDFora Smart Market AI analyse?</h2>
-        <p className="mt-4 leading-8 text-slate-700">Review historical NEPSE prices or upload your own Forex and Crypto daily OHLCV CSV. The engine calculates EMA trend alignment, RSI momentum, MACD direction, recent volume behaviour, annualized historical volatility and estimated 20-session support and resistance. It then displays a rule-based market condition and risk warnings. Optional free AI explains those calculations; it does not generate or override the signal.</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Restaurant bill calculator</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Calculate a restaurant tip, the final bill and each person&apos;s share</h2>
+        <p className="mt-4 leading-8 text-slate-700">Enter the bill amount, the tip percentage and the number of people sharing equally. The calculator shows the tip amount, bill plus tip, and the amount each person pays. It uses the same currency as the amount you enter and does not convert currencies.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">How to use the Market Intelligence & Risk Analyzer</h2>
+        <h2 className="text-xl font-black text-slate-950">How to use the tip calculator</h2>
         <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
-          <li>Choose NEPSE, Forex or Crypto. For NEPSE, enter an index or listed symbol and request the available daily history.</li>
-          <li>For Forex or Crypto, upload a CSV with Date and Close columns. Open, High, Low and Volume are recommended for more useful levels and volume checks.</li>
-          <li>Use one daily candle per date and keep dates in YYYY-MM-DD format. The tool requires at least 50 valid observations and accepts files up to 5 MB.</li>
-          <li>Check the latest data date and source before interpreting the result. A stale history suppresses new BUY/SELL setups.</li>
-          <li>Read the signal together with the confluence score, EMA trend, RSI, MACD, volume warning, volatility and key levels. The score is not a win probability.</li>
-          <li>Use Explain with free AI only after reviewing the computed result. The explanation is optional and cannot change the technical signal.</li>
+          <li>Enter the bill amount before adding any extra tip.</li>
+          <li>Enter the tip percentage as a number, such as 10 for a 10% tip.</li>
+          <li>Enter the number of people who will split the bill equally.</li>
+          <li>Select Run tool and review the tip, total bill and per-person amount.</li>
+          <li>Check the restaurant receipt for any service charge or gratuity already included before paying.</li>
         </ol>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">How to interpret signals, risk and data quality</h2>
-        <p className="mt-4 leading-8 text-slate-700">EMA20/EMA50 describe trend alignment; RSI and MACD describe momentum; volume can confirm or weaken a move. Unusually high volume while price falls is a distribution warning and should weaken a bullish reading. RSI near or above 70 can indicate an extended move, not an automatic sell signal. Support, resistance, invalidation and 2R levels are historical estimates, not guaranteed execution prices.</p>
-        <p className="mt-3 leading-8 text-slate-700">NEPSE results use the available third-party historical daily dataset and are not an intraday terminal. Forex and Crypto analysis depends entirely on the uploaded CSV; PDFora does not claim to provide a live broker or exchange feed for those markets. Missing OHLC or volume columns reduce the quality of some checks. Confirm that the file uses the correct instrument, timezone, currency and candle interval.</p>
+        <h2 className="text-xl font-black text-slate-950">Tip calculator formula and worked example</h2>
+        <p className="mt-3 rounded-xl bg-slate-50 p-4 font-semibold leading-7 text-slate-900">Tip = bill amount × tip percentage ÷ 100. Total = bill amount + tip. Per-person share = total ÷ number of people.</p>
+        <p className="mt-4 leading-8 text-slate-700">For a bill of 2,000 and a 10% tip, the tip is 200 and the total is 2,200. If four people split the total equally, each person pays 550. The figures remain in the currency used on the original bill.</p>
+      </section>
+      <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Service charges, unequal splits and limitations</h2>
+        <p className="mt-3 leading-8 text-slate-700">This calculator does not decide what tip is customary in a particular country, restaurant or situation. It does not detect taxes, service charges or gratuities printed on a receipt. If a service charge or tip is already included, check the receipt and adjust the amount you enter to avoid adding it twice. The split is equal; it does not calculate separate shares for people who ordered different items.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">Practical checks before acting on an analysis</h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 leading-8 text-slate-700">
-          <li>Check that the latest completed candle is recent for that market and that no dates are missing or duplicated.</li>
-          <li>Do not treat the confluence score as a probability of profit or a guaranteed prediction.</li>
-          <li>Test any rule on separate, out-of-sample history and include brokerage, taxes, spread, slippage and liquidity.</li>
-          <li>Define position size, maximum acceptable loss and an invalidation condition before any trade.</li>
-          <li>Never upload broker passwords, API keys, exchange credentials or private keys in a CSV.</li>
-        </ul>
-        <p className="mt-4 leading-8 text-slate-700">This is an educational technical-analysis aid, not personal investment advice. It does not know your financial circumstances and cannot forecast prices with certainty.</p>
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">
+          <div><h3 className="font-bold text-slate-900">How do I calculate a 10% tip?</h3><p className="mt-1 leading-7 text-slate-700">Multiply the bill by 10 and divide by 100. For a bill of 2,000, a 10% tip is 200.</p></div>
+          <div><h3 className="font-bold text-slate-900">Can I split the bill between several people?</h3><p className="mt-1 leading-7 text-slate-700">Yes. Enter the number of people and the calculator divides the bill plus tip into equal shares.</p></div>
+          <div><h3 className="font-bold text-slate-900">Does the calculator include service charge or tax?</h3><p className="mt-1 leading-7 text-slate-700">No. Check your receipt and include only the amount that should be used as the tip base.</p></div>
+          <div><h3 className="font-bold text-slate-900">Can it split different orders separately?</h3><p className="mt-1 leading-7 text-slate-700">No. It calculates an equal split, not item-by-item or percentage-based shares.</p></div>
+        </div>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">Frequently asked questions about PDFora Smart Market AI</h2>
-        <div className="mt-5 space-y-5">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}</div>
+        <h2 className="text-xl font-black text-slate-950">Related calculators and guide</h2>
+        <p className="mt-2 leading-7 text-slate-700">For a worked explanation of the percentage formula, bill total and equal split, read the <Link href="/blog/how-to-calculate-tip-and-split-the-bill" className="font-semibold text-teal-800 underline">step-by-step tip calculation guide</Link>.</p>
+        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
       </section>
-      <section className="rounded-2xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
-        <h2 className="text-xl font-black text-slate-950">Related tools and further reading</h2>
-        <p className="mt-3 leading-7 text-slate-700">Use these utilities alongside market research, but verify all market data and assumptions independently.</p>
-        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 bg-white px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-100">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read the detailed guide</Link>}</div>
+    </div></article>;
+  }
+  if (tool.slug === "meta-title-checker") {
+    return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">SEO title preview and review</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Check a page title and preview how it may appear in Google Search</h2>
+        <p className="mt-4 leading-8 text-slate-700">Paste the exact title used for one page. The checker reports its character count and displays an approximate search-result preview so you can review whether the wording is clear and concise. It is a writing aid, not a Google ranking test or a guarantee that Google will display the same title.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to check and improve a page title</h2>
+        <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
+          <li>Open the page you want to improve and copy its actual HTML title text.</li>
+          <li>Paste that title into the Page title field and run the checker.</li>
+          <li>Review the character count and the approximate search preview.</li>
+          <li>Rewrite the title so it identifies the page&apos;s main purpose in natural language.</li>
+          <li>Compare the proposed title with the visible H1 and page content, then publish only a version that accurately describes the page.</li>
+        </ol>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">What makes a useful SEO title?</h2>
+        <p className="mt-3 leading-8 text-slate-700">Write a unique, descriptive title for each important page. Put the main topic first when that makes the page easier to understand, and add a concise brand name only when it helps identify the source. Avoid repeating near-identical keyword variations, generic boilerplate and promises that the page does not fulfil. There is no universal character limit that guarantees a full title will appear: Google may truncate or rewrite title links to fit the device and query.</p>
+      </section>
+      <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Accuracy and limitations</h2>
+        <p className="mt-3 leading-8 text-slate-700">The preview is an estimate and cannot reproduce Google&apos;s full title-link systems, query context, device layout or future rewrites. Google can generate title links from the HTML title, visible headings, prominent page text, links and other signals. Character count alone is not a ranking factor or a reliable measure of pixel width. Review the live page and monitor Search Console after publishing changes.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">
+          <div><h3 className="font-bold text-slate-900">What is an SEO title?</h3><p className="mt-1 leading-7 text-slate-700">It is the page title specified in the HTML title element. Search engines may use it when creating the clickable title link in results.</p></div>
+          <div><h3 className="font-bold text-slate-900">Is there a perfect title character limit?</h3><p className="mt-1 leading-7 text-slate-700">No fixed character count guarantees display. Search results can be truncated based on available width and may vary by query and device.</p></div>
+          <div><h3 className="font-bold text-slate-900">Does a title checker improve rankings?</h3><p className="mt-1 leading-7 text-slate-700">No. It helps review wording and length, but it cannot predict rankings or replace useful page content and technical SEO.</p></div>
+          <div><h3 className="font-bold text-slate-900">Why can Google show a different title?</h3><p className="mt-1 leading-7 text-slate-700">Google may use the visible heading, prominent text, links and other page signals when it considers another title more useful for the search.</p></div>
+        </div>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Related SEO tools and guidance</h2>
+        <p className="mt-2 leading-7 text-slate-700">For Google’s explanation of how snippets are selected and why the displayed text can vary by query, read the <Link href="https://developers.google.com/search/docs/appearance/snippet" className="font-semibold text-teal-800 underline">Google Search Central snippet documentation</Link>.</p>
+        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
+      </section>
+    </div></article>;
+  }
+  if (tool.slug === "meta-description-checker") {
+    return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Meta description length and snippet preview</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Check a page summary before publishing its meta description</h2>
+        <p className="mt-4 leading-8 text-slate-700">Paste the description used by one real page. This checker counts characters and provides an approximate search snippet preview so you can review whether the summary is clear, specific and useful. It does not test rankings or guarantee that Google will display the same text.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to write and check a meta description</h2>
+        <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
+          <li>Open the page and identify its main task, question or useful outcome.</li>
+          <li>Write one or two natural sentences that accurately summarise that specific page.</li>
+          <li>Put the main subject or task near the beginning when it reads naturally.</li>
+          <li>Paste the draft into the checker and review the character count and preview.</li>
+          <li>Compare the summary with the page title, visible heading and actual content before publishing.</li>
+        </ol>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">What length should a meta description be?</h2>
+        <p className="mt-3 leading-8 text-slate-700">Google does not set a fixed character limit for meta descriptions. Search snippets can be shortened to fit the device or replaced with text from the page that better matches an individual query. A 120–160 character draft can be a practical editorial starting point, not a Google rule. Keep the summary as long as it needs to be to communicate the page accurately.</p>
+      </section>
+      <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Accuracy and common mistakes</h2>
+        <p className="mt-3 leading-8 text-slate-700">A meta description is not a direct Google ranking factor. A clear description may help a searcher understand the result when Google uses it as a snippet, but it cannot guarantee clicks or rankings. Write unique summaries for important pages, avoid keyword lists and do not promise features that the page does not provide.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">
+          <div><h3 className="font-bold text-slate-900">What is a meta description?</h3><p className="mt-1 leading-7 text-slate-700">It is a page-level HTML summary that search engines may use when generating a result snippet.</p></div>
+          <div><h3 className="font-bold text-slate-900">Does Google have a 160-character limit?</h3><p className="mt-1 leading-7 text-slate-700">No. Google has no fixed character limit; snippets are shortened according to the available display space and query.</p></div>
+          <div><h3 className="font-bold text-slate-900">Can a meta description improve rankings?</h3><p className="mt-1 leading-7 text-slate-700">It is not a direct ranking factor. A useful summary can help searchers assess whether a result matches their needs when it is shown.</p></div>
+          <div><h3 className="font-bold text-slate-900">Why does Google show different snippet text?</h3><p className="mt-1 leading-7 text-slate-700">Google may select visible page text that better matches the user&apos;s query instead of the supplied meta description.</p></div>
+        </div>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Related SEO tools</h2>
+        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
       </section>
     </div></article>;
   }
@@ -497,11 +575,6 @@ export default function CatalogToolSEOContent({
     "nepal-electricity-bill-calculator": { example: "Use the official ERC calculator with the consumer category, connection details and kWh consumption shown on your latest NEA bill.", accuracy: "PDFora does not calculate a bill from hard-coded rates. ERC's current calculator and 2083 directive are the primary references; the NEA-issued bill remains the final account statement.", workflow: "Open the ERC calculator, enter the actual billing-period details, compare the result with the NEA bill and verify the applicable 2083 tariff notice.", mistakes: "Do not rely on old unit-rate tables, guess your fuse capacity or treat a third-party estimate as the official amount due." },
     "nepal-public-holidays-2083": { example: "Browse the listed 2083 BS holidays and check each Gregorian date, regional note and category before planning an appointment or work schedule.", accuracy: "The list is a reference and may omit institution-specific, regional or newly amended notices. Holiday applicability can vary by province, community and employer.", workflow: "Use the BS and AD date together, then confirm the latest Cabinet or responsible authority notice before booking travel or assuming an office is closed.", mistakes: "Do not assume every listed holiday applies nationwide or that a static list overrides a later official notice." },
     "nepali-unicode-typing": { example: "Type Romanized Nepali using an English keyboard and review the suggested Devanagari text before copying it into a document or message.", accuracy: "Romanized typing is transliteration, not translation. A Roman spelling can map to multiple Nepali words, names or conjuncts, so the output may require correction.", workflow: "Type a short phrase, choose the intended word where alternatives appear and proofread matras, halants, names and punctuation before using the text.", mistakes: "Do not assume the tool translates English sentences or that every Romanized spelling has only one correct Nepali equivalent." },
-
-    "ai-resume-writer": { example: "Enter the target role, real experience, education, skills and job description. Review the generated summary and bullet points, then copy accurate content into the PDFora Resume Builder.", accuracy: "The model cannot verify employment, qualifications, dates or achievements. Review every claim before using the draft.", workflow: "Use specific facts, tailor the draft to one vacancy, remove anything you cannot prove, then choose a template and proofread the exported PDF.", mistakes: "Do not add invented metrics, employers, degrees, certificates or skills. Avoid confidential personal information." },
-    "ai-cover-letter-generator": { example: "Provide the real job title, company, relevant experience and job description to create a focused letter.", accuracy: "The draft is based only on supplied details and may contain generic wording or factual errors. It does not verify the employer or vacancy.", workflow: "Replace placeholders, check company and role names, add a genuine example that demonstrates fit, and proofread the final letter.", mistakes: "Do not claim experience or company knowledge you do not have. Avoid sending the same unedited letter to every employer." },
-    "ai-humanizer": { example: "Paste a paragraph and choose a natural, professional, academic or simple-English style. Compare the rewrite with the original.", accuracy: "The rewrite may alter nuance, tone or factual details. It cannot reliably determine who wrote a text or guarantee how a detector will classify it.", workflow: "Keep the original, rewrite a short sample, compare names, figures, citations and meaning, then edit the result in your own voice.", mistakes: "Do not remove required citations or change factual claims. Always review the rewrite." },
-    "market-ai": { example: "Select a NEPSE index or listed symbol to analyse available history, or upload at least 50 daily Forex/Crypto price rows in CSV format.", accuracy: "The engine uses rule-based EMA, RSI, MACD and volatility calculations. NEPSE data comes from the existing third-party dataset; Forex/Crypto results depend on the quality and freshness of the uploaded CSV. No signal guarantees profit.", workflow: "Check the latest data date, inspect trend and momentum together, define a maximum loss, and test any entry/exit rule on separate historical data including fees and slippage.", mistakes: "Do not treat a confluence score as a win probability, rely on stale or incomplete data, or trade with leverage based only on one signal." },
 
   };
   const title = tool.name;

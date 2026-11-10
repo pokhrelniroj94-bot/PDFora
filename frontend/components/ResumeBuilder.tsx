@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 type Entry = { id: string; school: string; degree: string; place: string; dates: string };
 type Job = { id: string; role: string; company: string; dates: string; details: string };
@@ -62,19 +62,7 @@ export default function ResumeBuilder({ locale = "en" }: ResumeBuilderProps) {
     studio: ne ? "PDFora करियर स्टुडियो" : "PDFora Career Studio",
     title: ne ? "व्यावसायिक रिजुमे बिल्डर" : "Professional Resume Builder",
     description: ne ? "२० व्यावसायिक टेम्प्लेट, प्रत्यक्ष पूर्वावलोकन र A4 PDF निर्यातसहित तयार CV बनाउनुहोस्।" : "Build a polished, job-ready CV with 20 professional templates, live preview and print-ready A4 PDF export.",
-    aiWrite: ne ? "AI बाट CV सामग्री लेख्नुहोस् ↗" : "AI write CV content ↗",
-    cover: ne ? "कभर लेटर ↗" : "Cover letter ↗",
     download: ne ? "CV PDF डाउनलोड गर्नुहोस् ↗" : "Download CV as PDF ↗",
-    assistant: ne ? "AI CV सहायक" : "AI CV Assistant",
-    improveTitle: ne ? "AI बाट आफ्नो CV सुधार्नुहोस्" : "Improve your CV with AI",
-    improveDescription: ne ? "तपाईंको लक्षित पद, सीप, शिक्षा र अनुभव प्रयोग गरी बलियो सारांश र ATS-अनुकूल बुँदा तयार गर्छ। तपाईंको सम्पर्क विवरण र फोटो पठाइँदैन।" : "Uses your target role, skills, education and experience to draft a stronger summary and ATS-friendly bullet points. Your contact details and photo are not sent.",
-    improving: ne ? "CV सुधार हुँदैछ…" : "Improving CV…",
-    improve: ne ? "AI बाट CV सुधार्नुहोस्" : "Improve CV with AI",
-    consent: ne ? "मेरो लक्षित पद, सीप, शिक्षा र अनुभवको पाठ प्रशोधनका लागि कन्फिगर गरिएको AI प्रदायकलाई पठाउन सहमत छु। म गोप्य जानकारी समावेश गर्ने छैन।" : "I agree to send my target role, skills, education and experience text to the configured AI provider for processing. I will not include confidential information.",
-    suggestions: ne ? "लागू गर्नुअघि AI सुझाव जाँच गर्नुहोस्" : "Review AI suggestions before applying",
-    useSummary: ne ? "यो सारांश प्रयोग गर्नुहोस्" : "Use this summary",
-    useSkills: ne ? "यी सीप प्रयोग गर्नुहोस्" : "Use these skills",
-    useBullets: ne ? "यी बुँदा प्रयोग गर्नुहोस्" : "Use these bullets",
     personal: ne ? "१. व्यक्तिगत विवरण" : "1. Personal details",
     identity: ne ? "सम्पर्क र पहिचान" : "Contact & identity",
     summary: ne ? "२. व्यावसायिक सारांश" : "2. Professional summary",
@@ -107,28 +95,6 @@ export default function ResumeBuilder({ locale = "en" }: ResumeBuilderProps) {
   const [projects, setProjects] = useState("");
   const [certifications, setCertifications] = useState("");
   const [references, setReferences] = useState("");
-  const [aiDraftNotice, setAiDraftNotice] = useState("");
-  const [aiConsent, setAiConsent] = useState(false);
-  const [aiBusy, setAiBusy] = useState(false);
-  const [aiError, setAiError] = useState("");
-  const [aiSuggestions, setAiSuggestions] = useState<{ summary: string; skills: string; experience: string } | null>(null);
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      try {
-        const saved = sessionStorage.getItem("pdfora-ai-resume-draft");
-        if (!saved) return;
-        const draft = JSON.parse(saved) as { summary?: string; skills?: string; experience?: string };
-        if (draft.summary) setSummary(draft.summary);
-        if (draft.skills) setSkills(draft.skills.replace(/\r?\n/g, ", "));
-        if (draft.experience) setJobs((rows) => rows.map((row, index) => index === 0 ? { ...row, details: draft.experience || "" } : row));
-        setAiDraftNotice(ne ? "AI मस्यौदा आयात भयो। CV निर्यात गर्नुअघि प्रत्येक खण्ड जाँच र सम्पादन गर्नुहोस्।" : "AI draft imported. Review and edit every section before exporting your CV.");
-        sessionStorage.removeItem("pdfora-ai-resume-draft");
-      } catch {
-        sessionStorage.removeItem("pdfora-ai-resume-draft");
-      }
-    }, 0);
-    return () => window.clearTimeout(timer);
-  }, [ne]);
   const [photo, setPhoto] = useState("");
   const [photoError, setPhotoError] = useState("");
   const loadPhoto = (file?: File) => {
@@ -154,65 +120,14 @@ export default function ResumeBuilder({ locale = "en" }: ResumeBuilderProps) {
   const label = "mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500";
   const field = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{title}</span><input className={input} value={value} onChange={e => setter(e.target.value)} placeholder={placeholder} /></label>;
   const area = (title: string, value: string, setter: (v: string) => void, placeholder = "") => <label className="block"><span className={label}>{title}</span><textarea className={input + " min-h-24 resize-y"} value={value} onChange={e => setter(e.target.value)} placeholder={placeholder} /></label>;
-  const generateCvWithAi = async () => {
-    if (!role.trim() || aiBusy || !aiConsent) return;
-    setAiBusy(true);
-    setAiError("");
-    setAiDraftNotice("");
-    setAiSuggestions(null);
-    try {
-      const experience = jobs.map((job) => [job.role, job.company, job.dates, job.details].filter(Boolean).join(" · ")).filter(Boolean).join("\n");
-      const educationText = education.map((item) => [item.degree, item.school, item.place, item.dates].filter(Boolean).join(" · ")).filter(Boolean).join("\n");
-      const response = await fetch("/api/ai-writing", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind: "ai-resume-writer", role, skills, experience, education: educationText, style: "Professional and ATS-friendly" }),
-      });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || (ne ? "AI ले अहिले CV सुधार्न सकेन।" : "AI could not improve this CV right now."));
-      const draft: string = typeof payload.text === "string" ? payload.text.trim() : "";
-      if (!draft) throw new Error(ne ? "AI ले खाली CV मस्यौदा पठायो।" : "AI returned an empty CV draft.");
-      const lines: string[] = draft.split("\n");
-      const headings = ["Professional Summary", "Core Skills", "Experience Bullets", "Optional ATS Keywords"];
-      const normalize = (line: string) => line.trim().replaceAll("#", "").replaceAll("*", "").replace(/:$/, "").trim().toLowerCase();
-      const extract = (heading: string) => {
-        const start = lines.findIndex((line: string) => normalize(line) === heading.toLowerCase());
-        if (start < 0) return "";
-        const end = lines.findIndex((line: string, index: number) => index > start && headings.some((item) => normalize(line) === item.toLowerCase()));
-        return lines.slice(start + 1, end < 0 ? lines.length : end).join("\n").trim();
-      };
-      const nextSummary = extract("Professional Summary");
-      const nextSkills = extract("Core Skills");
-      const nextExperience = extract("Experience Bullets");
-      if (!nextSummary && !nextSkills && !nextExperience) throw new Error(ne ? "AI ले अपेक्षित ढाँचामा नतिजा पठाएन। छुट्टै AI रिजुमे लेखक प्रयोग गरी नतिजा जाँच गर्नुहोस्।" : "AI returned an unexpected format. Please use the separate AI Resume Writer and review its output.");
-      setAiSuggestions({ summary: nextSummary, skills: nextSkills, experience: nextExperience });
-      setAiDraftNotice(ne ? "AI मस्यौदा तल तयार छ। लागू गर्ने सुझाव छान्नुहोस्; तपाईंका विद्यमान CV फिल्डहरू परिवर्तन भएका छैनन्।" : "AI draft is ready below. Choose which suggestions to apply; your existing CV fields have not been overwritten.");
-    } catch (error) {
-      setAiError(error instanceof Error ? error.message : (ne ? "AI CV सहायता अस्थायी रूपमा उपलब्ध छैन।" : "AI CV assistance is temporarily unavailable."));
-    } finally {
-      setAiBusy(false);
-    }
-  };
   const print = () => window.print();
   const heading = (title: string) => <h3 className="mb-3 mt-6 border-b pb-2 text-sm font-extrabold uppercase tracking-widest" style={{ color: accent, borderColor: accent + "55" }}>{title}</h3>;
   const section = (en: string, nepali: string) => ne ? nepali : en;
 
   return <main lang={ne ? "ne" : "en"} className={(ne ? "font-nepali " : "") + "mx-auto min-h-screen max-w-[1500px] px-4 py-8 sm:px-6 lg:px-8"}>
-    {aiDraftNotice && <div role="status" className="no-print mb-5 rounded-xl border border-teal-200 bg-teal-50 p-3 text-sm font-medium text-teal-900">{aiDraftNotice}</div>}
     <div className="mb-7 flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-700">{copy.studio}</p><h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{copy.title}</h1><p className="mt-2 max-w-2xl text-slate-600">{copy.description}</p></div>
-      <div className="no-print flex flex-wrap gap-2"><a href={ne ? "/ne/tools/ai-resume-writer" : "/tools/ai-resume-writer"} className="rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm font-extrabold text-teal-800 transition hover:bg-teal-100">{copy.aiWrite}</a><a href={ne ? "/ne/tools/ai-cover-letter-generator" : "/tools/ai-cover-letter-generator"} className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-50">{copy.cover}</a><button aria-label={copy.download} onClick={print} className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800">{copy.download}</button></div>
-    </div>
-    <div className="no-print mb-6 rounded-2xl border border-teal-200 bg-teal-50/60 p-4 sm:p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-wide text-teal-800">{copy.assistant}</p><h2 className="mt-1 text-lg font-extrabold text-slate-950">{copy.improveTitle}</h2><p className="mt-1 max-w-2xl text-sm text-slate-600">{copy.improveDescription}</p></div><button type="button" onClick={() => void generateCvWithAi()} disabled={aiBusy || !aiConsent || !role.trim()} className="rounded-xl bg-teal-700 px-4 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-50">{aiBusy ? copy.improving : copy.improve}</button></div>
-      <label className="mt-3 flex items-start gap-2 text-xs leading-5 text-slate-600"><input aria-label={ne ? "AI प्रशोधन सहमति" : "AI processing consent"} type="checkbox" checked={aiConsent} onChange={(event) => setAiConsent(event.target.checked)} className="mt-1 h-4 w-4 accent-teal-700" /><span>{copy.consent}</span></label>
-      {aiError && <p role="alert" className="mt-3 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{aiError}</p>}
-      {aiSuggestions && <div className="mt-4 space-y-3 rounded-xl border border-teal-200 bg-white p-4">
-        <p className="text-sm font-extrabold text-slate-900">{copy.suggestions}</p>
-        {aiSuggestions.summary && <div><p className="mb-1 text-xs font-bold uppercase text-slate-500">{section("Professional summary", "व्यावसायिक सारांश")}</p><p className="whitespace-pre-wrap text-sm text-slate-700">{aiSuggestions.summary}</p><button type="button" onClick={() => { setSummary(aiSuggestions.summary); setAiDraftNotice(ne ? "AI सारांश लागू भयो। निर्यात गर्नुअघि जाँच गर्नुहोस्।" : "AI summary applied. Review it before exporting."); }} className="mt-2 rounded-lg border border-teal-300 px-3 py-2 text-xs font-bold text-teal-800">{copy.useSummary}</button></div>}
-        {aiSuggestions.skills && <div className="border-t border-slate-100 pt-3"><p className="mb-1 text-xs font-bold uppercase text-slate-500">{section("Core skills", "मुख्य सीप")}</p><p className="whitespace-pre-wrap text-sm text-slate-700">{aiSuggestions.skills}</p><button type="button" onClick={() => { setSkills(aiSuggestions.skills.replace(/\r?\n/g, ", ")); setAiDraftNotice(ne ? "AI सीप लागू भए। निर्यात गर्नुअघि जाँच गर्नुहोस्।" : "AI skills applied. Review them before exporting."); }} className="mt-2 rounded-lg border border-teal-300 px-3 py-2 text-xs font-bold text-teal-800">{copy.useSkills}</button></div>}
-        {aiSuggestions.experience && <div className="border-t border-slate-100 pt-3"><p className="mb-1 text-xs font-bold uppercase text-slate-500">{section("Experience bullets", "अनुभवका बुँदा")}</p><p className="whitespace-pre-wrap text-sm text-slate-700">{aiSuggestions.experience}</p><button type="button" onClick={() => { setJobs((rows) => rows.length ? rows.map((row, index) => index === 0 ? { ...row, details: aiSuggestions.experience } : row) : [{ ...initialJob(), details: aiSuggestions.experience }]); setAiDraftNotice(ne ? "AI अनुभवका बुँदा लागू भए। निर्यात गर्नुअघि प्रत्येक तथ्य जाँच गर्नुहोस्।" : "AI experience bullets applied. Verify every fact before exporting."); }} className="mt-2 rounded-lg border border-teal-300 px-3 py-2 text-xs font-bold text-teal-800">{copy.useBullets}</button></div>}
-      </div>}
+      <div className="no-print flex flex-wrap gap-2"><button aria-label={copy.download} onClick={print} className="rounded-xl bg-teal-700 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-teal-900/10 transition hover:-translate-y-0.5 hover:bg-teal-800">{copy.download}</button></div>
     </div>
     <div className="no-print mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {templates.map(t => { const localized = templateText(t); return <button key={t.id} aria-label={`${localized.name}${template === t.id ? ` — ${ne ? "चयन गरिएको" : "Selected"}` : ""}`} onClick={() => setTemplate(t.id)} className={"rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md " + (template === t.id ? "border-teal-600 bg-teal-50 ring-2 ring-teal-100" : "border-slate-200 bg-white")}>

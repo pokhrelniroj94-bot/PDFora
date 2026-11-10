@@ -69,7 +69,6 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
   const copy = ne ? {
     home: "← PDFora गृहपृष्ठ", eyebrow: "PDFora बजार डेस्क", title: "NEPSE बजार ड्यासबोर्ड",
     description: "बजारको झलक, सूचकाङ्क र शेयर चार्ट, क्षेत्रगत प्रदर्शन, बढेका/घटेका शेयर तथा कम्पनीको मूल्य इतिहास।",
-    ai: "PDFora Smart Market AI खोल्नुहोस् →", open: "बजार खुलेको देखिन्छ", closed: "बजार बन्द / अन्तिम झलक",
     status: "ड्यासबोर्डले हरेक ६० सेकेन्डमा कोट अद्यावधिक जाँच गर्छ; स्रोतको समय तल देखिन्छ",
     refresh: "बजार डेटा अद्यावधिक गर्नुहोस्", loading: "लोड हुँदैछ…", source: "शेयर कोट स्रोत",
     chart: "मूल्य चार्ट", load: "चार्ट लोड गर्नुहोस्", candles: "क्यान्डल", line: "लाइन",
@@ -79,7 +78,7 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
   } : {
     home: "← PDFora home", eyebrow: "PDFora Market Desk", title: "NEPSE Market Dashboard",
     description: "Market snapshot, index and stock charts, sector performance, top movers and company price history.",
-    ai: "Open PDFora Smart Market AI →", open: "Market reported open", closed: "Market reported closed / snapshot",
+    open: "Market reported open", closed: "Market reported closed / snapshot",
     status: "Dashboard checks for quote updates every 60 seconds; source timestamps are shown below",
     refresh: "Refresh market data", loading: "Loading…", source: "Stock quote source",
     chart: "Price chart", load: "Load chart", candles: "Candles", line: "Line",
@@ -141,7 +140,7 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
     <section className="bg-[#071b1b] px-4 py-10 text-white sm:px-6">
       <div className="mx-auto max-w-7xl">
         <Link href="/" className="text-sm font-semibold text-teal-200 hover:underline">{copy.home}</Link>
-        <div className="mt-5 flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-300">{copy.eyebrow}</p><h1 className="mt-2 text-3xl font-black sm:text-4xl">{copy.title}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">{copy.description}</p><Link href="/tools/market-ai" className="mt-4 inline-flex rounded-xl border border-teal-300/40 bg-teal-300/10 px-4 py-2.5 text-sm font-bold text-teal-200 transition hover:bg-teal-300/20">{copy.ai}</Link></div><div className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm"><span className={"mr-2 inline-block h-2 w-2 rounded-full "+(data?.status?.is_open?"bg-emerald-400":"bg-slate-400")}/>{data?.status?.is_open?copy.open:copy.closed}<p className="mt-1 text-xs text-slate-400">{copy.status}</p></div></div>
+        <div className="mt-5 flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[.2em] text-teal-300">{copy.eyebrow}</p><h1 className="mt-2 text-3xl font-black sm:text-4xl">{copy.title}</h1><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">{copy.description}</p></div><div className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm"><span className={"mr-2 inline-block h-2 w-2 rounded-full "+(data?.status?.is_open?"bg-emerald-400":"bg-slate-400")}/>{data?.status?.is_open?copy.open:copy.closed}<p className="mt-1 text-xs text-slate-400">{copy.status}</p></div></div>
       </div>
     </section>
     <div className="mx-auto max-w-7xl space-y-7 px-4 py-8 sm:px-6">

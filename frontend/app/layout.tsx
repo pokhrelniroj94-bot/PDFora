@@ -4,7 +4,6 @@ import Script from "next/script";
 import CookieConsent from "../components/CookieConsent";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
-import SiteAIHelp from "../components/SiteAIHelp";
 import SiteFooter from "../components/SiteFooter";
 import SiteLanguageBar from "../components/SiteLanguageBar";
 
@@ -29,7 +28,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         {children}
         <SiteFooter />
         <ToolDirectory />
-        <SiteAIHelp />
         <Script id="pdfora-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@graph": [

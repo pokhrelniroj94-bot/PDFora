@@ -37,6 +37,7 @@ if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-
   implemented.add("image-compressor");
   implemented.add("image-format-converter");
 }
+for (const slug of ["nepali-janma-kundali", "nepali-guna-milan"]) if (allTools.includes(`slug==="${slug}"`)) implemented.add(slug);
 const missing = catalog.filter((slug) => !implemented.has(slug));
 assert.deepEqual(missing, [], `Tools without handlers: ${missing.join(", ")}`);
 for (const slug of ["nepal-forex-rates", "nepal-salary-tax-calculator", "nepal-electricity-bill-calculator", "nepal-public-holidays-2083"]) {
@@ -48,7 +49,7 @@ assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('
 
 assert.ok(allTools.includes('import("./NepaliTypingTool")') || allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");
 assert.ok(allTools.includes('import("./KundaliTool")') && allTools.includes('import("./GunaMilanTool")'), "Kundali and Guna Milan workspaces must be loaded");
-assert.ok(conditionalCases.includes("nepali-janma-kundali") && conditionalCases.includes("nepali-guna-milan"), "Kundali tools must have dedicated workspace handlers");
+assert.ok(allTools.includes('slug==="nepali-janma-kundali"') && allTools.includes('slug==="nepali-guna-milan"'), "Kundali tools must have dedicated workspace handlers");
 assert.ok(seoContent.includes('"nepali-janma-kundali"') && seoContent.includes('"nepali-guna-milan"'), "Kundali tools must have tool-specific SEO accuracy guidance");
 
 const nepalSlugs = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"[^"]+",category:"Nepal"/g)].map((m) => m[1]);

@@ -18,10 +18,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
-    "nepali-janma-kundali": { title: "Janma Kundali – Vedic Birth Chart, D1 & D9", description: "Calculate a Vedic birth chart with geocentric sidereal planetary positions, ascendant, Nakshatra, D1, D9 Navamsa and Vimshottari Dasha. Exact local birth time and place are important." },
-    "nepali-guna-milan": { title: "36 Guna Milan – Ashtakoota Kundali Matching", description: "Compare two birth charts across all eight Ashtakoota categories and review the raw score out of 36 with separately explained traditional exceptions." },
-    "nepali-janma-kundali": { title: "Janma Kundali – Vedic Birth Chart, D1 & D9", description: "Calculate a Vedic birth chart with Lahiri sidereal planetary positions, ascendant, Nakshatra, D1, D9 Navamsa and Vimshottari Dasha. Exact local birth time and place are important." },
-    "nepali-guna-milan": { title: "36 Guna Milan – Ashtakoota Kundali Matching", description: "Compare two birth charts across all eight Ashtakoota categories and review the raw score out of 36 with separately explained traditional exceptions." },
     "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly Savings Target", description: "Calculate how much to save each month to reach a target by your deadline. Enter current savings, target amount and months remaining; excludes interest and inflation." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
@@ -75,8 +71,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
     "meta-title-checker": { title: "SEO Title Checker – Meta Title Length & Google Preview", description: "Check SEO title length, preview a Google-style title link and compare the wording with your page heading. Review clarity without ranking promises." },
     "meta-description-checker": { title: "Meta Description Checker – Length & Google Snippet Preview", description: "Check meta description length, count characters and preview a search snippet. Write a clear, page-specific summary; Google may choose different text." },
-    "nepali-janma-kundali": { title: "Janma Kundali Online – Vedic Birth Chart, Lagna, Rashi & Dasha", description: "Calculate a Vedic birth chart using local birth time and birthplace. View sidereal planetary positions, D1 Rashi, D9 Navamsa and Vimshottari Mahadasha with documented Lahiri-approximation settings." },
-    "nepali-guna-milan": { title: "36 Guna Milan Calculator – Traditional Ashtakoota Matching", description: "Compare Moon signs and birth nakshatras using a documented 36-point Ashtakoota convention. Review all eight koota scores, source tables and traditional exceptions." },
   };
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;

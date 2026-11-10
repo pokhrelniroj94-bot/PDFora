@@ -67,6 +67,11 @@ try {
   assert.throws(() => calculateJanmaKundali({
     name: "", dateSystem: "AD", birthDate: "2001-02-29", birthTime: "12:00", placeId: "kathmandu",
   }), /जन्ममिति/);
+  const indiaMidnight = calculateJanmaKundali({
+    name: "Timezone regression fixture", dateSystem: "AD", birthDate: "2000-01-01", birthTime: "00:30", placeId: "mumbai",
+  });
+  assert.equal(indiaMidnight.dasha[0].start, "2000-01-01", "Dasha boundary date must use the birthplace timezone, not Kathmandu time.");
+  assert.ok(source.includes("formatBS(start,place.timeZone)") && source.includes("formatBS(end,place.timeZone)"), "Both Dasha boundary dates must use the selected birthplace timezone.");
   console.log("Janma Kundali regression tests passed: geocentric chart, D1/D9 houses, normalized planetary positions, exact Rahu/Ketu opposition and retrograde flags, and invalid-input rejection.");
 } finally {
   fs.rmSync(tempDir, { recursive: true, force: true });

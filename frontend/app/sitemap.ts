@@ -11,11 +11,9 @@ const baseUrl = "https://pd-fora.vercel.app";
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // Never submit redirected legacy URLs: /nepali-date-converter now redirects to
-  // /tools/nepali-date-converter, which is the single canonical catalog URL.
-  const legacyPdfEntries: MetadataRoute.Sitemap = legacyToolSlugs
-    .filter((slug) => slug !== "nepali-date-converter")
-    .map((slug) => ({
+  // Legacy PDF slugs are canonical root routes only. Redirect-only routes such as
+  // /nepali-date-converter are intentionally absent from this registry.
+  const legacyPdfEntries: MetadataRoute.Sitemap = legacyToolSlugs.map((slug) => ({
     url: `${baseUrl}/${slug}`,
     changeFrequency: "monthly",
     priority: prioritySlugs.has(slug) ? 0.9 : 0.7,

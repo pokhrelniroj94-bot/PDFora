@@ -7,6 +7,7 @@ ensureTypeStripping();
 
 const read = (relative) => fs.readFileSync(path.join(frontendRoot, relative), "utf8");
 const sitemapSource = read("app/sitemap.ts");
+const legacyToolSlugsSource = read("lib/legacy-tool-slugs.ts");
 const nextConfigSource = read("next.config.ts");
 const nepaliPdfPageSource = read("app/[locale]/[slug]/page.tsx");
 const catalogToolSeoSource = read("components/CatalogToolSEOContent.tsx");
@@ -196,7 +197,8 @@ for (const slug of ["pdf-information", "pdf-to-png", "pdf-to-html", "pdf-to-exce
 }
 assert.match(nepaliPdfPageSource, /Object\.keys\(nepaliPdfRoutes\)/, "All registered Nepali PDF routes must be generated so legacy URLs resolve");
 assert.ok(nextConfigSource.includes('{ source: "/nepali-date-converter", destination: "/tools/nepali-date-converter", permanent: true }'), "Legacy /nepali-date-converter must permanently redirect to the catalog canonical URL");
-assert.match(sitemapSource, /filter\(\(slug\) => slug !== "nepali-date-converter"\)/, "Redirected legacy URLs must be excluded from the sitemap");
+assert.doesNotMatch(legacyToolSlugsSource, /"nepali-date-converter"/, "Redirect-only Nepali date URL must not enter the canonical legacy PDF route registry");
+assert.match(sitemapSource, /\$\{baseUrl\}\/tools\/\$\{tool\.slug\}/, "The canonical catalog URL must remain in the sitemap");
 assert.ok(robotsSource.includes('disallow: ["/api/"]'), "The 27 API endpoints in the Search Console robots export must remain intentionally blocked");
 
 console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} approved Nepali tool URLs; ${toolRoutes.length} unapproved localized catalog tools remain noindex.`);

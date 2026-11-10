@@ -490,8 +490,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
     ],
     faqs: [{ question: "के कुनै पनि PDF editable Word बन्छ?", answer: "Text-based PDF राम्रोसँग रूपान्तरण हुन सक्छ। Scan भएका PDF मा OCR आवश्यक पर्न सक्छ।" }, { question: "के फोटो र तालिका उही ठाउँमा रहन्छन्?", answer: "सधैँ होइन। रूपान्तरणपछि फोटो, तालिका र page break जाँच्नुहोस्।" }, { question: "के Word फाइल तुरुन्त बुझाउन मिल्छ?", answer: "मूल PDF सँग तुलना, formatting सुधार र proofreading गरेपछि मात्र प्रयोग गर्नुहोस्।" }],
     toolLinks: [{ label: "PDF बाट Word", href: "/pdf-to-word" }, { label: "PDF बाट Text", href: "/pdf-to-text" }]
-  }
-
+  },
   {
     slug: "repair-pdf-guide-online",
     title: "नखुल्ने वा बिग्रिएको PDF कसरी मर्मत गर्ने?",

@@ -11,6 +11,8 @@ const nextConfigSource = read("next.config.ts");
 const nepaliPdfPageSource = read("app/[locale]/[slug]/page.tsx");
 const catalogToolSeoSource = read("components/CatalogToolSEOContent.tsx");
 const pdfToExcelLayoutSource = read("app/pdf-to-excel/layout.tsx");
+const pdfToExcelPageSource = read("app/pdf-to-excel/page.tsx");
+const niroj77ToolSource = read("components/Niroj77Tool.tsx");
 const nepseLabPageSource = read("app/nepse-lab/page.tsx");
 const ocrPageSource = read("app/ocr-pdf/page.tsx");
 const generatedBlogPageSource = read("app/blog/[slug]/page.tsx");
@@ -72,7 +74,10 @@ for (const slug of ["case-converter", "prime-number-checker", "json-to-yaml", "d
   assert.match(catalogToolSeoSource, new RegExp('"' + slug + '"'), `${slug} must have page-specific Search Console recovery guidance`);
 }
 assert.match(catalogToolSeoSource, /toolSpecificSteps\[tool\.slug\]/, "Reviewed tools must render their own instructions instead of repeated generic steps");
-assert.doesNotMatch(pdfToExcelLayoutSource, /<ToolSEOContent/, "PDF to Excel must not append a duplicate generic guide to its bespoke page content");
+assert.doesNotMatch(pdfToExcelLayoutSource, /<ToolSEOContent/, "PDF to Excel layout must not append a duplicate generic guide");
+assert.match(pdfToExcelPageSource, /showSeoContent=\{false\}/, "PDF to Excel must disable the nested generic guide because its page contains a bespoke XLSX guide");
+assert.match(niroj77ToolSource, /showSeoContent\?: boolean/, "Niroj77Tool must allow bespoke pages to suppress its generic SEO block");
+assert.match(niroj77ToolSource, /showSeoContent && <ToolSEOContent/, "Niroj77Tool must render generic SEO content only when explicitly enabled");
 for (const section of ["SMA 20/50 crossover", "RSI 14 recovery", "20-day breakout", "Maximum drawdown", "Important limitations before using results"]) {
   assert.ok(nepseLabPageSource.includes(section), `NEPSE Lab must explain ${section} for users and search crawlers`);
 }

@@ -1,5 +1,6 @@
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const origin = new URL(baseUrl).origin;
+const canonicalOrigin = process.env.PDFORA_EXPECT_CANONICAL_ORIGIN || "https://pd-fora.vercel.app";
 const sitemapUrl = new URL("/sitemap.xml", origin);
 const robotsUrl = new URL("/robots.txt", origin);
 const concurrency = 8;
@@ -34,7 +35,7 @@ const duplicates = [];
 const urls = [];
 for (const loc of locs) {
   const parsed = new URL(loc);
-  if (parsed.origin !== origin) throw new Error("Unexpected sitemap origin: " + loc);
+  if (parsed.origin !== canonicalOrigin) throw new Error("Unexpected sitemap canonical origin: " + loc);
   if (parsed.pathname.startsWith("/api/") || parsed.pathname === "/ocr-pdf") {
     throw new Error("Non-indexable endpoint included in sitemap: " + loc);
   }

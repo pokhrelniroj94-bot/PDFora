@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
         destination: `/${slug}`,
         permanent: true,
       })),
+      // Retire the old unprefixed Nepali-date URL in favour of the catalog canonical.
+      { source: "/nepali-date-converter", destination: "/tools/nepali-date-converter", permanent: true },
       // English is served from the unprefixed URLs and never under /en.
       { source: "/en", destination: "/", permanent: true },
       { source: "/en/:path*", destination: "/:path*", permanent: true },

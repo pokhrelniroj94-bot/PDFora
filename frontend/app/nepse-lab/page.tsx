@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import NepseAlphaLab from "../../components/NepseAlphaLab";
+import NepseRuleBasedAnalysis from "../../components/NepseRuleBasedAnalysis";
 
 export const metadata: Metadata = {
-  title: "NEPSE Strategy Backtester & Quant Lab | PDFora",
-  description: "Backtest NEPSE SMA, RSI and breakout strategies on historical daily prices. Include transaction cost assumptions and compare with buy-and-hold.",
+  title: "AI-Free NEPSE Stock Analyzer & Quant Lab | PDFora",
+  description: "Analyze NEPSE shares with formula-based RSI, MACD, EMA, Bollinger Bands, support and resistance, fundamental ratios, portfolio P/L and historical strategy backtests. No AI.",
   alternates: { canonical: "https://pd-fora.vercel.app/nepse-lab" },
 };
 
 export default function NepseLabPage() {
   return (
     <>
+      <main className="mx-auto max-w-7xl px-4 pt-8 sm:px-6"><NepseRuleBasedAnalysis /></main>
       <NepseAlphaLab />
       <main className="bg-slate-50 px-4 pb-14 sm:px-6">
         <article className="mx-auto max-w-4xl space-y-8">

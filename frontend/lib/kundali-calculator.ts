@@ -128,8 +128,8 @@ function formatAD(date: Date, timeZone: string): string {
   return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
-function formatBS(date: Date): string {
-  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kathmandu", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date);
+function formatBS(date: Date, timeZone = "Asia/Kathmandu"): string {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date);
   const get = (type: string) => parts.find((part) => part.type === type)?.value ?? "";
   const y = Number(get("year")), m = get("month"), d = get("day");
   try {
@@ -216,7 +216,7 @@ export function calculateJanmaKundali(input: KundaliInput): KundaliResult {
     const years = i===0 ? remainingYears : lord.years;
     const start = new Date(cursor);
     const end = new Date(cursor + years*365.2425*DAY_MS);
-    dasha.push({lord:lord.lord,start:formatBS(start),end:formatBS(end),startAD:formatAD(start,place.timeZone),endAD:formatAD(end,place.timeZone),years:Number(years.toFixed(2)),current:Date.now()>=start.getTime()&&Date.now()<end.getTime()});
+    dasha.push({lord:lord.lord,start:formatBS(start,place.timeZone),end:formatBS(end,place.timeZone),startAD:formatAD(start,place.timeZone),endAD:formatAD(end,place.timeZone),years:Number(years.toFixed(2)),current:Date.now()>=start.getTime()&&Date.now()<end.getTime()});
     cursor=end.getTime();
   }
   const currentDasha = dasha.find((period)=>period.current)?.lord ?? "हालको महादशा यो १२०-वर्षे चक्रबाहिर छ";

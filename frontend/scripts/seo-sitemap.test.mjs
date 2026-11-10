@@ -67,7 +67,7 @@ for (const slug of reportedNepaliLongTitleSlugs) {
 }
 assert.match(nepaliBlogPageSource, /title: searchTitle/, "Nepali blog metadata must use concise search titles without changing visible article headlines");
 
-const generatedArticleSlugs = toolGuidesSource.match(/const existingBlogSlugs = new Set\\(\\[([\\s\\S]*?)\\]\\);/)?.[1] ?? "";
+const generatedArticleSlugs = toolGuidesSource.match(/const existingBlogSlugs = new Set\(\[([\s\S]*?)\]\);)?.[1] ?? "";
 for (const slug of ["repair-pdf-guide-online", "pdf-to-text-guide-online"]) {
   assert.ok(generatedArticleSlugs.includes(slug), `${slug} must use its individually reviewed editorial guide instead of the generic template`);
   assert.ok(englishEditorialBlogSource.includes(`slug: "${slug}"`), `${slug} must have a bespoke editorial article`);

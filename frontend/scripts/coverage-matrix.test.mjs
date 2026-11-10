@@ -12,7 +12,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.counts.catalogUtilities, 122);
   assert.equal(report.counts.tools, 171);
   assert.equal(report.counts.matrixRows, 12 * 171);
-  assert.equal(report.rows.length, 2028);
+  assert.equal(report.rows.length, 2052);
   assert.equal(report.counts.localizedNepaliTools, 119, "49 Nepali PDF routes plus 70 Nepali catalog routes");
   assert.equal(report.counts.indexableNepaliTools, 6);
   assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 171);

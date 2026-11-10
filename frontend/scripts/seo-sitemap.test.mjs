@@ -49,7 +49,7 @@ for (const slug of ["case-converter", "prime-number-checker", "json-to-yaml", "d
 }
 assert.match(catalogToolSeoSource, /toolSpecificSteps\[tool\.slug\]/, "Reviewed tools must render their own instructions instead of repeated generic steps");
 assert.doesNotMatch(pdfToExcelLayoutSource, /<ToolSEOContent/, "PDF to Excel must not append a duplicate generic guide to its bespoke page content");
-for (const section of ["SMA 20/50 crossover", "RSI 14 recovery", "20-day breakout", "maximum drawdown", "Important limitations before using results"]) {
+for (const section of ["SMA 20/50 crossover", "RSI 14 recovery", "20-day breakout", "Maximum drawdown", "Important limitations before using results"]) {
   assert.ok(nepseLabPageSource.includes(section), `NEPSE Lab must explain ${section} for users and search crawlers`);
 }
 

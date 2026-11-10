@@ -648,7 +648,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "SEO title र H1 एउटै हुन्?", answer: "होइन। SEO title HTML title element हो भने H1 पेजको मुख्य देखिने heading हो। दुवैले एउटै विषय वर्णन गर्नुपर्छ, तर शब्दशः समान हुन आवश्यक छैन।" },
       { question: "के title checker ले Google ranking वा देखिने शीर्षक ग्यारेन्टी गर्छ?", answer: "गर्दैन। यसले character count र अनुमानित preview दिन्छ। Google ले title link आफैँ चयन वा परिवर्तन गर्न सक्छ; checker ले ranking भविष्यवाणी गर्दैन।" }
     ],
-    toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }, { label: "SEO Tools", href: "/tools" }],
+    toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }],
     sources: [{ label: "Google Search Central: Title links", url: "https://developers.google.com/search/docs/appearance/title-link" }]
   }
 ];

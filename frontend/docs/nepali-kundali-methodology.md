@@ -14,7 +14,7 @@
 - Houses: whole-sign houses counted from the ascendant sign.
 - Rahu/Ketu: mean lunar node and its exact opposite.
 - Nakshatra: 27 equal sectors of 13°20′; pada: four equal quarters.
-- Vimshottari Mahadasha: 120-year lord sequence, with the birth balance derived from the Moon's progress through its birth nakshatra; year length used here is 365.2425 days.
+- Vimshottari Mahadasha: 120-year lord sequence, with the birth balance derived from the Moon's progress through its birth nakshatra; year length used here is 365.2425 days. Dasha boundary dates are formatted in the selected birthplace time zone before conversion to Bikram Sambat.
 
 ## Accuracy, licensing and verification
 Astronomy Engine documents a design target of approximately ±1 arcminute against NOVAS for its astronomical calculations. This is not a guarantee of identical astrological output across different software: ayanamsha conventions, true/mean node selection, house systems, time-zone history, coordinates and dasha-year conventions can all cause differences.
@@ -28,7 +28,7 @@ The exact calculation settings used internally by Hamro Patro are not publicly c
 - BS input is available only within the converter's verified 1975–2083 BS data.
 - The city selector includes supported Nepal and Indian cities and uses approximate city-centre coordinates; exact coordinates and the correct IANA time zone should be entered for rural or international birthplaces, or when the ascendant is close to a sign boundary.
 - Birth time is entered to the nearest minute. An inaccurate or rounded birth time can change the ascendant and house placement.
-- This first release does not calculate Navamsa/D9, other divisional charts, Ashtakoota/36-guna matching, Mangal dosha or personalized muhurta.
+- This release calculates D1/Rashi, D9/Navamsa and Vimshottari Mahadasha. The separate Ashtakoota tool calculates a documented 36-guna convention. Other divisional charts, Mangal dosha and personalized muhurta are not included.
 - Astrological interpretations are traditional beliefs, not scientifically validated predictions.
 
 ## Privacy

@@ -356,7 +356,7 @@ const priorityEditorialBlogPosts: BlogPost[] = [
       { question: "Is an SEO title the same as an H1?", answer: "No. The SEO title is the HTML title element, while the H1 is the main visible page heading. They should describe the same topic but do not have to use identical wording." },
       { question: "Can a title checker guarantee Google rankings or the exact title shown?", answer: "No. It can count characters and provide an approximate preview. Google chooses title links automatically and may rewrite them; a checker cannot predict rankings." }
     ],
-    toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }, { label: "SEO Tools", href: "/tools" }],
+    toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }],
     sources: [{ label: "Google Search Central: Influencing title links in Google Search", url: "https://developers.google.com/search/docs/appearance/title-link" }]
   }
 ];

@@ -336,7 +336,6 @@ const priorityEditorialBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "Percentage Change Calculator", href: "/tools/percentage-change-calculator" }, { label: "Percentage of Number Calculator", href: "/tools/percentage-of-number-calculator" }, { label: "Tip Calculator", href: "/tools/tip-calculator" }]
   },
-  },
   {
     slug: "meta-title-checker-guide",
     title: "SEO Title Checker Guide: How to Write Clear Google Page Titles",

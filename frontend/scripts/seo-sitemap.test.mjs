@@ -112,6 +112,7 @@ assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\
 const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);
+  assert.ok(nepaliLocalizedBlogSource.includes(`slug: "${slug}"`), `${slug} must have a reviewed Nepali translation before hreflang is published`);
 }
 assert.match(blogPostsSource, /return !existingArticleSlugs\.has\(slug\) && toolCatalog\.some\(/, "Reviewed editorial guides must be indexable while unreviewed generated guides remain noindex");
 assert.doesNotMatch(nepaliBlogArticleSource, /"@type":\s*"FAQPage"/, "Nepali blog pages must not emit deprecated FAQ rich-result markup");

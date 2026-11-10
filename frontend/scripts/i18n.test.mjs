@@ -24,7 +24,7 @@ const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
 test("every curated Nepali blog article is a real localized route with hreflang", () => {
-  assert.equal(nepaliLocalizedBlogPosts.length, 27);
+  assert.equal(nepaliLocalizedBlogPosts.length, 29);
   for (const post of nepaliLocalizedBlogPosts) {
     const localizedPath = "/blog/" + post.slug;
     assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);

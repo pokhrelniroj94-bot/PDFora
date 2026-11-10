@@ -630,7 +630,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
   }
 ];
 
-export const nepaliLocalizedBlogPosts: BlogPost[...priorityNepaliLocalizedBlogPosts, ] = [
+export const nepaliLocalizedBlogPosts: BlogPost[] = [...priorityNepaliLocalizedBlogPosts,
   ...coreNepaliLocalizedBlogPosts,
   ...additionalNepaliLocalizedBlogPosts,
   ...nepaliPdfBlogPosts,

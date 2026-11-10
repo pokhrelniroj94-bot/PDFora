@@ -39,6 +39,8 @@ assert.deepEqual(
 
 assert.match(sitemapSource, /Object\.keys\(nepaliPdfRoutes\)/, "Sitemap must derive PDF URLs from the canonical route registry");
 assert.match(sitemapSource, /isLocalizedToolIndexable\("ne", slug\)/, "Localized sitemap entries must pass the same default-deny gate as metadata");
+assert.match(sitemapSource, /\$\{baseUrl\}\/nepse-lab/, "The canonical NEPSE Strategy Lab page must be discoverable in the sitemap");
+assert.match(sitemapSource, /\$\{baseUrl\}\/resume-builder/, "The canonical Resume Builder page must be discoverable in the sitemap");
 assert.match(sitemapSource, /nepaliPdfRoutes\[slug\]/, "PDF URLs must retain their established root-level paths");
 assert.doesNotMatch(sitemapSource, /\.\.\.\["merge-pdf",\s*"split-pdf",\s*"compress-pdf",\s*"rotate-pdf",\s*"pdf-to-word",\s*"pdf-to-jpg"\]/, "Do not maintain a second hard-coded localized PDF allowlist");
 assert.match(sitemapSource, /!isCatalogGeneratedGuide\(post\.slug\)/, "Unreviewed generated catalogue guides must stay out of the sitemap");

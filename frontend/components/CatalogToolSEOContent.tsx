@@ -72,6 +72,47 @@ export default function CatalogToolSEOContent({
   guideSlug?: string;
 }) {
   const uniqueFaqItems = questions.slice(0, 4);
+  if (tool.slug === "prime-number-checker") {
+    return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Math utility</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Check whether a whole number is prime or composite</h2>
+        <p className="mt-4 leading-8 text-slate-700">A prime number is an integer greater than 1 that has exactly two positive factors: 1 and itself. A composite number is greater than 1 and has additional positive factors. Enter a whole number to test its classification and review the available factor information.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to use the prime number checker</h2>
+        <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
+          <li>Enter a whole-number integer in the input field.</li>
+          <li>Run the checker to test the number.</li>
+          <li>Read whether the value is prime or composite and inspect the factor result.</li>
+          <li>Try another integer to compare prime and composite examples.</li>
+        </ol>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Prime number examples and rules</h2>
+        <p className="mt-3 leading-8 text-slate-700">The numbers 2, 3, 5, 7, 11 and 13 are prime. The number 2 is the only even prime; every other even integer greater than 2 is composite. For example, 21 is composite because it can be divided evenly by 3 and 7.</p>
+        <p className="mt-3 leading-8 text-slate-700">Zero and 1 are not prime numbers. Negative integers are not classified as prime numbers under the standard positive-prime definition. A prime number must be greater than 1 and have no positive divisors other than 1 and itself.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to test divisibility efficiently</h2>
+        <p className="mt-3 leading-8 text-slate-700">To determine whether an integer n greater than 1 is prime, it is sufficient to test possible divisors up to the square root of n. If no integer from 2 through the square root divides it evenly, the number is prime. This works because any factor larger than the square root would have a matching factor smaller than the square root.</p>
+        <p className="mt-3 leading-8 text-slate-700">For example, to test 29, check possible divisors 2, 3, 4 and 5. None divides 29 evenly, so 29 is prime. For 35, the divisor 5 gives 35 = 5 × 7, so 35 is composite.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">
+          <div><h3 className="font-bold text-slate-900">Is 1 a prime number?</h3><p className="mt-1 leading-7 text-slate-700">No. A prime number has exactly two distinct positive factors. The number 1 has only one positive factor: itself.</p></div>
+          <div><h3 className="font-bold text-slate-900">Is 2 the only even prime number?</h3><p className="mt-1 leading-7 text-slate-700">Yes. Every even integer greater than 2 is divisible by 2 and therefore has more than two positive factors.</p></div>
+          <div><h3 className="font-bold text-slate-900">How can I check a large number for primality?</h3><p className="mt-1 leading-7 text-slate-700">For a basic divisibility test, checking possible factors up to the square root is sufficient. Very large integers may require specialised primality algorithms.</p></div>
+          <div><h3 className="font-bold text-slate-900">What is the difference between prime and composite?</h3><p className="mt-1 leading-7 text-slate-700">A prime integer greater than 1 has exactly two positive factors. A composite integer greater than 1 has more than two.</p></div>
+        </div>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Related maths tools</h2>
+        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
+      </section>
+    </div></article>;
+  }
   if (tool.slug === "tip-calculator") {
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">

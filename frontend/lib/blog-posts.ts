@@ -335,6 +335,30 @@ const priorityEditorialBlogPosts: BlogPost[] = [
       { question: "Can percentage change be calculated from zero?", answer: "The standard formula is undefined when the original value is zero because it divides by the starting value. Use the absolute difference or describe the change without a percentage." }
     ],
     toolLinks: [{ label: "Percentage Change Calculator", href: "/tools/percentage-change-calculator" }, { label: "Percentage of Number Calculator", href: "/tools/percentage-of-number-calculator" }, { label: "Tip Calculator", href: "/tools/tip-calculator" }]
+  },
+  },
+  {
+    slug: "meta-title-checker-guide",
+    title: "SEO Title Checker Guide: How to Write Clear Google Page Titles",
+    description: "Learn how to check an SEO title, write a clear page title, compare it with your H1 and understand why Google may rewrite or shorten title links.",
+    keyword: "SEO title checker how to check SEO title",
+    updated: "2026-11-10",
+    readTime: "5 min read",
+    intro: "A page title helps readers and search engines understand what a page is about. The HTML title element, the visible H1 heading and the title link shown in Google Search can be different. This guide explains how to check the title you publish, improve its wording and review the result without relying on an arbitrary character limit.",
+    sections: [
+      { heading: "HTML title, H1 and Google title link are different", paragraphs: ["The HTML title is the text in the page's title element. It is commonly used as the browser-tab label and is one source Google may use for a search-result title link. The H1 is the main visible heading on the page. They can be similar, but each should describe the same page accurately.", "Google may generate a different title link using the page title, visible heading, prominent text, link text and other signals. A title checker can review the text you enter; it cannot guarantee which wording Google will display for every query."] },
+      { heading: "How to check an SEO title", paragraphs: ["Open the actual page and copy its current HTML title, not just the text shown in the browser address bar. Paste it into the SEO Title Checker to count characters and review an approximate search preview. Then compare it with the visible H1 and the main content.", "If the title is vague, repetitive or too broad, rewrite it so the main topic and page purpose are clear. Put the most useful wording early when it reads naturally, and include the brand only when it helps readers identify the source."] },
+      { heading: "Is there a perfect title length?", paragraphs: ["Google does not publish a fixed character limit that guarantees a title will display in full. Search-result titles can be shortened to fit the available space, which varies by device and context. A character count is useful for spotting unusually long drafts, but it is not a ranking score or a pass/fail rule.", "Aim for a concise description rather than forcing every title into an exact number of characters. Remove repeated words and boilerplate, but do not delete important context just to reach an arbitrary length."] },
+      { heading: "Common title mistakes to avoid", paragraphs: ["Avoid using the same title on many pages, repeating keyword variations, stuffing the brand name several times or promising something the page does not provide. A title should set an accurate expectation for the page that opens after the click.", "After publishing a meaningful change, check the live HTML title and canonical URL. Search Console can show which queries and pages receive impressions, but Google needs to recrawl and reprocess a page before its search-result title may change."] }
+    ],
+    faqs: [
+      { question: "How do I check my SEO title?", answer: "Open the page, copy its actual HTML title element and paste it into an SEO title checker. Review the character count and preview, then compare the wording with the page's H1 and content." },
+      { question: "What is the ideal SEO title character limit?", answer: "Google does not specify a fixed character limit that guarantees full display. Write a concise, descriptive title; the visible title link may be shortened to fit the device and query." },
+      { question: "Is an SEO title the same as an H1?", answer: "No. The SEO title is the HTML title element, while the H1 is the main visible page heading. They should describe the same topic but do not have to use identical wording." },
+      { question: "Can a title checker guarantee Google rankings or the exact title shown?", answer: "No. It can count characters and provide an approximate preview. Google chooses title links automatically and may rewrite them; a checker cannot predict rankings." }
+    ],
+    toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }, { label: "SEO Tools", href: "/tools" }],
+    sources: [{ label: "Google Search Central: Influencing title links in Google Search", url: "https://developers.google.com/search/docs/appearance/title-link" }]
   }
 ];
 

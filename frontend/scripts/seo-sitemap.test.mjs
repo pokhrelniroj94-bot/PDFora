@@ -196,6 +196,7 @@ for (const slug of ["pdf-information", "pdf-to-png", "pdf-to-html", "pdf-to-exce
 }
 assert.match(nepaliPdfPageSource, /Object\.keys\(nepaliPdfRoutes\)/, "All registered Nepali PDF routes must be generated so legacy URLs resolve");
 assert.ok(nextConfigSource.includes('{ source: "/nepali-date-converter", destination: "/tools/nepali-date-converter", permanent: true }'), "Legacy /nepali-date-converter must permanently redirect to the catalog canonical URL");
+assert.match(sitemapSource, /filter\(\(slug\) => slug !== "nepali-date-converter"\)/, "Redirected legacy URLs must be excluded from the sitemap");
 assert.ok(robotsSource.includes('disallow: ["/api/"]'), "The 27 API endpoints in the Search Console robots export must remain intentionally blocked");
 
 console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} approved Nepali tool URLs; ${toolRoutes.length} unapproved localized catalog tools remain noindex.`);

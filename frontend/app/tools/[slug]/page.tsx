@@ -199,6 +199,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Can I calculate percentage change from zero?", a: "No. The standard formula is undefined when the original value is zero because it divides by the starting value." },
       { q: "What is the difference between percentage change and percentage points?", a: "Percentage change is relative to the starting value. Percentage points are the direct difference between two percentages, such as 10% to 12% = 2 percentage points." }
     ],
+    "meta-title-checker": [
+      { q: "How do I check my SEO title?", a: "Copy the actual HTML title element from your page, paste it into the checker and compare the preview with your H1 and page content." },
+      { q: "What is the ideal SEO title character limit?", a: "Google does not set a fixed character limit that guarantees full display. Write a concise, descriptive title; Google may shorten it for the device and query." },
+      { q: "Is the SEO title the same as the H1?", a: "No. The SEO title is the HTML title element; the H1 is the main visible heading. They should describe the same page accurately." },
+      { q: "Can this checker guarantee Google rankings?", a: "No. It counts characters and provides an approximate preview. Google chooses title links automatically and may rewrite them." }
+    ],
     "meta-description-checker": [
       { q: "What is a meta description?", a: "A meta description is a short summary of a page that may be used as the descriptive text in a search result. It should accurately explain what the visitor will find on that specific page." },
       { q: "How long should a meta description be?", a: "Google does not set a fixed character limit. A practical 120–160 character range can help with drafting, but snippets are shortened or rewritten according to the device, query and available display space. Do not add filler just to reach a number." },

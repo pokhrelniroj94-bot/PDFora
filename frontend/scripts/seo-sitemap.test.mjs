@@ -27,6 +27,7 @@ const pdfToolSeoSource = read("components/ToolSEOContent.tsx");
 const nepaliToolsDirectorySource = read("app/[locale]/tools/page.tsx");
 const nepaliNepseSource = read("app/ne/nepse-technical-analysis/page.tsx");
 const englishToolPageSource = read("app/tools/[slug]/page.tsx");
+const nepaliBlogPageSource = read("app/[locale]/blog/[slug]/page.tsx");
 const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
@@ -43,6 +44,25 @@ assert.deepEqual(
   [...pdfRoutes.filter((slug) => isLocalizedToolIndexable("ne", slug))].sort(),
   "The explicit Nepali PDF allowlist must match exactly the PDF routes approved for indexing",
 );
+
+const reportedNepaliLongTitleSlugs = [
+  "nepali-date-converter-bs-to-ad-guide", "nepal-vat-calculator-13-percent-guide",
+  "ropani-aana-paisa-daam-land-measurement-guide", "tola-to-gram-gold-weight-conversion-nepal",
+  "nepali-number-to-words-lakh-crore-guide", "nepal-mobile-number-format-checker-guide",
+  "nepal-public-holidays-2083-calendar-guide", "nepal-rastra-bank-daily-exchange-rates-guide",
+  "nepal-salary-income-tax-calculator-2083-84-guide", "nepse-cash-dividend-and-bonus-share-calculator-guide",
+  "nepse-market-news-and-ipo-updates", "nepse-share-buy-sell-profit-calculator-guide",
+  "preeti-to-unicode-nepali-font-converter-guide", "nepali-calendar-bs-month-guide",
+  "compress-pdf-to-under-1mb-online", "convert-jpg-images-to-one-pdf-on-phone",
+  "convert-pdf-pages-to-jpg-images", "convert-pdf-table-to-excel-spreadsheet",
+  "convert-pdf-to-editable-word-document", "merge-multiple-pdf-files-into-one-document",
+  "split-pdf-and-extract-selected-pages", "english-to-nepali-digits-converter-guide",
+  "loksewa-online-form-photo-resizer-guide", "nea-electricity-bill-calculator-nepal-guide",
+];
+for (const slug of reportedNepaliLongTitleSlugs) {
+  assert.match(nepaliBlogPageSource, new RegExp('"' + slug + '"\\s*:'), "Search Console title recovery missing for " + slug);
+}
+assert.match(nepaliBlogPageSource, /title: searchTitle/, "Nepali blog metadata must use concise search titles without changing visible article headlines");
 
 assert.match(sitemapSource, /Object\.keys\(nepaliPdfRoutes\)/, "Sitemap must derive PDF URLs from the canonical route registry");
 assert.match(sitemapSource, /isLocalizedToolIndexable\("ne", slug\)/, "Localized sitemap entries must pass the same default-deny gate as metadata");

@@ -17,6 +17,7 @@ const niroj77ToolSource = read("components/Niroj77Tool.tsx");
 const nepseLabPageSource = read("app/nepse-lab/page.tsx");
 const ocrPageSource = read("app/ocr-pdf/page.tsx");
 const generatedBlogPageSource = read("app/blog/[slug]/page.tsx");
+const blogPostsSource = read("lib/blog-posts.ts");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
 const homepageSource = read("app/page.tsx");
@@ -108,6 +109,12 @@ assert.doesNotMatch(sitemapSource, /\/api\//, "API endpoints must never be submi
 assert.match(sitemapSource, /tool\.slug !== "ocr-pdf"/, "Unavailable OCR must be explicitly filtered out of the sitemap");
 assert.match(ocrPageSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unavailable OCR page must remain intentionally noindex");
 assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unreviewed generated guide pages must remain noindex until editorial review");
+const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
+for (const slug of priorityEditorialGuides) {
+  assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);
+  assert.ok(nepaliLocalizedBlogSource.includes(`slug: "${slug}"`), `${slug} must have a reviewed Nepali translation before hreflang is published`);
+}
+assert.match(blogPostsSource, /return !existingArticleSlugs\.has\(slug\) && toolCatalog\.some\(/, "Reviewed editorial guides must be indexable while unreviewed generated guides remain noindex");
 assert.doesNotMatch(nepaliBlogArticleSource, /"@type":\s*"FAQPage"/, "Nepali blog pages must not emit deprecated FAQ rich-result markup");
 assert.doesNotMatch(pdfToolJsonLdSource, /FAQPage/, "PDF tool JSON-LD must not emit deprecated FAQ rich-result markup");
 assert.doesNotMatch(pdfToolSeoSource, /FAQPage/, "Localized PDF tool pages must retain visible FAQs without obsolete FAQ markup");

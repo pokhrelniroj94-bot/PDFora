@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
-    "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly Savings Target", description: "Calculate how much to save each month to reach a target by your deadline. Enter current savings, target amount and months remaining; excludes interest and inflation." },
+    "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly Savings Needed | PDFora", description: "Calculate how much to save each month using your target, current savings and time remaining. Interest and returns are not included." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
-    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate percentage increase or decrease between an original value and a new value with a clear direction and percentage result." },
-    "tip-calculator": { title: "Tip Calculator – Calculate Tip, Total Bill & Split", description: "Calculate a tip by percentage, add it to the bill and split the total per person. See the formula and check for included service charges." },
+    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease | PDFora", description: "Calculate percentage increase or decrease between an original value and a new value. See the formula and interpret negative results." },
+    "tip-calculator": { title: "Tip Calculator – Tip, Total & Bill Split | PDFora", description: "Calculate a tip percentage, final bill and equal per-person share. Check service charges before adding another tip." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "px-rem-converter": { title: "PX to REM Converter – CSS Units with Root Font Size", description: "Convert CSS pixel values to rem and rem to pixels using an editable root font size. Useful for responsive typography and spacing." },
     "color-contrast-checker": { title: "Color Contrast Checker – WCAG Text Accessibility", description: "Check foreground and background colour contrast ratios and review WCAG guidance for normal and large text." },
     "word-character-counter": { title: "Word Counter – Count Words, Characters & Reading Time", description: "Count words, characters with or without spaces, sentences and paragraphs, and estimate reading time for pasted text." },
-    "reading-time-calculator": { title: "Reading Time Calculator – Words to Minutes & WPM", description: "Estimate article reading time from its word count. Adjust reading speed in words per minute (WPM); the result is an estimate, not a guaranteed duration." },
+    "reading-time-calculator": { title: "Reading Time Calculator – Words to Minutes | PDFora", description: "Estimate reading time from word count and words per minute. Adjust the speed for your audience and the complexity of the text." },
     "json-formatter-validator": { title: "JSON Formatter & Validator – Pretty Print or Minify JSON", description: "Format, minify and validate JSON syntax with readable indentation. Check malformed JSON before using it in an application." },
     "base64-encoder-decoder": { title: "Base64 Encoder & Decoder – Convert Text Online", description: "Encode text to Base64 or decode Base64 back to text in your browser. Base64 is an encoding, not encryption." },
     "url-encoder-decoder": { title: "URL Encoder & Decoder – Percent Encode URL Components", description: "Encode or decode URL query values and components with percent encoding. Avoid double-encoding and preserve URL structure." },
@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;
-  const socialTitle = `${tool.name} Online | PDFora`;
+  const socialTitle = seo?.title ?? `${tool.name} Online | PDFora`;
   const categoryDescription: Record<string, string> = {
     PDF: "Check page order, layout, text, forms and signatures in the exported document before sharing it.",
     Finance: "Review the rate, period, fees and tax assumptions before relying on a financial estimate.",
@@ -175,6 +175,12 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: "Does the tool replace official advice or verification?", a: "No. Confirm important legal, financial, government or compliance matters with the responsible authority." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
+    "meta-title-checker": [
+      { q: "How do I check my SEO title?", a: "Copy the actual HTML title element from your page, paste it into the checker and compare the preview with your H1 and page content." },
+      { q: "What is the ideal SEO title character limit?", a: "Google does not set a fixed character limit that guarantees full display. Write a concise, descriptive title; Google may shorten it for the device and query." },
+      { q: "Is the SEO title the same as the H1?", a: "No. The SEO title is the HTML title element; the H1 is the main visible heading. They should describe the same page accurately." },
+      { q: "Can this checker guarantee Google rankings?", a: "No. It counts characters and provides an approximate preview. Google chooses title links automatically and may rewrite them." }
+    ],
     "meta-description-checker": [
       { q: "What is a meta description?", a: "A meta description is a short summary of a page that may be used as the descriptive text in a search result. It should accurately explain what the visitor will find on that specific page." },
       { q: "How long should a meta description be?", a: "Google does not set a fixed character limit. A practical 120–160 character range can help with drafting, but snippets are shortened or rewritten according to the device, query and available display space. Do not add filler just to reach a number." },

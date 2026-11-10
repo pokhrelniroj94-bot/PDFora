@@ -246,7 +246,122 @@ const editorialBlogPosts: BlogPost[] = [
   },
 ];
 
-const existingArticleSlugs = new Set([...editorialBlogPosts, ...additionalToolBlogPosts].map((post) => post.slug));
+
+const priorityEditorialBlogPosts: BlogPost[] = [
+  {
+    slug: "savings-goal-calculator-guide",
+    title: "How to Calculate a Savings Goal: Monthly Savings Formula",
+    description: "Calculate the monthly amount needed to reach a savings target. Learn the formula, see a worked example and adjust your plan when your deadline changes.",
+    keyword: "how to calculate a savings goal monthly savings",
+    updated: "2026-11-10",
+    readTime: "5 min read",
+    intro: "A savings goal becomes easier to manage when you turn one large target into a regular amount. The calculation needs three figures: the amount you want to have, the money already saved and the number of months left before you need it. This guide explains the simple monthly plan and what it does not include.",
+    sections: [
+      { heading: "The monthly savings formula", paragraphs: ["First subtract your current savings from the target. Then divide the remaining amount by the number of full months available. The formula is: monthly savings needed = (savings target − current savings) ÷ months remaining. Use the same currency for both amounts and enter a positive number of months.", "This is a straight-line plan: it assumes you add the same amount each month and do not earn interest or investment returns. It is useful for a clear cash target such as tuition, a laptop, travel or an emergency fund."] },
+      { heading: "Worked example: save NPR 90,000 in six months", paragraphs: ["Suppose your target is NPR 90,000 and you have already saved NPR 30,000. The remaining amount is NPR 60,000. With six months left, divide NPR 60,000 by six: you need to set aside NPR 10,000 each month.", "If your income arrives weekly or irregularly, you can divide the remaining target across your expected pay periods instead. The calculator uses months, so convert your plan to a monthly equivalent before comparing it with the result."] },
+      { heading: "Use the Savings Goal Calculator", paragraphs: ["Open the Savings Goal Calculator and enter the final target, current savings and months remaining. Review the remaining amount and monthly savings figure. If the monthly amount is too high, test a longer deadline or a smaller target rather than entering an unrealistic current-savings figure.", "Update the calculation after each deposit or whenever your target or deadline changes. Keep the original goal and the date of each revision so you can see whether your plan is on track."] },
+      { heading: "Interest, inflation and other limits", paragraphs: ["This calculator does not add bank interest, investment returns, inflation, fees or tax. A savings account that pays interest may reach the target sooner, but the actual result depends on its rate, balance rules and deposit timing. Investments can lose value and should not be treated as guaranteed savings.", "For a reliable cash plan, use the result as a contribution target and check your actual account balance regularly. Keep emergency money separate from funds that are committed to a fixed deadline."] }
+    ],
+    faqs: [
+      { question: "How do I calculate how much to save each month?", answer: "Subtract the amount already saved from your target, then divide the remaining amount by the months left. For example, (NPR 90,000 − NPR 30,000) ÷ 6 = NPR 10,000 per month." },
+      { question: "Does the savings goal calculator include interest?", answer: "No. It divides the remaining target evenly across the months entered. It does not calculate bank interest, investment returns, inflation, fees or taxes." },
+      { question: "What if I have already saved more than my target?", answer: "The remaining amount is zero, so no additional monthly saving is required to reach that target under the calculator's simple assumptions." },
+      { question: "Should I use my total income as current savings?", answer: "No. Enter only the money already set aside for this goal, not your salary, monthly income or money needed for regular expenses." }
+    ],
+    toolLinks: [{ label: "Savings Goal Calculator", href: "/tools/savings-goal-calculator" }, { label: "Salary Breakdown Calculator", href: "/tools/salary-breakdown-calculator" }, { label: "SIP & Compound Interest Calculator", href: "/tools/compound-interest-sip-calculator" }]
+  },
+  {
+    slug: "reading-time-calculator-guide",
+    title: "Reading Time Calculator: Estimate Minutes from Word Count",
+    description: "Estimate how long an article takes to read using its word count and reading speed. Learn the WPM formula, examples and why actual reading time varies.",
+    keyword: "reading time calculator words per minute",
+    updated: "2026-11-10",
+    readTime: "5 min read",
+    intro: "A reading-time estimate helps readers decide whether to start an article and helps writers plan the length of a page, newsletter or lesson. The estimate is based on word count and an assumed reading speed, usually measured in words per minute (WPM). It is a guide rather than a promise about every reader.",
+    sections: [
+      { heading: "Reading time formula", paragraphs: ["The basic formula is reading time in minutes = total word count ÷ reading speed in words per minute. If a text contains 1,000 words and the selected speed is 200 WPM, the estimate is 1,000 ÷ 200 = 5 minutes.", "For a result in seconds, multiply the number of minutes by 60. A 300-word text at 200 WPM is 1.5 minutes, or about 90 seconds."] },
+      { heading: "Choose a realistic reading speed", paragraphs: ["A speed of 200 WPM is a convenient starting assumption for general English prose, not a universal standard. Readers may move more slowly through technical instructions, unfamiliar vocabulary, legal terms, tables or material in a second language. Skimming and familiar topics can make reading faster.", "When comparing two drafts, use the same WPM setting for both. Otherwise a change in the displayed estimate may come from the selected speed rather than the word count."] },
+      { heading: "Use the Reading Time Calculator", paragraphs: ["Paste the complete article into the text field and enter a positive WPM value. Run the calculator and review the word count and estimated time. Include the whole body you expect visitors to read; leaving out headings, captions or important sections can make the estimate misleading.", "If you are writing for a specific audience, test more than one reading speed and choose a value that reflects the complexity of the material. Keep the displayed estimate clearly labelled as approximate."] },
+      { heading: "Why actual reading time differs", paragraphs: ["Word counters may treat punctuation, hyphenated terms, numbers and Unicode text differently. The tool counts whitespace-separated words, so code blocks, tables, diagrams and screen-reader navigation may not match a person's actual reading experience.", "Use reading time as a simple editorial signal, not a ranking factor or accessibility measurement. Clear headings, short paragraphs and useful examples can make a long article easier to navigate even when the estimated minutes do not change."] }
+    ],
+    faqs: [
+      { question: "How do you calculate reading time from word count?", answer: "Divide the number of words by the selected reading speed in words per minute. A 1,000-word article at 200 WPM is about five minutes." },
+      { question: "What is a normal reading speed in words per minute?", answer: "There is no speed that fits every reader or text. Around 200 WPM is a practical starting assumption for general English prose; technical or unfamiliar material may take longer." },
+      { question: "Does the calculator count headings and tables?", answer: "It calculates from the text you paste. Include the complete content you want to estimate, and remember that tables, code and complex layouts may take longer to understand than ordinary prose." },
+      { question: "Is reading time an exact measurement?", answer: "No. It is an estimate based on word count and the WPM value entered. Individual reading speed, language familiarity and content complexity change the actual time." }
+    ],
+    toolLinks: [{ label: "Reading Time Calculator", href: "/tools/reading-time-calculator" }, { label: "Word Counter", href: "/tools/word-character-counter" }, { label: "Sentence Counter", href: "/tools/sentence-counter" }]
+  },
+  {
+    slug: "tip-calculator-guide",
+    title: "How to Calculate a Tip: Percentage, Total Bill and Split",
+    description: "Learn how to calculate a restaurant tip, add it to the bill and divide the total between people, with a clear percentage formula and worked example.",
+    keyword: "how to calculate tip tip calculator",
+    updated: "2026-11-10",
+    readTime: "5 min read",
+    intro: "A tip calculator turns a bill and a percentage into the extra amount, final total and each person's share. The key is to check whether a service charge or gratuity is already included, then decide whether the tip should be calculated on the pre-tax or tax-inclusive amount.",
+    sections: [
+      { heading: "Tip calculator formula", paragraphs: ["Tip amount = bill amount × tip percentage ÷ 100. Add the tip to the bill to get the total. If everyone pays an equal share, divide that total by the number of people.", "For example, a bill of 2,000 with a 10% tip gives a tip of 200 and a total of 2,200. Four people splitting equally would each pay 550. The amounts stay in the currency entered; the calculator does not convert currencies."] },
+      { heading: "Calculate the tip and split the bill", paragraphs: ["Enter the bill before any additional tip, type the percentage as a number such as 10 for 10%, and enter the number of people sharing equally. Run the Tip Calculator and check the tip amount, final total and per-person share.", "If people ordered different items or one person is paying for an extra dish, an equal split may not be fair. Use the equal-share result only when everyone has agreed to divide the total evenly."] },
+      { heading: "Check service charges and tax", paragraphs: ["Read the receipt before adding a tip. Some restaurants already include a service charge, gratuity or other fee. Adding another percentage without checking can mean paying twice for the same purpose. Local customs and restaurant policies also differ.", "If you want to tip on the pre-tax amount, use the bill subtotal before tax. If you want to tip on the full amount, use the total shown on the receipt. The calculator follows the amount you enter and does not decide which base is appropriate."] },
+      { heading: "Rounding and payment", paragraphs: ["The exact per-person amount may include decimals. Agree how to handle rounding before paying, especially when the bill is split between several people. One person can cover a small rounding difference, or the group can allocate the remaining cents or paisa explicitly.", "Treat the result as arithmetic assistance. Check the final receipt and payment amount before completing the transaction."] }
+    ],
+    faqs: [
+      { question: "How do I calculate a 10% tip?", answer: "Multiply the bill by 10 and divide by 100. A bill of 2,000 has a 10% tip of 200." },
+      { question: "How do I split a bill including tip?", answer: "Add the tip to the bill, then divide the total by the number of people sharing equally. A total of 2,200 split four ways is 550 each." },
+      { question: "Should I tip on the bill before or after tax?", answer: "It depends on local practice and your preference. Use the pre-tax subtotal if that is the amount you intend to tip on, or the tax-inclusive total if that is your chosen basis." },
+      { question: "What if a service charge is already included?", answer: "Check the receipt and restaurant policy before adding another tip. The calculator does not detect or remove service charges automatically." }
+    ],
+    toolLinks: [{ label: "Tip Calculator", href: "/tools/tip-calculator" }, { label: "Split Bill Calculator", href: "/tools/split-bill-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }]
+  },
+  {
+    slug: "percentage-change-calculator-guide",
+    title: "Percentage Change Calculator: Formula for Increase and Decrease",
+    description: "Calculate percentage increase or decrease between two values. Learn the percentage change formula, worked examples and how to handle a zero starting value.",
+    keyword: "percentage change calculator increase decrease formula",
+    updated: "2026-11-10",
+    readTime: "5 min read",
+    intro: "Percentage change describes how much a value has increased or decreased compared with its starting value. It is useful for comparing prices, quantities, monthly expenses and other measurements, provided both values use the same unit and basis.",
+    sections: [
+      { heading: "Percentage change formula", paragraphs: ["Percentage change = (new value − original value) ÷ original value × 100. A positive result means an increase; a negative result means a decrease. The original value is the denominator because the change is measured relative to where the value started.", "Do not reverse the original and new values. Changing the denominator changes the answer and can make a decrease look like a different percentage from the reverse increase."] },
+      { heading: "Worked examples: increase and decrease", paragraphs: ["If a price rises from 80 to 100, the difference is 20. Divide 20 by the original 80 and multiply by 100: the increase is 25%.", "If a value falls from 100 to 80, the difference is −20. Divide −20 by the original 100 and multiply by 100: the change is −20%, meaning a 20% decrease. The reverse movement is not the same percentage because the starting value is different."] },
+      { heading: "Use the Percentage Change Calculator", paragraphs: ["Enter the original value first and the new value second. Check that both numbers use the same unit—for example, rupees compared with rupees or kilograms compared with kilograms—then run the calculation and read whether the result is an increase or decrease.", "If the original value is zero, the standard percentage-change formula is undefined because it would require division by zero. Report the absolute difference instead or explain the change without expressing it as a percentage."] },
+      { heading: "Percentage change versus percentage points", paragraphs: ["Percentage change is a relative change between two values. Percentage points describe the arithmetic difference between two percentages. For example, a rate moving from 10% to 12% has increased by 2 percentage points, while its relative percentage change is 20%.", "Use percentage points when comparing rates such as interest, market share or pass rates. Use percentage change when you want to express the relative movement from an original numerical value."] }
+    ],
+    faqs: [
+      { question: "What is the formula for percentage change?", answer: "Subtract the original value from the new value, divide by the original value and multiply by 100: ((new − original) ÷ original) × 100." },
+      { question: "How do I calculate percentage increase?", answer: "Use the same formula. When the new value is higher than the original value, the result is positive and represents the percentage increase." },
+      { question: "How do I calculate percentage decrease?", answer: "Use the same formula. When the new value is lower, the result is negative; the absolute value tells you the percentage decrease." },
+      { question: "Can percentage change be calculated from zero?", answer: "The standard formula is undefined when the original value is zero because it divides by the starting value. Use the absolute difference or describe the change without a percentage." }
+    ],
+    toolLinks: [{ label: "Percentage Change Calculator", href: "/tools/percentage-change-calculator" }, { label: "Percentage of Number Calculator", href: "/tools/percentage-of-number-calculator" }, { label: "Tip Calculator", href: "/tools/tip-calculator" }]
+  },
+  {
+    slug: "meta-title-checker-guide",
+    title: "SEO Title Checker Guide: How to Write Clear Google Page Titles",
+    description: "Learn how to check an SEO title, write a clear page title, compare it with your H1 and understand why Google may rewrite or shorten title links.",
+    keyword: "SEO title checker how to check SEO title",
+    updated: "2026-11-10",
+    readTime: "5 min read",
+    intro: "A page title helps readers and search engines understand what a page is about. The HTML title element, the visible H1 heading and the title link shown in Google Search can be different. This guide explains how to check the title you publish, improve its wording and review the result without relying on an arbitrary character limit.",
+    sections: [
+      { heading: "HTML title, H1 and Google title link are different", paragraphs: ["The HTML title is the text in the page's title element. It is commonly used as the browser-tab label and is one source Google may use for a search-result title link. The H1 is the main visible heading on the page. They can be similar, but each should describe the same page accurately.", "Google may generate a different title link using the page title, visible heading, prominent text, link text and other signals. A title checker can review the text you enter; it cannot guarantee which wording Google will display for every query."] },
+      { heading: "How to check an SEO title", paragraphs: ["Open the actual page and copy its current HTML title, not just the text shown in the browser address bar. Paste it into the SEO Title Checker to count characters and review an approximate search preview. Then compare it with the visible H1 and the main content.", "If the title is vague, repetitive or too broad, rewrite it so the main topic and page purpose are clear. Put the most useful wording early when it reads naturally, and include the brand only when it helps readers identify the source."] },
+      { heading: "Is there a perfect title length?", paragraphs: ["Google does not publish a fixed character limit that guarantees a title will display in full. Search-result titles can be shortened to fit the available space, which varies by device and context. A character count is useful for spotting unusually long drafts, but it is not a ranking score or a pass/fail rule.", "Aim for a concise description rather than forcing every title into an exact number of characters. Remove repeated words and boilerplate, but do not delete important context just to reach an arbitrary length."] },
+      { heading: "Common title mistakes to avoid", paragraphs: ["Avoid using the same title on many pages, repeating keyword variations, stuffing the brand name several times or promising something the page does not provide. A title should set an accurate expectation for the page that opens after the click.", "After publishing a meaningful change, check the live HTML title and canonical URL. Search Console can show which queries and pages receive impressions, but Google needs to recrawl and reprocess a page before its search-result title may change."] }
+    ],
+    faqs: [
+      { question: "How do I check my SEO title?", answer: "Open the page, copy its actual HTML title element and paste it into an SEO title checker. Review the character count and preview, then compare the wording with the page's H1 and content." },
+      { question: "What is the ideal SEO title character limit?", answer: "Google does not specify a fixed character limit that guarantees full display. Write a concise, descriptive title; the visible title link may be shortened to fit the device and query." },
+      { question: "Is an SEO title the same as an H1?", answer: "No. The SEO title is the HTML title element, while the H1 is the main visible page heading. They should describe the same topic but do not have to use identical wording." },
+      { question: "Can a title checker guarantee Google rankings or the exact title shown?", answer: "No. It can count characters and provide an approximate preview. Google chooses title links automatically and may rewrite them; a checker cannot predict rankings." }
+    ],
+    toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }],
+    sources: [{ label: "Google Search Central: Influencing title links in Google Search", url: "https://developers.google.com/search/docs/appearance/title-link" }]
+  }
+];
+
+const existingArticleSlugs = new Set([...editorialBlogPosts, ...priorityEditorialBlogPosts, ...additionalToolBlogPosts].map((post) => post.slug));
 const catalogGuides: BlogPost[] = toolCatalog
   .filter((tool) => tool.slug !== "pdf-tools" && !existingArticleSlugs.has(`${tool.slug}-guide`))
   .map((tool) => {
@@ -335,13 +450,13 @@ const catalogGuides: BlogPost[] = toolCatalog
   });
 
 
-export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides];
+export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...priorityEditorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides];
 
 // Catalog-wide guide pages are generated from a shared template. Keep them
 // accessible from their relevant tools, but do not expose them as indexable
 // editorial articles until each has been individually reviewed and expanded.
 export function isCatalogGeneratedGuide(slug: string): boolean {
-  return toolCatalog.some((tool) => tool.slug !== "pdf-tools" && slug === `${tool.slug}-guide`);
+  return !existingArticleSlugs.has(slug) && toolCatalog.some((tool) => tool.slug !== "pdf-tools" && slug === `${tool.slug}-guide`);
 }
 
 export function getBlogPost(slug: string) {

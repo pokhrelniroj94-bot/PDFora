@@ -4,8 +4,6 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { toolCatalog } from "./toolCatalog";
 import ResumeBuilder from "./ResumeBuilder";
-import KundaliTool from "./KundaliTool";
-import GunaMilanTool from "./GunaMilanTool";
 import { allTools } from "../lib/tool-directory";
 import { discountedPrice, loanEmi, sipFutureValue } from "../lib/catalog-calculations";
 

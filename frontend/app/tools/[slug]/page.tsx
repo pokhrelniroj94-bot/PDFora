@@ -175,6 +175,30 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: "Does the tool replace official advice or verification?", a: "No. Confirm important legal, financial, government or compliance matters with the responsible authority." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
+    "savings-goal-calculator": [
+      { q: "How do I calculate monthly savings needed to reach a target?", a: "Subtract current savings from the target, then divide by the months remaining. For example, (120,000 − 30,000) ÷ 9 = 10,000 per month." },
+      { q: "Does the savings goal calculator include bank interest?", a: "No. It uses a straight-line contribution plan and excludes interest, investment returns, inflation, fees and taxes." },
+      { q: "What should I enter as current savings?", a: "Enter only the amount already set aside for this goal, not your salary or total monthly income." },
+      { q: "What if I have already reached my savings target?", a: "The remaining amount and monthly savings needed should be zero; no additional contribution is required for that target under the calculator's assumptions." }
+    ],
+    "reading-time-calculator": [
+      { q: "How is reading time calculated?", a: "The calculator divides the word count by the selected words-per-minute speed. A 1,000-word article at 200 WPM is about five minutes." },
+      { q: "What reading speed should I use?", a: "Use a speed that fits the audience and material. Around 200 WPM is a practical starting point for general English prose, while technical or unfamiliar content may take longer." },
+      { q: "Does it count the full article?", a: "It counts the text you paste. Include the complete article and remember that tables, code and complex layouts may take longer to understand." },
+      { q: "Is the estimated reading time exact?", a: "No. It is an estimate based on word count and the WPM value entered; actual reading time varies by reader, language and content complexity." }
+    ],
+    "tip-calculator": [
+      { q: "How do I calculate a 10% tip?", a: "Multiply the bill by 10 and divide by 100. A bill of 2,000 has a 10% tip of 200." },
+      { q: "How do I split a bill including tip?", a: "Add the tip to the bill, then divide the total by the number of people sharing equally. A total of 2,200 split four ways is 550 each." },
+      { q: "Should I calculate a tip before or after tax?", a: "It depends on local practice and your preference. Use the pre-tax subtotal or the tax-inclusive total according to the basis you choose." },
+      { q: "What if the receipt already includes a service charge?", a: "Check the receipt and restaurant policy before adding another tip. The calculator does not detect or remove service charges automatically." }
+    ],
+    "percentage-change-calculator": [
+      { q: "What is the percentage change formula?", a: "Percentage change = ((new value − original value) ÷ original value) × 100. Keep the original value as the denominator." },
+      { q: "How do I calculate percentage increase or decrease?", a: "Use the same formula for both. A positive result is an increase; a negative result is a decrease." },
+      { q: "Can I calculate percentage change from zero?", a: "No. The standard formula is undefined when the original value is zero because it divides by the starting value." },
+      { q: "What is the difference between percentage change and percentage points?", a: "Percentage change is relative to the starting value. Percentage points are the direct difference between two percentages, such as 10% to 12% = 2 percentage points." }
+    ],
     "meta-description-checker": [
       { q: "What is a meta description?", a: "A meta description is a short summary of a page that may be used as the descriptive text in a search result. It should accurately explain what the visitor will find on that specific page." },
       { q: "How long should a meta description be?", a: "Google does not set a fixed character limit. A practical 120–160 character range can help with drafting, but snippets are shortened or rewritten according to the device, query and available display space. Do not add filler just to reach a number." },

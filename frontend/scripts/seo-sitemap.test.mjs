@@ -66,7 +66,7 @@ assert.match(homepageSource, /"@type":\s*"SoftwareApplication"/, "SoftwareApplic
 assert.doesNotMatch(robotsSource, /disallow:[^\]]*noindex|disallow:[^\]]*\/ne\//, "Do not block crawlers from reading noindex directives on localized pages");
 assert.match(robotsSource, /disallow:\s*\[\s*"\/api\/"\s*\]/, "Only non-page API endpoints should be blocked in robots.txt");
 assert.doesNotMatch(sitemapSource, /\/api\//, "API endpoints must never be submitted in the XML sitemap");
-assert.doesNotMatch(sitemapSource, /ocr-pdf/, "Unavailable OCR must remain outside the sitemap");
+assert.match(sitemapSource, /tool\.slug !== "ocr-pdf"/, "Unavailable OCR must be explicitly filtered out of the sitemap");
 assert.match(ocrPageSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unavailable OCR page must remain intentionally noindex");
 assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unreviewed generated guide pages must remain noindex until editorial review");
 assert.doesNotMatch(nepaliBlogArticleSource, /"@type":\s*"FAQPage"/, "Nepali blog pages must not emit deprecated FAQ rich-result markup");

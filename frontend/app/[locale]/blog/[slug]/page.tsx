@@ -19,6 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Keep search titles concise without changing the reader-facing article headline.
   const searchTitles: Record<string, string> = {
     "nepali-date-converter-bs-to-ad-guide": "नेपाली मिति BS–AD रूपान्तरण",
+    "neb-gpa-calculator-nepal-guide": "NEB GPA क्याल्कुलेटर: ग्रेड र क्रेडिट",
     "nepal-vat-calculator-13-percent-guide": "नेपालमा १३% VAT कसरी गणना गर्ने?",
     "ropani-aana-paisa-daam-land-measurement-guide": "रोपनी–आना–पैसा–दाम जग्गा नाप",
     "tola-to-gram-gold-weight-conversion-nepal": "तोला र ग्राम: सुनको तौल रूपान्तरण",

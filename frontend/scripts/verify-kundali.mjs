@@ -43,6 +43,18 @@ try {
     assert.ok(planet.house >= 1 && planet.house <= 12, planet.key + " must be assigned to a valid house.");
     assert.ok(planet.nakshatra && planet.navamsaSign, planet.key + " must have Nakshatra and Navamsa data.");
   }
+  const utcResult = calculateJanmaKundali({
+    name: "UTC regression fixture",
+    dateSystem: "AD",
+    birthDate: "2000-01-01",
+    birthTime: "12:00",
+    placeId: "custom",
+    placeName: "Greenwich",
+    latitude: 51.4779,
+    longitude: 0,
+    timeZone: "Etc/UTC",
+  });
+  assert.equal(utcResult.birthDateAD, "2000-01-01", "Zero-offset IANA time zones must be accepted for custom birthplaces.");
   const rahu = result.planets.find((planet) => planet.key === "Rahu");
   const ketu = result.planets.find((planet) => planet.key === "Ketu");
   assert.ok(rahu && ketu, "Both lunar nodes must be present.");

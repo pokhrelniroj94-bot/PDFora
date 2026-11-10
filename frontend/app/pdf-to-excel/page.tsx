@@ -33,6 +33,7 @@ export default function Page() {
               accept="application/pdf,.pdf"
               downloadName="PDFora-Converted.xlsx"
               fieldName="file"
+              showSeoContent={false}
             />
           </div>
         </div>

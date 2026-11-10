@@ -197,9 +197,54 @@ const editorialBlogPosts: BlogPost[] = [
       { question: "Is the converted Word document ready to submit?", answer: "Check the complete document against the source PDF, correct formatting and proofread the text before submitting or sharing it." }
     ],
     toolLinks: [{ label: "PDF to Word", href: "/pdf-to-word" }, { label: "PDF to Text", href: "/pdf-to-text" }, { label: "PDF to Excel", href: "/pdf-to-excel" }]
-  }
+  },
+{
+    slug: "repair-pdf-guide-online",
+    title: "How to Repair a Damaged PDF Online: What to Check",
+    description: "Try a best-effort repair for a PDF that will not open. Learn how to protect the original file and verify the recovered copy.",
+    keyword: "how to repair a corrupted or damaged PDF file online",
+    updated: "2026-11-10",
+    readTime: "6 min read",
+    intro: "A PDF may stop opening after an interrupted download, storage error, transfer problem or damaged file structure. A repair attempt can sometimes make a damaged file readable again, but it cannot recreate information that was never saved or has been permanently lost. Start with a copy and treat every recovered file as a new version that needs checking.",
+    sections: [
+      { heading: "1. Protect the original before trying a repair", paragraphs: ["Make a separate copy of the damaged PDF and leave the original untouched. If the file came from an email, website or cloud drive, check whether you can download it again; a fresh copy may solve an incomplete transfer without any repair step.", "Try opening the file in another trusted PDF reader. If only one application reports an error, the issue may be viewer-specific rather than damage to the PDF itself. Also check that the file is not empty and that its extension matches the actual file type."] },
+      { heading: "2. Try the PDFora repair workflow", paragraphs: ["Open the Repair PDF page, choose the copy of the damaged file and start the repair attempt. Wait for processing to finish, then download the recovered PDF if a result is produced. The tool makes a best-effort attempt to rewrite the file; it does not promise recovery of every damaged document.", "Do not upload the only copy of an important record and do not overwrite the source with the downloaded result. Keep both files until you have checked the recovered version."] , bullets: ["Keep an untouched backup of the source PDF.", "Select the copied file on the Repair PDF page.", "Run the repair attempt and wait for the result.", "Download the recovered copy and open it in a PDF reader."] },
+      { heading: "3. Check what was recovered", paragraphs: ["A file that opens is not necessarily a complete recovery. Compare the recovered copy with the source or another copy when available. Check the total page count, first and last pages, text, images, tables, page dimensions and reading order. Pay extra attention to pages that were missing or unreadable before the repair.", "Bookmarks, form fields, annotations, embedded attachments and interactive elements may not survive a rewrite exactly as they were. If the PDF contains a digital signature, verify it again: changing the underlying file can invalidate a signature even when the visible page looks unchanged."] },
+      { heading: "4. Understand when repair may not work", paragraphs: ["A repair tool cannot restore bytes that are missing from a truncated download, recreate pages that were never stored, or guarantee recovery from severe corruption. Password protection, unusual PDF features and damaged embedded resources can also prevent a successful result. If the file is important, ask the sender for a fresh copy rather than relying on an incomplete recovery.", "If the PDF opens but is simply too large, use compression instead of repair. If the pages are intact but appear sideways, use a rotation tool. If you only need to inspect document properties, start with PDF Information."] },
+      { heading: "5. Handle recovered documents carefully", paragraphs: ["PDFs can contain personal details, signatures, financial information and confidential records. Upload only documents you are authorised to process, and review the privacy information before using an online service for sensitive material. Keep a local backup until the recovered file has been checked and accepted by its recipient.", "For official, legal, financial or academic submissions, confirm the receiving organisation's requirements and retain the original source. A successful download is not proof that every page or embedded feature has been preserved."] }
+    ],
+    faqs: [
+      { question: "Can an online tool repair every damaged PDF?", answer: "No. Repair is best-effort. A file with missing data, severe corruption or unsupported features may not be recoverable. Try to obtain a fresh copy when possible." },
+      { question: "Will the repaired PDF be identical to the original?", answer: "Not necessarily. Check page count, text, images, layout, bookmarks, forms and attachments. Rewriting a PDF can also invalidate a digital signature." },
+      { question: "Should I upload my only copy?", answer: "No. Keep an untouched copy and process a duplicate. Do not overwrite the source until you have reviewed the recovered file." },
+      { question: "What if the PDF still will not open?", answer: "Try downloading it again or opening it in another trusted reader. If the file is important, ask the sender for a fresh copy rather than relying on a partial recovery." }
+    ],
+    toolLinks: [{ label: "Repair PDF", href: "/repair-pdf" }, { label: "PDF Information", href: "/pdf-information" }, { label: "Compress PDF", href: "/compress-pdf" }]
+  },
+  {
+    slug: "pdf-to-text-guide-online",
+    title: "How to Extract Text from a PDF Online and Save a TXT File",
+    description: "Extract selectable PDF text into a TXT file. Learn how to prepare the document and check reading order, line breaks and scanned pages.",
+    keyword: "how to extract text from a PDF online",
+    updated: "2026-11-10",
+    readTime: "6 min read",
+    intro: "Extracting text from a PDF is useful when you need to search, quote, review or reuse the wording in another document. PDFora's PDF to Text tool exports selectable text into a downloadable TXT file. It does not recreate the original page layout, and scanned pages need a separate OCR workflow before their words can be extracted.",
+    sections: [
+      { heading: "1. Check whether the PDF contains selectable text", paragraphs: ["Open the PDF in a reader and try selecting a sentence with your cursor. If you can highlight individual words, the page contains selectable text and is a good candidate for extraction. If the page behaves like one large picture, it may be a scan; an ordinary text extractor cannot read words that exist only as pixels.", "Some PDFs mix selectable text with scanned pages. In that case, the output may contain text from some pages but little or nothing from the image-only pages. Identify those pages before relying on the extracted file."] },
+      { heading: "2. Extract text with PDFora", paragraphs: ["Open the PDF to Text page and choose the source PDF from your device. Start the extraction and wait for processing to finish. Download the TXT file and open it in a text editor to review the extracted wording.", "Keep the original PDF beside the TXT output. The text file is intended for reading and reuse; it does not preserve page styling, exact spacing, images or the full visual structure of the source document."] , bullets: ["Choose a PDF that contains selectable text.", "Upload it on the PDF to Text page.", "Run the extraction and download the TXT file.", "Open the text file and compare important passages with the original PDF."] },
+      { heading: "3. Review reading order and formatting", paragraphs: ["PDFs store text at positions on a page rather than as a normal word-processing document. A multi-column page, table, sidebar or footnote may therefore be extracted in an order that differs from how a person reads the page. Check headings, paragraphs, numbered lists, columns and table values before copying the text elsewhere.", "Line breaks may appear at the end of visual lines, while headers and footers may be mixed into the main text. Search for missing punctuation, unusual symbols, broken words and characters that have been substituted by the source font."] },
+      { heading: "4. Know the limits of text extraction", paragraphs: ["A TXT file contains text, not the original page design. Images, charts, diagrams, handwriting, stamps and signatures are not converted into editable text by this workflow. Scanned pages require OCR, and OCR output should be proofread because similar characters, decimal points and punctuation can be misread.", "If you need editable paragraphs and some document structure, PDF to Word may be a better next step. If you need web markup, PDF to HTML may suit a different workflow. Choose the format based on what you plan to do with the content."] },
+      { heading: "5. Protect the source document and extracted text", paragraphs: ["Extracted text can contain names, addresses, account details, contract terms or other private information from the original PDF. Upload only files you are authorised to process and review the site's privacy information before using an online tool for sensitive records.", "Before sharing the TXT file, compare important passages with the source and remove any content that the recipient should not receive. Keep the original PDF until the extracted text has been checked and saved where it belongs."] }
+    ],
+    faqs: [
+      { question: "Can PDF to Text read a scanned PDF?", answer: "Not by ordinary text extraction. A scanned page is an image and needs OCR before its words can be extracted. PDFora's PDF to Text workflow extracts selectable text; use a separate OCR process for image-only pages." },
+      { question: "Will the TXT file keep the PDF layout?", answer: "No. TXT stores plain text, not page styling, images, columns or exact spacing. Review the reading order and line breaks after extraction." },
+      { question: "Why are some words or symbols missing?", answer: "The source PDF may use unusual fonts, contain image-only pages or store text in a complex layout. Compare the output with the original and proofread important values." },
+      { question: "Should I use PDF to Word instead?", answer: "Use PDF to Text when you mainly need plain wording. Use PDF to Word when you need an editable document structure, then review formatting and tables after conversion." }
+    ],
+    toolLinks: [{ label: "PDF to Text", href: "/pdf-to-text" }, { label: "PDF to Word", href: "/pdf-to-word" }, { label: "PDF to HTML", href: "/pdf-to-html" }]
+  },
 ];
-
 
 const existingArticleSlugs = new Set([...editorialBlogPosts, ...additionalToolBlogPosts].map((post) => post.slug));
 const catalogGuides: BlogPost[] = toolCatalog

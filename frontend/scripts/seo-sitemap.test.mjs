@@ -10,7 +10,10 @@ const sitemapSource = read("app/sitemap.ts");
 const nextConfigSource = read("next.config.ts");
 const nepaliPdfPageSource = read("app/[locale]/[slug]/page.tsx");
 const catalogToolSeoSource = read("components/CatalogToolSEOContent.tsx");
+const toolGuidesSource = read("lib/tool-guides.ts");
 const pdfToExcelLayoutSource = read("app/pdf-to-excel/layout.tsx");
+const pdfToExcelPageSource = read("app/pdf-to-excel/page.tsx");
+const niroj77ToolSource = read("components/Niroj77Tool.tsx");
 const nepseLabPageSource = read("app/nepse-lab/page.tsx");
 const ocrPageSource = read("app/ocr-pdf/page.tsx");
 const generatedBlogPageSource = read("app/blog/[slug]/page.tsx");
@@ -46,7 +49,7 @@ assert.deepEqual(
 );
 
 const reportedNepaliLongTitleSlugs = [
-  "nepali-date-converter-bs-to-ad-guide", "nepal-vat-calculator-13-percent-guide",
+  "nepali-date-converter-bs-to-ad-guide", "neb-gpa-calculator-nepal-guide", "nepal-vat-calculator-13-percent-guide",
   "ropani-aana-paisa-daam-land-measurement-guide", "tola-to-gram-gold-weight-conversion-nepal",
   "nepali-number-to-words-lakh-crore-guide", "nepal-mobile-number-format-checker-guide",
   "nepal-public-holidays-2083-calendar-guide", "nepal-rastra-bank-daily-exchange-rates-guide",
@@ -64,6 +67,15 @@ for (const slug of reportedNepaliLongTitleSlugs) {
 }
 assert.match(nepaliBlogPageSource, /title: searchTitle/, "Nepali blog metadata must use concise search titles without changing visible article headlines");
 
+const generatedArticleSlugs = toolGuidesSource.match(/const existingBlogSlugs = new Set\(\[([\s\S]*?)\]\);/)?.[1] ?? "";
+for (const slug of ["repair-pdf-guide-online", "pdf-to-text-guide-online"]) {
+  assert.ok(generatedArticleSlugs.includes(slug), `${slug} must use its individually reviewed editorial guide instead of the generic template`);
+  assert.ok(englishEditorialBlogSource.includes(`slug: "${slug}"`), `${slug} must have a bespoke editorial article`);
+}
+assert.ok(englishEditorialBlogSource.includes("How to Repair a Damaged PDF Online: What to Check"));
+assert.ok(englishEditorialBlogSource.includes("How to Extract Text from a PDF Online and Save a TXT File"));
+
+
 assert.match(sitemapSource, /Object\.keys\(nepaliPdfRoutes\)/, "Sitemap must derive PDF URLs from the canonical route registry");
 assert.match(sitemapSource, /isLocalizedToolIndexable\("ne", slug\)/, "Localized sitemap entries must pass the same default-deny gate as metadata");
 assert.match(sitemapSource, /\$\{baseUrl\}\/nepse-lab/, "The canonical NEPSE Strategy Lab page must be discoverable in the sitemap");
@@ -72,7 +84,10 @@ for (const slug of ["case-converter", "prime-number-checker", "json-to-yaml", "d
   assert.match(catalogToolSeoSource, new RegExp('"' + slug + '"'), `${slug} must have page-specific Search Console recovery guidance`);
 }
 assert.match(catalogToolSeoSource, /toolSpecificSteps\[tool\.slug\]/, "Reviewed tools must render their own instructions instead of repeated generic steps");
-assert.doesNotMatch(pdfToExcelLayoutSource, /<ToolSEOContent/, "PDF to Excel must not append a duplicate generic guide to its bespoke page content");
+assert.doesNotMatch(pdfToExcelLayoutSource, /<ToolSEOContent/, "PDF to Excel layout must not append a duplicate generic guide");
+assert.match(pdfToExcelPageSource, /showSeoContent=\{false\}/, "PDF to Excel must disable the nested generic guide because its page contains a bespoke XLSX guide");
+assert.match(niroj77ToolSource, /showSeoContent\?: boolean/, "Niroj77Tool must allow bespoke pages to suppress its generic SEO block");
+assert.match(niroj77ToolSource, /showSeoContent && <ToolSEOContent/, "Niroj77Tool must render generic SEO content only when explicitly enabled");
 for (const section of ["SMA 20/50 crossover", "RSI 14 recovery", "20-day breakout", "Maximum drawdown", "Important limitations before using results"]) {
   assert.ok(nepseLabPageSource.includes(section), `NEPSE Lab must explain ${section} for users and search crawlers`);
 }

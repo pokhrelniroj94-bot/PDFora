@@ -894,6 +894,8 @@ export function getRequiredToolGuide(slug:string): ToolGuide {
 
 const existingBlogSlugs = new Set([
   "compress-pdf-to-under-1mb-online",
+  "repair-pdf-guide-online",
+  "pdf-to-text-guide-online",
   "merge-multiple-pdf-files-into-one-document",
   "convert-jpg-images-to-one-pdf-on-phone",
   "convert-pdf-pages-to-jpg-images",

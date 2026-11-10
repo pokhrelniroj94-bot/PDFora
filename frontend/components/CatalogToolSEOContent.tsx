@@ -659,7 +659,7 @@ export default function CatalogToolSEOContent({
           <h2 className="text-xl font-black text-slate-950">How to use the {title} step by step</h2>
           <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
             {toolSpecificSteps[tool.slug]
-              ? toolSpecificSteps[tool.slug].map((step, index) => <li key={step}>{step}</li>)
+              ? toolSpecificSteps[tool.slug].map((step) => <li key={step}>{step}</li>)
               : <>
                   <li><strong>Prepare the right input.</strong> {inputNote} The task on this page is to {taskDescription.toLowerCase()}.</li>
                   <li><strong>Open the tool and read its labels.</strong> Confirm that you are using the correct utility. Read the field names, units, format hints and options before entering information.</li>

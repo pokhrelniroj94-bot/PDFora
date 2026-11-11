@@ -294,10 +294,10 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "tip-calculator-guide",
-    title: "How to Calculate a Tip: 10%, 15% and 20% Examples",
-    description: "Use the tip formula to calculate 10%, 15% or 20%, add the tip to your bill and split the total per person. Includes a worked example and service-charge check.",
+    title: "How to Calculate a Tip: Formula & Examples | PDFora",
+    description: "Calculate a 10%, 15% or 20% tip with a simple formula. See a worked bill example, per-person split and how to check service charges.",
     keyword: "how to calculate tip tip calculator",
-    updated: "2026-11-10",
+    updated: "2026-11-11",
     readTime: "5 min read",
     intro: "A tip calculator turns a bill and a percentage into the extra amount, final total and each person's share. The key is to check whether a service charge or gratuity is already included, then decide whether the tip should be calculated on the pre-tax or tax-inclusive amount.",
     sections: [
@@ -316,10 +316,10 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "percentage-change-calculator-guide",
-    title: "Percentage Change Calculator: Formula for Increase and Decrease",
-    description: "Calculate percentage increase or decrease between two values. Learn the percentage change formula, worked examples and how to handle a zero starting value.",
+    title: "Percentage Change Calculator: Formula & Examples",
+    description: "Calculate percentage increase or decrease with the formula, worked examples, percentage points and a clear explanation of zero starting values.",
     keyword: "percentage change calculator increase decrease formula",
-    updated: "2026-11-10",
+    updated: "2026-11-11",
     readTime: "5 min read",
     intro: "Percentage change describes how much a value has increased or decreased compared with its starting value. It is useful for comparing prices, quantities, monthly expenses and other measurements, provided both values use the same unit and basis.",
     sections: [
@@ -338,16 +338,18 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "meta-title-checker-guide",
-    title: "SEO Title Checker Guide: How to Write Clear Google Page Titles",
-    description: "Learn how to check an SEO title, write a clear page title, compare it with your H1 and understand why Google may rewrite or shorten title links.",
+    title: "SEO Title Checker: Write Better Google Title Tags",
+    description: "Check an SEO title tag, compare it with your H1, improve page-title wording and understand when Google may rewrite search-result titles.",
     keyword: "SEO title checker how to check SEO title",
-    updated: "2026-11-10",
+    updated: "2026-11-11",
     readTime: "5 min read",
     intro: "A page title helps readers and search engines understand what a page is about. The HTML title element, the visible H1 heading and the title link shown in Google Search can be different. This guide explains how to check the title you publish, improve its wording and review the result without relying on an arbitrary character limit.",
     sections: [
       { heading: "HTML title, H1 and Google title link are different", paragraphs: ["The HTML title is the text in the page's title element. It is commonly used as the browser-tab label and is one source Google may use for a search-result title link. The H1 is the main visible heading on the page. They can be similar, but each should describe the same page accurately.", "Google may generate a different title link using the page title, visible heading, prominent text, link text and other signals. A title checker can review the text you enter; it cannot guarantee which wording Google will display for every query."] },
       { heading: "How to check an SEO title", paragraphs: ["Open the actual page and copy its current HTML title, not just the text shown in the browser address bar. Paste it into the SEO Title Checker to count characters and review an approximate search preview. Then compare it with the visible H1 and the main content.", "If the title is vague, repetitive or too broad, rewrite it so the main topic and page purpose are clear. Put the most useful wording early when it reads naturally, and include the brand only when it helps readers identify the source."] },
       { heading: "Is there a perfect title length?", paragraphs: ["Google does not publish a fixed character limit that guarantees a title will display in full. Search-result titles can be shortened to fit the available space, which varies by device and context. A character count is useful for spotting unusually long drafts, but it is not a ranking score or a pass/fail rule.", "Aim for a concise description rather than forcing every title into an exact number of characters. Remove repeated words and boilerplate, but do not delete important context just to reach an arbitrary length."] },
+      { heading: "Title tag examples: make the page purpose obvious", paragraphs: ["A useful title names the main task and gives the reader a reason to choose the page. For example, a vague title such as \"Online Tool\" could become \"Merge PDF Files Online – Combine Documents | PDFora\" when the page really combines PDFs. A generic title such as \"Calculator\" could become \"Percentage Change Calculator – Formula & Examples\" when that is the actual task.", "Keep examples honest. Do not add words such as \"free\", \"instant\", \"official\" or a specific file limit unless the page genuinely supports that claim. Each important page should have its own title that reflects its visible H1 and primary content."] },
+      { heading: "Measure the change in Google Search Console", paragraphs: ["Before editing a title, record the page's recent impressions, clicks, click-through rate and average position for its main queries. After publishing, compare the same page and query set over a similar period. Avoid judging a title change from one day's data because search demand, ranking and result presentation can vary.", "If impressions are high but clicks are low, review whether the title and description clearly match the query and distinguish the page from other results. If the page has very few impressions or ranks far below the first results, improve the content and its relevance as well; a title rewrite alone is unlikely to solve that problem."] },
       { heading: "Common title mistakes to avoid", paragraphs: ["Avoid using the same title on many pages, repeating keyword variations, stuffing the brand name several times or promising something the page does not provide. A title should set an accurate expectation for the page that opens after the click.", "After publishing a meaningful change, check the live HTML title and canonical URL. Search Console can show which queries and pages receive impressions, but Google needs to recrawl and reprocess a page before its search-result title may change."] }
     ],
     faqs: [

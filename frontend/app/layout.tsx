@@ -28,6 +28,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         {children}
         <SiteFooter />
         <ToolDirectory />
+        <Script
+          src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498"
+          strategy="afterInteractive"
+          data-cfasync="false"
+        />
         <Script id="pdfora-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@graph": [

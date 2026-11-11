@@ -147,7 +147,9 @@ export default function HomePageClient() {
       return matchesCategory && (tokens.length === 0 || tokens.every((token) => searchable.includes(token)));
     });
   }, [query, category]);
-  const popularTools = Array.from(new Map([...allTools.filter((tool) => tool.popular), ...allTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))].map((tool) => [tool.href, tool])).values()).slice(0, 9);
+  // Prioritize tools already earning first-page Google impressions, then retain the existing popular picks.
+  const searchConsolePriorityHrefs = ["/tools/tip-calculator", "/tools/savings-goal-calculator", "/tools/reading-time-calculator", "/tools/percentage-change-calculator"];
+  const popularTools = Array.from(new Map([...allTools.filter((tool) => searchConsolePriorityHrefs.includes(tool.href)), ...allTools.filter((tool) => tool.popular), ...allTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))].map((tool) => [tool.href, tool])).values()).slice(0, 9);
   const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
 
   return (

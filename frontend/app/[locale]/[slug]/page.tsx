@@ -114,7 +114,7 @@ export default async function NepaliPdfToolPage({ params }: Props) {
             </ol>
             <h3 className="mt-6 font-bold text-slate-950">के केही पृष्ठ मात्र घुमाउनुपर्छ?</h3>
             <p className="mt-2 text-sm leading-7 text-slate-700">
-              कागजातमा एउटा वा केही पृष्ठ मात्र उल्टो छन् भने सबै पृष्ठ घुमाउँदा सही रहेका पृष्ठ पनि गलत हुन सक्छन्। त्यस्तो अवस्थामा <a className="font-semibold text-blue-700 underline" href="/rotate-selected-pages">छानिएका PDF पृष्ठ घुमाउने उपकरण</a> प्रयोग गरी पृष्ठ नम्बर र नतिजा छुट्टाछुट्टै जाँच्नुहोस्।
+              कागजातमा एउटा वा केही पृष्ठ मात्र उल्टो छन् भने सबै पृष्ठ घुमाउँदा सही रहेका पृष्ठ पनि गलत हुन सक्छन्। त्यस्तो अवस्थामा <a className="font-semibold text-blue-700 underline" href="/ne/rotate-selected-pages">छानिएका PDF पृष्ठ घुमाउने उपकरण</a> प्रयोग गरी पृष्ठ नम्बर र नतिजा छुट्टाछुट्टै जाँच्नुहोस्।
             </p>
             <h3 className="mt-6 font-bold text-slate-950">घुमाउँदा PDF को सामग्री परिवर्तन हुन्छ?</h3>
             <p className="mt-2 text-sm leading-7 text-slate-700">
@@ -140,7 +140,7 @@ export default async function NepaliPdfToolPage({ params }: Props) {
             </p>
             <h3 className="mt-6 font-bold text-slate-950">Word होइन, plain text चाहिएको हो?</h3>
             <p className="mt-2 text-sm leading-7 text-slate-700">
-              केवल पाठ निकालेर खोज्न वा अर्को ठाउँमा सार्न चाहनुहुन्छ भने <a className="font-semibold text-blue-700 underline" href="/pdf-to-text">PDF बाट Text निकाल्ने उपकरण</a> उपयुक्त हुन सक्छ। त्यसले मूल layout राख्दैन; कुन format चाहिन्छ भन्ने आधारमा उपकरण छान्नुहोस्।
+              केवल पाठ निकालेर खोज्न वा अर्को ठाउँमा सार्न चाहनुहुन्छ भने <a className="font-semibold text-blue-700 underline" href="/ne/pdf-to-text">PDF बाट Text निकाल्ने उपकरण</a> उपयुक्त हुन सक्छ। त्यसले मूल layout राख्दैन; कुन format चाहिन्छ भन्ने आधारमा उपकरण छान्नुहोस्।
             </p>
           </section>
         )}

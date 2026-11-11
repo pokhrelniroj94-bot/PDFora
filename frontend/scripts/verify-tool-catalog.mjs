@@ -134,7 +134,7 @@ assert.ok(newsApi.includes("Promise.allSettled"), "News API must preserve workin
 assert.ok(newsComponent.includes("10 * 60 * 1000"), "News component must auto-refresh headlines every 10 minutes");
 assert.ok(pageImagesToolPage.includes("Render PDF Pages to PNG") && pageImagesToolPage.includes("Render every PDF page as a PNG image"), "Page-image tool must clearly describe full-page PNG rendering");
 assert.ok(nepalLiveTools.includes("Effective tax rate: {amount > 0 ?") && !nepalLiveTools.includes("Effective tax rate: ${amount > 0 ?"), "Nepal salary tax effective rate must display as a percentage, not currency");
-assert.ok(catalogSource.includes("Explore 49 PDF Tools") && catalogSource.includes("49 available PDF tools"), "PDF tool catalogue must advertise the 49 enabled PDF tools accurately");
+assert.ok(catalogSource.includes("Explore All PDF Tools") && catalogSource.includes("complete PDF toolkit"), "PDF tool catalogue must use an accurate count-free description of the available PDF tools");
 const resumeTemplateBlock = resumeBuilder.match(/const templates = \[([\s\S]*?)\n\];/);
 assert.ok(resumeTemplateBlock, "Resume Builder template list is missing");
 assert.equal([...resumeTemplateBlock[1].matchAll(/\bid:\s*"/g)].length, 20, "Resume Builder must expose 20 templates");

@@ -294,8 +294,8 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "tip-calculator-guide",
-    title: "How to Calculate a Tip: Percentage, Total Bill and Split",
-    description: "Learn how to calculate a restaurant tip, add it to the bill and divide the total between people, with a clear percentage formula and worked example.",
+    title: "How to Calculate a Tip: 10%, 15% and 20% Examples",
+    description: "Use the tip formula to calculate 10%, 15% or 20%, add the tip to your bill and split the total per person. Includes a worked example and service-charge check.",
     keyword: "how to calculate tip tip calculator",
     updated: "2026-11-10",
     readTime: "5 min read",

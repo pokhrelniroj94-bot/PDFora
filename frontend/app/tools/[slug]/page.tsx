@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
     "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease | PDFora", description: "Calculate percentage increase or decrease between an original value and a new value. See the formula and interpret negative results." },
-    "tip-calculator": { title: "Tip Calculator – Tip, Total & Bill Split | PDFora", description: "Calculate a tip percentage, final bill and equal per-person share. Check service charges before adding another tip." },
+    "tip-calculator": { title: "Tip Calculator – Calculate Tip, Total & Bill Split | PDFora", description: "Calculate a tip from your bill and percentage, see the total including tip, and split the amount per person. Check service charges before paying." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepse-market-news": { title: "Nepal Stock Market News – NEPSE & IPO Updates", description: "Browse recent Nepal stock market and IPO headlines with publication dates and links to the original publishers. Verify notices with official sources." },
     "nepali-unicode-typing": { title: "Nepali Unicode Typing Tool – Type in Devanagari", description: "Convert Romanized Nepali typing into Unicode Devanagari text. Review spelling, conjuncts and punctuation before using the text in a document." },
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
-    "meta-title-checker": { title: "SEO Title Checker – Meta Title Length & Google Preview", description: "Check SEO title length, preview a Google-style title link and compare the wording with your page heading. Review clarity without ranking promises." },
+    "meta-title-checker": { title: "SEO Title Checker – Check Page Titles & Google Preview | PDFora", description: "Run an SEO title check, count characters and preview a Google-style title link. Compare the page title with its H1; Google may rewrite titles." },
     "meta-description-checker": { title: "Meta Description Checker – Length & Google Snippet Preview", description: "Check meta description length, count characters and preview a search snippet. Write a clear, page-specific summary; Google may choose different text." },
   };
   const seo = seoOverrides[slug];

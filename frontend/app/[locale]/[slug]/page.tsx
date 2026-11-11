@@ -100,6 +100,50 @@ export default async function NepaliPdfToolPage({ params }: Props) {
           {route.component === "pdfora" ? <PDForaTool {...commonProps} /> : <Niroj77Tool {...commonProps} extraFields={route.extraFields} />}
         </div>
         {guide && <ToolGuide guide={{ ...guide, slug, name: localizedName, keyword: "", related: [], blogSlug: "" }} />}
+        {slug === "rotate-pdf" && (
+          <section className="mx-auto mt-8 max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <h2 className="text-xl font-black text-slate-950">PDF का सबै पृष्ठ सही दिशामा कसरी घुमाउने?</h2>
+            <p className="mt-3 text-sm leading-7 text-slate-700">
+              स्क्यानरबाट आएको कागजात, मोबाइलबाट खिचिएको पृष्ठ वा पुरानो रिपोर्टमा केही वा सबै पृष्ठ तेर्सो देखिन सक्छन्। घुमाउनुअघि कुन पृष्ठको दिशा बिग्रिएको छ भनेर PDF reader मा जाँच्नुहोस्। सबै पृष्ठ एउटै दिशामा बिग्रिएका छन् भने यो Rotate PDF उपकरण प्रयोग गर्नुहोस्।
+            </p>
+            <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-700">
+              <li>मूल PDF को सुरक्षित प्रतिलिपि राख्नुहोस् र फाइल सही खुलेको पुष्टि गर्नुहोस्।</li>
+              <li>माथिको उपकरणमा PDF अपलोड गरी आवश्यक rotation कोण छान्नुहोस्।</li>
+              <li>प्रक्रिया पूरा भएपछि नयाँ PDF डाउनलोड गर्नुहोस्।</li>
+              <li>पहिलो, बीचको र अन्तिम पृष्ठ खोलेर पाठ, चित्र र पृष्ठको दिशा जाँच्नुहोस्।</li>
+            </ol>
+            <h3 className="mt-6 font-bold text-slate-950">के केही पृष्ठ मात्र घुमाउनुपर्छ?</h3>
+            <p className="mt-2 text-sm leading-7 text-slate-700">
+              कागजातमा एउटा वा केही पृष्ठ मात्र उल्टो छन् भने सबै पृष्ठ घुमाउँदा सही रहेका पृष्ठ पनि गलत हुन सक्छन्। त्यस्तो अवस्थामा <a className="font-semibold text-blue-700 underline" href="/rotate-selected-pages">छानिएका PDF पृष्ठ घुमाउने उपकरण</a> प्रयोग गरी पृष्ठ नम्बर र नतिजा छुट्टाछुट्टै जाँच्नुहोस्।
+            </p>
+            <h3 className="mt-6 font-bold text-slate-950">घुमाउँदा PDF को सामग्री परिवर्तन हुन्छ?</h3>
+            <p className="mt-2 text-sm leading-7 text-slate-700">
+              सामान्य rotation ले पृष्ठको दृश्य दिशा बदल्छ; यसले स्क्यान गरिएको चित्रभित्रको अक्षरलाई आफैँ editable text बनाउँदैन। हस्ताक्षर, तालिका वा फाराम भएका महत्त्वपूर्ण पृष्ठ डाउनलोडपछि फेरि जाँच्नुहोस्।
+            </p>
+          </section>
+        )}
+        {slug === "pdf-to-word" && (
+          <section className="mx-auto mt-8 max-w-3xl rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+            <h2 className="text-xl font-black text-slate-950">PDF लाई सम्पादनयोग्य Word फाइलमा बदल्दा के जाँच्ने?</h2>
+            <p className="mt-3 text-sm leading-7 text-slate-700">
+              PDF-to-Word रूपान्तरण रिपोर्ट, पत्र वा assignment का पाठ संशोधन गर्न उपयोगी हुन्छ। तर PDF ले पृष्ठको देखिने बनावट सुरक्षित गर्छ; त्यसैले Word मा रूपान्तरण हुँदा अनुच्छेद, column, तालिका र चित्रको स्थान सर्न सक्छ। नतिजा मूल कागजातसँग तुलना गरेर मात्र प्रयोग गर्नुहोस्।
+            </p>
+            <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-700">
+              <li>PDF reader मा एउटा वाक्य चयन गरेर selectable text छ कि जाँच्नुहोस्।</li>
+              <li>माथिको उपकरणबाट फाइल रूपान्तरण गरी DOCX डाउनलोड गर्नुहोस्।</li>
+              <li>Word वा मिल्दो editor मा खोलेर शीर्षक, अनुच्छेद, तालिका र page break जाँच्नुहोस्।</li>
+              <li>नाम, मिति, रकम, विशेष चिन्ह र हस्ताक्षर मूल PDF सँग मिलाउनुहोस्।</li>
+            </ol>
+            <h3 className="mt-6 font-bold text-slate-950">स्क्यान गरिएको PDF किन फरक हुन्छ?</h3>
+            <p className="mt-2 text-sm leading-7 text-slate-700">
+              स्क्यान गरिएको पृष्ठमा शब्दहरू चित्रका pixel का रूपमा हुन्छन्, selectable text का रूपमा होइनन्। यस्तो फाइलमा OCR आवश्यक पर्न सक्छ र OCR ले अंक, विरामचिह्न वा नेपाली अक्षर गलत चिन्न सक्छ। रूपान्तरणपछि सबै महत्त्वपूर्ण अंश प्रूफरिड गर्नुहोस्।
+            </p>
+            <h3 className="mt-6 font-bold text-slate-950">Word होइन, plain text चाहिएको हो?</h3>
+            <p className="mt-2 text-sm leading-7 text-slate-700">
+              केवल पाठ निकालेर खोज्न वा अर्को ठाउँमा सार्न चाहनुहुन्छ भने <a className="font-semibold text-blue-700 underline" href="/pdf-to-text">PDF बाट Text निकाल्ने उपकरण</a> उपयुक्त हुन सक्छ। त्यसले मूल layout राख्दैन; कुन format चाहिन्छ भन्ने आधारमा उपकरण छान्नुहोस्।
+            </p>
+          </section>
+        )}
       </div>
     </main>
   );

@@ -337,7 +337,7 @@ export default function HomePageClient() {
               type="button"
               onClick={() => {
                 setQuery("");
-                setCategory("PDF");
+                setCategory("All");
                 setVisibleCount(12);
               }}
               className="mt-5 rounded-xl bg-slate-950 px-4 py-3 text-xs font-bold text-white"

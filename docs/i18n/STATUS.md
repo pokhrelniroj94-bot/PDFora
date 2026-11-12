@@ -6,7 +6,7 @@ This section supersedes the stale 2026-11-07 inventory statements below. The cur
 
 - **Published locales:** English and Nepali only.
 - **Unpublished locales:** Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese. Their routes must remain unpublished/noindex and excluded from sitemap/hreflang until their actual content is complete and reviewed.
-- **Nepali:** the last committed source-inspection matrix records 122 tool interfaces and six tool pages in the explicit indexing allowlist. This is not proof that 122 tools have complete localized inputs, validation, errors, help, output, human review or end-to-end QA.
+- **Nepali:** the committed JSON matrix snapshot is stale and records 122 tool interfaces. A fresh source scan finds 119 registered tool interfaces (49 PDF + 70 catalog utilities) and 50 catalog utilities without a Nepali route entry. Only six Nepali tool pages are in the explicit indexing allowlist. Route registration is not proof of complete localized inputs, validation, errors, help, output, human review or end-to-end QA. See `NEPALI_TOOL_GAPS_2026-11-12.md` for the exact 50-slug backlog.
 - **English:** source language; its tool functionality and page SEO are tested separately from translation review.
 - **RTL:** Urdu and Arabic need full visual, keyboard, mobile and mixed-direction testing before publication.
 - **Google release gate:** localized pages require distinct useful content, self-referencing canonical URLs, reciprocal hreflang only between real equivalent pages, correct HTML language/direction, and sitemap entries only for published indexable pages. Do not redirect users solely from browser language.

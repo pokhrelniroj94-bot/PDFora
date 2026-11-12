@@ -17,6 +17,7 @@ export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string)
 
   const url = `${SITE}/${slug}`;
   const overrides: Record<string,{title:string;description:string}> = {
+    "merge-pdf": { title: "Merge PDF Files Online – Combine Multiple PDFs", description: "Combine 2–20 PDF files into one document. Reorder files, merge and download a single PDF. Combined upload limit: 50 MB." },
     "split-pdf": { title: "Split PDF Online – Extract Pages into Separate Files", description: "Split a PDF into smaller documents by selecting page ranges. Extract the pages you need, then check page order and readability before sharing." },
     "delete-pages": { title: "Delete PDF Pages Online – Remove Selected Pages", description: "Remove unwanted or blank PDF pages by entering page numbers such as 2, 4, or 6–8. Download a clean copy and verify the remaining page order." }
   };

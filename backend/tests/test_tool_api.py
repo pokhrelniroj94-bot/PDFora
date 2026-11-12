@@ -236,7 +236,16 @@ def test_delete_pages_accepts_comma_separated_numbers_and_ranges():
     response = post_pdf("/api/delete-pages", pdf, data={"pages": "2-3"})
     assert response.status_code == 200
     reader = PdfReader(io.BytesIO(response.content))
-    assert len(reader.pages) == 1
+    # The fixture has four pages (three content pages plus one blank page).
+    # Deleting pages 2-3 must retain page 1 and the blank page 4.
+    assert len(reader.pages) == 2
+    assert "PDFora regression test page 1" in reader.pages[0].extract_text()
+
+    comma_separated = post_pdf("/api/delete-pages", pdf, data={"pages": "2,4"})
+    assert comma_separated.status_code == 200
+    comma_reader = PdfReader(io.BytesIO(comma_separated.content))
+    assert len(comma_reader.pages) == 2
+    assert "PDFora regression test page 1" in comma_reader.pages[0].extract_text()
 
     invalid = post_pdf("/api/delete-pages", pdf, data={"pages": "3-2"})
     assert invalid.status_code == 400

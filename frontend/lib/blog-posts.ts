@@ -252,8 +252,8 @@ const editorialBlogPosts: BlogPost[] = [
 const priorityEditorialBlogPosts: BlogPost[] = [
   {
     slug: "savings-goal-calculator-guide",
-    title: "How Much Should You Save Each Month? Savings Goal Formula",
-    description: "Estimate weekly or monthly deposits for a savings goal. Include your current balance, deadline and an assumed annual interest rate.",
+    title: "Savings Goal Calculator: Weekly & Monthly Savings Plan",
+    description: "Calculate how much to save each week or month to reach a target. Include current savings, deadline and estimated interest, with worked examples.",
     keyword: "how to calculate a savings goal monthly savings",
     updated: "2026-11-12",
     readTime: "5 min read",
@@ -276,8 +276,8 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "reading-time-calculator-guide",
-    title: "Reading Time Calculator: Words to Minutes & WPM Guide",
-    description: "Estimate reading and speaking time from pasted text. Compare reading speeds, use the words-per-minute formula and plan a realistic presentation duration.",
+    title: "Reading Time Calculator: Estimate Reading & Speaking Time",
+    description: "Paste text to estimate minutes and seconds. Compare 150, 200 and 250 WPM, calculate speaking time and plan article or presentation length.",
     keyword: "reading time calculator words per minute",
     updated: "2026-11-12",
     readTime: "5 min read",
@@ -325,8 +325,8 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "percentage-change-calculator-guide",
-    title: "Percentage Change Calculator: Formula, Increase & Decrease",
-    description: "Calculate percentage increase or decrease, or find an original value from a final value and known percentage change.",
+    title: "Percentage Change Calculator: Increase, Decrease & Formula",
+    description: "Calculate percentage increase or decrease from original and new values. See worked examples, reverse the calculation and distinguish percentage change from percentage points.",
     keyword: "percentage change calculator increase decrease formula",
     updated: "2026-11-12",
     readTime: "5 min read",

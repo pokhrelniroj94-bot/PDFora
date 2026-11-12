@@ -11,7 +11,7 @@ PDFora is a free web-based toolkit for common PDF tasks and everyday utilities. 
 - **Text and developer utilities:** format, convert, validate, and inspect common text and data formats.
 - **Nepal-focused utilities:** selected date, finance, currency, and market tools.
 
-The current directory includes **49 PDF tool routes and 124 catalog tools**, with 173 unified entries across the homepage and full tools directory. The available tools and supported file limits are documented on their individual pages.
+The current directory includes **49 PDF tool routes and **120 catalog tools**, with 169 unified entries across the homepage and full tools directory. The available tools and supported file limits are documented on their individual pages.
 
 ## Useful links
 

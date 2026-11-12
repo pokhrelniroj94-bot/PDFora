@@ -250,15 +250,16 @@ const editorialBlogPosts: BlogPost[] = [
 const priorityEditorialBlogPosts: BlogPost[] = [
   {
     slug: "savings-goal-calculator-guide",
-    title: "How to Calculate a Savings Goal: Monthly Savings Formula",
-    description: "Calculate the monthly amount needed to reach a savings target. Learn the formula, see a worked example and adjust your plan when your deadline changes.",
+    title: "How Much Should You Save Each Month? Savings Goal Formula",
+    description: "Work out a monthly savings target from your goal, current balance and deadline. Follow the formula, see a worked NPR example and adjust an unrealistic plan.",
     keyword: "how to calculate a savings goal monthly savings",
-    updated: "2026-11-10",
+    updated: "2026-11-12",
     readTime: "5 min read",
     intro: "A savings goal becomes easier to manage when you turn one large target into a regular amount. The calculation needs three figures: the amount you want to have, the money already saved and the number of months left before you need it. This guide explains the simple monthly plan and what it does not include.",
     sections: [
       { heading: "The monthly savings formula", paragraphs: ["First subtract your current savings from the target. Then divide the remaining amount by the number of full months available. The formula is: monthly savings needed = (savings target − current savings) ÷ months remaining. Use the same currency for both amounts and enter a positive number of months.", "This is a straight-line plan: it assumes you add the same amount each month and do not earn interest or investment returns. It is useful for a clear cash target such as tuition, a laptop, travel or an emergency fund."] },
       { heading: "Worked example: save NPR 90,000 in six months", paragraphs: ["Suppose your target is NPR 90,000 and you have already saved NPR 30,000. The remaining amount is NPR 60,000. With six months left, divide NPR 60,000 by six: you need to set aside NPR 10,000 each month.", "If your income arrives weekly or irregularly, you can divide the remaining target across your expected pay periods instead. The calculator uses months, so convert your plan to a monthly equivalent before comparing it with the result."] },
+      { heading: "What if the monthly savings target is too high?", paragraphs: ["Suppose your target is 120,000 and you have already saved 30,000, leaving 90,000. With six months remaining, the simple plan requires 15,000 each month. If you can set aside only 10,000 per month, the same no-interest calculation needs nine months to cover the remaining 90,000.", "You can respond by extending the deadline, reducing the target or adding a one-time deposit from money genuinely available for this goal. Do not count your salary or money reserved for rent, food and bills as savings already set aside."] },
       { heading: "Use the Savings Goal Calculator", paragraphs: ["Open the Savings Goal Calculator and enter the final target, current savings and months remaining. Review the remaining amount and monthly savings figure. If the monthly amount is too high, test a longer deadline or a smaller target rather than entering an unrealistic current-savings figure.", "Update the calculation after each deposit or whenever your target or deadline changes. Keep the original goal and the date of each revision so you can see whether your plan is on track."] },
       { heading: "Interest, inflation and other limits", paragraphs: ["This calculator does not add bank interest, investment returns, inflation, fees or tax. A savings account that pays interest may reach the target sooner, but the actual result depends on its rate, balance rules and deposit timing. Investments can lose value and should not be treated as guaranteed savings.", "For a reliable cash plan, use the result as a contribution target and check your actual account balance regularly. Keep emergency money separate from funds that are committed to a fixed deadline."] }
     ],
@@ -272,17 +273,18 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "reading-time-calculator-guide",
-    title: "Reading Time Calculator: Estimate Minutes from Word Count",
-    description: "Estimate how long an article takes to read using its word count and reading speed. Learn the WPM formula, examples and why actual reading time varies.",
+    title: "Reading Time Calculator: Words to Minutes & WPM Guide",
+    description: "Estimate reading time from a word count or pasted text. Compare 150, 200 and 250 WPM examples, use the formula and choose a realistic speed.",
     keyword: "reading time calculator words per minute",
-    updated: "2026-11-10",
+    updated: "2026-11-12",
     readTime: "5 min read",
     intro: "A reading-time estimate helps readers decide whether to start an article and helps writers plan the length of a page, newsletter or lesson. The estimate is based on word count and an assumed reading speed, usually measured in words per minute (WPM). It is a guide rather than a promise about every reader.",
     sections: [
       { heading: "Reading time formula", paragraphs: ["The basic formula is reading time in minutes = total word count ÷ reading speed in words per minute. If a text contains 1,000 words and the selected speed is 200 WPM, the estimate is 1,000 ÷ 200 = 5 minutes.", "For a result in seconds, multiply the number of minutes by 60. A 300-word text at 200 WPM is 1.5 minutes, or about 90 seconds."] },
       { heading: "Choose a realistic reading speed", paragraphs: ["A speed of 200 WPM is a convenient starting assumption for general English prose, not a universal standard. Readers may move more slowly through technical instructions, unfamiliar vocabulary, legal terms, tables or material in a second language. Skimming and familiar topics can make reading faster.", "When comparing two drafts, use the same WPM setting for both. Otherwise a change in the displayed estimate may come from the selected speed rather than the word count."] },
       { heading: "Use the Reading Time Calculator", paragraphs: ["Paste the complete article into the text field and enter a positive WPM value. Run the calculator and review the word count and estimated time. Include the whole body you expect visitors to read; leaving out headings, captions or important sections can make the estimate misleading.", "If you are writing for a specific audience, test more than one reading speed and choose a value that reflects the complexity of the material. Keep the displayed estimate clearly labelled as approximate."] },
-      { heading: "Why actual reading time differs", paragraphs: ["Word counters may treat punctuation, hyphenated terms, numbers and Unicode text differently. The tool counts whitespace-separated words, so code blocks, tables, diagrams and screen-reader navigation may not match a person's actual reading experience.", "Use reading time as a simple editorial signal, not a ranking factor or accessibility measurement. Clear headings, short paragraphs and useful examples can make a long article easier to navigate even when the estimated minutes do not change."] }
+      { heading: "Words-to-minutes examples at different speeds", paragraphs: ["For 500 words, the estimate is 3 minutes 20 seconds at 150 WPM, 2 minutes 30 seconds at 200 WPM and 2 minutes at 250 WPM. For 1,000 words, those estimates become 6 minutes 40 seconds, 5 minutes and 4 minutes respectively.", "For a 1,500-word article, the same speeds produce estimates of 10 minutes, 7 minutes 30 seconds and 6 minutes. These examples are arithmetic comparisons, not a claim that every reader uses one of these speeds."] },
+      { heading: "Why actual reading time differs", paragraphs: ["Word counters may treat punctuation, hyphenated terms, numbers and Unicode text differently. The tool counts whitespace-separated words, so code blocks, tables, diagrams and screen-reader navigation may not match a reader’s actual reading experience.", "Use reading time as a simple editorial signal, not a ranking factor or accessibility measurement. Clear headings, short paragraphs and useful examples can make a long article easier to navigate even when the estimated minutes do not change."] }
     ],
     faqs: [
       { question: "How do you calculate reading time from word count?", answer: "Divide the number of words by the selected reading speed in words per minute. A 1,000-word article at 200 WPM is about five minutes." },
@@ -316,15 +318,16 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "percentage-change-calculator-guide",
-    title: "Percentage Change Calculator: Formula & Examples",
-    description: "Calculate percentage increase or decrease with the formula, worked examples, percentage points and a clear explanation of zero starting values.",
+    title: "Percentage Change Calculator: Formula, Increase & Decrease",
+    description: "Calculate percentage increase or decrease from an original value. Learn the formula, compare reverse changes, distinguish percentage points and handle zero.",
     keyword: "percentage change calculator increase decrease formula",
-    updated: "2026-11-11",
+    updated: "2026-11-12",
     readTime: "5 min read",
     intro: "Percentage change describes how much a value has increased or decreased compared with its starting value. It is useful for comparing prices, quantities, monthly expenses and other measurements, provided both values use the same unit and basis.",
     sections: [
       { heading: "Percentage change formula", paragraphs: ["Percentage change = (new value − original value) ÷ original value × 100. A positive result means an increase; a negative result means a decrease. The original value is the denominator because the change is measured relative to where the value started.", "Do not reverse the original and new values. Changing the denominator changes the answer and can make a decrease look like a different percentage from the reverse increase."] },
       { heading: "Worked examples: increase and decrease", paragraphs: ["If a price rises from 80 to 100, the difference is 20. Divide 20 by the original 80 and multiply by 100: the increase is 25%.", "If a value falls from 100 to 80, the difference is −20. Divide −20 by the original 100 and multiply by 100: the change is −20%, meaning a 20% decrease. The reverse movement is not the same percentage because the starting value is different."] },
+      { heading: "Why reverse changes have different percentages", paragraphs: ["A change from 100 to 120 is a 20% increase because the difference of 20 is divided by the original 100. Reversing the movement from 120 to 100 is a 16.67% decrease because the same difference is now divided by 120.", "This is why a 20% increase followed by a 20% decrease does not return to the starting value: 100 rises to 120, then falls to 96. Always use the value at the start of the specific comparison as the denominator."] },
       { heading: "Use the Percentage Change Calculator", paragraphs: ["Enter the original value first and the new value second. Check that both numbers use the same unit—for example, rupees compared with rupees or kilograms compared with kilograms—then run the calculation and read whether the result is an increase or decrease.", "If the original value is zero, the standard percentage-change formula is undefined because it would require division by zero. Report the absolute difference instead or explain the change without expressing it as a percentage."] },
       { heading: "Percentage change versus percentage points", paragraphs: ["Percentage change is a relative change between two values. Percentage points describe the arithmetic difference between two percentages. For example, a rate moving from 10% to 12% has increased by 2 percentage points, while its relative percentage change is 20%.", "Use percentage points when comparing rates such as interest, market share or pass rates. Use percentage change when you want to express the relative movement from an original numerical value."] }
     ],

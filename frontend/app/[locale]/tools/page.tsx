@@ -69,21 +69,6 @@ export default async function NepaliToolsDirectory({ params }: Props) {
       <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">नेपालीमा उपलब्ध अनलाइन उपकरणहरू</h1>
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">PDF व्यवस्थापन, नेपालका दैनिक उपयोगिता, गणना, लेखन, मिति, वित्त र करियरसम्बन्धी उपकरणहरू यहाँबाट खोल्नुहोस्। हरेक उपकरणको नतिजा प्रयोग गर्नुअघि विवरण जाँच्नुहोस्; वित्तीय तथा शैक्षिक हिसाब अनुमानका लागि हुन्।</p>
     </header>
-    <section className="mb-10">
-      <h2 className="mb-4 text-xl font-extrabold">PDF उपकरणहरू</h2>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{pdfTools.map(([slug,title]) => <ToolLink key={slug} slug={slug} title={title}/>)}</div>
-    </section>
-    <section className="mb-10">
-      <h2 className="mb-4 text-xl font-extrabold">बजार तथा NEPSE विश्लेषण</h2>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"><ToolLink slug="nepse-technical-analysis" title="NEPSE प्राविधिक विश्लेषण"/></div>
-    </section>
-    <section className="mb-10">
-      <h2 className="mb-4 text-xl font-extrabold">जन्मकुण्डली तथा परम्परागत ज्योतिष</h2>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <ToolLink slug="nepali-janma-kundali" title="वैदिक जन्मकुण्डली"/>
-        <ToolLink slug="nepali-guna-milan" title="३६ गुण मिलान"/>
-      </div>
-    </section>
     {groups.map((group) => <section className="mb-10" key={group.title}>
       <h2 className="mb-4 text-xl font-extrabold">{group.title}</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{Array.from(new Set(group.slugs)).map((slug) => <ToolLink key={slug} slug={slug}/>)}</div>

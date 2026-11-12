@@ -433,14 +433,14 @@ export const toolGuides: ToolGuide[] = [
   {
     "slug": "pdf-to-excel",
     "name": "PDF to Excel",
-    "keyword": "how to convert PDF tables into editable Excel spreadsheets online",
-    "purpose": "Convert suitable PDF table content into a spreadsheet so you can sort, filter and analyse extracted values.",
+    "keyword": "convert PDF tables to Excel XLSX online",
+    "purpose": "Extract suitable selectable PDF table content into an editable XLSX workbook for sorting, filtering and further analysis.",
     "steps": [
-      "Open PDF to Excel and upload the PDF with the table.",
-      "Start the conversion and download the workbook.",
-      "Open it in Excel and verify rows, columns, dates and totals against the source."
+      "Open PDF to Excel and upload a PDF that contains a readable table.",
+      "Start the conversion and download the generated XLSX workbook.",
+      "Open the workbook in Excel or a compatible spreadsheet app and compare sample rows, columns and totals with the PDF."
     ],
-    "caution": "Scanned PDFs may need OCR first, and merged cells or multi-line headings can require manual cleanup.",
+    "caution": "Image-only scanned pages may need OCR first. Merged cells, multi-line headings and complex layouts can require manual cleanup; verify financial figures before using them.",
     "related": [
       "pdf-to-csv",
       "pdf-to-word",
@@ -758,13 +758,13 @@ export const toolGuides: ToolGuide[] = [
     "slug": "rotate-pdf",
     "name": "Rotate PDF",
     "keyword": "how to rotate all PDF pages to landscape or portrait online",
-    "purpose": "Correct page orientation in a PDF when scanned pages or exported documents appear sideways or upside down.",
+    "purpose": "Rotate every page in a PDF by a quarter-turn or half-turn when a scanned or exported document is sideways or upside down.",
     "steps": [
-      "Open Rotate PDF and upload the document.",
-      "Choose the rotation direction or angle supported by the tool.",
-      "Process and download the updated PDF, then inspect several pages."
+      "Open Rotate PDF and upload one PDF document.",
+      "Choose 90°, 180° or 270° depending on the correction needed.",
+      "Process and download the rotated PDF, then check portrait and landscape pages in a separate PDF reader."
     ],
-    "caution": "If only a few pages are sideways, use Rotate Selected Pages instead of rotating the entire document.",
+    "caution": "This tool rotates the document pages together. If only selected pages need correction, use Rotate Selected Pages so correctly oriented pages remain unchanged.",
     "related": [
       "rotate-selected-pages",
       "reorder-pdf",

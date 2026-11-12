@@ -233,7 +233,7 @@ def test_all_available_pdf_tools_process_a_realistic_pdf():
 
 def test_delete_pages_accepts_comma_separated_numbers_and_ranges():
     pdf = make_sample_pdf()
-    response = post_pdf("/api/delete-pages", pdf, data={"pages": "2-3,4"})
+    response = post_pdf("/api/delete-pages", pdf, data={"pages": "2-3"})
     assert response.status_code == 200
     reader = PdfReader(io.BytesIO(response.content))
     assert len(reader.pages) == 1

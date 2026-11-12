@@ -131,7 +131,8 @@ const howToUse: Record<string, string> = {
 
 export default function HomePageClient() {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("All");
+  const [category, setCategory] = useState("PDF");
+  const [visibleCount, setVisibleCount] = useState(12);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
 
@@ -152,6 +153,7 @@ export default function HomePageClient() {
   const searchConsolePriorityHrefs = ["/tools/tip-calculator", "/tools/savings-goal-calculator", "/tools/reading-time-calculator", "/tools/percentage-change-calculator"];
   const popularTools = Array.from(new Map([...allTools.filter((tool) => searchConsolePriorityHrefs.includes(tool.href)), ...allTools.filter((tool) => tool.popular), ...allTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))].map((tool) => [tool.href, tool])).values()).slice(0, 9);
   const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
+  const visibleTools = filteredTools.slice(0, visibleCount);
 
   return (
     <main className="min-h-screen bg-[#f5f7f6] text-slate-950">
@@ -207,8 +209,8 @@ export default function HomePageClient() {
             <div className="mt-10 max-w-2xl rounded-2xl border border-white/15 bg-white/[0.08] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl focus-within:border-teal-300/60">
               <div className="flex items-center gap-3">
                 <span className="pl-3 text-xl text-teal-200" aria-hidden="true">⌕</span>
-                <input value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); }} placeholder="What do you need to do?  e.g. merge PDF, compress image…" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" />
-                {query && <button type="button" onClick={() => setQuery("")} className="rounded-xl px-3 py-2 text-xs font-bold text-slate-300 hover:bg-white/10">Clear</button>}
+                <input value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); setVisibleCount(12); }} placeholder="What do you need to do?  e.g. merge PDF, compress image…" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" />
+                {query && <button type="button" onClick={() => { setQuery(""); setCategory("PDF"); setVisibleCount(12); }} className="rounded-xl px-3 py-2 text-xs font-bold text-slate-300 hover:bg-white/10">Clear</button>}
               </div>
             </div>
             {query.trim() && (
@@ -286,11 +288,11 @@ export default function HomePageClient() {
             id="tools-heading"
             className="mt-1 text-2xl font-black"
           >
-            All tools in one place
+            Explore PDF tools and everyday utilities
           </h2>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-            Search and open every available PDF tool, calculator, text utility, developer helper, image tool and Nepal-focused service from this one directory.
+            Start with the most-used PDF tools. Search all categories or open the full directory whenever you need a calculator, text utility, developer helper or Nepal-focused service.
           </p>
         </div>
 
@@ -300,7 +302,7 @@ export default function HomePageClient() {
             <button
               key={item}
               type="button"
-              onClick={() => setCategory(item)}
+              onClick={() => { setCategory(item); setQuery(""); setVisibleCount(12); }}
               aria-pressed={category === item}
               className={
                 category === item
@@ -313,7 +315,7 @@ export default function HomePageClient() {
           ))}
         </div>
 
-        <p className="mb-4 text-sm text-slate-500" aria-live="polite">{query.trim() ? `Showing ${filteredTools.length} matching tools for “${query}”.` : `Browse ${filteredTools.length} tools. Search by name, task or keyword.`}</p>
+        <p className="mb-4 text-sm text-slate-500" aria-live="polite">{query.trim() ? `Showing ${visibleTools.length} of ${filteredTools.length} matching tools for “${query}”.` : `Showing ${visibleTools.length} of ${filteredTools.length} ${category === "PDF" ? "PDF" : category === "All" ? "total" : category} tools. Search or choose a category to narrow results.`}</p>
         {filteredTools.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white px-5 py-14 text-center">
             <div
@@ -335,7 +337,8 @@ export default function HomePageClient() {
               type="button"
               onClick={() => {
                 setQuery("");
-                setCategory("All");
+                setCategory("PDF");
+                setVisibleCount(12);
               }}
               className="mt-5 rounded-xl bg-slate-950 px-4 py-3 text-xs font-bold text-white"
             >
@@ -344,10 +347,24 @@ export default function HomePageClient() {
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredTools.map((tool) => (
+            {visibleTools.map((tool) => (
               <ToolCard key={tool.href} tool={tool} />
             ))}
           </div>
+          {visibleTools.length < filteredTools.length && (
+            <div className="mt-8 flex flex-col items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((count) => Math.min(count + 12, filteredTools.length))}
+                className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
+              >
+                Show more tools
+              </button>
+              <Link href="/tools" className="text-sm font-semibold text-teal-700 underline underline-offset-4 hover:text-teal-900">
+                Open the full tools directory
+              </Link>
+            </div>
+          )}
         )}
       </section>
 

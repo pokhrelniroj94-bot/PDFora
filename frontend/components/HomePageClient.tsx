@@ -5,12 +5,13 @@ import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import AdsterraNative from "../app/components/AdsterraNative";
 import { allTools, type Tool } from "../lib/tool-directory";
+import BrandMark from "./BrandMark";
 
 const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
   loading: () => <div className="grid min-h-40 place-items-center rounded-3xl border border-white/10 bg-slate-900/5 text-sm text-slate-500">Loading Nepal market updates…</div>,
 });
 
-const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)])).sort((a, b) => a.localeCompare(b))];
+const categories = ["All", "PDF", ...Array.from(new Set(allTools.map((tool) => tool.category).filter((item) => item !== "PDF"))).sort((a, b) => a.localeCompare(b))];
 
 const faqs = [
   {
@@ -162,12 +163,9 @@ export default function HomePageClient() {
             className="flex items-center gap-2"
             aria-label="PDFora home"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 via-emerald-600 to-cyan-700 text-sm font-black text-white shadow-lg shadow-teal-900/20">
-              P
-            </div>
-
-            <span className="text-[22px] font-black tracking-tight text-slate-950">
-              PDFora
+            <BrandMark size={42} />
+            <span className="text-[22px] font-black tracking-tight">
+              <span className="text-slate-950">PDF</span><span className="text-teal-700">ora</span>
             </span>
           </Link>
 
@@ -191,11 +189,11 @@ export default function HomePageClient() {
               Your everyday digital workspace
             </div>
             <h1 className="mt-7 max-w-3xl text-[2.65rem] font-black leading-[1.06] tracking-[-.045em] sm:text-6xl lg:text-[4.35rem]">
-              Get more done.
-              <span className="mt-1 block bg-gradient-to-r from-teal-200 via-emerald-300 to-cyan-200 bg-clip-text text-transparent">Without the busywork.</span>
+              Free Online PDF Tools
+              <span className="mt-1 block bg-gradient-to-r from-teal-200 via-emerald-300 to-cyan-200 bg-clip-text text-transparent">for everyday work.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base sm:leading-8">
-              A smarter place for PDF editing, image conversion, calculations, text utilities and Nepal-focused tools. Fast workflows, simple controls and no software to install.
+              Merge, split, compress, convert and organize PDF files online. Then explore useful image tools, calculators, text utilities and Nepal-focused services—all in one simple workspace.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href="/tools" className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 px-6 py-3.5 text-sm font-extrabold text-[#062321] shadow-xl shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:shadow-emerald-400/20">Explore all tools <span className="ml-2">→</span></Link>
@@ -572,13 +570,8 @@ export default function HomePageClient() {
                 className="flex items-center gap-2"
                 aria-label="PDFora home"
               >
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-black text-slate-950">
-                  P
-                </div>
-
-                <span className="text-xl font-black">
-                  PDFora
-                </span>
+                <BrandMark size={38} />
+                <span className="text-xl font-black"><span className="text-white">PDF</span><span className="text-teal-300">ora</span></span>
               </Link>
 
               <p className="mt-4 max-w-sm text-sm leading-6 text-slate-400">

@@ -25,6 +25,7 @@ type Props = {
   formPlaceholder?: string;
   queryField?: string;
   queryDefault?: string;
+  showSeoContent?: boolean;
 };
 
 export default function PDForaTool({
@@ -39,6 +40,7 @@ export default function PDForaTool({
   formPlaceholder,
   queryField,
   queryDefault = "",
+  showSeoContent = true,
 }: Props) {
   const pathname = usePathname();
   const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
@@ -510,7 +512,7 @@ export default function PDForaTool({
         <div className="mt-8 border-t border-slate-200 pt-2">
         </div>
       </section>
-      <ToolSEOContent slug={currentSlug} locale={locale} />
+      {showSeoContent && <ToolSEOContent slug={currentSlug} locale={locale} />}
     </div>
   );
 }

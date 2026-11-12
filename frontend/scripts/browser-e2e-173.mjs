@@ -449,6 +449,7 @@ async function runTool(tool, index) {
       row.checks.push("processing action clicked");
       const start = Date.now();
       let finalState = null;
+      let statusText = "";
       while (Date.now() - start < timeoutMs) {
         finalState = await page.evaluate(`(() => ({
           body: document.body?.innerText?.slice(0, 16000) || "",
@@ -461,8 +462,8 @@ async function runTool(tool, index) {
           busy: !!document.querySelector('button[disabled]'),
         }))()`);
         const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name)).length;
-        const statusText = finalState.statuses.map((status) => status.text).join(" | ");
-        if (downloadCount > downloadsBefore.size || finalState.links.length || (statusText && !/processing|please wait/i.test(statusText)) || finalState.alerts.length) break;
+        statusText = finalState.statuses.map((status) => status.text).join(" | ");
+        if (downloadCount > 0 || finalState.links.length || (statusText && !/processing|please wait/i.test(statusText)) || finalState.alerts.length) break;
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));
@@ -480,7 +481,7 @@ async function runTool(tool, index) {
       for (const name of newDownloadNames) validatedDownloads.push(await validateDownloadedFile(path.join(downloadsDir, name)));
       row.downloadCount = validatedDownloads.length;
       row.downloadedFiles = validatedDownloads;
-      const statusText = finalState?.statuses?.map((status) => status.text).join(" | ") ?? "";
+      statusText = finalState?.statuses?.map((status) => status.text).join(" | ") ?? statusText;
       const statusClass = finalState?.statuses?.map((status) => status.className).join(" ") ?? "";
       const invalidPdfNode = await page.send("DOM.getDocument", { depth: 1 });
       const invalidPdfInput = await page.send("DOM.querySelector", { nodeId: invalidPdfNode.root.nodeId, selector: 'input[type="file"]' });

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import BrandMark from "./BrandMark";
 import ToolSEOContent from "./ToolSEOContent";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
@@ -225,12 +226,9 @@ export default function PDForaTool({
             href={homeHref}
             className="flex min-h-11 items-center gap-2"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-700 font-black text-white shadow-lg shadow-teal-900/20">
-              P
-            </div>
-
+            <BrandMark size={38} />
             <span className="text-xl font-black tracking-tight">
-              PDFora
+              <span className="text-slate-950">PDF</span><span className="text-teal-700">ora</span>
             </span>
           </a>
 

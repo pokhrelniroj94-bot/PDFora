@@ -123,4 +123,7 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"nepse-market-news",name:"NEPSE Market & IPO News",category:"Nepal",description:"Read automatically refreshed Nepal stock-market, IPO, FPO and allotment headlines with publisher links and publication times.",keywords:"NEPSE news today Nepal stock market news IPO FPO allotment news shares Nepal"},
 {slug:"nepse-dividend-calculator",name:"NEPSE Dividend & Bonus Share Calculator",category:"Nepal",description:"Estimate cash dividends after an editable withholding-tax assumption and calculate bonus-share entitlement from your holdings.",keywords:"Nepse dividend calculator Nepal cash dividend bonus share calculator dividend tax"},
 
+
+{slug:"nepali-janma-kundali",name:"Janma Kundali / जन्मकुण्डली",category:"Kundali & Astrology",description:"Create a Vedic birth chart from birth date, exact local time and birthplace, with D1 Rashi, D9 Navamsa, Lagna, planetary positions and Vimshottari Mahadasha.",keywords:"janma kundali birth chart vedic astrology Nepal India lagna rashi nakshatra navamsa dasha जन्मकुण्डली"},
+{slug:"nepali-guna-milan",name:"36 Guna Milan / अष्टकूट गुण मिलान",category:"Kundali & Astrology",description:"Compare two birth charts using a documented traditional 36-point Ashtakoota method, with eight koota scores and source-table notes.",keywords:"36 guna milan ashtakoota kundli matching marriage varna vashya tara yoni graha maitri gana bhakoot nadi गुण मिलान"},
 ];

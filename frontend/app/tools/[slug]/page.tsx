@@ -437,6 +437,16 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Is the result an official CDSC credit?", a: "No. Confirm eligibility, final tax and credited shares with the company, CDSC and Mero Share." }
     ],
     
+    "nepali-janma-kundali": [
+      { q: "What birth details are required?", a: "Enter the Gregorian or supported Bikram Sambat date, exact local birth time and birthplace. City-centre coordinates are approximate; use exact coordinates and the correct time zone when available." },
+      { q: "Why can my chart differ from another astrology website?", a: "Different services may use different ephemerides, Lahiri or other ayanamsha definitions, mean or true lunar nodes, house systems, historical time-zone data and birth-place coordinates. Compare the settings before comparing chart outputs." },
+      { q: "Is the chart guaranteed to match Swiss Ephemeris or every Panchang?", a: "No. This browser calculator uses Astronomy Engine and a documented Lahiri/Chitrapaksha approximation. It is not certified as an exact match to Swiss Ephemeris or another service." }
+    ],
+    "nepali-guna-milan": [
+      { q: "How is the 36-guna score calculated?", a: "The tool calculates Varna (1), Vashya (2), Tara (3), Yoni (4), Graha Maitri (5), Gana (6), Bhakoot (7) and Nadi (8), for a maximum of 36 points." },
+      { q: "Why can another Guna Milan service show a different score?", a: "Traditional sources and editions can differ in Vashya and Yoni tables, directionality and parihara rules. PDFora names the selected Muhurta Chintamani convention and displays raw scores separately from traditional exceptions." },
+      { q: "Does a score guarantee marriage compatibility?", a: "No. Ashtakoota is a traditional astrological matching method, not a scientifically validated compatibility test or a guarantee of marriage outcomes." }
+    ],
   };
   const questions = questionsBySlug[slug] ?? defaultQuestions;
   const canonicalUrl = legacyToolSlugSet.has(slug) ? `${site}/${slug}` : `${site}/tools/${slug}`;

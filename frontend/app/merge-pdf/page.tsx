@@ -27,6 +27,7 @@ export default function Page() {
             title="Merge PDF"
             description="Combine two or more PDF files into one document. Select the files, arrange their order and download the merged PDF."
             multiple
+            showSeoContent={false}
             downloadName="PDFora-Merged.pdf"
           />
         </div>

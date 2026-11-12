@@ -19,7 +19,7 @@ The last checked-in matrix snapshot records 122 Nepali tool interfaces and six N
 | Locale | Publication | Tool-interface evidence | Indexing |
 |---|---|---:|---|
 | en | Published; source language | 169 source tools | English pages subject to their own SEO policy |
-| ne | Published; partially localized | 122 source-inspected interfaces in the last matrix snapshot | 6 approved tools; all others excluded |
+| ne | Published; partially localized | 119 registered interfaces in the 2026-11-12 source scan | 6 approved tools; all others excluded |
 | hi | Unpublished | 0 complete tool interfaces recorded | Excluded |
 | bn | Unpublished | 0 complete tool interfaces recorded | Excluded |
 | ur | Unpublished; RTL | 0 complete tool interfaces recorded | Excluded |

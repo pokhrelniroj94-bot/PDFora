@@ -346,25 +346,27 @@ export default function HomePageClient() {
             </button>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {visibleTools.map((tool) => (
-              <ToolCard key={tool.href} tool={tool} />
-            ))}
-          </div>
-          {visibleTools.length < filteredTools.length && (
-            <div className="mt-8 flex flex-col items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setVisibleCount((count) => Math.min(count + 12, filteredTools.length))}
-                className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
-              >
-                Show more tools
-              </button>
-              <Link href="/tools" className="text-sm font-semibold text-teal-700 underline underline-offset-4 hover:text-teal-900">
-                Open the full tools directory
-              </Link>
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {visibleTools.map((tool) => (
+                <ToolCard key={tool.href} tool={tool} />
+              ))}
             </div>
-          )}
+            {visibleTools.length < filteredTools.length && (
+              <div className="mt-8 flex flex-col items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((count) => Math.min(count + 12, filteredTools.length))}
+                  className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
+                >
+                  Show more tools
+                </button>
+                <Link href="/tools" className="text-sm font-semibold text-teal-700 underline underline-offset-4 hover:text-teal-900">
+                  Open the full tools directory
+                </Link>
+              </div>
+            )}
+          </>
         )}
       </section>
 

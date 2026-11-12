@@ -23,14 +23,21 @@ const pdfRoutes = [...pdfBlock.matchAll(/href:\s*"([^"]+)"/g)]
 const catalogTools = [...catalogSource.matchAll(/\{slug:"([^"]+)",name:"([^"]+)",category:"([^"]+)"/g)]
   .filter((match) => match[1] !== "pdf-tools")
   .map((match) => ({ slug: match[1], name: match[2], category: match[3] }));
-const tools = [
+const allTools = [
   ...pdfRoutes.map((href) => ({ kind: "pdf", slug: href.slice(1), url: href })),
   ...catalogTools.map((tool) => ({ kind: "catalog", ...tool, url: "/tools/" + tool.slug })),
 ];
 
-if (pdfRoutes.length !== 49 || catalogTools.length !== 120 || tools.length !== 169) {
+if (pdfRoutes.length !== 49 || catalogTools.length !== 120 || allTools.length !== 169) {
   throw new Error("Expected 49 PDF routes + 120 catalog tools = 169; got " +
-    pdfRoutes.length + " + " + catalogTools.length + " = " + tools.length);
+    pdfRoutes.length + " + " + catalogTools.length + " = " + allTools.length);
+}
+const requestedToolFilters = (process.env.E2E_TOOL_FILTER || "").split(",").map((value) => value.trim()).filter(Boolean);
+const tools = requestedToolFilters.length
+  ? allTools.filter((tool) => requestedToolFilters.includes(tool.slug))
+  : allTools;
+if (requestedToolFilters.length && tools.length !== requestedToolFilters.length) {
+  throw new Error("Requested E2E tool filter did not match the catalog: " + requestedToolFilters.join(", "));
 }
 
 const pngPath = path.join(tempDir, "pdfora-e2e-fixture.png");
@@ -1207,10 +1214,13 @@ const report = {
   generatedAt: new Date().toISOString(),
   sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
-  expected: { pdf: 49, catalog: 120, total: 169, nepaliLocalizedRoutes: 169 },
+  scope: requestedToolFilters.length ? requestedToolFilters : "all-169-tools",
+  expected: requestedToolFilters.length
+    ? { pdf: tools.filter((tool) => tool.kind === "pdf").length, catalog: tools.filter((tool) => tool.kind === "catalog").length, total: tools.length }
+    : { pdf: 49, catalog: 120, total: 169, nepaliLocalizedRoutes: 169 },
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
-    pdf: "Open each PDF route, attach a generated one-page PDF, click the processing action and inspect completion/output state.",
+    pdf: "Open each selected PDF route, attach valid fixtures and inspect processing/output. The Merge PDF assertion uploads two distinct PDFs, moves the first below the second, then verifies the downloaded merged page dimensions match that selected order.",
     catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A separate second pass verifies every Nepali route and its visible controls.",
     limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 169 non-AI tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },

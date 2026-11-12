@@ -250,21 +250,23 @@ const editorialBlogPosts: BlogPost[] = [
 const priorityEditorialBlogPosts: BlogPost[] = [
   {
     slug: "savings-goal-calculator-guide",
-    title: "How to Calculate a Savings Goal: Monthly Savings Formula",
-    description: "Calculate the monthly amount needed to reach a savings target. Learn the formula, see a worked example and adjust your plan when your deadline changes.",
+    title: "How Much Should You Save Each Month? Savings Goal Formula",
+    description: "Estimate weekly or monthly deposits for a savings goal. Include your current balance, deadline and an assumed annual interest rate.",
     keyword: "how to calculate a savings goal monthly savings",
-    updated: "2026-11-10",
+    updated: "2026-11-12",
     readTime: "5 min read",
-    intro: "A savings goal becomes easier to manage when you turn one large target into a regular amount. The calculation needs three figures: the amount you want to have, the money already saved and the number of months left before you need it. This guide explains the simple monthly plan and what it does not include.",
+    intro: "A savings goal becomes easier to manage when you turn one large target into regular deposits. The calculation uses your target, current balance, deadline, deposit frequency and an assumed annual interest rate. This guide explains the no-interest formula and how a periodic-interest estimate differs.",
     sections: [
       { heading: "The monthly savings formula", paragraphs: ["First subtract your current savings from the target. Then divide the remaining amount by the number of full months available. The formula is: monthly savings needed = (savings target − current savings) ÷ months remaining. Use the same currency for both amounts and enter a positive number of months.", "This is a straight-line plan: it assumes you add the same amount each month and do not earn interest or investment returns. It is useful for a clear cash target such as tuition, a laptop, travel or an emergency fund."] },
       { heading: "Worked example: save NPR 90,000 in six months", paragraphs: ["Suppose your target is NPR 90,000 and you have already saved NPR 30,000. The remaining amount is NPR 60,000. With six months left, divide NPR 60,000 by six: you need to set aside NPR 10,000 each month.", "If your income arrives weekly or irregularly, you can divide the remaining target across your expected pay periods instead. The calculator uses months, so convert your plan to a monthly equivalent before comparing it with the result."] },
+      { heading: "What if the monthly savings target is too high?", paragraphs: ["Suppose your target is 120,000 and you have already saved 30,000, leaving 90,000. With six months remaining, the simple plan requires 15,000 each month. If you can set aside only 10,000 per month, the same no-interest calculation needs nine months to cover the remaining 90,000.", "You can respond by extending the deadline, reducing the target or adding a one-time deposit from money genuinely available for this goal. Do not count your salary or money reserved for rent, food and bills as savings already set aside."] },
       { heading: "Use the Savings Goal Calculator", paragraphs: ["Open the Savings Goal Calculator and enter the final target, current savings and months remaining. Review the remaining amount and monthly savings figure. If the monthly amount is too high, test a longer deadline or a smaller target rather than entering an unrealistic current-savings figure.", "Update the calculation after each deposit or whenever your target or deadline changes. Keep the original goal and the date of each revision so you can see whether your plan is on track."] },
-      { heading: "Interest, inflation and other limits", paragraphs: ["This calculator does not add bank interest, investment returns, inflation, fees or tax. A savings account that pays interest may reach the target sooner, but the actual result depends on its rate, balance rules and deposit timing. Investments can lose value and should not be treated as guaranteed savings.", "For a reliable cash plan, use the result as a contribution target and check your actual account balance regularly. Keep emergency money separate from funds that are committed to a fixed deadline."] }
+      { heading: "Weekly deposits and interest estimates", paragraphs: ["For weekly deposits, the calculator converts the month horizon into an estimated number of weekly periods using 52 weeks per year. For monthly deposits, it uses one period per month. The periodic rate is estimated by dividing the annual rate by 52 or 12, respectively.", "The current balance is projected forward with compound growth, and each new deposit is assumed to arrive at the end of its period. The calculator then solves for a regular deposit that reaches the target. This is an illustrative model: banks may compound daily, use different rate conventions, apply tiered balances or deduct tax and fees.", "Interest is not guaranteed. Use the actual account terms and statements for financial decisions, and do not treat investment returns as equivalent to a guaranteed savings-account rate."] }
     ],
     faqs: [
       { question: "How do I calculate how much to save each month?", answer: "Subtract the amount already saved from your target, then divide the remaining amount by the months left. For example, (NPR 90,000 − NPR 30,000) ÷ 6 = NPR 10,000 per month." },
-      { question: "Does the savings goal calculator include interest?", answer: "No. It divides the remaining target evenly across the months entered. It does not calculate bank interest, investment returns, inflation, fees or taxes." },
+      { question: "Does the savings goal calculator include interest?", answer: "It can estimate interest when you enter an annual rate. The estimate assumes a constant rate and deposits at the end of each weekly or monthly period; actual bank terms, compounding, taxes and fees may differ." },
+      { question: "Can I calculate weekly deposits?", answer: "Yes. Choose weekly deposits to estimate the regular amount using an approximate number of weeks in the selected month horizon. The result is an estimate, especially when the goal date does not align with a full week." },
       { question: "What if I have already saved more than my target?", answer: "The remaining amount is zero, so no additional monthly saving is required to reach that target under the calculator's simple assumptions." },
       { question: "Should I use my total income as current savings?", answer: "No. Enter only the money already set aside for this goal, not your salary, monthly income or money needed for regular expenses." }
     ],
@@ -272,29 +274,32 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "reading-time-calculator-guide",
-    title: "Reading Time Calculator: Estimate Minutes from Word Count",
-    description: "Estimate how long an article takes to read using its word count and reading speed. Learn the WPM formula, examples and why actual reading time varies.",
+    title: "Reading Time Calculator: Words to Minutes & WPM Guide",
+    description: "Estimate reading and speaking time from pasted text. Compare reading speeds, use the words-per-minute formula and plan a realistic presentation duration.",
     keyword: "reading time calculator words per minute",
-    updated: "2026-11-10",
+    updated: "2026-11-12",
     readTime: "5 min read",
-    intro: "A reading-time estimate helps readers decide whether to start an article and helps writers plan the length of a page, newsletter or lesson. The estimate is based on word count and an assumed reading speed, usually measured in words per minute (WPM). It is a guide rather than a promise about every reader.",
+    intro: "A reading-time estimate helps readers decide whether to start an article and helps writers plan the length of a page, newsletter, lesson or spoken presentation. The calculator uses word count and separate words-per-minute assumptions for silent reading and speaking. Both results are estimates, not a promise about every reader or presenter.",
     sections: [
       { heading: "Reading time formula", paragraphs: ["The basic formula is reading time in minutes = total word count ÷ reading speed in words per minute. If a text contains 1,000 words and the selected speed is 200 WPM, the estimate is 1,000 ÷ 200 = 5 minutes.", "For a result in seconds, multiply the number of minutes by 60. A 300-word text at 200 WPM is 1.5 minutes, or about 90 seconds."] },
       { heading: "Choose a realistic reading speed", paragraphs: ["A speed of 200 WPM is a convenient starting assumption for general English prose, not a universal standard. Readers may move more slowly through technical instructions, unfamiliar vocabulary, legal terms, tables or material in a second language. Skimming and familiar topics can make reading faster.", "When comparing two drafts, use the same WPM setting for both. Otherwise a change in the displayed estimate may come from the selected speed rather than the word count."] },
       { heading: "Use the Reading Time Calculator", paragraphs: ["Paste the complete article into the text field and enter a positive WPM value. Run the calculator and review the word count and estimated time. Include the whole body you expect visitors to read; leaving out headings, captions or important sections can make the estimate misleading.", "If you are writing for a specific audience, test more than one reading speed and choose a value that reflects the complexity of the material. Keep the displayed estimate clearly labelled as approximate."] },
-      { heading: "Why actual reading time differs", paragraphs: ["Word counters may treat punctuation, hyphenated terms, numbers and Unicode text differently. The tool counts whitespace-separated words, so code blocks, tables, diagrams and screen-reader navigation may not match a person's actual reading experience.", "Use reading time as a simple editorial signal, not a ranking factor or accessibility measurement. Clear headings, short paragraphs and useful examples can make a long article easier to navigate even when the estimated minutes do not change."] }
+      { heading: "Words-to-minutes examples at different speeds", paragraphs: ["For 500 words, the estimate is 3 minutes 20 seconds at 150 WPM, 2 minutes 30 seconds at 200 WPM and 2 minutes at 250 WPM. For 1,000 words, those estimates become 6 minutes 40 seconds, 5 minutes and 4 minutes respectively.", "For a 1,500-word article, the same speeds produce estimates of 10 minutes, 7 minutes 30 seconds and 6 minutes. These examples are arithmetic comparisons, not a claim that every reader uses one of these speeds."] },
+      { heading: "Estimate speaking and presentation time", paragraphs: ["Speaking time uses the same calculation: word count ÷ speaking speed. A 1,000-word script at 130 WPM is about 7.7 minutes before pauses. A slower pace may suit a training session or unfamiliar topic; a faster pace may suit a short, rehearsed update.", "The calculator starts with 130 WPM as an editable speaking-speed assumption. Add time for pauses, audience questions, slide changes, demonstrations and emphasis. A script that calculates to eight minutes may need a longer slot when delivered live."] },
+      { heading: "Why actual reading and speaking time differs", paragraphs: ["Word counters may treat punctuation, hyphenated terms, numbers and Unicode text differently. The tool counts whitespace-separated words, so code blocks, tables, diagrams and screen-reader navigation may not match a reader’s actual reading experience.", "Use reading and speaking time as planning estimates, not ranking factors or accessibility measurements. Clear headings, short paragraphs and useful examples can make a long article easier to navigate even when the estimated minutes do not change."] }
     ],
     faqs: [
       { question: "How do you calculate reading time from word count?", answer: "Divide the number of words by the selected reading speed in words per minute. A 1,000-word article at 200 WPM is about five minutes." },
       { question: "What is a normal reading speed in words per minute?", answer: "There is no speed that fits every reader or text. Around 200 WPM is a practical starting assumption for general English prose; technical or unfamiliar material may take longer." },
       { question: "Does the calculator count headings and tables?", answer: "It calculates from the text you paste. Include the complete content you want to estimate, and remember that tables, code and complex layouts may take longer to understand than ordinary prose." },
-      { question: "Is reading time an exact measurement?", answer: "No. It is an estimate based on word count and the WPM value entered. Individual reading speed, language familiarity and content complexity change the actual time." }
+      { question: "Is reading time an exact measurement?", answer: "No. It is an estimate based on word count and the WPM value entered. Individual reading speed, language familiarity and content complexity change the actual time." },
+      { question: "How do I estimate speaking time from a script?", answer: "Divide the script word count by the speaking speed in words per minute. For example, 1,000 words at 130 WPM is about 7.7 minutes before pauses, questions or slide changes." }
     ],
     toolLinks: [{ label: "Reading Time Calculator", href: "/tools/reading-time-calculator" }, { label: "Word Counter", href: "/tools/word-character-counter" }, { label: "Sentence Counter", href: "/tools/sentence-counter" }]
   },
   {
     slug: "tip-calculator-guide",
-    title: "How to Calculate a Tip: Formula & Examples | PDFora",
+    title: "How to Calculate a Tip: 10%, 15% & 20% Examples | PDFora",
     description: "Calculate a 10%, 15% or 20% tip with a simple formula. See a worked bill example, per-person split and how to check service charges.",
     keyword: "how to calculate tip tip calculator",
     updated: "2026-11-11",
@@ -316,16 +321,17 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "percentage-change-calculator-guide",
-    title: "Percentage Change Calculator: Formula & Examples",
-    description: "Calculate percentage increase or decrease with the formula, worked examples, percentage points and a clear explanation of zero starting values.",
+    title: "Percentage Change Calculator: Formula, Increase & Decrease",
+    description: "Calculate percentage increase or decrease, or find an original value from a final value and known percentage change.",
     keyword: "percentage change calculator increase decrease formula",
-    updated: "2026-11-11",
+    updated: "2026-11-12",
     readTime: "5 min read",
     intro: "Percentage change describes how much a value has increased or decreased compared with its starting value. It is useful for comparing prices, quantities, monthly expenses and other measurements, provided both values use the same unit and basis.",
     sections: [
       { heading: "Percentage change formula", paragraphs: ["Percentage change = (new value − original value) ÷ original value × 100. A positive result means an increase; a negative result means a decrease. The original value is the denominator because the change is measured relative to where the value started.", "Do not reverse the original and new values. Changing the denominator changes the answer and can make a decrease look like a different percentage from the reverse increase."] },
       { heading: "Worked examples: increase and decrease", paragraphs: ["If a price rises from 80 to 100, the difference is 20. Divide 20 by the original 80 and multiply by 100: the increase is 25%.", "If a value falls from 100 to 80, the difference is −20. Divide −20 by the original 100 and multiply by 100: the change is −20%, meaning a 20% decrease. The reverse movement is not the same percentage because the starting value is different."] },
-      { heading: "Use the Percentage Change Calculator", paragraphs: ["Enter the original value first and the new value second. Check that both numbers use the same unit—for example, rupees compared with rupees or kilograms compared with kilograms—then run the calculation and read whether the result is an increase or decrease.", "If the original value is zero, the standard percentage-change formula is undefined because it would require division by zero. Report the absolute difference instead or explain the change without expressing it as a percentage."] },
+      { heading: "Why reverse changes have different percentages", paragraphs: ["A change from 100 to 120 is a 20% increase because the difference of 20 is divided by the original 100. Reversing the movement from 120 to 100 is a 16.67% decrease because the same difference is now divided by 120.", "This is why a 20% increase followed by a 20% decrease does not return to the starting value: 100 rises to 120, then falls to 96. Always use the value at the start of the specific comparison as the denominator."] },
+      { heading: "Use forward and reverse calculation modes", paragraphs: ["For a normal comparison, enter the original value and new value to calculate the percentage increase or decrease. Both values must use the same unit, and the original value cannot be zero.", "To work backwards, choose the reverse mode, enter the final value and the known percentage change, then calculate the original value with: original = final value ÷ (1 + percentage change ÷ 100). For example, a final value of 120 after a 20% increase means the original value was 100. A change of −100% or less cannot be reversed with this formula because it implies a zero or negative multiplier."] },
       { heading: "Percentage change versus percentage points", paragraphs: ["Percentage change is a relative change between two values. Percentage points describe the arithmetic difference between two percentages. For example, a rate moving from 10% to 12% has increased by 2 percentage points, while its relative percentage change is 20%.", "Use percentage points when comparing rates such as interest, market share or pass rates. Use percentage change when you want to express the relative movement from an original numerical value."] }
     ],
     faqs: [
@@ -338,10 +344,10 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "meta-title-checker-guide",
-    title: "SEO Title Checker: Write Better Google Title Tags",
-    description: "Check an SEO title tag, compare it with your H1, improve page-title wording and understand when Google may rewrite search-result titles.",
-    keyword: "SEO title checker how to check SEO title",
-    updated: "2026-11-11",
+    title: "How to Write SEO Title Tags: Examples & Best Practices",
+    description: "Learn how to write a clear page title, align it with the H1, avoid keyword stuffing and understand when Google rewrites title links.",
+    keyword: "how to write SEO title tags examples best practices",
+    updated: "2026-11-12",
     readTime: "5 min read",
     intro: "A page title helps readers and search engines understand what a page is about. The HTML title element, the visible H1 heading and the title link shown in Google Search can be different. This guide explains how to check the title you publish, improve its wording and review the result without relying on an arbitrary character limit.",
     sections: [
@@ -350,6 +356,7 @@ const priorityEditorialBlogPosts: BlogPost[] = [
       { heading: "Is there a perfect title length?", paragraphs: ["Google does not publish a fixed character limit that guarantees a title will display in full. Search-result titles can be shortened to fit the available space, which varies by device and context. A character count is useful for spotting unusually long drafts, but it is not a ranking score or a pass/fail rule.", "Aim for a concise description rather than forcing every title into an exact number of characters. Remove repeated words and boilerplate, but do not delete important context just to reach an arbitrary length."] },
       { heading: "Title tag examples: make the page purpose obvious", paragraphs: ["A useful title names the main task and gives the reader a reason to choose the page. For example, a vague title such as \"Online Tool\" could become \"Merge PDF Files Online – Combine Documents | PDFora\" when the page really combines PDFs. A generic title such as \"Calculator\" could become \"Percentage Change Calculator – Formula & Examples\" when that is the actual task.", "Keep examples honest. Do not add words such as \"free\", \"instant\", \"official\" or a specific file limit unless the page genuinely supports that claim. Each important page should have its own title that reflects its visible H1 and primary content."] },
       { heading: "Measure the change in Google Search Console", paragraphs: ["Before editing a title, record the page's recent impressions, clicks, click-through rate and average position for its main queries. After publishing, compare the same page and query set over a similar period. Avoid judging a title change from one day's data because search demand, ranking and result presentation can vary.", "If impressions are high but clicks are low, review whether the title and description clearly match the query and distinguish the page from other results. If the page has very few impressions or ranks far below the first results, improve the content and its relevance as well; a title rewrite alone is unlikely to solve that problem."] },
+      { heading: "When to use a title checker versus a writing guide", paragraphs: ["Use a title checker after you have drafted a page title and want to review its character count, compare it with the visible H1 and see an illustrative search-result preview. The checker cannot judge whether the page satisfies a search query, whether competing pages offer more useful information or whether Google will keep the wording.", "Use this guide to make the writing decisions: identify the page’s actual purpose, choose wording that matches the reader’s task, align the title with the H1 and main content, and remove boilerplate. If a page already receives impressions but few clicks, review its actual Search Console queries before testing one meaningful title change."] },
       { heading: "Common title mistakes to avoid", paragraphs: ["Avoid using the same title on many pages, repeating keyword variations, stuffing the brand name several times or promising something the page does not provide. A title should set an accurate expectation for the page that opens after the click.", "After publishing a meaningful change, check the live HTML title and canonical URL. Search Console can show which queries and pages receive impressions, but Google needs to recrawl and reprocess a page before its search-result title may change."] }
     ],
     faqs: [

@@ -1195,17 +1195,27 @@ async def delete_pages(
 
         try:
 
-            delete_set = {
-                int(value.strip())
-                for value in pages.split(",")
-                if value.strip()
-            }
+            delete_set: set[int] = set()
+            for value in pages.split(","):
+                token = value.strip()
+                if not token:
+                    continue
+                if "-" in token:
+                    parts = token.split("-")
+                    if len(parts) != 2:
+                        raise ValueError("Invalid page range")
+                    start, end = (int(part.strip()) for part in parts)
+                    if start < 1 or end < start or end > len(reader.pages):
+                        raise ValueError("Invalid page range")
+                    delete_set.update(range(start, end + 1))
+                else:
+                    delete_set.add(int(token))
 
         except Exception:
 
             raise HTTPException(
                 status_code=400,
-                detail="Pages must look like: 2,4,7"
+                detail="Pages must look like: 2,4,6-8"
             )
 
         if not delete_set:

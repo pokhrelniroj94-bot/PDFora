@@ -16,9 +16,13 @@ export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string)
   if (!guide) return { title: "PDF Tool | PDFora", robots: { index: false, follow: true } };
 
   const url = `${SITE}/${slug}`;
-  const title = `${guide.name} Online`;
+  const overrides: Record<string,{title:string;description:string}> = {
+    "split-pdf": { title: "Split PDF Online – Extract Pages into Separate Files", description: "Split a PDF into smaller documents by selecting page ranges. Extract the pages you need, then check page order and readability before sharing." },
+    "delete-pages": { title: "Delete PDF Pages Online – Remove Selected Pages", description: "Remove unwanted or blank PDF pages by entering page numbers such as 2, 4, or 6–8. Download a clean copy and verify the remaining page order." }
+  };
+  const title = overrides[slug]?.title ?? `${guide.name} Online`;
   const brandedTitle = `${title} | PDFora`;
-  const description = fitDescription(guide.purpose);
+  const description = fitDescription(overrides[slug]?.description ?? guide.purpose);
   const keywords = [
     guide.name,
     guide.keyword,

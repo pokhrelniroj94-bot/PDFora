@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
-    "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly Savings Needed | PDFora", description: "Calculate how much to save each month using your target, current savings and time remaining. Interest and returns are not included." },
+    "savings-goal-calculator": { title: "Savings Goal Calculator – Weekly or Monthly Savings with Interest", description: "Plan weekly or monthly deposits toward a savings target. Include your current balance, time horizon and an estimated annual interest rate." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
-    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease | PDFora", description: "Calculate percentage increase or decrease between an original value and a new value. See the formula and interpret negative results." },
-    "tip-calculator": { title: "Tip Calculator – Calculate Tip, Total & Bill Split | PDFora", description: "Calculate a tip from your bill and percentage, see the total including tip, and split the amount per person. Check service charges before paying." },
+    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase, Decrease & Reverse", description: "Calculate percentage increase or decrease, or work backwards to find the original value from a final value and percentage change." },
+    "tip-calculator": { title: "Tip Calculator – 10%, 15%, 20% Tip, Total & Split", description: "Calculate 10%, 15% or a custom tip, see the full bill total and split the amount per person. Check whether service charge is already included." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "px-rem-converter": { title: "PX to REM Converter – CSS Units with Root Font Size", description: "Convert CSS pixel values to rem and rem to pixels using an editable root font size. Useful for responsive typography and spacing." },
     "color-contrast-checker": { title: "Color Contrast Checker – WCAG Text Accessibility", description: "Check foreground and background colour contrast ratios and review WCAG guidance for normal and large text." },
     "word-character-counter": { title: "Word Counter – Count Words, Characters & Reading Time", description: "Count words, characters with or without spaces, sentences and paragraphs, and estimate reading time for pasted text." },
-    "reading-time-calculator": { title: "Reading Time Calculator – Words to Minutes | PDFora", description: "Estimate reading time from word count and words per minute. Adjust the speed for your audience and the complexity of the text." },
+    "reading-time-calculator": { title: "Reading Time Calculator – Reading & Speaking Time", description: "Estimate how long text takes to read or speak. Enter your text and adjust reading and speaking speed in words per minute." },
     "json-formatter-validator": { title: "JSON Formatter & Validator – Pretty Print or Minify JSON", description: "Format, minify and validate JSON syntax with readable indentation. Check malformed JSON before using it in an application." },
     "base64-encoder-decoder": { title: "Base64 Encoder & Decoder – Convert Text Online", description: "Encode text to Base64 or decode Base64 back to text in your browser. Base64 is an encoding, not encryption." },
     "url-encoder-decoder": { title: "URL Encoder & Decoder – Percent Encode URL Components", description: "Encode or decode URL query values and components with percent encoding. Avoid double-encoding and preserve URL structure." },
@@ -69,8 +69,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepse-market-news": { title: "Nepal Stock Market News – NEPSE & IPO Updates", description: "Browse recent Nepal stock market and IPO headlines with publication dates and links to the original publishers. Verify notices with official sources." },
     "nepali-unicode-typing": { title: "Nepali Unicode Typing Tool – Type in Devanagari", description: "Convert Romanized Nepali typing into Unicode Devanagari text. Review spelling, conjuncts and punctuation before using the text in a document." },
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
-    "meta-title-checker": { title: "SEO Title Checker – Check Page Titles & Google Preview | PDFora", description: "Run an SEO title check, count characters and preview a Google-style title link. Compare the page title with its H1; Google may rewrite titles." },
-    "meta-description-checker": { title: "Meta Description Checker – Length & Google Snippet Preview", description: "Check meta description length, count characters and preview a search snippet. Write a clear, page-specific summary; Google may choose different text." },
+    "meta-title-checker": { title: "Meta Title Checker – SEO Title & Google Preview | PDFora", description: "Check an HTML title tag, count characters, compare it with the page H1 and preview a search result. Google may rewrite title links." },
+    "meta-description-checker": { title: "Meta Description Checker – Length & Search Preview | PDFora", description: "Check a page description, review its length and preview a search snippet. Write a useful page-specific summary; Google may select other text." },
   };
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;

@@ -3,6 +3,10 @@ import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 export const metadata = getPdfToolMetadata("delete-pages");
 
 import Niroj77Tool from "../../components/Niroj77Tool";
+import ToolGuide from "../../components/ToolGuide";
+import { getRequiredToolGuide } from "../../lib/tool-guides";
+
+const guide = getRequiredToolGuide("delete-pages");
 
 export default function Page() {
   return (
@@ -22,7 +26,7 @@ export default function Page() {
               Delete Pages from PDF Online Free</h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Delete unwanted pages from a PDF online for free with PDFora. Remove blank, unnecessary or unwanted pages quickly from your document using your browser on desktop, tablet or mobile.
+              Remove selected, blank or duplicate pages from a PDF copy. Enter individual page numbers or ranges, such as 2,4,6-8, then download and review the updated document.
             </p>
           </div>
 
@@ -35,7 +39,7 @@ export default function Page() {
               accept="application/pdf,.pdf"
               downloadName="PDFora-Deleted-Pages.pdf"
               formField="pages"
-              formPlaceholder="Enter page numbers, e.g. 2,4,6"
+              formPlaceholder="Enter pages or ranges, e.g. 2,4,6-8"
             />
           </div>
         </div>
@@ -113,7 +117,7 @@ export default function Page() {
                 Enter page numbers
               </h3>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Enter the pages you want to remove from the document.
+                Enter page numbers using commas for separate pages or a hyphen for a continuous range, for example 2,4,6-8. Use the PDF viewer page position rather than printed page labels.
               </p>
             </div>
 
@@ -137,15 +141,11 @@ export default function Page() {
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora provides an online PDF page removal tool for removing
-            unwanted pages from PDF documents. It can be useful when you need
-            to remove blank pages, unnecessary sections or other pages before
-            sharing a document.
+            Use this page when you want to remove selected pages while keeping the rest of a PDF together. Common tasks include deleting a blank scan, removing an outdated form page, or taking out an accidental duplicate before sending a document. Work from a copy of the original so you can return to the untouched file if you remove the wrong page.
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Upload your PDF, specify the pages you want to remove and process
-            the document directly through your browser.
+            Enter page numbers such as 2,4,6-8 in the page field. Commas separate individual pages and a hyphen represents a range. Confirm the page numbers against the PDF viewer before processing; printed page numbers inside a document may not match the viewer’s page count.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
@@ -153,8 +153,7 @@ export default function Page() {
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora currently provides its available PDF tools without
-            requiring a subscription.
+            After deleting pages, use Split PDF to create separate files from selected page ranges, Extract Pages to keep only chosen pages, or Reorder PDF if the remaining pages need a different sequence.
           </p>
         </div>
       </section>
@@ -187,10 +186,10 @@ export default function Page() {
 
             <a href="/compress-pdf" className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-blue-300">
               <h3 className="font-black">Compress PDF</h3>
-              <p className="mt-2 text-sm text-slate-500">
-                Reduce PDF file size.
-              </p>
+              <p className="mt-2 text-sm text-slate-500">Reduce PDF file size.</p>
             </a>
+            <a href="/extract-pages" className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-blue-300"><h3 className="font-black">Extract Pages</h3><p className="mt-2 text-sm text-slate-500">Save selected pages as a new PDF.</p></a>
+            <a href="/reorder-pdf" className="rounded-2xl border border-slate-200 bg-white p-5 hover:border-blue-300"><h3 className="font-black">Reorder PDF</h3><p className="mt-2 text-sm text-slate-500">Change the order of the remaining pages.</p></a>
           </div>
         </div>
       </section>
@@ -236,6 +235,8 @@ export default function Page() {
           </div>
         </div>
       </section>
+      <section className="mx-auto max-w-4xl px-4 pb-10 sm:px-6"><h2 className="text-xl font-black">PDF page management reference</h2><p className="mt-2 text-sm leading-6 text-slate-600">For another explanation of page numbering, document restrictions and page deletion workflows, see the <a className="font-semibold text-blue-700 underline" href="https://helpx.adobe.com/acrobat/desktop/edit-documents/organize-pages/delete-pages.html" target="_blank" rel="noopener noreferrer">Adobe Acrobat guide to deleting PDF pages</a>. The steps may differ between software; this reference is not an endorsement or a requirement to use Acrobat.</p></section>
+      <div className="mx-auto max-w-4xl px-4 pb-10 sm:px-6"><ToolGuide guide={guide}/></div>
     </main>
   );
 }

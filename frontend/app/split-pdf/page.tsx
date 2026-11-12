@@ -159,15 +159,11 @@ export default function Page() {
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora provides a simple online PDF splitter for extracting pages
-            from PDF documents. Whether you need to separate specific pages,
-            remove unnecessary sections or create a smaller document, you can
-            use the Split PDF tool directly from your browser.
+            Use Split PDF when you need to turn one long document into smaller, separate files—for example, separating a report by chapter, creating a copy of selected page ranges, or dividing a large application into sections. Choose the page range carefully and check the output files before sending them.
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora is designed to work across modern desktop and mobile
-            browsers. No desktop application is required to access the tool.
+            This page is intended for page-range extraction. If your goal is to remove pages but keep one continuous PDF, use Delete Pages instead. If you only need a subset in one new document, Extract Pages may be the better workflow.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
@@ -175,9 +171,7 @@ export default function Page() {
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora currently provides its available PDF tools without
-            requiring a subscription. Upload your PDF, process it with the
-            Split PDF tool and download the resulting document.
+            Before splitting, check whether the document has restrictions that prevent page extraction, and keep an untouched copy. Page labels printed in a document can differ from the page numbers shown by a PDF viewer, so use the viewer’s page count when selecting ranges.
           </p>
         </div>
       </section>
@@ -224,19 +218,9 @@ export default function Page() {
               </div>
             </a>
 
-            <a
-              href="/pdf-to-word"
-              className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-md"
-            >
-              <div className="text-lg font-black text-blue-600">W</div>
-              <h3 className="mt-3 font-black">PDF to Word</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                Convert PDF documents into editable Word files.
-              </p>
-              <div className="mt-4 text-sm font-bold text-blue-600">
-                Open tool →
-              </div>
-            </a>
+            <a href="/pdf-to-word" className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-md"><div className="text-lg font-black text-blue-600">W</div><h3 className="mt-3 font-black">PDF to Word</h3><p className="mt-2 text-sm leading-6 text-slate-500">Convert PDF documents into editable Word files.</p><div className="mt-4 text-sm font-bold text-blue-600">Open tool →</div></a>
+            <a href="/delete-pages" className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-md"><div className="text-lg font-black text-blue-600">D</div><h3 className="mt-3 font-black">Delete Pages</h3><p className="mt-2 text-sm leading-6 text-slate-500">Remove unwanted pages while keeping the remaining PDF together.</p><div className="mt-4 text-sm font-bold text-blue-600">Open tool →</div></a>
+            <a href="/extract-pages" className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:border-blue-300 hover:shadow-md"><div className="text-lg font-black text-blue-600">E</div><h3 className="mt-3 font-black">Extract Pages</h3><p className="mt-2 text-sm leading-6 text-slate-500">Save chosen pages in a single new PDF.</p><div className="mt-4 text-sm font-bold text-blue-600">Open tool →</div></a>
           </div>
         </div>
       </section>
@@ -321,6 +305,7 @@ export default function Page() {
           </a>
         </div>
       </section>
+      <section className="mx-auto max-w-4xl px-4 pb-10 sm:px-6"><h2 className="text-xl font-black">PDF splitting reference</h2><p className="mt-2 text-sm leading-6 text-slate-600">Adobe’s <a className="font-semibold text-blue-700 underline" href="https://helpx.adobe.com/acrobat/desktop/edit-documents/organize-pages/split-pdfs.html" target="_blank" rel="noopener noreferrer">PDF splitting guide</a> describes splitting by page count, file size or top-level bookmarks in Acrobat. PDFora’s available options may differ, so use the controls shown above and verify the downloaded files.</p></section>
       <ToolGuide guide={guide} />
     </main>
   );

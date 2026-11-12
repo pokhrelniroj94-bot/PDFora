@@ -49,7 +49,7 @@ export default function Page() {
           </section>
           <section>
             <h2 className="text-2xl font-black">Rotate every page or only selected pages?</h2>
-            <p className="mt-3 text-sm leading-7 text-slate-700">Rotate PDF applies the selected angle across the document. This is useful when every scanned page was saved in the wrong orientation. If a report contains a mixture of correctly oriented pages and a few sideways pages, use <Link className="font-semibold text-teal-700 underline" href="/rotate-selected-pages">Rotate Selected Pages</Link> instead, then verify that unchanged pages keep their original orientation.</p>
+            <p className="mt-3 text-sm leading-7 text-slate-700">Rotate PDF applies the selected angle across the document. This is useful when every scanned page was saved in the wrong orientation. If a report contains a mixture of correctly oriented pages and a few sideways pages, use <Link className="font-semibold text-teal-700 underline" href="/rotate-selected-pages">Rotate Selected Pages</Link> instead, then verify that unchanged pages keep their original orientation. For a step-by-step walkthrough, see the <Link className="font-semibold text-teal-700 underline" href="/blog/rotate-pdf-guide-online">Rotate PDF guide</Link>.</p>
           </section>
           <section>
             <h2 className="text-2xl font-black">PDF rotation: common questions</h2>

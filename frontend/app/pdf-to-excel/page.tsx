@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 import Niroj77Tool from "../../components/Niroj77Tool";
 
@@ -76,6 +77,9 @@ export default function Page() {
               <li>Open the workbook in Excel or a compatible spreadsheet application and compare representative rows with the PDF.</li>
               <li>Correct any shifted columns, merged headings, date formats or numeric values before relying on the data.</li>
             </ol>
+            <p className="mt-4 text-sm leading-7 text-slate-700">
+              Need a fuller walkthrough? Read the <Link className="font-semibold text-blue-700 underline" href="/blog/convert-pdf-table-to-excel-spreadsheet">PDF-to-Excel conversion guide</Link> for table extraction checks and spreadsheet cleanup tips.
+            </p>
           </section>
 
           <section>

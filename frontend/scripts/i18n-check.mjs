@@ -47,6 +47,7 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
   const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")) : [];
   const published = config.isPublished(locale);
   const problems = [];
+  const potentialEnglishMatches = [];
   // Every locale JSON file must be reachable through a static loader import. This catches
   // dictionaries that exist in the repository but are silently never loaded by the app.
   for (const file of files) {
@@ -64,6 +65,12 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
       if (!(key in tr)) problems.push(`${ns}.${key}: missing`);
       else if (placeholders(tr[key]) !== placeholders(en[ns][key])) problems.push(`${ns}.${key}: placeholders differ from English`);
       else if (tr[key].some((s) => !s.trim())) problems.push(`${ns}.${key}: empty`);
+      else if (tr[key].join("\\u0000") === en[ns][key].join("\\u0000") &&
+        tr[key].some((value) => value.trim().length >= 24)) {
+        // Long exact matches are a useful human-review queue, not an automatic failure:
+        // product names, technical labels and intentionally shared phrases may be valid.
+        potentialEnglishMatches.push(`${ns}.${key}`);
+      }
     }
     for (const key of Object.keys(tr)) if (!(key in en[ns])) problems.push(`${ns}.${key}: not in English source`);
   }
@@ -71,6 +78,11 @@ for (const locale of config.locales.filter((l) => l !== "en")) {
   if (!problems.length && files.length === enFiles.length) console.log(`${label}\n  ok   complete`);
   else if (published) { console.log(label); problems.forEach((p) => fail(p)); }
   else console.log(`${label}\n  work in progress: ${problems.length} issue(s)${files.length ? "" : " (no files yet)"}`);
+  if (potentialEnglishMatches.length) {
+    console.log(`  review potential untranslated long strings: ${potentialEnglishMatches.length}`);
+    potentialEnglishMatches.slice(0, 20).forEach((key) => console.log(`    REVIEW ${key}`));
+    if (potentialEnglishMatches.length > 20) console.log(`    ... and ${potentialEnglishMatches.length - 20} more`);
+  }
 }
 
 console.log(hardFailures ? `\n${hardFailures} blocking problem(s).` : "\nNo blocking problems.");

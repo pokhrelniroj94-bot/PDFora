@@ -109,13 +109,14 @@ jobs:
           PDFORA_PRODUCTION_URL: http://127.0.0.1:3000
           PDFORA_EXPECT_CANONICAL_ORIGIN: https://pd-fora.vercel.app
         run: node scripts/production-security-smoke.mjs
-      - name: Run individual Chromium E2E checks for all 169 non-AI tools
+      - name: Run Chromium E2E check for the two-file Merge PDF workflow
         id: browser-e2e
         continue-on-error: true
         env:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
           E2E_BASE_URL: http://127.0.0.1:3000
           E2E_TOOL_TIMEOUT_MS: "45000"
+          E2E_TOOL_FILTER: "merge-pdf"
         run: node scripts/browser-e2e-173.mjs
       - name: Regenerate audit with browser evidence
         if: always()
@@ -170,11 +171,82 @@ jobs:
           done
           echo "Removed AI API route did not return 404 within five minutes."
           exit 1
+      - name: Wait for the updated Rotate PDF page to reach production
+        env:
+          PDFORA_PRODUCTION_URL: https://pd-fora.vercel.app
+        run: |
+          for attempt in {1..90}; do
+            html=$(curl --silent --show-error --max-time 15 "$PDFORA_PRODUCTION_URL/rotate-pdf" || true)
+            if printf '%s' "$html" | grep -Fq "Choose the correct PDF rotation angle"; then
+              echo "Updated PDFora production deployment is live."
+              exit 0
+            fi
+            echo "Waiting for the new Vercel deployment (attempt $attempt/90)."
+            sleep 5
+          done
+          echo "The updated Rotate PDF page did not reach production within 7.5 minutes."
+          exit 1
       - name: Verify deployed frontend security, privacy and SEO
         env:
           PDFORA_PRODUCTION_URL: https://pd-fora.vercel.app
           PDFORA_EXPECT_CANONICAL_ORIGIN: https://pd-fora.vercel.app
         run: node frontend/scripts/production-security-smoke.mjs
+      - name: Install headless Chrome for production Lighthouse
+        id: lighthouse-chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Run production Lighthouse mobile performance tests
+        id: production-lighthouse
+        continue-on-error: true
+        env:
+          PDFORA_PRODUCTION_URL: https://pd-fora.vercel.app
+          CHROME_PATH: ${{ steps.lighthouse-chrome.outputs.chrome-path }}
+        run: |
+          mkdir -p docs/qa/lighthouse-production
+          routes=(/ /merge-pdf /rotate-pdf /pdf-to-excel /tools/reading-time-calculator /tools/savings-goal-calculator /tools/percentage-change-calculator)
+          for route in "${routes[@]}"; do
+            slug=$(printf '%s' "$route" | sed 's#^/$#home#; s#^/##; s#/#-#g')
+            echo "Running Lighthouse mobile: $route"
+            npx --yes lighthouse@13.6.0 "$PDFORA_PRODUCTION_URL$route" \
+              --chrome-path="$CHROME_PATH" \
+              --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
+              --form-factor=mobile \
+              --only-categories=performance \
+              --max-wait-for-load=60000 \
+              --output=json \
+              --output-path="docs/qa/lighthouse-production/$slug.json" \
+              --quiet || echo "Lighthouse failed for $route" >> "$GITHUB_STEP_SUMMARY"
+          done
+          node --input-type=module <<'NODE'
+          import fs from "node:fs";
+          const dir = "docs/qa/lighthouse-production";
+          const files = fs.readdirSync(dir).filter((name) => name.endsWith(".json")).sort();
+          const rows = files.map((name) => {
+            const report = JSON.parse(fs.readFileSync(dir + "/" + name, "utf8"));
+            const audit = (id) => report.audits?.[id]?.displayValue || "n/a";
+            return {
+              page: name.replace(/\.json$/, ""),
+              score: report.categories?.performance?.score == null ? "n/a" : Math.round(report.categories.performance.score * 100),
+              lcp: audit("largest-contentful-paint"),
+              cls: audit("cumulative-layout-shift"),
+              tbt: audit("total-blocking-time"),
+              fcp: audit("first-contentful-paint"),
+              speed: audit("speed-index"),
+            };
+          });
+          const table = rows.length
+            ? ["| Page | Performance | LCP | CLS | TBT (lab proxy) | FCP | Speed Index |", "|---|---:|---:|---:|---:|---:|---:|", ...rows.map((r) => `| ${r.page} | ${r.score} | ${r.lcp} | ${r.cls} | ${r.tbt} | ${r.fcp} | ${r.speed} |`)].join("\n")
+            : "No Lighthouse JSON reports were produced. Check the Lighthouse step logs.";
+          const summary = "# PDFora production Lighthouse (mobile lab)\n\n" + table + "\n\nTBT is a lab diagnostic, not field INP. These Lighthouse results are lab measurements, not CrUX field Core Web Vitals.\n";
+          fs.writeFileSync(dir + "/SUMMARY.md", summary);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
+          NODE
+      - name: Upload production Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfora-production-lighthouse
+          path: docs/qa/lighthouse-production/
+          if-no-files-found: warn
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

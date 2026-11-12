@@ -13,8 +13,12 @@ const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf",
 export default function sitemap(): MetadataRoute.Sitemap {
   // Legacy PDF slugs are canonical root routes only. Redirect-only routes such as
   // /nepali-date-converter are intentionally absent from this registry.
+  const updatedPdfSlugs = new Set(["rotate-pdf", "pdf-to-excel"]);
+  const updatedCatalogSlugs = new Set(["reading-time-calculator", "savings-goal-calculator", "percentage-change-calculator"]);
+  const updateDate = new Date("2026-11-12T00:00:00Z");
   const legacyPdfEntries: MetadataRoute.Sitemap = legacyToolSlugs.map((slug) => ({
     url: `${baseUrl}/${slug}`,
+    ...(updatedPdfSlugs.has(slug) ? { lastModified: updateDate } : {}),
     changeFrequency: "monthly",
     priority: prioritySlugs.has(slug) ? 0.9 : 0.7,
   }));
@@ -25,6 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .filter((tool) => tool.slug !== "pdf-tools" && tool.slug !== "ocr-pdf" && !legacyToolSlugSet.has(tool.slug))
     .map((tool) => ({
       url: `${baseUrl}/tools/${tool.slug}`,
+      ...(updatedCatalogSlugs.has(tool.slug) ? { lastModified: updateDate } : {}),
       changeFrequency: "monthly" as const,
       priority: 0.7,
     }));

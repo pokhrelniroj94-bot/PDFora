@@ -62,6 +62,16 @@ export default function PDForaTool({
 
   function applyFiles(selectedFiles: File[]) {
     const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
+    if (currentSlug === "merge-pdf" && selected.length > 20) {
+      setFiles([]);
+      setMessage(locale === "ne" ? "एकपटकमा अधिकतम २० PDF फाइल छान्नुहोस्।" : "Choose no more than 20 PDF files for one merge.");
+      return;
+    }
+    if (currentSlug === "merge-pdf" && selected.reduce((total, file) => total + file.size, 0) > 50 * 1024 * 1024) {
+      setFiles([]);
+      setMessage(locale === "ne" ? "सबै PDF फाइलको जम्मा आकार ५० MB भन्दा बढी हुनु हुँदैन।" : "The combined size of all selected PDFs must not exceed 50 MB.");
+      return;
+    }
     const invalidImage = imageUpload && selected.find((file) =>
       file.type
         ? !["image/jpeg", "image/png", "image/webp"].includes(file.type)
@@ -101,6 +111,17 @@ export default function PDForaTool({
       current.filter((_, fileIndex) => fileIndex !== index)
     );
 
+    setMessage("");
+  }
+
+  function moveFile(index: number, direction: -1 | 1) {
+    setFiles((current) => {
+      const target = index + direction;
+      if (target < 0 || target >= current.length) return current;
+      const next = [...current];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
     setMessage("");
   }
 
@@ -312,6 +333,11 @@ export default function PDForaTool({
                 <p className="text-sm font-black">
                   {ui.selectedFiles}
                 </p>
+                {multiple && currentSlug === "merge-pdf" && (
+                  <p className="mt-1 text-xs text-slate-500">
+                    {locale === "ne" ? "↑ र ↓ बटनबाट फाइलको क्रम मिलाउनुहोस्।" : "Use ↑ and ↓ to set the order of the merged PDF."}
+                  </p>
+                )}
               </div>
 
               <div className="max-h-64 overflow-y-auto p-2">
@@ -334,6 +360,30 @@ export default function PDForaTool({
                       </p>
                     </div>
 
+                    {multiple && (
+                      <div className="flex shrink-0 items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => moveFile(index, -1)}
+                          disabled={index === 0}
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-base font-bold text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30"
+                          aria-label={locale === "ne" ? `${file.name} माथि सार्नुहोस्` : `Move ${file.name} up`}
+                          title={locale === "ne" ? "माथि सार्नुहोस्" : "Move up"}
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveFile(index, 1)}
+                          disabled={index === files.length - 1}
+                          className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-base font-bold text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30"
+                          aria-label={locale === "ne" ? `${file.name} तल सार्नुहोस्` : `Move ${file.name} down`}
+                          title={locale === "ne" ? "तल सार्नुहोस्" : "Move down"}
+                        >
+                          ↓
+                        </button>
+                      </div>
+                    )}
                     <button
                       type="button"
                       onClick={() => removeFile(index)}

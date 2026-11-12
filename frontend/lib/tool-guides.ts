@@ -347,18 +347,15 @@ export const toolGuides: ToolGuide[] = [
     "slug": "merge-pdf",
     "name": "Merge PDF",
     "keyword": "how to merge multiple PDF files into one document online",
-    "purpose": "Combine related PDF documents into one organised file for reports, assignments, invoices or application submissions.",
+    "purpose": "Combine 2–20 related PDF files into one document, set their reading order and download a single file for sharing or submission.",
     "steps": [
-      "Open Merge PDF and select two or more PDF files.",
-      "Arrange the files in the reading order you want.",
-      "Merge the files, download the combined PDF and check its pages."
+      "Open Merge PDF and select at least two PDF files. The combined upload must stay within 50 MB.",
+      "Use the up and down arrow buttons beside the selected file names to arrange the documents in the intended reading order.",
+      "Remove any file you do not need, merge the PDFs and download the new document.",
+      "Open the merged file and check its first, middle and final pages before sharing."
     ],
-    "caution": "Confirm that the recipient accepts one combined file and keep the original PDFs until the merged copy is checked.",
-    "related": [
-      "reorder-pdf",
-      "compress-pdf",
-      "split-pdf"
-    ],
+    "caution": "The tool accepts up to 20 PDFs with a combined upload limit of 50 MB. It combines existing pages but does not run OCR, so scanned pages remain images. Keep your source PDFs until you have checked the output.",
+    "related": ["reorder-pdf", "compress-pdf", "split-pdf"],
     "blogSlug": "merge-multiple-pdf-files-into-one-document"
   },
   {

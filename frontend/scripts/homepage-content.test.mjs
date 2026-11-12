@@ -24,4 +24,8 @@ assert.ok(!homepage.includes("upload the required file, follow the options and d
 for (const slug of ["loan-emi-calculator", "notes-to-pdf", "nepal-share-calculator"]) {
   assert.ok(catalog.includes(`slug:"${slug}"`), `Popular tool metadata must reference real catalog entry: ${slug}`);
 }
-console.log("Homepage content checks passed: popular calculator, Notes-to-PDF and NEPSE cards have accurate task-specific instructions.");
+assert.ok(homepage.includes('const [category, setCategory] = useState("PDF")'), "Homepage should focus on PDF tools by default");
+assert.ok(homepage.includes("const [visibleCount, setVisibleCount] = useState(12)"), "Homepage should render a compact initial tool list");
+assert.ok(homepage.includes("const visibleTools = filteredTools.slice(0, visibleCount)"), "Homepage should paginate the tool catalogue");
+assert.ok(homepage.includes("Show more tools") && homepage.includes('href="/tools"'), "Homepage should expose a path to the full tools directory");
+console.log("Homepage content checks passed: focused PDF-first browsing, paginated catalogue and accurate popular tool guidance.");

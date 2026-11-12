@@ -466,6 +466,15 @@ async function runTool(tool, index) {
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));
+      const downloadSignal = /download (?:started|ready)|completed successfully/i.test(statusText) || Boolean(finalState?.links?.length);
+      if (downloadSignal) {
+        const downloadWaitStarted = Date.now();
+        while (Date.now() - downloadWaitStarted < 15000) {
+          const completedDownloads = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name));
+          if (completedDownloads.length > 0) break;
+          await delay(250);
+        }
+      }
       const newDownloadNames = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name));
       const validatedDownloads = [];
       for (const name of newDownloadNames) validatedDownloads.push(await validateDownloadedFile(path.join(downloadsDir, name)));

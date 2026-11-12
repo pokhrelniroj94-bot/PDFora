@@ -906,7 +906,7 @@ export const additionalToolBlogPosts = toolGuides.filter((tool)=>!existingBlogSl
   title:`How to ${tool.name.toLowerCase()} online: a practical step-by-step guide`,
   description:`Learn ${tool.keyword}, when this PDF task is useful, how to use PDFora and what to check before sharing the result.`,
   keyword:tool.keyword,
-  updated:"2026-11-01",
+  updated:tool.slug === "rotate-pdf" ? "2026-11-12" : "2026-11-01",
   readTime:"5 min read",
   intro:`${tool.purpose} This guide explains the workflow, what to review in the output and common limitations to consider before using the processed file.`,
   sections:[

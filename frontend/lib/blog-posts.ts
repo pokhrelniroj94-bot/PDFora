@@ -294,7 +294,7 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "tip-calculator-guide",
-    title: "How to Calculate a Tip: Formula & Examples | PDFora",
+    title: "How to Calculate a Tip: 10%, 15% & 20% Examples | PDFora",
     description: "Calculate a 10%, 15% or 20% tip with a simple formula. See a worked bill example, per-person split and how to check service charges.",
     keyword: "how to calculate tip tip calculator",
     updated: "2026-11-11",

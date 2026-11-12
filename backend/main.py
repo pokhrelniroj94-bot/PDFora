@@ -1205,7 +1205,7 @@ async def delete_pages(
                     if len(parts) != 2:
                         raise ValueError("Invalid page range")
                     start, end = (int(part.strip()) for part in parts)
-                    if start < 1 or end < start:
+                    if start < 1 or end < start or end > len(reader.pages):
                         raise ValueError("Invalid page range")
                     delete_set.update(range(start, end + 1))
                 else:

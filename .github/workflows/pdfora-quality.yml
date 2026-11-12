@@ -202,7 +202,7 @@ jobs:
           CHROME_PATH: ${{ steps.lighthouse-chrome.outputs.chrome-path }}
         run: |
           mkdir -p docs/qa/lighthouse-production
-          routes=(/ /merge-pdf /rotate-pdf /pdf-to-excel /tools/reading-time-calculator /tools/savings-goal-calculator /tools/percentage-change-calculator)
+          routes=(/ /merge-pdf /split-pdf /compress-pdf /rotate-pdf /pdf-to-excel /pdf-to-word /pdf-to-jpg /images-to-pdf /delete-pages /extract-pages /rotate-selected-pages /pdf-to-csv /pdf-to-text /tools/reading-time-calculator /tools/savings-goal-calculator /tools/percentage-change-calculator /tools/tip-calculator /tools/word-character-counter /tools/age-calculator)
           for route in "${routes[@]}"; do
             slug=$(printf '%s' "$route" | sed 's#^/$#home#; s#^/##; s#/#-#g')
             echo "Running Lighthouse mobile: $route"

@@ -101,6 +101,13 @@ for (const section of ["SMA 20/50 crossover", "RSI 14 recovery", "20-day breakou
 assert.match(sitemapSource, /nepaliPdfRoutes\[slug\]/, "PDF URLs must retain their established root-level paths");
 assert.doesNotMatch(sitemapSource, /\.\.\.\["merge-pdf",\s*"split-pdf",\s*"compress-pdf",\s*"rotate-pdf",\s*"pdf-to-word",\s*"pdf-to-jpg"\]/, "Do not maintain a second hard-coded localized PDF allowlist");
 assert.match(sitemapSource, /!isCatalogGeneratedGuide\(post\.slug\)/, "Unreviewed generated catalogue guides must stay out of the sitemap");
+assert.doesNotMatch(sitemapSource, /opengraph-image|favicon\\.ico|_next\\/|\\/api\\//, "Sitemap must contain canonical content pages only, never OG images, static assets or API endpoints");
+assert.doesNotMatch(sitemapSource, /baseUrl}\\/(?:hi|id|pt|es|fr|de|bn|ur|ar|zh|ja)(?:\\/|\`)/, "Unpublished locale routes must not be included in the sitemap");
+assert.match(nextConfigSource, /Object\\.keys\\(nepaliPdfRoutes\\)\\.map/, "Legacy /ne/tools/<pdf-slug> paths must redirect using the canonical Nepali PDF route registry");
+assert.match(nextConfigSource, /source: \`\\/ne\\/tools\\/\\$\\{slug\\}\`/, "Legacy localized PDF route redirect must match /ne/tools/<slug>");
+assert.match(nextConfigSource, /destination: \`\\/ne\\/\\$\\{slug\\}\`/, "Legacy localized PDF route redirect must point to /ne/<slug>");
+assert.doesNotMatch(read("app/[locale]/tools/page.tsx"), /nepali-janma-kundali|nepali-guna-milan/, "Do not internally link to unpublished astrology routes that return 404");
+
 assert.match(robotsSource, /disallow:\s*\["\/api\/"\]/, "API endpoints should stay excluded from crawling");
 assert.match(layoutSource, /inLanguage:\s*htmlLang/, "Structured data must reflect the server-rendered page language");
 assert.match(layoutSource, /title:\s*\{\s*default:[^,]+,\s*template:\s*"%s"\s*\}/, "Page titles must not append a second PDFora brand suffix");

@@ -54,7 +54,7 @@ const groups = [
 ];
 
 function ToolLink({ slug, title }: { slug: string; title?: string }) {
-  return <Link href={slug === "nepse-technical-analysis" ? "/ne/nepse-technical-analysis" : slug.startsWith("nepali-janma") || slug === "nepali-guna-milan" ? `/ne/${slug}` : `/ne/tools/${slug}`} className="group rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-teal-300 hover:shadow-sm">
+  return <Link href={slug === "nepse-technical-analysis" ? "/ne/nepse-technical-analysis" : `/ne/tools/${slug}`} className="group rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-teal-300 hover:shadow-sm">
     <span className="font-bold text-slate-900 group-hover:text-teal-800">{title ?? names[slug] ?? slug.replaceAll("-", " ")}</span>
     <span className="mt-2 block text-xs font-semibold text-teal-700">उपकरण खोल्नुहोस् →</span>
   </Link>;

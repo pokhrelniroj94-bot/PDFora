@@ -86,6 +86,16 @@ pdf.catalog.set(PDFName.of("Outlines"), outlineRootRef);
 const fixturePath = path.join(tempDir, "pdfora-e2e-fixture.pdf");
 fs.writeFileSync(fixturePath, await pdf.save());
 
+// A distinct landscape PDF makes merge-order verification observable in the output.
+const secondPdf = await PDFDocument.create();
+const secondPage = secondPdf.addPage([700, 500]);
+const secondFont = await secondPdf.embedFont(StandardFonts.Helvetica);
+secondPage.drawText("PDFora E2E second document - landscape page", {
+  x: 48, y: 450, size: 14, font: secondFont,
+});
+const secondFixturePath = path.join(tempDir, "pdfora-e2e-second-fixture.pdf");
+fs.writeFileSync(secondFixturePath, await secondPdf.save());
+
 const chrome = spawn(chromePath, [
   "--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage",
   "--disable-background-networking", "--disable-extensions", "--hide-scrollbars",
@@ -424,13 +434,41 @@ async function runTool(tool, index) {
       });
       if (!queries.nodeIds?.length) throw new Error("PDF page has no file upload input.");
       for (const nodeId of queries.nodeIds) {
-        await page.send("DOM.setFileInputFiles", { nodeId, files: tool.slug === "images-to-pdf" ? [pngPath] : tool.slug === "merge-pdf" || tool.slug === "compare-pdf" ? [fixturePath, fixturePath] : [fixturePath] });
+        await page.send("DOM.setFileInputFiles", { nodeId, files: tool.slug === "images-to-pdf" ? [pngPath] : tool.slug === "merge-pdf" || tool.slug === "compare-pdf" ? [fixturePath, secondFixturePath] : [fixturePath] });
       }
-      const fixtureName = tool.slug === "images-to-pdf" ? path.basename(pngPath) : path.basename(fixturePath);
-      const expectedFileCount = tool.slug === "merge-pdf" || tool.slug === "compare-pdf" ? 2 : 1;
-      const attached = await page.evaluate("document.body.innerText.split(" + JSON.stringify(fixtureName) + ").length - 1");
-      if (attached < expectedFileCount) throw new Error("PDF fixture selection was not reflected in the upload workspace.");
+      const selectedFixtureNames = tool.slug === "images-to-pdf"
+        ? [path.basename(pngPath)]
+        : tool.slug === "merge-pdf" || tool.slug === "compare-pdf"
+          ? [path.basename(fixturePath), path.basename(secondFixturePath)]
+          : [path.basename(fixturePath)];
+      const attachedNames = await page.evaluate("(() => " + JSON.stringify(selectedFixtureNames) + ".map((name) => ({ name, present: document.body.innerText.includes(name) })))()");
+      if (attachedNames.some((item) => !item.present)) throw new Error("PDF fixture selection was not reflected in the upload workspace: " + JSON.stringify(attachedNames));
       row.checks.push("PDF file selected");
+      if (tool.slug === "merge-pdf") {
+        const readMergeOrder = () => page.evaluate(`(() => [...new Set(
+          [...document.querySelectorAll('button[aria-label^="Move "]')]
+            .map((button) => button.getAttribute("aria-label")?.match(/^Move (.+) (?:up|down)$/)?.[1])
+            .filter(Boolean)
+        )])()`);
+        const beforeOrder = await readMergeOrder();
+        const moveDown = await page.evaluate(`(() => {
+          const button = [...document.querySelectorAll('button[aria-label]')]
+            .find((item) => item.getAttribute("aria-label") === ${JSON.stringify("Move " + path.basename(fixturePath) + " down")});
+          if (!button || button.disabled) return false;
+          button.click();
+          return true;
+        })()`);
+        if (!moveDown) throw new Error("Merge PDF did not expose an enabled move-down control for the first file.");
+        await delay(150);
+        const afterOrder = await readMergeOrder();
+        const expectedOrder = [path.basename(secondFixturePath), path.basename(fixturePath)];
+        if (JSON.stringify(beforeOrder) !== JSON.stringify([path.basename(fixturePath), path.basename(secondFixturePath)]) ||
+            JSON.stringify(afterOrder) !== JSON.stringify(expectedOrder)) {
+          throw new Error("Merge file reordering did not update the visible file order: " + JSON.stringify({ beforeOrder, afterOrder, expectedOrder }));
+        }
+        row.mergeFileOrder = { before: beforeOrder, after: afterOrder };
+        row.checks.push("two distinct PDF files uploaded and file order changed with the move-down control");
+      }
       row.seededFields = await seedPdfFields(page, tool.slug);
       if (tool.slug === "reorder-pdf") {
         await page.evaluate("(() => { const field = [...document.querySelectorAll('input:not([type=file]), textarea')].find((item) => item.type !== 'number'); if (!field) return false; const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype; const setter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set; setter?.call(field, '1,2'); field.dispatchEvent(new Event('input', { bubbles: true })); field.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
@@ -479,6 +517,21 @@ async function runTool(tool, index) {
       const newDownloadNames = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name));
       const validatedDownloads = [];
       for (const name of newDownloadNames) validatedDownloads.push(await validateDownloadedFile(path.join(downloadsDir, name)));
+      if (tool.slug === "merge-pdf" && validatedDownloads.length) {
+        const mergedName = newDownloadNames.find((name) => path.extname(name).toLowerCase() === ".pdf");
+        if (!mergedName) throw new Error("Merge PDF did not download a PDF output.");
+        const mergedDocument = await PDFDocument.load(fs.readFileSync(path.join(downloadsDir, mergedName)), { ignoreEncryption: true });
+        const dimensions = mergedDocument.getPages().map((item) => ({
+          width: Math.round(item.getWidth()),
+          height: Math.round(item.getHeight()),
+        }));
+        const expectedDimensions = [{ width: 700, height: 500 }, { width: 595, height: 842 }, { width: 595, height: 842 }];
+        if (JSON.stringify(dimensions) !== JSON.stringify(expectedDimensions)) {
+          throw new Error("Merged PDF page order did not match the selected file order: " + JSON.stringify(dimensions));
+        }
+        row.mergeOutputEvidence = { pages: dimensions, pageCount: dimensions.length, firstPageFrom: path.basename(secondFixturePath), remainingPagesFrom: path.basename(fixturePath) };
+        row.checks.push("downloaded merged PDF contains all three pages in the reordered file sequence");
+      }
       row.downloadCount = validatedDownloads.length;
       row.downloadedFiles = validatedDownloads;
       statusText = finalState?.statuses?.map((status) => status.text).join(" | ") ?? statusText;

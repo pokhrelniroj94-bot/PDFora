@@ -10,7 +10,7 @@ import { convertRomanNumeral } from "../lib/roman-numerals";
 type Values = Record<string, string>;
 const defaults: Record<string, Values> = {
 "word-frequency-counter":{text:"Tools save time. Useful tools save time."},
-"reading-time-calculator":{text:"Paste your article here.",wpm:"200"},
+"reading-time-calculator":{text:"Paste your article here.",wpm:"200",speakingWpm:"130"},
 "line-counter":{text:"First line\nSecond line\n\nFirst line"},
 "sentence-counter":{text:"This is one sentence. Here is another! Is this the third?"},
 "email-extractor":{text:"Contact hello@example.com or support@example.org"},
@@ -41,8 +41,8 @@ const defaults: Record<string, Values> = {
 "aspect-ratio-calculator":{width:"1920",height:"1080"},"color-converter":{text:"#0f766e"},
 "css-gradient-generator":{a:"#0f766e",b:"#38bdf8",angle:"135"},"roman-numeral-converter":{text:"2026"}
 };
-const labels: Record<string, string> = {text:"Text or input",wpm:"Reading speed (words/min)",find:"Find",replace:"Replace with",mode:"Mode",weight:"Weight (kg)",height:"Height (cm)",age:"Age (years)",sex:"Sex (male/female)",bill:"Bill amount",tip:"Tip (%)",people:"People",extra:"Extra amount",principal:"Principal",rate:"Rate (%)",years:"Years",sales:"Sales amount",wage:"Hourly wage",hours:"Hours per week",value:"Value",a:"First value / colour",b:"Second value / colour",n:"Integer",min:"Minimum",max:"Maximum",count:"Count",date:"Starting date",days:"Days to add/subtract",start:"Start date",end:"End date",root:"Root font size (px)",width:"Width (px)",angle:"Angle (degrees)"};
-const numeric = new Set(["wpm","weight","height","age","bill","tip","people","extra","principal","rate","years","sales","wage","hours","value","a","b","n","min","max","count","days","root","width","angle"]);
+const labels: Record<string, string> = {text:"Text or input",wpm:"Reading speed (words/min)",speakingWpm:"Speaking speed (words/min)",find:"Find",replace:"Replace with",mode:"Mode",weight:"Weight (kg)",height:"Height (cm)",age:"Age (years)",sex:"Sex (male/female)",bill:"Bill amount",tip:"Tip (%)",people:"People",extra:"Extra amount",principal:"Principal",rate:"Rate (%)",years:"Years",sales:"Sales amount",wage:"Hourly wage",hours:"Hours per week",value:"Value",a:"First value / colour",b:"Second value / colour",n:"Integer",min:"Minimum",max:"Maximum",count:"Count",date:"Starting date",days:"Days to add/subtract",start:"Start date",end:"End date",root:"Root font size (px)",width:"Width (px)",angle:"Angle (degrees)"};
+const numeric = new Set(["wpm","speakingWpm","weight","height","age","bill","tip","people","extra","principal","rate","years","sales","wage","hours","value","a","b","n","min","max","count","days","root","width","angle"]);
 const words=(s:string)=>s.trim().split(/\s+/).filter(Boolean);
 const tokens=(s:string)=>s.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/([a-z0-9])([A-Z])/g,"$1 $2").toLowerCase().match(/[a-z0-9]+/g)||[];
 const morse:Record<string,string>={a:".-",b:"-...",c:"-.-.",d:"-..",e:".",f:"..-.",g:"--.",h:"....",i:"..",j:".---",k:"-.-",l:".-..",m:"--",n:"-.",o:"---",p:".--.",q:"--.-",r:".-.",s:"...",t:"-",u:"..-",v:"...-",w:".--",x:"-..-",y:"-.--",z:"--..",0:"-----",1:".----",2:"..---",3:"...--",4:"....-",5:".....",6:"-....",7:"--...",8:"---..",9:"----."," ":"/"};
@@ -53,7 +53,7 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  const run=()=>{setError("");setOut("");try{const t=get("text");let result="";
  switch(slug){
  case "word-frequency-counter":{const m=new Map<string,number>();words(t.toLowerCase().replace(/[^\p{L}\p{N}'-]+/gu," ")).forEach(w=>m.set(w,(m.get(w)||0)+1));result=[...m].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).map(([w,c])=>w+" — "+c).join("\n")||"No words found.";break;}
- case "reading-time-calculator":{const count=words(t).length,wpm=Math.max(1,n("wpm"));result=count+" words\nEstimated reading time: "+(count===0?"0 seconds":count/wpm<1?Math.max(1,Math.ceil(count/wpm*60))+" seconds":(count/wpm).toFixed(1)+" minutes");break;}
+ case "reading-time-calculator":{const count=words(t).length,wpm=n("wpm"),speakingWpm=n("speakingWpm");if(wpm<=0||speakingWpm<=0||wpm>2000||speakingWpm>1000)throw Error("Enter reading speed from 1–2,000 WPM and speaking speed from 1–1,000 WPM.");const format=(minutes:number)=>minutes===0?"0 seconds":minutes<1?Math.max(1,Math.ceil(minutes*60))+" seconds":minutes.toFixed(1)+" minutes";result=count+" words\nEstimated reading time ("+wpm+" WPM): "+format(count/wpm)+"\nEstimated speaking time ("+speakingWpm+" WPM): "+format(count/speakingWpm)+"\nSpeaking time is an estimate; pauses and delivery style can change the actual duration.";break;}
  case "line-counter":{const a=t.length?t.split(/\r?\n/):[];result="Total lines: "+a.length+"\nNon-empty: "+a.filter(x=>x.trim()).length+"\nUnique: "+new Set(a).size;break;}
  case "sentence-counter":{const a=t.trim().split(/[.!?]+(?=\s|$)/).filter(x=>x.trim()),w=words(t).length;result="Sentences: "+a.length+"\nWords: "+w+"\nAverage words per sentence: "+(a.length?(w/a.length).toFixed(1):"0");break;}
  case "email-extractor":result=[...new Set(t.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi)||[])].join("\n")||"No email addresses found.";break;

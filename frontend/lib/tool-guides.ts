@@ -149,13 +149,13 @@ export const toolGuides: ToolGuide[] = [
     "slug": "delete-pages",
     "name": "Delete PDF Pages",
     "keyword": "how to delete unwanted pages from a PDF online",
-    "purpose": "Remove blank, duplicate or irrelevant pages from a PDF copy before sending or archiving it.",
+    "purpose": "Remove selected, blank or duplicate pages while keeping the remaining pages together in one PDF.",
     "steps": [
-      "Open Delete PDF Pages and upload the file.",
-      "Select the pages you want to remove using the page controls.",
-      "Apply the change and download the updated PDF."
+      "Open Delete PDF Pages and upload a copy of the original document.",
+      "Enter individual page numbers separated by commas or a range such as 6-8, using the PDF viewer's page count.",
+      "Process the document, download the result and check the first, middle and final pages."
     ],
-    "caution": "Check the remaining page order and references; deleting a page from a copy does not change the source file.",
+    "caution": "Printed page labels can differ from viewer page numbers. Keep the original file and confirm that no required page, signature or attachment was removed.",
     "related": [
       "extract-pages",
       "reorder-pdf",
@@ -835,11 +835,11 @@ export const toolGuides: ToolGuide[] = [
     "keyword": "how to split a large PDF into smaller files by page range online",
     "purpose": "Divide a large PDF into smaller documents for sharing, uploading or organising chapters and sections.",
     "steps": [
-      "Open Split PDF and upload the source.",
-      "Choose the split method or page ranges available in the tool.",
-      "Process and download the separate PDF files, then check their page ranges."
+      "Open Split PDF and upload an unchanged copy of the source document.",
+      "Choose the page ranges or split options available in the tool; use the PDF viewer's page numbers rather than printed labels.",
+      "Process the file, download each result and check page order, page count and readability."
     ],
-    "caution": "Keep the original file until every split part has been checked and confirm the receiving portal accepts multiple documents.",
+    "caution": "Some PDFs restrict page extraction. Keep the source file and verify that each downloaded part contains the intended pages.",
     "related": [
       "extract-pages",
       "compress-pdf",

@@ -39,7 +39,7 @@ export default function Page() {
               accept="application/pdf,.pdf"
               downloadName="PDFora-Deleted-Pages.pdf"
               formField="pages"
-              formPlaceholder="Enter page numbers, e.g. 2,4,6"
+              formPlaceholder="Enter pages or ranges, e.g. 2,4,6-8"
             />
           </div>
         </div>

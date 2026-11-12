@@ -75,8 +75,7 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
         <h2 className="text-xl font-black text-slate-950">{labels[3]} {toolName.toLowerCase()} {labels[4]}</h2>
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-8 text-slate-700">
           {guide.steps.map((step) => <li key={step}>{step}</li>)}
-          <li>{locale === "ne" ? "प्रक्रिया पूरा भएपछि बनेको PDF डाउनलोड गर्नुहोस् र अर्को PDF रिडरमा खोलेर जाँच्नुहोस्।" : "Wait until processing has finished, download the generated PDF and open it in a separate PDF reader."}</li>
-          <li>{locale === "ne" ? "नतिजा साझा, प्रिन्ट वा बुझाउनुअघि परिवर्तन भएका पृष्ठलाई मूल कागजातसँग तुलना गर्नुहोस्।" : "Compare the affected pages with your original document before sharing, printing or submitting the output."}</li>
+          <li>{locale === "ne" ? "डाउनलोड गरिएको नतिजा उपयुक्त एपमा खोलेर यसको सामग्री, संरचना र फाइल ढाँचा जाँच्नुहोस्; त्यसपछि मात्र साझा वा बुझाउनुहोस्।" : "Open the downloaded result in the appropriate app and verify its content, structure and file type before sharing or submitting it."}</li>
         </ol>
         <p className="mt-4 text-sm leading-8 text-slate-700">{locale === "ne" ? "टुलमा देखिएका नियन्त्रण मात्र प्रयोग गर्नुहोस्। फरक PDF कामका सेटिङ पनि फरक हुन्छन्; पृष्ठ छान्ने, कम्प्रेस स्तर वा सम्पादन विकल्प टुलमा देखिएको छैन भने उपलब्ध छ भनेर नमान्नुहोस्।" : "Use the controls that are actually available in the workspace. Different PDF operations have different settings, so do not assume that a page-selection option, compression level or editing control exists unless it is shown on this tool page."}</p>
       </section>

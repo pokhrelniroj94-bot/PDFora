@@ -11,7 +11,7 @@ const NepalMarketNews = dynamic(() => import("../components/NepalMarketNews"), {
   loading: () => <div className="grid min-h-40 place-items-center rounded-3xl border border-white/10 bg-slate-900/5 text-sm text-slate-500">Loading Nepal market updates…</div>,
 });
 
-const categories = ["All", "PDF", ...Array.from(new Set(allTools.map((tool) => tool.category).filter((item) => item !== "PDF"))).sort((a, b) => a.localeCompare(b))];
+const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)])).sort((a, b) => a === "PDF" ? -1 : b === "PDF" ? 1 : a.localeCompare(b))];
 
 const faqs = [
   {

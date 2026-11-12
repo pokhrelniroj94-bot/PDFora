@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { nepaliPdfRoutes } from "../../../lib/i18n/nepali-pdf-routes";
 import {
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedPublicInfoSlugs,
@@ -54,7 +55,8 @@ const groups = [
 ];
 
 function ToolLink({ slug, title }: { slug: string; title?: string }) {
-  return <Link href={slug === "nepse-technical-analysis" ? "/ne/nepse-technical-analysis" : slug.startsWith("nepali-janma") || slug === "nepali-guna-milan" ? `/ne/${slug}` : `/ne/tools/${slug}`} className="group rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-teal-300 hover:shadow-sm">
+  const href = slug === "nepse-technical-analysis" ? "/ne/nepse-technical-analysis" : nepaliPdfRoutes[slug] ? `/ne/${slug}` : `/ne/tools/${slug}`;
+  return <Link href={href} className="group rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-teal-300 hover:shadow-sm">
     <span className="font-bold text-slate-900 group-hover:text-teal-800">{title ?? names[slug] ?? slug.replaceAll("-", " ")}</span>
     <span className="mt-2 block text-xs font-semibold text-teal-700">उपकरण खोल्नुहोस् →</span>
   </Link>;
@@ -76,13 +78,6 @@ export default async function NepaliToolsDirectory({ params }: Props) {
     <section className="mb-10">
       <h2 className="mb-4 text-xl font-extrabold">बजार तथा NEPSE विश्लेषण</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"><ToolLink slug="nepse-technical-analysis" title="NEPSE प्राविधिक विश्लेषण"/></div>
-    </section>
-    <section className="mb-10">
-      <h2 className="mb-4 text-xl font-extrabold">जन्मकुण्डली तथा परम्परागत ज्योतिष</h2>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <ToolLink slug="nepali-janma-kundali" title="वैदिक जन्मकुण्डली"/>
-        <ToolLink slug="nepali-guna-milan" title="३६ गुण मिलान"/>
-      </div>
     </section>
     {groups.map((group) => <section className="mb-10" key={group.title}>
       <h2 className="mb-4 text-xl font-extrabold">{group.title}</h2>

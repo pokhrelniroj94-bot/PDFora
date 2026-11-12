@@ -1,10 +1,18 @@
 import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
 import { legacyToolSlugs } from "./lib/legacy-tool-slugs";
+import { nepaliPdfRoutes } from "./lib/i18n/nepali-pdf-routes";
 
 const nextConfig: NextConfig = {
   async redirects() {
     return [
+      // Search Console found old /ne/tools/<pdf-slug> URLs returning 404.
+      // The canonical localized PDF routes live at /ne/<pdf-slug>.
+      ...Object.keys(nepaliPdfRoutes).map((slug) => ({
+        source: `/ne/tools/${slug}`,
+        destination: `/ne/${slug}`,
+        permanent: true,
+      })),
       ...legacyToolSlugs.map((slug) => ({
         source: `/tools/${slug}`,
         destination: `/${slug}`,

@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import { hreflangMap } from "../../lib/i18n/routing";
 import { blogPosts, isCatalogGeneratedGuide } from "../../lib/blog-posts";
 import AdsterraNative from "../components/AdsterraNative";
+import BlogPopunder from "../components/BlogPopunder";
 
 const localizedAlternates = hreflangMap("/blog");
 
@@ -22,6 +23,8 @@ export const metadata: Metadata = {
 
 export default function BlogIndexPage() {
   return (
+    <>
+    <BlogPopunder />
     <main className="min-h-screen bg-slate-50 px-4 py-12 sm:px-6">
       <div className="mx-auto max-w-5xl">
         <p className="text-xs font-black uppercase tracking-[0.2em] text-teal-700">PDFora Learning Centre</p>
@@ -57,5 +60,6 @@ export default function BlogIndexPage() {
         </div>
       </div>
     </main>
+    </>
   );
 }

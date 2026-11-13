@@ -34,6 +34,7 @@ const nepaliNepseSource = read("app/ne/nepse-technical-analysis/page.tsx");
 const englishToolPageSource = read("app/tools/[slug]/page.tsx");
 assert.ok(englishToolPageSource.includes('title: "SEO Title Checker – Meta Title & Google Preview | PDFora"'), "The meta-title utility must lead with the observed SEO Title Checker query");
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
+assert.ok(englishToolPageSource.includes('title: "Tip Calculator Online Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
 const nepaliBlogPageSource = read("app/[locale]/blog/[slug]/page.tsx");
 const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;

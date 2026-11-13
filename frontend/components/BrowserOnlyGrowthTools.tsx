@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 type ToolSlug = "email-signature-generator" | "timezone-meeting-planner" | "image-dpi-calculator" | "video-bitrate-calculator" | "markdown-table-generator";
 
@@ -84,10 +84,11 @@ function zonedLocalToDate(date: string, time: string, zone: string): Date | null
   return result;
 }
 function TimezoneTool() {
-  const [date, setDate] = useState("2026-11-16");
+  const [date, setDate] = useState("");
+  useEffect(() => { const now = new Date(); setDate([now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-")); }, []);
   const [time, setTime] = useState("09:00");
   const [source, setSource] = useState("America/New_York");
-  const [selected, setSelected] = useState(["Europe/London", "Asia/Kathmandu", "Asia/Tokyo"]);
+  const [selected, setSelected] = useState(["America/New_York", "Europe/London", "Asia/Kathmandu", "Asia/Tokyo"]);
   const [message, setMessage] = useState("");
   const instant = useMemo(() => zonedLocalToDate(date, time, source), [date, time, source]);
   const fmt = (zone: string) => instant ? new Intl.DateTimeFormat(undefined, { timeZone: zone, weekday: "short", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(instant) : "This local time may not exist because of a daylight-saving clock change.";
@@ -142,7 +143,7 @@ function VideoBitrateTool() {
   const [message, setMessage] = useState("");
   const duration = Number(minutes) * 60 + Number(seconds);
   const sizeMb = Number(size), audioKbps = Number(audio), overheadPct = Number(overhead);
-  const valid = [duration,sizeMb,audioKbps,overheadPct].every(Number.isFinite) && duration > 0 && sizeMb > 0 && audioKbps >= 0 && overheadPct >= 0 && overheadPct < 50;
+  const valid = [duration,sizeMb,audioKbps,overheadPct,Number(seconds)].every(Number.isFinite) && duration > 0 && sizeMb > 0 && audioKbps >= 0 && Number(seconds) >= 0 && Number(seconds) <= 59 && Number.isInteger(Number(seconds)) && overheadPct >= 0 && overheadPct < 50;
   const totalKbps = valid ? sizeMb * 8 * 1000 / duration : 0;
   const usableKbps = totalKbps * (1 - overheadPct / 100);
   const videoKbps = usableKbps - audioKbps;

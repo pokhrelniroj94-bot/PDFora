@@ -350,7 +350,7 @@ test("localized SEO descriptions are capped at 155 characters", () => {
     assert.ok(localized.openGraph.description.length <= 155, post.slug + " Open Graph description must match");
   }
   const route = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
-  const block = route.match(/const nepaliDescriptions:[\\s\\S]*?\\n\\};/)?.[0] ?? "";
+  const block = route.match(/const nepaliDescriptions:[\s\S]*?\n\};/)?.[0] ?? "";
   assert.ok(route.includes("fitLocaleDescription(nepaliDescriptions"), "localized tool overrides must use the shared description guard");
   for (const match of block.matchAll(/"([^"]+)": "([^"]+)"/g)) {
     assert.ok(metadata.fitLocaleDescription(match[2]).length <= 155, match[1] + " localized tool description must be <=155 characters");

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AdsterraNative from "../../components/AdsterraNative";
 import AdsterraSkyscraper from "../../components/AdsterraSkyscraper";
+import BlogPopunder from "../../components/BlogPopunder";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
@@ -64,16 +65,17 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   };
   return (
     <>
-    <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
-      <article className="mx-auto max-w-3xl">
+    <BlogPopunder />
+    <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 sm:py-10">
+      <article className="mx-auto w-full max-w-3xl min-w-0">
         <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
           <Link href="/" className="hover:text-teal-700">Home</Link><span className="mx-2">/</span>
           <Link href="/blog" className="hover:text-teal-700">Blog</Link><span className="mx-2">/</span>
           <span aria-current="page" className="text-slate-700">{post.title}</span>
         </nav>
-        <header className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 sm:p-9">
+        <header className="mt-8 rounded-3xl border border-slate-200 bg-white p-5 sm:p-9">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora Guide · {post.readTime}</p>
-          <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
+          <h1 className="mt-4 break-words text-2xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
           <p className="mt-5 text-xs text-slate-500">Published by PDFora · Last updated {new Date(post.updated + "T00:00:00Z").toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</p>
         </header>
@@ -81,7 +83,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
 
         <div className="mt-6 space-y-6">
           {post.sections.map((section) => (
-            <section key={section.heading} className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+            <section key={section.heading} className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-8">
               <h2 className="text-xl font-black text-slate-950">{section.heading}</h2>
               {section.paragraphs.map((paragraph) => <p key={paragraph} className="mt-4 text-sm leading-8 text-slate-700">{paragraph}</p>)}
               {section.bullets && <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-7 text-slate-700">{section.bullets.map((item) => <li key={item}>{item}</li>)}</ol>}
@@ -102,7 +104,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
               ))}
             </div>
           </section>
-          <section className="rounded-3xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
+          <section className="rounded-3xl border border-teal-100 bg-teal-50 p-5 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">Try a related tool</h2>
             <p className="mt-2 text-sm leading-7 text-slate-700">Continue with a related PDFora utility when you are ready to put this guide into practice.</p>
             <div className="mt-4 flex flex-wrap gap-3">

@@ -25,9 +25,9 @@ const faqs = [
       "No. PDFora is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
   },
   {
-    question: "What PDF tools are available?",
+    question: "What kinds of tools does PDFora offer?",
     answer:
-      "PDFora provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
+      "PDFora brings together PDF editing and conversion, finance and math calculators, text utilities, developer helpers, image tools, SEO checks, career tools and Nepal-focused utilities. OCR is not enabled on the current server yet.",
   },
   {
     question: "How are my files processed?",
@@ -336,7 +336,7 @@ export default function HomePageClient() {
           ))}
         </div>
 
-        <p className="mb-4 text-sm text-slate-500" aria-live="polite">{query.trim() ? `Showing ${visibleTools.length} of ${filteredTools.length} matching tools for “${query}”.` : `Showing ${visibleTools.length} of ${filteredTools.length} ${category === "All" ? "tools across all categories" : category} tools. Search or choose a category to narrow results.`}</p>
+        <p className="mb-4 text-sm text-slate-500" aria-live="polite">{query.trim() ? `Showing ${visibleTools.length} of ${filteredTools.length} matching tools for “${query}”.` : `Showing ${visibleTools.length} of ${filteredTools.length} ${category === "All" ? "tools across all categories" : `${category} tools`}. Search or choose a category to narrow results.`}</p>
         {filteredTools.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white px-5 py-14 text-center">
             <div

@@ -146,7 +146,7 @@ export default function Page() {
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Enter individual page numbers separated by commas or combine them with ranges, such as 1,3,5-8. Page numbers refer to the PDF viewer's page order, which may differ from printed page labels. After processing, open the new PDF and check its page count, order and readability.
+            Enter individual page numbers separated by commas or combine them with ranges, such as 1,3,5-8. Page numbers refer to the PDF viewer&apos;s page order, which may differ from printed page labels. After processing, open the new PDF and check its page count, order and readability.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">

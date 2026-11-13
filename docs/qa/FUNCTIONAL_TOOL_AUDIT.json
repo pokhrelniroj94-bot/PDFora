@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-13T10:00:00.000Z",
-  "sourceCommit": "50a7424a15cab3586a193b81db1f6ec6a117da1d",
+  "generatedAt": "2026-11-13T11:12:13.682Z",
+  "sourceCommit": "aecdd96f05d94788e510837c6a46eac20dc133df",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     "statusRule": "Only executed tests produce PASS; source inspection produces PARTIAL or NOT TESTED.",
-    "limitations": "This is a source-aligned inventory and evidence ledger, not a claim that every tool has passed browser, mobile, accessibility or individual runtime verification. Only executed tests produce PASS."
+    "limitations": "Browser route and tool-action checks are included where the per-tool report records them. 390px mobile viewport, Tab progression and basic document/control semantics are recorded per route. This does not replace visual comparison, WCAG contrast measurement, screen-reader testing or exhaustive input validation."
   },
   "evidence": {
     "backendPdfSweep": "backend/tests/test_tool_api.py::test_all_available_pdf_tools_process_a_realistic_pdf",
@@ -17,9 +17,23 @@
     "tools": 169,
     "pdfTools": 49,
     "catalogUtilities": 120,
-    "functionalPass": 0,
-    "functionalPartial": 60,
-    "functionalNotTested": 109
+    "functionalPass": 1,
+    "functionalPartial": 69,
+    "functionalFail": 0,
+    "functionalNotTested": 99,
+    "browserE2ePass": 1,
+    "browserE2eFail": 0,
+    "mobilePass": 1,
+    "mobileNotTested": 168,
+    "mobileFail": 0,
+    "keyboardPass": 1,
+    "keyboardFail": 0,
+    "keyboardNotTested": 168,
+    "accessibilityPass": 1,
+    "accessibilityPartial": 0,
+    "accessibilityNotTested": 168,
+    "browserReportSourceCommit": "aecdd96f05d94788e510837c6a46eac20dc133df",
+    "sourceCommitMatchesBrowserReport": true
   },
   "tools": [
     {
@@ -368,19 +382,20 @@
       "slug": "merge-pdf",
       "category": "PDF",
       "kind": "pdf",
-      "routeStatus": "PARTIAL",
-      "interfaceStatus": "PARTIAL",
+      "routeStatus": "PASS",
+      "interfaceStatus": "PASS",
       "handlerStatus": "PASS",
-      "functionalTestStatus": "PARTIAL",
-      "outputVerificationStatus": "PARTIAL",
-      "mobileStatus": "NOT TESTED",
-      "accessibilityStatus": "NOT TESTED",
+      "functionalTestStatus": "PASS",
+      "outputVerificationStatus": "PASS",
+      "mobileStatus": "PASS",
+      "accessibilityStatus": "PASS",
       "languageStatus": "PARTIAL",
       "seoStatus": "PARTIAL",
       "defectsFound": "",
       "fixesApplied": "",
-      "remainingBlockers": "Browser workflow, mobile layout, accessibility and download integrity require browser evidence.",
-      "evidence": "backend/tests/test_tool_api.py::test_all_available_pdf_tools_process_a_realistic_pdf; frontend/__tests__/pdfWorker.test.ts"
+      "remainingBlockers": "",
+      "evidence": "docs/qa/BROWSER_E2E_173_REPORT.json: 390px viewport, keyboard Tab progression, document language/main landmark/primary heading, two distinct PDF uploads, reorder, three-page output content/order verification, invalid PDF rejection",
+      "keyboardStatus": "PASS"
     },
     {
       "slug": "page-counter",

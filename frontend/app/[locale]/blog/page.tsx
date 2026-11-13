@@ -22,7 +22,7 @@ export default async function NepaliBlogIndex({ params }: Props) {
   const { locale } = await params;
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale)) notFound();
   return (
-    <main lang="ne" className="min-h-screen bg-slate-50 px-4 py-12 sm:px-6">
+    <main lang="ne" className="pdfora-blog-page min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-5xl">
         <p className="text-xs font-black uppercase tracking-[0.2em] text-teal-700">PDFora नेपाली मार्गदर्शिका</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">उपयोगी नेपाली लेख र ट्युटोरियल</h1>

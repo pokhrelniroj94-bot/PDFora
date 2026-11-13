@@ -650,8 +650,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }],
     sources: [{ label: "Google Search Central: Title links", url: "https://developers.google.com/search/docs/appearance/title-link" }]
-  }
-
+  },
   {
     slug: "pdf-to-csv-guide-online",
     title: "PDF तालिकालाई CSV मा कसरी रूपान्तरण गर्ने? चरणबद्ध मार्गदर्शिका",

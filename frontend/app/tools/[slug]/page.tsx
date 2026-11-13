@@ -243,9 +243,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Should I use this for a final payslip?", a: "No. Compare with your employer's payroll statement and use the dedicated Nepal salary-tax calculator for a separate FY-specific tax estimate." }
     ],
     "savings-goal-calculator": [
-      { q: "How is monthly savings needed calculated?", a: "The calculator subtracts current savings from the target and divides the remaining amount by the number of months available." },
-      { q: "Does it include interest or investment returns?", a: "No. It assumes you save the same amount each month and excludes interest, investment returns, fees and inflation." },
-      { q: "What if I have already reached my target?", a: "The remaining amount and monthly savings needed are shown as zero when current savings meet or exceed the target." }
+      { q: "How is monthly savings needed calculated?", a: "At a 0% annual rate, it divides the remaining target by the number of deposits. With a positive rate, it projects the current balance and calculates equal end-of-period deposits using the selected weekly or monthly frequency." },
+      { q: "Does it include interest or investment returns?", a: "It estimates periodic interest when you enter an annual rate. It assumes a constant rate and deposits at the end of each period; it does not model investment returns, inflation, fees or taxes. Actual bank terms may differ." },
+      { q: "What if I have already reached my target?", a: "The required deposit is zero when the projected existing balance meets or exceeds the target. A positive annual rate can make the projected balance higher than the target." }
     ],
     "nepali-number-converter": [
       { q: "Does it use the lakh and crore number system?", a: "Yes. English number words use thousand, lakh and crore grouping for the supported whole-number range." },

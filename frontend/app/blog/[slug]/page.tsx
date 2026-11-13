@@ -66,7 +66,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   return (
     <>
     <BlogPopunder />
-    <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 sm:py-10">
+    <main className="pdfora-blog-page pdfora-blog-article min-h-screen bg-slate-50 px-4 py-8 sm:px-6 sm:py-10">
       <article className="mx-auto w-full max-w-3xl min-w-0">
         <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
           <Link href="/" className="hover:text-teal-700">Home</Link><span className="mx-2">/</span>

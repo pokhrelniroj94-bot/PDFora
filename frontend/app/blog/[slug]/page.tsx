@@ -8,7 +8,7 @@ import { hreflangMap } from "../../../lib/i18n/routing";
 const baseUrl = "https://pd-fora.vercel.app";
 
 function fitMetaDescription(value: string, max = 155): string {
-  const clean = value.replace(/\\s+/g, " ").trim();
+  const clean = value.replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
   const shortened = clean.slice(0, max - 1);
   const boundary = shortened.lastIndexOf(" ");

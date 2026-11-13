@@ -19,7 +19,8 @@ export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string)
   const overrides: Record<string,{title:string;description:string}> = {
     "merge-pdf": { title: "Merge PDF Files Online – Combine Multiple PDFs", description: "Combine 2–20 PDF files into one document. Reorder files, merge and download a single PDF. Combined upload limit: 50 MB." },
     "split-pdf": { title: "Split PDF Online – Extract Pages into Separate Files", description: "Split a PDF into smaller documents by selecting page ranges. Extract the pages you need, then check page order and readability before sharing." },
-    "delete-pages": { title: "Delete PDF Pages Online – Remove Selected Pages", description: "Remove unwanted or blank PDF pages by entering page numbers such as 2, 4, or 6–8. Download a clean copy and verify the remaining page order." },
+    "extract-pages": { title: "Extract PDF Pages Online Free – Save Selected Pages", description: "Extract selected pages from a PDF by entering page numbers or ranges such as 1, 3, or 5–8. Download a separate PDF and check its page order." },
+    "delete-pages": { title: "Delete PDF Pages Online Free – Remove Selected Pages", description: "Delete selected PDF pages by entering page numbers or ranges such as 2, 4, or 6–8. Download a new PDF and verify the remaining page order." },
     "rotate-pdf": { title: "Rotate PDF Online – Turn Pages 90°, 180° or 270°", description: "Rotate a PDF by 90, 180 or 270 degrees to fix sideways or upside-down pages. Download the corrected file and check its orientation." },
     "pdf-to-excel": { title: "PDF to Excel Converter – Extract Tables to XLSX", description: "Convert selectable PDF tables into an editable Excel XLSX workbook. Scanned pages may need OCR; review columns, dates and totals after conversion." }
   };

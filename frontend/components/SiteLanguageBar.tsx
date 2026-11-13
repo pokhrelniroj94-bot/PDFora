@@ -34,7 +34,7 @@ export default function SiteLanguageBar() {
 
   return (
     <div className="border-b border-slate-200 bg-slate-50 px-4 py-2">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-end gap-x-3 gap-y-2 text-sm">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-3 gap-y-2 text-sm sm:justify-end">
         <label htmlFor="pdfora-global-language" className="font-semibold text-slate-700">
           {copy.language}:
         </label>
@@ -42,11 +42,11 @@ export default function SiteLanguageBar() {
           id="pdfora-global-language"
           value={locale}
           onChange={(event) => choose(event.target.value as Locale)}
-          className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="min-h-10 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
         >
           {publishedLocales.map((item) => <option key={item} value={item}>{localeInfo[item].nativeName}</option>)}
         </select>
-        <span className="text-xs text-slate-500">
+        <span className="w-full text-xs text-slate-500 sm:w-auto">
           {copy.languageHint}
         </span>
       </div>

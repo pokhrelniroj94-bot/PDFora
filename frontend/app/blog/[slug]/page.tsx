@@ -64,7 +64,6 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   };
   return (
     <>
-    <AdsterraSkyscraper />
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
       <article className="mx-auto max-w-3xl">
         <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
@@ -78,6 +77,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
           <p className="mt-5 text-xs text-slate-500">Published by PDFora · Last updated {new Date(post.updated + "T00:00:00Z").toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</p>
         </header>
+        <div className="mt-6"><AdsterraSkyscraper /></div>
 
         <div className="mt-6 space-y-6">
           {post.sections.map((section) => (

@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-07T09:56:49.572Z",
-  "sourceCommit": "951a782db51848a49e1ad4764b32d2f92fc977e8",
+  "generatedAt": "2026-11-13T10:00:00.000Z",
+  "sourceCommit": "50a7424a15cab3586a193b81db1f6ec6a117da1d",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     "statusRule": "Only executed tests produce PASS; source inspection produces PARTIAL or NOT TESTED.",
-    "limitations": "This report does not claim browser, mobile, accessibility or individual catalog-tool runtime verification."
+    "limitations": "This is a source-aligned inventory and evidence ledger, not a claim that every tool has passed browser, mobile, accessibility or individual runtime verification. Only executed tests produce PASS."
   },
   "evidence": {
     "backendPdfSweep": "backend/tests/test_tool_api.py::test_all_available_pdf_tools_process_a_realistic_pdf",
@@ -14,12 +14,12 @@
     "frontendTestCommand": "npm test -- --runInBand"
   },
   "counts": {
-    "tools": 173,
+    "tools": 169,
     "pdfTools": 49,
-    "catalogUtilities": 124,
+    "catalogUtilities": 120,
     "functionalPass": 0,
     "functionalPartial": 60,
-    "functionalNotTested": 113
+    "functionalNotTested": 109
   },
   "tools": [
     {
@@ -1842,7 +1842,7 @@
     },
     {
       "slug": "notes-to-pdf",
-      "category": "PDF",
+      "category": "Utilities",
       "kind": "catalog",
       "routeStatus": "PARTIAL",
       "interfaceStatus": "PARTIAL",
@@ -3049,78 +3049,6 @@
     {
       "slug": "nepse-dividend-calculator",
       "category": "Nepal",
-      "kind": "catalog",
-      "routeStatus": "PARTIAL",
-      "interfaceStatus": "PARTIAL",
-      "handlerStatus": "PARTIAL",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
-      "mobileStatus": "NOT TESTED",
-      "accessibilityStatus": "NOT TESTED",
-      "languageStatus": "PARTIAL",
-      "seoStatus": "PARTIAL",
-      "defectsFound": "",
-      "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
-    },
-    {
-      "slug": "ai-resume-writer",
-      "category": "Career Tools",
-      "kind": "catalog",
-      "routeStatus": "PARTIAL",
-      "interfaceStatus": "PARTIAL",
-      "handlerStatus": "PARTIAL",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
-      "mobileStatus": "NOT TESTED",
-      "accessibilityStatus": "NOT TESTED",
-      "languageStatus": "PARTIAL",
-      "seoStatus": "PARTIAL",
-      "defectsFound": "",
-      "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
-    },
-    {
-      "slug": "ai-cover-letter-generator",
-      "category": "Career Tools",
-      "kind": "catalog",
-      "routeStatus": "PARTIAL",
-      "interfaceStatus": "PARTIAL",
-      "handlerStatus": "PARTIAL",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
-      "mobileStatus": "NOT TESTED",
-      "accessibilityStatus": "NOT TESTED",
-      "languageStatus": "PARTIAL",
-      "seoStatus": "PARTIAL",
-      "defectsFound": "",
-      "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
-    },
-    {
-      "slug": "ai-humanizer",
-      "category": "Text",
-      "kind": "catalog",
-      "routeStatus": "PARTIAL",
-      "interfaceStatus": "PARTIAL",
-      "handlerStatus": "PARTIAL",
-      "functionalTestStatus": "NOT TESTED",
-      "outputVerificationStatus": "NOT TESTED",
-      "mobileStatus": "NOT TESTED",
-      "accessibilityStatus": "NOT TESTED",
-      "languageStatus": "PARTIAL",
-      "seoStatus": "PARTIAL",
-      "defectsFound": "",
-      "fixesApplied": "",
-      "remainingBlockers": "Runtime input/output, edge cases, mobile layout, accessibility and download/clipboard behavior require individual tests.",
-      "evidence": "frontend/scripts/verify-tool-catalog.mjs"
-    },
-    {
-      "slug": "market-ai",
-      "category": "Finance",
       "kind": "catalog",
       "routeStatus": "PARTIAL",
       "interfaceStatus": "PARTIAL",

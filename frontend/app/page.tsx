@@ -19,14 +19,14 @@ export const metadata: Metadata = {
     type: "website",
     url: site,
     siteName: "PDFora",
-    title: "Free Online PDF Tools – Merge, Split & Compress | PDFora",
+    title: "Free Online PDF, Finance & Text Tools | PDFora",
     description:
       "Free online tools for PDF documents, finance, text, code, images, SEO and everyday Nepal utilities.",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora online tools" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Online PDF Tools – Merge, Split & Compress | PDFora",
+    title: "Free Online PDF, Finance & Text Tools | PDFora",
     description:
       "Free online PDF, finance, text, developer, image, SEO and Nepal tools in one simple workspace.",
     images: ["/opengraph-image"],

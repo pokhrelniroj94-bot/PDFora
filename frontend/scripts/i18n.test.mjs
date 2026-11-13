@@ -340,6 +340,23 @@ test("switcher: never offers an unavailable page", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 
+test("localized SEO descriptions are capped at 155 characters", () => {
+  const long = "लामो विवरण ".repeat(30);
+  assert.ok(metadata.fitLocaleDescription(long).length <= 155);
+  for (const post of nepaliLocalizedBlogPosts) {
+    assert.ok(post.title.length <= 60, post.slug + " Nepali search title should remain concise");
+    const localized = metadata.buildLocaleMetadata({ locale: "ne", path: "/blog/" + post.slug, title: post.title, description: post.description });
+    assert.ok(localized.description.length <= 155, post.slug + " localized meta description must be <=155 characters");
+    assert.ok(localized.openGraph.description.length <= 155, post.slug + " Open Graph description must match");
+  }
+  const route = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const block = route.match(/const nepaliDescriptions:[\\s\\S]*?\\n\\};/)?.[0] ?? "";
+  assert.ok(route.includes("fitLocaleDescription(nepaliDescriptions"), "localized tool overrides must use the shared description guard");
+  for (const match of block.matchAll(/"([^"]+)": "([^"]+)"/g)) {
+    assert.ok(metadata.fitLocaleDescription(match[2]).length <= 155, match[1] + " localized tool description must be <=155 characters");
+  }
+});
+
 test("metadata: unreviewed Nepali PDF routes remain crawlable but noindex", () => {
   const approved = metadata.buildLocaleMetadata({
     locale: "ne",
@@ -490,7 +507,7 @@ test("PDF SEO metadata is unique, canonical and within search description length
   for (const guide of toolGuides) {
     const metadata = buildPdfToolMetadata(guide, guide.slug);
     assert.ok(String(metadata.title).includes(guide.name), guide.slug + " title must include the tool name");
-    assert.ok(String(metadata.title).length <= 70, guide.slug + " title should remain concise");
+    assert.ok(String(metadata.title).length <= 60, guide.slug + " title should remain concise");
     assert.ok(!titles.has(metadata.title), guide.slug + " title must be unique");
     titles.add(metadata.title);
     assert.ok(typeof metadata.description === "string" && metadata.description.length >= 80 && metadata.description.length <= 155, guide.slug + " description must be useful and within 160 characters");

@@ -91,7 +91,7 @@ export default function NepalMarketNews({ locale = "en" }: { locale?: "en" | "ne
     void load();
     const timer = window.setInterval(() => { void load(); }, 10 * 60 * 1000);
     return () => { active = false; window.clearInterval(timer); };
-  }, [fetchFeed, fetchGlobalFeed]);
+  }, [fetchFeed, fetchGlobalFeed, unavailable]);
 
   async function refresh() {
     setLoading(true);

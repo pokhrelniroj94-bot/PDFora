@@ -21,8 +21,8 @@ export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string)
     "split-pdf": { title: "Split PDF Online – Extract Pages into Separate Files", description: "Split a PDF into smaller documents by selecting page ranges. Extract the pages you need, then check page order and readability before sharing." },
     "extract-pages": { title: "Extract PDF Pages Online Free – Save Selected Pages", description: "Extract selected pages from a PDF by entering page numbers or ranges such as 1, 3, or 5–8. Download a separate PDF and check its page order." },
     "delete-pages": { title: "Delete PDF Pages Online Free – Remove Selected Pages", description: "Delete selected PDF pages by entering page numbers or ranges such as 2, 4, or 6–8. Download a new PDF and verify the remaining page order." },
-    "rotate-pdf": { title: "Rotate PDF Online – Turn Pages 90°, 180° or 270°", description: "Rotate a PDF by 90, 180 or 270 degrees to fix sideways or upside-down pages. Download the corrected file and check its orientation." },
-    "pdf-to-excel": { title: "PDF to Excel Converter – Extract Tables to XLSX", description: "Convert selectable PDF tables into an editable Excel XLSX workbook. Scanned pages may need OCR; review columns, dates and totals after conversion." }
+    "rotate-pdf": { title: "Rotate PDF Online Free – Turn Pages 90°, 180° or 270°", description: "Rotate a PDF online by 90°, 180° or 270° to fix sideways or upside-down pages. Download the corrected file and check each page orientation." },
+    "pdf-to-excel": { title: "PDF to Excel Converter Online Free – Extract Tables", description: "Convert selectable PDF tables to an editable Excel XLSX workbook online. Review columns, dates, decimals and totals; scanned pages may need OCR." }
   };
   const title = overrides[slug]?.title ?? `${guide.name} Online`;
   const brandedTitle = `${title} | PDFora`;

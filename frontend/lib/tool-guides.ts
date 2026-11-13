@@ -890,6 +890,7 @@ export function getRequiredToolGuide(slug:string): ToolGuide {
 }
 
 const existingBlogSlugs = new Set([
+  "pdf-to-csv-guide-online",
   "compress-pdf-to-under-1mb-online",
   "repair-pdf-guide-online",
   "pdf-to-text-guide-online",

@@ -493,7 +493,7 @@ test("PDF SEO metadata is unique, canonical and within search description length
     assert.ok(String(metadata.title).length <= 70, guide.slug + " title should remain concise");
     assert.ok(!titles.has(metadata.title), guide.slug + " title must be unique");
     titles.add(metadata.title);
-    assert.ok(typeof metadata.description === "string" && metadata.description.length >= 80 && metadata.description.length <= 160, guide.slug + " description must be useful and within 160 characters");
+    assert.ok(typeof metadata.description === "string" && metadata.description.length >= 80 && metadata.description.length <= 155, guide.slug + " description must be useful and within 160 characters");
     assert.ok(!descriptions.has(metadata.description), guide.slug + " description must be unique");
     descriptions.add(metadata.description);
     assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");

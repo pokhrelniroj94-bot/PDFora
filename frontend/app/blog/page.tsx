@@ -5,6 +5,7 @@ import { hreflangMap } from "../../lib/i18n/routing";
 import { blogPosts, isCatalogGeneratedGuide } from "../../lib/blog-posts";
 import AdsterraNative from "../components/AdsterraNative";
 import AdsterraSkyscraper from "../components/AdsterraSkyscraper";
+import BlogPopunder from "../components/BlogPopunder";
 
 const localizedAlternates = hreflangMap("/blog");
 
@@ -24,10 +25,11 @@ export const metadata: Metadata = {
 export default function BlogIndexPage() {
   return (
     <>
-    <main className="min-h-screen bg-slate-50 px-4 py-12 sm:px-6">
+    <BlogPopunder />
+    <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 sm:py-12">
       <div className="mx-auto max-w-5xl">
         <p className="text-xs font-black uppercase tracking-[0.2em] text-teal-700">PDFora Learning Centre</p>
-        <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Tools, Tutorials & Practical Guides</h1>
+        <h1 className="mt-3 break-words text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-5xl">Tools, Tutorials & Practical Guides</h1>
         <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">Practical Nepal how-to guides for NRB rates, income tax, electricity bills, public holidays, Nepali Unicode typing, Bikram Sambat dates, land units and everyday document tasks.</p>
         <AdsterraSkyscraper />
         <div className="mt-10 grid gap-5 md:grid-cols-2">

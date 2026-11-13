@@ -270,3 +270,102 @@ main:has(input[type="file"]) button:not(:disabled) {
   main:has(input[type="file"]) { padding-left: 1rem; padding-right: 1rem; }
   main:has(input[type="file"]) input[type="file"] { font-size: 14px; }
 }
+
+
+/* Motion and interaction polish across every PDFora tool and editorial page. */
+@keyframes pdfora-rise-in {
+  from { opacity: 0; transform: translate3d(0, 16px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes pdfora-glow-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(13 148 136 / 0%); }
+  50% { box-shadow: 0 0 0 5px rgb(13 148 136 / 5%); }
+}
+.pdfora-tool-page > div:first-child,
+.pdfora-blog-page > div:first-child,
+.pdfora-blog-article > article > header {
+  animation: pdfora-rise-in .48s cubic-bezier(.2,.7,.2,1) both;
+}
+.pdfora-tool-page > section,
+.pdfora-tool-page > div:not(:first-child),
+.pdfora-blog-page > div:first-child > div,
+.pdfora-blog-article > article > div > section {
+  animation: pdfora-rise-in .48s cubic-bezier(.2,.7,.2,1) both;
+}
+.pdfora-blog-page > div:first-child > div > article:nth-child(1) { animation-delay: 35ms; }
+.pdfora-blog-page > div:first-child > div > article:nth-child(2) { animation-delay: 75ms; }
+.pdfora-blog-page > div:first-child > div > article:nth-child(3) { animation-delay: 115ms; }
+.pdfora-blog-page > div:first-child > div > article:nth-child(4) { animation-delay: 155ms; }
+.pdfora-blog-page > div:first-child > div > article:nth-child(n+5) { animation-delay: 190ms; }
+.pdfora-tool-page .group,
+.pdfora-blog-page article {
+  transform-origin: center bottom;
+  backface-visibility: hidden;
+}
+.pdfora-tool-page .group:focus-visible,
+.pdfora-blog-page article a:focus-visible {
+  outline: 3px solid rgb(13 148 136 / 55%);
+  outline-offset: 4px;
+  border-radius: 14px;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .pdfora-tool-page .group:hover,
+  .pdfora-blog-page article:not(.pdfora-blog-article article):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 46px rgb(15 118 110 / 11%);
+  }
+  .pdfora-tool-page button:not(:disabled):hover,
+  .pdfora-tool-page a[class*="rounded"]:hover,
+  .pdfora-blog-page a[class*="rounded"]:hover {
+    transform: translateY(-1px);
+  }
+  .pdfora-tool-page input[type="file"]:hover,
+  main:has(input[type="file"]) input[type="file"]:hover {
+    border-color: #0d9488;
+    background: #eafaf6;
+  }
+}
+.pdfora-tool-page input[type="file"],
+main:has(input[type="file"]) input[type="file"] {
+  transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease;
+}
+.pdfora-tool-page button:focus-visible,
+.pdfora-blog-page button:focus-visible {
+  outline: 3px solid rgb(13 148 136 / 55%);
+  outline-offset: 3px;
+}
+.pdfora-tool-page [aria-live="polite"],
+.pdfora-tool-page [role="status"] {
+  animation: pdfora-rise-in .24s ease-out both;
+}
+@media (max-width: 639px) {
+  .pdfora-tool-page > div:first-child,
+  .pdfora-blog-page > div:first-child,
+  .pdfora-blog-article > article > header,
+  .pdfora-tool-page > section,
+  .pdfora-tool-page > div:not(:first-child),
+  .pdfora-blog-page > div:first-child > div,
+  .pdfora-blog-article > article > div > section {
+    animation-duration: .34s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pdfora-tool-page > div:first-child,
+  .pdfora-blog-page > div:first-child,
+  .pdfora-blog-article > article > header,
+  .pdfora-tool-page > section,
+  .pdfora-tool-page > div:not(:first-child),
+  .pdfora-blog-page > div:first-child > div,
+  .pdfora-blog-article > article > div > section,
+  .pdfora-tool-page [aria-live="polite"],
+  .pdfora-tool-page [role="status"] {
+    animation: none !important;
+  }
+  .pdfora-tool-page .group:hover,
+  .pdfora-blog-page article:hover,
+  .pdfora-tool-page button:hover,
+  .pdfora-tool-page a:hover,
+  .pdfora-blog-page a:hover {
+    transform: none !important;
+  }
+}

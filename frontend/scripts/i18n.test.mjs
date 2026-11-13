@@ -344,6 +344,7 @@ test("localized SEO descriptions are capped at 155 characters", () => {
   const long = "लामो विवरण ".repeat(30);
   assert.ok(metadata.fitLocaleDescription(long).length <= 155);
   for (const post of nepaliLocalizedBlogPosts) {
+    assert.ok(post.readTime, post.slug + " Nepali guide must retain its reading-time label");
     assert.ok(post.title.length <= 60, post.slug + " Nepali search title should remain concise");
     const localized = metadata.buildLocaleMetadata({ locale: "ne", path: "/blog/" + post.slug, title: post.title, description: post.description });
     assert.ok(localized.description.length <= 155, post.slug + " localized meta description must be <=155 characters");

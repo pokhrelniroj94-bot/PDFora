@@ -10,6 +10,14 @@ import { hreflangMap } from "../../../lib/i18n/routing";
 import { isLocalizedToolIndexable } from "../../../lib/tools/localized-verification";
 
 const site = "https://pd-fora.vercel.app";
+
+function fitMetaDescription(value: string, max = 155): string {
+  const clean = value.replace(/\\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const shortened = clean.slice(0, max - 1);
+  const boundary = shortened.lastIndexOf(" ");
+  return `${shortened.slice(0, boundary > 110 ? boundary : max - 1).replace(/[,:;–-]+$/, "")}.`;
+}
 export function generateStaticParams() {
   return toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ slug: tool.slug }));
 }
@@ -41,7 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
-    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate percentage increase or decrease between two values. See the formula, reverse the calculation and distinguish percentage change from percentage points." },
+    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate percentage increase or decrease between two values. View the formula, reverse the calculation and distinguish percentage change from percentage points." },
     "tip-calculator": { title: "Free Tip Calculator – Add Tip & Split Bill", description: "Calculate a restaurant tip, bill total and per-person share. Choose a custom rate or compare 15%, 18% and 20%; check included service charges." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
@@ -86,7 +94,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     Business: "Confirm the cost, price, margin and tax assumptions before using a figure in a quote or budget.",
     Nepal: "Check the applicable fiscal year, date system, local units and official notices before relying on the result."
   };
-  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")} ${categoryDescription[tool.category] ?? "Check the input and output carefully before using the result."}`.slice(0, 160);
+  const description = fitMetaDescription(seo?.description ?? `${tool.description.replace(/[.!?]$/, "")} ${categoryDescription[tool.category] ?? "Check the input and output carefully before using the result."}`);
   const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
   const canonicalPath = legacyToolSlugSet.has(slug) ? `/${slug}` : `/tools/${slug}`;
   const canonical = `${site}${canonicalPath}`;

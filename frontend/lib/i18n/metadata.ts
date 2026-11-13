@@ -12,11 +12,20 @@ interface LocaleMetadataInput {
   description: string;
 }
 
+function fitLocaleDescription(value: string, max = 155): string {
+  const clean = value.replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const shortened = clean.slice(0, max - 1);
+  const boundary = shortened.lastIndexOf(" ");
+  return `${shortened.slice(0, boundary > 100 ? boundary : max - 1).replace(/[,:;–-]+$/, "")}.`;
+}
+
 /**
  * Locale-aware metadata. Self-referencing canonical always; hreflang only for published,
  * genuinely localized equivalents; unpublished (preview) locales are noindex/nofollow.
  */
 export function buildLocaleMetadata({ locale, path, title, description }: LocaleMetadataInput): Metadata {
+  const fittedDescription = fitLocaleDescription(description);
   const published = isPublished(locale);
   const canonical = absoluteUrl(path, locale);
   const pdfSlug = path.replace(/^\/+/, "");
@@ -25,7 +34,7 @@ export function buildLocaleMetadata({ locale, path, title, description }: Locale
   const languages = indexable ? hreflangMap(path) : undefined;
   return {
     title,
-    description,
+    description: fittedDescription,
     alternates: { canonical, ...(languages ? { languages } : {}) },
     robots: !published ? { index: false, follow: false } : indexable ? { index: true, follow: true } : { index: false, follow: true },
     openGraph: {
@@ -33,10 +42,10 @@ export function buildLocaleMetadata({ locale, path, title, description }: Locale
       url: canonical,
       siteName: "PDFora",
       title,
-      description,
+      description: fittedDescription,
       locale: localeInfo[locale].intl.replace("-", "_"),
       images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora" }],
     },
-    twitter: { card: "summary_large_image", title, description, images: ["/opengraph-image"] },
+    twitter: { card: "summary_large_image", title, description: fittedDescription, images: ["/opengraph-image"] },
   };
 }

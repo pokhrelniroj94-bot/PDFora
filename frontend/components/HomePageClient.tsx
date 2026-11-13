@@ -150,11 +150,13 @@ export default function HomePageClient() {
     });
   }, [query, category]);
   // Prioritize tools already earning first-page Google impressions, then retain the existing popular picks.
-  const searchConsolePriorityHrefs = ["/tools/tip-calculator", "/tools/savings-goal-calculator", "/tools/reading-time-calculator", "/tools/percentage-change-calculator"];
+  const searchConsolePriorityHrefs = ["/pdf-to-excel", "/rotate-pdf", "/tools/tip-calculator", "/tools/savings-goal-calculator", "/tools/reading-time-calculator", "/tools/percentage-change-calculator"];
   const popularTools = Array.from(new Map([...allTools.filter((tool) => searchConsolePriorityHrefs.includes(tool.href)), ...allTools.filter((tool) => tool.popular), ...allTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))].map((tool) => [tool.href, tool])).values()).slice(0, 9);
   const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
   // Show a representative mix across PDF, finance, text, developer, image, SEO and Nepal tools before the full catalogue.
   const homepageFeaturedHrefs = [
+    "/pdf-to-excel",
+    "/rotate-pdf",
     "/tools/tip-calculator",
     "/tools/savings-goal-calculator",
     "/tools/reading-time-calculator",

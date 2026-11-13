@@ -203,33 +203,33 @@ export default function HomePageClient() {
       </header>
 
       {/* PREMIUM HERO */}
-      <section className="relative isolate w-full min-w-0 overflow-hidden bg-[#071b1b] px-4 pb-12 pt-10 text-white sm:px-6 sm:pb-24 sm:pt-20">
+      <section className="relative isolate w-full min-w-0 overflow-hidden bg-[#071b1b] px-4 pb-10 pt-9 text-white sm:px-5 md:px-6 md:pb-20 md:pt-16">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 opacity-40 [background-image:linear-gradient(rgba(148,220,205,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,220,205,.08)_1px,transparent_1px)] [background-size:52px_52px]" />
         <div aria-hidden="true" className="pointer-events-none absolute -right-40 -top-52 -z-10 h-[34rem] w-[34rem] rounded-full bg-teal-400/20 blur-[110px]" />
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-64 left-[-8rem] -z-10 h-[30rem] w-[30rem] rounded-full bg-cyan-500/15 blur-[100px]" />
-        <div className="mx-auto grid w-full min-w-0 max-w-7xl items-center gap-10 lg:grid-cols-[1.08fr_.92fr] lg:gap-10">
+        <div className="mx-auto grid w-full min-w-0 max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-[1.08fr_.92fr] lg:gap-10">
           <div className="w-full min-w-0 max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-teal-200/20 bg-white/[0.07] px-3.5 py-2 text-[11px] font-bold uppercase tracking-[.18em] text-teal-100 shadow-inner shadow-white/5">
               <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(52,211,153,.9)]" />
               Your everyday digital workspace
             </div>
-            <h1 className="mt-6 max-w-full break-words text-[2.25rem] font-black leading-[1.08] tracking-[-.045em] min-[400px]:text-[2.5rem] sm:mt-7 sm:text-6xl lg:text-[4.35rem]">
+            <h1 className="mt-5 w-full max-w-full break-words text-[2.15rem] font-black leading-[1.08] tracking-[-.045em] min-[400px]:text-[2.35rem] md:mt-7 md:text-6xl lg:text-[4.35rem]">
               Free Online Tools for
               <span className="mt-1 block bg-gradient-to-r from-teal-200 via-emerald-300 to-cyan-200 bg-clip-text text-transparent">PDF, Finance, Text & More.</span>
             </h1>
-            <p className="mt-5 w-full max-w-2xl break-words text-[14px] leading-7 text-slate-300 sm:mt-6 sm:text-base sm:leading-8">
+            <p className="mt-5 block w-full max-w-[58ch] whitespace-normal [overflow-wrap:anywhere] text-[14px] leading-6 text-slate-300 md:mt-6 md:text-base md:leading-8">
               Merge, split, compress and convert PDFs, calculate costs and savings, format text and code, edit images, check SEO and use Nepal-focused utilities—all in one free online workspace.
             </p>
-            <div className="mt-7 flex w-full min-w-0 flex-col gap-3 sm:w-auto sm:flex-row">
-              <Link href="/tools" className="inline-flex min-h-12 w-full min-w-0 items-center justify-center rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 px-5 py-3.5 text-sm font-extrabold text-[#062321] shadow-xl shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:shadow-emerald-400/20 sm:w-auto">Explore all tools <span className="ml-2">→</span></Link>
+            <div className="mt-7 flex w-full min-w-0 flex-col gap-3 md:w-auto md:flex-row">
+              <Link href="/tools" className="inline-flex min-h-12 w-full min-w-0 items-center justify-center rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 px-5 py-3.5 text-sm font-extrabold text-[#062321] shadow-xl shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:shadow-emerald-400/20 md:w-auto">Explore all tools <span className="ml-2">→</span></Link>
               <Link href="#tools" className="inline-flex min-h-12 w-full min-w-0 items-center justify-center rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-white/10 sm:w-auto">Browse all tools</Link>
             </div>
-            <div className="mt-7 grid grid-cols-1 gap-3 text-xs font-medium text-slate-300 min-[420px]:grid-cols-2 sm:mt-9 sm:flex sm:flex-wrap sm:gap-x-6">
+            <div className="mt-7 grid grid-cols-1 gap-3 text-xs font-medium text-slate-300 min-[420px]:grid-cols-2 md:mt-9 md:flex md:flex-wrap md:gap-x-6">
               <span className="inline-flex items-center gap-2"><span className="text-emerald-300">✓</span> Free-to-use tools</span>
               <span className="inline-flex items-center gap-2"><span className="text-emerald-300">✓</span> Works on mobile</span>
               <span className="inline-flex items-center gap-2"><span className="text-emerald-300">✓</span> No installation</span>
             </div>
-            <div className="mt-8 w-full min-w-0 max-w-2xl rounded-2xl border border-white/15 bg-white/[0.08] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl focus-within:border-teal-300/60 sm:mt-10">
+            <div className="mt-8 w-full min-w-0 max-w-[58ch] rounded-2xl border border-white/15 bg-white/[0.08] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl focus-within:border-teal-300/60 md:mt-10">
               <div className="flex items-center gap-3">
                 <span className="pl-3 text-xl text-teal-200" aria-hidden="true">⌕</span>
                 <input value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); setVisibleCount(12); }} placeholder="What do you need to do?  e.g. merge PDF, compress image…" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" />

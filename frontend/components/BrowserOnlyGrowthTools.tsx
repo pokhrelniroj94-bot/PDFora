@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 type ToolSlug = "email-signature-generator" | "timezone-meeting-planner" | "image-dpi-calculator" | "video-bitrate-calculator" | "markdown-table-generator";
 
@@ -10,7 +10,7 @@ const panelClass = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm s
 const buttonClass = "min-h-11 rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2";
 const secondaryClass = "min-h-11 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return <label className="block min-w-0"><span className={labelClass}>{label}</span>{children}</label>;
 }
 function copyText(value: string, setMessage: (message: string) => void) {

@@ -40,6 +40,13 @@ assert.ok(!homepageSource.includes("Free Online PDF Tools – Merge, Split & Com
 assert.ok(homepageSource.includes("Explore free online PDF, finance, math, text, developer, image, SEO and Nepal tools."), "Homepage description must identify the wider tool categories");
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
 assert.ok(englishToolPageSource.includes('title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
+assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Tip: 15%, 18% & 20% Examples"'), "The tip guide title must match the 486-impression Search Console query");
+assert.ok(englishEditorialBlogSource.includes('description: "Learn how to calculate tip with the formula, 15%, 18% and 20% examples'), "The tip guide description must lead with its actual Search Console query");
+assert.ok(englishEditorialBlogSource.includes('heading: "How to calculate tip: formula and worked examples"'), "The tip guide must answer the primary query in its first instructional section");
+assert.ok(catalogToolSeoSource.includes("SEO Title Checker: Review Your Page Title Before Publishing"), "The SEO title checker content must state its primary search intent");
+assert.ok(catalogToolSeoSource.includes("Use this SEO title checker with the exact HTML title"), "The SEO title checker intro must match its primary query");
+assert.ok(catalogToolSeoSource.includes("Meta Description Checker: Preview Your Search Snippet"), "The meta description checker content must state its primary search intent");
+assert.ok(catalogToolSeoSource.includes("Use this meta description checker with the exact description"), "The meta description checker intro must match its primary query");
 assert.ok(englishToolPageSource.includes('title: "Reading Time Calculator – Estimate Minutes & Speaking"'), "Reading Time metadata must target the calculator intent");
 assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Weekly & Monthly Deposits"'), "Savings Goal metadata must target deposit-planning intent");
 assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Increase or Decrease"'), "Percentage Change metadata must target calculation intent");

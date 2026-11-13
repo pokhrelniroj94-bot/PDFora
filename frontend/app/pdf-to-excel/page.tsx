@@ -17,7 +17,7 @@ export default function Page() {
               Spreadsheet conversion
             </p>
             <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
-              Convert PDF Tables to Excel
+              PDF to Excel Converter Online
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Turn readable tables in a PDF into an editable XLSX workbook.

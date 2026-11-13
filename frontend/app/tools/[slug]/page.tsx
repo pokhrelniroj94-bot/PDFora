@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
-    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate the percentage increase or decrease between two values. See the formula, reverse the calculation and distinguish percentage change from percentage points." },
-    "tip-calculator": { title: "Free Tip Calculator – Add Tip & Split Bill", description: "Calculate a restaurant tip, bill total and per-person share. Choose a custom rate or compare 15%, 18% and 20%; check whether service charge is already included." },
+    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate percentage increase or decrease between two values. See the formula, reverse the calculation and distinguish percentage change from percentage points." },
+    "tip-calculator": { title: "Free Tip Calculator – Add Tip & Split Bill", description: "Calculate a restaurant tip, bill total and per-person share. Choose a custom rate or compare 15%, 18% and 20%; check included service charges." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "px-rem-converter": { title: "PX to REM Converter – CSS Units with Root Font Size", description: "Convert CSS pixel values to rem and rem to pixels using an editable root font size. Useful for responsive typography and spacing." },
     "color-contrast-checker": { title: "Color Contrast Checker – WCAG Text Accessibility", description: "Check foreground and background colour contrast ratios and review WCAG guidance for normal and large text." },
     "word-character-counter": { title: "Word Counter – Count Words, Characters & Reading Time", description: "Count words, characters with or without spaces, sentences and paragraphs, and estimate reading time for pasted text." },
-    "reading-time-calculator": { title: "Reading Time Calculator – Estimate Minutes & Speaking", description: "Paste text to estimate reading time in minutes and seconds. Adjust words per minute and compare a separate speaking-time estimate for articles, scripts and presentations." },
+    "reading-time-calculator": { title: "Reading Time Calculator – Estimate Minutes & Speaking", description: "Paste text to estimate reading time in minutes and seconds. Adjust WPM and compare speaking time for articles, scripts and presentations." },
     "json-formatter-validator": { title: "JSON Formatter & Validator – Pretty Print or Minify JSON", description: "Format, minify and validate JSON syntax with readable indentation. Check malformed JSON before using it in an application." },
     "base64-encoder-decoder": { title: "Base64 Encoder & Decoder – Convert Text Online", description: "Encode text to Base64 or decode Base64 back to text in your browser. Base64 is an encoding, not encryption." },
     "url-encoder-decoder": { title: "URL Encoder & Decoder – Percent Encode URL Components", description: "Encode or decode URL query values and components with percent encoding. Avoid double-encoding and preserve URL structure." },
@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepali-unicode-typing": { title: "Nepali Unicode Typing Tool – Type in Devanagari", description: "Convert Romanized Nepali typing into Unicode Devanagari text. Review spelling, conjuncts and punctuation before using the text in a document." },
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
     "meta-title-checker": { title: "SEO Title Checker – Meta Title & Google Preview | PDFora", description: "Check an SEO title tag, count characters, compare it with the page H1 and preview a Google search result. Google may rewrite title links." },
-    "meta-description-checker": { title: "Meta Description Checker – SEO Snippet Preview | PDFora", description: "Check a meta description character count and preview its Google snippet. Write a clear, page-specific summary; Google may choose different text for results." },
+    "meta-description-checker": { title: "Meta Description Checker – SEO Snippet Preview | PDFora", description: "Check a meta description length and preview its Google snippet. Write a clear, page-specific summary; Google may choose different text for results." },
   };
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;

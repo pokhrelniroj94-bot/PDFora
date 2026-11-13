@@ -276,14 +276,14 @@ const editorialBlogPosts: BlogPost[] = [
 const priorityEditorialBlogPosts: BlogPost[] = [
   {
     slug: "savings-goal-calculator-guide",
-    title: "Savings Goal Calculator: Weekly & Monthly Savings Plan",
-    description: "Calculate how much to save each week or month to reach a target. Include current savings, deadline and estimated interest, with worked examples.",
-    keyword: "how to calculate a savings goal monthly savings",
-    updated: "2026-11-12",
+    title: "How to Set a Savings Goal: Monthly Plan & Formula",
+    description: "Learn how to set a savings target, calculate regular deposits from your current balance and deadline, and compare a no-interest plan with an estimate that includes periodic compounding.",
+    keyword: "how to set a savings goal monthly plan formula",
+    updated: "2026-11-13",
     readTime: "5 min read",
-    intro: "A savings goal becomes easier to manage when you turn one large target into regular deposits. The calculation uses your target, current balance, deadline, deposit frequency and an assumed annual interest rate. This guide explains the no-interest formula and how a periodic-interest estimate differs.",
+    intro: "A savings goal becomes easier to manage when you turn one large target into regular deposits. The calculator uses your target, current balance, deadline, deposit frequency and an assumed annual interest rate. This guide explains the zero-interest baseline and the calculator’s periodic-compounding estimate.",
     sections: [
-      { heading: "The monthly savings formula", paragraphs: ["First subtract your current savings from the target. Then divide the remaining amount by the number of full months available. The formula is: monthly savings needed = (savings target − current savings) ÷ months remaining. Use the same currency for both amounts and enter a positive number of months.", "This is a straight-line plan: it assumes you add the same amount each month and do not earn interest or investment returns. It is useful for a clear cash target such as tuition, a laptop, travel or an emergency fund."] },
+      { heading: "The monthly savings formula", paragraphs: ["First subtract your current savings from the target. Then divide the remaining amount by the number of full months available. The formula is: monthly savings needed = (savings target − current savings) ÷ months remaining. Use the same currency for both amounts and enter a positive number of months.", "This straight-line formula is the zero-interest baseline. When the annual rate is above zero, the calculator also projects the current balance and estimates equal deposits using the selected monthly or weekly compounding period. It is useful for planning a cash target such as tuition, a laptop, travel or an emergency fund."] },
       { heading: "Worked example: save NPR 90,000 in six months", paragraphs: ["Suppose your target is NPR 90,000 and you have already saved NPR 30,000. The remaining amount is NPR 60,000. With six months left, divide NPR 60,000 by six: you need to set aside NPR 10,000 each month.", "If your income arrives weekly or irregularly, you can divide the remaining target across your expected pay periods instead. The calculator uses months, so convert your plan to a monthly equivalent before comparing it with the result."] },
       { heading: "What if the monthly savings target is too high?", paragraphs: ["Suppose your target is 120,000 and you have already saved 30,000, leaving 90,000. With six months remaining, the simple plan requires 15,000 each month. If you can set aside only 10,000 per month, the same no-interest calculation needs nine months to cover the remaining 90,000.", "You can respond by extending the deadline, reducing the target or adding a one-time deposit from money genuinely available for this goal. Do not count your salary or money reserved for rent, food and bills as savings already set aside."] },
       { heading: "Use the Savings Goal Calculator", paragraphs: ["Open the Savings Goal Calculator and enter the final target, current savings and months remaining. Review the remaining amount and monthly savings figure. If the monthly amount is too high, test a longer deadline or a smaller target rather than entering an unrealistic current-savings figure.", "Update the calculation after each deposit or whenever your target or deadline changes. Keep the original goal and the date of each revision so you can see whether your plan is on track."] },
@@ -293,17 +293,17 @@ const priorityEditorialBlogPosts: BlogPost[] = [
       { question: "How do I calculate how much to save each month?", answer: "Subtract the amount already saved from your target, then divide the remaining amount by the months left. For example, (NPR 90,000 − NPR 30,000) ÷ 6 = NPR 10,000 per month." },
       { question: "Does the savings goal calculator include interest?", answer: "It can estimate interest when you enter an annual rate. The estimate assumes a constant rate and deposits at the end of each weekly or monthly period; actual bank terms, compounding, taxes and fees may differ." },
       { question: "Can I calculate weekly deposits?", answer: "Yes. Choose weekly deposits to estimate the regular amount using an approximate number of weeks in the selected month horizon. The result is an estimate, especially when the goal date does not align with a full week." },
-      { question: "What if I have already saved more than my target?", answer: "The remaining amount is zero, so no additional monthly saving is required to reach that target under the calculator's simple assumptions." },
+      { question: "What if I have already saved more than my target?", answer: "The required deposit is zero. If you enter a positive annual rate, the projected balance at the goal date may be higher than the target." },
       { question: "Should I use my total income as current savings?", answer: "No. Enter only the money already set aside for this goal, not your salary, monthly income or money needed for regular expenses." }
     ],
     toolLinks: [{ label: "Savings Goal Calculator", href: "/tools/savings-goal-calculator" }, { label: "Salary Breakdown Calculator", href: "/tools/salary-breakdown-calculator" }, { label: "SIP & Compound Interest Calculator", href: "/tools/compound-interest-sip-calculator" }]
   },
   {
     slug: "reading-time-calculator-guide",
-    title: "Reading Time Calculator: Estimate Reading & Speaking Time",
+    title: "How to Calculate Reading Time: WPM Formula & Examples",
     description: "Paste text to estimate minutes and seconds. Compare 150, 200 and 250 WPM, calculate speaking time and plan article or presentation length.",
-    keyword: "reading time calculator words per minute",
-    updated: "2026-11-12",
+    keyword: "how to calculate reading time words per minute",
+    updated: "2026-11-13",
     readTime: "5 min read",
     intro: "A reading-time estimate helps readers decide whether to start an article and helps writers plan the length of a page, newsletter, lesson or spoken presentation. The calculator uses word count and separate words-per-minute assumptions for silent reading and speaking. Both results are estimates, not a promise about every reader or presenter.",
     sections: [
@@ -349,10 +349,10 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "percentage-change-calculator-guide",
-    title: "Percentage Change Calculator: Increase, Decrease & Formula",
+    title: "Percentage Change Formula: Increase & Decrease Examples",
     description: "Calculate percentage increase or decrease from original and new values. See worked examples, reverse the calculation and distinguish percentage change from percentage points.",
-    keyword: "percentage change calculator increase decrease formula",
-    updated: "2026-11-12",
+    keyword: "percentage change formula increase decrease examples",
+    updated: "2026-11-13",
     readTime: "5 min read",
     intro: "Percentage change describes how much a value has increased or decreased compared with its starting value. It is useful for comparing prices, quantities, monthly expenses and other measurements, provided both values use the same unit and basis.",
     sections: [

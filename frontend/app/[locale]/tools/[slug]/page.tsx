@@ -5,6 +5,7 @@ import ToolWorkspace from "../../../../components/AllTools";
 import { isPublished } from "../../../../lib/i18n/config";
 import { getTranslator } from "../../../../lib/i18n/messages";
 import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../../../../lib/tools/localized-metadata";
+import { fitLocaleDescription } from "../../../../lib/i18n/metadata";
 import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-route";
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
@@ -175,7 +176,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       ...metadata,
       title: nepaliTitles[request.implementation.slug],
-      description: nepaliDescriptions[request.implementation.slug] ?? metadata.description,
+      description: fitLocaleDescription(nepaliDescriptions[request.implementation.slug] ?? metadata.description),
     };
   }
   return metadata;

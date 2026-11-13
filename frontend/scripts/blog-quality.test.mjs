@@ -138,6 +138,14 @@ for (const [label, file] of collections) {
   substantialParagraphsByCollection.set(label, substantialParagraphs.size);
 }
 
+const pdfToCsvArticle = articleBlocks(read("lib/blog-posts.ts")).find((item) => item.slug === "pdf-to-csv-guide-online");
+assert.ok(pdfToCsvArticle, "PDF to CSV must have a bespoke editorial guide");
+assert.match(pdfToCsvArticle.body, /How to Convert PDF Tables to CSV Online/);
+assert.match(pdfToCsvArticle.body, /CSV file/);
+assert.match(pdfToCsvArticle.body, /delimiter|delimiters/i);
+assert.match(pdfToCsvArticle.body, /leading zeros/i);
+assert.doesNotMatch(pdfToCsvArticle.body, /downloaded PDF|processed PDF|PDF reader/i, "CSV guidance must not describe the output as a PDF");
+
 const enSlugs = new Set([
   ...articleBlocks(read("lib/blog-posts.ts")).map((item) => item.slug),
   ...articleBlocks(read("lib/nepal-blog-posts.ts")).map((item) => item.slug),

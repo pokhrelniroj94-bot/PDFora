@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AdsterraNative from "../../components/AdsterraNative";
+import AdsterraSkyscraper from "../../components/AdsterraSkyscraper";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
@@ -63,6 +64,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
   };
   return (
     <>
+    <AdsterraSkyscraper />
     <main className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
       <article className="mx-auto max-w-3xl">
         <nav aria-label="Breadcrumb" className="text-sm text-slate-500">

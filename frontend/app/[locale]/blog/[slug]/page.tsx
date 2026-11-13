@@ -75,7 +75,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
     ],
   };
   return (
-    <main lang="ne" className="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
+    <main lang="ne" className="pdfora-blog-page pdfora-blog-article min-h-screen bg-slate-50 px-4 py-8 sm:px-6">
       <article className="mx-auto max-w-3xl">
         <nav aria-label="ब्रेडक्रम" className="text-sm text-slate-500">
           <Link href="/ne" className="hover:text-teal-700">गृहपृष्ठ</Link><span className="mx-2">/</span>

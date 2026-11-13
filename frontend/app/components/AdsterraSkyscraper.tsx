@@ -44,7 +44,7 @@ export default function AdsterraSkyscraper() {
   return (
     <aside
       aria-label="Advertisement"
-      className="pointer-events-auto fixed right-[max(24px,calc((100vw-1400px)/2))] top-28 z-20 hidden w-[160px] 2xl:block"
+      className="pointer-events-auto fixed right-[max(0px,calc((100vw-1360px)/2))] top-28 z-20 hidden w-[160px] min-[1360px]:block"
     >
       <p className="mb-2 text-center text-[10px] font-semibold uppercase tracking-widest text-slate-400">
         Advertisement

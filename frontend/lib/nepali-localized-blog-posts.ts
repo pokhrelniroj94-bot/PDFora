@@ -3,7 +3,7 @@ import type { BlogPost } from "./blog-posts";
 const coreNepaliLocalizedBlogPosts: BlogPost[] = [
   {
     slug: "nepali-date-converter-bs-to-ad-guide",
-    title: "नेपाली मिति कन्भर्टर: BS बाट AD र AD बाट BS कसरी रूपान्तरण गर्ने?",
+    title: "नेपाली मिति रूपान्तरण: BS र AD कसरी बदल्ने?",
     description: "विक्रम संवत् मितिलाई Gregorian मितिमा र AD मितिलाई BS मा रूपान्तरण गर्ने तरिका, सही ढाँचा र सावधानी बुझ्नुहोस्।",
     keyword: "नेपाली मिति कन्भर्टर BS AD",
     updated: "2026-11-07",
@@ -47,7 +47,7 @@ const coreNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "ropani-aana-paisa-daam-land-measurement-guide",
-    title: "रोपनी, आना, पैसा र दाम: नेपालको जग्गा नाप बुझ्ने मार्गदर्शिका",
+    title: "रोपनी, आना, पैसा र दाम: जग्गा नाप रूपान्तरण",
     description: "रोपनी, आना, पैसा र दामको सम्बन्ध तथा वर्गफुट र वर्गमिटरमा रूपान्तरण गर्ने तरिका बुझ्नुहोस्।",
     keyword: "नेपाल रोपनी आना पैसा दाम रूपान्तरण",
     updated: "2026-11-07",
@@ -148,7 +148,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "loksewa-online-form-photo-resizer-guide",
-    title: "लोकसेवा तथा अनलाइन फारामका लागि फोटो ५०KB वा २००KB कसरी बनाउने?",
+    title: "लोकसेवा फोटो रिसाइज: ५०KB वा २००KB कसरी बनाउने?",
     description: "फोटोको फाइल आकार घटाउने तरिका र सरकारी फाराममा पिक्सेल आकार, अनुपात तथा पृष्ठभूमि किन जाँच्नुपर्छ भन्ने बुझ्नुहोस्।",
     keyword: "लोकसेवा फोटो 50KB resizer",
     updated: "2026-11-07", readTime: "४ मिनेट",
@@ -166,7 +166,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "nepse-share-buy-sell-profit-calculator-guide",
-    title: "NEPSE सेयर क्याल्कुलेटर: खरिद लागत, बिक्री शुल्क र नाफा कसरी अनुमान गर्ने?",
+    title: "NEPSE सेयर क्याल्कुलेटर: लागत, शुल्क र नाफा",
     description: "ब्रोकर कमिसन, SEBON शुल्क, DP शुल्क र पूँजीगत लाभकरका मान्यतासहित सेयर कारोबारको लागत तथा नाफा अनुमान गर्नुहोस्।",
     keyword: "NEPSE share profit calculator",
     updated: "2026-11-07", readTime: "५ मिनेट",
@@ -203,7 +203,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "preeti-to-unicode-nepali-font-converter-guide",
-    title: "पुरानो Preeti फन्टमा टाइप गरिएको नेपाली पाठलाई Unicode मा कसरी बदल्ने?",
+    title: "Preeti बाट Unicode नेपाली पाठ कसरी बदल्ने?",
     description: "पुरानो Word वा अन्य कागजातमा Preeti encoding प्रयोग भएको पाठलाई Unicode मा बदल्ने चरण, देखिन सक्ने त्रुटि र मूल फाइल जाँच्ने तरिका बुझ्नुहोस्।",
     keyword: "Preeti to Unicode converter",
     updated: "2026-11-07", readTime: "५ मिनेट",
@@ -222,7 +222,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "nepal-rastra-bank-daily-exchange-rates-guide",
-    title: "नेपाल राष्ट्र बैंकको विनिमय दर: USD, INR र अन्य मुद्रा कसरी हेर्ने?",
+    title: "नेपाल राष्ट्र बैंक विनिमय दर: USD र INR कसरी हेर्ने?",
     description: "NRB को खरिद तथा बिक्री दर, मुद्रा एकाइ र विदेशी मुद्रालाई नेपाली रुपैयाँमा रूपान्तरण गर्ने तरिका बुझ्नुहोस्।",
     keyword: "नेपाल राष्ट्र बैंक विनिमय दर आज",
     updated: "2026-11-07", readTime: "५ मिनेट",
@@ -262,7 +262,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "nea-electricity-bill-calculator-nepal-guide",
-    title: "नेपालको बिजुली बिल कसरी जाँच्ने? ERC को आधिकारिक क्याल्कुलेटर र २०८३ महसुल निर्देशिका",
+    title: "नेपाल बिजुली बिल: ERC क्याल्कुलेटर कसरी चलाउने?",
     description: "NEA बिलबाट आवश्यक विवरण तयार गरी ERC को आधिकारिक क्याल्कुलेटर चलाउने र हालको विद्युत् महसुल पुष्टि गर्ने तरिका जान्नुहोस्।",
     keyword: "नेपाल विद्युत् बिल ERC आधिकारिक क्याल्कुलेटर",
     updated: "2026-11-07", readTime: "६ मिनेट",
@@ -288,7 +288,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "nepal-public-holidays-2083-calendar-guide",
-    title: "नेपाल सरकारका सार्वजनिक बिदा २०८३: राष्ट्रिय र क्षेत्रीय बिदा कसरी जाँच्ने?",
+    title: "नेपाल सार्वजनिक बिदा २०८३: राष्ट्रिय र क्षेत्रीय सूची",
     description: "२०८३ सालका सार्वजनिक बिदा, AD मिति र क्षेत्र वा समुदायअनुसार लागू हुने सूचनाबारे बुझ्नुहोस्।",
     keyword: "नेपाल सार्वजनिक बिदा २०८३",
     updated: "2026-11-07", readTime: "४ मिनेट",
@@ -586,7 +586,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "tip-calculator-guide",
-    title: "Tip Calculator: टिप, कुल बिल र प्रत्येक व्यक्तिको हिस्सा कसरी निकाल्ने?",
+    title: "टिप क्याल्कुलेटर: टिप र बिल कसरी बाँड्ने?",
     description: "रेस्टुरेन्टको बिलमा टिप प्रतिशत कसरी जोड्ने र समूहमा बराबर बाँड्ने सिक्नुहोस्। सूत्र, उदाहरण र service charge सम्बन्धी सावधानी पढ्नुहोस्।",
     keyword: "tip calculator टिप कसरी निकाल्ने",
     updated: "2026-11-10",
@@ -608,7 +608,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "percentage-change-calculator-guide",
-    title: "Percentage Change Calculator: वृद्धि र घटावटको प्रतिशत कसरी निकाल्ने?",
+    title: "प्रतिशत परिवर्तन: वृद्धि र घटावट कसरी निकाल्ने?",
     description: "दुई मानबीचको प्रतिशत वृद्धि वा घटावट निकाल्नुहोस्। सूत्र, उदाहरण र सुरुको मान शून्य हुँदा हुने सीमाबारे बुझ्नुहोस्।",
     keyword: "percentage change calculator वृद्धि घटावट सूत्र",
     updated: "2026-11-10",
@@ -653,7 +653,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
   },
   {
     slug: "pdf-to-csv-guide-online",
-    title: "PDF तालिकालाई CSV मा कसरी रूपान्तरण गर्ने? चरणबद्ध मार्गदर्शिका",
+    title: "PDF तालिका CSV मा रूपान्तरण: चरणबद्ध तरिका",
     description: "PDF भित्रका तालिकाको डेटा CSV मा निकाल्ने, स्प्रेडसिटमा जाँच्ने र स्क्यान गरिएका तालिकाका सीमाहरू बुझ्ने व्यावहारिक तरिका।",
     keyword: "PDF to CSV नेपालीमा",
     updated: "2026-11-13",

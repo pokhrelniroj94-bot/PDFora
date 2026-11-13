@@ -7,6 +7,14 @@ import { hreflangMap } from "../../../lib/i18n/routing";
 
 const baseUrl = "https://pd-fora.vercel.app";
 
+function fitMetaDescription(value: string, max = 155): string {
+  const clean = value.replace(/\\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const shortened = clean.slice(0, max - 1);
+  const boundary = shortened.lastIndexOf(" ");
+  return `${shortened.slice(0, boundary > 110 ? boundary : max - 1).replace(/[,:;–-]+$/, "")}.`;
+}
+
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }
@@ -17,13 +25,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) return { title: "Article not found" };
   const url = `${baseUrl}/blog/${post.slug}`;
   const languages = hreflangMap(`/blog/${post.slug}`);
+  const description = fitMetaDescription(post.description);
   return {
     title: post.title,
-    description: post.description,
+    description,
     alternates: { canonical: url, ...(languages ? { languages } : {}) },
     robots: isCatalogGeneratedGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
-    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description: post.description, modifiedTime: `${post.updated}T00:00:00+05:45` },
-    twitter: { card: "summary", title: post.title, description: post.description },
+    openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description, modifiedTime: `${post.updated}T00:00:00+05:45` },
+    twitter: { card: "summary", title: post.title, description },
   };
 }
 

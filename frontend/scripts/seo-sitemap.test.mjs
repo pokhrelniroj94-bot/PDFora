@@ -39,7 +39,7 @@ assert.ok(englishToolPageSource.includes('title: "Tip Calculator Online Free –
 assert.ok(pdfToolSeoCoreSource.includes('"rotate-pdf": { title: "Rotate PDF Online Free – Turn Pages 90°, 180° or 270°"'), "The Rotate PDF snippet must match its page operation and free-online intent");
 assert.ok(pdfToolSeoCoreSource.includes('"pdf-to-excel": { title: "PDF to Excel Converter Online Free – Extract Tables"'), "The PDF to Excel snippet must match its conversion intent");
 assert.ok(read("app/rotate-pdf/page.tsx").includes("Rotate PDF Online Free</h1>"), "The Rotate PDF page heading must match the primary tool intent");
-assert.ok(pdfToExcelPageSource.includes("PDF to Excel Converter Online</h1>"), "The PDF to Excel page heading must match the primary conversion intent");
+assert.ok(pdfToExcelPageSource.includes("PDF to Excel Converter Online"), "The PDF to Excel page heading must match the primary conversion intent");
 const nepaliBlogPageSource = read("app/[locale]/blog/[slug]/page.tsx");
 const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 type ToolSlug = "email-signature-generator" | "timezone-meeting-planner" | "image-dpi-calculator" | "video-bitrate-calculator" | "markdown-table-generator";
 
@@ -85,7 +85,6 @@ function zonedLocalToDate(date: string, time: string, zone: string): Date | null
 }
 function TimezoneTool() {
   const [date, setDate] = useState("");
-  useEffect(() => { const now = new Date(); setDate([now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-")); }, []);
   const [time, setTime] = useState("09:00");
   const [source, setSource] = useState("America/New_York");
   const [selected, setSelected] = useState(["America/New_York", "Europe/London", "Asia/Kathmandu", "Asia/Tokyo"]);
@@ -100,7 +99,7 @@ function TimezoneTool() {
       <Field label="Time zone for entered time"><select className={inputClass} value={source} onChange={e => setSource(e.target.value)}>{zones.map(([zone, city]) => <option key={zone} value={zone}>{city} ({zone})</option>)}</select></Field>
     </div>
     <div className={panelClass}><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-bold text-slate-900">Compare time zones</h3><span className="text-xs text-slate-500">Select up to 8 cities</span></div><div className="mt-3 grid gap-2 sm:grid-cols-2">{zones.map(([zone, city]) => <label key={zone} className="flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm"><input type="checkbox" checked={selected.includes(zone)} onChange={() => toggle(zone)} />{city}</label>)}</div></div>
-    {instant ? <div className="grid gap-3 sm:grid-cols-2">{selected.map(zone => <div key={zone} className="rounded-xl border border-teal-100 bg-teal-50/60 p-4"><p className="text-xs font-bold uppercase tracking-wide text-teal-800">{zones.find(item => item[0] === zone)?.[1] ?? zone}</p><p className="mt-2 text-lg font-bold text-slate-950">{fmt(zone)}</p><p className="mt-1 break-all text-xs text-slate-500">{zone}</p></div>)}</div> : <p role="alert" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">That local time is invalid or falls inside a daylight-saving clock change. Choose another time.</p>}
+    {!date ? <p className="rounded-xl bg-slate-50 p-3 text-sm text-slate-600">Choose a meeting date and time to compare local times.</p> : instant ? <div className="grid gap-3 sm:grid-cols-2">{selected.map(zone => <div key={zone} className="rounded-xl border border-teal-100 bg-teal-50/60 p-4"><p className="text-xs font-bold uppercase tracking-wide text-teal-800">{zones.find(item => item[0] === zone)?.[1] ?? zone}</p><p className="mt-2 text-lg font-bold text-slate-950">{fmt(zone)}</p><p className="mt-1 break-all text-xs text-slate-500">{zone}</p></div>)}</div> : <p role="alert" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">That local time is invalid or falls inside a daylight-saving clock change. Choose another time.</p>}
     <p className="text-xs leading-6 text-slate-500">Uses the time-zone database built into your browser. No account, API or server request is required. During the autumn clock change, a local time can occur twice; verify the intended offset for important meetings.</p>
   </div>;
 }

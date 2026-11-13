@@ -39,7 +39,7 @@ assert.equal(homepageSource.split("Free Online PDF, Finance & Text Tools | PDFor
 assert.ok(!homepageSource.includes("Free Online PDF Tools – Merge, Split & Compress | PDFora"), "Legacy PDF-only social titles must be removed");
 assert.ok(homepageSource.includes("Explore free online PDF, finance, math, text, developer, image, SEO and Nepal tools."), "Homepage description must identify the wider tool categories");
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
-assert.ok(englishToolPageSource.includes('title: "Tip Calculator Online Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
+assert.ok(englishToolPageSource.includes('title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
 assert.ok(pdfToolSeoCoreSource.includes('"rotate-pdf": { title: "Rotate PDF Online Free – Turn Pages 90°, 180° or 270°"'), "The Rotate PDF snippet must match its page operation and free-online intent");
 assert.ok(pdfToolSeoCoreSource.includes('"pdf-to-excel": { title: "PDF to Excel Converter Online Free – Extract Tables"'), "The PDF to Excel snippet must match its conversion intent");
 assert.ok(read("app/rotate-pdf/page.tsx").includes("Rotate PDF Online Free</h1>"), "The Rotate PDF page heading must match the primary tool intent");

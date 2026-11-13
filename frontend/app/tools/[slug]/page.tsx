@@ -69,8 +69,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepse-market-news": { title: "Nepal Stock Market News – NEPSE & IPO Updates", description: "Browse recent Nepal stock market and IPO headlines with publication dates and links to the original publishers. Verify notices with official sources." },
     "nepali-unicode-typing": { title: "Nepali Unicode Typing Tool – Type in Devanagari", description: "Convert Romanized Nepali typing into Unicode Devanagari text. Review spelling, conjuncts and punctuation before using the text in a document." },
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
-    "meta-title-checker": { title: "Meta Title Checker – SEO Title & Google Preview | PDFora", description: "Check an HTML title tag, count characters, compare it with the page H1 and preview a search result. Google may rewrite title links." },
-    "meta-description-checker": { title: "Meta Description Checker – Length & Search Preview | PDFora", description: "Check a page description, review its length and preview a search snippet. Write a useful page-specific summary; Google may select other text." },
+    "meta-title-checker": { title: "SEO Title Checker – Meta Title & Google Preview | PDFora", description: "Check an SEO title tag, count characters, compare it with the page H1 and preview a Google search result. Google may rewrite title links." },
+    "meta-description-checker": { title: "Meta Description Checker – SEO Snippet Preview | PDFora", description: "Check a meta description character count and preview its Google snippet. Write a clear, page-specific summary; Google may choose different text for results." },
   };
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;

@@ -277,7 +277,7 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   {
     slug: "savings-goal-calculator-guide",
     title: "How to Set a Savings Goal: Monthly Plan & Formula",
-    description: "Learn how to set a savings target, calculate regular deposits from your current balance and deadline, and compare a no-interest plan with an estimate that includes periodic compounding.",
+    description: "Set a savings target, calculate regular deposits from your balance and deadline, and compare a zero-interest plan with periodic compounding.",
     keyword: "how to set a savings goal monthly plan formula",
     updated: "2026-11-13",
     readTime: "5 min read",
@@ -350,7 +350,7 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   {
     slug: "percentage-change-calculator-guide",
     title: "Percentage Change Formula: Increase & Decrease Examples",
-    description: "Calculate percentage increase or decrease from original and new values. See worked examples, reverse the calculation and distinguish percentage change from percentage points.",
+    description: "Learn the percentage-change formula with worked increase and decrease examples. Compare reverse changes and percentage points.",
     keyword: "percentage change formula increase decrease examples",
     updated: "2026-11-13",
     readTime: "5 min read",

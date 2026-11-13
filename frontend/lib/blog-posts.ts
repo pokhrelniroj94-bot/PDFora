@@ -246,7 +246,31 @@ const editorialBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "PDF to Text", href: "/pdf-to-text" }, { label: "PDF to Word", href: "/pdf-to-word" }, { label: "PDF to HTML", href: "/pdf-to-html" }]
   },
-];
+  {
+    slug: "pdf-to-csv-guide-online",
+    title: "How to Convert PDF Tables to CSV Online",
+    description: "Convert PDF tables to CSV online with PDFora. Extract selectable table data, download a CSV file and check delimiters, columns, dates and totals.",
+    keyword: "convert PDF to CSV online",
+    updated: "2026-11-13",
+    readTime: "5 min read",
+    intro: "A CSV file is useful when you need table values from a PDF in a spreadsheet, database or data-cleaning workflow. PDFora can export available text-based table data to CSV, but the quality depends on how the original PDF stores its rows and columns. This guide explains how to convert a table and verify the data before relying on it.",
+    sections: [
+      { heading: "When should you convert a PDF table to CSV?", paragraphs: ["Choose CSV when you need plain rows and columns that can be opened in spreadsheet software, imported into a database or processed with another data tool. CSV is a simple text format, so it is often convenient for transferring table values between applications.", "Use PDF to Excel instead when you need an XLSX workbook for spreadsheet-specific features. CSV does not preserve cell colours, fonts, formulas, charts or multiple worksheets; it stores values and delimiters as text."] },
+      { heading: "Prepare the PDF before conversion", paragraphs: ["Text-based PDFs with selectable table text and a clear row-and-column structure are usually the best starting point. Open the source PDF and check that you can select the table text. If the table is only a photograph or scanned image, ordinary text extraction may not recognise its values; OCR may be needed first.", "Keep an untouched copy of the original PDF. Tables with merged cells, multi-line headings, footnotes, repeated headers or columns positioned independently on the page may need manual cleanup after conversion."] },
+      { heading: "How to convert PDF to CSV with PDFora", paragraphs: ["Open PDFora's PDF to CSV tool and select a PDF that contains a readable table. Start the conversion, wait for processing to finish and download the generated CSV file. Open it in a spreadsheet application such as Excel, Google Sheets or LibreOffice Calc to review the extracted rows.", "For the first attempt, use a short representative document if possible. Confirm that the tool has extracted the table you need before processing a larger or more complex PDF."], bullets: ["Open PDF to CSV and select a PDF containing a table.", "Run the conversion and download the CSV file.", "Open the CSV in a spreadsheet application.", "Check the delimiter, headers, columns, decimal points, dates and totals against the original PDF."] },
+      { heading: "Check the CSV data before using it", paragraphs: ["CSV files separate values with delimiters, commonly commas. If a value itself contains a comma, quotation marks or a line break, it should be quoted correctly. When opening the file, check that each value appears in the intended column and that rows have not shifted.", "Review decimal and thousands separators, negative signs, percentages, dates, leading zeros and total values. Spreadsheet software may automatically reinterpret dates or remove leading zeros from codes and account-like identifiers. If those values matter, import the CSV and set the relevant columns to text before editing.", "Compare important figures with the source PDF. A CSV file contains table data rather than the original page design, so do not expect it to reproduce the PDF's fonts, borders, images or exact visual layout."] },
+      { heading: "Common PDF-to-CSV limitations", paragraphs: ["Scanned tables may need OCR, and OCR can confuse similar characters such as 0 and O, 1 and I, decimal points and commas. Complex layouts, merged cells, multiple tables on one page and tables that continue across pages can also affect extraction accuracy.", "If the CSV does not match the source, keep the original, check whether the PDF text is selectable and compare a few rows manually. For a workbook with separate sheets or richer spreadsheet formatting, try PDF to Excel instead."] }
+    ],
+    faqs: [
+      { question: "How do I convert PDF to CSV online?", answer: "Open PDFora's PDF to CSV tool, select a PDF containing a readable table, run the conversion and download the CSV file. Open it in a spreadsheet and check the extracted columns and values." },
+      { question: "Can I use PDFora PDF to CSV on my phone?", answer: "Yes. You can open PDFora in a modern mobile browser and select a PDF from your device. The exact file-selection experience depends on your phone and browser." },
+      { question: "Will the CSV file look exactly like the original PDF?", answer: "No. CSV stores table values as delimited text. It does not preserve the PDF page layout, images, fonts, cell styling, formulas or multiple worksheets." },
+      { question: "Can scanned PDF tables be converted to CSV?", answer: "Scanned pages are images rather than selectable text. OCR may be required before table extraction, and you should verify recognised digits and totals against the original." },
+      { question: "What should I check after downloading the CSV?", answer: "Check the delimiter, header row, column alignment, quotation marks, decimal separators, dates, negative values, leading zeros and totals. Compare important figures with the source PDF." }
+    ],
+    toolLinks: [{ label: "PDF to CSV", href: "/pdf-to-csv" }, { label: "PDF to Excel", href: "/pdf-to-excel" }, { label: "PDF to Text", href: "/pdf-to-text" }]
+  },
+]; 
 
 
 const priorityEditorialBlogPosts: BlogPost[] = [

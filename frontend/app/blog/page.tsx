@@ -27,18 +27,24 @@ export default function BlogIndexPage() {
         <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Tools, Tutorials & Practical Guides</h1>
         <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">Practical Nepal how-to guides for NRB rates, income tax, electricity bills, public holidays, Nepali Unicode typing, Bikram Sambat dates, land units and everyday document tasks.</p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug)).map((post) => (
-            <article key={post.slug} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-wider text-teal-700">{post.readTime} · Practical guide</p>
-              <h2 className="mt-3 text-xl font-black leading-snug text-slate-950">
-                <Link className="hover:text-teal-700" href={`/blog/${post.slug}`}>{post.title}</Link>
-              </h2>
-              <p className="mt-3 text-sm leading-7 text-slate-600">{post.description}</p>
-              <Link className="mt-5 inline-flex font-bold text-teal-700 hover:underline" href={`/blog/${post.slug}`}>Read guide →</Link>
-            </article>
+          {blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug)).map((post, index) => (
+            <React.Fragment key={post.slug}>
+              <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                <p className="text-xs font-bold uppercase tracking-wider text-teal-700">{post.readTime} · Practical guide</p>
+                <h2 className="mt-3 text-xl font-black leading-snug text-slate-950">
+                  <Link className="hover:text-teal-700" href={`/blog/${post.slug}`}>{post.title}</Link>
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-slate-600">{post.description}</p>
+                <Link className="mt-5 inline-flex font-bold text-teal-700 hover:underline" href={`/blog/${post.slug}`}>Read guide →</Link>
+              </article>
+              {index === 3 && (
+                <div className="md:col-span-2">
+                  <AdsterraNative />
+                </div>
+              )}
+            </React.Fragment>
           ))}
         </div>
-        <div className="mt-8"><AdsterraNative /></div>
         <div className="mt-10 rounded-3xl border border-teal-100 bg-teal-50 p-6">
           <h2 className="text-xl font-black text-slate-950">Need a tool now?</h2>
           <p className="mt-2 text-sm leading-7 text-slate-700">Use PDFora&apos;s free online tools to merge, split, compress and convert documents.</p>

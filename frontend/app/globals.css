@@ -239,3 +239,34 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 @media (hover: none) {
   .pdfora-blog-page article:not(.pdfora-blog-article article):hover { transform: none; }
 }
+
+
+/* Shared PDF-operation routes use their own page components; cover their upload workspaces too. */
+main:has(input[type="file"]) {
+  background-image: radial-gradient(ellipse at 8% 0%, rgb(20 184 166 / 7%), transparent 32rem);
+}
+main:has(input[type="file"]) input:not([type="checkbox"]):not([type="radio"]),
+main:has(input[type="file"]) select,
+main:has(input[type="file"]) textarea {
+  min-height: 46px;
+  max-width: 100%;
+  border-radius: 13px;
+}
+main:has(input[type="file"]) input[type="file"] {
+  display: block;
+  width: 100%;
+  min-height: 54px;
+  border: 1px dashed #8dbdb4;
+  border-radius: 16px;
+  background: #f3fbf9;
+  padding: 12px;
+  color: #164e49;
+}
+main:has(input[type="file"]) button:not(:disabled) {
+  min-height: 44px;
+  border-radius: 12px;
+}
+@media (max-width: 639px) {
+  main:has(input[type="file"]) { padding-left: 1rem; padding-right: 1rem; }
+  main:has(input[type="file"]) input[type="file"] { font-size: 14px; }
+}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Fragment } from "react";
 import { hreflangMap } from "../../lib/i18n/routing";
 import { blogPosts, isCatalogGeneratedGuide } from "../../lib/blog-posts";
 import AdsterraNative from "../components/AdsterraNative";
@@ -28,7 +29,7 @@ export default function BlogIndexPage() {
         <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">Practical Nepal how-to guides for NRB rates, income tax, electricity bills, public holidays, Nepali Unicode typing, Bikram Sambat dates, land units and everyday document tasks.</p>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug)).map((post, index) => (
-            <React.Fragment key={post.slug}>
+            <Fragment key={post.slug}>
               <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <p className="text-xs font-bold uppercase tracking-wider text-teal-700">{post.readTime} · Practical guide</p>
                 <h2 className="mt-3 text-xl font-black leading-snug text-slate-950">
@@ -42,7 +43,7 @@ export default function BlogIndexPage() {
                   <AdsterraNative />
                 </div>
               )}
-            </React.Fragment>
+            </Fragment>
           ))}
         </div>
         <div className="mt-10 rounded-3xl border border-teal-100 bg-teal-50 p-6">

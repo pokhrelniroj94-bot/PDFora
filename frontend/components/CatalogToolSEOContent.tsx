@@ -160,8 +160,8 @@ export default function CatalogToolSEOContent({
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <p className="text-xs font-bold uppercase tracking-widest text-teal-700">SEO title preview and review</p>
-        <h2 className="mt-2 text-2xl font-black text-slate-950">Check a page title and preview how it may appear in Google Search</h2>
-        <p className="mt-4 leading-8 text-slate-700">Paste the exact title used for one page. The checker reports its character count and displays an approximate search-result preview so you can review whether the wording is clear and concise. It is a writing aid, not a Google ranking test or a guarantee that Google will display the same title.</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">SEO Title Checker: Review Your Page Title Before Publishing</h2>
+        <p className="mt-4 leading-8 text-slate-700">Use this SEO title checker with the exact HTML title from a real page. It reports the character count and displays an approximate Google search-result preview so you can review whether the wording is clear, descriptive and aligned with the page content. It is a writing aid, not a ranking test or a guarantee that Google will display the same title.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">How to check and improve a page title</h2>
@@ -201,8 +201,8 @@ export default function CatalogToolSEOContent({
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Meta description length and snippet preview</p>
-        <h2 className="mt-2 text-2xl font-black text-slate-950">Check a page summary before publishing its meta description</h2>
-        <p className="mt-4 leading-8 text-slate-700">Paste the description used by one real page. This checker counts characters and provides an approximate search snippet preview so you can review whether the summary is clear, specific and useful. It does not test rankings or guarantee that Google will display the same text.</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Meta Description Checker: Preview Your Search Snippet</h2>
+        <p className="mt-4 leading-8 text-slate-700">Use this meta description checker with the exact description from a real page. It counts characters and provides an approximate Google search snippet preview so you can review whether the summary is clear, specific and useful. It does not test rankings or guarantee that Google will display the same text.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">How to write and check a meta description</h2>

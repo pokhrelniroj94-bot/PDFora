@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // /nepali-date-converter are intentionally absent from this registry.
   const updatedPdfSlugs = new Set(["rotate-pdf", "pdf-to-excel"]);
   const updatedCatalogSlugs = new Set(["reading-time-calculator", "savings-goal-calculator", "percentage-change-calculator"]);
-  const updateDate = new Date("2026-11-12T00:00:00Z");
+  const updateDate = new Date("2026-11-13T00:00:00Z");
   const legacyPdfEntries: MetadataRoute.Sitemap = legacyToolSlugs.map((slug) => ({
     url: `${baseUrl}/${slug}`,
     ...(updatedPdfSlugs.has(slug) ? { lastModified: updateDate } : {}),

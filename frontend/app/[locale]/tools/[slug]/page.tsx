@@ -5,6 +5,7 @@ import ToolWorkspace from "../../../../components/AllTools";
 import { isPublished } from "../../../../lib/i18n/config";
 import { getTranslator } from "../../../../lib/i18n/messages";
 import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../../../../lib/tools/localized-metadata";
+import { fitLocaleDescription } from "../../../../lib/i18n/metadata";
 import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-route";
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
@@ -156,7 +157,7 @@ const nepaliDescriptions: Record<string, string> = {
   "lorem-ipsum-generator": "डिजाइन तथा लेआउट परीक्षणका लागि नमुना placeholder पाठ बनाउनुहोस्।",
   "html-encoder-decoder": "HTML का विशेष अक्षर encode वा समर्थित entity decode गर्नुहोस्।",
   "text-to-slug": "पाठलाई URL-friendly slug मा बदल्नुहोस्; नेपाली Unicode अक्षर सुरक्षित रहन्छन्।",
-  "nepse-technical-analysis": "NEPSE को उपलब्ध ऐतिहासिक मूल्य तथ्याङ्कबाट प्रवृत्ति, RSI, EMA, MACD, जोखिम र समर्थन तथा प्रतिरोध स्तरको नियममा आधारित विश्लेषण गर्नुहोस्। बजार तथ्याङ्क अपूर्ण वा पुरानो भएमा नतिजा उपलब्ध नहुन सक्छ।",
+  "nepse-technical-analysis": "उपलब्ध NEPSE ऐतिहासिक मूल्यबाट RSI, EMA, MACD, जोखिम र समर्थन/प्रतिरोधको नियममा आधारित विश्लेषण हेर्नुहोस्। डेटा अपूर्ण वा पुरानो भए नतिजा सीमित हुन सक्छ।",
   "nepal-forex-rates": "नेपाल राष्ट्र बैंकबाट उपलब्ध खरिद तथा बिक्री विनिमय दर हेर्नुहोस् र NPR रूपान्तरणको अनुमान जाँच्नुहोस्।",
   "nepal-salary-tax-calculator": "नेपालको लागू कर-ब्यान्ड र प्रविष्ट गरिएको आम्दानीका आधारमा तलब करको अनुमान निकाल्नुहोस्।",
   "nepse-dividend-calculator": "शेयर संख्याबाट नगद लाभांश, withholding tax र बोनस शेयरको अनुमान निकाल्नुहोस्।",
@@ -174,8 +175,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (request.locale === "ne" && (nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number]) || nepaliLocalizedFinancialSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedFinancialSlugs)[number]) || nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedPublicInfoSlugs)[number]))) {
     return {
       ...metadata,
-      title: `${nepaliTitles[request.implementation.slug]} | PDFora`,
-      description: nepaliDescriptions[request.implementation.slug] ?? metadata.description,
+      title: nepaliTitles[request.implementation.slug],
+      description: fitLocaleDescription(nepaliDescriptions[request.implementation.slug] ?? metadata.description),
     };
   }
   return metadata;

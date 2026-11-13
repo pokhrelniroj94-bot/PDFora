@@ -25,9 +25,9 @@ const faqs = [
       "No. PDFora is designed to work directly in a modern web browser on desktop computers, tablets and mobile devices.",
   },
   {
-    question: "What PDF tools are available?",
+    question: "What kinds of tools does PDFora offer?",
     answer:
-      "PDFora provides PDF tools for merging, splitting, compressing, converting, rotating, page organization, numbering, cropping, password protection, signing, metadata editing and more. OCR is not enabled on the current server yet.",
+      "PDFora brings together PDF editing and conversion, finance and math calculators, text utilities, developer helpers, image tools, SEO checks, career tools and Nepal-focused utilities. OCR is not enabled on the current server yet.",
   },
   {
     question: "How are my files processed?",
@@ -131,7 +131,7 @@ const howToUse: Record<string, string> = {
 
 export default function HomePageClient() {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("PDF");
+  const [category, setCategory] = useState("All");
   const [visibleCount, setVisibleCount] = useState(12);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -150,10 +150,33 @@ export default function HomePageClient() {
     });
   }, [query, category]);
   // Prioritize tools already earning first-page Google impressions, then retain the existing popular picks.
-  const searchConsolePriorityHrefs = ["/tools/tip-calculator", "/tools/savings-goal-calculator", "/tools/reading-time-calculator", "/tools/percentage-change-calculator"];
+  const searchConsolePriorityHrefs = ["/pdf-to-excel", "/rotate-pdf", "/tools/tip-calculator", "/tools/savings-goal-calculator", "/tools/reading-time-calculator", "/tools/percentage-change-calculator"];
   const popularTools = Array.from(new Map([...allTools.filter((tool) => searchConsolePriorityHrefs.includes(tool.href)), ...allTools.filter((tool) => tool.popular), ...allTools.filter((tool) => ["/tools/loan-emi-calculator", "/tools/notes-to-pdf", "/tools/nepal-share-calculator"].includes(tool.href))].map((tool) => [tool.href, tool])).values()).slice(0, 9);
   const searchResults = filteredTools.filter((tool) => tool.href !== "/ocr-pdf");
-  const visibleTools = filteredTools.slice(0, visibleCount);
+  // Show a representative mix across PDF, finance, text, developer, image, SEO and Nepal tools before the full catalogue.
+  const homepageFeaturedHrefs = [
+    "/pdf-to-excel",
+    "/rotate-pdf",
+    "/tools/tip-calculator",
+    "/tools/savings-goal-calculator",
+    "/tools/reading-time-calculator",
+    "/tools/nepal-share-calculator",
+    "/tools/json-formatter-validator",
+    "/tools/image-compressor",
+    "/tools/meta-title-checker",
+    "/tools/loan-emi-calculator",
+    "/merge-pdf",
+    "/compress-pdf",
+    "/tools/nepali-date-converter",
+    "/tools/word-character-counter",
+  ];
+  const homepageTools = category === "All" && !query.trim()
+    ? [
+        ...homepageFeaturedHrefs.map((href) => filteredTools.find((tool) => tool.href === href)).filter((tool): tool is Tool => Boolean(tool)),
+        ...filteredTools.filter((tool) => !homepageFeaturedHrefs.includes(tool.href)),
+      ]
+    : filteredTools;
+  const visibleTools = homepageTools.slice(0, visibleCount);
 
   return (
     <main className="min-h-screen bg-[#f5f7f6] text-slate-950">
@@ -191,11 +214,11 @@ export default function HomePageClient() {
               Your everyday digital workspace
             </div>
             <h1 className="mt-7 max-w-3xl text-[2.65rem] font-black leading-[1.06] tracking-[-.045em] sm:text-6xl lg:text-[4.35rem]">
-              Free Online PDF Tools
-              <span className="mt-1 block bg-gradient-to-r from-teal-200 via-emerald-300 to-cyan-200 bg-clip-text text-transparent">for everyday work.</span>
+              Free Online Tools for
+              <span className="mt-1 block bg-gradient-to-r from-teal-200 via-emerald-300 to-cyan-200 bg-clip-text text-transparent">PDF, Finance, Text & More.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base sm:leading-8">
-              Merge, split, compress, convert and organize PDF files online. Then explore useful image tools, calculators, text utilities and Nepal-focused services—all in one simple workspace.
+              Merge, split, compress and convert PDFs, calculate costs and savings, format text and code, edit images, check SEO and use Nepal-focused utilities—all in one free online workspace.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href="/tools" className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 px-6 py-3.5 text-sm font-extrabold text-[#062321] shadow-xl shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:shadow-emerald-400/20">Explore all tools <span className="ml-2">→</span></Link>
@@ -210,7 +233,7 @@ export default function HomePageClient() {
               <div className="flex items-center gap-3">
                 <span className="pl-3 text-xl text-teal-200" aria-hidden="true">⌕</span>
                 <input value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); setVisibleCount(12); }} placeholder="What do you need to do?  e.g. merge PDF, compress image…" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" />
-                {query && <button type="button" onClick={() => { setQuery(""); setCategory("PDF"); setVisibleCount(12); }} className="rounded-xl px-3 py-2 text-xs font-bold text-slate-300 hover:bg-white/10">Clear</button>}
+                {query && <button type="button" onClick={() => { setQuery(""); setCategory("All"); setVisibleCount(12); }} className="rounded-xl px-3 py-2 text-xs font-bold text-slate-300 hover:bg-white/10">Clear</button>}
               </div>
             </div>
             {query.trim() && (
@@ -228,13 +251,13 @@ export default function HomePageClient() {
                 <span className="rounded-xl border border-emerald-200/20 bg-emerald-300/10 px-3 py-1.5 text-[10px] font-bold text-emerald-200">ALL IN ONE</span>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3">
-                {[{icon:"📄",name:"PDF tools",desc:"Edit & convert",tone:"from-rose-400/20 to-orange-300/5"},{icon:"🖼️",name:"Image tools",desc:"Compress & convert",tone:"from-violet-400/20 to-fuchsia-300/5"},{icon:"🧮",name:"Calculators",desc:"Math & finance",tone:"from-sky-400/20 to-cyan-300/5"},{icon:"🇳🇵",name:"Nepal tools",desc:"Local utilities",tone:"from-emerald-400/20 to-teal-300/5"}].map(item=><Link key={item.name} href="/tools" className={`group rounded-2xl border border-white/10 bg-gradient-to-br ${item.tone} p-4 transition hover:-translate-y-1 hover:border-teal-200/40`}><span className="text-2xl">{item.icon}</span><p className="mt-4 text-sm font-extrabold text-white">{item.name}</p><p className="mt-1 text-[11px] text-slate-300">{item.desc}</p><span className="mt-3 inline-flex text-xs font-bold text-teal-200 transition group-hover:translate-x-1">Explore →</span></Link>)}
+                {[{icon:"📄",name:"PDF tools",desc:"Edit & convert",tone:"from-rose-400/20 to-orange-300/5"},{icon:"🧮",name:"Finance & math",desc:"Plan & calculate",tone:"from-sky-400/20 to-cyan-300/5"},{icon:"✍️",name:"Text tools",desc:"Write & organize",tone:"from-amber-400/20 to-yellow-300/5"},{icon:"⌨️",name:"Developer tools",desc:"Format & validate",tone:"from-indigo-400/20 to-blue-300/5"},{icon:"🖼️",name:"Image tools",desc:"Compress & convert",tone:"from-violet-400/20 to-fuchsia-300/5"},{icon:"🇳🇵",name:"Nepal tools",desc:"Local utilities",tone:"from-emerald-400/20 to-teal-300/5"}].map(item=><Link key={item.name} href="/tools" className={`group rounded-2xl border border-white/10 bg-gradient-to-br ${item.tone} p-4 transition hover:-translate-y-1 hover:border-teal-200/40`}><span className="text-2xl">{item.icon}</span><p className="mt-4 text-sm font-extrabold text-white">{item.name}</p><p className="mt-1 text-[11px] text-slate-300">{item.desc}</p><span className="mt-3 inline-flex text-xs font-bold text-teal-200 transition group-hover:translate-x-1">Explore →</span></Link>)}
               </div>
               <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-black/15 px-4 py-3">
                 <div><p className="text-xs font-bold text-white">One simple workspace</p><p className="mt-1 text-[10px] text-slate-400">Useful tools for everyday work</p></div><span className="text-2xl text-teal-200">✦</span>
               </div>
             </div>
-            <div className="relative mx-auto mt-4 flex max-w-[90%] items-center justify-center gap-5 text-[10px] font-semibold text-slate-400"><span>PDF</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>IMAGE</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>FINANCE</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>NEPAL</span></div>
+            <div className="relative mx-auto mt-4 flex max-w-[90%] items-center justify-center gap-5 text-[10px] font-semibold text-slate-400"><span>PDF</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>FINANCE</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>TEXT</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>DEVELOPER</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>IMAGE</span><span className="h-1 w-1 rounded-full bg-teal-300" /><span>NEPAL</span></div>
           </div>
         </div>
       </section>
@@ -257,7 +280,7 @@ export default function HomePageClient() {
           </h2>
 
           <p className="mt-2 text-sm text-slate-500">
-            Quick access to popular PDF tools, calculators and practical utilities.
+            Quick access to popular tools across PDF, finance, text and Nepal utilities.
           </p>
         </div>
 
@@ -281,18 +304,18 @@ export default function HomePageClient() {
       >
         <div className="mb-6">
           <p className="text-xs font-black uppercase tracking-widest text-orange-600">
-            PDFora toolbox
+            PDFora all-in-one toolbox
           </p>
 
           <h2
             id="tools-heading"
             className="mt-1 text-2xl font-black"
           >
-            Explore PDF tools and everyday utilities
+            Explore tools for documents, money, text, code and images
           </h2>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-            Start with the most-used PDF tools. Search all categories or open the full directory whenever you need a calculator, text utility, developer helper or Nepal-focused service.
+            Browse tools from every category in one place: PDF utilities, finance and math calculators, text helpers, developer tools, image editors, SEO checks and Nepal-focused services.
           </p>
         </div>
 
@@ -315,7 +338,7 @@ export default function HomePageClient() {
           ))}
         </div>
 
-        <p className="mb-4 text-sm text-slate-500" aria-live="polite">{query.trim() ? `Showing ${visibleTools.length} of ${filteredTools.length} matching tools for “${query}”.` : `Showing ${visibleTools.length} of ${filteredTools.length} ${category === "PDF" ? "PDF" : category === "All" ? "total" : category} tools. Search or choose a category to narrow results.`}</p>
+        <p className="mb-4 text-sm text-slate-500" aria-live="polite">{query.trim() ? `Showing ${visibleTools.length} of ${filteredTools.length} matching tools for “${query}”.` : `Showing ${visibleTools.length} of ${filteredTools.length} ${category === "All" ? "tools across all categories" : `${category} tools`}. Search or choose a category to narrow results.`}</p>
         {filteredTools.length === 0 ? (
           <div className="rounded-3xl border border-slate-200 bg-white px-5 py-14 text-center">
             <div

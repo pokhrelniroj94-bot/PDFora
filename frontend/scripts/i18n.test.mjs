@@ -24,7 +24,7 @@ const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
 test("every curated Nepali blog article is a real localized route with hreflang", () => {
-  assert.equal(nepaliLocalizedBlogPosts.length, 34);
+  assert.equal(nepaliLocalizedBlogPosts.length, 35);
   for (const post of nepaliLocalizedBlogPosts) {
     const localizedPath = "/blog/" + post.slug;
     assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);
@@ -131,7 +131,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/nepse-technical-analysis", "ne"), "/ne/nepse-technical-analysis");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 163, "All localized routes must be represented in the route registry");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 164, "All localized routes must be represented in the route registry");
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
@@ -256,7 +256,7 @@ test("Nepali blog routes contain complete translated article content", () => {
   for (const phrase of ["नेपाली मिति कन्भर्टर", "नेपालमा १३% VAT", "रोपनी, आना, पैसा र दाम", "बारम्बार सोधिने प्रश्न"]) {
     assert.ok(source.includes(phrase) || page.includes(phrase), `Nepali blog content must include: ${phrase}`);
   }
-  assert.equal((source.match(/slug: "/g) ?? []).length, 34);
+  assert.equal((source.match(/slug: "/g) ?? []).length, 35);
   assert.ok(page.includes('inLanguage: "ne"'));
   assert.ok(page.includes('href="/ne/blog"'));
 });
@@ -338,6 +338,24 @@ test("switcher: never offers an unavailable page", () => {
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"]);
   assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne"], "only reviewed static pages offer Nepali");
   delete process.env.PDFORA_I18N_PREVIEW;
+});
+
+test("localized SEO descriptions are capped at 155 characters", () => {
+  const long = "लामो विवरण ".repeat(30);
+  assert.ok(metadata.fitLocaleDescription(long).length <= 155);
+  for (const post of nepaliLocalizedBlogPosts) {
+    assert.ok(post.readTime, post.slug + " Nepali guide must retain its reading-time label");
+    assert.ok(post.title.length <= 60, post.slug + " Nepali search title should remain concise");
+    const localized = metadata.buildLocaleMetadata({ locale: "ne", path: "/blog/" + post.slug, title: post.title, description: post.description });
+    assert.ok(localized.description.length <= 155, post.slug + " localized meta description must be <=155 characters");
+    assert.ok(localized.openGraph.description.length <= 155, post.slug + " Open Graph description must match");
+  }
+  const route = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
+  const block = route.match(/const nepaliDescriptions:[\s\S]*?\n\};/)?.[0] ?? "";
+  assert.ok(route.includes("fitLocaleDescription(nepaliDescriptions"), "localized tool overrides must use the shared description guard");
+  for (const match of block.matchAll(/"([^"]+)": "([^"]+)"/g)) {
+    assert.ok(metadata.fitLocaleDescription(match[2]).length <= 155, match[1] + " localized tool description must be <=155 characters");
+  }
 });
 
 test("metadata: unreviewed Nepali PDF routes remain crawlable but noindex", () => {
@@ -490,15 +508,21 @@ test("PDF SEO metadata is unique, canonical and within search description length
   for (const guide of toolGuides) {
     const metadata = buildPdfToolMetadata(guide, guide.slug);
     assert.ok(String(metadata.title).includes(guide.name), guide.slug + " title must include the tool name");
-    assert.ok(String(metadata.title).length <= 70, guide.slug + " title should remain concise");
+    assert.ok(String(metadata.title).length <= 60, guide.slug + " title should remain concise");
     assert.ok(!titles.has(metadata.title), guide.slug + " title must be unique");
     titles.add(metadata.title);
-    assert.ok(typeof metadata.description === "string" && metadata.description.length >= 80 && metadata.description.length <= 160, guide.slug + " description must be useful and within 160 characters");
+    assert.ok(typeof metadata.description === "string" && metadata.description.length >= 80 && metadata.description.length <= 155, guide.slug + " description must be useful and within 160 characters");
     assert.ok(!descriptions.has(metadata.description), guide.slug + " description must be unique");
     descriptions.add(metadata.description);
     assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
     assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
   }
+  const deletePages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "delete-pages"), "delete-pages");
+  const extractPages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "extract-pages"), "extract-pages");
+  assert.ok(String(deletePages.title).includes("Free"), "Delete Pages title should reflect the free-online query intent");
+  assert.ok(String(deletePages.description).includes("page numbers or ranges"), "Delete Pages description should explain its real input");
+  assert.ok(String(extractPages.title).includes("Free"), "Extract Pages title should reflect the free-online query intent");
+  assert.ok(String(extractPages.description).includes("page numbers or ranges"), "Extract Pages description should explain its real input");
 });
 
 

@@ -229,7 +229,7 @@ async function setFieldByLabel(page, labelText, value) {
 }
 
 
-async function seedPdfFields(page, slug) {
+async function seedPdfFields(page) {
   const expression = [
     "(() => {",
     "  const controls = [...document.querySelectorAll('input:not([type=\"file\"]), textarea')];",
@@ -476,7 +476,7 @@ async function runTool(tool, index) {
         row.mergeFileOrder = { before: beforeOrder, after: afterOrder };
         row.checks.push("two distinct PDF files uploaded and file order changed with the move-down control");
       }
-      row.seededFields = await seedPdfFields(page, tool.slug);
+      row.seededFields = await seedPdfFields(page);
       if (tool.slug === "reorder-pdf") {
         await page.evaluate("(() => { const field = [...document.querySelectorAll('input:not([type=file]), textarea')].find((item) => item.type !== 'number'); if (!field) return false; const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype; const setter = Object.getOwnPropertyDescriptor(prototype, 'value')?.set; setter?.call(field, '1,2'); field.dispatchEvent(new Event('input', { bubbles: true })); field.dispatchEvent(new Event('change', { bubbles: true })); return true; })()");
       }

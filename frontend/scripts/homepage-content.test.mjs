@@ -24,8 +24,18 @@ assert.ok(!homepage.includes("upload the required file, follow the options and d
 for (const slug of ["loan-emi-calculator", "notes-to-pdf", "nepal-share-calculator"]) {
   assert.ok(catalog.includes(`slug:"${slug}"`), `Popular tool metadata must reference real catalog entry: ${slug}`);
 }
-assert.ok(homepage.includes('const [category, setCategory] = useState("PDF")'), "Homepage should focus on PDF tools by default");
+assert.ok(homepage.includes('const [category, setCategory] = useState("All")'), "Homepage should show all tool categories by default");
 assert.ok(homepage.includes("const [visibleCount, setVisibleCount] = useState(12)"), "Homepage should render a compact initial tool list");
-assert.ok(homepage.includes("const visibleTools = filteredTools.slice(0, visibleCount)"), "Homepage should paginate the tool catalogue");
+assert.ok(homepage.includes("const visibleTools = homepageTools.slice(0, visibleCount)"), "Homepage should paginate the mixed-category featured catalogue");
+assert.ok(homepage.includes("Free Online Tools for"), "Homepage hero must present PDFora as a multi-category tool platform");
+for (const phrase of ["Finance & math", "Text tools", "Developer tools", "Image tools", "Nepal tools"]) {
+  assert.ok(homepage.includes(phrase), `Homepage hero must visibly introduce ${phrase}`);
+}
+for (const href of ["/tools/tip-calculator", "/tools/savings-goal-calculator", "/tools/json-formatter-validator", "/tools/image-compressor", "/tools/nepali-date-converter", "/merge-pdf"]) {
+  assert.ok(homepage.includes(`"${href}"`), `Homepage mixed-category featured tools must include ${href}`);
+}
+assert.ok(homepage.includes('setCategory("All")'), "Homepage search and clear actions should keep all categories discoverable");
+assert.ok(homepage.includes("Explore tools for documents, money, text, code and images"), "Homepage directory introduction must explain the broader tool range");
+
 assert.ok(homepage.includes("Show more tools") && homepage.includes('href="/tools"'), "Homepage should expose a path to the full tools directory");
-console.log("Homepage content checks passed: focused PDF-first browsing, paginated catalogue and accurate popular tool guidance.");
+console.log("Homepage content checks passed: all-category discovery, mixed-category featured tools, paginated catalogue and accurate popular tool guidance.");

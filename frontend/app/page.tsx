@@ -4,9 +4,9 @@ import HomePageClient from "../components/HomePageClient";
 const site = "https://pd-fora.vercel.app";
 
 export const metadata: Metadata = {
-  title: "Free Online PDF Tools – Merge, Split & Compress | PDFora",
+  title: "Free Online PDF, Finance & Text Tools | PDFora",
   description:
-    "Merge, split, compress, convert and organize PDF files online. Use free browser-based PDF tools plus practical calculators and Nepal utilities with PDFora.",
+    "Explore free online PDF, finance, math, text, developer, image, SEO and Nepal tools. Merge PDFs, calculate, format text and more with PDFora.",
   alternates: {
     canonical: site,
     languages: {
@@ -19,16 +19,16 @@ export const metadata: Metadata = {
     type: "website",
     url: site,
     siteName: "PDFora",
-    title: "Free Online PDF Tools – Merge, Split & Compress | PDFora",
+    title: "Free Online PDF, Finance & Text Tools | PDFora",
     description:
-      "Merge, split, compress and convert PDF files online, with practical calculators and Nepal utilities in one workspace.",
+      "Free online tools for PDF documents, finance, text, code, images, SEO and everyday Nepal utilities.",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora online tools" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Online PDF Tools – Merge, Split & Compress | PDFora",
+    title: "Free Online PDF, Finance & Text Tools | PDFora",
     description:
-      "Merge, split, compress and convert PDF files online, plus practical calculators and Nepal-focused utilities.",
+      "Free online PDF, finance, text, developer, image, SEO and Nepal tools in one simple workspace.",
     images: ["/opengraph-image"],
   },
 };
@@ -42,7 +42,7 @@ export default function HomePage() {
     url: "https://pd-fora.vercel.app/",
     applicationCategory: "UtilitiesApplication",
     operatingSystem: "Any",
-    description: "Free online PDF tools to merge, split, compress, convert and organize documents, with useful browser-based utilities.",
+    description: "Free online tools for PDF documents, finance, math, text, code, images, SEO and Nepal utilities.",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   };
 

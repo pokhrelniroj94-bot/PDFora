@@ -10,6 +10,14 @@ import { hreflangMap } from "../../../lib/i18n/routing";
 import { isLocalizedToolIndexable } from "../../../lib/tools/localized-verification";
 
 const site = "https://pd-fora.vercel.app";
+
+function fitMetaDescription(value: string, max = 155): string {
+  const clean = value.replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  const shortened = clean.slice(0, max - 1);
+  const boundary = shortened.lastIndexOf(" ");
+  return `${shortened.slice(0, boundary > 110 ? boundary : max - 1).replace(/[,:;–-]+$/, "")}.`;
+}
 export function generateStaticParams() {
   return toolCatalog.filter((tool) => tool.slug !== "pdf-tools").map((tool) => ({ slug: tool.slug }));
 }
@@ -18,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
-    "savings-goal-calculator": { title: "Savings Goal Calculator – Weekly & Monthly Savings Plan", description: "Calculate weekly or monthly deposits to reach a savings target. Include your current balance, deadline and estimated annual interest rate." },
+    "savings-goal-calculator": { title: "Savings Goal Calculator – Weekly & Monthly Deposits", description: "Calculate the weekly or monthly deposit needed to reach a savings target by a chosen date. Include current savings and an assumed annual interest rate." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
@@ -41,8 +49,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
-    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase & Decrease", description: "Calculate percentage increase or decrease from original and new values. Use reverse mode to find the starting value and compare percentage points." },
-    "tip-calculator": { title: "Tip Calculator – Calculate 15%, 18%, 20% & Split Bill", description: "Calculate a custom restaurant tip, add it to your bill and split the total per person. Compare common percentage examples and check service charges first." },
+    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate percentage change between two values. View the formula, reverse the calculation and distinguish percentage points." },
+    "tip-calculator": { title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill", description: "Calculate a restaurant tip, bill total and per-person share. Choose a custom rate or compare 15%, 18% and 20%; check included service charges." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 
@@ -51,15 +59,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "unit-converter": { title: "Unit Converter – Length, Weight, Temperature & Volume", description: "Convert common units for length, mass, temperature and volume. Select compatible units and check the converted value instantly." },
     "ratio-simplifier": { title: "Ratio Simplifier – Reduce Ratios to Lowest Terms", description: "Simplify a ratio to its lowest whole-number terms using the greatest common divisor. Check equivalent ratios with clear steps." },
     "gcd-lcm-calculator": { title: "GCD and LCM Calculator – Greatest Common Divisor", description: "Find the greatest common divisor and least common multiple of integers. Use the results to simplify fractions and solve number problems." },
-    "prime-number-checker": { title: "Prime Number Checker – Test Integers and Find Factors", description: "Check whether an integer is prime or composite and inspect its factors. Includes clear handling for values below 2." },
+    "prime-number-checker": { title: "Prime Number Checker – Test Prime or Composite", description: "Check whether a whole number is prime or composite. Test divisibility, review factors and learn why 1 is not a prime number." },
     "business-days-calculator": { title: "Business Days Calculator – Count Weekdays Between Dates", description: "Count weekdays between two dates while excluding Saturdays and Sundays. Check date boundaries and account separately for public holidays." },
     "unix-timestamp-converter": { title: "Unix Timestamp Converter – Seconds & Milliseconds to Date", description: "Convert Unix timestamps in seconds or milliseconds into readable UTC dates and times, then compare with your local timezone." },
     "date-add-subtract-calculator": { title: "Date Calculator – Add or Subtract Days from a Date", description: "Add or subtract a chosen number of days from a starting date. Check the resulting date across month, year and leap-year boundaries." },
     "aspect-ratio-calculator": { title: "Aspect Ratio Calculator – Find Image Width & Height", description: "Calculate image and video aspect ratios or derive a proportional width or height without stretching the original dimensions." },
+
     "px-rem-converter": { title: "PX to REM Converter – CSS Units with Root Font Size", description: "Convert CSS pixel values to rem and rem to pixels using an editable root font size. Useful for responsive typography and spacing." },
     "color-contrast-checker": { title: "Color Contrast Checker – WCAG Text Accessibility", description: "Check foreground and background colour contrast ratios and review WCAG guidance for normal and large text." },
     "word-character-counter": { title: "Word Counter – Count Words, Characters & Reading Time", description: "Count words, characters with or without spaces, sentences and paragraphs, and estimate reading time for pasted text." },
-    "reading-time-calculator": { title: "Reading Time Calculator – Words to Minutes & Speaking", description: "Estimate reading and speaking time from text with adjustable words-per-minute speeds. Calculate minutes and seconds for articles, scripts and presentations." },
+    "reading-time-calculator": { title: "Reading Time Calculator – Estimate Minutes & Speaking", description: "Paste text to estimate reading time in minutes and seconds. Adjust WPM and compare speaking time for articles, scripts and presentations." },
     "json-formatter-validator": { title: "JSON Formatter & Validator – Pretty Print or Minify JSON", description: "Format, minify and validate JSON syntax with readable indentation. Check malformed JSON before using it in an application." },
     "base64-encoder-decoder": { title: "Base64 Encoder & Decoder – Convert Text Online", description: "Encode text to Base64 or decode Base64 back to text in your browser. Base64 is an encoding, not encryption." },
     "url-encoder-decoder": { title: "URL Encoder & Decoder – Percent Encode URL Components", description: "Encode or decode URL query values and components with percent encoding. Avoid double-encoding and preserve URL structure." },
@@ -69,8 +78,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "nepse-market-news": { title: "Nepal Stock Market News – NEPSE & IPO Updates", description: "Browse recent Nepal stock market and IPO headlines with publication dates and links to the original publishers. Verify notices with official sources." },
     "nepali-unicode-typing": { title: "Nepali Unicode Typing Tool – Type in Devanagari", description: "Convert Romanized Nepali typing into Unicode Devanagari text. Review spelling, conjuncts and punctuation before using the text in a document." },
     "currency-converter": { title: "Currency Converter – Convert NPR, USD, INR & More", description: "Convert currencies using the available public exchange-rate source. Check the rate timestamp and compare with bank fees and offered rates." },
-    "meta-title-checker": { title: "Meta Title Checker – SEO Title & Google Preview | PDFora", description: "Check an HTML title tag, count characters, compare it with the page H1 and preview a search result. Google may rewrite title links." },
-    "meta-description-checker": { title: "Meta Description Checker – Length & Search Preview | PDFora", description: "Check a page description, review its length and preview a search snippet. Write a useful page-specific summary; Google may select other text." },
+    "meta-title-checker": { title: "SEO Title Checker – Meta Title & Google Preview | PDFora", description: "Check an SEO title tag, count characters, compare it with the page H1 and preview a Google search result. Google may rewrite title links." },
+    "meta-description-checker": { title: "Meta Description Checker – SEO Snippet Preview | PDFora", description: "Check a meta description character count and preview its Google snippet. Write a clear summary; Google may choose different result text." },
   };
   const seo = seoOverrides[slug];
   const title = seo?.title ?? `Free ${tool.name} Online`;
@@ -86,7 +95,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     Business: "Confirm the cost, price, margin and tax assumptions before using a figure in a quote or budget.",
     Nepal: "Check the applicable fiscal year, date system, local units and official notices before relying on the result."
   };
-  const description = seo?.description ?? `${tool.description.replace(/[.!?]$/, "")} ${categoryDescription[tool.category] ?? "Check the input and output carefully before using the result."}`.slice(0, 160);
+  const description = fitMetaDescription(seo?.description ?? `${tool.description.replace(/[.!?]$/, "")} ${categoryDescription[tool.category] ?? "Check the input and output carefully before using the result."}`);
   const keywords = [tool.name, ...tool.keywords.split(/[, ]+/).filter(Boolean), `${tool.name.toLowerCase()} online`, `free ${tool.name.toLowerCase()}`];
   const canonicalPath = legacyToolSlugSet.has(slug) ? `/${slug}` : `/tools/${slug}`;
   const canonical = `${site}${canonicalPath}`;
@@ -243,9 +252,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Should I use this for a final payslip?", a: "No. Compare with your employer's payroll statement and use the dedicated Nepal salary-tax calculator for a separate FY-specific tax estimate." }
     ],
     "savings-goal-calculator": [
-      { q: "How is monthly savings needed calculated?", a: "The calculator subtracts current savings from the target and divides the remaining amount by the number of months available." },
-      { q: "Does it include interest or investment returns?", a: "No. It assumes you save the same amount each month and excludes interest, investment returns, fees and inflation." },
-      { q: "What if I have already reached my target?", a: "The remaining amount and monthly savings needed are shown as zero when current savings meet or exceed the target." }
+      { q: "How is monthly savings needed calculated?", a: "At a 0% annual rate, it divides the remaining target by the number of deposits. With a positive rate, it projects the current balance and calculates equal end-of-period deposits using the selected weekly or monthly frequency." },
+      { q: "Does it include interest or investment returns?", a: "It estimates periodic interest when you enter an annual rate. It assumes a constant rate and deposits at the end of each period; it does not model investment returns, inflation, fees or taxes. Actual bank terms may differ." },
+      { q: "What if I have already reached my target?", a: "The required deposit is zero when the projected existing balance meets or exceeds the target. A positive annual rate can make the projected balance higher than the target." }
     ],
     "nepali-number-converter": [
       { q: "Does it use the lakh and crore number system?", a: "Yes. English number words use thousand, lakh and crore grouping for the supported whole-number range." },

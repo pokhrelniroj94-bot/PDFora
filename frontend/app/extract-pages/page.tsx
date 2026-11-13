@@ -22,13 +22,13 @@ export default function Page() {
             </p>
 
             <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
-              Extract PDF Pages Online
+              Extract Pages from PDF Online Free
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Extract selected pages from a PDF document and create a new PDF
-              file. PDFora makes it easy to select the pages you need and
-              download the result.
+              Extract selected pages from a PDF by entering individual page numbers or
+              ranges such as 1,3,5-8. PDFora creates a separate PDF containing
+              the pages you choose; review the page order before sharing.
             </p>
           </div>
 
@@ -117,7 +117,8 @@ export default function Page() {
                 Select pages
               </h3>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Enter individual pages or page ranges to extract.
+                Enter the PDF viewer page numbers or ranges, such as 1,3,5-8. Use the
+                viewer page count rather than printed page labels inside the document.
               </p>
             </div>
 
@@ -141,14 +142,19 @@ export default function Page() {
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            PDFora provides an online PDF page extraction tool for creating a
-            new PDF from selected pages of an existing document. It can be
-            useful when you only need certain pages from a larger PDF.
+            Use Extract PDF Pages when you need only a few pages from a longer document—for example, selected assignment pages, a report section or supporting pages from a form. The tool creates a separate PDF from the pages you enter, leaving the source document available as your original.
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Enter the page numbers or ranges you need and process the PDF
-            directly from your browser.
+            Enter individual page numbers separated by commas or combine them with ranges, such as 1,3,5-8. Page numbers refer to the PDF viewer&apos;s page order, which may differ from printed page labels. After processing, open the new PDF and check its page count, order and readability.
+          </p>
+
+          <h2 className="mt-10 text-2xl font-black">
+            Extract pages, split a PDF or delete pages?
+          </h2>
+
+          <p className="mt-4 text-sm leading-7 text-slate-600">
+            Extract Pages creates one new PDF containing only the pages you select. Use <a className="font-semibold text-blue-700 underline" href="/split-pdf">Split PDF</a> when you want to divide a document into separate page ranges, or <a className="font-semibold text-blue-700 underline" href="/delete-pages">Delete Pages</a> when you want to remove selected pages while keeping the rest together.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">
@@ -225,8 +231,7 @@ export default function Page() {
                 Can I extract a page range?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                You can enter page ranges when supported by the PDFora
-                processing endpoint.
+                Yes. Enter a range such as 5-8, or combine ranges and individual pages such as 1,3,5-8. Review the downloaded PDF to confirm the selected pages are in the intended order.
               </p>
             </details>
 

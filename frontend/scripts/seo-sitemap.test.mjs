@@ -49,6 +49,14 @@ assert.ok(englishEditorialBlogSource.includes('title: "Percentage Change Formula
 assert.ok(englishToolPageSource.includes("It estimates periodic interest when you enter an annual rate."), "Savings Goal FAQ must match the interest calculation");
 assert.ok(catalogToolSeoSource.includes("compounds monthly or weekly"), "Savings Goal guidance must disclose periodic compounding");
 assert.ok(nepaliLocalizedBlogSource.includes("मासिक वा साप्ताहिक अवधिअनुसार चक्रवृद्धि"), "Nepali savings guide must disclose periodic compounding");
+const nepaliPostMatches = [...nepaliLocalizedBlogSource.matchAll(/slug: "([^"]+)"/g)];
+assert.equal(nepaliPostMatches.length, 35, "Reviewed Nepali blog inventory must remain complete");
+for (let index = 0; index < nepaliPostMatches.length; index += 1) {
+  const start = nepaliPostMatches[index].index;
+  const end = nepaliPostMatches[index + 1]?.index ?? nepaliLocalizedBlogSource.length;
+  const entry = nepaliLocalizedBlogSource.slice(start, end);
+  assert.ok(entry.includes("readTime:"), nepaliPostMatches[index][1] + " Nepali guide must retain reading-time metadata");
+}
 for (const href of ["/pdf-to-excel", "/rotate-pdf"]) {
   assert.ok(homepageSource.includes(`"${href}"`), `Homepage priority links must include the unindexed PDF page: ${href}`);
 }

@@ -40,6 +40,18 @@ assert.ok(!homepageSource.includes("Free Online PDF Tools – Merge, Split & Com
 assert.ok(homepageSource.includes("Explore free online PDF, finance, math, text, developer, image, SEO and Nepal tools."), "Homepage description must identify the wider tool categories");
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
 assert.ok(englishToolPageSource.includes('title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
+assert.ok(englishToolPageSource.includes('title: "Reading Time Calculator – Estimate Minutes & Speaking"'), "Reading Time metadata must target the calculator intent");
+assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Weekly & Monthly Deposits"'), "Savings Goal metadata must target deposit-planning intent");
+assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Increase or Decrease"'), "Percentage Change metadata must target calculation intent");
+assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Reading Time: WPM Formula & Examples"'), "Reading Time guide must retain informational search intent");
+assert.ok(englishEditorialBlogSource.includes('title: "How to Set a Savings Goal: Monthly Plan & Formula"'), "Savings guide must retain informational search intent");
+assert.ok(englishEditorialBlogSource.includes('title: "Percentage Change Formula: Increase & Decrease Examples"'), "Percentage Change guide must retain informational search intent");
+assert.ok(englishToolPageSource.includes("It estimates periodic interest when you enter an annual rate."), "Savings Goal FAQ must match the interest calculation");
+assert.ok(catalogToolSeoSource.includes("compounds monthly or weekly"), "Savings Goal guidance must disclose periodic compounding");
+assert.ok(nepaliLocalizedBlogSource.includes("मासिक वा साप्ताहिक अवधिअनुसार चक्रवृद्धि"), "Nepali savings guide must disclose periodic compounding");
+for (const href of ["/pdf-to-excel", "/rotate-pdf"]) {
+  assert.ok(homepageSource.includes(`"${href}"`), `Homepage priority links must include the unindexed PDF page: ${href}`);
+}
 assert.ok(pdfToolSeoCoreSource.includes('"rotate-pdf": { title: "Rotate PDF Online Free – Turn Pages 90°, 180° or 270°"'), "The Rotate PDF snippet must match its page operation and free-online intent");
 assert.ok(pdfToolSeoCoreSource.includes('"pdf-to-excel": { title: "PDF to Excel Converter Online Free – Extract Tables"'), "The PDF to Excel snippet must match its conversion intent");
 assert.ok(read("app/rotate-pdf/page.tsx").includes("Rotate PDF Online Free</h1>"), "The Rotate PDF page heading must match the primary tool intent");

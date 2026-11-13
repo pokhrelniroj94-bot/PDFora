@@ -50,6 +50,7 @@ assert.ok(catalogToolSeoSource.includes("Use this meta description checker with 
 assert.ok(englishToolPageSource.includes('title: "Reading Time Calculator – Estimate Minutes & Speaking"'), "Reading Time metadata must target the calculator intent");
 assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Weekly & Monthly Deposits"'), "Savings Goal metadata must target deposit-planning intent");
 assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Increase or Decrease"'), "Percentage Change metadata must target calculation intent");
+assert.ok(englishToolPageSource.includes('title: "Prime Number Checker – Test Prime or Composite"'), "Prime Number Checker metadata must target the 114-impression GSC query");
 assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Reading Time: WPM Formula & Examples"'), "Reading Time guide must retain informational search intent");
 assert.ok(englishEditorialBlogSource.includes('title: "How to Set a Savings Goal: Monthly Plan & Formula"'), "Savings guide must retain informational search intent");
 assert.ok(englishEditorialBlogSource.includes('title: "Percentage Change Formula: Increase & Decrease Examples"'), "Percentage Change guide must retain informational search intent");

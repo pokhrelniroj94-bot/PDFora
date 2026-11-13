@@ -3,7 +3,7 @@ import type { ToolGuide } from "../tool-guides";
 
 const SITE = "https://pd-fora.vercel.app";
 
-function fitDescription(value: string, max = 160): string {
+function fitDescription(value: string, max = 155): string {
   const clean = value.replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
   const shortened = clean.slice(0, max - 1);

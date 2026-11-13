@@ -174,7 +174,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (request.locale === "ne" && (nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number]) || nepaliLocalizedFinancialSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedFinancialSlugs)[number]) || nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedPublicInfoSlugs)[number]))) {
     return {
       ...metadata,
-      title: `${nepaliTitles[request.implementation.slug]} | PDFora`,
+      title: nepaliTitles[request.implementation.slug],
       description: nepaliDescriptions[request.implementation.slug] ?? metadata.description,
     };
   }

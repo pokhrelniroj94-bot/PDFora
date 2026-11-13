@@ -499,6 +499,12 @@ test("PDF SEO metadata is unique, canonical and within search description length
     assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
     assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
   }
+  const deletePages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "delete-pages"), "delete-pages");
+  const extractPages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "extract-pages"), "extract-pages");
+  assert.ok(String(deletePages.title).includes("Free"), "Delete Pages title should reflect the free-online query intent");
+  assert.ok(String(deletePages.description).includes("page numbers or ranges"), "Delete Pages description should explain its real input");
+  assert.ok(String(extractPages.title).includes("Free"), "Extract Pages title should reflect the free-online query intent");
+  assert.ok(String(extractPages.description).includes("page numbers or ranges"), "Extract Pages description should explain its real input");
 });
 
 

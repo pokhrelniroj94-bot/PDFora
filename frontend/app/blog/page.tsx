@@ -26,7 +26,7 @@ export default function BlogIndexPage() {
   return (
     <>
     <BlogPopunder />
-    <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 sm:py-12">
+    <main className="pdfora-blog-page min-h-screen bg-slate-50 px-4 py-8 sm:px-6 sm:py-12">
       <div className="mx-auto max-w-5xl">
         <p className="text-xs font-black uppercase tracking-[0.2em] text-teal-700">PDFora Learning Centre</p>
         <h1 className="mt-3 break-words text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-5xl">Tools, Tutorials & Practical Guides</h1>

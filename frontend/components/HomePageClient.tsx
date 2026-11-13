@@ -182,54 +182,54 @@ export default function HomePageClient() {
     <main className="min-h-screen bg-[#f5f7f6] text-slate-950">
       {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-[0_8px_30px_rgba(15,23,42,0.04)] backdrop-blur-xl">
-        <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-[64px] w-full max-w-7xl items-center justify-between gap-2 px-3 sm:h-[72px] sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="flex items-center gap-2"
+            className="flex min-w-0 shrink items-center gap-1.5 sm:gap-2"
             aria-label="PDFora home"
           >
-            <BrandMark size={42} />
-            <span className="text-[22px] font-black tracking-tight">
+            <BrandMark size={38} />
+            <span className="whitespace-nowrap text-[20px] font-black tracking-tight sm:text-[22px]">
               <span className="text-slate-950">PDF</span><span className="text-teal-700">ora</span>
             </span>
           </Link>
 
-          <nav aria-label="Main navigation" className="flex min-w-0 items-center gap-1.5 sm:gap-2">
-            <Link href="/ne" lang="ne" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2 py-2 text-[11px] font-extrabold text-blue-800 hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">नेपाली</Link>
-            <Link href="/market" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2 py-2 text-[10px] font-bold text-teal-800 hover:border-teal-400 sm:px-3 sm:text-xs">📈 <span className="ml-1">Market</span></Link>
-            <Link href="/tools" className="inline-flex min-h-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 px-2.5 py-2 text-[10px] font-bold text-white transition hover:bg-slate-800 sm:px-4 sm:text-xs">Tools</Link>
+          <nav aria-label="Main navigation" className="flex min-w-0 shrink-0 items-center gap-1 sm:gap-2">
+            <Link href="/ne" lang="ne" className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg border border-blue-200 bg-blue-50 px-2 py-2 text-[11px] font-extrabold text-blue-800 hover:border-blue-400 hover:bg-blue-100 sm:px-3 sm:text-xs">नेपाली</Link>
+            <Link href="/market" className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg border border-teal-200 bg-teal-50 px-2 py-2 text-[10px] font-bold text-teal-800 hover:border-teal-400 sm:px-3 sm:text-xs">📈 <span className="ml-1">Market</span></Link>
+            <Link href="/tools" className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-xl bg-slate-950 px-2.5 py-2 text-[10px] font-bold text-white transition hover:bg-slate-800 sm:px-4 sm:text-xs">Tools</Link>
           </nav>
         </div>
       </header>
 
       {/* PREMIUM HERO */}
-      <section className="relative isolate overflow-hidden bg-[#071b1b] px-4 pb-16 pt-14 text-white sm:px-6 sm:pb-24 sm:pt-20">
+      <section className="relative isolate w-full min-w-0 overflow-hidden bg-[#071b1b] px-4 pb-12 pt-10 text-white sm:px-6 sm:pb-24 sm:pt-20">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 opacity-40 [background-image:linear-gradient(rgba(148,220,205,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,220,205,.08)_1px,transparent_1px)] [background-size:52px_52px]" />
         <div aria-hidden="true" className="pointer-events-none absolute -right-40 -top-52 -z-10 h-[34rem] w-[34rem] rounded-full bg-teal-400/20 blur-[110px]" />
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-64 left-[-8rem] -z-10 h-[30rem] w-[30rem] rounded-full bg-cyan-500/15 blur-[100px]" />
-        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.08fr_.92fr] lg:gap-10">
-          <div className="max-w-3xl">
+        <div className="mx-auto grid w-full min-w-0 max-w-7xl items-center gap-10 lg:grid-cols-[1.08fr_.92fr] lg:gap-10">
+          <div className="w-full min-w-0 max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-teal-200/20 bg-white/[0.07] px-3.5 py-2 text-[11px] font-bold uppercase tracking-[.18em] text-teal-100 shadow-inner shadow-white/5">
               <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(52,211,153,.9)]" />
               Your everyday digital workspace
             </div>
-            <h1 className="mt-7 max-w-3xl text-[2.65rem] font-black leading-[1.06] tracking-[-.045em] sm:text-6xl lg:text-[4.35rem]">
+            <h1 className="mt-6 max-w-full break-words text-[2.25rem] font-black leading-[1.08] tracking-[-.045em] min-[400px]:text-[2.5rem] sm:mt-7 sm:text-6xl lg:text-[4.35rem]">
               Free Online Tools for
               <span className="mt-1 block bg-gradient-to-r from-teal-200 via-emerald-300 to-cyan-200 bg-clip-text text-transparent">PDF, Finance, Text & More.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base sm:leading-8">
+            <p className="mt-5 w-full max-w-2xl break-words text-[14px] leading-7 text-slate-300 sm:mt-6 sm:text-base sm:leading-8">
               Merge, split, compress and convert PDFs, calculate costs and savings, format text and code, edit images, check SEO and use Nepal-focused utilities—all in one free online workspace.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/tools" className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 px-6 py-3.5 text-sm font-extrabold text-[#062321] shadow-xl shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:shadow-emerald-400/20">Explore all tools <span className="ml-2">→</span></Link>
-              <Link href="#tools" className="inline-flex items-center justify-center rounded-2xl border border-white/15 bg-white/[0.06] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/10">Browse all tools</Link>
+            <div className="mt-7 flex w-full min-w-0 flex-col gap-3 sm:w-auto sm:flex-row">
+              <Link href="/tools" className="inline-flex min-h-12 w-full min-w-0 items-center justify-center rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 px-5 py-3.5 text-sm font-extrabold text-[#062321] shadow-xl shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:shadow-emerald-400/20 sm:w-auto">Explore all tools <span className="ml-2">→</span></Link>
+              <Link href="#tools" className="inline-flex min-h-12 w-full min-w-0 items-center justify-center rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-white/10 sm:w-auto">Browse all tools</Link>
             </div>
-            <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-slate-300">
+            <div className="mt-7 grid grid-cols-1 gap-3 text-xs font-medium text-slate-300 min-[420px]:grid-cols-2 sm:mt-9 sm:flex sm:flex-wrap sm:gap-x-6">
               <span className="inline-flex items-center gap-2"><span className="text-emerald-300">✓</span> Free-to-use tools</span>
               <span className="inline-flex items-center gap-2"><span className="text-emerald-300">✓</span> Works on mobile</span>
               <span className="inline-flex items-center gap-2"><span className="text-emerald-300">✓</span> No installation</span>
             </div>
-            <div className="mt-10 max-w-2xl rounded-2xl border border-white/15 bg-white/[0.08] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl focus-within:border-teal-300/60">
+            <div className="mt-8 w-full min-w-0 max-w-2xl rounded-2xl border border-white/15 bg-white/[0.08] p-2 shadow-2xl shadow-black/20 backdrop-blur-xl focus-within:border-teal-300/60 sm:mt-10">
               <div className="flex items-center gap-3">
                 <span className="pl-3 text-xl text-teal-200" aria-hidden="true">⌕</span>
                 <input value={query} onChange={(event) => { setQuery(event.target.value); setCategory("All"); setVisibleCount(12); }} placeholder="What do you need to do?  e.g. merge PDF, compress image…" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white outline-none placeholder:text-slate-400" aria-label="Search PDFora tools" />

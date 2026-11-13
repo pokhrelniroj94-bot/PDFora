@@ -190,6 +190,37 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     { q: "Does the tool replace official advice or verification?", a: "No. Confirm important legal, financial, government or compliance matters with the responsible authority." }
   ];
   const questionsBySlug: Record<string, { q: string; a: string }[]> = {
+    "email-signature-generator": [
+      { q: "Can I create an email signature for Gmail and Outlook?", a: "Yes. Copy or download the generated HTML and add it through your email app's signature settings. Each email client handles HTML differently, so send a test message and check the result." },
+      { q: "Are my name and contact details uploaded?", a: "No. This tool builds the preview and HTML in your browser. It does not send the fields to a PDFora API or external signature service." },
+      { q: "Why does my signature look different in an email?", a: "Email apps support different HTML and CSS features. Use a simple layout, then test it in the email clients your recipients use." },
+      { q: "Can I add a logo?", a: "This version creates a text-based signature. You can add a hosted logo later in your email client's editor if you control the image URL and understand its privacy implications." }
+    ],
+    "timezone-meeting-planner": [
+      { q: "Does this meeting planner account for daylight saving time?", a: "It uses the time-zone rules built into your browser for the selected date. Recheck meetings near clock changes because a local time can be skipped or occur twice." },
+      { q: "Can the meeting date be different in another country?", a: "Yes. A converted meeting can fall on the previous or following calendar day. Each selected city displays its own local date." },
+      { q: "Does it need an internet API?", a: "No external time API is called. Conversion uses the browser's built-in Internationalization time-zone database." },
+      { q: "Are the time conversions guaranteed for future dates?", a: "No. Governments can change time-zone rules. Recheck a future meeting if local daylight-saving policy changes." }
+    ],
+    "image-dpi-calculator": [
+      { q: "What is the difference between DPI and PPI?", a: "PPI measures image pixels per printed inch. DPI refers to printer dots per inch. They are often used interchangeably in print instructions, but they describe different things." },
+      { q: "Is 300 PPI always required for printing?", a: "No. The suitable resolution depends on print size, viewing distance, printer and provider requirements. Use the print shop's specification." },
+      { q: "Can changing DPI increase image quality?", a: "Changing a resolution value does not create new image detail. The pixel dimensions and source quality determine how much detail is available." },
+      { q: "Does this tool upload my image?", a: "No image is needed. Enter pixel dimensions and print size; the calculations run locally in your browser." }
+    ],
+    "video-bitrate-calculator": [
+      { q: "How do I calculate video bitrate from file size?", a: "Convert the target file size to bits, divide by the clip duration in seconds, then reserve bitrate for audio and container overhead." },
+      { q: "Does this estimate guarantee the final video size?", a: "No. It estimates average bitrate. Variable bitrate, codec, scene complexity, audio and container metadata can change the exported file size." },
+      { q: "Should audio bitrate be included?", a: "Yes. Audio uses part of the total bitrate budget, so subtract it before assigning the remaining bitrate to video." },
+      { q: "Does the calculator upload my video?", a: "No video file is required. The calculator uses only the duration, target size and bitrate values you enter in your browser." }
+    ],
+    "markdown-table-generator": [
+      { q: "How do I make a Markdown table from Excel data?", a: "Copy the cells and paste them as tab-separated text. Keep the first row as column headings and each following row as a record." },
+      { q: "Does the first row become the table header?", a: "Yes. The first non-empty line is used as the header, and the generator creates the Markdown separator row automatically." },
+      { q: "How do I include a pipe character inside a cell?", a: "A literal pipe is escaped as a backslash followed by a pipe so it is not interpreted as a column separator." },
+      { q: "Is my table data uploaded?", a: "No. The conversion and preview run in your browser. The tool does not send the pasted table to a server." }
+    ],
+
     "meta-title-checker": [
       { q: "How do I check my SEO title?", a: "Copy the actual HTML title element from your page, paste it into the checker and compare the preview with your H1 and page content." },
       { q: "What is the ideal SEO title character limit?", a: "Google does not set a fixed character limit that guarantees full display. Write a concise, descriptive title; Google may shorten it for the device and query." },

@@ -1,125 +1,124 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { calculateSavings, calculateShare } from "../lib/i18n/nepali-remaining-tools";
 
-const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
+const input = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
-const action = "rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800";
 const panel = "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-7 text-slate-800";
+const copy = (value: string) => void navigator.clipboard?.writeText(value);
 
-export function stripHtmlToText(source: string): string {
-  if (typeof DOMParser === "undefined") return source.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-  const document = new DOMParser().parseFromString(source, "text/html");
-  return (document.body.textContent ?? "").replace(/\s+/g, " ").trim();
-}
-
-export function formatXml(source: string): string {
-  if (!source.trim()) throw new Error("XML खाली छ।");
-  if (typeof DOMParser === "undefined" || typeof XMLSerializer === "undefined") throw new Error("यो ब्राउजरमा XML जाँच उपलब्ध छैन।");
-  const document = new DOMParser().parseFromString(source, "application/xml");
-  if (document.querySelector("parsererror")) throw new Error("XML संरचना मान्य छैन। Tag र attribute जाँच गर्नुहोस्।");
-  const serialized = new XMLSerializer().serializeToString(document);
-  const tokens = serialized.replace(/>\s*</g, "><").replace(/></g, ">\n<").split("\n");
-  let depth = 0;
-  return tokens.map((token) => {
-    if (/^<\//.test(token)) depth = Math.max(0, depth - 1);
-    const line = "  ".repeat(depth) + token;
-    if (/^<[^!?/][^>]*[^/]?>$/.test(token) && !/<\/[^>]+>$/.test(token) && !/^<[^>]+\/>$/.test(token)) depth += 1;
-    return line;
-  }).join("\n");
-}
-
-function Copy({ value }: { value: string }) {
-  return <button type="button" className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold" onClick={() => void navigator.clipboard?.writeText(value)}>नतिजा कपी गर्नुहोस्</button>;
+function base64UrlDecode(value: string) {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const binary = atob(normalized + "=".repeat((4 - normalized.length % 4) % 4));
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
 }
 
 export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }) {
   const [source, setSource] = useState("");
-  const [target, setTarget] = useState("100000");
-  const [notesTitle, setNotesTitle] = useState("मेरा नोटहरू");
-  const [current, setCurrent] = useState("10000");
-  const [months, setMonths] = useState("12");
-  const [rate, setRate] = useState("0");
-  const [quantity, setQuantity] = useState("100");
-  const [buy, setBuy] = useState("200");
-  const [sell, setSell] = useState("220");
-  const [fee, setFee] = useState("0");
-  const [tax, setTax] = useState("0");
-  const [dp, setDp] = useState("0");
+  const [secondary, setSecondary] = useState("");
+  const [third, setThird] = useState("");
+  const [flags, setFlags] = useState("g");
+  const [length, setLength] = useState("20");
+  const [includeNumbers, setIncludeNumbers] = useState(true);
+  const [includeSymbols, setIncludeSymbols] = useState(true);
+  const [generated, setGenerated] = useState("");
+  const [error, setError] = useState("");
 
-
-  const textResult = useMemo(() => {
-    if (slug !== "html-tag-stripper") return "";
-    return stripHtmlToText(source);
-  }, [slug, source]);
-
-  const xml = useMemo(() => {
-    if (slug !== "xml-formatter-validator" || !source.trim()) return { result: "", error: "" };
+  const result = useMemo(() => {
     try {
-      return { result: formatXml(source), error: "" };
+      if (slug === "regex-tester") {
+        if (!source) return { text: "", error: "" };
+        const regex = new RegExp(secondary, flags.replace(/[^dgimsuvy]/g, ""));
+        const matches = [...source.matchAll(regex)];
+        return { text: matches.length ? matches.map((m, i) => `${i + 1}. ${m[0]} (index: ${m.index})`).join("\n") : "कुनै मिल्दो अंश भेटिएन।", error: "" };
+      }
+      if (slug === "jwt-decoder") {
+        const parts = source.trim().split(".");
+        if (parts.length !== 3) throw new Error("JWT मा header, payload र signature गरी तीन भाग हुनुपर्छ।");
+        return { text: JSON.stringify({ header: JSON.parse(base64UrlDecode(parts[0])), payload: JSON.parse(base64UrlDecode(parts[1])), note: "Signature यहाँ verify गरिएको छैन।" }, null, 2), error: "" };
+      }
+      if (slug === "css-minifier") {
+        const minified = source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ").replace(/\s*([{}:;,>])\s*/g, "$1").replace(/;}/g, "}").trim();
+        return { text: minified, error: "" };
+      }
+      if (slug === "keyword-density-checker") {
+        const words = source.toLocaleLowerCase().match(/[\p{L}\p{N}_-]+/gu) ?? [];
+        const needle = secondary.trim().toLocaleLowerCase();
+        if (!needle) return { text: `कुल शब्द: ${words.length}\nविश्लेषणका लागि keyword लेख्नुहोस्।`, error: "" };
+        const count = words.filter((word) => word === needle).length;
+        return { text: `कुल शब्द: ${words.length}\nKeyword: ${needle}\nआवृत्ति: ${count}\nघनत्व: ${words.length ? (count / words.length * 100).toFixed(2) : "0.00"}%\nयो साधारण exact-match अनुमान हो।`, error: "" };
+      }
+      if (slug === "meta-title-checker") return { text: `अक्षर संख्या: ${source.length}\nसुझाव: ३०–६० अक्षरको दायरालाई प्रारम्भिक guideline मान्नुहोस्। वास्तविक SERP प्रदर्शन फरक हुन सक्छ।`, error: "" };
+      if (slug === "meta-description-checker") return { text: `अक्षर संख्या: ${source.length}\nसुझाव: करिब १२०–१६० अक्षरमा स्पष्ट, पृष्ठसँग मेल खाने विवरण लेख्नुहोस्। Google ले snippet फरक देखाउन सक्छ।`, error: "" };
+      if (slug === "color-contrast-checker") {
+        const parse = (hex: string) => {
+          const clean = hex.trim().replace(/^#/, "");
+          if (!/^(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(clean)) throw new Error("रङ #RGB वा #RRGGBB ढाँचामा लेख्नुहोस्।");
+          const full = clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
+          const rgb = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255);
+          return rgb.map((v) => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+        };
+        const a = parse(source), b = parse(secondary);
+        const ratio = (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+        return { text: `Contrast ratio: ${ratio.toFixed(2)}:1\nWCAG AA सामान्य text: ${ratio >= 4.5 ? "PASS" : "FAIL"}\nWCAG AA ठूलो text: ${ratio >= 3 ? "PASS" : "FAIL"}\nWCAG AAA सामान्य text: ${ratio >= 7 ? "PASS" : "FAIL"}`, error: "" };
+      }
+      if (slug === "open-graph-preview") {
+        return { text: "", error: "" };
+      }
+      if (slug === "robots-txt-generator") {
+        const sitemap = secondary.trim();
+        return { text: `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin/\n${sitemap ? `Sitemap: ${sitemap}\n` : ""}`, error: "" };
+      }
+      if (slug === "sitemap-generator") {
+        const urls = source.split(/\r?\n/).map((v) => v.trim()).filter(Boolean);
+        const invalid = urls.filter((url) => { try { return !["http:", "https:"].includes(new URL(url).protocol); } catch { return true; } });
+        if (invalid.length) throw new Error(`अमान्य URL: ${invalid[0]}`);
+        const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((url) => `  <url><loc>${url.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</loc></url>`).join("\n")}\n</urlset>`;
+        return { text: xml, error: "" };
+      }
+      return { text: "", error: "" };
     } catch (cause) {
-      return { result: "", error: cause instanceof Error ? cause.message : "XML जाँच गर्न सकिएन।" };
+      return { text: "", error: cause instanceof Error ? cause.message : "इनपुट जाँच गर्नुहोस्।" };
     }
-  }, [slug, source]);
+  }, [slug, source, secondary, flags]);
 
-  if (slug === "html-tag-stripper") return <section className="space-y-4">
-    <div><h2 className="text-xl font-black">HTML Tag हटाउने</h2><p className="mt-1 text-sm text-slate-600">HTML snippet बाट देखिने पाठ निकाल्नुहोस्। Script चलाइँदैन र कुनै डेटा सर्भरमा पठाइँदैन।</p></div>
-    <label className="block"><span className={label}>HTML कोड</span><textarea className={field + " min-h-40 font-mono"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="<h1>नमस्कार</h1>" /></label>
-    <div className={panel}><strong>निकालिएको पाठ</strong><p className="mt-2 whitespace-pre-wrap break-words">{textResult || "यहाँ नतिजा देखिन्छ।"}</p></div><Copy value={textResult} />
+  const generatePassword = () => {
+    const alphabet = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ" + (includeNumbers ? "23456789" : "") + (includeSymbols ? "!@#$%&*+-_?" : "");
+    const size = Math.max(8, Math.min(128, Number(length) || 20));
+    const random = new Uint32Array(size);
+    crypto.getRandomValues(random);
+    setGenerated(Array.from(random, (n) => alphabet[n % alphabet.length]).join(""));
+  };
+  const generateUuid = () => setGenerated(crypto.randomUUID());
+
+  if (slug === "password-generator" || slug === "uuid-generator") return <section className="space-y-4">
+    <h2 className="text-xl font-black">{slug === "password-generator" ? "सुरक्षित पासवर्ड बनाउने" : "UUID बनाउने"}</h2>
+    {slug === "password-generator" && <><label className="block"><span className={label}>लम्बाइ (८–१२८)</span><input className={input} type="number" min="8" max="128" value={length} onChange={(e) => setLength(e.target.value)} /></label><label className="flex gap-2 text-sm"><input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} /> अंक समावेश गर्ने</label><label className="flex gap-2 text-sm"><input type="checkbox" checked={includeSymbols} onChange={(e) => setIncludeSymbols(e.target.checked)} /> चिन्ह समावेश गर्ने</label></>}
+    <button className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white" onClick={slug === "password-generator" ? generatePassword : generateUuid}>नयाँ {slug === "password-generator" ? "पासवर्ड" : "UUID"} बनाउनुहोस्</button>
+    {generated && <div className={panel}><code className="break-all">{generated}</code><button className="ml-3 underline" onClick={() => copy(generated)}>कपी</button></div>}
+    <p className="text-xs text-slate-500">गोपनीयता: उत्पादन तपाईंको ब्राउजरमै हुन्छ; कुनै सर्भरमा पठाइँदैन।</p>
   </section>;
 
-  if (slug === "xml-formatter-validator") {
-    const result = xml.result;
-    return <section className="space-y-4">
-      <div><h2 className="text-xl font-black">XML फर्म्याट तथा जाँच</h2><p className="mt-1 text-sm text-slate-600">XML को syntax ब्राउजरमै जाँचेर indentation मिलाउनुहोस्।</p></div>
-      <label className="block"><span className={label}>XML सामग्री</span><textarea className={field + " min-h-48 font-mono"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="<root><item>नमूना</item></root>" /></label>
-      {xml.error ? <p role="alert" className="text-sm font-semibold text-red-700">{xml.error}</p> : <div className={panel}><strong>फर्म्याट गरिएको XML</strong><pre className="mt-2 whitespace-pre-wrap break-words">{result || "XML लेख्नुहोस्।"}</pre></div>}
-      <Copy value={result} />
-    </section>;
-  }
+  if (slug === "color-picker-palette") return <section className="space-y-4"><h2 className="text-xl font-black">रङ छान्ने तथा प्यालेट</h2><label className="block"><span className={label}>रङ छान्नुहोस्</span><input className="h-16 w-full rounded-xl border p-2" type="color" value={source || "#0d9488"} onChange={(e) => setSource(e.target.value)} /></label><div className={panel}>HEX: {source || "#0d9488"}<br/>RGB: {source ? source.match(/[\da-f]{2}/gi)?.map((v) => parseInt(v,16)).join(", ") : "13, 148, 136"}</div><button className="underline" onClick={() => copy(source || "#0d9488")}>HEX कपी गर्नुहोस्</button></section>;
 
-  if (slug === "notes-to-pdf") return <section className="space-y-4">
-    <div><h2 className="text-xl font-black">नोटबाट PDF</h2><p className="mt-1 text-sm text-slate-600">नोट लेख्नुहोस् र ब्राउजरको Print संवादबाट Save as PDF छान्नुहोस्। नोट बाह्य सर्भरमा पठाइँदैन।</p></div>
-    <label className="block"><span className={label}>शीर्षक</span><input className={field} value={notesTitle} onChange={(e) => setNotesTitle(e.target.value)} placeholder="कागजातको शीर्षक" /></label>
-    <label className="block"><span className={label}>तपाईंका नोटहरू</span><textarea className={field + " min-h-64"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="यहाँ नोट लेख्नुहोस्..." /></label>
-    <button type="button" className={action} onClick={() => window.print()} disabled={!source.trim()}>PDF का रूपमा सुरक्षित गर्नुहोस्</button>
-    <p className="text-xs text-slate-500">Print गर्दा ब्राउजरमा उपलब्ध शीर्षक र सामग्री छान्नुहोस्। पृष्ठको बाँकी UI पनि print preview मा देखिन सक्छ।</p>
-    <style jsx global>{`@media print { body * { visibility: hidden !important; } [data-notes-print], [data-notes-print] * { visibility: visible !important; } [data-notes-print] { position: absolute; inset: 0; width: 100%; } }`}</style>
-    <article data-notes-print className="hidden print:block"><h1 className="mb-6 text-2xl font-bold">{notesTitle || "नोटहरू"}</h1><p className="whitespace-pre-wrap">{source}</p></article>
-  </section>;
+  if (slug === "meta-title-checker" || slug === "meta-description-checker") return <section className="space-y-4"><h2 className="text-xl font-black">{slug === "meta-title-checker" ? "Meta Title जाँच" : "Meta Description जाँच"}</h2><textarea className={input + " min-h-28"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="पृष्ठको meta text लेख्नुहोस्..." /><div className={panel}>{result.text}</div><p className="text-xs text-slate-500">यो अक्षर-आधारित सुझाव मात्र हो, Google मा देखिने snippet को ग्यारेन्टी होइन।</p></section>;
 
-  if (slug === "savings-goal-calculator") {
-    let result: ReturnType<typeof calculateSavings> | null = null;
-    let errorMessage = "";
-    try { result = calculateSavings(Number(target), Number(current), Number(months), Number(rate)); }
-    catch (cause) { errorMessage = cause instanceof Error ? cause.message : "मान जाँच गर्नुहोस्।"; }
-    return <section className="space-y-4">
-      <div><h2 className="text-xl font-black">बचत लक्ष्य क्याल्कुलेटर</h2><p className="mt-1 text-sm text-slate-600">लक्ष्य पूरा गर्न आवश्यक मासिक बचतको अनुमान निकाल्नुहोस्। हालको बचतलाई लक्ष्यबाट घटाइन्छ र मासिक योगदानमा ब्याज मासिक रूपमा जोडिएको मानिन्छ।</p></div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        <label><span className={label}>बचत लक्ष्य (रु.)</span><input className={field} type="number" min="1" value={target} onChange={(e) => setTarget(e.target.value)} /></label>
-        <label><span className={label}>हालको बचत (रु.)</span><input className={field} type="number" min="0" value={current} onChange={(e) => setCurrent(e.target.value)} /></label>
-        <label><span className={label}>महिना</span><input className={field} type="number" min="1" value={months} onChange={(e) => setMonths(e.target.value)} /></label>
-        <label><span className={label}>वार्षिक अनुमानित ब्याज (%)</span><input className={field} type="number" min="0" step="0.01" value={rate} onChange={(e) => setRate(e.target.value)} /></label>
-      </div>
-      {errorMessage ? <p role="alert" className="text-sm text-red-700">{errorMessage}</p> : result && <div className={panel}>बाँकी लक्ष्य: रु. {result.remaining.toLocaleString("ne-NP", { maximumFractionDigits: 2 })}<br />आवश्यक मासिक बचत: रु. {result.monthlyDeposit.toLocaleString("ne-NP", { maximumFractionDigits: 2 })}</div>}
-    </section>;
-  }
+  if (slug === "regex-tester") return <section className="space-y-4"><h2 className="text-xl font-black">Regex Tester</h2><label className="block"><span className={label}>Regular expression</span><input className={input + " font-mono"} value={secondary} onChange={(e) => setSecondary(e.target.value)} placeholder="\\d+" /></label><label className="block"><span className={label}>Flags</span><input className={input} value={flags} onChange={(e) => setFlags(e.target.value)} /></label><label className="block"><span className={label}>जाँच गर्ने पाठ</span><textarea className={input + " min-h-28"} value={source} onChange={(e) => setSource(e.target.value)} /></label><div role="status" className={panel}>{result.error || result.text || "Regex र पाठ लेख्नुहोस्।"}</div></section>;
 
-  if (slug === "nepal-share-calculator") {
-    let result: ReturnType<typeof calculateShare> | null = null;
-    let errorMessage = "";
-    try { result = calculateShare(Number(quantity), Number(buy), Number(sell), Number(fee), Number(tax), Number(dp)); }
-    catch (cause) { errorMessage = cause instanceof Error ? cause.message : "मान जाँच गर्नुहोस्।"; }
-    const money = (n: number) => "रु. " + n.toLocaleString("ne-NP", { maximumFractionDigits: 2 });
-    return <section className="space-y-4">
-      <div><h2 className="text-xl font-black">शेयर नाफा–नोक्सान क्याल्कुलेटर</h2><p className="mt-1 text-sm text-slate-600">कारोबार मूल्य र तपाईंले प्रविष्ट गरेका शुल्क/कर दरका आधारमा अनुमान निकाल्नुहोस्। दरहरू स्वतः अद्यावधिक हुँदैनन्; कारोबारअघि ब्रोकर र CDSC को हालको शुल्क जाँच्नुहोस्।</p></div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {([[quantity,setQuantity,"कित्ता"],[buy,setBuy,"खरिद मूल्य (प्रति कित्ता)"],[sell,setSell,"बिक्री मूल्य (प्रति कित्ता)"],[fee,setFee,"कुल कारोबार शुल्क (%)"],[tax,setTax,"नाफामा कर दर (%)"],[dp,setDp,"DP शुल्क (रु.)"]] as const).map(([v,fn,title]) => <label key={title}><span className={label}>{title}</span><input className={field} type="number" min="0" step="any" value={v} onChange={(e) => fn(e.target.value)} /></label>)}
-      </div>
-      {errorMessage ? <p role="alert" className="text-sm text-red-700">{errorMessage}</p> : result && <div className={panel}>खरिद रकम: {money(result.buyValue)}<br />बिक्री रकम: {money(result.sellValue)}<br />कुल नाफा/नोक्सान: {money(result.gross)}<br />अनुमानित शुल्क: {money(result.fees)}<br />प्रविष्ट कर दरअनुसार कर: {money(result.tax)}<br /><strong>अनुमानित खुद नाफा/नोक्सान: {money(result.net)}</strong></div>}
-    </section>;
-  }
+  if (slug === "jwt-decoder") return <section className="space-y-4"><h2 className="text-xl font-black">JWT Decoder</h2><textarea className={input + " min-h-28 font-mono"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="eyJhbGciOi..." /><div role="alert" className={panel}>{result.error || result.text || "JWT token राख्नुहोस्।"}</div><p className="text-xs text-red-700">सावधानी: यहाँ token को signature verify हुँदैन। संवेदनशील वा वास्तविक production token सार्वजनिक/अविश्वसनीय उपकरणमा नराख्नुहोस्।</p></section>;
+
+  if (slug === "css-minifier") return <section className="space-y-4"><h2 className="text-xl font-black">CSS Minifier</h2><textarea className={input + " min-h-40 font-mono"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="/* CSS */ .box { color: teal; }" /><div className={panel}><pre className="whitespace-pre-wrap break-all">{result.text}</pre></div><button className="underline" onClick={() => copy(result.text)}>Minified CSS कपी गर्नुहोस्</button></section>;
+
+  if (slug === "keyword-density-checker") return <section className="space-y-4"><h2 className="text-xl font-black">Keyword Density Checker</h2><input className={input} value={secondary} onChange={(e) => setSecondary(e.target.value)} placeholder="जाँच्ने keyword" /><textarea className={input + " min-h-40"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="आफ्नो लेख वा सामग्री यहाँ राख्नुहोस्..." /><div className={panel}>{result.text}</div><p className="text-xs text-slate-500">Keyword density ranking लक्ष्य होइन; स्वाभाविक, उपयोगी सामग्रीलाई प्राथमिकता दिनुहोस्।</p></section>;
+
+  if (slug === "color-contrast-checker") return <section className="space-y-4"><h2 className="text-xl font-black">रङ Contrast जाँच</h2><div className="grid gap-3 sm:grid-cols-2"><label><span className={label}>Foreground HEX</span><input className={input} value={source} onChange={(e) => setSource(e.target.value)} placeholder="#111827" /></label><label><span className={label}>Background HEX</span><input className={input} value={secondary} onChange={(e) => setSecondary(e.target.value)} placeholder="#ffffff" /></label></div><div className={panel}>{result.error || result.text || "दुवै HEX रङ प्रविष्ट गर्नुहोस्।"}</div></section>;
+
+  if (slug === "robots-txt-generator") return <section className="space-y-4"><h2 className="text-xl font-black">robots.txt Generator</h2><label><span className={label}>Sitemap URL (ऐच्छिक)</span><input className={input} value={secondary} onChange={(e) => setSecondary(e.target.value)} placeholder="https://example.com/sitemap.xml" /></label><pre className={panel}>{result.text}</pre><button className="underline" onClick={() => copy(result.text)}>robots.txt कपी गर्नुहोस्</button><p className="text-xs text-slate-500">यसलाई deploy गर्नुअघि आफ्नो वास्तविक private routes र crawler policy जाँच्नुहोस्।</p></section>;
+
+  if (slug === "sitemap-generator") return <section className="space-y-4"><h2 className="text-xl font-black">XML Sitemap Generator</h2><label><span className={label}>प्रत्येक लाइनमा एउटा canonical URL</span><textarea className={input + " min-h-40 font-mono"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="https://example.com/\nhttps://example.com/about" /></label><div className={panel}>{result.error || <pre className="whitespace-pre-wrap break-all">{result.text || "URL राख्नुहोस्।"}</pre>}</div>{result.text && <button className="underline" onClick={() => copy(result.text)}>XML कपी गर्नुहोस्</button>}<p className="text-xs text-slate-500">केवल canonical, indexable र 200-status URL समावेश गर्नुहोस्।</p></section>;
+
+  if (slug === "open-graph-preview") return <section className="space-y-4"><h2 className="text-xl font-black">Open Graph Preview</h2><label><span className={label}>og:title</span><input className={input} value={source} onChange={(e) => setSource(e.target.value)} placeholder="पृष्ठ शीर्षक" /></label><label><span className={label}>og:description</span><textarea className={input} value={secondary} onChange={(e) => setSecondary(e.target.value)} /></label><label><span className={label}>og:image URL</span><input className={input} value={third} onChange={(e) => setThird(e.target.value)} placeholder="https://example.com/image.jpg" /></label><div className="overflow-hidden rounded-2xl border border-slate-200"><div className="aspect-[1.91/1] bg-slate-100">{third && <img src={third} alt="Open Graph preview" className="h-full w-full object-cover" onError={() => setError("तस्बिर URL लोड भएन।")} />}</div><div className="p-4"><p className="text-xs uppercase text-slate-500">WEBSITE PREVIEW</p><h3 className="font-bold">{source || "पृष्ठ शीर्षक"}</h3><p className="text-sm text-slate-600">{secondary || "पृष्ठको संक्षिप्त विवरण यहाँ देखिन्छ।"}</p>{error && <p role="alert" className="text-xs text-red-700">{error}</p>}</div></div></section>;
 
   return null;
 }

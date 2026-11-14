@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
   description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
   alternates: { canonical: "https://pd-fora.vercel.app/ne/tools" },
-  robots: { index: false, follow: true },
+  robots: { index: true, follow: true },
 };
 
 const names: Record<string, string> = {
@@ -41,11 +41,7 @@ const names: Record<string, string> = {
   "nepal-electricity-bill-calculator":"विद्युत् बिल क्याल्कुलेटर","nepal-public-holidays-2083":"नेपालका सार्वजनिक बिदा २०८३",
 };
 
-const pdfTools = [
-  ["merge-pdf","PDF फाइल जोड्नुहोस्"],["split-pdf","PDF पृष्ठ छुट्याउनुहोस्"],["compress-pdf","PDF को आकार घटाउनुहोस्"],
-  ["pdf-to-word","PDF लाई Word मा बदल्नुहोस्"],["pdf-to-jpg","PDF लाई JPG तस्बिरमा बदल्नुहोस्"],["rotate-pdf","PDF का पृष्ठ घुमाउनुहोस्"],
-  ["reorder-pdf","PDF पृष्ठको क्रम मिलाउनुहोस्"],["images-to-pdf","तस्बिरबाट PDF बनाउनुहोस्"],["protect-pdf","PDF मा पासवर्ड राख्नुहोस्"],
-] as const;
+const pdfTools = Object.keys(nepaliPdfRoutes).map((slug) => [slug, names[slug] ?? slug.replaceAll("-", " ")] as const);
 
 const groups = [
   { title: "नेपालका सेवा तथा वित्तीय उपकरण", slugs: [...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs, "nepal-phone-validator", "gold-tola-gram-converter", "nepali-calendar"] },
@@ -83,6 +79,13 @@ export default async function NepaliToolsDirectory({ params }: Props) {
       <h2 className="mb-4 text-xl font-extrabold">{group.title}</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{Array.from(new Set(group.slugs)).map((slug) => <ToolLink key={slug} slug={slug}/>)}</div>
     </section>)}
+    <section className="mb-10">
+      <h2 className="mb-4 text-xl font-extrabold">सबै नेपाली उपयोगिता तथा क्याल्कुलेटर टुल</h2>
+      <p className="mb-4 max-w-3xl text-sm leading-6 text-slate-600">तलका सूचीमा दर्ता भएका सबै नेपाली utility, वित्तीय र सार्वजनिक सूचना उपकरण छन्। कुनै उपकरण खोल्न यसको नाम छान्नुहोस्।</p>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {Array.from(new Set([...nepaliLocalizedUtilitySlugs, ...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs])).map((slug) => <ToolLink key={slug} slug={slug}/>)}
+      </div>
+    </section>
     <p className="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">सूचना: सबै उपकरणका प्रत्येक सहायक सन्देश र त्रुटि अझै पूर्ण रूपमा नेपालीमा नहुन सक्छन्। अपूर्ण अनुवाद भएका पृष्ठमा भाषा fallback स्पष्ट रूपमा देखाइन्छ।</p>
   </main>;
 }

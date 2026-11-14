@@ -109,14 +109,13 @@ jobs:
           PDFORA_PRODUCTION_URL: http://127.0.0.1:3000
           PDFORA_EXPECT_CANONICAL_ORIGIN: https://pd-fora.vercel.app
         run: node scripts/production-security-smoke.mjs
-      - name: Run Chromium E2E check for the two-file Merge PDF workflow
+      - name: Run Chromium E2E across all 174 PDF and catalog tools
         id: browser-e2e
         continue-on-error: true
         env:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
           E2E_BASE_URL: http://127.0.0.1:3000
-          E2E_TOOL_TIMEOUT_MS: "45000"
-          E2E_TOOL_FILTER: "merge-pdf"
+          E2E_TOOL_TIMEOUT_MS: "20000"
         run: node scripts/browser-e2e-173.mjs
       - name: Regenerate audit with browser evidence
         if: always()
@@ -125,7 +124,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pdfora-browser-e2e-173-report
+          name: pdfora-browser-e2e-174-report
           path: |
             docs/qa/BROWSER_E2E_173_REPORT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.json

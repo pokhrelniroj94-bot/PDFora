@@ -110,6 +110,11 @@ export const nepaliLocalizedUtilitySlugs = [
   "image-format-converter",
   "preeti-unicode-converter",
   "nepali-unicode-typing",
+  "email-signature-generator",
+  "timezone-meeting-planner",
+  "image-dpi-calculator",
+  "video-bitrate-calculator",
+  "markdown-table-generator",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

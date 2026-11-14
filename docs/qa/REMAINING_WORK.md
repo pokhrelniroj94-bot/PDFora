@@ -1,8 +1,8 @@
 # PDFora — Remaining work and verified QA evidence
 
 Updated: 2026-11-14
-Working PR: https://github.com/pokhrelniroj94-bot/PDFora/pull/162
-Working branch: `feat/nepali-encoding-case-tools-2026-11-14`
+Merged PR: https://github.com/pokhrelniroj94-bot/PDFora/pull/162
+Production merge commit: `6afae795f1b6c59aa9f82d71f64895c716a797d1`
 Latest completed full-browser run: GitHub Actions run #3105, branch head `dc612a91a813e979da70c867278d7ba415db7978`.
 
 ## Superseding full-tool QA evidence — 2026-11-14 (run #3105)
@@ -18,7 +18,7 @@ The latest completed GitHub Actions run **43609001348** passed frontend and back
 - 48 PDF workflows validated downloaded file bytes/signatures; Extract Fonts was checked through its expected negative-path handling. Merge PDF validated reordered page sequence and output bytes.
 - Backend tests, catalog verification, i18n runtime/content checks, ESLint, Next.js build, npm audit, local security/privacy/SEO smoke, sitemap/robots checks and 17 live-data checks passed.
 - Report artifact: `pdfora-browser-e2e-174-report`, artifact ID `14119562810`. Browser and functional reports share the same pull-request merge-test source commit.
-- Production spot-check: homepage, Nepali homepage, a tool, blog index/article, robots.txt and sitemap.xml returned HTTP 200. Sitemap contains 307 unique URLs. Social Bar is site-wide; Popunder is on blog index/articles and absent from sampled homepage/tool routes. The public personal email was removed from Contact, Privacy and Terms; the public issue tracker is limited to non-sensitive requests and no private support channel is claimed. Production remains on master commit `3312302d040cd1ec6eff047179eb33c8afebd2b3`; PR #162 is not deployed.
+- Production spot-check: homepage, Nepali homepage, a tool, blog index/article, robots.txt and sitemap.xml returned HTTP 200. Sitemap contains 307 unique URLs. Social Bar is site-wide; Popunder is on blog index/articles and absent from sampled homepage/tool routes. The public personal email was removed from Contact, Privacy and Terms; the public issue tracker is limited to non-sensitive requests and no private support channel is claimed. PR #162 was merged to `master` at `6afae795f1b6c59aa9f82d71f64895c716a797d1`; the production deployment was separately verified READY. The PR CI run itself skipped the live-production job.
 
 Historical audit sections below are retained for traceability; older counts are superseded by run #3105.
 
@@ -27,18 +27,18 @@ Historical audit sections below are retained for traceability; older counts are 
 The source-generated tool matrix in `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json` defines the current inventory:
 
 - **174 tools total**: 49 PDF tools + 125 catalog utilities; 2,088 locale/tool matrix rows.
-- The five utilities missing from the 169-tool localization branch were confirmed in the production source commit `982b5b5d73b77edbee516bce22af7dc03723c49d` and restored to the branch catalog/workspace: Email Signature Generator, Time Zone Meeting Planner, Image DPI & PPI Calculator, Video Bitrate Calculator, and Markdown Table Generator.
-- Nepali coverage is now honestly recorded as **169/174**. The five restored tools remain English-only and are not published under `/ne` until translated and reviewed.
+- The five restored browser-only utilities are now localized through `NepaliBrowserOnlyGrowthTools` and the shared browser-only workspace: Email Signature Generator, Time Zone Meeting Planner, Image DPI & PPI Calculator, Video Bitrate Calculator, and Markdown Table Generator.
+- Nepali source-interface coverage is **174/174** (49 PDF + 125 catalog utilities). This is source-level interface coverage, not native-speaker approval or proof of exhaustive functional testing.
 
 ## Localization status
 
 ### Nepali
 
-- 169/174 tool interfaces are present in Nepali: 49 PDF + 120 catalog utilities. The five restored browser-only utilities remain English-only and are explicitly marked not implemented for Nepali.
-- All 120 currently localized catalog interfaces are present, including: `currency-converter`, `image-compressor`, `image-format-converter`, `color-picker-palette`, `password-generator`, `uuid-generator`, `regex-tester`, `jwt-decoder`, `color-contrast-checker`, `css-minifier`, `meta-title-checker`, `meta-description-checker`, `keyword-density-checker`, `robots-txt-generator`, `sitemap-generator`, `open-graph-preview`, `preeti-unicode-converter`, `nepali-unicode-typing`. Five other restored catalog tools remain English-only.
+- 174/174 tool interfaces are present in Nepali: 49 PDF + 125 catalog utilities. The five restored browser-only utilities have dedicated Nepali presentation and translated visible labels, messages, results and route metadata.
+- All 125 localized catalog interfaces are present, including: `currency-converter`, `image-compressor`, `image-format-converter`, `color-picker-palette`, `password-generator`, `uuid-generator`, `regex-tester`, `jwt-decoder`, `color-contrast-checker`, `css-minifier`, `meta-title-checker`, `meta-description-checker`, `keyword-density-checker`, `robots-txt-generator`, `sitemap-generator`, `open-graph-preview`, `preeti-unicode-converter`, `nepali-unicode-typing`. The five browser-only utilities listed above are also included in the 125 catalog interfaces.
 - The five earlier additions (`xml-formatter-validator`, `notes-to-pdf`, `html-tag-stripper`, `savings-goal-calculator`, `nepal-share-calculator`) remain present. The latest batch adds 18 more interfaces through the shared Nepali remaining-tools workspace; all 23 are still subject to individual functional QA.
 - 44 Nepali tools have targeted unit-test coverage recorded by the matrix, including seven newly tested developer/SEO logic helpers. The other tools are not individually functionally verified.
-- Native-language review is not independently recorded as complete for the 169 Nepali interfaces.
+- Native-language review is not independently recorded as complete for all 174 Nepali interfaces.
 - Only six Nepali PDF tools are in the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing until their individual approval gates pass.
 
 ### Other locales

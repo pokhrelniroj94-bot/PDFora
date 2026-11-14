@@ -15,6 +15,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.rows.length, 2028);
   assert.equal(report.counts.localizedNepaliTools, 169, "49 Nepali PDF routes plus 120 localized catalog routes including finance and public-information utilities");
   assert.equal(report.counts.indexableNepaliTools, 6);
+  assert.equal(report.rows.filter((row) => row.locale === "ne" && row.functionalTest === "targeted-unit-tests").length, 44);
   for (const slug of ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
     assert.equal(row?.interface, "nepali-interface-present", `${slug} should have a dedicated Nepali interface`);

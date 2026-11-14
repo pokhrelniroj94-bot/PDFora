@@ -128,6 +128,19 @@ const nepaliTitles: Record<string, string> = {
   "html-tag-stripper": "HTML Tag हटाउने",
   "savings-goal-calculator": "बचत लक्ष्य क्याल्कुलेटर",
   "nepal-share-calculator": "शेयर नाफा–नोक्सान क्याल्कुलेटर",
+  "password-generator": "सुरक्षित पासवर्ड बनाउने",
+  "uuid-generator": "UUID बनाउने",
+  "regex-tester": "Regex जाँचकर्ता",
+  "jwt-decoder": "JWT Decoder",
+  "color-picker-palette": "रङ छान्ने तथा प्यालेट",
+  "color-contrast-checker": "रङ Contrast जाँच",
+  "css-minifier": "CSS Minifier",
+  "meta-title-checker": "Meta Title जाँच",
+  "meta-description-checker": "Meta Description जाँच",
+  "keyword-density-checker": "Keyword Density जाँच",
+  "robots-txt-generator": "robots.txt Generator",
+  "sitemap-generator": "XML Sitemap Generator",
+  "open-graph-preview": "Open Graph Preview",
 };
 const nepaliDescriptions: Record<string, string> = {
   "xml-formatter-validator": "XML syntax जाँचेर सुरक्षित रूपमा indentation मिलाउनुहोस्।",
@@ -135,6 +148,19 @@ const nepaliDescriptions: Record<string, string> = {
   "html-tag-stripper": "HTML snippet बाट देखिने पाठ ब्राउजरमै निकाल्नुहोस्।",
   "savings-goal-calculator": "लक्ष्य, हालको बचत, अवधि र अनुमानित ब्याजका आधारमा मासिक बचत निकाल्नुहोस्।",
   "nepal-share-calculator": "शेयर कारोबारको नाफा वा नोक्सान तपाईंले दिएको शुल्क र कर दरअनुसार अनुमान गर्नुहोस्।",
+  "password-generator": "ब्राउजरमै क्रिप्टोग्राफिक random बाट पासवर्ड बनाउनुहोस्; कुनै डेटा सर्भरमा पठाइँदैन।",
+  "uuid-generator": "Web Crypto API प्रयोग गरी UUID v4 बनाउनुहोस्।",
+  "regex-tester": "JavaScript regular expression बाट पाठमा मिल्ने अंशहरू जाँच्नुहोस्।",
+  "jwt-decoder": "JWT header र payload ब्राउजरमै decode गर्नुहोस्; signature verify हुँदैन।",
+  "color-picker-palette": "HEX रङ छान्नुहोस् र त्यसको RGB मान हेर्नुहोस्।",
+  "color-contrast-checker": "दुई HEX रङबीच contrast ratio र WCAG AA/AAA अनुपालन जाँच्नुहोस्।",
+  "css-minifier": "CSS बाट comment र अनावश्यक whitespace हटाएर compact बनाउनुहोस्।",
+  "meta-title-checker": "Meta title को अक्षर संख्या र सामान्य SERP guideline जाँच्नुहोस्।",
+  "meta-description-checker": "Meta description को लम्बाइ जाँच्नुहोस्; Google snippet को ग्यारेन्टी हुँदैन।",
+  "keyword-density-checker": "लेखमा exact-match keyword को आवृत्ति र प्रतिशत अनुमान गर्नुहोस्।",
+  "robots-txt-generator": "आधारभूत robots.txt तयार गर्नुहोस्; deploy अघि crawler नियम जाँच्नुहोस्।",
+  "sitemap-generator": "दिइएका canonical URL बाट XML sitemap बनाउनुहोस्।",
+  "open-graph-preview": "शीर्षक, विवरण र image URL बाट social sharing preview हेर्नुहोस्।",
   "resume-builder": "२० वटा व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन, सम्पादनयोग्य खण्ड र PDF निर्यात प्रयोग गरी व्यवस्थित CV बनाउनुहोस्।",
   "csv-to-json": "पहिलो पङ्क्तिलाई शीर्षक मानेर CSV डेटालाई JSON array मा बदल्नुहोस्।",
   "json-to-yaml": "JSON डेटालाई पढ्न सजिलो YAML ढाँचामा बदल्नुहोस्।",
@@ -266,7 +292,7 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
-  if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator"].includes(toolSlug)) {
+  if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator", "password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliRemainingToolsWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && toolSlug === "resume-builder") {

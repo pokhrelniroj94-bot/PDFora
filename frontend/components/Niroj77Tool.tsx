@@ -56,7 +56,7 @@ export default function NirojToolsTool({
   const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
   const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;
   const localizedFormPlaceholder = locale === "ne" ? getNepaliPdfFieldText(formPlaceholder) : formPlaceholder;
-  const localizedExtraFields = locale === "ne" ? extraFields.map((field) => ({ ...field, label: getNepaliPdfFieldText(field.label) || field.label, placeholder: getNepaliPdfFieldText(field.placeholder) })) : extraFields;
+  const localizedExtraFields = locale === "ne" ? extraFields.map((field) => ({ ...field, label: getNepaliPdfFieldText(field.label) || field.label, placeholder: getNepaliPdfFieldText(field.placeholder), defaultValue: getNepaliPdfFieldText(field.defaultValue) || field.defaultValue })) : extraFields;
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
   const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((field) => [field.name, locale === "ne" ? getNepaliPdfFieldText(field.defaultValue) || field.defaultValue || "" : field.defaultValue || ""])));
@@ -209,9 +209,11 @@ export default function NirojToolsTool({
       setMessage(
         timedOut
           ? ui.serverTimeout
-          : error instanceof Error
-            ? error.message
-            : ui.couldNotProcess
+          : locale === "ne"
+            ? ui.processingFailed
+            : error instanceof Error
+              ? error.message
+              : ui.couldNotProcess
       );
     } finally {
       setLoading(false);
@@ -374,7 +376,7 @@ export default function NirojToolsTool({
                     : "text"
                 }
                 placeholder={
-                  formPlaceholder || ui.enterValue
+                  localizedFormPlaceholder || ui.enterValue
                 }
                 className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-100"
               />
@@ -405,7 +407,7 @@ export default function NirojToolsTool({
                 {ui.processing}
               </span>
             ) : (
-              title
+              displayTitle
             )}
           </button>
 

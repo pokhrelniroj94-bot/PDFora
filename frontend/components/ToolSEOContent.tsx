@@ -1,6 +1,6 @@
 import Link from "next/link";
 import AdsterraNative from "../app/components/AdsterraNative";
-import { getToolGuide } from "../lib/tool-guides";
+import { getToolGuide, toolGuides } from "../lib/tool-guides";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 const seoLabels = {
@@ -33,10 +33,20 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
   if (!baseGuide) return null;
   const guide = locale === "ne" && nepaliToolGuides[slug] ? { ...baseGuide, ...nepaliToolGuides[slug] } : baseGuide;
   const toolName = locale === "ne" ? nepaliToolNames[slug] || guide.name : guide.name;
+  const localizeGuideText = (value: string) => locale !== "ne" ? value : toolGuides.reduce(
+    (text, item) => nepaliToolNames[item.slug] ? text.replaceAll(item.name, nepaliToolNames[item.slug]) : text,
+    value,
+  );
+  const localizedGuide = locale === "ne" ? {
+    ...guide,
+    purpose: localizeGuideText(guide.purpose),
+    steps: guide.steps.map(localizeGuideText),
+    caution: localizeGuideText(guide.caution),
+  } : guide;
   const faqs = [
-    { q: localizedFaqs[locale]?.[0]?.replace("{name}", toolName) || `What does ${toolName} do?`, a: guide.purpose },
-    { q: localizedFaqs[locale]?.[1]?.replace("{name}", toolName) || `How do I ${toolName.toLowerCase()} online?`, a: guide.steps.join(" ") },
-    { q: localizedFaqs[locale]?.[2]?.replace("{name}", toolName) || `What should I check after using ${toolName.toLowerCase()}?`, a: guide.caution },
+    { q: localizedFaqs[locale]?.[0]?.replace("{name}", toolName) || `What does ${toolName} do?`, a: localizedGuide.purpose },
+    { q: localizedFaqs[locale]?.[1]?.replace("{name}", toolName) || `How do I ${toolName.toLowerCase()} online?`, a: localizedGuide.steps.join(" ") },
+    { q: localizedFaqs[locale]?.[2]?.replace("{name}", toolName) || `What should I check after using ${toolName.toLowerCase()}?`, a: localizedGuide.caution },
     { q: localizedFaqs[locale]?.[3] || "Which PDF tasks may I need next?", a: locale === "ne" ? `तपाईंको कामअनुसार सम्बन्धित टुलहरू प्रयोग गर्न सक्नुहुन्छ: ${guide.related.map((item) => nepaliToolNames[item] || item).join(", ")}। मूल PDF सुरक्षित राख्नुहोस् र नतिजा साझा गर्नुअघि जाँच्नुहोस्।` : `Depending on your document workflow, related tasks include ${guide.related.map((item) => item.replace(/-/g, " ")).join(", ")}. Keep the original PDF and inspect each processed file before sharing it.` },
     { q: localizedFaqs[locale]?.[4] || "Can I use this PDF tool on a phone?", a: locale === "ne" ? "यो टुल आधुनिक मोबाइल ब्राउजरमा उपलब्ध छ। फाइल छान्ने र डाउनलोड गर्ने तरिका तपाईंको डिभाइस, ब्राउजर र उपलब्ध स्टोरेजअनुसार फरक हुन सक्छ।" : "The tool is available in modern mobile browsers. File selection and download behaviour can vary by device, browser and available storage." },
     { q: localizedFaqs[locale]?.[5] || "Should I keep a copy of the original PDF?", a: locale === "ne" ? "हो। अन्तिम फाइल खोलेर जाँच नगरेसम्म र आवश्यक पृष्ठ तथा जानकारी भएको पुष्टि नगरेसम्म मूल PDF को नबदलिएको प्रतिलिपि राख्नुहोस्।" : "Yes. Keep an untouched copy until you have opened and checked the final file and confirmed that it contains the pages and information you need." }
@@ -48,7 +58,7 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
     name: toolName,
     applicationCategory: "UtilitiesApplication",
     operatingSystem: "Any",
-    description: guide.purpose,
+    description: localizedGuide.purpose,
     url: pageUrl,
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
   };
@@ -66,7 +76,7 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-600">{labels[0]}</p>
         <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-950">{labels[1]} {toolName} {labels[2]}</h2>
-        <p className="mt-4 text-sm leading-8 text-slate-700">{guide.purpose}</p>
+        <p className="mt-4 text-sm leading-8 text-slate-700">{localizedGuide.purpose}</p>
         <p className="mt-4 text-sm leading-8 text-slate-700">{locale === "ne" ? `अध्ययन, कार्यालयको काम, अभिलेख व्यवस्थापन वा अनलाइन आवेदनका लागि PDF तयार गर्दा यो प्रक्रिया उपयोगी हुन सक्छ। यस मार्गदर्शिकामा ${toolName} को उपयोग, फाइल तयार गर्ने तरिका, प्रक्रिया पूरा भएपछि जाँच्नुपर्ने कुरा र सम्भावित सीमाबारे जानकारी दिइएको छ। वास्तविक विकल्पहरू माथिको टुलमा देखाइएका विकल्पअनुसार हुन्छन्।` : `The right workflow for ${toolName.toLowerCase()} depends on the source PDF and the requirements of the person or service receiving it. This guide covers file preparation, the steps shown in the workspace, checks to make after processing and limitations that may affect the output. Use the on-page controls as the source of truth for the options available in this tool.`}</p>
         <p className="mt-4 text-sm leading-8 text-slate-700">{locale === "ne" ? "सुरु गर्नुअघि मूल PDF खोलेर आवश्यक पृष्ठ र सामग्री ठीक छन् कि जाँच्नुहोस्। महत्त्वपूर्ण कागजात भए नबदलिएको प्रतिलिपि छुट्टै राख्नुहोस्। फाइल बुझाउने वेबसाइटले आकार, पृष्ठ संख्या, पृष्ठको मापन वा अन्य PDF सर्त तोकेको छ कि पहिले हेर्नुहोस्। गलत फाइल छानेर प्रक्रिया दोहोर्‍याउनुभन्दा सुरुमा सही फाइल तयार गर्नु राम्रो हुन्छ।" : "Before you begin, open the original PDF and check that it contains the correct pages. If the document is important, save an untouched backup. Check whether the receiving website has a maximum file size, page count, page dimension or other PDF requirement. Preparing the right source file is often more useful than repeating the operation after a preventable input mistake."}</p>
       </section>
@@ -74,7 +84,7 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <h2 className="text-xl font-black text-slate-950">{labels[3]} {toolName.toLowerCase()} {labels[4]}</h2>
         <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-8 text-slate-700">
-          {guide.steps.map((step) => <li key={step}>{step}</li>)}
+          {localizedGuide.steps.map((step) => <li key={step}>{step}</li>)}
           <li>{locale === "ne" ? "डाउनलोड गरिएको नतिजा उपयुक्त एपमा खोलेर यसको सामग्री, संरचना र फाइल ढाँचा जाँच्नुहोस्; त्यसपछि मात्र साझा वा बुझाउनुहोस्।" : "Open the downloaded result in the appropriate app and verify its content, structure and file type before sharing or submitting it."}</li>
         </ol>
         <p className="mt-4 text-sm leading-8 text-slate-700">{locale === "ne" ? "टुलमा देखिएका नियन्त्रण मात्र प्रयोग गर्नुहोस्। फरक PDF कामका सेटिङ पनि फरक हुन्छन्; पृष्ठ छान्ने, कम्प्रेस स्तर वा सम्पादन विकल्प टुलमा देखिएको छैन भने उपलब्ध छ भनेर नमान्नुहोस्।" : "Use the controls that are actually available in the workspace. Different PDF operations have different settings, so do not assume that a page-selection option, compression level or editing control exists unless it is shown on this tool page."}</p>
@@ -87,7 +97,7 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
       </section>
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <h2 className="text-xl font-black text-slate-950">{labels[6]}</h2>
-        <p className="mt-4 text-sm leading-8 text-slate-700">{guide.caution}</p>
+        <p className="mt-4 text-sm leading-8 text-slate-700">{localizedGuide.caution}</p>
         <p className="mt-4 text-sm leading-8 text-slate-700">{locale === "ne" ? "PDF भित्र छान्न मिल्ने पाठ, स्क्यान गरिएका पृष्ठका तस्बिर, इम्बेड गरिएका फन्ट, बुकमार्क, फारामका फिल्ड, टिप्पणी, लिंक र डिजिटल हस्ताक्षर हुन सक्छन्। प्रत्येक प्रक्रिया सबै फाइलमा यी सबै सुविधा जस्ताको तस्तै राख्न सक्षम नहुन सक्छ। स्क्यान गरिएको PDF र पाठमा आधारित PDF फरक तरिकाले प्रशोधन हुन सक्छन्; पासवर्ड सुरक्षा वा फाइल बिग्रिएको अवस्थाले प्रक्रिया रोक्न सक्छ।" : "PDF is a container format. A file may include selectable text, scanned page images, embedded fonts, bookmarks, form fields, annotations, hyperlinks and digital signatures. A particular operation may not preserve every feature in every document. Scanned pages can behave differently from text-based pages, and password protection or file damage can prevent processing."}</p>
         <p className="mt-4 text-sm leading-8 text-slate-700">{locale === "ne" ? "प्रिन्ट गर्ने हो भने पृष्ठको मापन, मार्जिन र तस्बिरको स्पष्टता जाँच्नुहोस्। स्क्रिनमा पढ्ने हो भने अक्षर प्रस्ट छन् कि र आवश्यक लिंक वा बुकमार्क चल्छन् कि हेर्नुहोस्। डिजिटल हस्ताक्षर भएको फाइलमा प्रक्रिया गर्दा हस्ताक्षर गरिएको सामग्री परिवर्तन हुन्छ वा हस्ताक्षर अमान्य हुन्छ कि बुझेर मात्र नतिजा प्रयोग गर्नुहोस्।" : "If the output is intended for printing, inspect page dimensions, margins and image clarity. If it is intended for reading on screen, check that text is legible and links or bookmarks work where relevant. If it contains a digital signature, confirm whether the operation changes the signed content or invalidates the signature before using the result."}</p>
       </section>

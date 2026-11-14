@@ -228,9 +228,11 @@ export default function PDForaTool({
           ? ui.serverTimeout
           : error instanceof TypeError
             ? ui.connectionFailed
-            : error instanceof Error
-              ? error.message
-              : ui.couldNotProcess
+            : locale === "ne"
+              ? ui.processingFailed
+              : error instanceof Error
+                ? error.message
+                : ui.couldNotProcess
       );
     } finally {
       setLoading(false);
@@ -422,7 +424,7 @@ export default function PDForaTool({
                     : "text"
                 }
                 placeholder={
-                  formPlaceholder || ui.enterValue
+                  localizedFormPlaceholder || ui.enterValue
                 }
                 className="min-h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-100"
               />
@@ -442,7 +444,7 @@ export default function PDForaTool({
                 {ui.processing}
               </span>
             ) : (
-              title
+              displayTitle
             )}
           </button>
 
@@ -488,7 +490,7 @@ export default function PDForaTool({
           className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7"
         >
           <h2 id="how-to-use-title" className="text-xl font-black tracking-tight">
-            {ui.howToUse} {title}
+            {ui.howToUse} {displayTitle}
           </h2>
           <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-600">
             <li>{ui.stepSelect}</li>

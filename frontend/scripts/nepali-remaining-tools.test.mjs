@@ -94,7 +94,7 @@ test("sitemap generator validates URLs and escapes XML text", () => {
 });
 
 test("robots generator uses an allow-by-default policy and validates sitemap URL", () => {
-  assert.equal(buildRobotsTxt(), "User-agent: *\\nAllow: /\\n");
+  assert.equal(buildRobotsTxt(), "User-agent: *\nAllow: /\n");
   assert.match(buildRobotsTxt("https://example.com/sitemap.xml"), /Sitemap: https:\/\/example.com\/sitemap.xml/);
   assert.throws(() => buildRobotsTxt("javascript:alert(1)"), /HTTP वा HTTPS/);
 });

@@ -91,6 +91,7 @@ test("sitemap generator validates URLs and escapes XML text", () => {
   assert.match(xml, /a=1&amp;b=2/);
   assert.equal((xml.match(/<url>/g) ?? []).length, 2);
   assert.throws(() => buildSitemap(["javascript:alert(1)"]), /अमान्य URL/);
+  assert.throws(() => buildSitemap([]), /कम्तीमा एउटा URL/);
 });
 
 test("robots generator uses an allow-by-default policy and validates sitemap URL", () => {

@@ -33,6 +33,10 @@ const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map
 const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
 const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
+const browserOnlyGrowthSlugs = ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"];
+if (allTools.includes('import("./BrowserOnlyGrowthTools")') && browserOnlyGrowthSlugs.every((slug) => allTools.includes(`"${slug}"`))) {
+  for (const slug of browserOnlyGrowthSlugs) implemented.add(slug);
+}
 if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {
   implemented.add("image-compressor");
   implemented.add("image-format-converter");

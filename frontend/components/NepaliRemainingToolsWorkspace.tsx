@@ -96,7 +96,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     } catch (cause) {
       return { text: "", error: cause instanceof Error ? cause.message : "इनपुट जाँच गर्नुहोस्।" };
     }
-  }, [slug, source, secondary, flags]);
+  }, [slug, source, secondary, third, flags]);
 
   const generatePassword = () => {
     const alphabet = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ" + (includeNumbers ? "23456789" : "") + (includeSymbols ? "!@#$%&*+-_?" : "");

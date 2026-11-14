@@ -89,6 +89,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
         return { text: buildRobotsTxt(secondary), error: "" };
       }
       if (slug === "sitemap-generator") {
+        if (!source.trim()) return { text: "", error: "" };
         return { text: buildSitemap(source.split(/\r?\n/)), error: "" };
       }
       return { text: "", error: "" };

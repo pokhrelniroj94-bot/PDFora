@@ -2,24 +2,22 @@
 
 ## Current authoritative status — 2026-11-14 (source-generated)
 
-The tool inventory is generated from `legacy-tool-slugs.ts` plus `toolCatalog.ts`, excluding the `pdf-tools` directory entry. Historical sections below are retained as history and must not override this status.
+The reconciled canonical inventory is generated from `legacy-tool-slugs.ts` plus `toolCatalog.ts`, excluding the `pdf-tools` collection entry. Historical sections below are retained as history and must not override this status.
 
 | Dimension | Evidence |
 |---|---|
-| Inventory | **169 tools** = 49 PDF + 120 catalog utilities (2,028 matrix rows = 12 locales × 169). Earlier 173-tool / 124-utility figures are stale. |
-| Nepali route handling | The shared dynamic route can resolve catalog entries, but a valid route is not proof of a Nepali interface. Missing interfaces show the explicit English fallback notice. |
-| Nepali interface present | **151/169** (49 PDF + 102 catalog). **18 not implemented:** currency-converter, image-compressor, image-format-converter, color-picker-palette, password-generator, uuid-generator, regex-tester, jwt-decoder, color-contrast-checker, css-minifier, meta-title-checker, meta-description-checker, keyword-density-checker, robots-txt-generator, sitemap-generator, open-graph-preview, preeti-unicode-converter, nepali-unicode-typing. Five additional workspaces (XML formatter, Notes to PDF, HTML tag stripper, savings goal and Nepal share calculator) are now routed to dedicated Nepali interfaces; runtime/CI verification is pending. |
-| Targeted Nepali unit tests | 37/151 localized interfaces have targeted unit-test coverage recorded by the matrix. The other localized tools are not individually functionally verified. |
-| Browser QA | One full browser E2E PASS (Merge PDF); the remaining 168 tools are not individually browser-certified. See `docs/qa/REMAINING_WORK.md`. |
+| Inventory | **174 tools** = 49 PDF + 125 catalog utilities (2,088 matrix rows = 12 locales × 174). |
+| Nepali interface present | **169/174** = 49 PDF + 120 catalog utility interfaces. Five restored legacy browser-only utilities remain English-only: email-signature-generator, timezone-meeting-planner, image-dpi-calculator, video-bitrate-calculator and markdown-table-generator. |
+| Targeted Nepali unit tests | **44/169** localized interfaces have targeted unit-test coverage recorded by the matrix. Other interfaces are not individually functionally certified. |
+| Browser QA | The latest attempted CI run successfully passed setup, build, dependency audit, local security/SEO checks, sitemap validation, live-data checks and backend tests. Its Merge PDF browser test was blocked by a stale 169-tool assertion; that assertion and report counts have now been corrected. A fresh CI run is required to certify the fix. |
 | Human / native review | Not assessed for all Nepali tools. No complete native-review sign-off is recorded. |
-| SEO eligibility | Six Nepali PDF tool URLs are on the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing, sitemap and hreflang until their individual approval gates pass. |
-| Publication | English and Nepali only. Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Chinese and Japanese remain unpublished. Shared dictionary key parity is not full-site translation. |
-| Production | PR #162 has not been deployed. The latest Vercel production deployment inspected used commit `982b5b5d73b77edbee516bce22af7dc03723c49d` from a different branch; the live homepage displayed 174 tools, which must be reconciled with the 169-tool source inventory. |
-
+| SEO eligibility | Six Nepali PDF tool URLs remain on the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing, sitemap and hreflang until individual approval gates pass. |
+| Publication | English and Nepali only. Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Chinese and Japanese remain unpublished. |
+| Production | PR #162 has not been deployed. The latest inspected production commit is `982b5b5d73b77edbee516bce22af7dc03723c49d`, from a different branch. |
 
 ### Nepali batch 4 — five additional interfaces (2026-11-14)
 
-Added route-specific Nepali workspaces for XML formatting/validation, Notes to PDF (browser print-to-PDF), HTML tag stripping, savings-goal calculation and a Nepal share profit/loss estimator. These five are included in the 151/169 interface-present count. They are **not** counted as functionally tested, browser-tested, natively reviewed or index-approved. Share fee/tax inputs are user-entered rather than asserted as current statutory rates. Notes-to-PDF uses the browser print dialog and needs a full print-preview/download browser check.
+Added route-specific Nepali workspaces for XML formatting/validation, Notes to PDF (browser print-to-PDF), HTML tag stripping, savings-goal calculation and a Nepal share profit/loss estimator. These five were included in the earlier 151/169 interface-present count; current reconciled coverage is 169/174. They are **not** counted as functionally tested, browser-tested, natively reviewed or index-approved. Share fee/tax inputs are user-entered rather than asserted as current statutory rates. Notes-to-PDF uses the browser print dialog and needs a full print-preview/download browser check.
 
 ### Added in this branch (Nepali batch 2: encoding, case and unit tools)
 text-to-binary, binary-to-text, text-to-hex, hex-to-text, morse-code-translator, camel-case-converter, snake-case-converter, kebab-case-converter, json-escape-unescape, px-rem-converter, roman-numeral-converter — logic in `lib/i18n/nepali-encoding-case-tools.ts`, UI in `components/NepaliEncodingCaseWorkspace.tsx`, test in `scripts/nepali-encoding-case-tools.test.mjs`.

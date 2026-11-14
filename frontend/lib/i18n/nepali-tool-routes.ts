@@ -60,6 +60,17 @@ export const nepaliLocalizedUtilitySlugs = [
   "gold-tola-gram-converter",
   "nepali-calendar",
   "loksewa-photo-resizer",
+  "text-to-binary",
+  "binary-to-text",
+  "text-to-hex",
+  "hex-to-text",
+  "morse-code-translator",
+  "camel-case-converter",
+  "snake-case-converter",
+  "kebab-case-converter",
+  "json-escape-unescape",
+  "px-rem-converter",
+  "roman-numeral-converter",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

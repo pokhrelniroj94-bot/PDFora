@@ -30,7 +30,7 @@ const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh
 const rtlLocales = new Set(["ur", "ar"]);
 const publishedLocales = new Set(["en", "ne"]);
 const handlerEvidence = "catalog-handler-check";
-const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"]);
+const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator", "text-to-binary", "binary-to-text", "text-to-hex", "hex-to-text", "morse-code-translator", "camel-case-converter", "snake-case-converter", "kebab-case-converter", "json-escape-unescape", "px-rem-converter", "roman-numeral-converter"]);
 
 const matrix = [];
 for (const locale of locales) {

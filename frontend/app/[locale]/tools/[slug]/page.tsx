@@ -14,6 +14,7 @@ import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtility
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
+import NepaliEncodingCaseWorkspace from "../../../../components/NepaliEncodingCaseWorkspace";
 import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWorkspace";
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
@@ -21,6 +22,17 @@ import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLo
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const nepaliTitles: Record<string, string> = {
+  "text-to-binary": "पाठबाट बाइनरी",
+  "binary-to-text": "बाइनरीबाट पाठ",
+  "text-to-hex": "पाठबाट Hexadecimal",
+  "hex-to-text": "Hexadecimal बाट पाठ",
+  "morse-code-translator": "मोर्स कोड अनुवादक",
+  "camel-case-converter": "camelCase रूपान्तरण",
+  "snake-case-converter": "snake_case रूपान्तरण",
+  "kebab-case-converter": "kebab-case रूपान्तरण",
+  "json-escape-unescape": "JSON Escape / Unescape",
+  "px-rem-converter": "px ↔ rem रूपान्तरण",
+  "roman-numeral-converter": "रोमन अंक रूपान्तरण",
   "nepali-digit-converter": "नेपाली अंक रूपान्तरण",
   "nepali-number-converter": "नेपाली नम्बर रूपान्तरण",
   "nepali-date-converter": "नेपाली मिति रूपान्तरण",
@@ -94,6 +106,17 @@ const nepaliTitles: Record<string, string> = {
   "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",
 };
 const nepaliDescriptions: Record<string, string> = {
+  "text-to-binary": "कुनै पनि पाठ (नेपाली सहित) UTF-8 बाइटमा बदली ८-bit बाइनरी समूहमा देखाउनुहोस्।",
+  "binary-to-text": "खाली स्थानले छुट्याइएका ८-bit बाइनरी समूहलाई UTF-8 पाठमा फर्काउनुहोस्।",
+  "text-to-hex": "पाठलाई UTF-8 बाइटमा बदली hexadecimal (आधार १६) मा देखाउनुहोस्।",
+  "hex-to-text": "Hex बाइट जोडालाई UTF-8 पाठमा फर्काउनुहोस्।",
+  "morse-code-translator": "अङ्ग्रेजी अक्षर र अंकलाई मोर्स कोडमा बदल्नुहोस् वा मोर्स कोडबाट पाठ निकाल्नुहोस्।",
+  "camel-case-converter": "पाठलाई प्रोग्रामिङमा प्रयोग हुने camelCase नाममा बदल्नुहोस्।",
+  "snake-case-converter": "पाठलाई underscore ले जोडिएको snake_case नाममा बदल्नुहोस्।",
+  "kebab-case-converter": "पाठलाई hyphen ले जोडिएको kebab-case नाममा बदल्नुहोस्।",
+  "json-escape-unescape": "पाठलाई JSON string मा सुरक्षित बनाउनुहोस् वा escape गरिएको string खोल्नुहोस्।",
+  "px-rem-converter": "CSS मा px र rem एकाइबीच रूपान्तरण गर्नुहोस्।",
+  "roman-numeral-converter": "१ देखि ३९९९ सम्मका सङ्ख्या र रोमन अंकबीच रूपान्तरण गर्नुहोस्।",
   "nepali-digit-converter": "अङ्ग्रेजी अंकलाई नेपाली देवनागरी अंकमा र नेपाली अंकलाई अङ्ग्रेजी अंकमा रूपान्तरण गर्नुहोस्।",
   "nepali-number-converter": "नम्बरलाई नेपाली अंकमा देखाउनुहोस् र नेपाली लाख तथा करोडको ढाँचा जाँच्नुहोस्।",
   "nepali-date-converter": "विक्रम संवत् र इस्वी संवत्का मितिहरूबीच रूपान्तरण गर्नुहोस् र समर्थित मिति दायरा जाँच्नुहोस्।",
@@ -218,6 +241,9 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && ["nepal-phone-validator", "gold-tola-gram-converter", "nepali-calendar", "loksewa-photo-resizer"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाल उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliNepalToolsWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["text-to-binary", "binary-to-text", "text-to-hex", "hex-to-text", "morse-code-translator", "camel-case-converter", "snake-case-converter", "kebab-case-converter", "json-escape-unescape", "px-rem-converter", "roman-numeral-converter"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली एन्कोडिङ तथा केस रूपान्तरण टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliEncodingCaseWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;

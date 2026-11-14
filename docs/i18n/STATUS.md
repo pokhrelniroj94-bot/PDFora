@@ -1,5 +1,29 @@
 # PDFora i18n rollout: status
 
+## Current authoritative status — 2026-11-14 (regenerated from source at master 3312302 + this branch)
+
+All numbers below come from `npm run i18n:matrix` / `i18n:coverage` run against the checked-out source. Earlier sections of this file are historical.
+
+| Dimension | Evidence |
+|---|---|
+| Inventory | **169 tools** = 49 PDF + 120 catalog utilities (2,028 matrix rows = 12 locales × 169). The earlier 173-tool figures were stale (retired AI tools / unavailable OCR). |
+| Route existence | 169/169 Nepali routes resolve. This is **not** translation completeness. |
+| Nepali interface present | **130/169** (49 PDF + 81 catalog). **39 not implemented:** resume-builder, currency-converter, image-compressor, image-format-converter, color-picker-palette, password-generator, uuid-generator, regex-tester, jwt-decoder, color-contrast-checker, css-minifier, json-to-csv, meta-title-checker, meta-description-checker, keyword-density-checker, robots-txt-generator, sitemap-generator, open-graph-preview, savings-goal-calculator, url-query-parser, xml-formatter-validator, notes-to-pdf, html-tag-stripper, csv-to-json, json-to-yaml, url-validator, email-validator, password-strength-checker, random-number-generator, dice-roller, unix-timestamp-converter, date-add-subtract-calculator, business-days-calculator, aspect-ratio-calculator, color-converter, css-gradient-generator, nepal-share-calculator, preeti-unicode-converter, nepali-unicode-typing. |
+| Previous conflicting counts | 70 vs 119 Nepali entries: 70 = catalog tools only (119 = 49 PDF + 70 catalog). After this branch: 81 catalog / 130 total. |
+| Functional tests | 22 Nepali tools have targeted unit tests (11 pre-existing + 11 added here). All others: not individually verified. No browser E2E was run in this session. |
+| Human / native review | Not assessed for any Nepali tool. Nothing is marked reviewed. |
+| SEO eligibility | Unchanged: 6 Nepali PDF tool URLs on the explicit allowlist. The 81 localized catalog tools stay `noindex`, outside sitemap and hreflang. |
+| Publication | English and Nepali only. Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Chinese and Japanese remain **unpublished** (dictionaries pass key parity but have no tool/blog/static localization and no human review). |
+| Production deployment | Not deployed by this branch. |
+
+### Added in this branch (Nepali batch 2: encoding, case and unit tools)
+text-to-binary, binary-to-text, text-to-hex, hex-to-text, morse-code-translator, camel-case-converter, snake-case-converter, kebab-case-converter, json-escape-unescape, px-rem-converter, roman-numeral-converter — logic in `lib/i18n/nepali-encoding-case-tools.ts`, UI in `components/NepaliEncodingCaseWorkspace.tsx`, test in `scripts/nepali-encoding-case-tools.test.mjs`.
+Deliberate differences from English: Nepali validation messages; case converters keep Devanagari/Unicode letters; Devanagari digits accepted in px/rem and Roman numerals; morse notes dropped characters; empty input shows a message.
+
+### Verification actually executed for this branch
+PASS: `npm run verify:tools`, `npm run i18n:test` (42/42 node tests plus all script suites), `npm run i18n:check`, `npm run tools:test`.
+NOT RUN (the authoring sandbox blocks package installation, so `node_modules` is absent): `npm test -- --runInBand` (Jest), `npm run lint`, `npx tsc --noEmit`, `npm run build`, backend tests, browser E2E. The new `.tsx` component and page wiring are therefore **not type-checked or built**; CI must pass before merge.
+
 ## Authoritative localization counts — 2026-11-07
 
 The generated `TOOL_LANGUAGE_COVERAGE_MATRIX.json` is the current machine-readable source for per-tool locale status. It was generated at `2026-11-07T09:39:50.763Z` from source commit `c13a9fbbc2f8f70b3b0de82e9bf8640e48844d33` (the matrix must be regenerated on the final QA commit before release).

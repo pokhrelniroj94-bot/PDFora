@@ -10,12 +10,6 @@ const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 const panel = "rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-7 text-slate-800";
 const copy = (value: string) => void navigator.clipboard?.writeText(value);
 
-function base64UrlDecode(value: string) {
-  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
-  const binary = atob(normalized + "=".repeat((4 - normalized.length % 4) % 4));
-  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
-  return new TextDecoder().decode(bytes);
-}
 
 export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }) {
   const [source, setSource] = useState("");

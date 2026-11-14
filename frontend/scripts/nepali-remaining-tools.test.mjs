@@ -92,10 +92,12 @@ test("sitemap generator validates URLs and escapes XML text", () => {
   assert.equal((xml.match(/<url>/g) ?? []).length, 2);
   assert.throws(() => buildSitemap(["javascript:alert(1)"]), /अमान्य URL/);
   assert.throws(() => buildSitemap([]), /कम्तीमा एउटा URL/);
+  assert.throws(() => buildSitemap(Array.from({ length: 50001 }, (_, index) => `https://example.com/${index}`)), /५०,०००/);
 });
 
 test("robots generator uses an allow-by-default policy and validates sitemap URL", () => {
   assert.equal(buildRobotsTxt(), "User-agent: *\nAllow: /\n");
   assert.match(buildRobotsTxt("https://example.com/sitemap.xml"), /Sitemap: https:\/\/example.com\/sitemap.xml/);
   assert.throws(() => buildRobotsTxt("javascript:alert(1)"), /HTTP वा HTTPS/);
+  assert.throws(() => buildRobotsTxt("https://example.com/\\nDisallow: /secret"), /नयाँ लाइन/);
 });

@@ -209,9 +209,11 @@ export default function NirojToolsTool({
       setMessage(
         timedOut
           ? ui.serverTimeout
-          : error instanceof Error
-            ? error.message
-            : ui.couldNotProcess
+          : locale === "ne"
+            ? ui.processingFailed
+            : error instanceof Error
+              ? error.message
+              : ui.couldNotProcess
       );
     } finally {
       setLoading(false);
@@ -405,7 +407,7 @@ export default function NirojToolsTool({
                 {ui.processing}
               </span>
             ) : (
-              {displayTitle}
+              displayTitle
             )}
           </button>
 

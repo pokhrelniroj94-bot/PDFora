@@ -34,10 +34,10 @@ export default function NepaliTypingTool({ locale = "en" }: { locale?: "en" | "n
       if (window.nepalify?.format) setReady(true);
       else setError(ne ? "टाइपिङ script लोड भयो तर API भेटिएन। पृष्ठ पुनःलोड गर्नुहोस् वा Preeti converter प्रयोग गर्नुहोस्।" : "Nepali typing script loaded, but its API was not found. Please reload or use the Preeti converter.");
     };
-    script.onerror = () => setError("Nepali typing library could not load. Check your internet connection and retry.");
+    script.onerror = () => setError(ne ? "नेपाली टाइपिङ library लोड भएन। इन्टरनेट जाँचेर फेरि प्रयास गर्नुहोस्।" : "Nepali typing library could not load. Check your internet connection and retry.");
     document.head.appendChild(script);
     return () => { script.onload = null; script.onerror = null; };
-  }, []);
+  }, [ne]);
   const convert = () => {
     try {
       if (!window.nepalify?.format) throw new Error("Typing library is still loading.");

@@ -785,12 +785,12 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "image-dpi-calculator") {
         const dpi = await page.evaluate('document.querySelector("main")?.innerText || ""');
-        if (!/300\.0\\s+PPI/.test(dpi) || !/2,400 × 3,000 px/.test(dpi) || !/at or above/i.test(dpi)) {
+        if (!/300\.0\s+PPI/.test(dpi) || !/2,400 × 3,000 px/.test(dpi) || !/at or above/i.test(dpi)) {
           throw new Error("Image DPI calculator default 2400×3000px at 8×10in did not produce 300 PPI.");
         }
         await setFieldByLabel(page, "Print measurement unit", "cm");
         const converted = await page.evaluate('document.querySelector("main")?.innerText || ""');
-        if (!/762\.0\\s+PPI/.test(converted)) throw new Error("Image DPI calculator did not recalculate correctly for centimetres.");
+        if (!/762\.0\s+PPI/.test(converted)) throw new Error("Image DPI calculator did not recalculate correctly for centimetres.");
         row.checks.push("300 PPI baseline and centimetre unit conversion verified");
         row.action = "Calculate print resolution";
         row.output = converted.slice(-650);
@@ -801,7 +801,7 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "video-bitrate-calculator") {
         const bitrate = await page.evaluate('document.querySelector("main")?.innerText || ""');
-        if (!/6,667\\s+kbps/.test(bitrate) || !/6,141\\s+kbps/.test(bitrate) || !/500\.0 MB/.test(bitrate)) {
+        if (!/6,667\s+kbps/.test(bitrate) || !/6,141\s+kbps/.test(bitrate) || !/500\.0 MB/.test(bitrate)) {
           throw new Error("Video bitrate calculator did not match the 10-minute, 500MB baseline.");
         }
         if (!(await setFieldByLabel(page, "Audio bitrate (kbps)", "7000"))) throw new Error("Audio bitrate field is missing.");
@@ -816,10 +816,10 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "markdown-table-generator") {
-        const source = "Name\\tRole\\nAsha\\tEngineer | QA\\nRavi\\tDesigner";
+        const source = "Name\tRole\nAsha\tEngineer | QA\nRavi\tDesigner";
         if (!(await setFirstTextArea(page, source))) throw new Error("Markdown table source textarea is missing.");
         const markdown = await page.evaluate('document.querySelector("main pre")?.innerText || ""');
-        if (!markdown.includes("| Name | Role |") || !markdown.includes("| Asha | Engineer \\\\| QA |") || !markdown.includes("| Ravi | Designer |") || !markdown.includes("| --- | --- |")) {
+        if (!markdown.includes("| Name | Role |") || !markdown.includes("| Asha | Engineer \\| QA |") || !markdown.includes("| Ravi | Designer |") || !markdown.includes("| --- | --- |")) {
           throw new Error("Markdown table output did not preserve rows, headers and escaped pipe characters.");
         }
         row.checks.push("tab-separated input converted to Markdown with pipe escaping");

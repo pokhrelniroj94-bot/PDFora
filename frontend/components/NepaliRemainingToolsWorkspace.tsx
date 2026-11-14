@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { analyzeKeywordDensity, buildRobotsTxt, buildSitemap, calculateContrast, decodeJwt, findRegexMatches, minifyCss } from "../lib/i18n/nepali-remaining-tools";
 
 declare global { interface Window { PreetiConverter?: new () => { convert: (text: string) => string; reverseConvert: (text: string) => string } } }
 
@@ -66,54 +67,35 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     try {
       if (slug === "regex-tester") {
         if (!source) return { text: "", error: "" };
-        const safeFlags = [...new Set((flags.replace(/[^dgimsuvy]/g, "") + "g").split(""))].join("");
-        const regex = new RegExp(secondary, safeFlags);
-        const matches = [...source.matchAll(regex)];
-        return { text: matches.length ? matches.map((m, i) => `${i + 1}. ${m[0]} (index: ${m.index})`).join("\n") : "कुनै मिल्दो अंश भेटिएन।", error: "" };
+        const matches = findRegexMatches(source, secondary, flags);
+        return { text: matches.length ? matches.map((match) => String(match.index) + ". " + match.value + " (index: " + match.offset + ")").join("\n") : "कुनै मिल्दो अंश भेटिएन।", error: "" };
       }
       if (slug === "jwt-decoder") {
-        const parts = source.trim().split(".");
-        if (parts.length !== 3) throw new Error("JWT मा header, payload र signature गरी तीन भाग हुनुपर्छ।");
-        return { text: JSON.stringify({ header: JSON.parse(base64UrlDecode(parts[0])), payload: JSON.parse(base64UrlDecode(parts[1])), note: "Signature यहाँ verify गरिएको छैन।" }, null, 2), error: "" };
+        const decoded = decodeJwt(source);
+        return { text: JSON.stringify({ header: decoded.header, payload: decoded.payload, note: "Signature यहाँ verify गरिएको छैन।" }, null, 2), error: "" };
       }
       if (slug === "css-minifier") {
-        const minified = source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ").replace(/\s*([{}:;,>])\s*/g, "$1").replace(/;}/g, "}").trim();
-        return { text: minified, error: "" };
+        return { text: minifyCss(source), error: "" };
       }
       if (slug === "keyword-density-checker") {
-        const words = source.toLocaleLowerCase().match(/[\p{L}\p{N}_-]+/gu) ?? [];
-        const needle = secondary.trim().toLocaleLowerCase();
-        if (!needle) return { text: `कुल शब्द: ${words.length}\nविश्लेषणका लागि keyword लेख्नुहोस्।`, error: "" };
-        const count = words.filter((word) => word === needle).length;
-        return { text: `कुल शब्द: ${words.length}\nKeyword: ${needle}\nआवृत्ति: ${count}\nघनत्व: ${words.length ? (count / words.length * 100).toFixed(2) : "0.00"}%\nयो साधारण exact-match अनुमान हो।`, error: "" };
+        const analysis = analyzeKeywordDensity(source, secondary);
+        if (!secondary.trim()) return { text: "कुल शब्द: " + analysis.totalWords + "\nविश्लेषणका लागि keyword लेख्नुहोस्।", error: "" };
+        return { text: "कुल शब्द: " + analysis.totalWords + "\nKeyword: " + secondary.trim() + "\nआवृत्ति: " + analysis.count + "\nघनत्व: " + analysis.density.toFixed(2) + "%\nयो साधारण exact-match अनुमान हो।", error: "" };
       }
       if (slug === "meta-title-checker") return { text: `अक्षर संख्या: ${source.length}\nसुझाव: ३०–६० अक्षरको दायरालाई प्रारम्भिक guideline मान्नुहोस्। वास्तविक SERP प्रदर्शन फरक हुन सक्छ।`, error: "" };
       if (slug === "meta-description-checker") return { text: `अक्षर संख्या: ${source.length}\nसुझाव: करिब १२०–१६० अक्षरमा स्पष्ट, पृष्ठसँग मेल खाने विवरण लेख्नुहोस्। Google ले snippet फरक देखाउन सक्छ।`, error: "" };
       if (slug === "color-contrast-checker") {
-        const parse = (hex: string) => {
-          const clean = hex.trim().replace(/^#/, "");
-          if (!/^(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(clean)) throw new Error("रङ #RGB वा #RRGGBB ढाँचामा लेख्नुहोस्।");
-          const full = clean.length === 3 ? clean.split("").map((c) => c + c).join("") : clean;
-          const rgb = [0, 2, 4].map((i) => parseInt(full.slice(i, i + 2), 16) / 255);
-          return rgb.map((v) => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
-        };
-        const a = parse(source), b = parse(secondary);
-        const ratio = (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
-        return { text: `Contrast ratio: ${ratio.toFixed(2)}:1\nWCAG AA सामान्य text: ${ratio >= 4.5 ? "PASS" : "FAIL"}\nWCAG AA ठूलो text: ${ratio >= 3 ? "PASS" : "FAIL"}\nWCAG AAA सामान्य text: ${ratio >= 7 ? "PASS" : "FAIL"}`, error: "" };
+        const contrast = calculateContrast(source, secondary);
+        return { text: "Contrast ratio: " + contrast.ratio.toFixed(2) + ":1\nWCAG AA सामान्य text: " + (contrast.aaNormal ? "PASS" : "FAIL") + "\nWCAG AA ठूलो text: " + (contrast.aaLarge ? "PASS" : "FAIL") + "\nWCAG AAA सामान्य text: " + (contrast.aaaNormal ? "PASS" : "FAIL"), error: "" };
       }
       if (slug === "open-graph-preview") {
         return { text: "", error: "" };
       }
       if (slug === "robots-txt-generator") {
-        const sitemap = secondary.trim();
-        return { text: `User-agent: *\nAllow: /\n${sitemap ? `Sitemap: ${sitemap}\n` : ""}`, error: "" };
+        return { text: buildRobotsTxt(secondary), error: "" };
       }
       if (slug === "sitemap-generator") {
-        const urls = source.split(/\r?\n/).map((v) => v.trim()).filter(Boolean);
-        const invalid = urls.filter((url) => { try { return !["http:", "https:"].includes(new URL(url).protocol); } catch { return true; } });
-        if (invalid.length) throw new Error(`अमान्य URL: ${invalid[0]}`);
-        const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((url) => `  <url><loc>${url.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</loc></url>`).join("\n")}\n</urlset>`;
-        return { text: xml, error: "" };
+        return { text: buildSitemap(source.split(/\r?\n/)), error: "" };
       }
       return { text: "", error: "" };
     } catch (cause) {

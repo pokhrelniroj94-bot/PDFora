@@ -302,6 +302,7 @@ async function validateDownloadedFile(filePath) {
 }
 
 const results = [];
+const nepaliRouteResults = [];
 let browserFailures = 0;
 let fatalBrowserError = false;
 async function runTool(tool, index) {
@@ -1303,6 +1304,48 @@ try {
       (result.errors[0] || result.checks.join(", ")));
     if (fatalBrowserError) break;
   }
+
+  // Dedicated locale smoke pass for the five newly restored browser-only Nepali routes.
+  const nepaliRoutes = [
+    { slug: "email-signature-generator", title: "व्यावसायिक इमेल हस्ताक्षर निर्माता" },
+    { slug: "timezone-meeting-planner", title: "समय क्षेत्र बैठक योजनाकार" },
+    { slug: "image-dpi-calculator", title: "तस्बिर DPI तथा PPI क्याल्कुलेटर" },
+    { slug: "video-bitrate-calculator", title: "भिडियो बिटरेट क्याल्कुलेटर" },
+    { slug: "markdown-table-generator", title: "Markdown तालिका निर्माता" },
+  ];
+  for (const route of nepaliRoutes) {
+    let page;
+    const row = { slug: route.slug, url: "/ne/tools/" + route.slug, status: "FAIL", checks: [], errors: [] };
+    try {
+      page = await openPage(row.url);
+      const state = await page.evaluate(`(() => ({
+        lang: document.documentElement.lang || "",
+        title: document.title || "",
+        heading: document.querySelector("h1")?.innerText?.trim() || "",
+        body: document.querySelector("main")?.innerText || document.body?.innerText || "",
+        controls: document.querySelectorAll("main input, main textarea, main select, main button").length
+      }))()`);
+      if (!state.body || /Application error|Internal Server Error|404: This page could not be found/i.test(state.body)) {
+        throw new Error("Nepali route did not render a usable page.");
+      }
+      if (state.lang !== "ne") throw new Error("Expected document language ne; received " + state.lang);
+      if (!state.body.includes(route.title)) throw new Error("Nepali title not found: " + route.title);
+      if (!/[\\u0900-\\u097F]/.test(state.body)) throw new Error("Nepali Devanagari interface text is missing.");
+      if (state.controls < 1) throw new Error("Nepali tool has no visible interactive controls.");
+      row.heading = state.heading;
+      row.controls = state.controls;
+      row.checks.push("Nepali route renders with lang=ne, localized title, Devanagari UI and interactive controls");
+      row.status = "PASS";
+    } catch (error) {
+      row.errors.push(error instanceof Error ? error.message : String(error));
+      browserFailures += 1;
+    } finally {
+      if (page) await page.close();
+    }
+    nepaliRouteResults.push(row);
+    console.log((row.status === "PASS" ? "PASS " : "FAIL ") + "ne-NP " + route.slug + " — " +
+      (row.errors[0] || row.checks.join(", ")));
+  }
 } finally {
   chrome.kill("SIGTERM");
 }
@@ -1314,7 +1357,7 @@ const report = {
   scope: requestedToolFilters.length ? requestedToolFilters : "all-174-tools",
   expected: requestedToolFilters.length
     ? { pdf: tools.filter((tool) => tool.kind === "pdf").length, catalog: tools.filter((tool) => tool.kind === "catalog").length, total: tools.length }
-    : { pdf: 49, catalog: 125, total: 174, nepaliLocalizedRoutes: 169 },
+    : { pdf: 49, catalog: 125, total: 174, nepaliLocalizedRoutes: 174, newlyAddedNepaliBrowserRoutes: 5 },
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each selected PDF route, attach valid fixtures and inspect processing/output. The Merge PDF assertion uploads two distinct PDFs, moves the first below the second, then verifies the downloaded merged page dimensions match that selected order.",
@@ -1330,6 +1373,12 @@ const report = {
     catalog: results.filter((row) => row.kind === "catalog").length,
   },
   results,
+  nepaliRouteResults: {
+    total: nepaliRouteResults.length,
+    pass: nepaliRouteResults.filter((row) => row.status === "PASS").length,
+    fail: nepaliRouteResults.filter((row) => row.status === "FAIL").length,
+    results: nepaliRouteResults,
+  },
 };
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");

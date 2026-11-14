@@ -343,9 +343,17 @@ async function runTool(tool, index) {
       const unnamedLinks = [...document.querySelectorAll("a[href]")].filter((element) =>
         visible(element) && !((element.innerText || "").trim() || element.getAttribute("aria-label") ||
           element.getAttribute("aria-labelledby") || element.querySelector("img[alt]")));
-      const unnamedFields = [...document.querySelectorAll("input:not([type=hidden]), textarea, select")].filter((element) =>
+      const unnamedFieldElements = [...document.querySelectorAll("input:not([type=hidden]), textarea, select")].filter((element) =>
         visible(element) && !(element.labels?.length || element.getAttribute("aria-label") ||
           element.getAttribute("aria-labelledby") || element.getAttribute("title")));
+      const unnamedFieldDetails = unnamedFieldElements.map((element) => ({
+        tag: element.tagName,
+        id: element.id || "",
+        type: element.getAttribute("type") || "",
+        name: element.getAttribute("name") || "",
+        placeholder: element.getAttribute("placeholder") || "",
+        className: typeof element.className === "string" ? element.className.slice(0, 120) : "",
+      }));
       return {
         viewport: { width: innerWidth, height: innerHeight },
         documentWidth: root.scrollWidth,
@@ -357,7 +365,7 @@ async function runTool(tool, index) {
         h1Count: document.querySelectorAll("h1").length,
         unnamedButtons: unnamedButtons.length,
         unnamedLinks: unnamedLinks.length,
-        unnamedFields: unnamedFields.length,
+        unnamedFields: unnamedFieldElements.length,\n        unnamedFieldDetails,
       };
     })()`);
     row.mobileViewport = mobileState;

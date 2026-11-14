@@ -162,6 +162,7 @@ function VideoBitrateTool() {
 
 function MarkdownTableTool() {
   const [source, setSource] = useState("Name\tRole\tLocation\nAlex\tDesigner\tLondon\nSam\tDeveloper\tKathmandu");
+  const [message, setMessage] = useState("");
 
   const markdown = useMemo(() => {
     const rows = source.split(/\r?\n/).filter(line => line.length > 0).map(line => line.split("\t").map(cell => cell.trim().replace(/\|/g, "\\|").replace(/\r?\n/g, " ")));

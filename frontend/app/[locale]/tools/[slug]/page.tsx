@@ -19,7 +19,7 @@ import NepaliDataToolsWorkspace from "../../../../components/NepaliDataToolsWork
 import NepaliEncodingCaseWorkspace from "../../../../components/NepaliEncodingCaseWorkspace";
 import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWorkspace";
 import NepalLiveTools from "../../../../components/NepalLiveTools";
-import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
+import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";\nimport NepaliRemainingToolsWorkspace from "../../../../components/NepaliRemainingToolsWorkspace";
 import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -121,7 +121,7 @@ const nepaliTitles: Record<string, string> = {
   "nepse-market-news": "NEPSE तथा नेपाल बजार समाचार",
   "loan-emi-calculator": "ऋण EMI क्याल्कुलेटर",
   "compound-interest-sip-calculator": "चक्रवृद्धि ब्याज तथा SIP क्याल्कुलेटर",
-  "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",
+  "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",\n  "xml-formatter-validator": "XML syntax जाँचेर सुरक्षित रूपमा indentation मिलाउनुहोस्।",\n  "notes-to-pdf": "नोट ब्राउजरमै लेखेर Print संवादबाट PDF का रूपमा सुरक्षित गर्नुहोस्।",\n  "html-tag-stripper": "HTML snippet बाट देखिने पाठ ब्राउजरमै निकाल्नुहोस्।",\n  "savings-goal-calculator": "लक्ष्य, हालको बचत, अवधि र अनुमानित ब्याजका आधारमा मासिक बचत निकाल्नुहोस्।",\n  "nepal-share-calculator": "शेयर कारोबारको नाफा वा नोक्सान तपाईंले दिएको शुल्क र कर दरअनुसार अनुमान गर्नुहोस्।",\n  "xml-formatter-validator": "XML फर्म्याट तथा जाँच",\n  "notes-to-pdf": "नोटबाट PDF",\n  "html-tag-stripper": "HTML Tag हटाउने",\n  "savings-goal-calculator": "बचत लक्ष्य क्याल्कुलेटर",\n  "nepal-share-calculator": "शेयर नाफा–नोक्सान क्याल्कुलेटर",
 };
 const nepaliDescriptions: Record<string, string> = {
   "resume-builder": "२० वटा व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन, सम्पादनयोग्य खण्ड र PDF निर्यात प्रयोग गरी व्यवस्थित CV बनाउनुहोस्।",
@@ -255,7 +255,7 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
-  if (request.locale === "ne" && toolSlug === "resume-builder") {
+  if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator"].includes(toolSlug)) {\n    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliRemainingToolsWorkspace slug={toolSlug} /></section></main>;\n  }\n  if (request.locale === "ne" && toolSlug === "resume-builder") {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
       <div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली करियर टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div>
       <ResumeBuilder locale="ne" />

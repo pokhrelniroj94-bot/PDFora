@@ -10,7 +10,8 @@ declare global {
   }
 }
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
-export default function NepaliTypingTool() {
+export default function NepaliTypingTool({ locale = "en" }: { locale?: "en" | "ne" }) {
+  const ne = locale === "ne";
   const [roman, setRoman] = useState("namaste mero desh nepal ho");
   const [output, setOutput] = useState("");
   const [ready, setReady] = useState(false);
@@ -61,12 +62,12 @@ export default function NepaliTypingTool() {
   };
   return <div className="space-y-4">
     <div><h2 className="text-lg font-bold">Nepali Unicode Typing (Roman to Nepali)</h2><p className="mt-1 text-sm text-slate-600">Type Nepali words using English letters, then convert them into Devanagari Unicode.</p></div>
-    <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">Romanized Nepali input</span><textarea className={field + " min-h-36"} value={roman} onChange={(e) => setRoman(e.target.value)} placeholder="namaste mero desh nepal ho"/></label>
-    <div className="flex flex-wrap gap-2"><button disabled={!ready} onClick={convert} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">{ready ? "Convert to Nepali Unicode" : "Loading typing engine…"}</button><button onClick={() => { setRoman(""); setOutput(""); setError(""); }} className="rounded-xl border px-4 py-2.5 text-sm font-semibold">Clear</button><button onClick={() => { setRoman("namaste mero desh nepal ho. dhanyabad!"); setOutput(""); }} className="rounded-xl border px-4 py-2.5 text-sm font-semibold">Load example</button></div>
-    <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">Nepali Unicode output</span><textarea className={field + " min-h-36"} value={output} onChange={(e) => setOutput(e.target.value)} placeholder="नेपाली Unicode output यहाँ देखिन्छ…"/></label>
-    {output && <div className="flex flex-wrap gap-2"><button onClick={() => void copy()} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white">Copy Nepali text</button><button onClick={download} className="rounded-xl border px-4 py-2.5 text-sm font-semibold">Download TXT</button></div>}
+    <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{ne ? "Romanized नेपाली इनपुट" : "Romanized Nepali input"}</span><textarea className={field + " min-h-36"} value={roman} onChange={(e) => setRoman(e.target.value)} placeholder="namaste mero desh nepal ho"/></label>
+    <div className="flex flex-wrap gap-2"><button disabled={!ready} onClick={convert} className="rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50">{ready ? "{ne ? "नेपाली Unicode मा बदल्नुहोस्" : "Convert to Nepali Unicode"}" : "{ne ? "टाइपिङ इन्जिन लोड हुँदैछ…" : "Loading typing engine…"}"}</button><button onClick={() => { setRoman(""); setOutput(""); setError(""); }} className="rounded-xl border px-4 py-2.5 text-sm font-semibold">{ne ? "खाली गर्नुहोस्" : "Clear"}</button><button onClick={() => { setRoman("namaste mero desh nepal ho. dhanyabad!"); setOutput(""); }} className="rounded-xl border px-4 py-2.5 text-sm font-semibold">{ne ? "उदाहरण राख्नुहोस्" : "Load example"}</button></div>
+    <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{ne ? "नेपाली Unicode नतिजा" : "Nepali Unicode output"}</span><textarea className={field + " min-h-36"} value={output} onChange={(e) => setOutput(e.target.value)} placeholder="नेपाली Unicode output यहाँ देखिन्छ…"/></label>
+    {output && <div className="flex flex-wrap gap-2"><button onClick={() => void copy()} className="rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white">{ne ? "नेपाली पाठ कपी गर्नुहोस्" : "Copy Nepali text"}</button><button onClick={download} className="rounded-xl border px-4 py-2.5 text-sm font-semibold">{ne ? "TXT डाउनलोड गर्नुहोस्" : "Download TXT"}</button></div>}
     {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{error}</p>}
-    <div className="rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700"><p className="font-semibold">Examples</p><p><code>namaste</code> → नमस्ते</p><p><code>mero desh nepal ho</code> → मेरो देश नेपाल हो</p><p><code>dhanyabad</code> → धन्यवाद</p></div>
-    <p className="text-xs leading-5 text-slate-500">This is phonetic transliteration, not English-to-Nepali translation. Review spelling, names and formal text. Your text is converted in the browser; the typing engine is loaded from the pinned open-source Nepalify CDN package.</p>
+    <div className="rounded-xl bg-slate-50 p-4 text-sm leading-6 text-slate-700"><p className="font-semibold">{ne ? "उदाहरणहरू" : "Examples"}</p><p><code>namaste</code> → नमस्ते</p><p><code>mero desh nepal ho</code> → मेरो देश नेपाल हो</p><p><code>dhanyabad</code> → धन्यवाद</p></div>
+    <p className="text-xs leading-5 text-slate-500">{ne ? "यो ध्वनिमा आधारित लिप्यन्तरण हो, अंग्रेजीबाट नेपाली अनुवाद होइन। हिज्जे, नाम र औपचारिक पाठ जाँच्नुहोस्। पाठ ब्राउजरमै बदलिन्छ; टाइपिङ इन्जिन pinned open-source Nepalify CDN बाट लोड हुन्छ।" : "This is phonetic transliteration, not English-to-Nepali translation. Review spelling, names and formal text. Your text is converted in the browser; the typing engine is loaded from the pinned open-source Nepalify CDN package."}</p>
   </div>;
 }

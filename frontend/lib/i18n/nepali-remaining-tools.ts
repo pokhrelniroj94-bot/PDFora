@@ -75,6 +75,7 @@ export function analyzeKeywordDensity(source: string, keyword: string) {
 
 export function buildSitemap(urls: string[]) {
   const normalized = urls.map((url) => url.trim()).filter(Boolean);
+  if (!normalized.length) throw new Error("कम्तीमा एउटा URL प्रविष्ट गर्नुहोस्।");
   const invalid = normalized.find((url) => {
     try { return !["http:", "https:"].includes(new URL(url).protocol); }
     catch { return true; }

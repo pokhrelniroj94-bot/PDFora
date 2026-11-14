@@ -89,7 +89,7 @@ export function buildSitemap(urls: string[]) {
 export function buildRobotsTxt(sitemapUrl = "") {
   const sitemap = sitemapUrl.trim();
   if (sitemap) {
-    if (/[\\r\\n]/.test(sitemap)) throw new Error("Sitemap URL मा नयाँ लाइन राख्न मिल्दैन।");
+    if (/[\r\n]/.test(sitemap)) throw new Error("Sitemap URL मा नयाँ लाइन राख्न मिल्दैन।");
     let parsed: URL;
     try { parsed = new URL(sitemap); }
     catch { throw new Error("Sitemap URL मान्य छैन।"); }

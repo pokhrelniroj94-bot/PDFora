@@ -7,13 +7,24 @@ The reconciled canonical inventory is generated from `legacy-tool-slugs.ts` plus
 | Dimension | Evidence |
 |---|---|
 | Inventory | **174 tools** = 49 PDF + 125 catalog utilities (2,088 matrix rows = 12 locales × 174). |
-| Nepali interface present | **169/174** = 49 PDF + 120 catalog utility interfaces. Five restored legacy browser-only utilities remain English-only: email-signature-generator, timezone-meeting-planner, image-dpi-calculator, video-bitrate-calculator and markdown-table-generator. |
-| Targeted Nepali unit tests | **44/169** localized interfaces have targeted unit-test coverage recorded by the matrix. Other interfaces are not individually functionally certified. |
-| Browser QA | GitHub Actions run 43604659883 completed successfully on PR head b986eba48018028c60856972c92a5a8b067a43a9. Frontend and backend jobs passed; 307 sitemap URLs returned HTTP 200, 17 live-data checks and 20 local security/SEO checks passed, and Merge PDF E2E passed. The separate live-production deployment job was skipped. Functional/browser and native-review limitations remain as documented in docs/qa/REMAINING_WORK.md. |
-| Human / native review | Not assessed for all Nepali tools. No complete native-review sign-off is recorded. |
-| SEO eligibility | Six Nepali PDF tool URLs remain on the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing, sitemap and hreflang until individual approval gates pass. |
+| Nepali interface present | **174/174 code-level interfaces** = 49 PDF + 125 catalog utilities. The five restored browser-only utilities now have a dedicated Nepali wrapper, translated visible labels/messages/results and Nepali route metadata. This is source coverage, not native-speaker approval. |
+| Targeted Nepali unit tests | **44/174** interfaces are recorded with targeted tool-specific unit tests in the matrix. The five browser-only tools reuse the existing tested English calculation logic and have route/copy assertions; they are not counted as individual algorithm unit-test suites. |
+| Browser QA | GitHub Actions run **3117** on PR head `4373308dc6d136c7f940d3e21cf0a03f4a364ecd`: backend passed (13/13); frontend install, i18n runtime/content, lint, production build, dependency audit, production security/privacy/SEO smoke, sitemap/robots checks, live-data checks and local security/SEO checks passed. Chromium E2E across all 174 tools was still running at the time this status was written. The live-production job is skipped on pull requests. |
+| Human / native review | **Not assessed for all 174 interfaces.** No complete native-review sign-off is recorded. Automated translation/source checks do not replace a Nepali native-speaker review. |
+| SEO eligibility | Six Nepali PDF tool URLs remain on the explicit indexing allowlist. The 125 Nepali catalog utility routes, including the five new browser-only routes, remain noindex and excluded from sitemap/hreflang pending individual editorial and functional approval. |
 | Publication | English and Nepali only. Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Chinese and Japanese remain unpublished. |
-| Production | PR #162 has not been deployed. The latest inspected production commit is `982b5b5d73b77edbee516bce22af7dc03723c49d`, from a different branch. |
+| Production | PR #162 has not been merged or deployed. Production remains on the currently deployed master commit until final CI, review, merge and deployment verification. |
+
+### Nepali batch 5 — five restored browser-only utilities (2026-11-14)
+
+Added Nepali route presentation and localized metadata for:
+- `email-signature-generator` — इमेल हस्ताक्षर निर्माता
+- `timezone-meeting-planner` — समय क्षेत्र बैठक योजनाकार
+- `image-dpi-calculator` — तस्बिर DPI/PPI क्याल्कुलेटर
+- `video-bitrate-calculator` — भिडियो बिटरेट क्याल्कुलेटर
+- `markdown-table-generator` — Markdown तालिका निर्माता
+
+The existing browser-side calculation and formatting logic is retained. Inputs stay in the browser. These five utility routes remain noindex until independent Nepali editorial review and individual functional approval. The PR does not alter the existing ad-placement configuration or sitemap.
 
 ### Nepali batch 4 — five additional interfaces (2026-11-14)
 

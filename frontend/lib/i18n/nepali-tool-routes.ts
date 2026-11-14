@@ -105,6 +105,9 @@ export const nepaliLocalizedUtilitySlugs = [
   "robots-txt-generator",
   "sitemap-generator",
   "open-graph-preview",
+  "currency-converter",
+  "image-compressor",
+  "image-format-converter",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

@@ -15,6 +15,12 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.rows.length, 2028);
   assert.equal(report.counts.localizedNepaliTools, 151, "49 Nepali PDF routes plus 102 Nepali catalog routes");
   assert.equal(report.counts.indexableNepaliTools, 6);
+  for (const slug of ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator"]) {
+    const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
+    assert.equal(row?.interface, "nepali-interface-present", `${slug} should have a dedicated Nepali interface`);
+    assert.equal(row?.indexing, "excluded", `${slug} must remain noindex pending review`);
+    assert.equal(row?.humanReview, "native-review-not-assessed");
+  }
   assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 169);
   for (const slug of ["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);

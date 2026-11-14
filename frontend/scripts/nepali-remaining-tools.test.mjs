@@ -84,7 +84,7 @@ test("keyword density is case-insensitive and uses Unicode word tokens", () => {
   assert.equal(density.totalWords, 3);
   assert.equal(density.count, 2);
   assert.ok(Math.abs(density.density - 200 / 3) < 1e-10);
-  const phrase = analyzeKeywordDensity("free pdf tools and free online pdf tools", "free pdf tools");
+  const phrase = analyzeKeywordDensity("free pdf tools and more free pdf tools", "free pdf tools");
   assert.equal(phrase.count, 2);
   assert.equal(phrase.density, 6 / 8 * 100);
   assert.deepEqual(analyzeKeywordDensity("नेपाली नेपाली", ""), {

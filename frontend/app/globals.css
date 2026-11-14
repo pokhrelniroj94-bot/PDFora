@@ -541,3 +541,30 @@ main:has(input[type="file"]) input[type="file"] {
     border-color: var(--brand); background: color-mix(in srgb, var(--brand-soft) 68%, white);
   }
 }
+
+
+/* The language bar, Nepali landing hero and shared accents inherit the active locale. */
+body > div:first-child {
+  border-color: var(--theme-line);
+  background: var(--surface-muted);
+  color: var(--foreground);
+}
+.pdfora-tool-page [class*="text-teal-"],
+.pdfora-blog-page [class*="text-teal-"] { color: var(--brand) !important; }
+.pdfora-tool-page [class*="border-teal-"],
+.pdfora-blog-page [class*="border-teal-"] { border-color: color-mix(in srgb, var(--brand) 34%, white) !important; }
+.pdfora-tool-page a[class*="bg-teal-"],
+.pdfora-blog-page a[class*="bg-teal-"] { background-color: var(--brand) !important; color: white !important; }
+main:has(#pdf-tools) { background: var(--background); color: var(--foreground); }
+main:has(#pdf-tools) > section:first-of-type {
+  background: radial-gradient(ellipse at 85% 0%, color-mix(in srgb, var(--brand-accent) 24%, transparent), transparent 25rem), var(--theme-hero) !important;
+}
+main:has(#pdf-tools) > section:first-of-type [class*="text-teal-"] { color: var(--brand-soft) !important; }
+main:has(#pdf-tools) > section:first-of-type a[class*="bg-teal-"] {
+  background: var(--brand) !important; color: white !important;
+}
+main:has(#pdf-tools) #pdf-tools > div > a {
+  border-color: var(--theme-line);
+  background: var(--surface);
+}
+main:has(#pdf-tools) #pdf-tools > div > a:hover { border-color: var(--brand); }

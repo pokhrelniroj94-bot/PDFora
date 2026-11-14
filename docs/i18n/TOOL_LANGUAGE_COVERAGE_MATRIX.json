@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-14T14:26:24.000Z",
-  "sourceCommit": "b986eba48018028c60856972c92a5a8b067a43a9",
+  "generatedAt": "2026-11-14T16:13:37.000Z",
+  "sourceCommit": "6afae795f1b6c59aa9f82d71f64895c716a797d1",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry; includes five restored browser-only utilities from the production source.",
     "expectedUniqueTools": 174,
@@ -17,7 +17,7 @@
       "en",
       "ne"
     ],
-    "localizedNepaliTools": 169,
+    "localizedNepaliTools": 174,
     "indexableNepaliTools": 6
   },
   "tools": [
@@ -6218,13 +6218,13 @@
       "kind": "utility",
       "route": "/tools/email-signature-generator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "nepali-interface-present",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -6233,13 +6233,13 @@
       "kind": "utility",
       "route": "/tools/timezone-meeting-planner",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "nepali-interface-present",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -6248,13 +6248,13 @@
       "kind": "utility",
       "route": "/tools/image-dpi-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "nepali-interface-present",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -6263,13 +6263,13 @@
       "kind": "utility",
       "route": "/tools/video-bitrate-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "nepali-interface-present",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {
@@ -6278,13 +6278,13 @@
       "kind": "utility",
       "route": "/tools/markdown-table-generator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "nepali-interface-present",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
-      "published": false,
+      "published": true,
       "direction": "ltr"
     },
     {

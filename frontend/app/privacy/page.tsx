@@ -36,14 +36,19 @@ export default function PrivacyPage() {
               2. Files You Upload
             </h2>
             <p>
-              PDFora processes files that you voluntarily upload to use our
-              tools. Uploaded files are temporarily processed by our backend
-              servers to provide the requested service.
+              PDFora processes files that you voluntarily upload to use our tools. Files are
+              transmitted to our processing backend so the requested operation can
+              be completed; tools using this service do not process the uploaded
+              document entirely on your device.
             </p>
             <p className="mt-2">
-              Our current backend is designed to remove uploaded temporary
-              files after processing. We do not intentionally maintain a
-              permanent user file library or account-based file history.
+              Under normal operation, request-scoped temporary files are cleaned after the
+              processing response has been sent. If a request is interrupted or the
+              service stops before cleanup, the backend checks for abandoned temporary
+              job folders during a later processing request and removes folders older
+              than six hours. This is best-effort cleanup, not a guarantee that every
+              interrupted file is erased at an exact time. We do not intentionally
+              maintain a permanent user file library or account-based file history.
             </p>
           </div>
 

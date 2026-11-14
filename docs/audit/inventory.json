@@ -1,9 +1,11 @@
 {
-  "generatedAt": "2026-11-06T15:51:03.843Z",
-  "baseCommit": "8323820",
-  "frontendPageFiles": 66,
-  "apiRouteFiles": 6,
+  "generatedAt": "2026-11-14",
+  "baseCommit": "5461ff035f992b604373aa04b7abb22029dfe363",
+  "frontendPageFiles": 70,
+  "apiRouteFiles": 5,
   "catalogToolEntries": 125,
+  "legacyPdfToolEntries": 49,
+  "unifiedToolInventory": 174,
   "catalogCategories": 10,
   "catalogCategoryNames": [
     "Career Tools",
@@ -17,8 +19,12 @@
     "Business",
     "Nepal"
   ],
-  "blogRecordSlugLiterals": 8,
-  "guideSlugLiterals": 0,
+  "editorialBlogArticles": 8,
+  "nepalBlogArticles": 19,
+  "nepaliDedicatedToolInterfaces": 169,
+  "nepaliToolInterfacesTotal": 174,
+  "nepaliLocalizedUtilityRoutes": 111,
+  "publishedNepaliPdfRoutes": 49,
   "publishedLocales": [
     "en",
     "ne"
@@ -35,5 +41,17 @@
     "zh",
     "ja"
   ],
-  "publishedLocalizedRouteFiles": 3
+  "methodology": {
+    "sourceOfTruth": "frontend/lib/legacy-tool-slugs.ts plus frontend/components/toolCatalog.ts; exclude the pdf-tools collection entry.",
+    "verification": "Source inventory includes the five legacy browser-only utilities restored from the production source commit. Nepali interface coverage is 169/174; the five English-only utilities are not claimed as localized. Source counts are not runtime or QA evidence.",
+    "limitations": "Source inventory does not prove every runtime workflow, translation quality, native-speaker review, accessibility, or browser compatibility. See docs/i18n and docs/qa for separate evidence."
+  },
+  "indexableNepaliPdfRoutes": 6,
+  "nepaliUnlocalizedToolSlugs": [
+    "email-signature-generator",
+    "timezone-meeting-planner",
+    "image-dpi-calculator",
+    "video-bitrate-calculator",
+    "markdown-table-generator"
+  ]
 }

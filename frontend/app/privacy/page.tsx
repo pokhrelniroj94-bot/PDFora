@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <h1 className="mb-4 text-4xl font-bold">Privacy Policy</h1>
 
         <p className="mb-8 text-gray-600">
-          Last updated: November 3, 2026
+          Last updated: November 14, 2026
         </p>
 
         <section className="space-y-6 leading-7">
@@ -130,9 +130,12 @@ export default function PrivacyPage() {
           <div>
             <h2 className="mb-2 text-2xl font-semibold">9. Contact</h2>
             <p>
-              If you have questions about this Privacy Policy or PDFora&apos;s
-              privacy practices, email us at{" "}
-              <a className="underline" href="mailto:pokhrelniroj94@gmail.com">pokhrelniroj94@gmail.com</a>.
+              For non-sensitive questions about this Privacy Policy or PDFora&apos;s
+              privacy practices, visit our <a className="underline" href="/contact">Contact page</a>
+              and use the public issue tracker. Do not post personal information,
+              passwords, uploaded files or confidential details in public issues.
+              PDFora does not currently publish a private support email or a
+              dedicated private privacy-request channel.
             </p>
           </div>
         </section>

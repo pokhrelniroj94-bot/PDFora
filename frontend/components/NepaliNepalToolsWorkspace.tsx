@@ -159,7 +159,7 @@ function LoksewaPhotoResizer() {
     <div className="space-y-4">
       <div><h2 className="text-lg font-bold">लोकसेवा तथा अनलाइन फाराम फोटो रिसाइजर</h2><p className="mt-1 text-sm text-slate-600">फोटोको पिक्सेल आयाम र JPEG फाइल आकार घटाएर डाउनलोड गर्नुहोस्।</p></div>
       {photo && <p className="text-sm text-slate-600">छानिएको फाइल: {photo.name} · {(photo.size / 1024).toFixed(1)} KB</p>}
-      <label className="block"><span className={label}>फोटो छान्नुहोस् (अधिकतम २० MB)</span><input className={field} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { setPhoto(event.target.files?.[0] ?? null); setMessage(""); }} /></label>
+      <label className="block"><span className={label}>फोटो छान्नुहोस् (अधिकतम २० MB)</span><input className={field} type="file" accept="image/jpeg,image/png,image/webp" aria-label="फोटो छान्नुहोस् (अधिकतम २० MB)" onChange={(event) => { setPhoto(event.target.files?.[0] ?? null); setMessage(""); }} /></label>
       <div className="grid grid-cols-2 gap-3">
         <label><span className={label}>अधिकतम फाइल आकार</span><select className={field} value={limit} onChange={(event) => setLimit(event.target.value)}><option value="50">५० KB</option><option value="100">१०० KB</option><option value="200">२०० KB</option></select></label>
         <label><span className={label}>अधिकतम चौडाइ/उचाइ</span><select className={field} value={dimension} onChange={(event) => setDimension(event.target.value)}><option value="600">६०० px</option><option value="800">८०० px</option><option value="1200">१२०० px</option></select></label>

@@ -2,25 +2,58 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ToolWorkspace from "../../../../components/AllTools";
+import ResumeBuilder from "../../../../components/ResumeBuilder";
 import { isPublished } from "../../../../lib/i18n/config";
 import { getTranslator } from "../../../../lib/i18n/messages";
 import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../../../../lib/tools/localized-metadata";
 import { fitLocaleDescription } from "../../../../lib/i18n/metadata";
 import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-route";
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
+import NepaliBrowserOnlyGrowthTools from "../../../../components/NepaliBrowserOnlyGrowthTools";
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
+import NepaliDataToolsWorkspace from "../../../../components/NepaliDataToolsWorkspace";
+import NepaliEncodingCaseWorkspace from "../../../../components/NepaliEncodingCaseWorkspace";
 import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWorkspace";
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
+import NepaliRemainingToolsWorkspace from "../../../../components/NepaliRemainingToolsWorkspace";
+import NepaliTypingTool from "../../../../components/NepaliTypingTool";
 import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const nepaliTitles: Record<string, string> = {
+  "resume-builder": "व्यावसायिक रिजुमे तथा CV निर्माता",
+  "csv-to-json": "CSV बाट JSON",
+  "json-to-yaml": "JSON बाट YAML",
+  "json-to-csv": "JSON बाट CSV",
+  "url-validator": "URL जाँचकर्ता",
+  "email-validator": "इमेल जाँचकर्ता",
+  "password-strength-checker": "पासवर्ड बल जाँचकर्ता",
+  "url-query-parser": "URL Query पार्सर",
+  "color-converter": "रङ रूपान्तरण (HEX → RGB/HSL)",
+  "aspect-ratio-calculator": "Aspect Ratio क्याल्कुलेटर",
+  "css-gradient-generator": "CSS Gradient जेनेरेटर",
+  "unix-timestamp-converter": "Unix Timestamp रूपान्तरण",
+  "date-add-subtract-calculator": "मिति जोड्ने / घटाउने क्याल्कुलेटर",
+  "business-days-calculator": "कार्यदिन क्याल्कुलेटर",
+  "random-number-generator": "अनियमित सङ्ख्या जेनेरेटर",
+  "dice-roller": "पासा फाल्ने टुल",
+  "text-to-binary": "पाठबाट बाइनरी",
+  "binary-to-text": "बाइनरीबाट पाठ",
+  "text-to-hex": "पाठबाट Hexadecimal",
+  "hex-to-text": "Hexadecimal बाट पाठ",
+  "morse-code-translator": "मोर्स कोड अनुवादक",
+  "camel-case-converter": "camelCase रूपान्तरण",
+  "snake-case-converter": "snake_case रूपान्तरण",
+  "kebab-case-converter": "kebab-case रूपान्तरण",
+  "json-escape-unescape": "JSON Escape / Unescape",
+  "px-rem-converter": "px ↔ rem रूपान्तरण",
+  "roman-numeral-converter": "रोमन अंक रूपान्तरण",
   "nepali-digit-converter": "नेपाली अंक रूपान्तरण",
   "nepali-number-converter": "नेपाली नम्बर रूपान्तरण",
   "nepali-date-converter": "नेपाली मिति रूपान्तरण",
@@ -92,8 +125,91 @@ const nepaliTitles: Record<string, string> = {
   "loan-emi-calculator": "ऋण EMI क्याल्कुलेटर",
   "compound-interest-sip-calculator": "चक्रवृद्धि ब्याज तथा SIP क्याल्कुलेटर",
   "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",
+  "xml-formatter-validator": "XML फर्म्याट तथा जाँच",
+  "notes-to-pdf": "नोटबाट PDF",
+  "html-tag-stripper": "HTML Tag हटाउने",
+  "savings-goal-calculator": "बचत लक्ष्य क्याल्कुलेटर",
+  "nepal-share-calculator": "शेयर नाफा–नोक्सान क्याल्कुलेटर",
+  "password-generator": "सुरक्षित पासवर्ड बनाउने",
+  "uuid-generator": "UUID बनाउने",
+  "regex-tester": "Regex जाँचकर्ता",
+  "jwt-decoder": "JWT Decoder",
+  "color-picker-palette": "रङ छान्ने तथा प्यालेट",
+  "color-contrast-checker": "रङ Contrast जाँच",
+  "css-minifier": "CSS Minifier",
+  "meta-title-checker": "Meta Title जाँच",
+  "meta-description-checker": "Meta Description जाँच",
+  "keyword-density-checker": "Keyword Density जाँच",
+  "robots-txt-generator": "robots.txt Generator",
+  "sitemap-generator": "XML Sitemap Generator",
+  "open-graph-preview": "Open Graph Preview",
+  "currency-converter": "मुद्रा रूपान्तरण",
+  "image-compressor": "तस्बिर कम्प्रेसर",
+  "image-format-converter": "तस्बिर Format रूपान्तरण",
+  "preeti-unicode-converter": "Preeti बाट Unicode रूपान्तरण",
+  "nepali-unicode-typing": "नेपाली Unicode टाइपिङ",
+  "email-signature-generator": "व्यावसायिक इमेल हस्ताक्षर निर्माता",
+  "timezone-meeting-planner": "समय क्षेत्र बैठक योजनाकार",
+  "image-dpi-calculator": "तस्बिर DPI तथा PPI क्याल्कुलेटर",
+  "video-bitrate-calculator": "भिडियो बिटरेट क्याल्कुलेटर",
+  "markdown-table-generator": "Markdown तालिका निर्माता",
 };
 const nepaliDescriptions: Record<string, string> = {
+  "xml-formatter-validator": "XML syntax जाँचेर सुरक्षित रूपमा indentation मिलाउनुहोस्।",
+  "notes-to-pdf": "नोट ब्राउजरमै लेखेर Print संवादबाट PDF का रूपमा सुरक्षित गर्नुहोस्।",
+  "html-tag-stripper": "HTML snippet बाट देखिने पाठ ब्राउजरमै निकाल्नुहोस्।",
+  "savings-goal-calculator": "लक्ष्य, हालको बचत, अवधि र अनुमानित ब्याजका आधारमा मासिक बचत निकाल्नुहोस्।",
+  "nepal-share-calculator": "शेयर कारोबारको नाफा वा नोक्सान तपाईंले दिएको शुल्क र कर दरअनुसार अनुमान गर्नुहोस्।",
+  "password-generator": "ब्राउजरमै क्रिप्टोग्राफिक random बाट पासवर्ड बनाउनुहोस्; कुनै डेटा सर्भरमा पठाइँदैन।",
+  "uuid-generator": "Web Crypto API प्रयोग गरी UUID v4 बनाउनुहोस्।",
+  "regex-tester": "JavaScript regular expression बाट पाठमा मिल्ने अंशहरू जाँच्नुहोस्।",
+  "jwt-decoder": "JWT header र payload ब्राउजरमै decode गर्नुहोस्; signature verify हुँदैन।",
+  "color-picker-palette": "HEX रङ छान्नुहोस् र त्यसको RGB मान हेर्नुहोस्।",
+  "color-contrast-checker": "दुई HEX रङबीच contrast ratio र WCAG AA/AAA अनुपालन जाँच्नुहोस्।",
+  "css-minifier": "CSS बाट comment र अनावश्यक whitespace हटाएर compact बनाउनुहोस्।",
+  "meta-title-checker": "Meta title को अक्षर संख्या र सामान्य SERP guideline जाँच्नुहोस्।",
+  "meta-description-checker": "Meta description को लम्बाइ जाँच्नुहोस्; Google snippet को ग्यारेन्टी हुँदैन।",
+  "keyword-density-checker": "लेखमा exact-match keyword को आवृत्ति र प्रतिशत अनुमान गर्नुहोस्।",
+  "robots-txt-generator": "आधारभूत robots.txt तयार गर्नुहोस्; deploy अघि crawler नियम जाँच्नुहोस्।",
+  "sitemap-generator": "दिइएका canonical URL बाट XML sitemap बनाउनुहोस्।",
+  "open-graph-preview": "शीर्षक, विवरण र image URL बाट social sharing preview हेर्नुहोस्।",
+  "currency-converter": "सार्वजनिक विनिमय-दर API बाट विभिन्न मुद्राको अनुमानित रूपान्तरण गर्नुहोस्; कारोबारअघि आधिकारिक दर पुष्टि गर्नुहोस्।",
+  "image-compressor": "तस्बिरलाई WebP मा कम्प्रेस गर्नुहोस्। फाइल ब्राउजरमै प्रशोधन हुन्छ र सर्भरमा अपलोड हुँदैन।",
+  "image-format-converter": "PNG, JPEG र WebP बीच तस्बिर रूपान्तरण गर्नुहोस्; फाइल ब्राउजरमै प्रशोधन हुन्छ।",
+  "preeti-unicode-converter": "पुरानो Preeti font encoding लाई नेपाली Unicode मा बदल्नुहोस्; reverse conversion अनुमानित हुन्छ।",
+  "nepali-unicode-typing": "अङ्ग्रेजी अक्षरमा नेपाली शब्द टाइप गरी देवनागरी Unicode मा बदल्नुहोस्.",
+  "email-signature-generator": "आफ्नो नाम, पद, कम्पनी र सम्पर्क विवरणसहित HTML इमेल हस्ताक्षर ब्राउजरमै तयार गर्नुहोस्।",
+  "timezone-meeting-planner": "विभिन्न समय क्षेत्र र सहरमा बैठकको स्थानीय समय तुलना गर्नुहोस्।",
+  "image-dpi-calculator": "प्रिन्ट आकारअनुसार तस्बिरको PPI र आवश्यक पिक्सेल आयाम गणना गर्नुहोस्।",
+  "video-bitrate-calculator": "भिडियो अवधि, लक्षित फाइल आकार, अडियो बिटरेट र अतिरिक्त स्थानका आधारमा भिडियो बिटरेट अनुमान गर्नुहोस्।",
+  "markdown-table-generator": "Tab छुट्याइएको पाठलाई Markdown तालिकामा रूपान्तरण गर्नुहोस्; सबै प्रशोधन ब्राउजरमै हुन्छ।",
+  "resume-builder": "२० वटा व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन, सम्पादनयोग्य खण्ड र PDF निर्यात प्रयोग गरी व्यवस्थित CV बनाउनुहोस्।",
+  "csv-to-json": "पहिलो पङ्क्तिलाई शीर्षक मानेर CSV डेटालाई JSON array मा बदल्नुहोस्।",
+  "json-to-yaml": "JSON डेटालाई पढ्न सजिलो YAML ढाँचामा बदल्नुहोस्।",
+  "json-to-csv": "JSON object हरूको array लाई Excel/Sheets मा खोल्न मिल्ने CSV मा बदल्नुहोस्।",
+  "url-validator": "URL को बनोट जाँचेर protocol, host, path र query छुट्याउनुहोस्।",
+  "email-validator": "इमेल ठेगानाको आधारभूत बनोट मान्य छ कि छैन जाँच्नुहोस्।",
+  "password-strength-checker": "पासवर्डले आधारभूत मापदण्ड कति पूरा गर्छ भनी स्थानीय रूपमा जाँच्नुहोस्।",
+  "url-query-parser": "URL भित्रका query parameter हरू कुञ्जी र मानमा छुट्याएर हेर्नुहोस्।",
+  "color-converter": "HEX रङलाई RGB र HSL मान सहित हेर्नुहोस्।",
+  "aspect-ratio-calculator": "चौडाइ र उचाइबाट सरल aspect ratio निकाल्नुहोस्।",
+  "css-gradient-generator": "दुई रङ र कोणबाट CSS linear-gradient कोड बनाउनुहोस्।",
+  "unix-timestamp-converter": "Unix timestamp लाई UTC र नेपाल समयमा बदल्नुहोस्।",
+  "date-add-subtract-calculator": "कुनै मितिमा दिन थपेर वा घटाएर नयाँ मिति निकाल्नुहोस्।",
+  "business-days-calculator": "दुई मितिबीच शनिबार–आइतबार बाहेकका कार्यदिन गन्नुहोस्।",
+  "random-number-generator": "दिइएको दायराभित्र सुरक्षित अनियमित पूर्ण सङ्ख्या बनाउनुहोस्।",
+  "dice-roller": "१ देखि १०० वटासम्म ६-पाटे पासा फाल्नुहोस्।",
+  "text-to-binary": "कुनै पनि पाठ (नेपाली सहित) UTF-8 बाइटमा बदली ८-bit बाइनरी समूहमा देखाउनुहोस्।",
+  "binary-to-text": "खाली स्थानले छुट्याइएका ८-bit बाइनरी समूहलाई UTF-8 पाठमा फर्काउनुहोस्।",
+  "text-to-hex": "पाठलाई UTF-8 बाइटमा बदली hexadecimal (आधार १६) मा देखाउनुहोस्।",
+  "hex-to-text": "Hex बाइट जोडालाई UTF-8 पाठमा फर्काउनुहोस्।",
+  "morse-code-translator": "अङ्ग्रेजी अक्षर र अंकलाई मोर्स कोडमा बदल्नुहोस् वा मोर्स कोडबाट पाठ निकाल्नुहोस्।",
+  "camel-case-converter": "पाठलाई प्रोग्रामिङमा प्रयोग हुने camelCase नाममा बदल्नुहोस्।",
+  "snake-case-converter": "पाठलाई underscore ले जोडिएको snake_case नाममा बदल्नुहोस्।",
+  "kebab-case-converter": "पाठलाई hyphen ले जोडिएको kebab-case नाममा बदल्नुहोस्।",
+  "json-escape-unescape": "पाठलाई JSON string मा सुरक्षित बनाउनुहोस् वा escape गरिएको string खोल्नुहोस्।",
+  "px-rem-converter": "CSS मा px र rem एकाइबीच रूपान्तरण गर्नुहोस्।",
+  "roman-numeral-converter": "१ देखि ३९९९ सम्मका सङ्ख्या र रोमन अंकबीच रूपान्तरण गर्नुहोस्।",
   "nepali-digit-converter": "अङ्ग्रेजी अंकलाई नेपाली देवनागरी अंकमा र नेपाली अंकलाई अङ्ग्रेजी अंकमा रूपान्तरण गर्नुहोस्।",
   "nepali-number-converter": "नम्बरलाई नेपाली अंकमा देखाउनुहोस् र नेपाली लाख तथा करोडको ढाँचा जाँच्नुहोस्।",
   "nepali-date-converter": "विक्रम संवत् र इस्वी संवत्का मितिहरूबीच रूपान्तरण गर्नुहोस् र समर्थित मिति दायरा जाँच्नुहोस्।",
@@ -172,7 +288,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const request = resolveLocalizedToolRequest(locale, slug);
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
-  if (request.locale === "ne" && (nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number]) || nepaliLocalizedFinancialSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedFinancialSlugs)[number]) || nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedPublicInfoSlugs)[number]))) {
+  if (request.locale === "ne" && (["email-signature-generator", "timezone-meeting-planner", "image-dpi-calculator", "video-bitrate-calculator", "markdown-table-generator"].includes(request.implementation.slug) || nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number]) || nepaliLocalizedFinancialSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedFinancialSlugs)[number]) || nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedPublicInfoSlugs)[number]))) {
     return {
       ...metadata,
       title: nepaliTitles[request.implementation.slug],
@@ -198,6 +314,16 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
+  if (request.locale === "ne" && toolSlug === "nepali-unicode-typing") { return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTypingTool locale="ne" /></section></main>; }
+  if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator", "password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "currency-converter", "image-compressor", "image-format-converter", "preeti-unicode-converter"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliRemainingToolsWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && toolSlug === "resume-builder") {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
+      <div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली करियर टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div>
+      <ResumeBuilder locale="ne" />
+    </main>;
+  }
   if (request.locale === "ne" && ["email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliExtraTextWorkspace slug={toolSlug} /></section></main>;
   }
@@ -218,6 +344,16 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && ["nepal-phone-validator", "gold-tola-gram-converter", "nepali-calendar", "loksewa-photo-resizer"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाल उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliNepalToolsWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["text-to-binary", "binary-to-text", "text-to-hex", "hex-to-text", "morse-code-translator", "camel-case-converter", "snake-case-converter", "kebab-case-converter", "json-escape-unescape", "px-rem-converter", "roman-numeral-converter"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली एन्कोडिङ तथा केस रूपान्तरण टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliEncodingCaseWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["csv-to-json", "json-to-yaml", "json-to-csv", "url-validator", "email-validator", "password-strength-checker", "url-query-parser", "color-converter", "aspect-ratio-calculator", "css-gradient-generator", "unix-timestamp-converter", "date-add-subtract-calculator", "business-days-calculator", "random-number-generator", "dice-roller"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली डेटा, जाँच तथा डेभलपर टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliDataToolsWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"].includes(toolSlug)) {
+    const titles:Record<string,string>={"email-signature-generator":"व्यावसायिक इमेल हस्ताक्षर निर्माता","timezone-meeting-planner":"समय क्षेत्र बैठक योजनाकार","image-dpi-calculator":"तस्बिर DPI तथा PPI क्याल्कुलेटर","video-bitrate-calculator":"भिडियो बिटरेट क्याल्कुलेटर","markdown-table-generator":"Markdown तालिका निर्माता"};
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><h1 className="mb-6 text-3xl font-black">{titles[toolSlug]}</h1><NepaliBrowserOnlyGrowthTools slug={toolSlug as "email-signature-generator"|"timezone-meeting-planner"|"image-dpi-calculator"|"video-bitrate-calculator"|"markdown-table-generator"}/></main>;
   }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;

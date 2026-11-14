@@ -325,6 +325,7 @@ export default function PDForaTool({
             accept={accept}
             multiple={multiple}
             onChange={handleFiles}
+            aria-label={locale === "ne" ? "PDF फाइल छान्नुहोस्" : "Choose PDF files"}
             className="hidden"
           />
 
@@ -403,13 +404,14 @@ export default function PDForaTool({
           {/* Extra input */}
           {(formField || queryField) && (
             <div className="mt-4">
-              <label className="mb-2 block text-sm font-bold">
+              <label htmlFor="pdfora-extra-value" className="mb-2 block text-sm font-bold">
                 {queryField === "degrees"
                   ? ui.rotationAngle
                   : localizedFormPlaceholder || ui.enterValue}
               </label>
 
               <input
+                id="pdfora-extra-value"
                 value={value}
                 onChange={(event) =>
                   setValue(event.target.value)

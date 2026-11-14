@@ -33,6 +33,10 @@ const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map
 const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
 const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
+const browserOnlyGrowthSlugs = ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"];
+if (allTools.includes('import("./BrowserOnlyGrowthTools")') && browserOnlyGrowthSlugs.every((slug) => allTools.includes(`"${slug}"`))) {
+  for (const slug of browserOnlyGrowthSlugs) implemented.add(slug);
+}
 if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {
   implemented.add("image-compressor");
   implemented.add("image-format-converter");
@@ -82,8 +86,8 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 120, "Expected 120 non-AI catalog utilities");
-assert.equal(allHrefs.length, 169, "Expected 169 available tools (49 PDF tools + 120 catalog utilities)");
+assert.equal(catalog.length, 125, "Expected 125 non-AI catalog utilities");
+assert.equal(allHrefs.length, 174, "Expected 174 available tools (49 PDF tools + 125 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
 assert.ok(toolDirectory.includes('"notes-to-pdf": "notes to PDF'), "Notes-to-PDF search aliases are missing");

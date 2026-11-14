@@ -131,7 +131,11 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/nepse-technical-analysis", "ne"), "/ne/nepse-technical-analysis");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 164, "All localized routes must be represented in the route registry");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 219, "All localized routes must be represented in the route registry");
+  for (const slug of ["email-signature-generator", "timezone-meeting-planner", "image-dpi-calculator", "video-bitrate-calculator", "markdown-table-generator"]) {
+    assert.equal(routing.localizedOrFallbackPath(`/tools/${slug}`, "ne"), `/ne/tools/${slug}`);
+    assert.equal(routing.hasIndexableLocalizedPage(`/tools/${slug}`, "ne"), false, `${slug} must remain noindex pending independent review`);
+  }
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 

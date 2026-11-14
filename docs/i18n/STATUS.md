@@ -1,5 +1,62 @@
 # PDFora i18n rollout: status
 
+## Current authoritative status — 2026-11-14 (source-generated)
+
+The reconciled canonical inventory is generated from `legacy-tool-slugs.ts` plus `toolCatalog.ts`, excluding the `pdf-tools` collection entry. Historical sections below are retained as history and must not override this status.
+
+| Dimension | Evidence |
+|---|---|
+| Inventory | **174 tools** = 49 PDF + 125 catalog utilities (2,088 matrix rows = 12 locales × 174). |
+| Nepali interface present | **174/174 code-level interfaces** = 49 PDF + 125 catalog utilities. The five restored browser-only utilities now have a dedicated Nepali wrapper, translated visible labels/messages/results and Nepali route metadata. This is source coverage, not native-speaker approval. |
+| Targeted Nepali unit tests | **44/174** interfaces are recorded with targeted tool-specific unit tests in the matrix. The five browser-only tools reuse the existing tested English calculation logic and have route/copy assertions; they are not counted as individual algorithm unit-test suites. |
+| Browser QA | GitHub Actions run **3117** on PR head `4373308dc6d136c7f940d3e21cf0a03f4a364ecd`: backend passed (13/13); frontend install, i18n runtime/content, lint, production build, dependency audit, production security/privacy/SEO smoke, sitemap/robots checks, live-data checks and local security/SEO checks passed. Chromium E2E across all 174 tools was still running at the time this status was written. The live-production job is skipped on pull requests. |
+| Human / native review | **Not assessed for all 174 interfaces.** No complete native-review sign-off is recorded. Automated translation/source checks do not replace a Nepali native-speaker review. |
+| SEO eligibility | Six Nepali PDF tool URLs remain on the explicit indexing allowlist. The 125 Nepali catalog utility routes, including the five new browser-only routes, remain noindex and excluded from sitemap/hreflang pending individual editorial and functional approval. |
+| Publication | English and Nepali only. Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Chinese and Japanese remain unpublished. |
+| Production | PR #162 has not been merged or deployed. Production remains on the currently deployed master commit until final CI, review, merge and deployment verification. |
+
+### Nepali batch 5 — five restored browser-only utilities (2026-11-14)
+
+Added Nepali route presentation and localized metadata for:
+- `email-signature-generator` — इमेल हस्ताक्षर निर्माता
+- `timezone-meeting-planner` — समय क्षेत्र बैठक योजनाकार
+- `image-dpi-calculator` — तस्बिर DPI/PPI क्याल्कुलेटर
+- `video-bitrate-calculator` — भिडियो बिटरेट क्याल्कुलेटर
+- `markdown-table-generator` — Markdown तालिका निर्माता
+
+The existing browser-side calculation and formatting logic is retained. Inputs stay in the browser. These five utility routes remain noindex until independent Nepali editorial review and individual functional approval. The PR does not alter the existing ad-placement configuration or sitemap.
+
+### Nepali batch 4 — five additional interfaces (2026-11-14)
+
+Added route-specific Nepali workspaces for XML formatting/validation, Notes to PDF (browser print-to-PDF), HTML tag stripping, savings-goal calculation and a Nepal share profit/loss estimator. These five were included in the earlier 151/169 interface-present count; current reconciled coverage is 169/174. They are **not** counted as functionally tested, browser-tested, natively reviewed or index-approved. Share fee/tax inputs are user-entered rather than asserted as current statutory rates. Notes-to-PDF uses the browser print dialog and needs a full print-preview/download browser check.
+
+### Added in this branch (Nepali batch 2: encoding, case and unit tools)
+text-to-binary, binary-to-text, text-to-hex, hex-to-text, morse-code-translator, camel-case-converter, snake-case-converter, kebab-case-converter, json-escape-unescape, px-rem-converter, roman-numeral-converter — logic in `lib/i18n/nepali-encoding-case-tools.ts`, UI in `components/NepaliEncodingCaseWorkspace.tsx`, test in `scripts/nepali-encoding-case-tools.test.mjs`.
+Deliberate differences from English: Nepali validation messages; case converters keep Devanagari/Unicode letters; Devanagari digits accepted in px/rem and Roman numerals; morse notes dropped characters; empty input shows a message.
+
+### Nepali batch 3: data, validator, colour, date and random tools
+csv-to-json, json-to-yaml, json-to-csv, url-validator, email-validator, password-strength-checker, url-query-parser, color-converter, aspect-ratio-calculator, css-gradient-generator, unix-timestamp-converter, date-add-subtract-calculator, business-days-calculator, random-number-generator, dice-roller — logic in `lib/i18n/nepali-data-tools.ts` (English helpers injected, so CSV parsing, the JSON->CSV spreadsheet-formula guard, calendar arithmetic and unbiased random selection are shared with the English tools; every English error message is mapped to Nepali), UI in `components/NepaliDataToolsWorkspace.tsx`, test in `scripts/nepali-data-tools.test.mjs` (86 assertions).
+Deliberate differences: Nepal-time line on timestamps; business-days notes that Saturday/Sunday are treated as the weekend and holidays are not removed; password field is masked with a show/hide toggle.
+
+### Verification actually executed for PR #162
+
+GitHub Actions run `43596956402` completed successfully. Frontend and backend jobs both concluded `success`.
+
+Frontend CI recorded successful dependency installation, catalog verification, i18n runtime/content checks, ESLint, Next.js production build, npm dependency audit, local production security/privacy/SEO smoke checks, sitemap/robots validation, live NRB/NEPSE/news freshness and fallback checks, and Merge PDF browser E2E. The build's `prebuild` lifecycle includes tool UI tests, Jest, i18n tests/checks and lint. A separate `npx tsc --noEmit` command was not recorded as its own step; the Next.js build passed its build-time checks.
+
+Backend CI recorded successful syntax checks, dependency installation, backend functional regression tests and Python dependency audit. The separate `live-production` job was skipped; CI success is not a deployment.
+
+The uploaded browser/functional audit artifact was generated against merge-test commit `7bf9b4b39318001758f097d8eaad82e47fd3f983`. Its executed evidence reports:
+
+- Functional audit: 1 PASS, 69 PARTIAL, 0 FAIL, 99 NOT TESTED (169 tools).
+- PDF: Merge PDF is the sole browser E2E PASS; 48 other PDF workflows remain PARTIAL despite backend/worker evidence.
+- Catalog utilities: 21 PARTIAL and 99 NOT TESTED; none had a complete browser E2E PASS.
+- 390px mobile: 1 PASS, 168 NOT TESTED.
+- Keyboard Tab progression: 1 PASS, 168 NOT TESTED.
+- Accessibility: 0 PASS, 1 PARTIAL, 168 NOT TESTED.
+
+See `docs/qa/REMAINING_WORK.md` for exact scope, GSC data, sitemap metrics and remaining blockers. These results do not certify all 169 tools or all localized interfaces.
+
 ## Authoritative localization counts — 2026-11-07
 
 The generated `TOOL_LANGUAGE_COVERAGE_MATRIX.json` is the current machine-readable source for per-tool locale status. It was generated at `2026-11-07T09:39:50.763Z` from source commit `c13a9fbbc2f8f70b3b0de82e9bf8640e48844d33` (the matrix must be regenerated on the final QA commit before release).

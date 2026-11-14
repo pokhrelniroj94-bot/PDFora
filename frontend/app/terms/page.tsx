@@ -17,7 +17,7 @@ export default function TermsPage() {
         <header className="mb-10 border-b border-gray-200 pb-8">
           <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-violet-700">PDFora policies</p>
           <h1 className="mb-4 text-4xl font-bold tracking-tight">Terms of Service</h1>
-          <p className="text-sm text-gray-600">Last updated: November 7, 2026</p>
+          <p className="text-sm text-gray-600">Last updated: November 14, 2026</p>
           <p className="mt-5 leading-7 text-gray-700">
             These Terms explain the conditions for accessing and using PDFora. By using the website, you agree to these Terms. If you do not agree, please stop using the service.
           </p>
@@ -79,7 +79,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="mb-2 text-2xl font-semibold text-gray-900">11. Contact</h2>
-            <p>Questions about these Terms can be sent to <a className="font-semibold text-violet-700 underline" href="mailto:pokhrelniroj94@gmail.com">pokhrelniroj94@gmail.com</a>. You can also visit our <a className="font-semibold text-violet-700 underline" href="/contact">Contact page</a>.</p>
+            <p>For non-sensitive questions about these Terms, visit our <a className="font-semibold text-violet-700 underline" href="/contact">Contact page</a> and use the public issue tracker. Do not post personal information, passwords, private files or security details in public issues.</p>
           </section>
         </div>
       </article>

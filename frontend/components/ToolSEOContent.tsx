@@ -33,6 +33,16 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
   if (!baseGuide) return null;
   const guide = locale === "ne" && nepaliToolGuides[slug] ? { ...baseGuide, ...nepaliToolGuides[slug] } : baseGuide;
   const toolName = locale === "ne" ? nepaliToolNames[slug] || guide.name : guide.name;
+  const localizeGuideText = (value: string) => locale !== "ne" ? value : toolGuides.reduce(
+    (text, item) => nepaliToolNames[item.slug] ? text.replaceAll(item.name, nepaliToolNames[item.slug]) : text,
+    value,
+  );
+  const localizedGuide = locale === "ne" ? {
+    ...guide,
+    purpose: localizeGuideText(guide.purpose),
+    steps: guide.steps.map(localizeGuideText),
+    caution: localizeGuideText(guide.caution),
+  } : guide;
   const faqs = [
     { q: localizedFaqs[locale]?.[0]?.replace("{name}", toolName) || `What does ${toolName} do?`, a: guide.purpose },
     { q: localizedFaqs[locale]?.[1]?.replace("{name}", toolName) || `How do I ${toolName.toLowerCase()} online?`, a: guide.steps.join(" ") },

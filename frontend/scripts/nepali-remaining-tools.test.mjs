@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { calculateSavings, calculateShare } from "../lib/i18n/nepali-remaining-tools.ts";
+import { analyzeKeywordDensity, buildRobotsTxt, buildSitemap, calculateContrast, calculateSavings, calculateShare, decodeJwt, findRegexMatches, minifyCss } from "../lib/i18n/nepali-remaining-tools.ts";
 
 test("savings calculator handles zero interest and an existing balance", () => {
   assert.deepEqual(calculateSavings(100000, 10000, 12, 0), { remaining: 90000, monthlyDeposit: 7500 });
@@ -43,4 +43,57 @@ test("share calculator rejects invalid quantities and negative costs/rates", () 
   for (const values of [[0, 100, 120, 0, 0, 0], [1, -1, 120, 0, 0, 0], [1, 100, 120, -1, 0, 0], [1, 100, 120, 0, -1, 0], [1, 100, 120, 0, 0, -1], [1, NaN, 120, 0, 0, 0]]) {
     assert.throws(() => calculateShare(...values), /मान शून्य वा सकारात्मक/);
   }
+});
+
+
+test("regex tester enforces global matching and reports offsets", () => {
+  assert.deepEqual(findRegexMatches("a1 b2", "\\d", ""), [
+    { index: 1, value: "1", offset: 1 },
+    { index: 2, value: "2", offset: 4 },
+  ]);
+  assert.throws(() => findRegexMatches("abc", "[", "g"));
+});
+
+test("JWT decoder parses header and payload but never verifies the signature", () => {
+  const encode = (value) => Buffer.from(JSON.stringify(value)).toString("base64url");
+  const token = [encode({ alg: "HS256", typ: "JWT" }), encode({ sub: "123", role: "user" }), "signature"].join(".");
+  const decoded = decodeJwt(token);
+  assert.deepEqual(decoded.header, { alg: "HS256", typ: "JWT" });
+  assert.deepEqual(decoded.payload, { sub: "123", role: "user" });
+  assert.equal(decoded.signatureVerified, false);
+  assert.throws(() => decodeJwt("not.a.jwt.token"), /तीन भाग/);
+});
+
+test("CSS minifier removes comments and redundant whitespace", () => {
+  assert.equal(minifyCss("/* note */ .card { color: teal; padding: 4px; }"), ".card{color:teal;padding:4px}");
+});
+
+test("WCAG contrast checker calculates black/white ratio and rejects malformed colors", () => {
+  const result = calculateContrast("#000", "#fff");
+  assert.equal(result.ratio, 21);
+  assert.equal(result.aaNormal, true);
+  assert.equal(result.aaaNormal, true);
+  assert.throws(() => calculateContrast("red", "#fff"), /#RGB/);
+});
+
+test("keyword density is case-insensitive and uses Unicode word tokens", () => {
+  assert.deepEqual(analyzeKeywordDensity("PDFora pdfora नेपाली", "PDFora"), {
+    totalWords: 3, count: 2, density: 200 / 3,
+  });
+  assert.deepEqual(analyzeKeywordDensity("नेपाली नेपाली", ""), {
+    totalWords: 2, count: 0, density: 0,
+  });
+});
+
+test("sitemap generator validates URLs and escapes XML text", () => {
+  const xml = buildSitemap(["https://example.com/?a=1&b=2", "https://example.com/about"]);
+  assert.match(xml, /a=1&amp;b=2/);
+  assert.equal((xml.match(/<url>/g) ?? []).length, 2);
+  assert.throws(() => buildSitemap(["javascript:alert(1)"]), /अमान्य URL/);
+});
+
+test("robots generator uses an allow-by-default policy and validates sitemap URL", () => {
+  assert.equal(buildRobotsTxt(), "User-agent: *\\nAllow: /\\n");
+  assert.match(buildRobotsTxt("https://example.com/sitemap.xml"), /Sitemap: https:\/\/example.com\/sitemap.xml/);
+  assert.throws(() => buildRobotsTxt("javascript:alert(1)"), /HTTP वा HTTPS/);
 });

@@ -55,6 +55,10 @@ The build's `prebuild` lifecycle also runs the configured catalog, tool UI, Jest
 
 The separate `live-production` job was skipped. CI success does not mean PR #162 was deployed.
 
+## Follow-up CI correction
+
+The first run against the updated 151/169 branch exposed two stale assertions: the localized-route registry now contains 196 routes (not 191), and the Nepal share calculator test expected a different Nepali validation phrase. Both assertions were corrected in the branch. The run that exposed the second assertion is **43598720210** (failed at `nepali-remaining-tools.test.mjs`); the current branch needs a fresh completed run before merge.
+
 ## Executed browser / functional evidence
 
 CI artifact `pdfora-browser-e2e-173-report` and its functional audit were downloaded and inspected. The artifact was generated against the PR merge-test commit `7bf9b4b39318001758f097d8eaad82e47fd3f983`.

@@ -33,8 +33,9 @@ export function calculateSavings(target: number, current: number, months: number
   if (![target, current, months, annualRate].every(Number.isFinite) || target <= 0 || current < 0 || months <= 0 || annualRate < 0) {
     throw new Error("लक्ष्य, हालको बचत, अवधि र ब्याजदरका मान जाँच गर्नुहोस्।");
   }
-  const remaining = Math.max(0, target - current);
   const monthlyRate = annualRate / 1200;
+  const futureCurrent = current * Math.pow(1 + monthlyRate, months);
+  const remaining = Math.max(0, target - futureCurrent);
   const factor = monthlyRate === 0 ? months : (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate;
   return { remaining, monthlyDeposit: remaining === 0 ? 0 : remaining / factor };
 }
@@ -57,7 +58,8 @@ function Copy({ value }: { value: string }) {
 
 export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }) {
   const [source, setSource] = useState("");
-  const [target, setTarget] = useState("100000");\n  const [notesTitle, setNotesTitle] = useState("मेरा नोटहरू");
+  const [target, setTarget] = useState("100000");
+  const [notesTitle, setNotesTitle] = useState("मेरा नोटहरू");
   const [current, setCurrent] = useState("10000");
   const [months, setMonths] = useState("12");
   const [rate, setRate] = useState("0");
@@ -115,7 +117,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     try { result = calculateSavings(Number(target), Number(current), Number(months), Number(rate)); }
     catch (cause) { errorMessage = cause instanceof Error ? cause.message : "मान जाँच गर्नुहोस्।"; }
     return <section className="space-y-4">
-      <div><h2 className="text-xl font-black">बचत लक्ष्य क्याल्कुलेटर</h2><p className="mt-1 text-sm text-slate-600">लक्ष्य पूरा गर्न आवश्यक मासिक बचतको अनुमान निकाल्नुहोस्। हालको बचत र मासिक योगदान दुवैमा ब्याज मासिक रूपमा जोडिएको मानिएको छ।</p></div>
+      <div><h2 className="text-xl font-black">बचत लक्ष्य क्याल्कुलेटर</h2><p className="mt-1 text-sm text-slate-600">लक्ष्य पूरा गर्न आवश्यक मासिक बचतको अनुमान निकाल्नुहोस्। हालको बचत र मासिक योगदान दुवैमा हालको बचत र मासिक योगदान दुवैमा ब्याज मासिक रूपमा जोडिएको मानिएको छ।</p></div>
       <div className="grid gap-3 sm:grid-cols-2">
         <label><span className={label}>बचत लक्ष्य (रु.)</span><input className={field} type="number" min="1" value={target} onChange={(e) => setTarget(e.target.value)} /></label>
         <label><span className={label}>हालको बचत (रु.)</span><input className={field} type="number" min="0" value={current} onChange={(e) => setCurrent(e.target.value)} /></label>

@@ -148,7 +148,7 @@ const rows = [
   })),
 ];
 
-if (rows.length !== 169) throw new Error(`Expected 169 rows, generated ${rows.length}`);
+if (rows.length !== 174) throw new Error(`Expected 174 rows, generated ${rows.length}`);
 const report = {
   generatedAt: new Date().toISOString(),
   sourceCommit: commit,

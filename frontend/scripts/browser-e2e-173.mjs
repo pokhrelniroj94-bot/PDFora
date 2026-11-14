@@ -7,7 +7,7 @@ import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
-const reportPath = path.resolve("../docs/qa/BROWSER_E2E_174_REPORT.json");
+const reportPath = path.resolve("../docs/qa/BROWSER_E2E_173_REPORT.json");
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
 const downloadsDir = path.join(tempDir, "downloads");

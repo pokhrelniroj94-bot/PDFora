@@ -144,7 +144,7 @@ test("all Nepali PDF tools show localized names and actions in both shared works
   const niroj = fs.readFileSync(path.join(frontendRoot, "components", "Niroj77Tool.tsx"), "utf8");
   const directory = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "page.tsx"), "utf8");
   for (const [source, label] of [[pdfora, "PDForaTool"], [niroj, "Niroj77Tool"]]) {
-    assert.ok(source.includes("{displayTitle}"), label + " primary action must use the localized tool title");
+    assert.ok(source.includes("displayTitle\n            )}"), label + " primary action must use the localized tool title");
     assert.ok(source.includes("localizedFormPlaceholder || ui.enterValue"), label + " form placeholders must be localized");
     assert.ok(source.includes("{ui.howToUse} {displayTitle}"), label + " instructions heading must use the localized title");
   }

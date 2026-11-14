@@ -62,7 +62,8 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     try {
       if (slug === "regex-tester") {
         if (!source) return { text: "", error: "" };
-        const regex = new RegExp(secondary, flags.replace(/[^dgimsuvy]/g, ""));
+        const safeFlags = [...new Set((flags.replace(/[^dgimsuvy]/g, "") + "g").split(""))].join("");
+        const regex = new RegExp(secondary, safeFlags);
         const matches = [...source.matchAll(regex)];
         return { text: matches.length ? matches.map((m, i) => `${i + 1}. ${m[0]} (index: ${m.index})`).join("\n") : "कुनै मिल्दो अंश भेटिएन।", error: "" };
       }
@@ -101,7 +102,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
       }
       if (slug === "robots-txt-generator") {
         const sitemap = secondary.trim();
-        return { text: `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /admin/\n${sitemap ? `Sitemap: ${sitemap}\n` : ""}`, error: "" };
+        return { text: `User-agent: *\nAllow: /\n${sitemap ? `Sitemap: ${sitemap}\n` : ""}`, error: "" };
       }
       if (slug === "sitemap-generator") {
         const urls = source.split(/\r?\n/).map((v) => v.trim()).filter(Boolean);
@@ -201,13 +202,14 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
           image.onerror = () => reject(new Error("यो image format पढ्न सकिएन।"));
           image.src = sourceUrl;
         });
-        if (!image.naturalWidth || !image.naturalHeight || image.naturalWidth * image.naturalHeight > 100_000_000) throw new Error("तस्बिरको dimensions अमान्य वा अत्यधिक ठूलो छ।");
+        if (!image.naturalWidth || !image.naturalHeight || image.naturalWidth * image.naturalHeight > 40_000_000) throw new Error("तस्बिरको dimensions अमान्य वा अत्यधिक ठूलो छ (अधिकतम ४० मेगापिक्सेल)।");
         const canvas = document.createElement("canvas");
         canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
         const context = canvas.getContext("2d");
         if (!context) throw new Error("ब्राउजरमा image canvas उपलब्ध छैन।");
-        context.drawImage(image, 0, 0);
         const mime = slug === "image-compressor" ? "image/webp" : imageFormat;
+        if (mime === "image/jpeg") { context.fillStyle = "#ffffff"; context.fillRect(0, 0, canvas.width, canvas.height); }
+        context.drawImage(image, 0, 0);
         const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error("यो output format ब्राउजरले समर्थन गर्दैन।")), mime, quality));
         outputUrl = URL.createObjectURL(blob);
         const extension = mime === "image/jpeg" ? "jpg" : mime === "image/png" ? "png" : "webp";

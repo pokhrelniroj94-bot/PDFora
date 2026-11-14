@@ -9,30 +9,24 @@ counts are in `docs/audit/inventory.json`.
 |---|---:|---|
 | Frontend page source files | 70 | Recursive repository tree: `frontend/app/**/page.tsx` |
 | API route files | 5 | Recursive repository tree: `frontend/app/api/**/route.ts` |
-| Catalog utility entries | 120 | `frontend/components/toolCatalog.ts`, excluding the `pdf-tools` collection entry |
+| Catalog utility entries | 125 | `frontend/components/toolCatalog.ts`, excluding the `pdf-tools` collection entry |
 | Legacy PDF tool entries | 49 | `frontend/lib/legacy-tool-slugs.ts` |
-| Unique tools in canonical inventory | **169** | 120 catalog utilities + 49 PDF tools; 169 unique slugs |
+| Unique tools in canonical inventory | **174** | 125 catalog utilities + 49 PDF tools; 174 unique slugs |
 | Catalog categories | 10 | Catalog source |
 | Editorial blog articles | 8 | `frontend/lib/blog-posts.ts` |
 | Nepal blog articles | 19 | `frontend/lib/nepal-blog-posts.ts` |
-| Nepali dedicated tool interfaces | 169/169 | All 49 PDF routes and 120 catalog utility interfaces have Nepali route/workspace coverage; QA and native review are tracked separately |
+| Nepali dedicated tool interfaces | 169/174 | 49 PDF routes and 120 catalog utilities have Nepali route/workspace coverage; five restored legacy utilities remain English-only |
 | Nepali utility route equivalents | 111 | `frontend/lib/i18n/nepali-tool-routes.ts` |
 | Localized Nepali PDF route equivalents | 49 | `frontend/lib/i18n/nepali-pdf-routes.ts` |
 | Indexable Nepali PDF routes | 6 | `frontend/lib/tools/localized-verification.ts` allowlist |
 | Published locales | 2 | English and Nepali |
 | Unpublished locales | 10 | Locale publication registry |
 
-The canonical source inventory is **169 unique tools**, not 173 or 174. Older
-reports that used 173 homepage/directory entries or 174 live homepage entries
-refer to earlier or differently counted UI inventories and must not be treated as
-the current canonical tool count. The production/live discrepancy still requires
-a separate runtime verification; this source count alone does not establish what
-is currently deployed.
+The reconciled source inventory is **174 unique tools**: 49 PDF tools and 125 catalog utilities. Five browser-only utilities existed in the production source but were omitted from the localization branch; they have now been restored. The earlier 169 count was incomplete.
 
 ## Localization and publication policy
 
-English is the source language. Nepali now has route/workspace coverage for all
-169 canonical tools (49 PDF tools and 120 catalog utilities). This is interface
+English is the source language. Nepali now has route/workspace coverage for 169 of 174 canonical tools (49 PDF tools and 120 catalog utilities). Five restored utilities remain English-only until localized and reviewed. This is interface
 presence, not proof that every workflow passed functional/browser QA or that all
 copy received independent native-speaker review. Newly added utility interfaces
 remain excluded from indexing until the relevant QA and review are complete.

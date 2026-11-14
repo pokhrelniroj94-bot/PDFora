@@ -42,9 +42,9 @@ function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char] ?? char);
 }
 function SignatureTool({locale="en"}:{locale?:ToolLocale}) {
-  const [name, setName] = useState("Alex Morgan");
-  const [role, setRole] = useState("Product Designer");
-  const [company, setCompany] = useState("Company name");
+  const [name, setName] = useState(locale === "ne" ? "उदाहरण नाम" : "Alex Morgan");
+  const [role, setRole] = useState(locale === "ne" ? "उत्पादन डिजाइनर" : "Product Designer");
+  const [company, setCompany] = useState(locale === "ne" ? "कम्पनीको नाम" : "Company name");
   const [email, setEmail] = useState("alex@example.com");
   const [phone, setPhone] = useState("+1 555 010 2020");
   const [website, setWebsite] = useState("https://example.com");
@@ -180,7 +180,8 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
 }
 
 ({locale="en"}:{locale?:ToolLocale}) {
-  const [source, setSource] = useState("Name\tRole\tLocation\nAlex\tDesigner\tLondon\nSam\tDeveloper\tKathmandu");
+  const sample = locale === "ne" ? "नाम\tभूमिका\tस्थान\nराम\tडिजाइनर\tकाठमाडौं\nसीता\tडेभलपर\tपोखरा" : "Name\tRole\tLocation\nAlex\tDesigner\tLondon\nSam\tDeveloper\tKathmandu";
+  const [source, setSource] = useState(sample);
   const [message, setMessage] = useState("");
 
   const markdown = useMemo(() => {
@@ -195,7 +196,7 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
   return <div className="space-y-4">
     <Field label="Paste tab-separated data (first row becomes the header)"><textarea className={inputClass + " min-h-44 font-mono text-sm"} value={source} onChange={e => setSource(e.target.value)} spellCheck={false} /></Field>
     <div className={panelClass}><div className="mb-2 flex items-center justify-between gap-2"><h3 className="font-bold text-slate-900">Markdown output</h3><span className="text-xs text-slate-500">Live preview</span></div><pre className="max-h-80 overflow-auto whitespace-pre rounded-xl bg-slate-950 p-4 text-sm leading-6 text-slate-100">{markdown || "Enter at least one row."}</pre></div>
-    <div className="flex flex-wrap gap-2"><button className={buttonClass} disabled={!markdown} onClick={() => copyText(markdown, setMessage)}>Copy Markdown</button><button className={secondaryClass} disabled={!markdown} onClick={() => saveText("markdown-table.md", markdown, "text/markdown;charset=utf-8")}>Download .md</button><button className={secondaryClass} onClick={() => { setSource("Name\tRole\tLocation\nAlex\tDesigner\tLondon\nSam\tDeveloper\tKathmandu"); setMessage(""); }}>Reset example</button></div>
+    <div className="flex flex-wrap gap-2"><button className={buttonClass} disabled={!markdown} onClick={() => copyText(markdown, setMessage)}>Copy Markdown</button><button className={secondaryClass} disabled={!markdown} onClick={() => saveText("markdown-table.md", markdown, "text/markdown;charset=utf-8")}>Download .md</button><button className={secondaryClass} onClick={() => { setSource(sample); setMessage(""); }}>Reset example</button></div>
     {message && <p role="status" className="text-sm text-teal-800">{message}</p>}
     <p className="text-xs leading-6 text-slate-500">Use tabs between columns and new lines between rows. The first row is treated as the header. All conversion happens locally in your browser.</p>
   </div>;

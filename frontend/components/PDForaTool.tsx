@@ -228,9 +228,11 @@ export default function PDForaTool({
           ? ui.serverTimeout
           : error instanceof TypeError
             ? ui.connectionFailed
-            : error instanceof Error
-              ? error.message
-              : ui.couldNotProcess
+            : locale === "ne"
+              ? ui.processingFailed
+              : error instanceof Error
+                ? error.message
+                : ui.couldNotProcess
       );
     } finally {
       setLoading(false);
@@ -442,7 +444,7 @@ export default function PDForaTool({
                 {ui.processing}
               </span>
             ) : (
-              {displayTitle}
+              displayTitle
             )}
           </button>
 

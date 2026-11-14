@@ -139,6 +139,23 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
 
+test("all Nepali PDF tools show localized names and actions in both shared workspaces", () => {
+  const pdfora = fs.readFileSync(path.join(frontendRoot, "components", "PDForaTool.tsx"), "utf8");
+  const niroj = fs.readFileSync(path.join(frontendRoot, "components", "Niroj77Tool.tsx"), "utf8");
+  const directory = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "page.tsx"), "utf8");
+  for (const [source, label] of [[pdfora, "PDForaTool"], [niroj, "Niroj77Tool"]]) {
+    assert.ok(source.includes("{displayTitle}"), label + " primary action must use the localized tool title");
+    assert.ok(source.includes("localizedFormPlaceholder || ui.enterValue"), label + " form placeholders must be localized");
+    assert.ok(source.includes("{ui.howToUse} {displayTitle}"), label + " instructions heading must use the localized title");
+  }
+  assert.ok(directory.includes("import { nepaliToolNames }"), "The Nepali directory must import reviewed PDF tool names");
+  assert.ok(directory.includes("nepaliToolNames[slug]"), "Every PDF tool card must display its Nepali name");
+  for (const slug of Object.keys(nepaliRoutes.nepaliPdfRoutes)) {
+    assert.ok(nepaliNames.nepaliToolNames[slug], slug + " must have a Nepali name");
+    assert.ok(nepaliGuides.nepaliToolGuides[slug], slug + " must have a complete Nepali guide");
+  }
+});
+
 test("Nepali PDF tool back navigation stays in the active locale", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "PDForaTool.tsx"), "utf8");
   assert.ok(source.includes("href={homeHref}"), "the tool back link must use the locale-aware home destination");

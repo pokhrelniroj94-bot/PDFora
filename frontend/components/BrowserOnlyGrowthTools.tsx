@@ -34,6 +34,7 @@ function SignatureTool() {
   const [phone, setPhone] = useState("+1 555 010 2020");
   const [website, setWebsite] = useState("https://example.com");
   const [accent, setAccent] = useState("#0f766e");
+  const [message, setMessage] = useState("");
 
   const safeWebsite = /^https?:\/\//i.test(website.trim()) ? website.trim() : "";
   const html = useMemo(() => {
@@ -139,7 +140,6 @@ function VideoBitrateTool() {
   const [size, setSize] = useState("500");
   const [audio, setAudio] = useState("192");
   const [overhead, setOverhead] = useState("5");
-  const [message, setMessage] = useState("");
   const duration = Number(minutes) * 60 + Number(seconds);
   const sizeMb = Number(size), audioKbps = Number(audio), overheadPct = Number(overhead);
   const valid = [duration,sizeMb,audioKbps,overheadPct,Number(seconds)].every(Number.isFinite) && duration > 0 && sizeMb > 0 && audioKbps >= 0 && Number(seconds) >= 0 && Number(seconds) <= 59 && Number.isInteger(Number(seconds)) && overheadPct >= 0 && overheadPct < 50;

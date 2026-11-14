@@ -174,8 +174,11 @@ assert.doesNotMatch(pdfToolJsonLdSource, /FAQPage/, "PDF tool JSON-LD must not e
 assert.doesNotMatch(pdfToolSeoSource, /FAQPage/, "Localized PDF tool pages must retain visible FAQs without obsolete FAQ markup");
 assert.doesNotMatch(blogArticleSource, /"@type":\s*"FAQPage"/, "Do not emit obsolete FAQ rich-result markup");
 assert.match(blogArticleSource, /"@type":\s*"BlogPosting"/, "Blog articles must retain accurate Article structured data");
-assert.match(nepaliToolsDirectorySource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "The partially translated Nepali directory must stay noindex");
+assert.match(nepaliToolsDirectorySource, /robots:\s*\{\s*index:\s*true,\s*follow:\s*true\s*\}/, "The Nepali tools directory must be indexable so crawlers can discover every localized tool link");
 assert.ok(nepaliToolsDirectorySource.includes("nepaliPdfRoutes[slug] ? " + String.fromCharCode(96) + "/ne/${slug}" + String.fromCharCode(96)), "Nepali PDF directory links must point directly to their canonical /ne/<slug> URLs");
+assert.match(nepaliToolsDirectorySource, /Object\.keys\(nepaliPdfRoutes\)/, "The Nepali directory must link every registered PDF tool, not a hand-picked subset");
+assert.match(nepaliToolsDirectorySource, /\[\.\.\.nepaliLocalizedUtilitySlugs, \.\.\.nepaliLocalizedFinancialSlugs, \.\.\.nepaliLocalizedPublicInfoSlugs\]/, "The Nepali directory must expose every registered utility, finance and public-info route for crawling");
+assert.match(sitemapSource, /\$\{baseUrl\}\/ne\/tools/, "The indexable Nepali tools directory must be discoverable from the XML sitemap");
 assert.match(nepaliNepseSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "The not-yet-reviewed Nepali NEPSE page must stay noindex");
 assert.doesNotMatch(sitemapSource, /nepaliLocalizedPublicInfoSlugs/, "Unreviewed public-info translations must not be added to the indexable sitemap automatically");
 

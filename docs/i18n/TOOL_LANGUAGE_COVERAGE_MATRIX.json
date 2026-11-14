@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-14T13:07:12.582Z",
-  "sourceCommit": "929418bc8598a09333a2d83e08a181f42f3f0359",
+  "generatedAt": "2026-11-14T14:26:24.000Z",
+  "sourceCommit": "b986eba48018028c60856972c92a5a8b067a43a9",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry; includes five restored browser-only utilities from the production source.",
     "expectedUniqueTools": 174,

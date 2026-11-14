@@ -71,6 +71,21 @@ export const nepaliLocalizedUtilitySlugs = [
   "json-escape-unescape",
   "px-rem-converter",
   "roman-numeral-converter",
+  "csv-to-json",
+  "json-to-yaml",
+  "json-to-csv",
+  "url-validator",
+  "email-validator",
+  "password-strength-checker",
+  "url-query-parser",
+  "color-converter",
+  "aspect-ratio-calculator",
+  "css-gradient-generator",
+  "unix-timestamp-converter",
+  "date-add-subtract-calculator",
+  "business-days-calculator",
+  "random-number-generator",
+  "dice-roller",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

@@ -11,7 +11,7 @@ Inventory: 70 frontend page source files, 5 API route source files, 49 English P
 | Code | Language | Status | Localized route equivalents | Shared UI module | PDF guides | Blog content |
 |---|---|---|---:|---:|---:|---:|---:|
 | en | English | Source language; translation review not assessed | Source language | 100% | 100% | 100% |
-| ne | Nepali | Partially translated | 175 | 100% | 100% | 100% |
+| ne | Nepali | Partially translated | 190 | 100% | 100% | 100% |
 | hi | Hindi | Not published | 0 | 0% | 0% | 0% |
 | bn | Bengali | Not published | 0 | 0% | 0% | 0% |
 | ur | Urdu | Not published | 0 | 0% | 0% | 0% |

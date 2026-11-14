@@ -14,6 +14,7 @@ import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtility
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
+import NepaliDataToolsWorkspace from "../../../../components/NepaliDataToolsWorkspace";
 import NepaliEncodingCaseWorkspace from "../../../../components/NepaliEncodingCaseWorkspace";
 import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWorkspace";
 import NepalLiveTools from "../../../../components/NepalLiveTools";
@@ -22,6 +23,21 @@ import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLo
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const nepaliTitles: Record<string, string> = {
+  "csv-to-json": "CSV बाट JSON",
+  "json-to-yaml": "JSON बाट YAML",
+  "json-to-csv": "JSON बाट CSV",
+  "url-validator": "URL जाँचकर्ता",
+  "email-validator": "इमेल जाँचकर्ता",
+  "password-strength-checker": "पासवर्ड बल जाँचकर्ता",
+  "url-query-parser": "URL Query पार्सर",
+  "color-converter": "रङ रूपान्तरण (HEX → RGB/HSL)",
+  "aspect-ratio-calculator": "Aspect Ratio क्याल्कुलेटर",
+  "css-gradient-generator": "CSS Gradient जेनेरेटर",
+  "unix-timestamp-converter": "Unix Timestamp रूपान्तरण",
+  "date-add-subtract-calculator": "मिति जोड्ने / घटाउने क्याल्कुलेटर",
+  "business-days-calculator": "कार्यदिन क्याल्कुलेटर",
+  "random-number-generator": "अनियमित सङ्ख्या जेनेरेटर",
+  "dice-roller": "पासा फाल्ने टुल",
   "text-to-binary": "पाठबाट बाइनरी",
   "binary-to-text": "बाइनरीबाट पाठ",
   "text-to-hex": "पाठबाट Hexadecimal",
@@ -106,6 +122,21 @@ const nepaliTitles: Record<string, string> = {
   "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",
 };
 const nepaliDescriptions: Record<string, string> = {
+  "csv-to-json": "पहिलो पङ्क्तिलाई शीर्षक मानेर CSV डेटालाई JSON array मा बदल्नुहोस्।",
+  "json-to-yaml": "JSON डेटालाई पढ्न सजिलो YAML ढाँचामा बदल्नुहोस्।",
+  "json-to-csv": "JSON object हरूको array लाई Excel/Sheets मा खोल्न मिल्ने CSV मा बदल्नुहोस्।",
+  "url-validator": "URL को बनोट जाँचेर protocol, host, path र query छुट्याउनुहोस्।",
+  "email-validator": "इमेल ठेगानाको आधारभूत बनोट मान्य छ कि छैन जाँच्नुहोस्।",
+  "password-strength-checker": "पासवर्डले आधारभूत मापदण्ड कति पूरा गर्छ भनी स्थानीय रूपमा जाँच्नुहोस्।",
+  "url-query-parser": "URL भित्रका query parameter हरू कुञ्जी र मानमा छुट्याएर हेर्नुहोस्।",
+  "color-converter": "HEX रङलाई RGB र HSL मान सहित हेर्नुहोस्।",
+  "aspect-ratio-calculator": "चौडाइ र उचाइबाट सरल aspect ratio निकाल्नुहोस्।",
+  "css-gradient-generator": "दुई रङ र कोणबाट CSS linear-gradient कोड बनाउनुहोस्।",
+  "unix-timestamp-converter": "Unix timestamp लाई UTC र नेपाल समयमा बदल्नुहोस्।",
+  "date-add-subtract-calculator": "कुनै मितिमा दिन थपेर वा घटाएर नयाँ मिति निकाल्नुहोस्।",
+  "business-days-calculator": "दुई मितिबीच शनिबार–आइतबार बाहेकका कार्यदिन गन्नुहोस्।",
+  "random-number-generator": "दिइएको दायराभित्र सुरक्षित अनियमित पूर्ण सङ्ख्या बनाउनुहोस्।",
+  "dice-roller": "१ देखि १०० वटासम्म ६-पाटे पासा फाल्नुहोस्।",
   "text-to-binary": "कुनै पनि पाठ (नेपाली सहित) UTF-8 बाइटमा बदली ८-bit बाइनरी समूहमा देखाउनुहोस्।",
   "binary-to-text": "खाली स्थानले छुट्याइएका ८-bit बाइनरी समूहलाई UTF-8 पाठमा फर्काउनुहोस्।",
   "text-to-hex": "पाठलाई UTF-8 बाइटमा बदली hexadecimal (आधार १६) मा देखाउनुहोस्।",
@@ -244,6 +275,9 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && ["text-to-binary", "binary-to-text", "text-to-hex", "hex-to-text", "morse-code-translator", "camel-case-converter", "snake-case-converter", "kebab-case-converter", "json-escape-unescape", "px-rem-converter", "roman-numeral-converter"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली एन्कोडिङ तथा केस रूपान्तरण टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliEncodingCaseWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["csv-to-json", "json-to-yaml", "json-to-csv", "url-validator", "email-validator", "password-strength-checker", "url-query-parser", "color-converter", "aspect-ratio-calculator", "css-gradient-generator", "unix-timestamp-converter", "date-add-subtract-calculator", "business-days-calculator", "random-number-generator", "dice-roller"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली डेटा, जाँच तथा डेभलपर टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliDataToolsWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;

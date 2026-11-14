@@ -13,7 +13,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.counts.tools, 169);
   assert.equal(report.counts.matrixRows, 12 * 169);
   assert.equal(report.rows.length, 2028);
-  assert.equal(report.counts.localizedNepaliTools, 130, "49 Nepali PDF routes plus 81 Nepali catalog routes");
+  assert.equal(report.counts.localizedNepaliTools, 145, "49 Nepali PDF routes plus 96 Nepali catalog routes");
   assert.equal(report.counts.indexableNepaliTools, 6);
   assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 169);
   for (const slug of ["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"]) {

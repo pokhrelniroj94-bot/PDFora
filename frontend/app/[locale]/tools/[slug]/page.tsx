@@ -122,7 +122,12 @@ const nepaliTitles: Record<string, string> = {
   "nepse-market-news": "NEPSE तथा नेपाल बजार समाचार",
   "loan-emi-calculator": "ऋण EMI क्याल्कुलेटर",
   "compound-interest-sip-calculator": "चक्रवृद्धि ब्याज तथा SIP क्याल्कुलेटर",
-  "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",\n  "xml-formatter-validator": "XML फर्म्याट तथा जाँच",\n  "notes-to-pdf": "नोटबाट PDF",\n  "html-tag-stripper": "HTML Tag हटाउने",\n  "savings-goal-calculator": "बचत लक्ष्य क्याल्कुलेटर",\n  "nepal-share-calculator": "शेयर नाफा–नोक्सान क्याल्कुलेटर",
+  "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",
+  "xml-formatter-validator": "XML फर्म्याट तथा जाँच",
+  "notes-to-pdf": "नोटबाट PDF",
+  "html-tag-stripper": "HTML Tag हटाउने",
+  "savings-goal-calculator": "बचत लक्ष्य क्याल्कुलेटर",
+  "nepal-share-calculator": "शेयर नाफा–नोक्सान क्याल्कुलेटर",
 };
 const nepaliDescriptions: Record<string, string> = {
   "xml-formatter-validator": "XML syntax जाँचेर सुरक्षित रूपमा indentation मिलाउनुहोस्।",

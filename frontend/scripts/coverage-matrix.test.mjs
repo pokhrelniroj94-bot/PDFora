@@ -37,7 +37,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.ok(localizedToolPage.includes('NepaliRemainingToolsWorkspace slug={toolSlug}'));
   assert.ok(localizedToolPage.includes('<NepaliTypingTool locale="ne" />'));
   assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 169);
-  for (const slug of ["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"]) {
+  for (const slug of ["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator", "regex-tester", "jwt-decoder", "css-minifier", "color-contrast-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
     assert.equal(row?.functionalTest, "targeted-unit-tests", `${slug} should record only its executed targeted tests`);
   }

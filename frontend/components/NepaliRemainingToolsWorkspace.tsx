@@ -42,6 +42,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
   const [preetiOutput, setPreetiOutput] = useState("");
   const [preetiDirection, setPreetiDirection] = useState<"to-unicode" | "to-preeti">("to-unicode");
   useEffect(() => {
+    if (slug !== "preeti-unicode-converter") return;
     if (window.PreetiConverter) { setPreetiReady(true); return; }
     const existing = document.querySelector<HTMLScriptElement>('script[data-pdfora-preeti]');
     if (existing) {
@@ -56,7 +57,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     script.onload = () => setPreetiReady(!!window.PreetiConverter);
     document.head.appendChild(script);
     return () => { script.onload = null; };
-  }, []);
+  }, [slug]);
 
   const result = useMemo(() => {
     try {
@@ -120,9 +121,17 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
   const generatePassword = () => {
     const alphabet = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ" + (includeNumbers ? "23456789" : "") + (includeSymbols ? "!@#$%&*+-_?" : "");
     const size = Math.max(8, Math.min(128, Number(length) || 20));
-    const random = new Uint32Array(size);
-    crypto.getRandomValues(random);
-    setGenerated(Array.from(random, (n) => alphabet[n % alphabet.length]).join(""));
+    const limit = Math.floor(0x100000000 / alphabet.length) * alphabet.length;
+    const chosen: string[] = [];
+    while (chosen.length < size) {
+      const random = new Uint32Array(Math.max(16, size - chosen.length));
+      crypto.getRandomValues(random);
+      for (const value of random) {
+        if (value < limit) chosen.push(alphabet[value % alphabet.length]);
+        if (chosen.length === size) break;
+      }
+    }
+    setGenerated(chosen.join(""));
   };
   const generateUuid = () => setGenerated(crypto.randomUUID());
 

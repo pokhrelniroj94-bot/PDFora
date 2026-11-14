@@ -86,7 +86,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
         return { text: "", error: "" };
       }
       if (slug === "robots-txt-generator") {
-        return { text: buildRobotsTxt(secondary), error: "" };
+        return { text: buildRobotsTxt(secondary, third.split(/\r?\n/)), error: "" };
       }
       if (slug === "sitemap-generator") {
         if (!source.trim()) return { text: "", error: "" };
@@ -249,7 +249,8 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
 
   if (slug === "color-contrast-checker") return <section className="space-y-4"><h2 className="text-xl font-black">रङ Contrast जाँच</h2><div className="grid gap-3 sm:grid-cols-2"><label><span className={label}>Foreground HEX</span><input className={input} value={source} onChange={(e) => setSource(e.target.value)} placeholder="#111827" /></label><label><span className={label}>Background HEX</span><input className={input} value={secondary} onChange={(e) => setSecondary(e.target.value)} placeholder="#ffffff" /></label></div><div className={panel}>{result.error || result.text || "दुवै HEX रङ प्रविष्ट गर्नुहोस्।"}</div></section>;
 
-  if (slug === "robots-txt-generator") return <section className="space-y-4"><h2 className="text-xl font-black">robots.txt Generator</h2><label><span className={label}>Sitemap URL (ऐच्छिक)</span><input className={input} value={secondary} onChange={(e) => setSecondary(e.target.value)} placeholder="https://example.com/sitemap.xml" /></label><pre className={panel}>{result.text}</pre><button className="underline" onClick={() => copy(result.text)}>robots.txt कपी गर्नुहोस्</button><p className="text-xs text-slate-500">यसलाई deploy गर्नुअघि आफ्नो वास्तविक private routes र crawler policy जाँच्नुहोस्।</p></section>;
+  if (slug === "robots-txt-generator") return <section className="space-y-4"><h2 className="text-xl font-black">robots.txt Generator</h2><label><span className={label}>Sitemap URL (ऐच्छिक)</span><input className={input} value={secondary} onChange={(e) => setSecondary(e.target.value)} placeholder="https://example.com/sitemap.xml" /></label>
+      <label><span className={label}>Disallow paths (प्रत्येक लाइनमा एउटा)</span><textarea className={input + " min-h-24 font-mono"} value={third} onChange={(e) => setThird(e.target.value)} placeholder="/admin/\n/private/" /></label><pre className={panel}>{result.text}</pre><button className="underline" onClick={() => copy(result.text)}>robots.txt कपी गर्नुहोस्</button><p className="text-xs text-slate-500">यसलाई deploy गर्नुअघि आफ्नो वास्तविक private routes र crawler policy जाँच्नुहोस्।</p></section>;
 
   if (slug === "sitemap-generator") return <section className="space-y-4"><h2 className="text-xl font-black">XML Sitemap Generator</h2><label><span className={label}>प्रत्येक लाइनमा एउटा canonical URL</span><textarea className={input + " min-h-40 font-mono"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="https://example.com/\nhttps://example.com/about" /></label><div className={panel}>{result.error || <pre className="whitespace-pre-wrap break-all">{result.text || "URL राख्नुहोस्।"}</pre>}</div>{result.text && <button className="underline" onClick={() => copy(result.text)}>XML कपी गर्नुहोस्</button>}<p className="text-xs text-slate-500">केवल canonical, indexable र 200-status URL समावेश गर्नुहोस्।</p></section>;
 

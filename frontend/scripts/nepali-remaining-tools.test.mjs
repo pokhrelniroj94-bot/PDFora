@@ -52,6 +52,9 @@ test("regex tester enforces global matching and reports offsets", () => {
     { index: 2, value: "2", offset: 4 },
   ]);
   assert.throws(() => findRegexMatches("abc", "[", "g"));
+  assert.throws(() => findRegexMatches("a".repeat(10001), "a"), /१०,०००/);
+  assert.throws(() => findRegexMatches("a".repeat(100), "(a+)+$"), /Nested वा repeated/);
+  assert.throws(() => findRegexMatches("abc", "a".repeat(257)), /२५६/);
 });
 
 test("JWT decoder parses header and payload but never verifies the signature", () => {
@@ -81,6 +84,9 @@ test("keyword density is case-insensitive and uses Unicode word tokens", () => {
   assert.equal(density.totalWords, 3);
   assert.equal(density.count, 2);
   assert.ok(Math.abs(density.density - 200 / 3) < 1e-10);
+  const phrase = analyzeKeywordDensity("free pdf tools and free online pdf tools", "free pdf tools");
+  assert.equal(phrase.count, 2);
+  assert.equal(phrase.density, 6 / 8 * 100);
   assert.deepEqual(analyzeKeywordDensity("नेपाली नेपाली", ""), {
     totalWords: 2, count: 0, density: 0,
   });
@@ -89,6 +95,7 @@ test("keyword density is case-insensitive and uses Unicode word tokens", () => {
 test("sitemap generator validates URLs and escapes XML text", () => {
   const xml = buildSitemap(["https://example.com/?a=1&b=2", "https://example.com/about"]);
   assert.match(xml, /a=1&amp;b=2/);
+  assert.match(buildSitemap(["https://example.com/?q=%3E"]).replace(/&amp;/g, "&"), /&gt;/);
   assert.equal((xml.match(/<url>/g) ?? []).length, 2);
   assert.throws(() => buildSitemap(["javascript:alert(1)"]), /अमान्य URL/);
   assert.throws(() => buildSitemap([]), /कम्तीमा एउटा URL/);

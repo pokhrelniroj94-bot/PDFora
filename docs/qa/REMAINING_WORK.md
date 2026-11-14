@@ -28,35 +28,32 @@ The source-generated tool matrix in `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.jso
 
 Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished. Shared dictionary key/placeholder parity is not evidence that tool interfaces, editorial pages or the whole site are translated. RTL and CJK browser QA and native review remain pending.
 
-## CI evidence for PR #162 (revision-specific)
+## CI evidence for PR #162 (latest verified revision)
 
-An earlier GitHub Actions run **43596956402** completed with overall conclusion **success** on an earlier PR revision. The subsequent run **43597895764** for commit `0d9e1afdf056a49b688e572fa68c6c1da73f2901` was cancelled. Later commits, including the current PR head, have no completed CI evidence. The GitHub Actions check-runs endpoint returned zero check runs for the latest inspected head; do not treat earlier success as validation of current code.
+Latest verified PR head: `b986eba48018028c60856972c92a5a8b067a43a9`.
+GitHub Actions run **43604659883** (run 3094) completed with overall conclusion **success** on 2026-11-14.
 
-Frontend job steps recorded as successful include:
+- Frontend job: 24 steps completed successfully.
+- Backend job: 13 steps completed successfully.
+- The separate `live-production` job was skipped because this was a pull-request run; no production deployment was performed.
+- Catalog implementation verification, i18n runtime/content tests, ESLint and Next.js production build passed.
+- ESLint reported no source warnings after replacing the Open Graph preview `img` with `next/image` and fixing the Nepali typing effect dependency.
+- npm production dependency audit passed.
+- Read-only production security/privacy/SEO smoke checks passed.
+- Sitemap check: **307 URLs**, every URL returned HTTP 200 with no redirects; robots and duplicate/unpublished-route checks passed.
+- Live-data smoke: **17/17 checks passed**. NRB returned 22 rates for 2026-11-14 from the official source; the fallback flag was true. NEPSE returned 349 stocks and 4 indices from YONEPSE, with source timestamp 2026-11-13 14:59:59 +05:45 (1,746 minutes old at test time). The API returned `quoteStale=false`, but users must still see the actual source timestamp; this is a last snapshot, not a claim of live intraday trades. Nepal market news returned 10 dated source-linked items.
+- Local security/privacy/SEO smoke: **20/20 checks passed**.
+- Chromium Merge PDF E2E: **1/1 PASS**. Two distinct PDFs were uploaded, reordered, merged, downloaded and byte/signature/page-order validated; invalid PDF input showed an error. At 390px, no horizontal overflow was found. One visible field lacked an accessible name, so accessibility remains PARTIAL for this workflow.
+- The uploaded functional audit covers all 174 tools: **1 PASS, 69 PARTIAL, 0 FAIL, 104 NOT TESTED**. Mobile: 1 PASS / 173 NOT TESTED. Keyboard: 1 PASS / 173 NOT TESTED. Accessibility: 0 PASS / 1 PARTIAL / 173 NOT TESTED.
+- Artifact: `pdfora-browser-e2e-173-report`, artifact ID `14117497583`. The report's source commit and functional-audit source commit match the CI merge-test commit.
 
-- Dependency installation with `npm ci`.
-- Catalog implementation verification.
-- i18n runtime and content checks.
-- ESLint.
-- Next.js production build.
-- npm dependency audit.
-- Local production security, privacy and SEO smoke checks.
-- Headless Chrome installation and local production-server startup.
-- Sitemap URL / robots-policy check.
-- Live NRB, NEPSE and Nepal-news freshness/fallback checks.
-- Local build security/privacy/SEO checks.
-- Merge PDF browser E2E.
-- Functional audit report generation and artifact upload.
-
-Backend job steps recorded as successful include Python/legacy backend syntax checks, dependency installation, backend functional regression tests and Python dependency audit.
+The earlier stale 169-tool assertion in the browser runner was corrected to 174. A separate follow-up build error caused by shadowing the native `Image` constructor was also fixed; the latest run above verifies the corrected `NextImage` alias.
 
 The build's `prebuild` lifecycle also runs the configured catalog, tool UI, Jest, i18n and lint checks. A separate `npx tsc --noEmit` command was not recorded as a standalone CI step; the Next.js build passed its build-time checks.
 
-The separate `live-production` job was skipped. CI success does not mean PR #162 was deployed.
-
 ## Follow-up CI correction
 
-The earlier 151/169 revision exposed stale localized-route and Nepal share-calculator assertions. Those were corrected. The latest branch now adds 18 localized utility routes and updates the expected Nepali route-equivalent count from 196 to 214. The 18 new interfaces are explicitly asserted as present and noindex, but these tests have not been executed on the latest head because no new Actions run is available.
+The earlier 151/169 revision exposed stale localized-route and Nepal share-calculator assertions. Those were corrected. The latest branch now adds 18 localized utility routes and updates the expected Nepali route-equivalent count from 196 to 214. The 18 new interfaces are explicitly asserted as present and noindex. The latest CI run confirms the route and i18n checks pass; per-tool functional and native-language review remain separate.
 
 ## Executed browser / functional evidence
 

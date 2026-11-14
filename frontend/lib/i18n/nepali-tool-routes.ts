@@ -108,6 +108,8 @@ export const nepaliLocalizedUtilitySlugs = [
   "currency-converter",
   "image-compressor",
   "image-format-converter",
+  "preeti-unicode-converter",
+  "nepali-unicode-typing",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

@@ -171,6 +171,9 @@ test("Nepali homepage renders reviewed content and honest fallback links", () =>
   assert.ok(source.includes('fallback("/tools")'));
   assert.ok(source.includes('fallback("/blog")'));
   assert.ok(source.includes('href={`/ne/${slug}`}'));
+  assert.ok(source.includes("Object.keys(nepaliPdfRoutes)"), "Nepali homepage must render every registered PDF tool");
+  assert.ok(source.includes("nepaliToolNames[slug]"), "Nepali homepage must show translated names for all PDF tools");
+  assert.ok(source.includes("४९ वटा PDF टुल"), "Nepali homepage must describe the full PDF tool collection");
 });
 
 test("Nepali utility workspace contains real localized calculator surfaces", () => {

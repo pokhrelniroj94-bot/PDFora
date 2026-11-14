@@ -75,7 +75,7 @@ function SignatureTool({locale="en"}:{locale?:ToolLocale}) {
   return trTree(ui,locale);
 }
 
- = [
+const zones = [
   ["America/New_York", "New York"], ["America/Los_Angeles", "Los Angeles"], ["America/Chicago", "Chicago"],
   ["Europe/London", "London"], ["Europe/Berlin", "Berlin"], ["Asia/Dubai", "Dubai"],
   ["Asia/Kathmandu", "Kathmandu"], ["Asia/Kolkata", "New Delhi"], ["Asia/Singapore", "Singapore"],
@@ -122,7 +122,7 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
   return trTree(ui,locale);
 }
 
-({locale="en"}:{locale?:ToolLocale}) {
+function DpiTool({locale="en"}:{locale?:ToolLocale}) {
   const [width, setWidth] = useState("2400");
   const [height, setHeight] = useState("3000");
   const [printWidth, setPrintWidth] = useState("8");
@@ -137,7 +137,7 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
   const ppiY = valid ? h / (ph * factor) : 0;
   const reqW = valid ? Math.round(pw * factor * dpi) : 0;
   const reqH = valid ? Math.round(ph * factor * dpi) : 0;
-  return <div className="space-y-5">
+  const ui = <div className="space-y-5">
     <div className="grid gap-4 sm:grid-cols-2">
       <Field label="Image width (pixels)"><input className={inputClass} type="number" min="1" value={width} onChange={e => setWidth(e.target.value)} /></Field>
       <Field label="Image height (pixels)"><input className={inputClass} type="number" min="1" value={height} onChange={e => setHeight(e.target.value)} /></Field>
@@ -152,7 +152,7 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
   return trTree(ui,locale);
 }
 
-({locale="en"}:{locale?:ToolLocale}) {
+function VideoBitrateTool({locale="en"}:{locale?:ToolLocale}) {
   const [minutes, setMinutes] = useState("10");
   const [seconds, setSeconds] = useState("0");
   const [size, setSize] = useState("500");
@@ -165,7 +165,7 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
   const usableKbps = totalKbps * (1 - overheadPct / 100);
   const videoKbps = usableKbps - audioKbps;
   const estimateMb = valid ? (Math.max(0, videoKbps) + audioKbps) * duration / 8000 / (1 - overheadPct / 100) : 0;
-  return <div className="space-y-5">
+  const ui = <div className="space-y-5">
     <div className="grid gap-4 sm:grid-cols-2">
       <Field label="Video duration (minutes)"><input className={inputClass} type="number" min="0" value={minutes} onChange={e => setMinutes(e.target.value)} /></Field>
       <Field label="Additional seconds"><input className={inputClass} type="number" min="0" max="59" value={seconds} onChange={e => setSeconds(e.target.value)} /></Field>
@@ -179,7 +179,7 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
   return trTree(ui,locale);
 }
 
-({locale="en"}:{locale?:ToolLocale}) {
+function MarkdownTableTool({locale="en"}:{locale?:ToolLocale}) {
   const sample = locale === "ne" ? "नाम\tभूमिका\tस्थान\nराम\tडिजाइनर\tकाठमाडौं\nसीता\tडेभलपर\tपोखरा" : "Name\tRole\tLocation\nAlex\tDesigner\tLondon\nSam\tDeveloper\tKathmandu";
   const [source, setSource] = useState(sample);
   const [message, setMessage] = useState("");
@@ -193,7 +193,7 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
     const body = normalized.slice(1);
     return [header, header.map(() => "---"), ...body].map(row => "| " + row.join(" | ") + " |").join("\n");
   }, [source]);
-  return <div className="space-y-4">
+  const ui = <div className="space-y-4">
     <Field label="Paste tab-separated data (first row becomes the header)"><textarea className={inputClass + " min-h-44 font-mono text-sm"} value={source} onChange={e => setSource(e.target.value)} spellCheck={false} /></Field>
     <div className={panelClass}><div className="mb-2 flex items-center justify-between gap-2"><h3 className="font-bold text-slate-900">Markdown output</h3><span className="text-xs text-slate-500">Live preview</span></div><pre className="max-h-80 overflow-auto whitespace-pre rounded-xl bg-slate-950 p-4 text-sm leading-6 text-slate-100">{markdown || "Enter at least one row."}</pre></div>
     <div className="flex flex-wrap gap-2"><button className={buttonClass} disabled={!markdown} onClick={() => copyText(markdown, setMessage)}>Copy Markdown</button><button className={secondaryClass} disabled={!markdown} onClick={() => saveText("markdown-table.md", markdown, "text/markdown;charset=utf-8")}>Download .md</button><button className={secondaryClass} onClick={() => { setSource(sample); setMessage(""); }}>Reset example</button></div>
@@ -203,7 +203,7 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
   return trTree(ui,locale);
 }
 
-({ slug }: { slug: ToolSlug }) {
+export default function BrowserOnlyGrowthTools({ slug, locale = "en" }: { slug: ToolSlug; locale?: ToolLocale }) {
   const content: Record<ToolSlug, { eyebrow: string; title: string; intro: string; component: React.ReactNode }> = {
     "email-signature-generator": { eyebrow: "Communication tool", title: "Create a professional email signature", intro: "Build a clean, copy-ready HTML email signature with your name, role, company and contact details.", component: <SignatureTool locale={locale} /> },
     "timezone-meeting-planner": { eyebrow: "Time planning tool", title: "Compare meeting times across time zones", intro: "Choose a date, local time and source time zone, then compare the meeting time in other cities.", component: <TimezoneTool locale={locale} /> },

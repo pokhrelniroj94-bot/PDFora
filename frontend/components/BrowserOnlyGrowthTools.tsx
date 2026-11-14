@@ -109,7 +109,7 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
   const instant = useMemo(() => zonedLocalToDate(date, time, source), [date, time, source]);
   const fmt = (zone: string) => instant ? new Intl.DateTimeFormat(locale === "ne" ? "ne-NP" : undefined, { timeZone: zone, weekday: "short", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(instant) : "This local time may not exist because of a daylight-saving clock change.";
   const toggle = (zone: string) => setSelected(current => current.includes(zone) ? current.filter(item => item !== zone) : current.length < 8 ? [...current, zone] : current);
-  return <div className="space-y-5">
+  const ui = <div className="space-y-5">
     <div className="grid gap-4 sm:grid-cols-3">
       <Field label="Meeting date"><input className={inputClass} type="date" value={date} onChange={e => setDate(e.target.value)} /></Field>
       <Field label="Local meeting time"><input className={inputClass} type="time" value={time} onChange={e => setTime(e.target.value)} /></Field>

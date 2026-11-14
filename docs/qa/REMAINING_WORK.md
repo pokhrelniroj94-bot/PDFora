@@ -3,7 +3,7 @@
 Updated: 2026-11-14
 Working PR: https://github.com/pokhrelniroj94-bot/PDFora/pull/162
 Working branch: `feat/nepali-encoding-case-tools-2026-11-14`
-PR head at this report: `d1f49ec1726163ccfaf81697f2a57dfa94b98280`
+PR head at initial audit: `0d9e1afdf056a49b688e572fa68c6c1da73f2901`; follow-up workspace fix and coverage updates were committed afterward.
 
 ## Canonical source inventory
 
@@ -18,20 +18,20 @@ The source-generated tool matrix in `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.jso
 
 ### Nepali
 
-- 145/169 tool interfaces are present: 49 PDF + 96 catalog utilities.
-- 24 catalog interfaces remain unimplemented:
-  `resume-builder`, `currency-converter`, `image-compressor`, `image-format-converter`, `color-picker-palette`, `password-generator`, `uuid-generator`, `regex-tester`, `jwt-decoder`, `color-contrast-checker`, `css-minifier`, `meta-title-checker`, `meta-description-checker`, `keyword-density-checker`, `robots-txt-generator`, `sitemap-generator`, `open-graph-preview`, `savings-goal-calculator`, `xml-formatter-validator`, `notes-to-pdf`, `html-tag-stripper`, `nepal-share-calculator`, `preeti-unicode-converter`, `nepali-unicode-typing`.
+- 151/169 tool interfaces are now present: 49 PDF + 102 catalog utilities. This corrects the stale pre-batch-4 count.
+- 18 catalog interfaces remain unimplemented: `currency-converter`, `image-compressor`, `image-format-converter`, `color-picker-palette`, `password-generator`, `uuid-generator`, `regex-tester`, `jwt-decoder`, `color-contrast-checker`, `css-minifier`, `meta-title-checker`, `meta-description-checker`, `keyword-density-checker`, `robots-txt-generator`, `sitemap-generator`, `open-graph-preview`, `preeti-unicode-converter`, `nepali-unicode-typing`.
+- Five additional tools now have dedicated Nepali workspaces: `xml-formatter-validator`, `notes-to-pdf`, `html-tag-stripper`, `savings-goal-calculator`, and `nepal-share-calculator`. The XML/savings/share workspace had missing state/error handling fixed in the follow-up commit; its CI verification is still pending.
 - 37 Nepali tools have targeted unit-test coverage recorded by the matrix. The other tools are not individually functionally verified.
-- Native-language review is not independently recorded as complete for all 145 interfaces.
+- Native-language review is not independently recorded as complete for all 151 interfaces.
 - Only six Nepali PDF tools are in the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing until their individual approval gates pass.
 
 ### Other locales
 
 Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished. Shared dictionary key/placeholder parity is not evidence that tool interfaces, editorial pages or the whole site are translated. RTL and CJK browser QA and native review remain pending.
 
-## CI evidence for PR #162
+## CI evidence for PR #162 (revision-specific)
 
-GitHub Actions run **43596956402** completed with overall conclusion **success**. The frontend and backend jobs both passed.
+An earlier GitHub Actions run **43596956402** completed with overall conclusion **success** on an earlier PR revision. The subsequent run **43597895764** for commit `0d9e1afdf056a49b688e572fa68c6c1da73f2901` was cancelled. The later follow-up commits have no completed CI evidence yet; do not treat the earlier success as validation of the current head.
 
 Frontend job steps recorded as successful include:
 

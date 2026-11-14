@@ -21,7 +21,7 @@ The source-generated tool matrix in `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.jso
 - 169/169 tool interfaces are now present: 49 PDF + 120 catalog utilities. This is interface/route presence, not functional certification.
 - No catalog interfaces remain unimplemented: `currency-converter`, `image-compressor`, `image-format-converter`, `color-picker-palette`, `password-generator`, `uuid-generator`, `regex-tester`, `jwt-decoder`, `color-contrast-checker`, `css-minifier`, `meta-title-checker`, `meta-description-checker`, `keyword-density-checker`, `robots-txt-generator`, `sitemap-generator`, `open-graph-preview`, `preeti-unicode-converter`, `nepali-unicode-typing`.
 - The five earlier additions (`xml-formatter-validator`, `notes-to-pdf`, `html-tag-stripper`, `savings-goal-calculator`, `nepal-share-calculator`) remain present. The latest batch adds 18 more interfaces through the shared Nepali remaining-tools workspace; all 23 are still subject to individual functional QA.
-- 37 Nepali tools have targeted unit-test coverage recorded by the matrix. The other tools are not individually functionally verified.
+- 44 Nepali tools have targeted unit-test coverage recorded by the matrix, including seven newly tested developer/SEO logic helpers. The other tools are not individually functionally verified.
 - Native-language review is not independently recorded as complete for all 169 interfaces.
 - Only six Nepali PDF tools are in the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing until their individual approval gates pass.
 

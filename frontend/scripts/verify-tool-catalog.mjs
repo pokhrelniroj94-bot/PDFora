@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 const read = (path) => fs.readFileSync(new URL(path, import.meta.url), "utf8");
 const catalogSource = read("../components/toolCatalog.ts");
 const allTools = read("../components/AllTools.tsx");
+const browserOnlyTools = read("../components/BrowserOnlyGrowthTools.tsx");
 const quickTools = read("../components/QuickUtilityTools.tsx");
 const extraTools = read("../components/ExtraTools.tsx");
 const nepalTools = read("../components/NepalTools.tsx");
@@ -31,7 +32,9 @@ const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
 const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
 const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
-const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
+const browserOnlySlugs = [...(browserOnlyTools.match(/type ToolSlug = ([^;]+);/)?.[1] ?? "").matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
+const browserOnlyDispatched = allTools.includes('import("./BrowserOnlyGrowthTools")') && browserOnlySlugs.every((slug) => allTools.includes('"' + slug + '"'));
+const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs, ...(browserOnlyDispatched ? browserOnlySlugs : [])]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
 if (allTools.includes('const imageTool=slug==="image-compressor"||slug==="image-format-converter"')) {
   implemented.add("image-compressor");

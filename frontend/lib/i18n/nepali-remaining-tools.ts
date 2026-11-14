@@ -25,3 +25,72 @@ export function calculateShare(quantity: number, buyPrice: number, sellPrice: nu
   const tax = taxableProfit * taxRate / 100;
   return { buyValue, sellValue, gross, fees, tax, net: gross - fees - tax - dpFee };
 }
+
+
+export function findRegexMatches(source: string, pattern: string, flags = "g") {
+  const safeFlags = [...new Set((flags.replace(/[^dgimsuvy]/g, "") + "g").split(""))].join("");
+  const matches = [...source.matchAll(new RegExp(pattern, safeFlags))];
+  return matches.map((match, index) => ({ index: index + 1, value: match[0], offset: match.index ?? -1 }));
+}
+
+export function decodeJwt(token: string) {
+  const parts = token.trim().split(".");
+  if (parts.length !== 3) throw new Error("JWT मा header, payload र signature गरी तीन भाग हुनुपर्छ।");
+  const decode = (value: string) => {
+    const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+    const binary = atob(normalized + "=".repeat((4 - normalized.length % 4) % 4));
+    const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  };
+  return { header: decode(parts[0]), payload: decode(parts[1]), signatureVerified: false };
+}
+
+export function minifyCss(source: string) {
+  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ").replace(/\s*([{}:;,>])\s*/g, "$1").replace(/;}/g, "}").trim();
+}
+
+function parseHexLuminance(hex: string) {
+  const clean = hex.trim().replace(/^#/, "");
+  if (!/^(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(clean)) throw new Error("रङ #RGB वा #RRGGBB ढाँचामा लेख्नुहोस्।");
+  const full = clean.length === 3 ? clean.split("").map((char) => char + char).join("") : clean;
+  const channels = [0, 2, 4].map((index) => parseInt(full.slice(index, index + 2), 16) / 255);
+  return channels.map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4)
+    .reduce((sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index], 0);
+}
+
+export function calculateContrast(foreground: string, background: string) {
+  const first = parseHexLuminance(foreground);
+  const second = parseHexLuminance(background);
+  const ratio = (Math.max(first, second) + 0.05) / (Math.min(first, second) + 0.05);
+  return { ratio, aaNormal: ratio >= 4.5, aaLarge: ratio >= 3, aaaNormal: ratio >= 7 };
+}
+
+export function analyzeKeywordDensity(source: string, keyword: string) {
+  const words = source.toLocaleLowerCase().match(/[\p{L}\p{N}_-]+/gu) ?? [];
+  const needle = keyword.trim().toLocaleLowerCase();
+  if (!needle) return { totalWords: words.length, count: 0, density: 0 };
+  const count = words.filter((word) => word === needle).length;
+  return { totalWords: words.length, count, density: words.length ? count / words.length * 100 : 0 };
+}
+
+export function buildSitemap(urls: string[]) {
+  const normalized = urls.map((url) => url.trim()).filter(Boolean);
+  const invalid = normalized.find((url) => {
+    try { return !["http:", "https:"].includes(new URL(url).protocol); }
+    catch { return true; }
+  });
+  if (invalid) throw new Error(`अमान्य URL: ${invalid}`);
+  const escapeXml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${normalized.map((url) => `  <url><loc>${escapeXml(url)}</loc></url>`).join("\n")}\n</urlset>`;
+}
+
+export function buildRobotsTxt(sitemapUrl = "") {
+  const sitemap = sitemapUrl.trim();
+  if (sitemap) {
+    let parsed: URL;
+    try { parsed = new URL(sitemap); }
+    catch { throw new Error("Sitemap URL मान्य छैन।"); }
+    if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("Sitemap URL मा HTTP वा HTTPS प्रयोग गर्नुहोस्।");
+  }
+  return `User-agent: *\nAllow: /\n${sitemap ? `Sitemap: ${sitemap}\n` : ""}`;
+}

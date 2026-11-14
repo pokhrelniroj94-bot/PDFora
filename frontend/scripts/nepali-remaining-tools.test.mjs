@@ -99,5 +99,5 @@ test("robots generator uses an allow-by-default policy and validates sitemap URL
   assert.equal(buildRobotsTxt(), "User-agent: *\nAllow: /\n");
   assert.match(buildRobotsTxt("https://example.com/sitemap.xml"), /Sitemap: https:\/\/example.com\/sitemap.xml/);
   assert.throws(() => buildRobotsTxt("javascript:alert(1)"), /HTTP वा HTTPS/);
-  assert.throws(() => buildRobotsTxt("https://example.com/\\nDisallow: /secret"), /नयाँ लाइन/);
+  assert.throws(() => buildRobotsTxt("https://example.com/\nDisallow: /secret"), /नयाँ लाइन/);
 });

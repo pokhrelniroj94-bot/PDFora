@@ -32,13 +32,13 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
   const [exchangeDate, setExchangeDate] = useState("");
   const [exchangeError, setExchangeError] = useState("");
   const [exchangeBusy, setExchangeBusy] = useState(false);
-  const [preetiReady, setPreetiReady] = useState(false);
+  const [preetiReady, setPreetiReady] = useState(() => typeof window !== "undefined" && !!window.PreetiConverter);
   const [preetiInput, setPreetiInput] = useState("");
   const [preetiOutput, setPreetiOutput] = useState("");
   const [preetiDirection, setPreetiDirection] = useState<"to-unicode" | "to-preeti">("to-unicode");
   useEffect(() => {
     if (slug !== "preeti-unicode-converter") return;
-    if (window.PreetiConverter) { setPreetiReady(true); return; }
+    if (window.PreetiConverter) return;
     const existing = document.querySelector<HTMLScriptElement>('script[data-pdfora-preeti]');
     if (existing) {
       const onLoad = () => setPreetiReady(!!window.PreetiConverter);

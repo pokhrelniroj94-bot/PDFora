@@ -32,6 +32,19 @@ test("every curated Nepali blog article is a real localized route with hreflang"
   }
 });
 
+test("each supported language has a distinct native visual theme without publishing hidden locales", () => {
+  const css = fs.readFileSync(path.join(frontendRoot, "app", "globals.css"), "utf8");
+  const themeLocales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh-Hans", "ja"];
+  for (const locale of themeLocales) {
+    assert.ok(css.includes(`html:lang(${locale})`), locale + " must have a dedicated visual theme");
+  }
+  assert.ok(css.includes("--theme-hero"), "shared hero surfaces must use locale theme tokens");
+  assert.ok(css.includes("--theme-link"), "links must use locale theme tokens");
+  assert.ok(css.includes("color-mix(in srgb, var(--brand)"), "focus and surfaces must derive from locale brand colors");
+  assert.equal(config.localeInfo.hi.status, "unpublished", "theme work must not publish untranslated Hindi routes");
+  assert.equal(config.localeInfo.ar.status, "unpublished", "theme work must not publish untranslated Arabic routes");
+});
+
 test("RTL and script font support covers Urdu, Arabic and Bengali", () => {
   const css = fs.readFileSync(path.join(frontendRoot, "app", "globals.css"), "utf8");
   assert.ok(css.includes(':lang(ar), :lang(ur)'), "Arabic and Urdu need script-aware font stacks");

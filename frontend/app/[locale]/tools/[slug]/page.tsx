@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ToolWorkspace from "../../../../components/AllTools";
+import ResumeBuilder from "../../../../components/ResumeBuilder";
 import { isPublished } from "../../../../lib/i18n/config";
 import { getTranslator } from "../../../../lib/i18n/messages";
 import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../../../../lib/tools/localized-metadata";
@@ -23,6 +24,7 @@ import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLo
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const nepaliTitles: Record<string, string> = {
+  "resume-builder": "व्यावसायिक रिजुमे तथा CV निर्माता",
   "csv-to-json": "CSV बाट JSON",
   "json-to-yaml": "JSON बाट YAML",
   "json-to-csv": "JSON बाट CSV",
@@ -122,6 +124,7 @@ const nepaliTitles: Record<string, string> = {
   "discount-percentage-calculator": "छुट प्रतिशत क्याल्कुलेटर",
 };
 const nepaliDescriptions: Record<string, string> = {
+  "resume-builder": "२० वटा व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन, सम्पादनयोग्य खण्ड र PDF निर्यात प्रयोग गरी व्यवस्थित CV बनाउनुहोस्।",
   "csv-to-json": "पहिलो पङ्क्तिलाई शीर्षक मानेर CSV डेटालाई JSON array मा बदल्नुहोस्।",
   "json-to-yaml": "JSON डेटालाई पढ्न सजिलो YAML ढाँचामा बदल्नुहोस्।",
   "json-to-csv": "JSON object हरूको array लाई Excel/Sheets मा खोल्न मिल्ने CSV मा बदल्नुहोस्।",
@@ -252,6 +255,12 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
+  if (request.locale === "ne" && toolSlug === "resume-builder") {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
+      <div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली करियर टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div>
+      <ResumeBuilder locale="ne" />
+    </main>;
+  }
   if (request.locale === "ne" && ["email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliExtraTextWorkspace slug={toolSlug} /></section></main>;
   }

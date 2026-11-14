@@ -1,5 +1,10 @@
 export const nepaliLocalizedUtilitySlugs = [
-  "resume-builder",\n  "xml-formatter-validator",\n  "notes-to-pdf",\n  "html-tag-stripper",\n  "savings-goal-calculator",\n  "nepal-share-calculator",
+  "resume-builder",
+  "xml-formatter-validator",
+  "notes-to-pdf",
+  "html-tag-stripper",
+  "savings-goal-calculator",
+  "nepal-share-calculator",
   "nepali-digit-converter",
   "nepali-number-converter",
   "nepali-date-converter",

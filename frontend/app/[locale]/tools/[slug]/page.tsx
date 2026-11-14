@@ -9,6 +9,7 @@ import { buildLocalizedToolMetadata, localizedToolNotFoundMetadata } from "../..
 import { fitLocaleDescription } from "../../../../lib/i18n/metadata";
 import { resolveLocalizedToolRequest } from "../../../../lib/tools/localized-route";
 import NepaliUtilityWorkspace from "../../../../components/NepaliUtilityWorkspace";
+import NepaliBrowserOnlyGrowthTools from "../../../../components/NepaliBrowserOnlyGrowthTools";
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
@@ -339,6 +340,10 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && ["csv-to-json", "json-to-yaml", "json-to-csv", "url-validator", "email-validator", "password-strength-checker", "url-query-parser", "color-converter", "aspect-ratio-calculator", "css-gradient-generator", "unix-timestamp-converter", "date-add-subtract-calculator", "business-days-calculator", "random-number-generator", "dice-roller"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली डेटा, जाँच तथा डेभलपर टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliDataToolsWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"].includes(toolSlug)) {
+    const titles:Record<string,string>={"email-signature-generator":"व्यावसायिक इमेल हस्ताक्षर निर्माता","timezone-meeting-planner":"समय क्षेत्र बैठक योजनाकार","image-dpi-calculator":"तस्बिर DPI तथा PPI क्याल्कुलेटर","video-bitrate-calculator":"भिडियो बिटरेट क्याल्कुलेटर","markdown-table-generator":"Markdown तालिका निर्माता"};
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><h1 className="mb-6 text-3xl font-black">{titles[toolSlug]}</h1><NepaliBrowserOnlyGrowthTools slug={toolSlug as "email-signature-generator"|"timezone-meeting-planner"|"image-dpi-calculator"|"video-bitrate-calculator"|"markdown-table-generator"}/></main>;
   }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;

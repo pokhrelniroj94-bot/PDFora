@@ -41,6 +41,6 @@ test("share calculator deducts fees before estimating tax", () => {
 
 test("share calculator rejects invalid quantities and negative costs/rates", () => {
   for (const values of [[0, 100, 120, 0, 0, 0], [1, -1, 120, 0, 0, 0], [1, 100, 120, -1, 0, 0], [1, 100, 120, 0, -1, 0], [1, 100, 120, 0, 0, -1], [1, NaN, 120, 0, 0, 0]]) {
-    assert.throws(() => calculateShare(...values), /मान जाँच/);
+    assert.throws(() => calculateShare(...values), /मान शून्य वा सकारात्मक/);
   }
 });

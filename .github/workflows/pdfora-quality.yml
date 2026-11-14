@@ -126,7 +126,7 @@ jobs:
         with:
           name: pdfora-browser-e2e-174-report
           path: |
-            docs/qa/BROWSER_E2E_173_REPORT.json
+            docs/qa/BROWSER_E2E_174_REPORT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.md
           if-no-files-found: warn

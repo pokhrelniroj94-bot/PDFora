@@ -30,6 +30,12 @@ Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Ch
 
 ## CI evidence for PR #162 (latest verified revision)
 
+### Full 174-tool Chromium run — 2026-11-14
+
+The first all-tool browser run (GitHub Actions run 43606393770, report artifact `pdfora-browser-e2e-174-report`) exercised all 174 routes: **169 PASS, 5 PARTIAL, 0 FAIL**. All 174 routes passed the 390px overflow and keyboard Tab reachability checks. The five PARTIAL rows are the five restored browser-only utilities; the runner rendered them but lacked dedicated output assertions. The 49 PDF routes still have a basic file-input accessibility audit issue; do not claim complete WCAG conformance. The live-production job was skipped; this run did not deploy production.
+
+A follow-up test patch adds dedicated behaviour assertions for the five browser-only tools (email signature preview/unsafe URL handling, timezone conversion/DST invalid time, DPI unit conversion, bitrate calculation/invalid audio bitrate, and Markdown table escaping). The next CI run must verify these before any PASS claim is updated.
+
 Latest verified PR head: `b986eba48018028c60856972c92a5a8b067a43a9`.
 GitHub Actions run **43604659883** (run 3094) completed with overall conclusion **success** on 2026-11-14.
 
@@ -45,7 +51,7 @@ GitHub Actions run **43604659883** (run 3094) completed with overall conclusion 
 - Local security/privacy/SEO smoke: **20/20 checks passed**.
 - Chromium Merge PDF E2E: **1/1 PASS**. Two distinct PDFs were uploaded, reordered, merged, downloaded and byte/signature/page-order validated; invalid PDF input showed an error. At 390px, no horizontal overflow was found. One visible field lacked an accessible name, so accessibility remains PARTIAL for this workflow.
 - The uploaded functional audit covers all 174 tools: **1 PASS, 69 PARTIAL, 0 FAIL, 104 NOT TESTED**. Mobile: 1 PASS / 173 NOT TESTED. Keyboard: 1 PASS / 173 NOT TESTED. Accessibility: 0 PASS / 1 PARTIAL / 173 NOT TESTED.
-- Artifact: `pdfora-browser-e2e-173-report`, artifact ID `14117497583`. The report's source commit and functional-audit source commit match the CI merge-test commit.
+- Artifact: `pdfora-browser-e2e-174-report`, artifact ID `14117497583`. The report's source commit and functional-audit source commit match the CI merge-test commit.
 
 The earlier stale 169-tool assertion in the browser runner was corrected to 174. A separate follow-up build error caused by shadowing the native `Image` constructor was also fixed; the latest run above verifies the corrected `NextImage` alias.
 
@@ -57,7 +63,7 @@ The earlier 151/169 revision exposed stale localized-route and Nepal share-calcu
 
 ## Executed browser / functional evidence
 
-CI artifact `pdfora-browser-e2e-173-report` and its functional audit were downloaded and inspected. The artifact was generated against the PR merge-test commit `7bf9b4b39318001758f097d8eaad82e47fd3f983`.
+CI artifact `pdfora-browser-e2e-174-report` and its functional audit were downloaded and inspected. The artifact was generated against the PR merge-test commit `7bf9b4b39318001758f097d8eaad82e47fd3f983`.
 
 ### Baseline browser audit (169 tools; before restoring five production utilities)
 

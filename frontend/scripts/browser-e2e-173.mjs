@@ -7,7 +7,7 @@ import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
-const reportPath = path.resolve("../docs/qa/BROWSER_E2E_173_REPORT.json");
+const reportPath = path.resolve("../docs/qa/BROWSER_E2E_174_REPORT.json");
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
 const downloadsDir = path.join(tempDir, "downloads");
@@ -740,6 +740,95 @@ async function runTool(tool, index) {
         await delay(["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug) ? 1500 : 800);
       } else {
         row.checks.push("reactive output/controls inspected (no submit button by design)");
+      }
+      // Dedicated behaviour assertions for the five restored browser-only tools.
+      if (tool.slug === "email-signature-generator") {
+        if (!(await setFieldByLabel(page, "Full name", "PDFora QA"))) throw new Error("Email signature name field is missing.");
+        if (!(await setFieldByLabel(page, "Website (https:// URL)", "javascript:alert(1)"))) throw new Error("Email signature website field is missing.");
+        const signature = await page.evaluate(`(() => {
+          const preview = document.querySelector("main table");
+          return { text: preview?.innerText || "", links: [...(preview?.querySelectorAll("a") || [])].map(a => a.getAttribute("href")), injected: !!preview?.querySelector("img,script") };
+        })()`);
+        if (!signature.text.includes("PDFora QA") || signature.links.some(href => /^javascript:/i.test(href || "")) || signature.injected) {
+          throw new Error("Email signature preview failed content or unsafe-URL escaping checks.");
+        }
+        row.checks.push("signature preview updates from user input and rejects unsafe website protocols");
+        row.action = "Live signature preview";
+        row.output = signature.text.slice(0, 300);
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "live-preview-and-unsafe-url-validation";
+        return row;
+      }
+      if (tool.slug === "timezone-meeting-planner") {
+        if (!(await setFieldByLabel(page, "Meeting date", "2026-11-14"))) throw new Error("Meeting date field is missing.");
+        if (!(await setFieldByLabel(page, "Local meeting time", "09:00"))) throw new Error("Meeting time field is missing.");
+        const validMeeting = await page.evaluate(`(() => ({
+          cards: document.querySelectorAll("main .grid > div.rounded-xl.border").length,
+          body: document.querySelector("main")?.innerText || "",
+          alert: document.querySelector("main [role=alert]")?.innerText || ""
+        }))()`);
+        if (validMeeting.cards !== 4 || !/New York/.test(validMeeting.body) || !/London/.test(validMeeting.body) || !/Kathmandu/.test(validMeeting.body) || !/Tokyo/.test(validMeeting.body) || validMeeting.alert) {
+          throw new Error("Time-zone planner did not render four selected city conversions.");
+        }
+        await setFieldByLabel(page, "Meeting date", "2026-03-08");
+        await setFieldByLabel(page, "Local meeting time", "02:30");
+        const dst = await page.evaluate('document.querySelector("main [role=alert]")?.innerText || ""');
+        if (!/daylight-saving clock change/i.test(dst)) throw new Error("Non-existent New York daylight-saving time was not rejected.");
+        row.checks.push("four city conversions rendered and a nonexistent DST time was rejected");
+        row.action = "Compare time zones";
+        row.output = validMeeting.body.slice(-900);
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "timezone-conversion-and-dst-edge-case-verified";
+        return row;
+      }
+      if (tool.slug === "image-dpi-calculator") {
+        const dpi = await page.evaluate('document.querySelector("main")?.innerText || ""');
+        if (!/300\.0\\s+PPI/.test(dpi) || !/2,400 × 3,000 px/.test(dpi) || !/at or above/i.test(dpi)) {
+          throw new Error("Image DPI calculator default 2400×3000px at 8×10in did not produce 300 PPI.");
+        }
+        await setFieldByLabel(page, "Print measurement unit", "cm");
+        const converted = await page.evaluate('document.querySelector("main")?.innerText || ""');
+        if (!/762\.0\\s+PPI/.test(converted)) throw new Error("Image DPI calculator did not recalculate correctly for centimetres.");
+        row.checks.push("300 PPI baseline and centimetre unit conversion verified");
+        row.action = "Calculate print resolution";
+        row.output = converted.slice(-650);
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "exact-ppi-and-unit-conversion-verified";
+        return row;
+      }
+      if (tool.slug === "video-bitrate-calculator") {
+        const bitrate = await page.evaluate('document.querySelector("main")?.innerText || ""');
+        if (!/6,667\\s+kbps/.test(bitrate) || !/6,141\\s+kbps/.test(bitrate) || !/500\.0 MB/.test(bitrate)) {
+          throw new Error("Video bitrate calculator did not match the 10-minute, 500MB baseline.");
+        }
+        if (!(await setFieldByLabel(page, "Audio bitrate (kbps)", "7000"))) throw new Error("Audio bitrate field is missing.");
+        const invalid = await page.evaluate('document.querySelector("main [role=alert]")?.innerText || ""');
+        if (!/too small for the selected audio bitrate/i.test(invalid)) throw new Error("Impossible audio bitrate was not rejected.");
+        row.checks.push("baseline bitrate values and impossible audio-bitrate validation verified");
+        row.action = "Calculate video bitrate";
+        row.output = bitrate.slice(-650);
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "exact-bitrate-and-invalid-input-verified";
+        return row;
+      }
+      if (tool.slug === "markdown-table-generator") {
+        const source = "Name\\tRole\\nAsha\\tEngineer | QA\\nRavi\\tDesigner";
+        if (!(await setFirstTextArea(page, source))) throw new Error("Markdown table source textarea is missing.");
+        const markdown = await page.evaluate('document.querySelector("main pre")?.innerText || ""');
+        if (!markdown.includes("| Name | Role |") || !markdown.includes("| Asha | Engineer \\\\| QA |") || !markdown.includes("| Ravi | Designer |") || !markdown.includes("| --- | --- |")) {
+          throw new Error("Markdown table output did not preserve rows, headers and escaped pipe characters.");
+        }
+        row.checks.push("tab-separated input converted to Markdown with pipe escaping");
+        row.action = "Generate Markdown table";
+        row.output = markdown;
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "markdown-output-and-escaping-verified";
+        return row;
       }
       if (["image-compressor", "image-format-converter", "loksewa-photo-resizer"].includes(tool.slug)) {
         const downloadStarted = Date.now();

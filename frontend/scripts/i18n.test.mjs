@@ -32,6 +32,16 @@ test("every curated Nepali blog article is a real localized route with hreflang"
   }
 });
 
+test("Nepali homepage has a clearly visible cultural visual identity", () => {
+  const home = fs.readFileSync(path.join(frontendRoot, "components", "NepaliHomePage.tsx"), "utf8");
+  const css = fs.readFileSync(path.join(frontendRoot, "app", "globals.css"), "utf8");
+  for (const token of ["nepali-home", "nepali-hero", "nepali-mountain-card", "nepali-tool-card", "nepali-faq-list"]) {
+    assert.ok(home.includes(token) || css.includes(`.${token}`), token + " must exist");
+  }
+  assert.ok(home.includes("HIMALAYAN EDITION"), "Nepali hero must include its own visual identity");
+  assert.ok(css.includes("--np-clay") && css.includes("--np-forest") && css.includes("--np-brass"), "Nepali palette must be distinct");
+});
+
 test("each supported language has a distinct native visual theme without publishing hidden locales", () => {
   const css = fs.readFileSync(path.join(frontendRoot, "app", "globals.css"), "utf8");
   const themeLocales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh-Hans", "ja"];

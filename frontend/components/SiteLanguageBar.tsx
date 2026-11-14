@@ -40,6 +40,7 @@ export default function SiteLanguageBar() {
         </label>
         <select
           id="pdfora-global-language"
+          aria-label={copy.language}
           value={locale}
           onChange={(event) => choose(event.target.value as Locale)}
           className="min-h-10 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"

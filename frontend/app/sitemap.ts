@@ -45,6 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
     { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${baseUrl}/ne/tools`, changeFrequency: "weekly", priority: 0.75 },
     { url: `${baseUrl}/ne/market`, changeFrequency: "daily", priority: 0.75 },
     { url: `${baseUrl}/ne/resume-builder`, changeFrequency: "monthly", priority: 0.65 },
     ...nepaliToolSlugs.map((slug) => ({

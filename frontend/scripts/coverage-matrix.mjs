@@ -108,7 +108,7 @@ ${summary}
 
 ## Current blockers
 
-- Nepali has ${localizedNepaliTools.size} route-specific tool interfaces out of ${tools.length} catalogued tools; five restored browser-only utilities remain English-only and unpublished on the Nepali route.
+- Nepali has ${localizedNepaliTools.size} route-specific tool interfaces out of ${tools.length} catalogued tools. Independent native-language review and individual functional verification remain outstanding for the five newly localized browser-only utilities.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
 - Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers.
 - OCR is not counted among the 174 available tools because it remains excluded from the canonical PDF inventory.

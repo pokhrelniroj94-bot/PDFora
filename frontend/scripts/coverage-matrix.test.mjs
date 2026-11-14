@@ -13,16 +13,17 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.counts.tools, 174);
   assert.equal(report.counts.matrixRows, 12 * 174);
   assert.equal(report.rows.length, 2088);
-  assert.equal(report.counts.localizedNepaliTools, 169, "49 Nepali PDF routes plus 120 localized catalog routes; five restored legacy utilities remain English-only");
+  assert.equal(report.counts.localizedNepaliTools, 174, "49 Nepali PDF routes plus 125 localized catalog routes");
   assert.equal(report.counts.indexableNepaliTools, 6);
   assert.equal(report.rows.filter((row) => row.locale === "ne" && row.functionalTest === "targeted-unit-tests").length, 44);
   for (const slug of ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"]) {
     const englishRow = report.rows.find((row) => row.locale === "en" && row.slug === slug);
     const nepaliRow = report.rows.find((row) => row.locale === "ne" && row.slug === slug);
     assert.equal(englishRow?.interface, "source-language", `${slug} must remain available in English`);
-    assert.equal(nepaliRow?.interface, "not-implemented", `${slug} must not be falsely reported as translated`);
-    assert.equal(nepaliRow?.published, false);
-    assert.equal(nepaliRow?.indexing, "excluded");
+    assert.equal(nepaliRow?.interface, "nepali-interface-present", `${slug} must have a dedicated Nepali interface`);
+    assert.equal(nepaliRow?.published, true);
+    assert.equal(nepaliRow?.humanReview, "native-review-not-assessed");
+    assert.equal(nepaliRow?.indexing, "excluded", `${slug} must remain noindex pending independent review`);
   }
   for (const slug of ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
@@ -54,6 +55,11 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   }
   assert.ok(localizedToolPage.includes('NepaliRemainingToolsWorkspace slug={toolSlug}'));
   assert.ok(localizedToolPage.includes('<NepaliTypingTool locale="ne" />'));
+  assert.ok(localizedToolPage.includes("<NepaliBrowserOnlyGrowthTools"));
+  const nepaliBrowserWorkspace = fs.readFileSync(path.resolve(new URL("../components/NepaliBrowserOnlyGrowthTools.tsx", import.meta.url).pathname), "utf8");
+  assert.ok(nepaliBrowserWorkspace.includes('locale="ne"'));
+  const browserToolSource = fs.readFileSync(browserOnlyWorkspacePath, "utf8");
+  for (const translatedLabel of ["पूरा नाम", "बैठकको मिति", "तस्बिरको चौडाइ (पिक्सेल)", "भिडियो अवधि (मिनेट)", "Markdown नतिजा"]) assert.ok(browserToolSource.includes(translatedLabel), `Missing Nepali copy: ${translatedLabel}`);
   assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 174);
   for (const slug of ["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator", "regex-tester", "jwt-decoder", "css-minifier", "color-contrast-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);

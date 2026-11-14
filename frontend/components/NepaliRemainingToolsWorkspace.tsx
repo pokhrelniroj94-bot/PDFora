@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+declare global { interface Window { PreetiConverter?: new () => { convert: (text: string) => string; reverseConvert: (text: string) => string } } }
 
 const input = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
@@ -35,6 +37,26 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
   const [exchangeDate, setExchangeDate] = useState("");
   const [exchangeError, setExchangeError] = useState("");
   const [exchangeBusy, setExchangeBusy] = useState(false);
+  const [preetiReady, setPreetiReady] = useState(false);
+  const [preetiInput, setPreetiInput] = useState("");
+  const [preetiOutput, setPreetiOutput] = useState("");
+  const [preetiDirection, setPreetiDirection] = useState<"to-unicode" | "to-preeti">("to-unicode");
+  useEffect(() => {
+    if (window.PreetiConverter) { setPreetiReady(true); return; }
+    const existing = document.querySelector<HTMLScriptElement>('script[data-pdfora-preeti]');
+    if (existing) {
+      const onLoad = () => setPreetiReady(!!window.PreetiConverter);
+      existing.addEventListener("load", onLoad, { once: true });
+      return () => existing.removeEventListener("load", onLoad);
+    }
+    const script = document.createElement("script");
+    script.src = "/vendor/preeti-to-unicode.js";
+    script.dataset.pdforaPreeti = "true";
+    script.async = true;
+    script.onload = () => setPreetiReady(!!window.PreetiConverter);
+    document.head.appendChild(script);
+    return () => { script.onload = null; };
+  }, []);
 
   const result = useMemo(() => {
     try {
@@ -102,6 +124,28 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     setGenerated(Array.from(random, (n) => alphabet[n % alphabet.length]).join(""));
   };
   const generateUuid = () => setGenerated(crypto.randomUUID());
+
+  if (slug === "preeti-unicode-converter") {
+    const convert = () => {
+      try {
+        if (!window.PreetiConverter) throw new Error("Preeti रूपान्तरण इन्जिन लोड भएको छैन। पृष्ठ पुनःलोड गरेर प्रयास गर्नुहोस्।");
+        const converter = new window.PreetiConverter();
+        setPreetiOutput(preetiDirection === "to-unicode" ? converter.convert(preetiInput) : converter.reverseConvert(preetiInput));
+        setError("");
+      } catch (cause) { setError(cause instanceof Error ? cause.message : "रूपान्तरण गर्न सकिएन।"); }
+    };
+    return <section className="space-y-4">
+      <h2 className="text-xl font-black">Preeti ↔ Unicode रूपान्तरण</h2>
+      <p className="text-sm text-slate-600">Preeti font मा लेखिएको पुरानो नेपाली पाठलाई Unicode मा बदल्नुहोस्। Reverse conversion अनुमानित हुन्छ; नतिजा जाँच गर्नुहोस्।</p>
+      <label className="block"><span className={label}>रूपान्तरण दिशा</span><select className={input} value={preetiDirection} onChange={(e) => setPreetiDirection(e.target.value as "to-unicode" | "to-preeti")}><option value="to-unicode">Preeti बाट Unicode</option><option value="to-preeti">Unicode बाट Preeti</option></select></label>
+      <label className="block"><span className={label}>इनपुट पाठ</span><textarea className={input + " min-h-36"} value={preetiInput} onChange={(e) => setPreetiInput(e.target.value)} /></label>
+      <button disabled={!preetiReady} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50" onClick={convert}>{preetiReady ? "रूपान्तरण गर्नुहोस्" : "इन्जिन लोड हुँदैछ..."}</button>
+      <label className="block"><span className={label}>रूपान्तरण नतिजा</span><textarea className={input + " min-h-36"} value={preetiOutput} onChange={(e) => setPreetiOutput(e.target.value)} /></label>
+      {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+      {preetiOutput && <button className="underline" onClick={() => copy(preetiOutput)}>नतिजा कपी गर्नुहोस्</button>}
+      <p className="text-xs text-slate-500">यो tool ले पुरानो font encoding map प्रयोग गर्छ। सबै custom glyph र formatting पूर्ण रूपमा मिल्ने ग्यारेन्टी छैन।</p>
+    </section>;
+  }
 
   if (slug === "currency-converter") {
     const convert = async () => {

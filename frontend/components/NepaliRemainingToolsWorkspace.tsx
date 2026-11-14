@@ -67,7 +67,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
   const [fee, setFee] = useState("0.4");
   const [tax, setTax] = useState("0");
   const [dp, setDp] = useState("25");
-  const [error, setError] = useState("");
+
 
   const textResult = useMemo(() => {
     if (slug !== "html-tag-stripper") return "";
@@ -86,11 +86,11 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
   </section>;
 
   if (slug === "xml-formatter-validator") {
-    const result = runXml();
+    const result = xml.result;
     return <section className="space-y-4">
       <div><h2 className="text-xl font-black">XML फर्म्याट तथा जाँच</h2><p className="mt-1 text-sm text-slate-600">XML को syntax ब्राउजरमै जाँचेर indentation मिलाउनुहोस्।</p></div>
       <label className="block"><span className={label}>XML सामग्री</span><textarea className={field + " min-h-48 font-mono"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="<root><item>नमूना</item></root>" /></label>
-      {error ? <p role="alert" className="text-sm font-semibold text-red-700">{error}</p> : <div className={panel}><strong>फर्म्याट गरिएको XML</strong><pre className="mt-2 whitespace-pre-wrap break-words">{result || "XML लेख्नुहोस्।"}</pre></div>}
+      {xml.error ? <p role="alert" className="text-sm font-semibold text-red-700">{xml.error}</p> : <div className={panel}><strong>फर्म्याट गरिएको XML</strong><pre className="mt-2 whitespace-pre-wrap break-words">{result || "XML लेख्नुहोस्।"}</pre></div>}
       <Copy value={result} />
     </section>;
   }
@@ -117,7 +117,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
         <label><span className={label}>महिना</span><input className={field} type="number" min="1" value={months} onChange={(e) => setMonths(e.target.value)} /></label>
         <label><span className={label}>वार्षिक अनुमानित ब्याज (%)</span><input className={field} type="number" min="0" step="0.01" value={rate} onChange={(e) => setRate(e.target.value)} /></label>
       </div>
-      {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : result && <div className={panel}>बाँकी लक्ष्य: रु. {result.remaining.toLocaleString("ne-NP", { maximumFractionDigits: 2 })}<br />आवश्यक मासिक बचत: रु. {result.monthlyDeposit.toLocaleString("ne-NP", { maximumFractionDigits: 2 })}</div>}
+      {errorMessage ? <p role="alert" className="text-sm text-red-700">{errorMessage}</p> : result && <div className={panel}>बाँकी लक्ष्य: रु. {result.remaining.toLocaleString("ne-NP", { maximumFractionDigits: 2 })}<br />आवश्यक मासिक बचत: रु. {result.monthlyDeposit.toLocaleString("ne-NP", { maximumFractionDigits: 2 })}</div>}
     </section>;
   }
 
@@ -131,7 +131,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
       <div className="grid gap-3 sm:grid-cols-2">
         {([[quantity,setQuantity,"कित्ता"],[buy,setBuy,"खरिद मूल्य (प्रति कित्ता)"],[sell,setSell,"बिक्री मूल्य (प्रति कित्ता)"],[fee,setFee,"कुल कारोबार शुल्क (%)"],[tax,setTax,"नाफामा कर दर (%)"],[dp,setDp,"DP शुल्क (रु.)"]] as const).map(([v,fn,title]) => <label key={title}><span className={label}>{title}</span><input className={field} type="number" min="0" step="any" value={v} onChange={(e) => fn(e.target.value)} /></label>)}
       </div>
-      {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : result && <div className={panel}>खरिद रकम: {money(result.buyValue)}<br />बिक्री रकम: {money(result.sellValue)}<br />कुल नाफा/नोक्सान: {money(result.gross)}<br />अनुमानित शुल्क: {money(result.fees)}<br />प्रविष्ट कर दरअनुसार कर: {money(result.tax)}<br /><strong>अनुमानित खुद नाफा/नोक्सान: {money(result.net)}</strong></div>}
+      {errorMessage ? <p role="alert" className="text-sm text-red-700">{errorMessage}</p> : result && <div className={panel}>खरिद रकम: {money(result.buyValue)}<br />बिक्री रकम: {money(result.sellValue)}<br />कुल नाफा/नोक्सान: {money(result.gross)}<br />अनुमानित शुल्क: {money(result.fees)}<br />प्रविष्ट कर दरअनुसार कर: {money(result.tax)}<br /><strong>अनुमानित खुद नाफा/नोक्सान: {money(result.net)}</strong></div>}
     </section>;
   }
 

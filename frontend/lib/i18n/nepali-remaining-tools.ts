@@ -88,23 +88,34 @@ export function buildSitemap(urls: string[]) {
   const normalized = urls.map((url) => url.trim()).filter(Boolean);
   if (!normalized.length) throw new Error("कम्तीमा एउटा URL प्रविष्ट गर्नुहोस्।");
   if (normalized.length > 50000) throw new Error("Sitemap मा बढीमा ५०,००० URL मात्र राख्न सकिन्छ।");
-  const invalid = normalized.find((url) => {
-    try { return !["http:", "https:"].includes(new URL(url).protocol); }
-    catch { return true; }
+  const canonicalUrls = normalized.map((url) => {
+    let parsed: URL;
+    try { parsed = new URL(url); }
+    catch { throw new Error(`अमान्य URL: ${url}`); }
+    if (!["http:", "https:"].includes(parsed.protocol) || parsed.username || parsed.password || parsed.hash) {
+      throw new Error(`अमान्य URL: ${url}`);
+    }
+    if (parsed.href.length > 2048) throw new Error("Sitemap URL बढीमा २,०४८ अक्षरको हुनुपर्छ।");
+    return parsed.href;
   });
-  if (invalid) throw new Error(`अमान्य URL: ${invalid}`);
   const escapeXml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${normalized.map((url) => `  <url><loc>${escapeXml(url)}</loc></url>`).join("\n")}\n</urlset>`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${canonicalUrls.map((url) => `  <url><loc>${escapeXml(url)}</loc></url>`).join("\n")}\n</urlset>`;
 }
 
-export function buildRobotsTxt(sitemapUrl = "") {
+export function buildRobotsTxt(sitemapUrl = "", disallowPaths: string[] = []) {
   const sitemap = sitemapUrl.trim();
   if (sitemap) {
     if (/[\r\n]/.test(sitemap)) throw new Error("Sitemap URL मा नयाँ लाइन राख्न मिल्दैन।");
     let parsed: URL;
     try { parsed = new URL(sitemap); }
     catch { throw new Error("Sitemap URL मान्य छैन।"); }
-    if (!["http:", "https:"].includes(parsed.protocol)) throw new Error("Sitemap URL मा HTTP वा HTTPS प्रयोग गर्नुहोस्।");
+    if (!["http:", "https:"].includes(parsed.protocol) || parsed.username || parsed.password || parsed.hash) {
+      throw new Error("Sitemap URL मा मान्य HTTP वा HTTPS address प्रयोग गर्नुहोस्।");
+    }
   }
-  return `User-agent: *\nAllow: /\n${sitemap ? `Sitemap: ${sitemap}\n` : ""}`;
+  const rules = disallowPaths.map((path) => path.trim()).filter(Boolean);
+  if (rules.some((path) => !path.startsWith("/") || /[\r\n\s]/.test(path) || path.includes("#"))) {
+    throw new Error("Disallow path / बाट सुरु हुनुपर्छ र space वा नयाँ लाइन हुनु हुँदैन।");
+  }
+  return `User-agent: *\nAllow: /\n${rules.map((path) => `Disallow: ${path}\n`).join("")}${sitemap ? `Sitemap: ${sitemap}\n` : ""}`;
 }

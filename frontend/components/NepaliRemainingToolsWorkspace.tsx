@@ -47,14 +47,17 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     const existing = document.querySelector<HTMLScriptElement>('script[data-pdfora-preeti]');
     if (existing) {
       const onLoad = () => setPreetiReady(!!window.PreetiConverter);
+      const onError = () => setError("Preeti रूपान्तरण इन्जिन लोड भएन। पृष्ठ पुनःलोड गरेर प्रयास गर्नुहोस्।");
       existing.addEventListener("load", onLoad, { once: true });
-      return () => existing.removeEventListener("load", onLoad);
+      existing.addEventListener("error", onError, { once: true });
+      return () => { existing.removeEventListener("load", onLoad); existing.removeEventListener("error", onError); };
     }
     const script = document.createElement("script");
     script.src = "/vendor/preeti-to-unicode.js";
     script.dataset.pdforaPreeti = "true";
     script.async = true;
     script.onload = () => setPreetiReady(!!window.PreetiConverter);
+    script.onerror = () => setError("Preeti रूपान्तरण इन्जिन लोड भएन। पृष्ठ पुनःलोड गरेर प्रयास गर्नुहोस्।");
     document.head.appendChild(script);
     return () => { script.onload = null; };
   }, [slug]);
@@ -237,7 +240,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     };
     return <section className="space-y-4">
       <h2 className="text-xl font-black">{slug === "image-compressor" ? "तस्बिर कम्प्रेसर" : "तस्बिर Format रूपान्तरण"}</h2>
-      <p className="text-sm text-slate-600">PNG, JPEG, WebP, GIF वा BMP छान्नुहोस्। HEIC समर्थित छैन। प्रक्रिया तपाईंको ब्राउजरमै हुन्छ; फाइल सर्भरमा पठाइँदैन।</p>
+      <p className="text-sm text-slate-600">PNG, JPEG, WebP, GIF वा BMP छान्नुहोस्। HEIC समर्थित छैन। Animated GIF को पहिलो frame मात्र रूपान्तरण हुन्छ। प्रक्रिया तपाईंको ब्राउजरमै हुन्छ; फाइल सर्भरमा पठाइँदैन।</p>
       <label className="block"><span className={label}>तस्बिर छान्नुहोस् (अधिकतम ५० MB)</span><input className={input} type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" onChange={(e) => { setImageFile(e.target.files?.[0] ?? null); setGenerated(""); setError(""); }} /></label>
       {imageFile && <p className="text-sm text-slate-600">{imageFile.name} · {(imageFile.size / 1024).toFixed(1)} KB</p>}
       {slug === "image-compressor" ? <label><span className={label}>गुणस्तर (०.१–१.०)</span><input className={input} type="number" min="0.1" max="1" step="0.1" value={imageQuality} onChange={(e) => setImageQuality(e.target.value)} /></label> : <label><span className={label}>नयाँ format</span><select className={input} value={imageFormat} onChange={(e) => setImageFormat(e.target.value)}><option value="image/webp">WebP</option><option value="image/jpeg">JPEG</option><option value="image/png">PNG</option></select></label>}

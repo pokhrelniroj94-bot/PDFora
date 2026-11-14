@@ -74,10 +74,14 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     return stripHtmlToText(source);
   }, [slug, source]);
 
-  function runXml() {
-    try { setError(""); return formatXml(source); }
-    catch (cause) { setError(cause instanceof Error ? cause.message : "XML जाँच गर्न सकिएन।"); return ""; }
-  }
+  const xml = useMemo(() => {
+    if (slug !== "xml-formatter-validator" || !source.trim()) return { result: "", error: "" };
+    try {
+      return { result: formatXml(source), error: "" };
+    } catch (cause) {
+      return { result: "", error: cause instanceof Error ? cause.message : "XML जाँच गर्न सकिएन।" };
+    }
+  }, [slug, source]);
 
   if (slug === "html-tag-stripper") return <section className="space-y-4">
     <div><h2 className="text-xl font-black">HTML Tag हटाउने</h2><p className="mt-1 text-sm text-slate-600">HTML snippet बाट देखिने पाठ निकाल्नुहोस्। Script चलाइँदैन र कुनै डेटा सर्भरमा पठाइँदैन।</p></div>
@@ -107,8 +111,9 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
 
   if (slug === "savings-goal-calculator") {
     let result: ReturnType<typeof calculateSavings> | null = null;
-    try { result = calculateSavings(Number(target), Number(current), Number(months), Number(rate)); setError(""); }
-    catch (cause) { setError(cause instanceof Error ? cause.message : "मान जाँच गर्नुहोस्।"); }
+    let errorMessage = "";
+    try { result = calculateSavings(Number(target), Number(current), Number(months), Number(rate)); }
+    catch (cause) { errorMessage = cause instanceof Error ? cause.message : "मान जाँच गर्नुहोस्।"; }
     return <section className="space-y-4">
       <div><h2 className="text-xl font-black">बचत लक्ष्य क्याल्कुलेटर</h2><p className="mt-1 text-sm text-slate-600">लक्ष्य पूरा गर्न आवश्यक मासिक बचतको अनुमान निकाल्नुहोस्। हालको बचत र मासिक योगदान दुवैमा ब्याज मासिक रूपमा जोडिएको मानिएको छ।</p></div>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -123,8 +128,9 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
 
   if (slug === "nepal-share-calculator") {
     let result: ReturnType<typeof calculateShare> | null = null;
-    try { result = calculateShare(Number(quantity), Number(buy), Number(sell), Number(fee), Number(tax), Number(dp)); setError(""); }
-    catch (cause) { setError(cause instanceof Error ? cause.message : "मान जाँच गर्नुहोस्।"); }
+    let errorMessage = "";
+    try { result = calculateShare(Number(quantity), Number(buy), Number(sell), Number(fee), Number(tax), Number(dp)); }
+    catch (cause) { errorMessage = cause instanceof Error ? cause.message : "मान जाँच गर्नुहोस्।"; }
     const money = (n: number) => "रु. " + n.toLocaleString("ne-NP", { maximumFractionDigits: 2 });
     return <section className="space-y-4">
       <div><h2 className="text-xl font-black">शेयर नाफा–नोक्सान क्याल्कुलेटर</h2><p className="mt-1 text-sm text-slate-600">कारोबार मूल्य र तपाईंले प्रविष्ट गरेका शुल्क/कर दरका आधारमा अनुमान निकाल्नुहोस्। दरहरू स्वतः अद्यावधिक हुँदैनन्; कारोबारअघि ब्रोकर र CDSC को हालको शुल्क जाँच्नुहोस्।</p></div>

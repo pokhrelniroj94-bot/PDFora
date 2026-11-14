@@ -53,7 +53,16 @@ check("sitemap excludes unpublished language routes", !sitemapUrls.some((url) =>
 
 const privacyText = (await privacy.text()).toLowerCase();
 check("privacy policy discloses advertising provider", privacyText.includes("adsterra") && privacyText.includes("advertising"));
-check("privacy policy describes temporary upload processing", privacyText.includes("temporarily") && privacyText.includes("after processing"));
+// Accept both the currently deployed wording ("temporarily ... after processing")
+// and the more explicit wording in the updated policy ("temporary ... after the
+// processing response has been sent"). This check is run against both production
+// and the pull-request build, so it must validate the policy intent, not one exact phrase.
+const describesTemporaryHandling =
+  privacyText.includes("temporar") &&
+  (privacyText.includes("after processing") ||
+    privacyText.includes("after the processing response") ||
+    privacyText.includes("after the result has been sent"));
+check("privacy policy describes temporary upload processing", describesTemporaryHandling);
 
 const html = await home.text();
 const canonicalTag = html.match(/<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/i)?.[0] || "";

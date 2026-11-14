@@ -16,6 +16,11 @@ The tool inventory is generated from `legacy-tool-slugs.ts` plus `toolCatalog.ts
 | Publication | English and Nepali only. Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Chinese and Japanese remain unpublished. Shared dictionary key parity is not full-site translation. |
 | Production | PR #162 has not been deployed. The latest Vercel production deployment inspected used commit `982b5b5d73b77edbee516bce22af7dc03723c49d` from a different branch; the live homepage displayed 174 tools, which must be reconciled with the 169-tool source inventory. |
 
+
+### Nepali batch 4 — five additional interfaces (2026-11-14)
+
+Added route-specific Nepali workspaces for XML formatting/validation, Notes to PDF (browser print-to-PDF), HTML tag stripping, savings-goal calculation and a Nepal share profit/loss estimator. These five are included in the 151/169 interface-present count. They are **not** counted as functionally tested, browser-tested, natively reviewed or index-approved. Share fee/tax inputs are user-entered rather than asserted as current statutory rates. Notes-to-PDF uses the browser print dialog and needs a full print-preview/download browser check.
+
 ### Added in this branch (Nepali batch 2: encoding, case and unit tools)
 text-to-binary, binary-to-text, text-to-hex, hex-to-text, morse-code-translator, camel-case-converter, snake-case-converter, kebab-case-converter, json-escape-unescape, px-rem-converter, roman-numeral-converter — logic in `lib/i18n/nepali-encoding-case-tools.ts`, UI in `components/NepaliEncodingCaseWorkspace.tsx`, test in `scripts/nepali-encoding-case-tools.test.mjs`.
 Deliberate differences from English: Nepali validation messages; case converters keep Devanagari/Unicode letters; Devanagari digits accepted in px/rem and Roman numerals; morse notes dropped characters; empty input shows a message.

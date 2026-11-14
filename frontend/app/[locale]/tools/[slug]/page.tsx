@@ -148,6 +148,11 @@ const nepaliTitles: Record<string, string> = {
   "image-format-converter": "तस्बिर Format रूपान्तरण",
   "preeti-unicode-converter": "Preeti बाट Unicode रूपान्तरण",
   "nepali-unicode-typing": "नेपाली Unicode टाइपिङ",
+  "email-signature-generator": "व्यावसायिक इमेल हस्ताक्षर निर्माता",
+  "timezone-meeting-planner": "समय क्षेत्र बैठक योजनाकार",
+  "image-dpi-calculator": "तस्बिर DPI तथा PPI क्याल्कुलेटर",
+  "video-bitrate-calculator": "भिडियो बिटरेट क्याल्कुलेटर",
+  "markdown-table-generator": "Markdown तालिका निर्माता",
 };
 const nepaliDescriptions: Record<string, string> = {
   "xml-formatter-validator": "XML syntax जाँचेर सुरक्षित रूपमा indentation मिलाउनुहोस्।",
@@ -173,6 +178,11 @@ const nepaliDescriptions: Record<string, string> = {
   "image-format-converter": "PNG, JPEG र WebP बीच तस्बिर रूपान्तरण गर्नुहोस्; फाइल ब्राउजरमै प्रशोधन हुन्छ।",
   "preeti-unicode-converter": "पुरानो Preeti font encoding लाई नेपाली Unicode मा बदल्नुहोस्; reverse conversion अनुमानित हुन्छ।",
   "nepali-unicode-typing": "अङ्ग्रेजी अक्षरमा नेपाली शब्द टाइप गरी देवनागरी Unicode मा बदल्नुहोस्.",
+  "email-signature-generator": "आफ्नो नाम, पद, कम्पनी र सम्पर्क विवरणसहित HTML इमेल हस्ताक्षर ब्राउजरमै तयार गर्नुहोस्।",
+  "timezone-meeting-planner": "विभिन्न समय क्षेत्र र सहरमा बैठकको स्थानीय समय तुलना गर्नुहोस्।",
+  "image-dpi-calculator": "प्रिन्ट आकारअनुसार तस्बिरको PPI र आवश्यक पिक्सेल आयाम गणना गर्नुहोस्।",
+  "video-bitrate-calculator": "भिडियो अवधि, लक्षित फाइल आकार, अडियो बिटरेट र अतिरिक्त स्थानका आधारमा भिडियो बिटरेट अनुमान गर्नुहोस्।",
+  "markdown-table-generator": "Tab छुट्याइएको पाठलाई Markdown तालिकामा रूपान्तरण गर्नुहोस्; सबै प्रशोधन ब्राउजरमै हुन्छ।",
   "resume-builder": "२० वटा व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन, सम्पादनयोग्य खण्ड र PDF निर्यात प्रयोग गरी व्यवस्थित CV बनाउनुहोस्।",
   "csv-to-json": "पहिलो पङ्क्तिलाई शीर्षक मानेर CSV डेटालाई JSON array मा बदल्नुहोस्।",
   "json-to-yaml": "JSON डेटालाई पढ्न सजिलो YAML ढाँचामा बदल्नुहोस्।",
@@ -278,7 +288,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const request = resolveLocalizedToolRequest(locale, slug);
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
-  if (request.locale === "ne" && (nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number]) || nepaliLocalizedFinancialSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedFinancialSlugs)[number]) || nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedPublicInfoSlugs)[number]))) {
+  if (request.locale === "ne" && (["email-signature-generator", "timezone-meeting-planner", "image-dpi-calculator", "video-bitrate-calculator", "markdown-table-generator"].includes(request.implementation.slug) || nepaliLocalizedUtilitySlugs.includes(request.implementation.slug as (typeof nepaliLocalizedUtilitySlugs)[number]) || nepaliLocalizedFinancialSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedFinancialSlugs)[number]) || nepaliLocalizedPublicInfoSlugs.includes(request.implementation.slug as (typeof nepaliLocalizedPublicInfoSlugs)[number]))) {
     return {
       ...metadata,
       title: nepaliTitles[request.implementation.slug],

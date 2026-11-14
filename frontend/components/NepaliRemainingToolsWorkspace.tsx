@@ -163,10 +163,10 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     return <section className="space-y-4">
       <h2 className="text-xl font-black">मुद्रा रूपान्तरण</h2>
       <p className="text-sm text-slate-600">सार्वजनिक विनिमय-दर API बाट दर ल्याइन्छ। दर ढिलाइ हुन सक्छ; बैंक वा कारोबारका लागि आधिकारिक दर पुष्टि गर्नुहोस्।</p>
-      <label className="block"><span className={label}>रकम</span><input className={input} type="number" min="0" value={currencyAmount} onChange={(e) => setCurrencyAmount(e.target.value)} /></label>
+      <label className="block"><span className={label}>रकम</span><input className={input} type="number" min="0" value={currencyAmount} onChange={(e) => { setCurrencyAmount(e.target.value); setExchangeRate(null); }} /></label>
       <div className="grid gap-3 sm:grid-cols-2">
-        <label><span className={label}>बाट</span><input className={input} maxLength={3} value={currencyFrom} onChange={(e) => setCurrencyFrom(e.target.value.toUpperCase())} /></label>
-        <label><span className={label}>मा</span><input className={input} maxLength={3} value={currencyTo} onChange={(e) => setCurrencyTo(e.target.value.toUpperCase())} /></label>
+        <label><span className={label}>बाट</span><select className={input} value={currencyFrom} onChange={(e) => { setCurrencyFrom(e.target.value); setExchangeRate(null); }}><option>USD</option><option>NPR</option><option>INR</option><option>EUR</option><option>GBP</option><option>AUD</option><option>CAD</option><option>JPY</option><option>CNY</option><option>AED</option></select></label>
+        <label><span className={label}>मा</span><select className={input} value={currencyTo} onChange={(e) => { setCurrencyTo(e.target.value); setExchangeRate(null); }}><option>NPR</option><option>USD</option><option>INR</option><option>EUR</option><option>GBP</option><option>AUD</option><option>CAD</option><option>JPY</option><option>CNY</option><option>AED</option></select></label>
       </div>
       <button disabled={exchangeBusy} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50" onClick={() => void convert()}>{exchangeBusy ? "दर ल्याउँदै..." : "रूपान्तरण गर्नुहोस्"}</button>
       {exchangeError && <p role="alert" className="text-sm text-red-700">{exchangeError}</p>}

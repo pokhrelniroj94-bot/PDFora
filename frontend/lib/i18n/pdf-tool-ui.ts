@@ -26,7 +26,7 @@ const en: PdfToolCopy = {
   couldNotProcess:"Could not process the PDF.",
   connectingServer:"Connecting to PDFora's processing server. If it has been idle, the first request may take up to a minute.",
   easy:"Easy", easyDescription:"Choose your file and process it with one tap.",
-  private:"Private", privateDescription:"Files are processed by the PDFora backend.",
+  private:"Temporary processing", privateDescription:"Files are processed on our server; see the deletion details below.",
   mobileReady:"Mobile Ready", mobileDescription:"Designed to work smoothly on phones and desktops.",
   howToUse:"How to use", stepSelect:"Select or drag and drop your PDF file into the upload area.",
   stepOptions:"Enter any required options shown for this tool.",
@@ -34,8 +34,8 @@ const en: PdfToolCopy = {
   stepDownload:"When processing finishes, your output file downloads automatically.",
   freeQuestion:"Is this PDF tool free to use?",
   freeAnswer:"You can use this PDFora tool online without installing desktop software. Choose your file, run the selected operation, and download the result.",
-  privacyQuestion:"Are my files kept private?",
-  privacyAnswer:"Files are sent securely to the PDFora processing service to complete the requested operation. Avoid uploading documents containing information you do not want processed online.",
+  privacyQuestion:"How does PDFora handle my files?",
+  privacyAnswer:"Files are sent to the PDFora processing server. Temporary request files are normally cleaned after the result is sent; interrupted jobs are cleaned during a later request when they are over six hours old. Do not upload highly sensitive files you are not comfortable processing online.",
   maxSizeError:"{name} exceeds the 50 MB per-file limit."
 };
 
@@ -54,7 +54,7 @@ const dictionaries: Record<Locale, PdfToolCopy> = {
     couldNotProcess:"PDF प्रक्रिया गर्न सकिएन।",
     connectingServer:"PDFora को प्रोसेसिङ सर्भरमा जडान हुँदैछ। सर्भर निष्क्रिय थियो भने पहिलो अनुरोधमा एक मिनेटसम्म लाग्न सक्छ।",
     easy:"सजिलो", easyDescription:"फाइल छानेर एकै पटकमा प्रक्रिया गर्नुहोस्।",
-    private:"गोपनीय", privateDescription:"फाइलहरू PDFora को ब्याकएन्डबाट प्रक्रिया गरिन्छन्।",
+    private:"अस्थायी प्रोसेसिङ", privateDescription:"फाइल सर्भरमा प्रक्रिया हुन्छन्; हटाउने समय तल स्पष्ट छ।",
     mobileReady:"मोबाइलमैत्री", mobileDescription:"मोबाइल र डेस्कटप दुवैमा सहज रूपमा चल्ने गरी बनाइएको।",
     howToUse:"प्रयोग गर्ने तरिका", stepSelect:"अपलोड क्षेत्रमा PDF फाइल छान्नुहोस् वा तानेर छोड्नुहोस्।",
     stepOptions:"यो टुलले मागेका आवश्यक विकल्पहरू भर्नुहोस्।",
@@ -62,8 +62,8 @@ const dictionaries: Record<Locale, PdfToolCopy> = {
     stepDownload:"प्रक्रिया सकिएपछि तयार फाइल स्वतः डाउनलोड हुन्छ।",
     freeQuestion:"के यो PDF टुल निःशुल्क छ?",
     freeAnswer:"डेस्कटप सफ्टवेयर स्थापना नगरी यो PDFora टुल अनलाइन प्रयोग गर्न सक्नुहुन्छ। फाइल छान्नुहोस्, प्रक्रिया चलाउनुहोस् र नतिजा डाउनलोड गर्नुहोस्।",
-    privacyQuestion:"के मेरा फाइलहरू गोप्य राखिन्छन्?",
-    privacyAnswer:"अनुरोध गरिएको काम पूरा गर्न फाइलहरू सुरक्षित रूपमा PDFora प्रोसेसिङ सेवामा पठाइन्छन्। अनलाइन प्रक्रिया गर्न नचाहेका संवेदनशील जानकारी भएका कागजात अपलोड नगर्नुहोस्।",
+    privacyQuestion:"PDFora ले मेरा फाइल कसरी ह्यान्डल गर्छ?",
+    privacyAnswer:"फाइलहरू PDFora को प्रोसेसिङ सर्भरमा पठाइन्छन्। सामान्य अवस्थामा नतिजा पठाएपछि अस्थायी फाइल सफा गरिन्छन्; बीचमै रोकिएका कामका बाँकी फाइल अर्को अनुरोधमा ६ घण्टाभन्दा पुराना भेटिएपछि सफा हुन्छन्। अनलाइन प्रोसेस गर्न नचाहने अत्यन्त संवेदनशील फाइल अपलोड नगर्नुहोस्।",
     maxSizeError:"{name} को आकार प्रति फाइल ५० MB सीमाभन्दा बढी छ।"
   },
   hi: {

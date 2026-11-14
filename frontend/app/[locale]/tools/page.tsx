@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { nepaliPdfRoutes } from "../../../lib/i18n/nepali-pdf-routes";
+import { nepaliToolNames } from "../../../lib/i18n/pdf-tool-names-ne";
 import {
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedPublicInfoSlugs,
@@ -41,7 +42,7 @@ const names: Record<string, string> = {
   "nepal-electricity-bill-calculator":"विद्युत् बिल क्याल्कुलेटर","nepal-public-holidays-2083":"नेपालका सार्वजनिक बिदा २०८३",
 };
 
-const pdfTools = Object.keys(nepaliPdfRoutes).map((slug) => [slug, names[slug] ?? slug.replaceAll("-", " ")] as const);
+const pdfTools = Object.keys(nepaliPdfRoutes).map((slug) => [slug, nepaliToolNames[slug] ?? names[slug] ?? slug.replaceAll("-", " ")] as const);
 
 const groups = [
   { title: "नेपालका सेवा तथा वित्तीय उपकरण", slugs: [...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs, "nepal-phone-validator", "gold-tola-gram-converter", "nepali-calendar"] },
@@ -81,7 +82,7 @@ export default async function NepaliToolsDirectory({ params }: Props) {
     </section>)}
     <section className="mb-10">
       <h2 className="mb-4 text-xl font-extrabold">सबै नेपाली उपयोगिता तथा क्याल्कुलेटर टुल</h2>
-      <p className="mb-4 max-w-3xl text-sm leading-6 text-slate-600">तलका सूचीमा दर्ता भएका सबै नेपाली utility, वित्तीय र सार्वजनिक सूचना उपकरण छन्। कुनै उपकरण खोल्न यसको नाम छान्नुहोस्।</p>
+      <p className="mb-4 max-w-3xl text-sm leading-6 text-slate-600">तलका सूचीमा दर्ता भएका नेपाली PDF, उपयोगिता, वित्तीय र सार्वजनिक सूचना उपकरण छन्। कुनै उपकरण खोल्न यसको नाम छान्नुहोस्।</p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from(new Set([...nepaliLocalizedUtilitySlugs, ...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs])).map((slug) => <ToolLink key={slug} slug={slug}/>)}
       </div>

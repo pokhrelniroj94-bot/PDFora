@@ -243,9 +243,9 @@ export default function PDForaTool({
     message === ui.completed;
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(20,184,166,.10),_transparent_42%),linear-gradient(180deg,#f8fafc_0%,#f1f5f9_100%)] text-slate-950">
+    <div className="pdfora-workspace min-h-screen text-slate-950">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 shadow-[0_8px_30px_rgba(15,23,42,.04)] backdrop-blur-xl">
+      <header className="pdfora-workspace-header sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 shadow-[0_8px_30px_rgba(15,23,42,.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <a
             href={homeHref}
@@ -273,9 +273,9 @@ export default function PDForaTool({
       </header>
 
       {/* Main */}
-      <section className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-16">
+      <section className="pdfora-workspace-content mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-14">
         {/* Heading */}
-        <div className="text-center">
+        <div className="pdfora-workspace-hero text-center">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">
             {ui.toolLabel}
           </p>
@@ -290,7 +290,7 @@ export default function PDForaTool({
         </div>
 
         {/* Tool Card */}
-        <div className="mt-8 rounded-[2rem] border border-white/80 bg-white/90 p-4 shadow-[0_24px_80px_rgba(15,23,42,.09)] ring-1 ring-slate-900/[0.03] backdrop-blur sm:mt-10 sm:p-8">
+        <div className="pdfora-tool-card mt-8 rounded-[2rem] border border-white/80 bg-white/90 p-4 shadow-[0_24px_80px_rgba(15,23,42,.09)] ring-1 ring-slate-900/[0.03] backdrop-blur sm:mt-10 sm:p-8">
           {/* Upload Area */}
           <button
             type="button"
@@ -299,7 +299,7 @@ export default function PDForaTool({
             onDragLeave={(event) => { event.preventDefault(); setDragActive(false); }}
             onDrop={handleDrop}
             aria-label={ui.chooseFilesAria}
-            className={`flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] sm:min-h-64 ${dragActive ? "border-teal-500 bg-teal-50" : "border-slate-300 bg-slate-50/80 hover:border-teal-400 hover:bg-teal-50"}`}
+            className={`pdfora-dropzone flex min-h-56 w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed px-4 text-center transition active:scale-[0.99] sm:min-h-64 ${dragActive ? "border-teal-500 bg-teal-50" : "border-slate-300 bg-slate-50/80 hover:border-teal-400 hover:bg-teal-50"}`}
           >
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-50 to-cyan-100 text-3xl ring-1 ring-teal-900/5">
               {imageUpload ? "🖼️" : "📄"}
@@ -436,7 +436,7 @@ export default function PDForaTool({
             type="button"
             onClick={processPDF}
             disabled={loading || files.length === 0}
-            className="mt-5 flex min-h-14 w-full items-center justify-center rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-700 px-5 text-sm font-black text-white shadow-lg shadow-teal-900/15 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-teal-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="pdfora-primary-action mt-5 flex min-h-14 w-full items-center justify-center rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-700 px-5 text-sm font-black text-white shadow-lg shadow-teal-900/15 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-teal-900/20 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-slate-300"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -484,6 +484,39 @@ export default function PDForaTool({
             description={ui.mobileDescription}
           />
         </div>
+        {locale === "ne" ? (
+        <section className="pdfora-trust-panel mt-6 rounded-3xl border p-5 sm:p-7" aria-labelledby="pdfora-trust-title">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="pdfora-trust-icon" aria-hidden="true">🔐</span>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-teal-800">PDFora गोपनीयता जानकारी</p>
+          </div>
+          <h2 id="pdfora-trust-title" className="mt-3 text-xl font-black tracking-tight sm:text-2xl">तपाईंको फाइल कसरी ह्यान्डल हुन्छ?</h2>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="pdfora-trust-detail"><h3>फाइल कहाँ जान्छ?</h3><p>प्रक्रिया सुरु गर्दा फाइल अनुरोध पूरा गर्न PDFora को प्रोसेसिङ सर्भरमा पठाइन्छ। यो टुल पूर्ण रूपमा तपाईंको ब्राउजरभित्र मात्र चल्दैन।</p></div>
+            <div className="pdfora-trust-detail"><h3>कहिले हटाइन्छ?</h3><p>सामान्य अवस्थामा नतिजा पठाइसकेपछि अनुरोधका अस्थायी फाइलहरू सफा गरिन्छन्। अनुरोध बीचमै अवरुद्ध भए बाँकी फाइलहरू अर्को प्रोसेसिङ अनुरोधमा ६ घण्टाभन्दा पुराना भेटिएपछि सफा गरिन्छन्।</p></div>
+            <div className="pdfora-trust-detail"><h3>स्थायी फाइल इतिहास राखिन्छ?</h3><p>PDFora मा प्रयोगकर्ताको स्थायी फाइल लाइब्रेरी वा अकाउन्टमा आधारित फाइल इतिहास छैन। डाउनलोड गरिएको नतिजा आफ्नै डिभाइसमा सुरक्षित राख्नुहोस्।</p></div>
+            <div className="pdfora-trust-detail"><h3>कस्तो फाइल अपलोड नगर्ने?</h3><p>इन्टरनेटमार्फत होस्ट गरिएको सर्भरमा प्रोसेस गर्न नचाहने अत्यन्त संवेदनशील कागजात अपलोड नगर्नुहोस्। इन्टरनेट प्रसारण वा सर्भर प्रणालीलाई शतप्रतिशत जोखिमरहित भन्न सकिँदैन।</p></div>
+          </div>
+          <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/ne/privacy">विस्तृत गोपनीयता नीति पढ्नुहोस् <span aria-hidden="true">↗</span></a>
+        </section>
+
+        ) : (
+        <section className="pdfora-trust-panel mt-6 rounded-3xl border p-5 sm:p-7" aria-labelledby="pdfora-trust-title">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="pdfora-trust-icon" aria-hidden="true">🔐</span>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-teal-800">PDFora privacy details</p>
+          </div>
+          <h2 id="pdfora-trust-title" className="mt-3 text-xl font-black tracking-tight sm:text-2xl">How your files are handled</h2>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="pdfora-trust-detail"><h3>Where does my file go?</h3><p>When you start processing, your file is sent to the PDFora processing server to complete your request. This tool does not run entirely inside your browser.</p></div>
+            <div className="pdfora-trust-detail"><h3>When is it deleted?</h3><p>Under normal operation, temporary request files are cleaned up after the result has been sent. If a request is interrupted, leftover files are cleaned when a later processing request finds them more than six hours old.</p></div>
+            <div className="pdfora-trust-detail"><h3>Is a permanent file history kept?</h3><p>PDFora does not provide a permanent user file library or account-based file history. Save your downloaded result on your own device.</p></div>
+            <div className="pdfora-trust-detail"><h3>What should I avoid uploading?</h3><p>Do not upload highly sensitive documents that you are not comfortable processing on an internet-hosted server. No internet transmission or server system can be described as completely risk-free.</p></div>
+          </div>
+          <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/privacy">Read the full Privacy Policy <span aria-hidden="true">↗</span></a>
+        </section>
+
+        )}
         {/* Crawlable tool guidance: keep useful content ahead of the ad unit. */}
         <section
           aria-labelledby="how-to-use-title"

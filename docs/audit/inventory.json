@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-11-14",
-  "baseCommit": "96f6c7a0476999c56ed2cc6762395fd17dcb1d89",
+  "baseCommit": "5461ff035f992b604373aa04b7abb22029dfe363",
   "frontendPageFiles": 70,
   "apiRouteFiles": 5,
   "catalogToolEntries": 120,
@@ -21,9 +21,9 @@
   ],
   "editorialBlogArticles": 8,
   "nepalBlogArticles": 19,
-  "nepaliDedicatedToolInterfaces": 151,
+  "nepaliDedicatedToolInterfaces": 169,
   "nepaliToolInterfacesTotal": 169,
-  "nepaliLocalizedUtilityRoutes": 93,
+  "nepaliLocalizedUtilityRoutes": 111,
   "publishedNepaliPdfRoutes": 6,
   "publishedLocales": [
     "en",
@@ -43,7 +43,7 @@
   ],
   "methodology": {
     "sourceOfTruth": "frontend/lib/legacy-tool-slugs.ts plus frontend/components/toolCatalog.ts; exclude the pdf-tools collection entry.",
-    "verification": "Counts checked against the recursive repository tree and source slug literals at baseCommit.",
+    "verification": "Source inventory counts checked against the recursive repository tree and source slug literals; Nepali interface route count refreshed after implementation of the remaining 18 catalog utilities. This is not runtime or QA evidence.",
     "limitations": "Source inventory does not prove every runtime workflow, translation quality, native-speaker review, accessibility, or browser compatibility. See docs/i18n and docs/qa for separate evidence."
   }
 }

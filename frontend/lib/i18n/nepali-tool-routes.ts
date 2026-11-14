@@ -1,4 +1,5 @@
 export const nepaliLocalizedUtilitySlugs = [
+  "resume-builder",
   "nepali-digit-converter",
   "nepali-number-converter",
   "nepali-date-converter",

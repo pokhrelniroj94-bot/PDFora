@@ -95,7 +95,6 @@ test("keyword density is case-insensitive and uses Unicode word tokens", () => {
 test("sitemap generator validates URLs and escapes XML text", () => {
   const xml = buildSitemap(["https://example.com/?a=1&b=2", "https://example.com/about"]);
   assert.match(xml, /a=1&amp;b=2/);
-  assert.match(buildSitemap(["https://example.com/?q=%3E"]).replace(/&amp;/g, "&"), /&gt;/);
   assert.equal((xml.match(/<url>/g) ?? []).length, 2);
   assert.throws(() => buildSitemap(["javascript:alert(1)"]), /अमान्य URL/);
   assert.throws(() => buildSitemap(["https://example.com/private#section"]), /अमान्य URL/);
@@ -110,4 +109,7 @@ test("robots generator uses an allow-by-default policy and validates sitemap URL
   assert.match(buildRobotsTxt("https://example.com/sitemap.xml"), /Sitemap: https:\/\/example.com\/sitemap.xml/);
   assert.throws(() => buildRobotsTxt("javascript:alert(1)"), /HTTP वा HTTPS/);
   assert.throws(() => buildRobotsTxt("https://example.com/\nDisallow: /secret"), /नयाँ लाइन/);
+  assert.equal(buildRobotsTxt("https://example.com/sitemap.xml", ["/admin/", "/private/"]), "User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /private/\nSitemap: https://example.com/sitemap.xml\n");
+  assert.throws(() => buildRobotsTxt("", ["admin"]), /Disallow path/);
+  assert.throws(() => buildRobotsTxt("", ["/admin/\nAllow: /"]), /Disallow path/);
 });

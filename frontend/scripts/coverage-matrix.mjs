@@ -15,8 +15,8 @@ const legacyPdfSlugs = parseSlugs(read("lib/legacy-tool-slugs.ts"), /"([a-z0-9-]
 const pdfTools = legacyPdfSlugs.map((slug) => ({ slug, name: slug, category: "PDF", kind: "pdf" }));
 const tools = [...pdfTools, ...catalog];
 const uniqueSlugs = new Set(tools.map((tool) => tool.slug));
-if (tools.length !== 169 || uniqueSlugs.size !== 169) {
-  throw new Error(`Expected 169 non-AI tools, found ${tools.length} entries and ${uniqueSlugs.size} unique slugs`);
+if (tools.length !== 174 || uniqueSlugs.size !== 174) {
+  throw new Error(`Expected 174 non-AI tools, found ${tools.length} entries and ${uniqueSlugs.size} unique slugs`);
 }
 
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
@@ -63,7 +63,7 @@ const inventory = {
   sourceCommit: execFileSync("git", ["-C", repoRoot, "rev-parse", "HEAD"], { encoding: "utf8" }).trim(),
   methodology: {
     sourceOfTruth: "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
-    expectedUniqueTools: 169,
+    expectedUniqueTools: 174,
     statuses: "Catalog existence, route existence, handler evidence, interface localization, guide/content, functional test, human review and indexing are tracked independently.",
     limitations: "Source inspection is not proof of runtime correctness, native-language review or browser compatibility. Functional tests remain explicitly unverified until executed.",
   },
@@ -108,7 +108,7 @@ ${summary}
 
 ## Current blockers
 
-- Nepali has ${localizedNepaliTools.size} route-specific tool interfaces, but native-language review is not independently established.
+- Nepali has ${localizedNepaliTools.size} route-specific tool interfaces out of ${tools.length} catalogued tools; five restored browser-only utilities remain English-only and unpublished on the Nepali route.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
 - Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers.
 - OCR is not counted among the 169 available tools because it remains excluded from the canonical PDF inventory.

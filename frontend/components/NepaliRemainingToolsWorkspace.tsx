@@ -66,9 +66,9 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
   const [quantity, setQuantity] = useState("100");
   const [buy, setBuy] = useState("200");
   const [sell, setSell] = useState("220");
-  const [fee, setFee] = useState("0.4");
+  const [fee, setFee] = useState("0");
   const [tax, setTax] = useState("0");
-  const [dp, setDp] = useState("25");
+  const [dp, setDp] = useState("0");
 
 
   const textResult = useMemo(() => {

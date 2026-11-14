@@ -13,7 +13,7 @@ The reconciled canonical inventory is generated from `legacy-tool-slugs.ts` plus
 | Human / native review | **Not assessed for all 174 interfaces.** No complete native-review sign-off is recorded. Automated translation/source checks do not replace a Nepali native-speaker review. |
 | SEO eligibility | Six Nepali PDF tool URLs remain on the explicit indexing allowlist. The 125 Nepali catalog utility routes, including the five new browser-only routes, remain noindex and excluded from sitemap/hreflang pending individual editorial and functional approval. |
 | Publication | English and Nepali only. Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Chinese and Japanese remain unpublished. |
-| Production | PR #162 has not been merged or deployed. Production remains on the currently deployed master commit until final CI, review, merge and deployment verification. |
+| Production | PR #162 merged to `master` at `6afae795f1b6c59aa9f82d71f64895c716a797d1`; Vercel production deployment was separately verified READY. |
 
 ### Nepali batch 5 — five restored browser-only utilities (2026-11-14)
 

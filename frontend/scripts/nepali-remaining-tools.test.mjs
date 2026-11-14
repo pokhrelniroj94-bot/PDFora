@@ -77,9 +77,10 @@ test("WCAG contrast checker calculates black/white ratio and rejects malformed c
 });
 
 test("keyword density is case-insensitive and uses Unicode word tokens", () => {
-  assert.deepEqual(analyzeKeywordDensity("PDFora pdfora नेपाली", "PDFora"), {
-    totalWords: 3, count: 2, density: 200 / 3,
-  });
+  const density = analyzeKeywordDensity("PDFora pdfora नेपाली", "PDFora");
+  assert.equal(density.totalWords, 3);
+  assert.equal(density.count, 2);
+  assert.ok(Math.abs(density.density - 200 / 3) < 1e-10);
   assert.deepEqual(analyzeKeywordDensity("नेपाली नेपाली", ""), {
     totalWords: 2, count: 0, density: 0,
   });

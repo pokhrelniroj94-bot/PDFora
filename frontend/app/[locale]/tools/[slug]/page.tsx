@@ -169,7 +169,9 @@ const nepaliDescriptions: Record<string, string> = {
   "open-graph-preview": "शीर्षक, विवरण र image URL बाट social sharing preview हेर्नुहोस्।",
   "currency-converter": "सार्वजनिक विनिमय-दर API बाट विभिन्न मुद्राको अनुमानित रूपान्तरण गर्नुहोस्; कारोबारअघि आधिकारिक दर पुष्टि गर्नुहोस्।",
   "image-compressor": "तस्बिरलाई WebP मा कम्प्रेस गर्नुहोस्। फाइल ब्राउजरमै प्रशोधन हुन्छ र सर्भरमा अपलोड हुँदैन।",
-  "image-format-converter": "PNG, JPEG र WebP बीच तस्बिर रूपान्तरण गर्नुहोस्; फाइल ब्राउजरमै प्रशोधन हुन्छ।
+  "image-format-converter": "PNG, JPEG र WebP बीच तस्बिर रूपान्तरण गर्नुहोस्; फाइल ब्राउजरमै प्रशोधन हुन्छ।",
+  "preeti-unicode-converter": "पुरानो Preeti font encoding लाई नेपाली Unicode मा बदल्नुहोस्; reverse conversion अनुमानित हुन्छ।",
+  "nepali-unicode-typing": "अङ्ग्रेजी अक्षरमा नेपाली शब्द टाइप गरी देवनागरी Unicode मा बदल्नुहोस्.",
   "resume-builder": "२० वटा व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन, सम्पादनयोग्य खण्ड र PDF निर्यात प्रयोग गरी व्यवस्थित CV बनाउनुहोस्।",
   "csv-to-json": "पहिलो पङ्क्तिलाई शीर्षक मानेर CSV डेटालाई JSON array मा बदल्नुहोस्।",
   "json-to-yaml": "JSON डेटालाई पढ्न सजिलो YAML ढाँचामा बदल्नुहोस्।",

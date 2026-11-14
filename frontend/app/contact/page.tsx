@@ -5,9 +5,9 @@ const localizedAlternates = hreflangMap("/contact");
 
 export const metadata: Metadata = {
   title: "Contact PDFora | Support, Feedback and Privacy Questions",
-  description: "Contact the PDFora team by email for tool support, feedback, bug reports, business enquiries and privacy questions.",
+  description: "Find ways to report PDFora tool issues, share feedback and review privacy information. Do not submit confidential files or personal data through public channels.",
   alternates: { canonical: "https://pd-fora.vercel.app/contact", ...(localizedAlternates ? { languages: localizedAlternates } : {}) },
-  openGraph: { type: "website", url: "https://pd-fora.vercel.app/contact", siteName: "PDFora", title: "Contact PDFora", description: "Email PDFora for tool support, feedback, bug reports, business enquiries and privacy questions." },
+  openGraph: { type: "website", url: "https://pd-fora.vercel.app/contact", siteName: "PDFora", title: "Contact PDFora", description: "Report non-sensitive tool issues, share feedback and review PDFora privacy information." },
 };
 
 export default function ContactPage() {
@@ -29,7 +29,7 @@ export default function ContactPage() {
             <p className="text-xs font-black uppercase tracking-[0.2em] text-violet-600">Contact PDFora</p>
             <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">How can we help?</h1>
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Contact our team about PDF tools, technical problems, suggestions, privacy questions or business enquiries.
+              Find the right place to report a tool problem, share a suggestion or review privacy information. Do not send confidential documents or passwords.
             </p>
           </div>
 
@@ -52,19 +52,19 @@ export default function ContactPage() {
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-xl" aria-hidden="true">🔒</div>
               <h2 className="mt-5 text-lg font-black">Privacy questions</h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                For questions about uploaded files, technical information, cookies, advertising or AI features, please review our Privacy Policy or email us.
+                For questions about uploaded files, technical information, cookies or advertising, please review our Privacy Policy. Use the public issue tracker only for non-sensitive questions.
               </p>
               <a href="/privacy" className="mt-3 inline-flex font-bold text-violet-700 underline underline-offset-4">Read the Privacy Policy</a>
             </section>
           </div>
 
           <div className="mt-8 rounded-3xl border border-violet-100 bg-violet-50 p-7 text-center">
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-700">Email PDFora</p>
-            <a href="mailto:pokhrelniroj94@gmail.com" className="mt-3 inline-block break-all text-xl font-black text-slate-950 underline decoration-violet-400 underline-offset-4 sm:text-2xl">
-              pokhrelniroj94@gmail.com
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-violet-700">Public support channel</p>
+            <a href="https://github.com/pokhrelniroj94-bot/PDFora/issues" target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-xl font-black text-slate-950 underline decoration-violet-400 underline-offset-4 sm:text-2xl">
+              Open PDFora issue tracker
             </a>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Please use a clear subject line and include only the information needed to understand your request. We aim to review messages, but cannot guarantee a response time.
+              Use this public channel only for non-sensitive bug reports and feature suggestions. Do not post personal information, passwords, private files or security details. PDFora does not currently publish a private support email.
             </p>
           </div>
 

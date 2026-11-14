@@ -3,7 +3,24 @@
 Updated: 2026-11-14
 Working PR: https://github.com/pokhrelniroj94-bot/PDFora/pull/162
 Working branch: `feat/nepali-encoding-case-tools-2026-11-14`
-PR head at initial audit: `0d9e1afdf056a49b688e572fa68c6c1da73f2901`; follow-up workspace fix and coverage updates were committed afterward.
+Latest completed full-browser run: GitHub Actions run #3105, branch head `dc612a91a813e979da70c867278d7ba415db7978`.
+
+## Superseding full-tool QA evidence — 2026-11-14 (run #3105)
+
+The latest completed GitHub Actions run **43609001348** passed frontend and backend jobs. The live-production job was skipped because this was a pull-request run.
+
+- Canonical inventory: **174 tools** (49 PDF + 125 catalog utilities).
+- Chromium: **174/174 PASS, 0 PARTIAL, 0 FAIL**. All five restored browser-only tools have dedicated behaviour assertions: email signature preview and unsafe-protocol handling; timezone conversion and DST-invalid-time handling; DPI/PPI and centimetre conversion; bitrate calculation and impossible audio-bitrate validation; Markdown table generation and pipe escaping.
+- Mobile: **174/174 PASS** at 390px with no horizontal overflow.
+- Keyboard: **174/174 PASS** for Tab reachability.
+- Basic accessibility: **173 PASS, 1 PARTIAL**. The remaining issue is the English `loksewa-photo-resizer` file input. The Nepali workspace input was labelled first, but the English route was the actual failing control. The English input now has an explicit accessible name; the next CI run must confirm the fix. This is not a WCAG certification.
+- Functional audit: 174 PASS, 0 PARTIAL, 0 FAIL, 0 NOT TESTED under the runner's explicit expected-output checks. This browser workflow audit is not exhaustive boundary testing for every possible input.
+- 48 PDF workflows validated downloaded file bytes/signatures; Extract Fonts was checked through its expected negative-path handling. Merge PDF validated reordered page sequence and output bytes.
+- Backend tests, catalog verification, i18n runtime/content checks, ESLint, Next.js build, npm audit, local security/privacy/SEO smoke, sitemap/robots checks and 17 live-data checks passed.
+- Report artifact: `pdfora-browser-e2e-174-report`, artifact ID `14119562810`. Browser and functional reports share the same pull-request merge-test source commit.
+- Production spot-check: homepage, Nepali homepage, a tool, blog index/article, robots.txt and sitemap.xml returned HTTP 200. Sitemap contains 307 unique URLs. Social Bar is site-wide; Popunder is on blog index/articles and absent from sampled homepage/tool routes. The public personal email was removed from Contact, Privacy and Terms; the public issue tracker is limited to non-sensitive requests and no private support channel is claimed. Production remains on master commit `3312302d040cd1ec6eff047179eb33c8afebd2b3`; PR #162 is not deployed.
+
+Historical audit sections below are retained for traceability; older counts are superseded by run #3105.
 
 ## Canonical source inventory
 
@@ -148,22 +165,22 @@ Live `robots.txt` and `sitemap.xml` could not be fetched directly from this exec
 
 1. Run functional and browser QA for the 18 newly implemented Nepali utility interfaces; fix any failures without changing existing English behavior.
 2. Rebuild the source-generated coverage matrix after each batch; keep translation, functional test, native review, indexing and publication statuses separate.
-3. Complete route-level browser QA for all 174 tools where feasible, including all 49 PDF upload/process/download workflows and all 125 catalog utilities; the five restored utilities have no current browser-test evidence.
-4. Complete mobile, keyboard, accessibility and downloaded-file integrity checks. Do not convert PARTIAL/NOT TESTED to PASS without new evidence.
+3. Extend browser coverage beyond the current all-174 expected-output smoke suite with deeper boundary, malformed-input, accessibility and downloaded-file checks for individual tools.
+4. Re-run the 174-tool suite after the English Loksewa photo upload label fix; then complete manual screen-reader, contrast and visual accessibility review. Do not claim WCAG conformance from automated checks alone.
 5. Translate all shared UI, tool interfaces, guides, blogs, legal/static pages and metadata for the ten other locales. Keep them unpublished until complete and reviewed.
 6. Complete Urdu/Arabic RTL and Chinese/Japanese CJK browser testing, including mixed-direction text and file names.
 7. Audit every blog/guide/static route for unique useful content, internal links, metadata and language correctness. Avoid thin or duplicate translated pages.
 8. Translate and review the five restored English-only utilities before claiming full Nepali coverage; preserve their English routes and keep their Nepali routes unpublished until then.
 9. Recheck live sitemap, robots, canonical, reciprocal hreflang, structured data, redirects and all included URLs. Keep the default-deny localized indexing policy.
 10. Use Search Console data to improve pages with demonstrated impressions; do not promise rankings or create keyword-only pages.
-11. Run the full requested standalone command set, including `npx tsc --noEmit`, plus backend, PDF worker, browser E2E, accessibility and mobile checks.
+11. Continue deeper per-tool boundary and malformed-input testing; the production build type-checks the frontend and its prebuild runs the configured unit/regression suites.
 12. Review the complete PR diff and all checks before merge. Deploy only after critical checks pass and deployment authorization is explicit; then verify the actual production deployment and live routes.
 
 ## Explicit limitations
 
 - No native reviewer confirmation is available in this QA evidence.
-- No complete 174-route browser suite was executed; the earlier 169-tool artifact had only Merge PDF as a browser E2E PASS. The five restored utilities were not included in that artifact.
-- No claim is made that all 49 PDF tools or all 125 catalog utilities are fully functionally certified.
+- A complete 174-route Chromium suite has passed in run #3105. It is a workflow smoke suite, not exhaustive certification of all possible inputs.
+- All 174 routes have expected-output browser checks, but exhaustive edge-case, screen-reader, contrast and visual accessibility certification remains incomplete.
 - No claim is made that the ten additional locales are translated or publishable.
 - Search Console data is available, but its returned dimensions have different aggregation totals.
-- No PR #162 production deployment, merge, indexing outcome or traffic improvement is claimed.
+- No PR #162 production deployment, merge, indexing outcome or traffic improvement is claimed. The live production site remains on master commit `3312302d040cd1ec6eff047179eb33c8afebd2b3`.

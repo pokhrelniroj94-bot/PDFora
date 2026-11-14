@@ -66,7 +66,7 @@ export function calculateContrast(foreground: string, background: string) {
 }
 
 export function analyzeKeywordDensity(source: string, keyword: string) {
-  const words = source.toLocaleLowerCase().match(/[\p{L}\p{N}_-]+/gu) ?? [];
+  const words = source.toLocaleLowerCase().match(/[\p{L}\p{M}\p{N}_-]+/gu) ?? [];
   const needle = keyword.trim().toLocaleLowerCase();
   if (!needle) return { totalWords: words.length, count: 0, density: 0 };
   const count = words.filter((word) => word === needle).length;

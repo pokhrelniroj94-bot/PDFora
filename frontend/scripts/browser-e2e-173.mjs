@@ -217,9 +217,9 @@ async function setFieldByLabel(page, labelText, value) {
     const expectedLabel = ${JSON.stringify(labelText)}.trim().toLowerCase();
     const label = [...document.querySelectorAll("label")].find((element) =>
       element.innerText.trim().toLowerCase().startsWith(expectedLabel));
-    const field = label?.querySelector("input,textarea");
+    const field = label?.querySelector("input,textarea,select");
     if (!field) return false;
-    const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+    const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : field instanceof HTMLSelectElement ? HTMLSelectElement.prototype : HTMLInputElement.prototype;
     const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
     setter?.call(field, ${JSON.stringify(value)});
     field.dispatchEvent(new Event("input", { bubbles: true }));

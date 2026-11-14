@@ -24,6 +24,17 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
   const [includeSymbols, setIncludeSymbols] = useState(true);
   const [generated, setGenerated] = useState("");
   const [error, setError] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFormat, setImageFormat] = useState("image/webp");
+  const [imageQuality, setImageQuality] = useState("0.8");
+  const [imageBusy, setImageBusy] = useState(false);
+  const [currencyAmount, setCurrencyAmount] = useState("1");
+  const [currencyFrom, setCurrencyFrom] = useState("USD");
+  const [currencyTo, setCurrencyTo] = useState("NPR");
+  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
+  const [exchangeDate, setExchangeDate] = useState("");
+  const [exchangeError, setExchangeError] = useState("");
+  const [exchangeBusy, setExchangeBusy] = useState(false);
 
   const result = useMemo(() => {
     try {
@@ -91,6 +102,95 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
     setGenerated(Array.from(random, (n) => alphabet[n % alphabet.length]).join(""));
   };
   const generateUuid = () => setGenerated(crypto.randomUUID());
+
+  if (slug === "currency-converter") {
+    const convert = async () => {
+      const amount = Number(currencyAmount);
+      if (!currencyAmount.trim() || !Number.isFinite(amount) || amount < 0) {
+        setExchangeError("शून्य वा सकारात्मक मान्य रकम प्रविष्ट गर्नुहोस्।");
+        setExchangeRate(null);
+        return;
+      }
+      setExchangeBusy(true);
+      setExchangeError("");
+      try {
+        const response = await fetch(`https://open.er-api.com/v6/latest/${encodeURIComponent(currencyFrom)}`);
+        if (!response.ok) throw new Error("विनिमय दर सेवा अहिले उपलब्ध छैन।");
+        const data = await response.json();
+        const rate = data?.rates?.[currencyTo];
+        if (typeof rate !== "number" || !Number.isFinite(rate)) throw new Error("छानिएको मुद्रा उपलब्ध छैन।");
+        setExchangeRate(rate);
+        setExchangeDate(String(data.time_last_update_utc ?? ""));
+      } catch (cause) {
+        setExchangeError(cause instanceof Error ? cause.message : "विनिमय दर ल्याउन सकिएन।");
+        setExchangeRate(null);
+      } finally { setExchangeBusy(false); }
+    };
+    return <section className="space-y-4">
+      <h2 className="text-xl font-black">मुद्रा रूपान्तरण</h2>
+      <p className="text-sm text-slate-600">सार्वजनिक विनिमय-दर API बाट दर ल्याइन्छ। दर ढिलाइ हुन सक्छ; बैंक वा कारोबारका लागि आधिकारिक दर पुष्टि गर्नुहोस्।</p>
+      <label className="block"><span className={label}>रकम</span><input className={input} type="number" min="0" value={currencyAmount} onChange={(e) => setCurrencyAmount(e.target.value)} /></label>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label><span className={label}>बाट</span><input className={input} maxLength={3} value={currencyFrom} onChange={(e) => setCurrencyFrom(e.target.value.toUpperCase())} /></label>
+        <label><span className={label}>मा</span><input className={input} maxLength={3} value={currencyTo} onChange={(e) => setCurrencyTo(e.target.value.toUpperCase())} /></label>
+      </div>
+      <button disabled={exchangeBusy} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50" onClick={() => void convert()}>{exchangeBusy ? "दर ल्याउँदै..." : "रूपान्तरण गर्नुहोस्"}</button>
+      {exchangeError && <p role="alert" className="text-sm text-red-700">{exchangeError}</p>}
+      {exchangeRate !== null && <div className={panel}>१ {currencyFrom} = {exchangeRate.toLocaleString("en-US", { maximumFractionDigits: 6 })} {currencyTo}<br/><strong>{Number(currencyAmount).toLocaleString("en-US")} {currencyFrom} = {(Number(currencyAmount) * exchangeRate).toLocaleString("en-US", { maximumFractionDigits: 4 })} {currencyTo}</strong><p className="mt-2 text-xs text-slate-500">अन्तिम अद्यावधिक: {exchangeDate || "स्रोतले मिति दिएको छैन"}</p></div>}
+    </section>;
+  }
+
+  if (slug === "image-compressor" || slug === "image-format-converter") {
+    const processImage = async () => {
+      if (!imageFile) { setError("पहिले तस्बिर छान्नुहोस्।"); return; }
+      if (imageFile.size > 50 * 1024 * 1024) { setError("५० MB भन्दा सानो तस्बिर छान्नुहोस्।"); return; }
+      const quality = Number(imageQuality);
+      if (slug === "image-compressor" && (!Number.isFinite(quality) || quality < 0.1 || quality > 1)) { setError("गुणस्तर ०.१ देखि १.० बीच हुनुपर्छ।"); return; }
+      setImageBusy(true); setError("");
+      let sourceUrl = "";
+      let outputUrl = "";
+      try {
+        sourceUrl = URL.createObjectURL(imageFile);
+        const image = new Image();
+        await new Promise<void>((resolve, reject) => {
+          image.onload = () => resolve();
+          image.onerror = () => reject(new Error("यो image format पढ्न सकिएन।"));
+          image.src = sourceUrl;
+        });
+        if (!image.naturalWidth || !image.naturalHeight || image.naturalWidth * image.naturalHeight > 100_000_000) throw new Error("तस्बिरको dimensions अमान्य वा अत्यधिक ठूलो छ।");
+        const canvas = document.createElement("canvas");
+        canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error("ब्राउजरमा image canvas उपलब्ध छैन।");
+        context.drawImage(image, 0, 0);
+        const mime = slug === "image-compressor" ? "image/webp" : imageFormat;
+        const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error("यो output format ब्राउजरले समर्थन गर्दैन।")), mime, quality));
+        outputUrl = URL.createObjectURL(blob);
+        const extension = mime === "image/jpeg" ? "jpg" : mime === "image/png" ? "png" : "webp";
+        const anchor = document.createElement("a");
+        anchor.href = outputUrl;
+        anchor.download = imageFile.name.replace(/\.[^.]+$/, "") + (slug === "image-compressor" ? "-compressed." : "-converted.") + extension;
+        document.body.appendChild(anchor); anchor.click(); anchor.remove();
+        setGenerated(`मूल आकार: ${(imageFile.size / 1024).toFixed(1)} KB · नयाँ आकार: ${(blob.size / 1024).toFixed(1)} KB`);
+      } catch (cause) {
+        setError(cause instanceof Error ? cause.message : "तस्बिर प्रक्रिया गर्न सकिएन।");
+      } finally {
+        if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+        if (outputUrl) window.setTimeout(() => URL.revokeObjectURL(outputUrl), 1500);
+        setImageBusy(false);
+      }
+    };
+    return <section className="space-y-4">
+      <h2 className="text-xl font-black">{slug === "image-compressor" ? "तस्बिर कम्प्रेसर" : "तस्बिर Format रूपान्तरण"}</h2>
+      <p className="text-sm text-slate-600">PNG, JPEG, WebP, GIF वा BMP छान्नुहोस्। HEIC समर्थित छैन। प्रक्रिया तपाईंको ब्राउजरमै हुन्छ; फाइल सर्भरमा पठाइँदैन।</p>
+      <label className="block"><span className={label}>तस्बिर छान्नुहोस् (अधिकतम ५० MB)</span><input className={input} type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" onChange={(e) => { setImageFile(e.target.files?.[0] ?? null); setGenerated(""); setError(""); }} /></label>
+      {imageFile && <p className="text-sm text-slate-600">{imageFile.name} · {(imageFile.size / 1024).toFixed(1)} KB</p>}
+      {slug === "image-compressor" ? <label><span className={label}>गुणस्तर (०.१–१.०)</span><input className={input} type="number" min="0.1" max="1" step="0.1" value={imageQuality} onChange={(e) => setImageQuality(e.target.value)} /></label> : <label><span className={label}>नयाँ format</span><select className={input} value={imageFormat} onChange={(e) => setImageFormat(e.target.value)}><option value="image/webp">WebP</option><option value="image/jpeg">JPEG</option><option value="image/png">PNG</option></select></label>}
+      <button disabled={imageBusy || !imageFile} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50" onClick={() => void processImage()}>{imageBusy ? "प्रक्रिया हुँदैछ..." : slug === "image-compressor" ? "तस्बिर कम्प्रेस गर्नुहोस्" : "Format बदल्नुहोस्"}</button>
+      {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+      {generated && <div role="status" className={panel}>{generated}</div>}
+    </section>;
+  }
 
   if (slug === "password-generator" || slug === "uuid-generator") return <section className="space-y-4">
     <h2 className="text-xl font-black">{slug === "password-generator" ? "सुरक्षित पासवर्ड बनाउने" : "UUID बनाउने"}</h2>

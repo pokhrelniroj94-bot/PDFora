@@ -26,6 +26,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
+    "email-signature-generator": { title: "Free Email Signature Generator – HTML Signature | PDFora", description: "Create a professional HTML email signature with contact details, brand colour and a live preview. Copy or download it without uploading personal details." },
+    "timezone-meeting-planner": { title: "Time Zone Meeting Planner – World Clock Converter", description: "Convert a meeting date and time across New York, London, Kathmandu, Tokyo and other time zones. Compare local times with daylight-saving support." },
+    "image-dpi-calculator": { title: "Image DPI & PPI Calculator – Print Resolution", description: "Calculate image PPI from pixel dimensions and print size. Find the pixel dimensions needed for 72, 150, 300 or 600 PPI printing." },
+    "video-bitrate-calculator": { title: "Video Bitrate Calculator – File Size & Audio Bitrate", description: "Estimate video bitrate from duration, target file size, audio bitrate and overhead. Plan export settings for video encoders." },
+    "markdown-table-generator": { title: "Markdown Table Generator – Create Tables Online", description: "Convert tab-separated text into a Markdown table for GitHub README files, documentation and notes. Preview, copy or download the result." },
     "savings-goal-calculator": { title: "Savings Goal Calculator – Weekly & Monthly Deposits", description: "Calculate the weekly or monthly deposit needed to reach a savings target by a chosen date. Include current savings and an assumed annual interest rate." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },

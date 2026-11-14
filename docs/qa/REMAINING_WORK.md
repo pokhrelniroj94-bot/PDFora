@@ -18,11 +18,11 @@ The source-generated tool matrix in `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.jso
 
 ### Nepali
 
-- 151/169 tool interfaces are now present: 49 PDF + 102 catalog utilities. This corrects the stale pre-batch-4 count.
-- 18 catalog interfaces remain unimplemented: `currency-converter`, `image-compressor`, `image-format-converter`, `color-picker-palette`, `password-generator`, `uuid-generator`, `regex-tester`, `jwt-decoder`, `color-contrast-checker`, `css-minifier`, `meta-title-checker`, `meta-description-checker`, `keyword-density-checker`, `robots-txt-generator`, `sitemap-generator`, `open-graph-preview`, `preeti-unicode-converter`, `nepali-unicode-typing`.
+- 169/169 tool interfaces are now present: 49 PDF + 102 catalog utilities. This corrects the stale pre-batch-4 count.
+- No catalog interfaces remain unimplemented: `currency-converter`, `image-compressor`, `image-format-converter`, `color-picker-palette`, `password-generator`, `uuid-generator`, `regex-tester`, `jwt-decoder`, `color-contrast-checker`, `css-minifier`, `meta-title-checker`, `meta-description-checker`, `keyword-density-checker`, `robots-txt-generator`, `sitemap-generator`, `open-graph-preview`, `preeti-unicode-converter`, `nepali-unicode-typing`.
 - Five additional tools now have dedicated Nepali workspaces: `xml-formatter-validator`, `notes-to-pdf`, `html-tag-stripper`, `savings-goal-calculator`, and `nepal-share-calculator`. The XML/savings/share workspace had missing state/error handling fixed in the follow-up commit; its CI verification is still pending.
 - 37 Nepali tools have targeted unit-test coverage recorded by the matrix. The other tools are not individually functionally verified.
-- Native-language review is not independently recorded as complete for all 151 interfaces.
+- Native-language review is not independently recorded as complete for all 169 interfaces.
 - Only six Nepali PDF tools are in the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing until their individual approval gates pass.
 
 ### Other locales
@@ -31,7 +31,7 @@ Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Ch
 
 ## CI evidence for PR #162 (revision-specific)
 
-An earlier GitHub Actions run **43596956402** completed with overall conclusion **success** on an earlier PR revision. The subsequent run **43597895764** for commit `0d9e1afdf056a49b688e572fa68c6c1da73f2901` was cancelled. The later follow-up commits have no completed CI evidence yet; do not treat the earlier success as validation of the current head.
+An earlier GitHub Actions run **43596956402** completed with overall conclusion **success** on an earlier PR revision. The subsequent run **43597895764** for commit `0d9e1afdf056a49b688e572fa68c6c1da73f2901` was cancelled. Later commits, including the current PR head, have no completed CI evidence. The GitHub Actions check-runs endpoint returned zero check runs for the latest inspected head; do not treat earlier success as validation of current code.
 
 Frontend job steps recorded as successful include:
 
@@ -57,7 +57,7 @@ The separate `live-production` job was skipped. CI success does not mean PR #162
 
 ## Follow-up CI correction
 
-The first run against the updated 151/169 branch exposed two stale assertions: the localized-route registry now contains 196 routes (not 191), and the Nepal share calculator test expected a different Nepali validation phrase. Both assertions were corrected in the branch. The run that exposed the second assertion is **43598720210** (failed at `nepali-remaining-tools.test.mjs`); the current branch needs a fresh completed run before merge.
+The earlier 151/169 revision exposed stale localized-route and Nepal share-calculator assertions. Those were corrected. The latest branch now adds 18 localized utility routes and updates the expected Nepali route-equivalent count from 196 to 214. The 18 new interfaces are explicitly asserted as present and noindex, but these tests have not been executed on the latest head because no new Actions run is available.
 
 ## Executed browser / functional evidence
 
@@ -144,7 +144,7 @@ Live `robots.txt` and `sitemap.xml` could not be fetched directly from this exec
 
 ## Remaining work before full completion
 
-1. Implement and test the 24 missing Nepali interfaces. Preserve the existing 145 interfaces and all English tool behavior.
+1. Run functional and browser QA for the 18 newly implemented Nepali utility interfaces; fix any failures without changing existing English behavior.
 2. Rebuild the source-generated coverage matrix after each batch; keep translation, functional test, native review, indexing and publication statuses separate.
 3. Complete route-level browser QA for all 169 tools where feasible, including all 49 PDF upload/process/download workflows and all 120 catalog utilities.
 4. Complete mobile, keyboard, accessibility and downloaded-file integrity checks. Do not convert PARTIAL/NOT TESTED to PASS without new evidence.

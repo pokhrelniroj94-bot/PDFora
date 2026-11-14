@@ -1,6 +1,6 @@
 import Link from "next/link";
 import AdsterraNative from "../app/components/AdsterraNative";
-import { getToolGuide } from "../lib/tool-guides";
+import { getToolGuide, toolGuides } from "../lib/tool-guides";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 const seoLabels = {

@@ -98,6 +98,9 @@ test("sitemap generator validates URLs and escapes XML text", () => {
   assert.match(buildSitemap(["https://example.com/?q=%3E"]).replace(/&amp;/g, "&"), /&gt;/);
   assert.equal((xml.match(/<url>/g) ?? []).length, 2);
   assert.throws(() => buildSitemap(["javascript:alert(1)"]), /अमान्य URL/);
+  assert.throws(() => buildSitemap(["https://example.com/private#section"]), /अमान्य URL/);
+  assert.throws(() => buildSitemap(["https://user:pass@example.com/"]), /अमान्य URL/);
+  assert.match(buildSitemap(["https://example.com/a b"]), /a%20b/);
   assert.throws(() => buildSitemap([]), /कम्तीमा एउटा URL/);
   assert.throws(() => buildSitemap(Array.from({ length: 50001 }, (_, index) => `https://example.com/${index}`)), /५०,०००/);
 });

@@ -92,6 +92,19 @@ export const nepaliLocalizedUtilitySlugs = [
   "business-days-calculator",
   "random-number-generator",
   "dice-roller",
+  "password-generator",
+  "uuid-generator",
+  "regex-tester",
+  "jwt-decoder",
+  "color-picker-palette",
+  "color-contrast-checker",
+  "css-minifier",
+  "meta-title-checker",
+  "meta-description-checker",
+  "keyword-density-checker",
+  "robots-txt-generator",
+  "sitemap-generator",
+  "open-graph-preview",
 ] as const;
 
 export type NepaliLocalizedUtilitySlug = (typeof nepaliLocalizedUtilitySlugs)[number];

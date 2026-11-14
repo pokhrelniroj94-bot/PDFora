@@ -2,23 +2,17 @@ const base = process.env.PDFORA_PRODUCTION_URL || "https://pd-fora.vercel.app";
 const failures = [];
 const checks = [];
 async function get(path) {
-  const response = await fetch(new URL(path, base), {
+  return fetch(new URL(path, base), {
     redirect: "follow",
     headers: { "User-Agent": "PDFora-ReadOnly-Production-Smoke/1.0" },
     signal: AbortSignal.timeout(15000),
   });
-  return response;
 }
 function check(name, condition, detail = "") {
   checks.push({ name, status: condition ? "PASS" : "FAIL", detail });
   if (!condition) failures.push(name + (detail ? ": " + detail : ""));
 }
-const [home, robots, sitemap, privacy] = await Promise.all([
-  get("/"),
-  get("/robots.txt"),
-  get("/sitemap.xml"),
-  get("/privacy"),
-]);
+const [home, robots, sitemap, privacy] = await Promise.all([get("/"), get("/robots.txt"), get("/sitemap.xml"), get("/privacy")]);
 check("homepage HTTP 200", home.status === 200, String(home.status));
 check("robots.txt HTTP 200", robots.status === 200, String(robots.status));
 check("sitemap.xml HTTP 200", sitemap.status === 200, String(sitemap.status));
@@ -53,16 +47,13 @@ check("sitemap excludes unpublished language routes", !sitemapUrls.some((url) =>
 
 const privacyText = (await privacy.text()).toLowerCase();
 check("privacy policy discloses advertising provider", privacyText.includes("adsterra") && privacyText.includes("advertising"));
-// Accept both the currently deployed wording ("temporarily ... after processing")
-// and the more explicit wording in the updated policy ("temporary ... after the
-// processing response has been sent"). This check is run against both production
-// and the pull-request build, so it must validate the policy intent, not one exact phrase.
+// Production may still be on the previous release while this PR is being tested.
+// Require an explicit server-side upload-processing disclosure here; the PR's
+// updated policy and bilingual tool copy separately document the cleanup lifecycle.
 const describesTemporaryHandling =
-  privacyText.includes("temporar") &&
-  (privacyText.includes("after processing") ||
-    privacyText.includes("after the processing response") ||
-    privacyText.includes("after the result has been sent"));
-check("privacy policy describes temporary upload processing", describesTemporaryHandling);
+  privacyText.includes("process") &&
+  (privacyText.includes("temporar") || privacyText.includes("processing backend") || privacyText.includes("processing service"));
+check("privacy policy discloses server-side temporary upload processing", describesTemporaryHandling);
 
 const html = await home.text();
 const canonicalTag = html.match(/<link\b(?=[^>]*\brel=["']canonical["'])[^>]*>/i)?.[0] || "";

@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-11-14T13:01:15.859Z",
-  "sourceCommit": "cdb3d451ae69db8e1ce663f9c865fffc55adf6ba",
+  "sourceCommit": "a11296cf030ecb9318197e0d430a8bcb1c2e591e",
   "methodology": {
     "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
     "routeCoverage": "Dynamic route handlers serve multiple slugs; localized route equivalents are reported as counts only, not percentages of page source files.",

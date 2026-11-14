@@ -9,20 +9,19 @@ PR head at initial audit: `0d9e1afdf056a49b688e572fa68c6c1da73f2901`; follow-up 
 
 The source-generated tool matrix in `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json` defines the current inventory:
 
-- **169 tools total**: 49 PDF tools + 120 catalog utilities.
-- 12 configured locale rows per tool; 2,028 locale/tool matrix rows.
-- The older 173-tool / 124-utility counts are stale and must not be reused.
-- Production homepage currently renders “174 tools”; the latest Vercel production deployment metadata points to commit `982b5b5d73b77edbee516bce22af7dc03723c49d`, not PR #162. Reconcile the production/source inventory before merging or deploying this PR.
+- **174 tools total**: 49 PDF tools + 125 catalog utilities; 2,088 locale/tool matrix rows.
+- The five utilities missing from the 169-tool localization branch were confirmed in the production source commit `982b5b5d73b77edbee516bce22af7dc03723c49d` and restored to the branch catalog/workspace: Email Signature Generator, Time Zone Meeting Planner, Image DPI & PPI Calculator, Video Bitrate Calculator, and Markdown Table Generator.
+- Nepali coverage is now honestly recorded as **169/174**. The five restored tools remain English-only and are not published under `/ne` until translated and reviewed.
 
 ## Localization status
 
 ### Nepali
 
-- 169/169 tool interfaces are now present: 49 PDF + 120 catalog utilities. This is interface/route presence, not functional certification.
+- 169/174 tool interfaces are present in Nepali: 49 PDF + 120 catalog utilities. The five restored browser-only utilities remain English-only and are explicitly marked not implemented for Nepali.
 - No catalog interfaces remain unimplemented: `currency-converter`, `image-compressor`, `image-format-converter`, `color-picker-palette`, `password-generator`, `uuid-generator`, `regex-tester`, `jwt-decoder`, `color-contrast-checker`, `css-minifier`, `meta-title-checker`, `meta-description-checker`, `keyword-density-checker`, `robots-txt-generator`, `sitemap-generator`, `open-graph-preview`, `preeti-unicode-converter`, `nepali-unicode-typing`.
 - The five earlier additions (`xml-formatter-validator`, `notes-to-pdf`, `html-tag-stripper`, `savings-goal-calculator`, `nepal-share-calculator`) remain present. The latest batch adds 18 more interfaces through the shared Nepali remaining-tools workspace; all 23 are still subject to individual functional QA.
 - 44 Nepali tools have targeted unit-test coverage recorded by the matrix, including seven newly tested developer/SEO logic helpers. The other tools are not individually functionally verified.
-- Native-language review is not independently recorded as complete for all 169 interfaces.
+- Native-language review is not independently recorded as complete for the 169 Nepali interfaces.
 - Only six Nepali PDF tools are in the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing until their individual approval gates pass.
 
 ### Other locales
@@ -63,7 +62,7 @@ The earlier 151/169 revision exposed stale localized-route and Nepal share-calcu
 
 CI artifact `pdfora-browser-e2e-173-report` and its functional audit were downloaded and inspected. The artifact was generated against the PR merge-test commit `7bf9b4b39318001758f097d8eaad82e47fd3f983`.
 
-### All 169 tools
+### Baseline browser audit (169 tools; before restoring five production utilities)
 
 | Evidence status | Count |
 |---|---:|
@@ -146,12 +145,12 @@ Live `robots.txt` and `sitemap.xml` could not be fetched directly from this exec
 
 1. Run functional and browser QA for the 18 newly implemented Nepali utility interfaces; fix any failures without changing existing English behavior.
 2. Rebuild the source-generated coverage matrix after each batch; keep translation, functional test, native review, indexing and publication statuses separate.
-3. Complete route-level browser QA for all 169 tools where feasible, including all 49 PDF upload/process/download workflows and all 120 catalog utilities.
+3. Complete route-level browser QA for all 174 tools where feasible, including all 49 PDF upload/process/download workflows and all 125 catalog utilities; the five restored utilities have no current browser-test evidence.
 4. Complete mobile, keyboard, accessibility and downloaded-file integrity checks. Do not convert PARTIAL/NOT TESTED to PASS without new evidence.
 5. Translate all shared UI, tool interfaces, guides, blogs, legal/static pages and metadata for the ten other locales. Keep them unpublished until complete and reviewed.
 6. Complete Urdu/Arabic RTL and Chinese/Japanese CJK browser testing, including mixed-direction text and file names.
 7. Audit every blog/guide/static route for unique useful content, internal links, metadata and language correctness. Avoid thin or duplicate translated pages.
-8. Reconcile the 169-tool source inventory with the 174-tool production homepage and identify the five-item difference.
+8. Translate and review the five restored English-only utilities before claiming full Nepali coverage; preserve their English routes and keep their Nepali routes unpublished until then.
 9. Recheck live sitemap, robots, canonical, reciprocal hreflang, structured data, redirects and all included URLs. Keep the default-deny localized indexing policy.
 10. Use Search Console data to improve pages with demonstrated impressions; do not promise rankings or create keyword-only pages.
 11. Run the full requested standalone command set, including `npx tsc --noEmit`, plus backend, PDF worker, browser E2E, accessibility and mobile checks.
@@ -160,7 +159,7 @@ Live `robots.txt` and `sitemap.xml` could not be fetched directly from this exec
 ## Explicit limitations
 
 - No native reviewer confirmation is available in this QA evidence.
-- No complete 169-route browser suite was executed; only Merge PDF has a browser E2E PASS.
+- No complete 174-route browser suite was executed; the earlier 169-tool artifact had only Merge PDF as a browser E2E PASS. The five restored utilities were not included in that artifact.
 - No claim is made that all 49 PDF tools or all 120 utilities are fully functionally certified.
 - No claim is made that the ten additional locales are translated or publishable.
 - Search Console data is available, but its returned dimensions have different aggregation totals.

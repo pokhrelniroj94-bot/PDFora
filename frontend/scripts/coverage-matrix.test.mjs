@@ -27,6 +27,15 @@ test("tool-language matrix accounts for every configured locale and unique tool"
     assert.equal(row?.indexing, "excluded", `${slug} must remain noindex pending QA and review`);
     assert.equal(row?.humanReview, "native-review-not-assessed");
   }
+
+  const localizedToolPage = fs.readFileSync(path.resolve(new URL("../app/[locale]/tools/[slug]/page.tsx", import.meta.url).pathname), "utf8");
+  for (const slug of ["currency-converter","image-compressor","image-format-converter","password-generator","uuid-generator","regex-tester","jwt-decoder","color-picker-palette","color-contrast-checker","css-minifier","meta-title-checker","meta-description-checker","keyword-density-checker","robots-txt-generator","sitemap-generator","open-graph-preview","preeti-unicode-converter","nepali-unicode-typing"]) {
+    const metadataKeys = localizedToolPage.match(new RegExp(`"${slug}"\\s*:`, "g")) ?? [];
+    assert.ok(metadataKeys.length >= 2, `${slug} must have both a Nepali title and description`);
+    assert.ok(localizedToolPage.includes(`"${slug}"`), `${slug} must be included in localized routing`);
+  }
+  assert.ok(localizedToolPage.includes('NepaliRemainingToolsWorkspace slug={toolSlug}'));
+  assert.ok(localizedToolPage.includes('<NepaliTypingTool locale="ne" />'));
   assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 169);
   for (const slug of ["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);

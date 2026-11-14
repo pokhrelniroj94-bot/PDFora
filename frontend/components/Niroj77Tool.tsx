@@ -306,6 +306,7 @@ export default function NirojToolsTool({
             accept={accept}
             multiple={multiple}
             onChange={handleFiles}
+            aria-label={locale === "ne" ? "PDF फाइल छान्नुहोस्" : "Choose PDF files"}
             className="hidden"
           />
 

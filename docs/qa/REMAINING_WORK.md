@@ -18,9 +18,9 @@ The source-generated tool matrix in `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.jso
 
 ### Nepali
 
-- 169/169 tool interfaces are now present: 49 PDF + 102 catalog utilities. This corrects the stale pre-batch-4 count.
+- 169/169 tool interfaces are now present: 49 PDF + 120 catalog utilities. This is interface/route presence, not functional certification.
 - No catalog interfaces remain unimplemented: `currency-converter`, `image-compressor`, `image-format-converter`, `color-picker-palette`, `password-generator`, `uuid-generator`, `regex-tester`, `jwt-decoder`, `color-contrast-checker`, `css-minifier`, `meta-title-checker`, `meta-description-checker`, `keyword-density-checker`, `robots-txt-generator`, `sitemap-generator`, `open-graph-preview`, `preeti-unicode-converter`, `nepali-unicode-typing`.
-- Five additional tools now have dedicated Nepali workspaces: `xml-formatter-validator`, `notes-to-pdf`, `html-tag-stripper`, `savings-goal-calculator`, and `nepal-share-calculator`. The XML/savings/share workspace had missing state/error handling fixed in the follow-up commit; its CI verification is still pending.
+- The five earlier additions (`xml-formatter-validator`, `notes-to-pdf`, `html-tag-stripper`, `savings-goal-calculator`, `nepal-share-calculator`) remain present. The latest batch adds 18 more interfaces through the shared Nepali remaining-tools workspace; all 23 are still subject to individual functional QA.
 - 37 Nepali tools have targeted unit-test coverage recorded by the matrix. The other tools are not individually functionally verified.
 - Native-language review is not independently recorded as complete for all 169 interfaces.
 - Only six Nepali PDF tools are in the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing until their individual approval gates pass.
@@ -137,7 +137,7 @@ Live `robots.txt` and `sitemap.xml` could not be fetched directly from this exec
 ## Production / deployment status
 
 - PR #162 remains open and draft; it has not been merged by this work.
-- Latest PR head at the time of inspection: `d1f49ec1726163ccfaf81697f2a57dfa94b98280`.
+- Latest PR head at the time of the earlier production inspection: `d1f49ec1726163ccfaf81697f2a57dfa94b98280`. The current branch head is recorded at the top of this document.
 - Vercel's latest listed production deployment was READY but used commit `982b5b5d73b77edbee516bce22af7dc03723c49d` from branch `feat/browser-only-tools-2026-11-13`, not PR #162.
 - Production homepage opened successfully and rendered a 174-tool count.
 - No deployment of PR #162 is claimed or performed.

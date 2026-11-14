@@ -28,6 +28,12 @@ export function calculateShare(quantity: number, buyPrice: number, sellPrice: nu
 
 
 export function findRegexMatches(source: string, pattern: string, flags = "g") {
+  if (source.length > 10000) throw new Error("जाँच गर्ने पाठ बढीमा १०,००० अक्षरको हुनुपर्छ।");
+  if (pattern.length > 256) throw new Error("Regular expression बढीमा २५६ अक्षरको हुनुपर्छ।");
+  // Avoid common catastrophic-backtracking patterns in this synchronous browser tool.
+  if (/\([^)]*[+*][^)]*\)[+*{]/.test(pattern) || /\([^)]*\|[^)]*\)[+*{]/.test(pattern)) {
+    throw new Error("Nested वा repeated समूह भएको regex सुरक्षित रूपमा चलाउन सकिँदैन।");
+  }
   const safeFlags = [...new Set((flags.replace(/[^dgimsuvy]/g, "") + "g").split(""))].join("");
   const matches = [...source.matchAll(new RegExp(pattern, safeFlags))];
   return matches.map((match, index) => ({ index: index + 1, value: match[0], offset: match.index ?? -1 }));
@@ -66,11 +72,16 @@ export function calculateContrast(foreground: string, background: string) {
 }
 
 export function analyzeKeywordDensity(source: string, keyword: string) {
-  const words = source.toLocaleLowerCase().match(/[\p{L}\p{M}\p{N}_-]+/gu) ?? [];
-  const needle = keyword.trim().toLocaleLowerCase();
-  if (!needle) return { totalWords: words.length, count: 0, density: 0 };
-  const count = words.filter((word) => word === needle).length;
-  return { totalWords: words.length, count, density: words.length ? count / words.length * 100 : 0 };
+  const tokenize = (value: string) => value.toLocaleLowerCase().match(/[\p{L}\p{M}\p{N}_-]+/gu) ?? [];
+  const words = tokenize(source);
+  const needle = tokenize(keyword);
+  if (!needle.length) return { totalWords: words.length, count: 0, density: 0 };
+  let count = 0;
+  for (let index = 0; index <= words.length - needle.length; index += 1) {
+    if (needle.every((word, offset) => words[index + offset] === word)) count += 1;
+  }
+  const density = words.length ? (count * needle.length) / words.length * 100 : 0;
+  return { totalWords: words.length, count, density };
 }
 
 export function buildSitemap(urls: string[]) {
@@ -82,7 +93,7 @@ export function buildSitemap(urls: string[]) {
     catch { return true; }
   });
   if (invalid) throw new Error(`अमान्य URL: ${invalid}`);
-  const escapeXml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const escapeXml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${normalized.map((url) => `  <url><loc>${escapeXml(url)}</loc></url>`).join("\n")}\n</urlset>`;
 }
 

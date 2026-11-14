@@ -37,6 +37,15 @@ test("tool-language matrix accounts for every configured locale and unique tool"
     assert.equal(row?.humanReview, "native-review-not-assessed");
   }
 
+  const englishCatalog = fs.readFileSync(path.resolve(new URL("../components/toolCatalog.ts", import.meta.url).pathname), "utf8");
+  const englishWorkspace = fs.readFileSync(path.resolve(new URL("../components/AllTools.tsx", import.meta.url).pathname), "utf8");
+  const browserOnlyWorkspacePath = path.resolve(new URL("../components/BrowserOnlyGrowthTools.tsx", import.meta.url).pathname);
+  for (const slug of ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"]) {
+    assert.ok(englishCatalog.includes(`slug:"${slug}"`), `${slug} must remain in the English catalog`);
+  }
+  assert.ok(englishWorkspace.includes("BrowserOnlyGrowthTools"), "Restored browser-only utilities must be routed to their workspace");
+  assert.equal(fs.existsSync(browserOnlyWorkspacePath), true, "Restored browser-only workspace source must exist");
+
   const localizedToolPage = fs.readFileSync(path.resolve(new URL("../app/[locale]/tools/[slug]/page.tsx", import.meta.url).pathname), "utf8");
   for (const slug of ["currency-converter","image-compressor","image-format-converter","password-generator","uuid-generator","regex-tester","jwt-decoder","color-picker-palette","color-contrast-checker","css-minifier","meta-title-checker","meta-description-checker","keyword-density-checker","robots-txt-generator","sitemap-generator","open-graph-preview","preeti-unicode-converter","nepali-unicode-typing"]) {
     const metadataKeys = localizedToolPage.match(new RegExp(`"${slug}"\\s*:`, "g")) ?? [];

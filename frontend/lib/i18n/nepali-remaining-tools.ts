@@ -76,6 +76,7 @@ export function analyzeKeywordDensity(source: string, keyword: string) {
 export function buildSitemap(urls: string[]) {
   const normalized = urls.map((url) => url.trim()).filter(Boolean);
   if (!normalized.length) throw new Error("कम्तीमा एउटा URL प्रविष्ट गर्नुहोस्।");
+  if (normalized.length > 50000) throw new Error("Sitemap मा बढीमा ५०,००० URL मात्र राख्न सकिन्छ।");
   const invalid = normalized.find((url) => {
     try { return !["http:", "https:"].includes(new URL(url).protocol); }
     catch { return true; }
@@ -88,6 +89,7 @@ export function buildSitemap(urls: string[]) {
 export function buildRobotsTxt(sitemapUrl = "") {
   const sitemap = sitemapUrl.trim();
   if (sitemap) {
+    if (/[\\r\\n]/.test(sitemap)) throw new Error("Sitemap URL मा नयाँ लाइन राख्न मिल्दैन।");
     let parsed: URL;
     try { parsed = new URL(sitemap); }
     catch { throw new Error("Sitemap URL मान्य छैन।"); }

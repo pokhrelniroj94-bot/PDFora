@@ -160,7 +160,7 @@ Live `robots.txt` and `sitemap.xml` could not be fetched directly from this exec
 
 - No native reviewer confirmation is available in this QA evidence.
 - No complete 174-route browser suite was executed; the earlier 169-tool artifact had only Merge PDF as a browser E2E PASS. The five restored utilities were not included in that artifact.
-- No claim is made that all 49 PDF tools or all 120 utilities are fully functionally certified.
+- No claim is made that all 49 PDF tools or all 125 catalog utilities are fully functionally certified.
 - No claim is made that the ten additional locales are translated or publishable.
 - Search Console data is available, but its returned dimensions have different aggregation totals.
 - No PR #162 production deployment, merge, indexing outcome or traffic improvement is claimed.

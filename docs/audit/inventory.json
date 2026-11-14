@@ -24,7 +24,7 @@
   "nepaliDedicatedToolInterfaces": 169,
   "nepaliToolInterfacesTotal": 169,
   "nepaliLocalizedUtilityRoutes": 111,
-  "publishedNepaliPdfRoutes": 6,
+  "publishedNepaliPdfRoutes": 49,
   "publishedLocales": [
     "en",
     "ne"
@@ -43,7 +43,8 @@
   ],
   "methodology": {
     "sourceOfTruth": "frontend/lib/legacy-tool-slugs.ts plus frontend/components/toolCatalog.ts; exclude the pdf-tools collection entry.",
-    "verification": "Source inventory counts checked against the recursive repository tree and source slug literals; Nepali interface route count refreshed after implementation of the remaining 18 catalog utilities. This is not runtime or QA evidence.",
+    "verification": "Source inventory counts checked against the recursive repository tree and source slug literals; Nepali interface route count refreshed after implementation of the remaining 18 catalog utilities. This is not runtime or QA evidence. Nepali PDF route availability (49) is distinct from the six existing indexable PDF routes.",
     "limitations": "Source inventory does not prove every runtime workflow, translation quality, native-speaker review, accessibility, or browser compatibility. See docs/i18n and docs/qa for separate evidence."
-  }
+  },
+  "indexableNepaliPdfRoutes": 6
 }

@@ -34,7 +34,7 @@ function SignatureTool() {
   const [phone, setPhone] = useState("+1 555 010 2020");
   const [website, setWebsite] = useState("https://example.com");
   const [accent, setAccent] = useState("#0f766e");
-  const [message, setMessage] = useState("");
+
   const safeWebsite = /^https?:\/\//i.test(website.trim()) ? website.trim() : "";
   const html = useMemo(() => {
     const c = accent;
@@ -54,7 +54,7 @@ function SignatureTool() {
     <div className={panelClass}><p className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">Live preview</p><div className="overflow-x-auto rounded-xl bg-slate-50 p-5" dangerouslySetInnerHTML={{ __html: html }} /></div>
     <div className="flex flex-wrap gap-2"><button className={buttonClass} onClick={() => copyText(html, setMessage)}>Copy HTML</button><button className={secondaryClass} onClick={() => saveText("email-signature.html", "<!doctype html><html><body>" + html + "</body></html>", "text/html;charset=utf-8")}>Download HTML</button></div>
     {message && <p role="status" className="text-sm text-teal-800">{message}</p>}
-    <p className="text-xs leading-6 text-slate-500">Your details are used only in this page to create the signature. Nothing is uploaded. Paste the HTML into your email app's signature editor and send a test email; some email clients remove unsupported styles.</p>
+    <p className="text-xs leading-6 text-slate-500">Your details are used only in this page to create the signature. Nothing is uploaded. Paste the HTML into your email app&apos;s signature editor and send a test email; some email clients remove unsupported styles.</p>
   </div>;
 }
 
@@ -88,7 +88,7 @@ function TimezoneTool() {
   const [time, setTime] = useState("09:00");
   const [source, setSource] = useState("America/New_York");
   const [selected, setSelected] = useState(["America/New_York", "Europe/London", "Asia/Kathmandu", "Asia/Tokyo"]);
-  const [message, setMessage] = useState("");
+
   const instant = useMemo(() => zonedLocalToDate(date, time, source), [date, time, source]);
   const fmt = (zone: string) => instant ? new Intl.DateTimeFormat(undefined, { timeZone: zone, weekday: "short", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short" }).format(instant) : "This local time may not exist because of a daylight-saving clock change.";
   const toggle = (zone: string) => setSelected(current => current.includes(zone) ? current.filter(item => item !== zone) : current.length < 8 ? [...current, zone] : current);
@@ -111,7 +111,7 @@ function DpiTool() {
   const [printHeight, setPrintHeight] = useState("10");
   const [unit, setUnit] = useState("in");
   const [target, setTarget] = useState("300");
-  const [message, setMessage] = useState("");
+
   const w = Number(width), h = Number(height), pw = Number(printWidth), ph = Number(printHeight), dpi = Number(target);
   const factor = unit === "in" ? 1 : unit === "cm" ? 1 / 2.54 : 1 / 25.4;
   const valid = [w,h,pw,ph,dpi].every(Number.isFinite) && w > 0 && h > 0 && pw > 0 && ph > 0 && dpi > 0 && dpi <= 9600;

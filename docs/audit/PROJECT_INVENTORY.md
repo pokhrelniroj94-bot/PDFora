@@ -17,7 +17,8 @@ counts are in `docs/audit/inventory.json`.
 | Nepal blog articles | 19 | `frontend/lib/nepal-blog-posts.ts` |
 | Nepali dedicated tool interfaces | 169/169 | All 49 PDF routes and 120 catalog utility interfaces have Nepali route/workspace coverage; QA and native review are tracked separately |
 | Nepali utility route equivalents | 111 | `frontend/lib/i18n/nepali-tool-routes.ts` |
-| Published Nepali PDF routes | 6 | `frontend/lib/i18n/nepali-pdf-routes.ts` |
+| Localized Nepali PDF route equivalents | 49 | `frontend/lib/i18n/nepali-pdf-routes.ts` |
+| Indexable Nepali PDF routes | 6 | `frontend/lib/tools/localized-verification.ts` allowlist |
 | Published locales | 2 | English and Nepali |
 | Unpublished locales | 10 | Locale publication registry |
 

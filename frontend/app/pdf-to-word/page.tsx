@@ -1,11 +1,8 @@
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
-import { getRequiredToolGuide } from "../../lib/tool-guides";
 
-const guide = getRequiredToolGuide("pdf-to-word");
 export const metadata = getPdfToolMetadata("pdf-to-word");
 
 import Niroj77Tool from "../../components/Niroj77Tool";
-import ToolGuide from "../../components/ToolGuide";
 
 export default function Page() {
   return (
@@ -279,7 +276,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-      <ToolGuide guide={guide} />
     </main>
   );
 }

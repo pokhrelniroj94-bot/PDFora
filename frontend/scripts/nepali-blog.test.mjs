@@ -41,7 +41,7 @@ console.log(`Nepali blog coverage passed: ${expected.length} editorial articles 
 
 
 // Deeper editorial audit: uniqueness, readable Nepali body, internal destinations and source hygiene.
-const entries = [...nepali.matchAll(/slug:\\s*"([^"]+)"/g)].map((match) => ({ slug: match[1], offset: match.index }));
+const entries = [...nepali.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => ({ slug: match[1], offset: match.index }));
 const toolRouteSource = read("lib/i18n/nepali-tool-routes.ts");
 const pdfRouteSource = read("lib/i18n/nepali-pdf-routes.ts");
 const legacyPdfSource = read("lib/legacy-tool-slugs.ts");
@@ -50,43 +50,43 @@ const knownToolSlugs = new Set([
   ...[...toolRouteSource.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]),
   ...[...pdfRouteSource.matchAll(/^  "([a-z0-9-]+)":/gm)].map((match) => match[1]),
 ]);
-const normalized = (value) => value.toLocaleLowerCase("ne").replace(/[\\s\\p{P}\\p{S}]+/gu, " ").trim();
+const normalized = (value) => value.toLocaleLowerCase("ne").replace(/[\s\p{P}\p{S}]+/gu, " ").trim();
 const normalizedIntros = new Map();
 const normalizedTitles = new Map();
 const missingSources = [];
 const editorialAudit = entries.map((entry, index) => {
   const source = nepali.slice(entry.offset, entries[index + 1]?.offset ?? nepali.length);
-  const title = source.match(/title:\\s*"([^"]+)"/)?.[1] ?? "";
-  const description = source.match(/description:\\s*"([^"]+)"/)?.[1] ?? "";
-  const intro = source.match(/intro:\\s*"([^"]+)"/)?.[1] ?? "";
+  const title = source.match(/title:\s*"([^"]+)"/)?.[1] ?? "";
+  const description = source.match(/description:\s*"([^"]+)"/)?.[1] ?? "";
+  const intro = source.match(/intro:\s*"([^"]+)"/)?.[1] ?? "";
   const add = (map, value) => map.set(normalized(value), (map.get(normalized(value)) ?? 0) + 1);
   add(normalizedTitles, title);
   add(normalizedIntros, intro);
-  const toolLinks = [...source.matchAll(/href:\\s*"([^"]+)"/g)].map((match) => match[1]);
-  const sourceUrls = [...source.matchAll(/url:\\s*"([^"]+)"/g)].map((match) => match[1]);
+  const toolLinks = [...source.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1]);
+  const sourceUrls = [...source.matchAll(/url:\s*"([^"]+)"/g)].map((match) => match[1]);
   const invalidLinks = toolLinks.filter((href) => {
-    const utilityMatch = href.match(/^\\/tools\\/([a-z0-9-]+)$/);
-    const pdfMatch = href.match(/^\\/([a-z0-9-]+)$/);
+    const utilityMatch = href.match(/^\/tools\/([a-z0-9-]+)$/);
+    const pdfMatch = href.match(/^\/([a-z0-9-]+)$/);
     return utilityMatch ? !knownToolSlugs.has(utilityMatch[1]) : pdfMatch ? !knownPdfSlugs.has(pdfMatch[1]) : true;
   });
   const invalidSources = sourceUrls.filter((url) => {
     try { return new URL(url).protocol !== "https:"; } catch { return true; }
   });
-  const bodyText = source.replace(/https?:\\/\\/[^"\\s]+/g, "").replace(/\\\\n/g, " ");
-  const hasNepaliBody = /[\\u0900-\\u097F]/u.test(bodyText);
-  const hasSections = /sections:\\s*\\[/u.test(source) && /heading:\\s*"/u.test(source);
-  const hasFaqs = /faqs:\\s*\\[/u.test(source) && /question:\\s*"/u.test(source) && /answer:\\s*"/u.test(source);
+  const bodyText = source.replace(/https?:\/\/[^"\s]+/g, "").replace(/\\n/g, " ");
+  const hasNepaliBody = /[\u0900-\u097F]/u.test(bodyText);
+  const hasSections = /sections:\s*\[/u.test(source) && /heading:\s*"/u.test(source);
+  const hasFaqs = /faqs:\s*\[/u.test(source) && /question:\s*"/u.test(source) && /answer:\s*"/u.test(source);
   if (!sourceUrls.length) missingSources.push(entry.slug);
-  assert.ok(title.length >= 15 && title.length <= 70, `Blog title length out of editorial range: ${entry.slug}`);
-  assert.ok(description.length >= 40 && description.length <= 180, `Blog description length out of editorial range: ${entry.slug}`);
-  assert.ok(intro.length >= 80, `Blog introduction is too short: ${entry.slug}`);
-  assert.ok(hasNepaliBody, `Blog body must contain Nepali script: ${entry.slug}`);
-  assert.ok(hasSections && hasFaqs, `Blog needs useful sections and FAQs: ${entry.slug}`);
-  assert.equal(invalidLinks.length, 0, `Broken/non-tool internal links in ${entry.slug}: ${invalidLinks.join(", ")}`);
-  assert.equal(invalidSources.length, 0, `Invalid or non-HTTPS sources in ${entry.slug}: ${invalidSources.join(", ")}`);
+  assert.ok(title.length >= 15 && title.length <= 70, \`Blog title length out of editorial range: \${entry.slug}\`);
+  assert.ok(description.length >= 40 && description.length <= 180, \`Blog description length out of editorial range: \${entry.slug}\`);
+  assert.ok(intro.length >= 80, \`Blog introduction is too short: \${entry.slug}\`);
+  assert.ok(hasNepaliBody, \`Blog body must contain Nepali script: \${entry.slug}\`);
+  assert.ok(hasSections && hasFaqs, \`Blog needs useful sections and FAQs: \${entry.slug}\`);
+  assert.equal(invalidLinks.length, 0, \`Broken/non-tool internal links in \${entry.slug}: \${invalidLinks.join(", ")}\`);
+  assert.equal(invalidSources.length, 0, \`Invalid or non-HTTPS sources in \${entry.slug}: \${invalidSources.join(", ")}\`);
   return { slug: entry.slug, titleLength: title.length, descriptionLength: description.length, introLength: intro.length, internalToolLinks: toolLinks.length, sources: sourceUrls.length, missingSources: sourceUrls.length === 0 };
 });
 assert.equal([...normalizedTitles.values()].filter((count) => count > 1).length, 0, "Nepali blog titles must not duplicate after normalization");
 assert.equal([...normalizedIntros.values()].filter((count) => count > 1).length, 0, "Nepali blog introductions must not duplicate after normalization");
 assert.equal(editorialAudit.length, 35, "Expected 35 Nepali blog articles in the editorial inventory");
-console.log(`Nepali editorial QA: ${editorialAudit.length} articles checked; ${missingSources.length} have no cited source and require factual/editorial review before indexing.`);
+console.log(\`Nepali editorial QA: \${editorialAudit.length} articles checked; \${missingSources.length} have no cited source and require factual/editorial review before indexing.\`);

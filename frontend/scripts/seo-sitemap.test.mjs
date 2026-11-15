@@ -168,7 +168,7 @@ assert.match(sitemapSource, /tool\.slug !== "ocr-pdf"/, "Unavailable OCR must be
 assert.match(ocrPageSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unavailable OCR page must remain intentionally noindex");
 assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unreviewed generated guide pages must remain noindex until editorial review");
 assert.match(generatedBlogPageSource, /!isCatalogGeneratedGuide\(post\.slug\)\s*&&\s*post\.toolLinks\[0\]/, "Every reviewed editorial guide with a primary tool link must show an above-the-fold tool CTA");
-assert.ok(generatedBlogPageSource.includes("Ready to try this workflow? Open the matching tool."), "Non-calculator editorial guides must explain the next practical tool action");
+assert.ok(blogToolCtaSource.includes("Ready to try this workflow? Open the matching tool."), "Non-calculator editorial guides must explain the next practical tool action");
 assert.match(generatedBlogPageSource, /<BlogToolCTA/, "Reviewed editorial guides must use the shared tracked CTA component");
 assert.match(analyticsClientSource, /preferences\?\.analytics !== true/, "All analytics events must respect the saved analytics consent choice");
 assert.ok(analyticsClientSource.includes("sendGAEvent"), "Consent-approved events must be sent to GA4");

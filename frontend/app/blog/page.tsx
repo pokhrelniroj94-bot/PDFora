@@ -33,7 +33,7 @@ export default function BlogIndexPage() {
         <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">Practical Nepal how-to guides for NRB rates, income tax, electricity bills, public holidays, Nepali Unicode typing, Bikram Sambat dates, land units and everyday document tasks.</p>
         <AdsterraSkyscraper />
         <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug)).map((post, index) => (
+          {blogPosts.filter((post) => !isGeneratedGuide(post.slug)).map((post, index) => (
             <Fragment key={post.slug}>
               <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <p className="text-xs font-bold uppercase tracking-wider text-teal-700">{post.readTime} · Practical guide</p>

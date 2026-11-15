@@ -67,6 +67,12 @@ export default function NirojToolsTool({
     switch (endpoint) {
       case "/api/merge": return { type: "merge" } as const;
       case "/api/rotate": { const angle = Number(value); return [90, 180, 270].includes(angle) ? { type: "rotate", angle } as const : null; }
+      case "/api/rotate-selected-pages": {
+        const angle = Number.parseInt(extraValues.degrees || "90", 10);
+        const pages = extraValues.pages || "all";
+        return [90, 180, 270].includes(angle) && (pages.trim().toLowerCase() === "all" || pages.trim().length > 0)
+          ? { type: "rotateSelected", angle, pages } as const : null;
+      }
       case "/api/extract-pages": return { type: "extract", pages: value } as const;
       case "/api/delete-pages": return { type: "deletePages", pages: value } as const;
       case "/api/reorder": return { type: "reorder", order: value } as const;

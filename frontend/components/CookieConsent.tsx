@@ -43,6 +43,7 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
   }, []);
 
   const save = (nextAnalytics: boolean, nextAdvertising: boolean) => {
+    const revokingAdvertising = preferences?.advertising === true && !nextAdvertising;
     const next: Preferences = { necessary: true, analytics: nextAnalytics, advertising: nextAdvertising, savedAt: new Date().toISOString() };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     setPreferences(next);
@@ -50,6 +51,7 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
     setAdvertising(nextAdvertising);
     setOpen(false);
     window.dispatchEvent(new CustomEvent("pdfora:consent-updated", { detail: next }));
+    if (revokingAdvertising) window.location.reload();
   };
 
   if (!ready) return null;

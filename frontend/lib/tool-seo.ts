@@ -68,7 +68,7 @@ export function getToolMetadata(slug: string): Metadata {
   const detail = tool?.detail ?? `Use PDFora to ${intent}. Follow the on-page instructions and download your processed document.`;
   // Keep titles concise and descriptions useful in search snippets.
   const title = `${name} Online Free`;
-  const description = `${detail} Use PDFora free in your browser; no installation required.`;
+  const description = `${detail} Open PDFora online in your web browser; no installation required. Processing may happen locally or through the processing service, depending on the tool and supported options.`;
   const url = `${baseUrl}/${slug}`;
   return {
     title,

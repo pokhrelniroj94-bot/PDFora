@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import ToolWorkspace from "../../../components/AllTools";
 import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
+import ToolViewAnalytics from "../../../components/ToolViewAnalytics";
 import { toolCatalog } from "../../../components/toolCatalog";
 import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
@@ -465,6 +466,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     ],
   };
   return <>
+    <ToolViewAnalytics toolSlug={slug} toolCategory={tool.category} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
     <ToolWorkspace slug={slug} />

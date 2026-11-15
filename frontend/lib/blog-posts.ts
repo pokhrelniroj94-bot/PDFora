@@ -497,7 +497,7 @@ function updateBlogProcessingGuidance(post: BlogPost): BlogPost {
   const primaryHref = post.toolLinks[0]?.href ?? "";
   const isPdfTool = primaryHref.startsWith("/") && !primaryHref.startsWith("/tools/") &&
     !primaryHref.startsWith("/ne/tools/") && primaryHref !== "/";
-  const slug = primaryHref.replace(/^\\//, "").replace(/^ne\\//, "");
+  const slug = (primaryHref.startsWith("/ne/") ? primaryHref.slice(4) : primaryHref.startsWith("/") ? primaryHref.slice(1) : primaryHref);
   const section: BlogSection = isPdfTool
     ? browserProcessedPdfSlugs.has(slug)
       ? {

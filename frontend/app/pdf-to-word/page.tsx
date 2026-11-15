@@ -28,8 +28,9 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Convert PDF files to editable Word documents online with PDFora.
-              Upload your PDF, process it in your browser and download the
-              converted Word document quickly and easily.
+              Upload your PDF for processing by the PDFora service, then
+              download the converted Word document. Review the tool's privacy
+              notice before selecting a file.
             </p>
           </div>
 

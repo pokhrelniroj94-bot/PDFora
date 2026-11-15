@@ -91,6 +91,9 @@ export async function processPdf(
 ): Promise<{ blob: Blob; blobs?: {blob: Blob; filename: string}[]; warnings?: string[] }> {
   if (!files.length) throw new Error("No files provided");
 
+  // Keep browser memory use bounded on mobile devices.
+  const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+  if (totalBytes > 50 * 1024 * 1024) throw new Error("Browser processing is limited to 50 MB combined input.");
   // Load all PDFs first
   const pdfDocs = await Promise.all(
     files.map(async (f) => {
@@ -117,6 +120,9 @@ export async function processPdf(
       }
     })
   );
+
+  const totalPages = pdfDocs.reduce((sum, doc) => sum + doc.getPageCount(), 0);
+  if (totalPages > 500) throw new Error("Browser processing is limited to 500 pages per job on this device.");
 
   // Helper to create a new empty document
   const outputDoc = await PDFDocument.create();

@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
-import { getRequiredToolGuide } from "../../lib/tool-guides";
 import Niroj77Tool from "../../components/Niroj77Tool";
-import ToolGuide from "../../components/ToolGuide";
 
-const guide = getRequiredToolGuide("rotate-pdf");
 export const metadata = getPdfToolMetadata("rotate-pdf");
 
 export default function Page() {
@@ -26,7 +23,6 @@ export default function Page() {
           queryDefault="90"
         />
       </section>
-      <ToolGuide guide={guide} />
       <section className="mx-auto max-w-4xl px-4 pb-14 sm:px-6">
         <div className="space-y-8 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <section>

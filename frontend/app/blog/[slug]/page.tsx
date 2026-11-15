@@ -5,7 +5,7 @@ import BlogPopunder from "../../components/BlogPopunder";
 import BlogToolCTA from "../../../components/BlogToolCTA";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
+import { blogPosts, getBlogPost, isGeneratedGuide } from "../../../lib/blog-posts";
 import { hreflangMap } from "../../../lib/i18n/routing";
 
 const baseUrl = "https://pd-fora.vercel.app";

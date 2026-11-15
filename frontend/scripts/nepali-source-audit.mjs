@@ -72,7 +72,7 @@ const missingTitles = [...routeSet].filter((s) => !titles.has(s) && !pdf.include
 const report = {
   generatedAt: new Date().toISOString(),
   methodology: "Derived from current catalog, canonical PDF inventory, Nepali route allowlists, page dispatch source, localized verification allowlist and registered Nepali blog records. Static source evidence is not runtime/browser or human review evidence.",
-  inventory: { uniqueTools: unique.length, pdfTools: pdf.length, catalogTools: catalog.length, nepaliRoutes: routeSet.size, nepaliPdfRoutes: pdfRoutes.length, nepaliCatalogRoutes: utility.length, targetedUnitTestSlugCount: targetedSlugs.size, nepaliBlogArticles: blogSlugs.length },
+  inventory: { uniqueTools: unique.length, pdfTools: pdf.length, catalogTools: catalog.length, nepaliToolRoutes: routeSet.size, nepaliPdfRoutes: pdfRoutes.length, nepaliCatalogRoutes: utility.length, nepaliNonToolRoutes: nonToolStaticRoutes.length + blogSlugs.length, nepaliRouteEquivalents, targetedUnitTestSlugCount: targetedSlugs.size, nepaliBlogArticles: blogSlugs.length },
   checks: {
     duplicateCatalogSlugs: duplicate(all),
     missingNepaliRoutes: missingRoutes,
@@ -107,7 +107,9 @@ Generated from current source by \`npm run i18n:nepali-audit\`.
 ## Inventory
 
 - Canonical unique tools: **${unique.length}** (${pdf.length} PDF + ${catalog.length} catalog).
-- Nepali route allowlist: **${routeSet.size}** (${pdfRoutes.length} PDF + ${utility.length} catalog).
+- Nepali tool routes: **${routeSet.size}** (${pdfRoutes.length} PDF + ${utility.length} catalog).
+- Additional localized non-tool routes: **${nonToolStaticRoutes.length + blogSlugs.length}** (${nonToolStaticRoutes.length} fixed pages + ${blogSlugs.length} blog articles).
+- Total Nepali route equivalents: **${nepaliRouteEquivalents}**. This is a route inventory, not an indexability count.
 - Registered Nepali blog articles: **${blogSlugs.length}**.
 - Tool slugs referenced by current targeted Nepali unit-test files: **${targetedSlugs.size}**.
 
@@ -130,5 +132,5 @@ Route registration is not proof that every label, hint, validation message, erro
 See \`NEPALI_SOURCE_AUDIT.json\` for per-tool evidence and explicit gaps.
 `;
 fs.writeFileSync(path.join(out, "NEPALI_SOURCE_AUDIT.md"), md);
-console.log(`Nepali source audit generated: ${routeSet.size} localized route registrations / ${unique.length} canonical tools; ${targetedSlugs.size} tool slugs referenced by targeted unit-test files.`);
+console.log(`Nepali source audit generated: ${nepaliRouteEquivalents} total Nepali route equivalents (${routeSet.size} tool routes) / ${unique.length} canonical tools; ${targetedSlugs.size} tool slugs referenced by targeted unit-test files.`);
 if (missingRoutes.length || duplicate(all).length || duplicate(blogSlugs).length || duplicate(blogTitles).length || duplicate(blogDescriptions).length) process.exitCode = 1;

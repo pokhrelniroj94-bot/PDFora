@@ -114,8 +114,9 @@ for (const slug of reportedNepaliLongTitleSlugs) {
   assert.match(nepaliBlogPageSource, new RegExp('"' + slug + '"\\s*:'), "Search Console title recovery missing for " + slug);
 }
 assert.match(nepaliBlogPageSource, /title: searchTitle/, "Nepali blog metadata must use concise search titles without changing visible article headlines");
-assert.match(nepaliBlogPageSource, /post\.toolLinks\.length > 0/, "Every Nepali editorial guide with a primary tool must show an above-the-fold CTA");
-assert.ok(nepaliBlogPageSource.includes("यो काम आफ्नै उदाहरणसँग गर्न चाहनुहुन्छ?"), "Nepali blog CTA copy must be localized");
+assert.match(nepaliBlogPageSource, /post\.toolLinks\.length > 0\s*&&\s*\(/, "Every Nepali editorial guide with a primary tool must show an above-the-fold CTA");
+assert.match(nepaliBlogPageSource, /<BlogToolCTA/, "Nepali blog CTAs must use the shared consent-aware analytics component");
+assert.ok(nepaliBlogPageSource.includes('locale="ne"'), "Nepali blog CTAs must render localized copy and analytics language");
 assert.ok(nepaliBlogPageSource.includes("function toNepaliToolHref"), "Nepali blog links must normalize both catalog and legacy PDF routes");
 assert.ok(nepaliBlogPageSource.includes("href={toNepaliToolHref(tool.href)}"), "Related-tool links must use localized route normalization");
 assert.ok(blogToolCtaSource.includes('locale === "ne"'), "Shared blog CTA must support Nepali copy");

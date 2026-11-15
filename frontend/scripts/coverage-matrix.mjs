@@ -108,9 +108,9 @@ ${summary}
 
 ## Current blockers
 
-- Nepali has ${localizedNepaliTools.size} route-specific tool interfaces out of ${tools.length} catalogued tools. Independent native-language review and individual functional verification remain outstanding for the five newly localized browser-only utilities.
+- Nepali has ${localizedNepaliTools.size} route registrations out of ${tools.length} catalogued tools. Route registration is not proof that every interface string, validation, error, output or download is localized or functionally verified. Native-speaker review is not certified by this matrix.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
-- Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers.
+- The targeted-test slug registry is a source-level indicator only; it must not be interpreted as full browser QA. The separate Nepali source audit reports current test references and per-tool route evidence.
 - OCR is not counted among the 174 available tools because it remains excluded from the canonical PDF inventory.
 `;
 fs.writeFileSync(path.join(outputDir, "TOOL_LANGUAGE_COVERAGE_MATRIX.md"), markdown);

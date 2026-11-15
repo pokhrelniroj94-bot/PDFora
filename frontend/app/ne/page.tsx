@@ -6,7 +6,8 @@ const site = "https://pd-fora.vercel.app";
 export const metadata: Metadata = {
   title: "निःशुल्क PDF उपकरण र नेपालका उपयोगी अनलाइन टुलहरू | PDFora",
   description: "PDF जोड्ने, छुट्याउने, कम्प्रेस गर्ने र रूपान्तरण गर्ने नेपाली अनलाइन टुलहरू। नेपाली मिति, मुद्रा विनिमय, कर, NEPSE र दैनिक उपयोगिताहरू एउटै ठाउँमा।",
-  alternates: { canonical: `${site}/ne`, languages: { en: site, ne: `${site}/ne`, "x-default": site } },
+  alternates: { canonical: `${site}/ne` },
+  robots: { index: false, follow: true },
   openGraph: { type: "website", title: "PDFora नेपाली — निःशुल्क PDF र दैनिक उपयोगी टुलहरू", description: "कागजात व्यवस्थापन, नेपालका गणना उपकरण र दैनिक डिजिटल कामका उपयोगी टुलहरू।", url: `${site}/ne`, siteName: "PDFora", locale: "ne_NP", images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "PDFora नेपाली अनलाइन टुलहरू" }] },
   twitter: { card: "summary_large_image", title: "PDFora नेपाली — निःशुल्क अनलाइन टुलहरू", description: "PDF व्यवस्थापन र नेपालका उपयोगी अनलाइन उपकरणहरू।", images: ["/opengraph-image"] },
 };

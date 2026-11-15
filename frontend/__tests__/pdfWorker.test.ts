@@ -140,8 +140,8 @@ describe('PDF Worker Core', () => {
     const file = await createSamplePdf('report.pdf');
     const count = await processPdf({ type: 'pageCount' }, [file]);
     const info = await processPdf({ type: 'info' }, [file]);
-    expect(await count.blob.text()).toContain('Pages: 2');
-    expect(await info.blob.text()).toContain('Page dimensions:');
+    expect(new TextDecoder().decode(await readBlob(count.blob))).toContain('Pages: 2');
+    expect(new TextDecoder().decode(await readBlob(info.blob))).toContain('Page dimensions:');
   });
 
   test('edit and remove PDF metadata locally', async () => {

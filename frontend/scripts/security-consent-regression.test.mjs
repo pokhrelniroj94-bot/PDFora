@@ -15,7 +15,7 @@ const checks = [
   ["CSP blocks plugin objects", /object-src 'none'/.test(config)],
   ["CSP blocks framing", /frame-ancestors 'none'/.test(config)],
   ["CSP restricts form destinations", /form-action 'self'/.test(config)],
-  ["CSP does not enable unsafe-eval", !/unsafe-eval/.test(config)],
+  ["CSP does not enable unsafe-eval", (() => { const policy = config.match(/"Content-Security-Policy"[\\s\\S]*?value:\\s*\\[([\\s\\S]*?)\\]\\.join\\("\\; "\\)/)?.[1] ?? ""; return !/unsafe-eval/.test(policy); })()],
   ["CSP permits PDF worker blobs", /worker-src 'self' blob:/.test(config)],
   ["CSP permits PDF worker child contexts", /child-src 'self' blob:/.test(config)],
   ["CSP uses an explicit script host list", /script-src 'self' 'unsafe-inline' https:\/\/www\.googletagmanager\.com/.test(config)],

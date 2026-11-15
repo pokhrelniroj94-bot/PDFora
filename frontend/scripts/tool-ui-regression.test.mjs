@@ -65,6 +65,7 @@ assert.doesNotMatch(pdfToJpgPage, /browser-based workflow|directly from your bro
 const compressPage = read("../app/compress-pdf/page.tsx");
 assert.ok(compressPage.includes("PDFora processing service") && compressPage.includes("not compressed") && compressPage.includes("locally in your browser"), "Compress PDF must disclose server processing");
 assert.ok(niroj.includes('endpoint === "/api/images-to-pdf" ?') && niroj.includes("Combined image upload limit: 50 MB total"), "Images to PDF must display its combined upload limit");
+assert.ok(niroj.includes('imageUpload ? "Choose image files" : "Choose PDF files"'), "Image upload input must have an image-specific accessible label");
 assert.ok(niroj.includes('(endpoint === "/api/images-to-pdf" || browserOnly)') && niroj.includes("The combined size of all selected images must not exceed 50 MB."), "Images to PDF must enforce the 50 MB combined limit for both browser and service paths");
 
 const imagesToPdfPage = read("../app/images-to-pdf/page.tsx");

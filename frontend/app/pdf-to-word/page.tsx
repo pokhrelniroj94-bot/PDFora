@@ -35,6 +35,7 @@ export default function Page() {
           <div className="mt-10">
             <Niroj77Tool
               endpoint="/api/pdf-to-word"
+              showSeoContent={false}
               title="PDF to Word"
               description="Convert your PDF into an editable Word document."
               multiple={false}

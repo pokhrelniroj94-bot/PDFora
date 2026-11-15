@@ -24,8 +24,9 @@ export default function Page() {
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Add a custom text watermark to your PDF document online.
               PDFora supports browser processing for compatible ASCII watermark text.
-              Other text, including Nepali characters, may use the processing
-              service. Check the processing notice for your selected text.
+              Other text, including Nepali characters, is sent to the processing
+              service and may not render correctly with every font. Test with a
+              small sample and check the processing notice before using it.
             </p>
           </div>
 

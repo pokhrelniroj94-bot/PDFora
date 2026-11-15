@@ -83,7 +83,7 @@ function ToolBody({slug}:{slug:string}) {
  const [busy,setBusy]=useState(false);
  const v=(k:string,d="")=>values[k]??d;
  const set=(k:string,x:string)=>setValues(p=>({...p,[k]:x}));
- const num=(k:string,d=0)=>{const raw=v(k,String(d));if(!raw.trim())return Number.NaN;const parsed=Number(raw);return Number.isFinite(parsed)?parsed:Number.NaN;};
+ const num=(k:string,d?:number)=>{const raw=v(k,d===undefined?"":String(d));if(!raw.trim())return Number.NaN;const parsed=Number(raw);return Number.isFinite(parsed)?parsed:Number.NaN;};
  const clearCalculatorInputs=()=>{setValues({});setOutput("");};
  const field=(key:string,title:string,example="",_legacyDefault="")=><Field title={title}><input className={box} type="number" inputMode="decimal" step="any" value={v(key)} placeholder={example||_legacyDefault} onChange={e=>set(key,e.target.value)}/></Field>;
  const action=(title:string,fn:()=>void)=><button onClick={fn} className="mt-4 min-h-11 rounded-xl bg-teal-700 px-5 py-3 text-sm font-bold text-white hover:bg-teal-800">{title}</button>;

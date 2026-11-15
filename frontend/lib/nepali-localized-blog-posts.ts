@@ -531,7 +531,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { question: "मर्मत गरिएको PDF मूल फाइलजस्तै हुन्छ?", answer: "सधैँ होइन। पृष्ठ, text, image, table, bookmark र signature जाँच्नुहोस्।" },
       { question: "मूल फाइल नै upload गर्ने?", answer: "पहिले प्रतिलिपि बनाउनुहोस्। मूल फाइल सुरक्षित राखेर प्रतिलिपिमा मात्र प्रक्रिया गर्नुहोस्।" }
     ],
-    sources: [{"label":"Adobe Acrobat Help: Repair a damaged PDF","url":"https://helpx.adobe.com/acrobat/kb/quick-fix-corrupt-pdf.html"}],
+    sources: [{"label":"Adobe Acrobat Help: Repair a damaged PDF","url":"https://helpx.adobe.com/acrobat/kb/cant-open-pdf.html"}],
     toolLinks: [{ label: "PDF मर्मत", href: "/repair-pdf" }, { label: "PDF जानकारी", href: "/pdf-information" }, { label: "PDF कम्प्रेस", href: "/compress-pdf" }]
   },
   {

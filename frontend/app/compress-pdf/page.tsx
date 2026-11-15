@@ -25,8 +25,9 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Compress PDF files online and reduce their file size for easier
-              sharing, uploading and storage. PDFora provides a simple way to
-              optimize PDF documents from your browser.
+              sharing, uploading and storage. The current PDFora compression workflow
+              uses the PDFora processing service; the PDF is not compressed
+              locally in your browser. Review the privacy notice before upload.
             </p>
           </div>
 

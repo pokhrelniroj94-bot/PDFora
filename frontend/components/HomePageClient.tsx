@@ -651,6 +651,22 @@ export default function HomePageClient() {
                 <FooterLink href="/images-to-pdf">
                   Images to PDF
                 </FooterLink>
+
+                <FooterLink href="/tools/tip-calculator">
+                  Tip Calculator
+                </FooterLink>
+
+                <FooterLink href="/tools/savings-goal-calculator">
+                  Savings Goal Calculator
+                </FooterLink>
+
+                <FooterLink href="/tools/reading-time-calculator">
+                  Reading Time Calculator
+                </FooterLink>
+
+                <FooterLink href="/tools/percentage-change-calculator">
+                  Percentage Change Calculator
+                </FooterLink>
               </div>
             </div>
 

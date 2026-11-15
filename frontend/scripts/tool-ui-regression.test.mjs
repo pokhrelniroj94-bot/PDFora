@@ -48,6 +48,8 @@ assert.ok(sharedPdfGuide.includes("Depending on the tool and selected options") 
 assert.ok(sharedPdfGuide.includes("Read the processing notice shown above") && sharedPdfGuide.includes("Avoid submitting the same request repeatedly"), "Shared PDF guidance must keep accurate processing and troubleshooting advice");
 assert.doesNotMatch(sharedPdfGuide, /\{labels\[(?:5|6|7|8|9|10)\]\}/, "Shared PDF guide must not render generic boilerplate sections on every tool page");
 assert.ok(sharedPdfGuide.includes("app that supports its output format") && sharedPdfGuide.includes("spreadsheets or text exports"), "Shared PDF guide must check the actual output format, not assume every tool downloads a PDF");
+assert.equal((sharedPdfGuide.match(/\{ q:/g) || []).length, 4, "Shared PDF FAQs must stay concise and tool-specific");
+assert.doesNotMatch(sharedPdfGuide, /Can I use this PDF tool on a phone|Should I keep a copy of the original PDF/, "Shared PDF FAQs must not repeat generic questions across every tool");
 assert.ok(sharedPdfGuide.includes("!isGeneratedGuide(guide.blogSlug)") && sharedPdfGuide.includes("/ne/blog/${guide.blogSlug}"), "Tool pages must link only to curated blog guides and use the Nepali guide URL when localized");
 
 for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "images-to-pdf", "delete-pages", "extract-pages", "add-background", "bates-numbering", "pdf-to-csv", "pdf-to-bmp", "pdf-to-tiff", "pdf-to-json", "page-counter", "extract-fonts", "add-bookmarks", "pdf-to-markdown", "remove-pdf-links", "remove-attachments", "remove-annotations", "split-by-bookmarks", "remove-pdf-metadata", "pdf-information"]) {

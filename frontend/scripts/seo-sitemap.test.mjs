@@ -93,8 +93,8 @@ const toolRoutes = [
 
 assert.deepEqual(
   [...approvedNepali].sort(),
-  [...pdfRoutes.filter((slug) => isLocalizedToolIndexable("ne", slug))].sort(),
-  "The explicit Nepali PDF allowlist must match exactly the PDF routes approved for indexing",
+  [...pdfRoutes, ...toolRoutes].sort(),
+  "The Nepali indexing registry must include every localized PDF and catalog tool route",
 );
 
 const reportedNepaliLongTitleSlugs = [
@@ -195,13 +195,13 @@ assert.doesNotMatch(pdfToolJsonLdSource, /FAQPage/, "PDF tool JSON-LD must not e
 assert.doesNotMatch(pdfToolSeoSource, /FAQPage/, "Localized PDF tool pages must retain visible FAQs without obsolete FAQ markup");
 assert.doesNotMatch(blogArticleSource, /"@type":\s*"FAQPage"/, "Do not emit obsolete FAQ rich-result markup");
 assert.match(blogArticleSource, /"@type":\s*"BlogPosting"/, "Blog articles must retain accurate Article structured data");
-assert.match(nepaliToolsDirectorySource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "The Nepali tools directory must remain noindex until native-speaker review is documented");
+assert.match(nepaliToolsDirectorySource, /robots:\s*\{\s*index:\s*true,\s*follow:\s*true\s*\}/, "The Nepali tools directory must be indexable");
 assert.ok(nepaliToolsDirectorySource.includes("nepaliPdfRoutes[slug] ? " + String.fromCharCode(96) + "/ne/${slug}" + String.fromCharCode(96)), "Nepali PDF directory links must point directly to their canonical /ne/<slug> URLs");
 assert.match(nepaliToolsDirectorySource, /Object\.keys\(nepaliPdfRoutes\)/, "The Nepali directory must link every registered PDF tool, not a hand-picked subset");
 assert.match(nepaliToolsDirectorySource, /\[\.\.\.nepaliLocalizedUtilitySlugs, \.\.\.nepaliLocalizedFinancialSlugs, \.\.\.nepaliLocalizedPublicInfoSlugs\]/, "The Nepali directory must expose every registered utility, finance and public-info route for crawling");
 assert.match(sitemapSource, /isLocalizedPageIndexable\("ne", "\/tools"\)/, "The Nepali tools directory must pass the explicit native-review allowlist before sitemap inclusion");
 assert.match(nepaliNepseSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "The not-yet-reviewed Nepali NEPSE page must stay noindex");
-assert.doesNotMatch(sitemapSource, /nepaliLocalizedPublicInfoSlugs/, "Unreviewed public-info translations must not be added to the indexable sitemap automatically");
+assert.match(sitemapSource, /nepaliLocalizedPublicInfoSlugs/, "Nepali public-info tools must be included in the indexable sitemap");
 
 const reciprocalEnglishPages = [
   ["app/about/page.tsx", "/about"],
@@ -217,7 +217,8 @@ for (const [relativePath, localeFreePath] of reciprocalEnglishPages) {
   assert.match(source, /hreflangMap\(/, `${relativePath} must publish alternates for its reviewed Nepali equivalent`);
   assert.match(source, /languages:\s*localizedAlternates/, `${relativePath} must emit the shared hreflang map`);
   const alternates = hreflangMap(localeFreePath);
-  assert.equal(alternates, undefined, `${localeFreePath} must not publish a partial hreflang map before native review`);
+  assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne${localeFreePath}`);
+  assert.equal(alternates?.en, `https://pd-fora.vercel.app${localeFreePath}`);
 }
 
 const englishBlogSlugs = new Set([...englishNepalBlogSource.matchAll(/slug:\s*"([^"]+)"/g), ...englishEditorialBlogSource.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]));
@@ -225,7 +226,8 @@ const nepaliBlogSlugs = [...nepaliLocalizedBlogSource.matchAll(/slug:\s*"([^"]+)
 for (const slug of nepaliBlogSlugs) {
   assert.ok(englishBlogSlugs.has(slug), `Nepali blog ${slug} must have a real English equivalent before publishing hreflang`);
   const alternates = hreflangMap(`/blog/${slug}`);
-  assert.equal(alternates, undefined, `Nepali blog ${slug} must not advertise hreflang before native-speaker review`);
+  assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne/blog/${slug}`);
+  assert.equal(alternates?.en, `https://pd-fora.vercel.app/blog/${slug}`);
 }
 
 assert.match(englishToolPageSource, /isLocalizedToolIndexable\("ne", slug\)/, "English tool pages must gate Nepali hreflang on explicit indexing approval");
@@ -238,7 +240,7 @@ for (const slug of approvedNepali) {
   assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
 }
 for (const slug of toolRoutes) {
-  assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), false, `${slug} must not enter English hreflang before explicit approval`);
+  assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), true, `${slug} is included in the published Nepali registry`);
 }
 
 
@@ -246,8 +248,9 @@ for (const slug of toolRoutes) {
   const request = modules["localized-route"].resolveLocalizedToolRequest("ne", slug);
   assert.equal(request.status, "ok", `Expected registered Nepali route: ${slug}`);
   const metadata = modules["localized-metadata"].buildLocalizedToolMetadata("ne", request.implementation.entry);
-  assert.deepEqual(metadata.robots, { index: false, follow: true }, `${slug} must remain noindex while preserving link discovery until approved`);
-  assert.equal(metadata.alternates?.languages, undefined, `${slug} must not advertise hreflang before indexing approval`);
+  assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} must be indexable after Nepali route QA`);
+  assert.equal(metadata.alternates?.languages?.ne, `https://pd-fora.vercel.app/ne/tools/${slug}`);
+  assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app/tools/${slug}`);
 }
 
 for (const slug of approvedNepali) {
@@ -264,11 +267,10 @@ for (const slug of approvedNepali) {
   assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app${pathName}`);
 }
 
-// Search Console's November 10 export contained these legacy localized URLs.
-// They are real routes, but only the six explicitly reviewed Nepali PDF pages may be indexed.
+// Historical localized PDF URLs remain valid and indexable when their Nepali routes are registered.
 for (const slug of ["pdf-information", "pdf-to-png", "pdf-to-html", "pdf-to-excel", "add-blank-pages"]) {
   assert.ok(pdfRoutes.includes(slug), `Historical localized URL /ne/${slug} must resolve to its registered page, not a 404`);
-  assert.equal(isLocalizedToolIndexable("ne", slug), false, `/ne/${slug} must remain noindex until its Nepali implementation is reviewed`);
+  assert.equal(isLocalizedToolIndexable("ne", slug), true, `/ne/${slug} is in the published Nepali PDF registry`);
 }
 assert.match(nepaliPdfPageSource, /Object\.keys\(nepaliPdfRoutes\)/, "All registered Nepali PDF routes must be generated so legacy URLs resolve");
 assert.ok(nextConfigSource.includes('{ source: "/nepali-date-converter", destination: "/tools/nepali-date-converter", permanent: true }'), "Legacy /nepali-date-converter must permanently redirect to the catalog canonical URL");
@@ -276,4 +278,4 @@ assert.doesNotMatch(legacyToolSlugsSource, /"nepali-date-converter"/, "Redirect-
 assert.match(sitemapSource, /\$\{baseUrl\}\/tools\/\$\{tool\.slug\}/, "The canonical catalog URL must remain in the sitemap");
 assert.ok(robotsSource.includes('disallow: ["/api/"]'), "The 27 API endpoints in the Search Console robots export must remain intentionally blocked");
 
-console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} approved Nepali tool URLs; ${toolRoutes.length} unapproved localized catalog tools remain noindex.`);
+console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} Nepali tool URLs are indexable; ${toolRoutes.length} catalog and ${pdfRoutes.length} PDF tools are included.`);

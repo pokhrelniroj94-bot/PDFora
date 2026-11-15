@@ -86,6 +86,8 @@ export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean
   if (locale !== "ne" || !isPublished(locale)) return false;
   const normalized = normalizePath(path);
   if (nepaliIndexableNonToolPaths.has(normalized) || isLocalizedPageIndexable(locale, normalized)) return true;
+  const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];
+  if (catalogToolSlug && isLocalizedToolIndexable(locale, catalogToolSlug)) return true;
   const pdfSlug = normalized.startsWith("/") ? normalized.slice(1) : normalized;
   return nepaliPdfRoutes[pdfSlug] !== undefined && isLocalizedToolIndexable(locale, pdfSlug);
 }

@@ -289,10 +289,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
   if (request.locale === "ne" && nepaliTitles[request.implementation.slug] && nepaliDescriptions[request.implementation.slug]) {
+    const title = nepaliTitles[request.implementation.slug];
+    const description = fitLocaleDescription(nepaliDescriptions[request.implementation.slug] ?? metadata.description ?? "");
     return {
       ...metadata,
-      title: nepaliTitles[request.implementation.slug],
-      description: fitLocaleDescription(nepaliDescriptions[request.implementation.slug] ?? metadata.description),
+      title,
+      description,
+      openGraph: { ...metadata.openGraph, title, description },
+      twitter: { ...metadata.twitter, title, description },
     };
   }
   return metadata;

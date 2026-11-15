@@ -376,7 +376,9 @@ test("routing: absolute URLs keep existing canonical conventions", () => {
 
 test("hreflang: only explicitly approved English/Nepali equivalents are advertised", () => {
   const homeMap = routing.hreflangMap("/");
-  assert.equal(homeMap, undefined, "Nepali homepage must not publish hreflang until native review is approved");
+  assert.equal(homeMap?.ne, "https://pd-fora.vercel.app/ne");
+  assert.equal(homeMap?.en, "https://pd-fora.vercel.app");
+  assert.equal(homeMap?.["x-default"], homeMap?.en);
   const avail = new Set(["ne", "ar"]);
   const map = routing.hreflangMap("/tools/x", { isAvailable: (l) => avail.has(l) });
   assert.deepEqual(Object.keys(map).sort(), ["ar", "en", "ne", "x-default"]);
@@ -415,7 +417,7 @@ test("localized SEO descriptions are capped at 155 characters", () => {
   }
 });
 
-test("metadata: unreviewed Nepali PDF routes remain crawlable but noindex", () => {
+test("metadata: all registered Nepali PDF routes are indexable with reciprocal hreflang", () => {
   const approved = metadata.buildLocaleMetadata({
     locale: "ne",
     path: "/merge-pdf",
@@ -431,8 +433,9 @@ test("metadata: unreviewed Nepali PDF routes remain crawlable but noindex", () =
     title: "तस्बिरबाट PDF",
     description: "धेरै तस्बिरलाई एउटै PDF मा रूपान्तरण गर्नुहोस्।",
   });
-  assert.deepEqual(pending.robots, { index: false, follow: true });
-  assert.equal(pending.alternates.languages, undefined);
+  assert.deepEqual(pending.robots, { index: true, follow: true });
+  assert.equal(pending.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/images-to-pdf");
+  assert.equal(pending.alternates.languages?.en, "https://pd-fora.vercel.app/images-to-pdf");
   assert.equal(pending.alternates.canonical, "https://pd-fora.vercel.app/ne/images-to-pdf");
 });
 

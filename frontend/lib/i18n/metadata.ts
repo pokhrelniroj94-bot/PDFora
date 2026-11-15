@@ -30,7 +30,15 @@ export function buildLocaleMetadata({ locale, path, title, description }: Locale
   const canonical = absoluteUrl(path, locale);
   const pdfSlug = path.replace(/^\/+/, "");
   const isPdfTool = Object.prototype.hasOwnProperty.call(nepaliPdfRoutes, pdfSlug);
-  const indexable = published && (isPdfTool ? isLocalizedToolIndexable(locale, pdfSlug) : locale === "en" || isLocalizedPageIndexable(locale, path));
+  const catalogToolSlug = path.match(/^\/tools\/([^/]+)$/)?.[1];
+  const isCatalogTool = Boolean(catalogToolSlug);
+  const indexable = published && (
+    isPdfTool
+      ? isLocalizedToolIndexable(locale, pdfSlug)
+      : isCatalogTool
+        ? isLocalizedToolIndexable(locale, catalogToolSlug!)
+        : locale === "en" || isLocalizedPageIndexable(locale, path)
+  );
   const languages = indexable ? hreflangMap(path) : undefined;
   return {
     title,

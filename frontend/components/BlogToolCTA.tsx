@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { sendGAEvent } from "@next/third-parties/google";
+import { trackConsentAwareEvent } from "../lib/analytics-client";
 
 type BlogToolCTAProps = {
   blogSlug: string;
@@ -12,19 +12,11 @@ type BlogToolCTAProps = {
 
 export default function BlogToolCTA({ blogSlug, href, label, calculator = false }: BlogToolCTAProps) {
   const trackClick = () => {
-    try {
-      const saved = window.localStorage.getItem("pdfora-cookie-preferences-v1");
-      const preferences = saved ? JSON.parse(saved) as { analytics?: boolean } : null;
-      if (preferences?.analytics !== true) return;
-      sendGAEvent({
-        event: "blog_to_tool_click",
-        blog_slug: blogSlug,
-        tool_name: label,
-        tool_path: href,
-      });
-    } catch {
-      // Analytics is optional; a storage or tracking failure must never block navigation.
-    }
+    trackConsentAwareEvent("blog_to_tool_click", {
+      blog_slug: blogSlug,
+      tool_name: label,
+      tool_path: href,
+    });
   };
 
   return (

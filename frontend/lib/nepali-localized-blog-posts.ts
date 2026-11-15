@@ -690,7 +690,8 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
 const browserProcessedNepaliPdfSlugs = new Set([
   "merge-pdf", "split-pdf", "rotate-pdf", "rotate-selected-pages", "extract-pages",
   "delete-pages", "reorder-pdf", "add-page-numbers", "watermark", "crop-pdf",
-  "add-blank-pages", "sign-pdf", "page-counter", "pdf-information",
+  "add-blank-pages", "sign-pdf", "page-counter", "pdf-information", "edit-pdf-metadata",
+  "remove-pdf-metadata", "flatten-pdf", "remove-annotations", "remove-attachments", "add-background",
 ]);
 
 function updateNepaliBlogProcessingGuidance(post: BlogPost): BlogPost {

@@ -69,7 +69,12 @@ assert.ok(niroj.includes('(endpoint === "/api/images-to-pdf" || browserOnly)') &
 const imagesToPdfPage = read("../app/images-to-pdf/page.tsx");
 assert.ok(imagesToPdfPage.includes("JPG, JPEG and PNG files are processed in your") && imagesToPdfPage.includes("WebP files may use the PDFora processing service"), "Images to PDF must distinguish browser-supported formats from WebP service fallback");
 const watermarkPage = read("../app/watermark/page.tsx");
-assert.ok(watermarkPage.includes("Compatible ASCII text") && watermarkPage.includes("Nepali characters") && watermarkPage.includes("processing service"), "Watermark must disclose the ASCII browser and non-ASCII service paths");
+assert.ok(watermarkPage.includes("compatible ASCII watermark text") && watermarkPage.includes("Nepali characters") && watermarkPage.includes("may not render correctly"), "Watermark must disclose ASCII browser processing and the limitations of service fallback text");
+const signPage = read("../app/sign-pdf/page.tsx");
+assert.ok(signPage.includes("basic English/ASCII characters") && signPage.includes("not a certificate-based digital signature"), "Typed signature must disclose its character and signature-type limitations");
+assert.ok(niroj.includes("Processing depends on image format") && niroj.includes("WebP files use the PDFora processing service"), "Images to PDF must explain its format-dependent processing before file selection");
+assert.ok(niroj.includes("Processing depends on watermark text") && niroj.includes("Local typed-signature processing"), "Conditional text-based PDF tools must not show a blanket server-processing claim before input");
+assert.ok(niroj.includes('endpoint === "/api/sign" && !/^[\x20-\x7E]+$/.test(value.trim())') && niroj.includes("the PDF will not be uploaded"), "Unsupported typed-signature characters must be rejected before any file upload");
 assert.ok(niroj.includes('case "/api/delete-pages": return { type: "deletePages", pages: value } as const;'), "Delete Pages must be wired to the browser worker when local processing is advertised");
 const pdfWorker = read("../app/tools/pdfWorkerImpl.ts");
 assert.ok(pdfWorker.includes('case "deletePages":'), "Delete Pages browser processing must have a matching worker implementation");

@@ -88,6 +88,8 @@ describe('PDF Worker Core', () => {
     const { blob } = await processPdf({
       type: 'addPageNumbers',
       start: 1,
+      format: 'CASE-%d',
+      digits: 6,
       position: 'top-center',
       skipFirst: true,
       fontSize: 10,

@@ -2,7 +2,7 @@
 // This file contains the core PDF manipulation logic that can be imported
 // both by the WebWorker (frontend/app/tools/pdfWorker.ts) and the Jest unit tests.
 
-import { PDFDocument, StandardFonts, degrees, rgb } from "pdf-lib";
+import { PDFDict, PDFDocument, PDFName, StandardFonts, degrees, rgb } from "pdf-lib";
 
 /**
  * Supported PDF commands. Each command carries the minimal parameters required.
@@ -18,6 +18,8 @@ export type PdfCommand =
   | { type: "editMetadata"; title?: string; author?: string; subject?: string; keywords?: string }
   | { type: "removeMetadata" }
   | { type: "flatten" }
+  | { type: "removeAnnotations" }
+  | { type: "removeAttachments" }
   | { type: "split"; pages: string } // e.g. "1,3-5"
   | { type: "extract"; pages: string }
   | { type: "deletePages"; pages: string }
@@ -25,7 +27,7 @@ export type PdfCommand =
   | { type: "rotate"; angle: number } // 0,90,180,270
   | { type: "rotateSelected"; angle: number; pages: string }
   | { type: "addPageNumbers"; start: number; format?: string; position?: string; skipFirst?: boolean; fontSize?: number }
-  | { type: "watermark"; text: string; opacity?: number }
+  | { type: "watermark"; text: string; opacity?: number; color?: string }
   | { type: "compress" };
 
 /** Utility: parse a page list like "1,3-5" into zeroÃ¢â‚¬â€˜based indices */
@@ -374,11 +376,29 @@ export async function processPdf(
       pages.forEach((page) => outputDoc.addPage(page));
       break;
     }
+    case "removeAnnotations": {
+      const src = pdfDocs[0];
+      src.getPages().forEach((page) => page.node.delete(PDFName.of("Annots")));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      break;
+    }
+    case "removeAttachments": {
+      const src = pdfDocs[0];
+      const names = src.catalog.lookupMaybe(PDFName.of("Names"), PDFDict);
+      names?.delete(PDFName.of("EmbeddedFiles"));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      break;
+    }
     case "watermark": {
       const src = pdfDocs[0];
       const pages = await outputDoc.copyPages(src, src.getPageIndices());
       const font = await outputDoc.embedFont(StandardFonts.HelveticaBold);
       const opacity = typeof cmd.opacity === "number" ? cmd.opacity : 0.3;
+      const colorHex = (cmd.color || "#BFBFBF").replace(/^#/, "");
+      if (!/^[0-9a-fA-F]{6}$/.test(colorHex)) throw new Error("Enter a valid six-digit HEX colour.");
+      const color = rgb(parseInt(colorHex.slice(0, 2), 16) / 255, parseInt(colorHex.slice(2, 4), 16) / 255, parseInt(colorHex.slice(4, 6), 16) / 255);
       pages.forEach((p) => {
         const { width, height } = p.getSize();
         p.drawText(cmd.text, {
@@ -386,7 +406,7 @@ export async function processPdf(
           y: height / 2,
           size: 48,
           font,
-          color: rgb(0.75, 0.75, 0.75),
+          color,
           rotate: degrees(45),
           opacity,
         });

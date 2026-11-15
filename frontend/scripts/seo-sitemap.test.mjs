@@ -19,6 +19,8 @@ const nepseLabPageSource = read("app/nepse-lab/page.tsx");
 const ocrPageSource = read("app/ocr-pdf/page.tsx");
 const generatedBlogPageSource = read("app/blog/[slug]/page.tsx");
 const blogToolCtaSource = read("components/BlogToolCTA.tsx");
+const analyticsClientSource = read("lib/analytics-client.ts");
+const toolViewAnalyticsSource = read("components/ToolViewAnalytics.tsx");
 const blogPostsSource = read("lib/blog-posts.ts");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
@@ -168,9 +170,13 @@ assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\
 assert.match(generatedBlogPageSource, /!isCatalogGeneratedGuide\(post\.slug\)\s*&&\s*post\.toolLinks\[0\]/, "Every reviewed editorial guide with a primary tool link must show an above-the-fold tool CTA");
 assert.ok(generatedBlogPageSource.includes("Ready to try this workflow? Open the matching tool."), "Non-calculator editorial guides must explain the next practical tool action");
 assert.match(generatedBlogPageSource, /<BlogToolCTA/, "Reviewed editorial guides must use the shared tracked CTA component");
-assert.match(blogToolCtaSource, /preferences\?\.analytics !== true/, "Blog-to-tool analytics must respect the saved analytics consent choice");
-assert.ok(blogToolCtaSource.includes('event: "blog_to_tool_click"'), "Blog-to-tool clicks must be measurable as a GA4 event");
+assert.match(analyticsClientSource, /preferences\?\.analytics !== true/, "All analytics events must respect the saved analytics consent choice");
+assert.ok(analyticsClientSource.includes("sendGAEvent"), "Consent-approved events must be sent to GA4");
+assert.ok(blogToolCtaSource.includes('"blog_to_tool_click"'), "Blog-to-tool clicks must be measurable as a GA4 event");
 assert.ok(blogToolCtaSource.includes("blog_slug") && blogToolCtaSource.includes("tool_path"), "Conversion events must identify the guide and destination tool without collecting document data");
+assert.ok(toolViewAnalyticsSource.includes('"tool_view"'), "All catalog tool categories must report consented tool views");
+assert.ok(toolViewAnalyticsSource.includes("tool_slug") && toolViewAnalyticsSource.includes("tool_category"), "Tool view events must identify the tool and category");
+assert.ok(niroj77ToolSource.includes('"tool_start"') && niroj77ToolSource.includes('"tool_complete"') && niroj77ToolSource.includes('"tool_error"'), "PDF tool processing must measure starts, completions and errors");
 const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);

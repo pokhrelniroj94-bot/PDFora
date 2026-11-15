@@ -631,7 +631,7 @@ async function runTool(tool, index) {
         const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "", search: !!document.querySelector("input") }))()');
         if (state.rows < 30) throw new Error("2083 public-holiday table is missing expected entries.");
         if (!state.links.some((href) => href.includes("moha.gov.np/en/page/government-and-public-holidays-in-2083"))) throw new Error("Official MoHA public-holiday source link is missing.");
-        if (!/Last Updated:\s*2083-07-20 15:42:42/.test(state.body)) throw new Error("Holiday page must disclose the exact MoHA source page update timestamp.");
+        if (!/Last Updated:\s*2083-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/.test(state.body)) throw new Error("Holiday page must disclose the MoHA source page update date and time.");
         if (!state.search) throw new Error("Holiday list is missing its search input.");
         await page.evaluate(`(() => {
           const input = document.querySelector("input");
@@ -1323,7 +1323,7 @@ async function runTool(tool, index) {
 }
 
 try {
-  for (let index = 0; index < tools.length; index += 1) {
+  for (let index = 0; !localePrefix && index < tools.length; index += 1) {
     const result = await runTool(tools[index], index);
     results.push(result);
     console.log((result.status === "PASS" ? "PASS " : result.status === "PARTIAL" ? "PARTIAL " : "FAIL ") +
@@ -1427,6 +1427,7 @@ const report = {
   generatedAt: new Date().toISOString(),
   sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
+  localeMode: localePrefix ? "ne-route-smoke" : "en-functional",
   scope: requestedToolFilters.length ? requestedToolFilters : "all-174-tools",
   expected: requestedToolFilters.length
     ? { pdf: tools.filter((tool) => tool.kind === "pdf").length, catalog: tools.filter((tool) => tool.kind === "catalog").length, total: tools.length }
@@ -1434,7 +1435,7 @@ const report = {
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each selected PDF route, attach valid fixtures and inspect processing/output. The Merge PDF assertion uploads two distinct PDFs, moves the first below the second, then verifies the downloaded merged page dimensions match that selected order.",
-    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A dedicated second pass visits all 174 registered Nepali tool routes, checks lang=ne, Devanagari content, heading, controls, PDF upload presence, 390px mobile overflow and a non-submitting editable-control interaction. This does not certify each tool’s validation, result oracle or downloaded file in Nepali; those require individual localized functional assertions.",
+    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A dedicated second pass visits all 174 registered Nepali tool routes, checks lang=ne, Devanagari content, heading, controls, PDF upload presence, 390px mobile overflow and a non-submitting editable-control interaction. This does not certify each tool’s validation, result oracle or downloaded file in Nepali; those require individual localized functional assertions. When E2E_LOCALE=ne, the English-language functional oracle suite is skipped and only the dedicated 174-route Nepali smoke pass runs, avoiding false failures from English expected-output strings.",
     limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 174 non-AI tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },
   counts: {

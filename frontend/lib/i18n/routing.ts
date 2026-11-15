@@ -5,7 +5,7 @@ import {
   nepaliLocalizedUtilitySlugs,
 } from "./nepali-tool-routes";
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
-import { isLocalizedToolIndexable } from "../tools/localized-verification";
+import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 
 /**
@@ -79,17 +79,13 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
 // Only pages that are eligible for indexing may participate in hreflang.
 // Existing localized routes such as the full tools directory and the NEPSE
 // analysis shell intentionally remain noindex until their content is fully reviewed.
-const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set([
-  "/", "/market", "/resume-builder", "/blog",
-  ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),
-  "/privacy", "/terms", "/about", "/contact",
-]);
+const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set();
 
 export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
   if (locale !== "ne" || !isPublished(locale)) return false;
   const normalized = normalizePath(path);
-  if (nepaliIndexableNonToolPaths.has(normalized)) return true;
+  if (nepaliIndexableNonToolPaths.has(normalized) || isLocalizedPageIndexable(locale, normalized)) return true;
   const pdfSlug = normalized.startsWith("/") ? normalized.slice(1) : normalized;
   return nepaliPdfRoutes[pdfSlug] !== undefined && isLocalizedToolIndexable(locale, pdfSlug);
 }

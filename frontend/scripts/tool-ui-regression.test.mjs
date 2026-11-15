@@ -49,6 +49,11 @@ assert.ok(sharedPdfGuide.includes("Read the processing notice shown above") && s
 assert.doesNotMatch(sharedPdfGuide, /\{labels\[(?:5|6|7|8|9|10)\]\}/, "Shared PDF guide must not render generic boilerplate sections on every tool page");
 assert.ok(sharedPdfGuide.includes("app that supports its output format") && sharedPdfGuide.includes("spreadsheets or text exports"), "Shared PDF guide must check the actual output format, not assume every tool downloads a PDF");
 
+for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "images-to-pdf", "delete-pages", "extract-pages"]) {
+  const pageSource = read("../app/" + page + "/page.tsx");
+  assert.doesNotMatch(pageSource, /ToolGuide|getRequiredToolGuide/, page + " must not duplicate the shared SEO guide rendered by Niroj77Tool");
+}
+
 const mergeLimitCopy = read("../components/PDForaTool.tsx");
 assert.ok(mergeLimitCopy.includes('endpoint === "/api/merge"') && mergeLimitCopy.includes("Combined PDF upload limit: 50 MB total"), "Merge PDF must display its combined 50 MB limit, not a per-file limit");
 const toolGuideSource = read("../lib/tool-guides.ts");

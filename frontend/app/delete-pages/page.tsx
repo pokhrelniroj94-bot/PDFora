@@ -30,6 +30,7 @@ export default function Page() {
           <div className="mt-10">
             <Niroj77Tool
               endpoint="/api/delete-pages"
+              showSeoContent={false}
               title="Delete PDF Pages"
               description="Remove unwanted pages from a PDF document."
               multiple={false}

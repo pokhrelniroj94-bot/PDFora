@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { SmartToolCenter } from "../../components/SmartToolCenter";
+import { hreflangMap } from "../../lib/i18n/routing";
 
 export const metadata: Metadata = {
   title: "All Free Online Tools | PDFora",
   description: "Find free PDF, image, finance, Nepal, text and developer tools in one searchable directory.",
-  alternates: { canonical: "https://pd-fora.vercel.app/tools" },
+  alternates: { canonical: "https://pd-fora.vercel.app/tools", languages: hreflangMap("/tools") },
   keywords: [
     "free online tools", "PDF tools", "PDF converter", "image converter",
     "Nepal online tools", "Nepali date converter", "salary tax calculator Nepal",

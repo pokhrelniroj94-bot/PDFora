@@ -9,6 +9,7 @@ import { PDFDocument, StandardFonts, degrees, rgb } from "pdf-lib";
  */
 export type PdfCommand =
   | { type: "merge" }
+  | { type: "imagesToPdf" }
   | { type: "crop"; margin: number; pages?: string }
   | { type: "addBlankPages"; count: number }
   | { type: "sign"; text: string }
@@ -94,6 +95,27 @@ export async function processPdf(
   // Keep browser memory use bounded on mobile devices.
   const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
   if (totalBytes > 50 * 1024 * 1024) throw new Error("Browser processing is limited to 50 MB combined input.");
+  if (cmd.type === "imagesToPdf") {
+    const output = await PDFDocument.create();
+    for (const file of files) {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      let image;
+      if (file.type === "image/jpeg" || /\\.jpe?g$/i.test(file.name)) {
+        image = await output.embedJpg(bytes);
+      } else if (file.type === "image/png" || /\\.png$/i.test(file.name)) {
+        image = await output.embedPng(bytes);
+      } else {
+        throw new Error("Browser image-to-PDF supports JPG and PNG files. Convert WebP to PNG first.");
+      }
+      const page = output.addPage([image.width, image.height]);
+      page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+    }
+    const bytes = await output.save();
+    const buffer = new ArrayBuffer(bytes.byteLength);
+    new Uint8Array(buffer).set(bytes);
+    return { blob: new Blob([buffer], { type: "application/pdf" }) };
+  }
+
   // Load all PDFs first
   const pdfDocs = await Promise.all(
     files.map(async (f) => {

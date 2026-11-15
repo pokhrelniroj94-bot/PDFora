@@ -23,12 +23,13 @@ const { buildPdfToolMetadata } = pdfToolSeoCore;
 const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
-test("every curated Nepali blog article is a real localized route with hreflang", () => {
+test("every curated Nepali blog article is a real localized route but remains noindex pending native review", () => {
   assert.equal(nepaliLocalizedBlogPosts.length, 35);
   for (const post of nepaliLocalizedBlogPosts) {
     const localizedPath = "/blog/" + post.slug;
     assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);
-    assert.equal(routing.hreflangMap(localizedPath)?.ne, "https://pd-fora.vercel.app/ne" + localizedPath);
+    assert.equal(routing.hasIndexableLocalizedPage(localizedPath, "ne"), false, "Unreviewed article must remain noindex: " + localizedPath);
+    assert.equal(routing.hreflangMap(localizedPath)?.ne, undefined, "Unreviewed article must not advertise hreflang: " + localizedPath);
   }
 });
 

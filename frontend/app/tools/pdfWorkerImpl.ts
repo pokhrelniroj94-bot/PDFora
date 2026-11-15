@@ -359,7 +359,7 @@ export async function processPdf(
       outputDoc.setTitle(src.getTitle() || "");
       outputDoc.setAuthor(src.getAuthor() || "");
       outputDoc.setSubject(src.getSubject() || "");
-      outputDoc.setKeywords(src.getKeywords() || []);
+      outputDoc.setKeywords((src.getKeywords() || "").split(",").map((item) => item.trim()).filter(Boolean));
       break;
     }
     case "removeMetadata": {

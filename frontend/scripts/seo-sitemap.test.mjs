@@ -152,7 +152,7 @@ for (const section of ["SMA 20/50 crossover", "RSI 14 recovery", "20-day breakou
 
 assert.match(sitemapSource, /nepaliPdfRoutes\[slug\]/, "PDF URLs must retain their established root-level paths");
 assert.doesNotMatch(sitemapSource, /\.\.\.\["merge-pdf",\s*"split-pdf",\s*"compress-pdf",\s*"rotate-pdf",\s*"pdf-to-word",\s*"pdf-to-jpg"\]/, "Do not maintain a second hard-coded localized PDF allowlist");
-assert.match(sitemapSource, /!isCatalogGeneratedGuide\(post\.slug\)/, "Unreviewed generated catalogue guides must stay out of the sitemap");
+assert.match(sitemapSource, /!isGeneratedGuide\(post\.slug\)/, "Unreviewed generated PDF and catalogue guides must stay out of the sitemap");
 assert.ok(!["opengraph-image", "favicon.ico", "_next/", "/api/"].some((value) => sitemapSource.includes(value)), "Sitemap must contain canonical content pages only, never OG images, static assets or API endpoints");
 assert.ok(!["/hi", "/id", "/pt", "/es", "/fr", "/de", "/bn", "/ur", "/ar", "/zh", "/ja"].some((value) => sitemapSource.includes(value)), "Unpublished locale routes must not be included in the sitemap");
 assert.ok(nextConfigSource.includes("Object.keys(nepaliPdfRoutes).map"), "Legacy /ne/tools/<pdf-slug> paths must redirect using the canonical Nepali PDF route registry");
@@ -172,8 +172,8 @@ assert.match(robotsSource, /disallow:\s*\[\s*"\/api\/"\s*\]/, "Only non-page API
 assert.doesNotMatch(sitemapSource, /\/api\//, "API endpoints must never be submitted in the XML sitemap");
 assert.match(sitemapSource, /tool\.slug !== "ocr-pdf"/, "Unavailable OCR must be explicitly filtered out of the sitemap");
 assert.match(ocrPageSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unavailable OCR page must remain intentionally noindex");
-assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unreviewed generated guide pages must remain noindex until editorial review");
-assert.match(generatedBlogPageSource, /!isCatalogGeneratedGuide\(post\.slug\)\s*&&\s*post\.toolLinks\[0\]/, "Every reviewed editorial guide with a primary tool link must show an above-the-fold tool CTA");
+assert.match(generatedBlogPageSource, /isGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unreviewed generated PDF and catalogue guide pages must remain noindex until editorial review");
+assert.match(generatedBlogPageSource, /!isGeneratedGuide\(post\.slug\)\s*&&\s*post\.toolLinks\[0\]/, "Every reviewed editorial guide with a primary tool link must show an above-the-fold tool CTA");
 assert.ok(blogToolCtaSource.includes("Ready to try this workflow? Open the matching tool."), "Non-calculator editorial guides must explain the next practical tool action");
 assert.match(generatedBlogPageSource, /<BlogToolCTA/, "Reviewed editorial guides must use the shared tracked CTA component");
 assert.match(analyticsClientSource, /preferences\?\.analytics !== true/, "All analytics events must respect the saved analytics consent choice");
@@ -188,7 +188,7 @@ for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);
   assert.ok(nepaliLocalizedBlogSource.includes(`slug: "${slug}"`), `${slug} must have a reviewed Nepali translation before hreflang is published`);
 }
-assert.match(blogPostsSource, /return !existingArticleSlugs\.has\(slug\) && toolCatalog\.some\(/, "Reviewed editorial guides must be indexable while unreviewed generated guides remain noindex");
+assert.match(blogPostsSource, /return additionalToolBlogPosts\.some\(\(post\) => post\.slug === slug\) \|\|/, "Shared-template PDF guides must remain noindex until they receive individual editorial review");
 assert.doesNotMatch(nepaliBlogArticleSource, /"@type":\s*"FAQPage"/, "Nepali blog pages must not emit deprecated FAQ rich-result markup");
 assert.doesNotMatch(pdfToolJsonLdSource, /FAQPage/, "PDF tool JSON-LD must not emit deprecated FAQ rich-result markup");
 assert.doesNotMatch(pdfToolSeoSource, /FAQPage/, "Localized PDF tool pages must retain visible FAQs without obsolete FAQ markup");

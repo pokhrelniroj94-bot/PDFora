@@ -56,6 +56,8 @@ function field(body, name) {
 
 const seenByCollection = new Map();
 const substantialParagraphsByCollection = new Map();
+const sameLanguageParagraphs = new Map([["en", new Map()], ["ne", new Map()]]);
+const sameLanguageFaqQuestions = new Map([["en", new Map()], ["ne", new Map()]]);
 for (const [label, file] of collections) {
   const source = read(file);
   const articles = articleBlocks(source);
@@ -73,8 +75,20 @@ for (const [label, file] of collections) {
     const keyword = field(body, "keyword");
     const intro = field(body, "intro");
     const sections = [...body.matchAll(/\{\s*heading:\s*"/g)].length;
-    const faqs = [...body.matchAll(/\{\s*question:\s*"/g)].length;
+    const faqMatches = [...body.matchAll(/\{\s*question:\s*"((?:\\.|[^"\\])*)"/g)];
+    const faqs = faqMatches.length;
     const toolLinks = [...body.matchAll(/\{\s*label:\s*"[^"]+",\s*href:\s*"\//g)].length;
+    const languageKey = label === "Nepali localized guides" ? "ne" : "en";
+    const languageFaqs = sameLanguageFaqQuestions.get(languageKey);
+    const articleFaqs = new Set();
+    for (const faq of faqMatches) {
+      const question = faq[1].normalize("NFC").replace(/\s+/gu, " ").trim().toLocaleLowerCase();
+      assert.ok(!articleFaqs.has(question), label + ": duplicate FAQ question within " + slug);
+      const previousFaq = languageFaqs.get(question);
+      assert.ok(!previousFaq || previousFaq === slug, label + ": repeated FAQ question shared by " + previousFaq + " and " + slug);
+      articleFaqs.add(question);
+      languageFaqs.set(question, slug);
+    }
     const sourceUrls = [...body.matchAll(/url:\s*"([^"]+)"/g)].map((match) => match[1]);
 
     if (requiresPrimarySource.test(slug)) {
@@ -104,6 +118,10 @@ for (const [label, file] of collections) {
           const previous = substantialParagraphs.get(normalized);
           assert.ok(!previous || previous === slug, label + ": repeated substantial paragraph shared by " + previous + " and " + slug);
           substantialParagraphs.set(normalized, slug);
+          const languageParagraphs = sameLanguageParagraphs.get(languageKey);
+          const previousAcrossCollections = languageParagraphs.get(normalized);
+          assert.ok(!previousAcrossCollections || previousAcrossCollections === slug, label + ": repeated same-language paragraph shared by " + previousAcrossCollections + " and " + slug);
+          languageParagraphs.set(normalized, slug);
         }
       }
     }

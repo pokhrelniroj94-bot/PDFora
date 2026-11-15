@@ -8,9 +8,9 @@ const { toolCatalog } = (await loadToolAdapter()).toolCatalog;
 const page = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "[slug]", "page.tsx"), "utf8");
 
 function readStringMap(name) {
-  const match = page.match(new RegExp("const " + name + ": Record<string, string> = \\{([\\s\\S]*?)\\n\\};"));
+  const match = page.match(new RegExp("const " + name + "[^=]*=\\s*\\{([\\s\\S]*?)\\n\\};"));
   assert.ok(match, name + " map must exist");
-  return new Map([...match[1].matchAll(/^\\s*"([^"]+)":\\s*"([^"]*)",?\\s*$/gm)].map((row) => [row[1], row[2]]));
+  return new Map([...match[1].matchAll(/"([^"]+)"\\s*:\\s*"([^"]*)"/g)].map((row) => [row[1], row[2]]));
 }
 
 const titles = readStringMap("nepaliTitles");

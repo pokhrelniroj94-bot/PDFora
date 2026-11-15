@@ -88,6 +88,10 @@ export default async function NepaliBlogArticle({ params }: Props) {
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
           <p className="mt-5 text-xs text-slate-500">प्रकाशक: PDFora · अन्तिम अद्यावधिक: {post.updated}</p>
         </header>
+        <aside className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-7 text-emerald-950" aria-label="प्रशोधन र गोपनीयता">
+          <h2 className="font-bold">फाइल प्रशोधन र गोपनीयता</h2>
+          <p className="mt-1">PDFora का समर्थित केही काम तपाईंको आफ्नै ब्राउजरमा हुन्छन् र ती फाइल डिभाइसबाट बाहिर पठाइँदैनन्। तर केही जटिल PDF काम र ताजा बाह्य डाटा लिन प्रशोधन सर्भर वा सार्वजनिक स्रोत चाहिन्छ। फाइल छान्नुअघि सम्बन्धित टुलमा देखाइएको प्रशोधन तथा गोपनीयता सूचना पढ्नुहोस्; सबै PDF काम browser मै हुन्छन् भन्ने नठान्नुहोस्।</p>
+        </aside>
         <div className="mt-6 space-y-6">
           {post.sections.map((section) => (
             <section key={section.heading} className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">

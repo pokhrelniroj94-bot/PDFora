@@ -82,6 +82,11 @@ export default function NirojToolsTool({
       case "/api/sign": return value.trim() ? { type: "sign", text: value.trim() } as const : null;
       case "/api/page-counter": return { type: "pageCount" } as const;
       case "/api/pdf-info": return { type: "info" } as const;
+      case "/api/metadata": return { type: "editMetadata", title: extraValues.title || "", author: extraValues.author || "", subject: extraValues.subject || "", keywords: extraValues.keywords || "" } as const;
+      case "/api/remove-metadata": return { type: "removeMetadata" } as const;
+      case "/api/flatten": return { type: "flatten" } as const;
+      case "/api/add-background": return /^[\\x20-\\x7E]+$/.test(extraValues.text || "DRAFT")
+        ? { type: "watermark", text: extraValues.text || "DRAFT", opacity: 0.12 } as const : null;
       case "/api/rotate": { const angle = Number(value); return [90, 180, 270].includes(angle) ? { type: "rotate", angle } as const : null; }
       case "/api/rotate-selected-pages": {
         const angle = Number.parseInt(extraValues.degrees || "90", 10);

@@ -805,3 +805,19 @@ html:lang(ne) a:focus-visible,
 html:lang(ne) input:focus-visible,
 html:lang(ne) textarea:focus-visible,
 html:lang(ne) select:focus-visible { outline:3px solid rgb(217 119 50 / 55%); outline-offset:3px; }
+
+
+/* Keep the homepage footer's dark brand treatment from being overridden by
+   the shared light-surface footer rule. This also preserves wordmark contrast. */
+body > div > footer.pdfora-home-footer,
+footer.pdfora-home-footer {
+  border-color: rgb(148 163 184 / 22%) !important;
+  background: #071b1b !important;
+  color: #f8fafc !important;
+}
+footer.pdfora-home-footer h3 { color: #f8fafc !important; }
+footer.pdfora-home-footer p { color: #aab9c1 !important; }
+footer.pdfora-home-footer a { color: #cbd5e1 !important; }
+footer.pdfora-home-footer a:hover { color: #5eead4 !important; }
+footer.pdfora-home-footer a[aria-label="PDFora home"] span span:first-child { color: #fff !important; }
+footer.pdfora-home-footer a[aria-label="PDFora home"] span span:last-child { color: #5eead4 !important; }

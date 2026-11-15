@@ -70,7 +70,7 @@ export default function NirojToolsTool({
       case "/api/extract-pages": return { type: "extract", pages: value } as const;
       case "/api/delete-pages": return { type: "deletePages", pages: value } as const;
       case "/api/reorder": return { type: "reorder", order: value } as const;
-      case "/api/watermark": return { type: "watermark", text: value } as const;
+      case "/api/watermark": return /^[\x20-\x7E]+$/.test(value) ? { type: "watermark", text: value } as const : null;
       case "/api/page-numbers": return {
         type: "addPageNumbers",
         start: Math.max(1, Number.parseInt(extraValues.start_number || "1", 10) || 1),

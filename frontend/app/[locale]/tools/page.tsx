@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
   description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
   alternates: { canonical: "https://pd-fora.vercel.app/ne/tools", languages: hreflangMap("/tools") },
-  robots: { index: false, follow: true },
+  robots: { index: true, follow: true },
 };
 
 const names: Record<string, string> = {

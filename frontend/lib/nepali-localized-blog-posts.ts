@@ -202,6 +202,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के यसले अङ्ग्रेजी शब्दलाई नेपालीमा अनुवाद गर्छ?", answer: "गर्दैन। यसले अङ्कका अक्षर मात्र बदल्छ।" },
       { question: "के विरामचिह्न र अरू पाठ जस्ताको तस्तै रहन्छ?", answer: "उपकरणको उद्देश्य अङ्क मात्र बदल्नु हो; प्रयोग गर्नुअघि नतिजा जाँच्नुहोस्।" }
     ],
+    sources: [{"label":"Unicode Consortium: Devanagari character chart","url":"https://www.unicode.org/Public/18.0.0/charts/nameslist/0900/"}],
     toolLinks: [{ label: "नेपाली अङ्क कन्भर्टर", href: "/tools/nepali-digit-converter" }]
   },
   {
@@ -407,6 +408,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { heading: "गुणस्तर जाँच्नुहोस्", paragraphs: ["फाइल आकार मात्र मिलेर पुग्दैन। फोटो, नागरिकता वा प्रमाणपत्रको नम्बर, नाम, मिति, हस्ताक्षर र छाप स्पष्ट देखिनुपर्छ। आवेदनले सबै पृष्ठ एउटै PDF मा मागेको छ भने PDF विभाजन गरेर अलग-अलग फाइल नपठाउनुहोस्।"] }
     ],
     faqs: [{ question: "के हरेक PDF लाई १MB बनाउन सकिन्छ?", answer: "ग्यारेन्टी हुँदैन। पृष्ठ सङ्ख्या, फोटो र मूल गुणस्तरले अन्तिम आकार निर्धारण गर्छ।" }, { question: "कम्प्रेस गर्दा अक्षर धमिलो हुन्छ?", answer: "सेटिङअनुसार गुणस्तर घट्न सक्छ। डाउनलोडपछि सबै पृष्ठ जाँच्नुहोस्।" }],
+    sources: [{"label":"Adobe Acrobat Help: Reduce PDF file size","url":"https://helpx.adobe.com/acrobat/desktop/create-documents/optimize-pdfs/reduce-file-size.html"}],
     toolLinks: [{ label: "PDF कम्प्रेस", href: "/compress-pdf" }, { label: "PDF विभाजन", href: "/split-pdf" }]
   },
   {
@@ -420,6 +422,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { heading: "अन्तिम फाइल जाँच्नुहोस्", paragraphs: ["पृष्ठ हराएको, उल्टो भएको वा दोहोरिएको छैन भन्ने जाँच्नुहोस्। ठूलो फाइल पठाउनुअघि आवश्यक भए कम्प्रेस गर्नुहोस्।"] }
     ],
     faqs: [{ question: "के फरक आकारका PDF जोड्न मिल्छ?", answer: "सामान्यतया मिल्छ, तर पृष्ठको आकार फरक देखिन सक्छ। अन्तिम फाइल जाँच्नुहोस्।" }, { question: "के मूल फाइल मेटिन्छ?", answer: "संयुक्त नतिजा छुट्टै फाइल हुन्छ; मूल फाइल सुरक्षित राख्नुहोस्।" }],
+    sources: [{"label":"Adobe Acrobat Help: Combine files into one PDF","url":"https://helpx.adobe.com/acrobat/desktop/edit-documents/combine-files/combine-files.html"}],
     toolLinks: [{ label: "PDF जोड्नुहोस्", href: "/merge-pdf" }, { label: "पृष्ठ क्रम मिलाउनुहोस्", href: "/reorder-pdf" }]
   },
   {
@@ -433,6 +436,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { heading: "पठाउनुअघि जाँच्नुहोस्", paragraphs: ["पाठ पढ्न मिल्छ कि मिल्दैन, पृष्ठको दिशा ठीक छ कि छैन र सबै फोटो समावेश भए कि भएनन् जाँच्नुहोस्। कम्प्रेस गर्दा अक्षर धमिलो नहोस्।"] }
     ],
     faqs: [{ question: "के मोबाइलमै PDF बनाउन सकिन्छ?", answer: "आधुनिक मोबाइल ब्राउजरबाट समर्थित फोटो चयन गरी PDF बनाउन सकिन्छ।" }, { question: "फोटोको क्रम मिलाउन मिल्छ?", answer: "उपकरणमा क्रम मिलाउने सुविधा भए PDF बनाउनुअघि क्रम मिलाउनुहोस्।" }],
+    sources: [{"label":"Adobe Acrobat Help: Supported file formats","url":"https://helpx.adobe.com/acrobat/desktop/get-started/learn-the-basics/file-formats.html"}],
     toolLinks: [{ label: "फोटोबाट PDF", href: "/images-to-pdf" }, { label: "PDF कम्प्रेस", href: "/compress-pdf" }]
   },
   {
@@ -446,6 +450,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { heading: "गुणस्तर र आकार सन्तुलन", paragraphs: ["उच्च resolution ले अक्षर स्पष्ट राख्न सक्छ तर फाइल ठूलो बनाउँछ। कम resolution ले सानो अक्षर पढ्न कठिन बनाउन सक्छ। प्रयोगअनुसार गुणस्तर छान्नुहोस्।"] }
     ],
     faqs: [{ question: "के प्रत्येक पृष्ठ छुट्टै JPG हुन्छ?", answer: "सामान्यतया प्रत्येक रूपान्तरण गरिएको पृष्ठ छुट्टै छवि बन्छ।" }, { question: "के JPG मा पाठ चयन गर्न मिल्छ?", answer: "सामान्य JPG मा पाठ चयन हुँदैन; त्यसका लागि OCR आवश्यक पर्न सक्छ।" }],
+    sources: [{"label":"Adobe Acrobat Help: Export images from PDFs","url":"https://helpx.adobe.com/acrobat/using/exporting-pdfs-file-formats.html"}],
     toolLinks: [{ label: "PDF बाट JPG", href: "/pdf-to-jpg" }, { label: "PDF बाट PNG", href: "/pdf-to-png" }]
   },
   {
@@ -459,6 +464,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { heading: "गोपनीयता र पूर्णता जाँच", paragraphs: ["साझा गर्नुअघि हटाउनुपर्ने संवेदनशील पृष्ठ बाँकी छैनन् भन्ने सुनिश्चित गर्नुहोस्। मूल PDF सुरक्षित राख्नुहोस्।"] }
     ],
     faqs: [{ question: "के केही पृष्ठ मात्र निकाल्न मिल्छ?", answer: "उपकरणले पृष्ठ चयन वा range स्वीकार गरेमा आवश्यक पृष्ठ मात्र निकाल्न सकिन्छ।" }, { question: "के मूल PDF परिवर्तन हुन्छ?", answer: "नयाँ नतिजा छुट्टै फाइल हुन्छ; मूल फाइल सुरक्षित राख्नुहोस्।" }],
+    sources: [{"label":"Adobe Acrobat Help: Split PDFs","url":"https://helpx.adobe.com/acrobat/web/edit-pdfs/organize-documents/split-pdfs.html"}],
     toolLinks: [{ label: "PDF विभाजन", href: "/split-pdf" }, { label: "PDF पृष्ठ निकाल्नुहोस्", href: "/extract-pages" }]
   },
   {
@@ -472,6 +478,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { heading: "वैकल्पिक उपाय", paragraphs: ["प्राप्तकर्ताले अनुमति दिएमा संस्थाले स्वीकृत गरेको सुरक्षित cloud storage link पठाउन सकिन्छ। संवेदनशील कागजातलाई सार्वजनिक रूपमा पहुँचयोग्य link नबनाउनुहोस्; आवश्यक व्यक्तिलाई मात्र पहुँच दिनुहोस् र link को अनुमति तथा म्याद जाँच्नुहोस्। सरकारी आवेदन प्रणालीले upload नै मागेको छ भने cloud link त्यसको विकल्प हुँदैन।"] }
     ],
     faqs: [{ question: "इमेल attachment को अधिकतम आकार कति हुन्छ?", answer: "यो इमेल सेवा र संस्थाको सेटिङअनुसार फरक हुन्छ; आफ्नो सेवा प्रदायकको सीमा जाँच्नुहोस्।" }, { question: "कम्प्रेस गर्दा PDF धमिलो हुन्छ?", answer: "धेरै कम्प्रेस गर्दा गुणस्तर घट्न सक्छ। पठाउनुअघि सबै पृष्ठ जाँच्नुहोस्।" }],
+    sources: [{"label":"Gmail Help: Attachment size limits","url":"https://support.google.com/mail/answer/6584"},{"label":"Adobe Acrobat Help: Reduce PDF file size","url":"https://helpx.adobe.com/acrobat/desktop/create-documents/optimize-pdfs/reduce-file-size.html"}],
     toolLinks: [{ label: "PDF कम्प्रेस", href: "/compress-pdf" }, { label: "PDF विभाजन", href: "/split-pdf" }]
   },
   {
@@ -485,6 +492,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { heading: "डेटा पुनः जाँच्नुहोस्", paragraphs: ["मिति, दशमलव, ऋणात्मक सङ्ख्या र जम्मा रकम गलत रूपमा import हुन सक्छन्। वित्तीय वा शैक्षिक काममा मूल PDF सँग महत्त्वपूर्ण मानहरू तुलना गर्नुहोस्।"] }
     ],
     faqs: [{ question: "के स्क्यान गरिएको PDF तालिका Excel मा बदल्न मिल्छ?", answer: "OCR आवश्यक पर्न सक्छ। OCR बाट आएको सङ्ख्या मूल PDF सँग मिलाउनुहोस्।" }, { question: "के Excel फाइल PDF जस्तै देखिन्छ?", answer: "सधैँ होइन। स्तम्भ, heading र cell format मिलाउनुपर्ने हुन सक्छ।" }, { question: "रूपान्तरणपछि के जाँच्ने?", answer: "स्तम्भ क्रम, दशमलव, मिति, ऋणात्मक मान र जम्मा रकम तुलना गर्नुहोस्।" }],
+    sources: [{"label":"Adobe Acrobat Help: Convert PDF to Excel","url":"https://helpx.adobe.com/acrobat/desktop/save-export-documents/convert-to-other-formats/pdf-to-excel.html"}],
     toolLinks: [{ label: "PDF बाट Excel", href: "/pdf-to-excel" }, { label: "PDF बाट CSV", href: "/pdf-to-csv" }]
   },
   {
@@ -498,6 +506,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { heading: "स्क्यान गरिएको PDF को सीमा", paragraphs: ["स्क्यान गरिएको PDF पृष्ठका छविहरू हुन्। तिनको पाठ सम्पादन गर्न OCR चाहिन्छ र नतिजा scan को गुणस्तर तथा भाषामा निर्भर हुन्छ। PDFora को OCR सुविधा हाल processing server मा उपलब्ध छैन, त्यसैले स्क्यान गरिएको फाइलका लागि छुट्टै OCR प्रक्रिया आवश्यक पर्न सक्छ। नाम, मिति र रकम विशेष ध्यान दिएर जाँच्नुहोस्।"] }
     ],
     faqs: [{ question: "के कुनै पनि PDF editable Word बन्छ?", answer: "Text-based PDF राम्रोसँग रूपान्तरण हुन सक्छ। Scan भएका PDF मा OCR आवश्यक पर्न सक्छ।" }, { question: "के फोटो र तालिका उही ठाउँमा रहन्छन्?", answer: "सधैँ होइन। रूपान्तरणपछि फोटो, तालिका र page break जाँच्नुहोस्।" }, { question: "के Word फाइल तुरुन्त बुझाउन मिल्छ?", answer: "मूल PDF सँग तुलना, formatting सुधार र proofreading गरेपछि मात्र प्रयोग गर्नुहोस्।" }],
+    sources: [{"label":"Adobe Acrobat Help: Export PDF to other file formats","url":"https://helpx.adobe.com/acrobat/using/exporting-pdfs-file-formats.html"}],
     toolLinks: [{ label: "PDF बाट Word", href: "/pdf-to-word" }, { label: "PDF बाट Text", href: "/pdf-to-text" }]
   },
   {
@@ -542,6 +551,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { question: "TXT फाइलमा PDF को layout रहन्छ?", answer: "रहँदैन। TXT मा plain text मात्र हुन्छ; image, page design र exact spacing सुरक्षित हुँदैन।" },
       { question: "केही अक्षर वा अंक किन हराउँछन्?", answer: "फन्ट, complex layout वा scan का कारण यस्तो हुन सक्छ। महत्त्वपूर्ण विवरण मूल PDF सँग तुलना गर्नुहोस्।" }
     ],
+    sources: [{"label":"Adobe Acrobat Help: Export PDF to other file formats","url":"https://helpx.adobe.com/acrobat/using/exporting-pdfs-file-formats.html"}],
     toolLinks: [{ label: "PDF बाट Text", href: "/pdf-to-text" }, { label: "PDF बाट Word", href: "/pdf-to-word" }, { label: "PDF बाट HTML", href: "/pdf-to-html" }]
   },
 ];
@@ -569,6 +579,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "लक्ष्यभन्दा बढी बचत भइसकेको छ भने के हुन्छ?", answer: "सरल हिसाबअनुसार बाँकी रकम शून्य हुन्छ र लक्ष्य पूरा गर्न थप मासिक बचत आवश्यक हुँदैन।" },
       { question: "हालको बचतमा मासिक तलब राख्ने हो?", answer: "होइन। यो लक्ष्यका लागि पहिले नै छुट्याएर राखेको रकम मात्र राख्नुहोस्; तलब वा नियमित खर्चका लागि चाहिने आम्दानी होइन।" }
     ],
+    sources: [{"label":"Investor.gov: Compound Interest Calculator","url":"https://www.investor.gov/financial-tools-calculators/calculators/compound-interest-calculator"}],
     toolLinks: [{ label: "बचत लक्ष्य क्याल्कुलेटर", href: "/tools/savings-goal-calculator" }, { label: "तलब विवरण क्याल्कुलेटर", href: "/tools/salary-breakdown-calculator" }, { label: "SIP तथा चक्रवृद्धि ब्याज", href: "/tools/compound-interest-sip-calculator" }]
   },
   {
@@ -580,7 +591,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
     readTime: "५ मिनेट",
     intro: "लेख पढ्न लाग्ने समयको अनुमानले पाठकलाई सामग्री सुरु गर्नुअघि समय बुझ्न र लेखकलाई लेखको लम्बाइ योजना गर्न मद्दत गर्छ। यो अनुमान कुल शब्द संख्या र प्रति मिनेट पढ्ने गति अर्थात् WPM मा आधारित हुन्छ। सबै पाठकका लागि यो निश्चित समय होइन।",
     sections: [
-      { heading: "पढ्ने समय निकाल्ने सूत्र", paragraphs: ["पढ्ने समय (मिनेट) = कुल शब्द संख्या ÷ प्रति मिनेट पढ्ने गति। उदाहरणका लागि, 200 WPM को गतिमा 1,000 शब्द पढ्न करिब 5 मिनेट लाग्छ।", "सेकेन्डमा अनुमान निकाल्न मिनेटलाई 60 ले गुणा गर्नुहोस्। 200 WPM मा 300 शब्द पढ्न करिब 1.5 मिनेट अर्थात् 90 सेकेन्ड लाग्छ।"] },
+      { heading: "पढ्ने समय निकाल्ने सूत्र", paragraphs: ["पढ्ने समय (मिनेट) = कुल शब्द संख्या ÷ प्रति मिनेट पढ्ने गति। गति पाठ, भाषा र पाठकअनुसार फरक हुन्छ। उदाहरणका लागि, 200 WPM लाई उदाहरणका लागि मात्र लिनुहोस्; यो सबै पाठक वा नेपाली भाषाका लागि प्रमाणित औसत होइन।", "सेकेन्डमा अनुमान निकाल्न मिनेटलाई 60 ले गुणा गर्नुहोस्। 200 WPM मा 300 शब्द पढ्न करिब 1.5 मिनेट अर्थात् 90 सेकेन्ड लाग्छ।"] },
       { heading: "उपयुक्त पढ्ने गति छान्नुहोस्", paragraphs: ["200 WPM सामान्य अंग्रेजी लेखका लागि सुरु गर्ने व्यावहारिक मान हो, सबै पाठकका लागि एउटै मापदण्ड होइन। प्राविधिक निर्देशन, अपरिचित शब्द, कानुनी सामग्री, तालिका वा दोस्रो भाषामा लेखिएको पाठ पढ्न बढी समय लाग्न सक्छ।", "दुई लेखको समय तुलना गर्दा एउटै WPM प्रयोग गर्नुहोस्। गति परिवर्तन भयो भने समयको फरक शब्द संख्याले मात्र आएको हुँदैन।"] },
       { heading: "Reading Time Calculator प्रयोग गर्ने तरिका", paragraphs: ["लेखको पूरा text राख्नुहोस् र शून्यभन्दा ठूलो WPM मान प्रविष्ट गर्नुहोस्। गणना गरेपछि शब्द संख्या र अनुमानित समय जाँच्नुहोस्। शीर्षक, क्याप्सन वा मुख्य भाग छुटेमा नतिजा वास्तविक सामग्रीभन्दा कम देखिन सक्छ।", "आफ्नो पाठक समूहअनुसार गति छान्नुहोस्। जटिल प्राविधिक लेखका लागि ढिलो गति र सजिलै पढिने सामग्रीका लागि उपयुक्त छिटो गति तुलना गर्न सकिन्छ।"] },
       { heading: "वास्तविक पढ्ने समय किन फरक हुन्छ?", paragraphs: ["शब्द गणना गर्ने प्रणालीले विरामचिह्न, hyphen भएका शब्द, संख्या र Unicode अक्षर फरक तरिकाले गन्न सक्छ। तालिका, code, चित्र र screen-reader प्रयोग गर्दा वास्तविक समय साधारण अनुच्छेदभन्दा फरक हुन सक्छ।", "पढ्ने समयलाई सम्पादकीय अनुमानका रूपमा मात्र लिनुहोस्। यसले Google ranking वा पहुँचयोग्यताको पूर्ण मापन गर्दैन। स्पष्ट शीर्षक र छोटा अनुच्छेदले लामो लेख पनि बुझ्न सजिलो बनाउन सक्छ।"] }
@@ -591,6 +602,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के क्याल्कुलेटरले शीर्षक र तालिका पनि गन्छ?", answer: "तपाईंले paste गरेको text गन्छ। पूरा सामग्री समावेश गर्नुहोस्; तालिका, code र जटिल layout बुझ्न साधारण text भन्दा बढी समय लाग्न सक्छ।" },
       { question: "के पढ्ने समय ठ्याक्कै मापन हो?", answer: "होइन। यो शब्द संख्या र तपाईंले राखेको WPM मा आधारित अनुमान हो। पाठकको गति, भाषा र सामग्रीको जटिलताले वास्तविक समय बदल्छ।" }
     ],
+    sources: [{"label":"Brysbaert (2019), Journal of Memory and Language: Reading-rate meta-analysis","url":"https://www.sciencedirect.com/science/article/abs/pii/S0749596X19300786"}],
     toolLinks: [{ label: "Reading Time Calculator", href: "/tools/reading-time-calculator" }, { label: "Word Counter", href: "/tools/word-character-counter" }, { label: "Sentence Counter", href: "/tools/sentence-counter" }]
   },
   {
@@ -682,6 +694,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "CSV मा अगाडिको शून्य किन हराउँछ?", answer: "स्प्रेडसिटले कोड वा खाता नम्बरलाई संख्या ठान्दा अगाडिको शून्य हटाउन सक्छ। Import गर्दा त्यस्ता स्तम्भलाई Text का रूपमा सेट गर्नुहोस्।" },
       { question: "CSV डाउनलोड गरेपछि के जाँच्नुपर्छ?", answer: "Delimiter, header, स्तम्भ, पङ्क्ति, मिति, दशमलव, अगाडिका शून्य र महत्त्वपूर्ण जम्मा रकम मूल PDF सँग तुलना गर्नुहोस्।" }
     ],
+    sources: [{"label":"IETF RFC 4180: Common Format and MIME Type for CSV Files","url":"https://www.rfc-editor.org/rfc/rfc4180.html"}],
     toolLinks: [
       { label: "PDF to CSV", href: "/pdf-to-csv" },
       { label: "PDF to Excel", href: "/pdf-to-excel" },

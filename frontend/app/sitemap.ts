@@ -76,7 +76,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...legacyPdfEntries,
     ...catalogEntries,
     { url: `${baseUrl}/blog`, changeFrequency: "weekly", priority: 0.8 },
-    ...blogPosts.filter((post) => !isCatalogGeneratedGuide(post.slug)).map((post) => ({
+    ...blogPosts.filter((post) => !isGeneratedGuide(post.slug)).map((post) => ({
       url: `${baseUrl}/blog/${post.slug}`,
       lastModified: new Date(post.updated),
       changeFrequency: "monthly" as const,

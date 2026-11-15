@@ -35,6 +35,7 @@ export default function Page() {
           <div className="mt-10">
             <Niroj77Tool
               endpoint="/api/pdf-to-jpg"
+              showSeoContent={false}
               title="PDF to JPG"
               description="Convert PDF pages into JPG images for easy sharing and viewing."
               multiple={false}

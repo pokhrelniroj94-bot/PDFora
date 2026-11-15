@@ -673,7 +673,7 @@ export default function CatalogToolSEOContent({
       "Paste the input using the expected text/Base64 format and run the selected operation.",
       "For a round-trip check, encode a harmless sample such as Hello and decode the result back to the original text.",
       "Do not use Base64 as encryption or as password protection; anyone can decode a Base64 string."
-    ]
+    ],
     "keyword-density-checker": [
       "Paste the body copy of one page, excluding navigation and unrelated site-wide text if you want a content-only measurement.",
       "Enter the exact target word or phrase, preserving the spelling and word order you want to count.",

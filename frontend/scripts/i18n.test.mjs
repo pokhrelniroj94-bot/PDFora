@@ -365,9 +365,9 @@ test("routing: absolute URLs keep existing canonical conventions", () => {
   assert.equal(routing.absoluteUrl("/tools/x", "de"), "https://pd-fora.vercel.app/de/tools/x");
 });
 
-test("hreflang: only reviewed English/Nepali equivalents are advertised", () => {
+test("hreflang: only explicitly approved English/Nepali equivalents are advertised", () => {
   const homeMap = routing.hreflangMap("/");
-  assert.deepEqual(Object.keys(homeMap).sort(), ["en", "ne", "x-default"]);
+  assert.equal(homeMap, undefined, "Nepali homepage must not publish hreflang until native review is approved");
   const avail = new Set(["ne", "ar"]);
   const map = routing.hreflangMap("/tools/x", { isAvailable: (l) => avail.has(l) });
   assert.deepEqual(Object.keys(map).sort(), ["ar", "en", "ne", "x-default"]);

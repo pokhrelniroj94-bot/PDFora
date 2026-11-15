@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import ToolWorkspace from "../../../components/AllTools";
 import CatalogToolSEOContent from "../../../components/CatalogToolSEOContent";
+import ToolViewAnalytics from "../../../components/ToolViewAnalytics";
 import { toolCatalog } from "../../../components/toolCatalog";
 import { blogPosts } from "../../../lib/blog-posts";
 import { legacyToolSlugSet } from "../../../lib/legacy-tool-slugs";
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "image-dpi-calculator": { title: "Image DPI & PPI Calculator – Print Resolution", description: "Calculate image PPI from pixel dimensions and print size. Find the pixel dimensions needed for 72, 150, 300 or 600 PPI printing." },
     "video-bitrate-calculator": { title: "Video Bitrate Calculator – File Size & Audio Bitrate", description: "Estimate video bitrate from duration, target file size, audio bitrate and overhead. Plan export settings for video encoders." },
     "markdown-table-generator": { title: "Markdown Table Generator – Create Tables Online", description: "Convert tab-separated text into a Markdown table for GitHub README files, documentation and notes. Preview, copy or download the result." },
-    "savings-goal-calculator": { title: "Savings Goal Calculator – Weekly & Monthly Deposits", description: "Calculate the weekly or monthly deposit needed to reach a savings target by a chosen date. Include current savings and an assumed annual interest rate." },
+    "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly & Weekly Savings", description: "Enter your target, current savings and deadline to estimate weekly or monthly deposits. Compare a no-interest baseline with an assumed annual rate." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
     "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
@@ -54,7 +55,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "average-calculator": { title: "Average Calculator – Mean, Median, Mode & Range", description: "Calculate mean, median, mode, range and count from a list of numbers. Enter values separated by commas, semicolons or spaces." },
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
-    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Calculate percentage change between two values. View the formula, reverse the calculation and distinguish percentage points." },
+    "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Enter original and new values to calculate a percentage increase or decrease. See the change, formula and worked result instantly." },
     "tip-calculator": { title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill", description: "Calculate a restaurant tip, bill total and per-person share. Choose a custom rate or compare 15%, 18% and 20%; check included service charges." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
@@ -73,7 +74,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "px-rem-converter": { title: "PX to REM Converter – CSS Units with Root Font Size", description: "Convert CSS pixel values to rem and rem to pixels using an editable root font size. Useful for responsive typography and spacing." },
     "color-contrast-checker": { title: "Color Contrast Checker – WCAG Text Accessibility", description: "Check foreground and background colour contrast ratios and review WCAG guidance for normal and large text." },
     "word-character-counter": { title: "Word Counter – Count Words, Characters & Reading Time", description: "Count words, characters with or without spaces, sentences and paragraphs, and estimate reading time for pasted text." },
-    "reading-time-calculator": { title: "Reading Time Calculator – Estimate Minutes & Speaking", description: "Paste text to estimate reading time in minutes and seconds. Adjust WPM and compare speaking time for articles, scripts and presentations." },
+    "reading-time-calculator": { title: "Free Reading Time Calculator – Estimate Minutes & WPM", description: "Paste text to estimate reading time in minutes and seconds. Adjust words per minute and compare a speaking-time estimate for your script." },
     "json-formatter-validator": { title: "JSON Formatter & Validator – Pretty Print or Minify JSON", description: "Format, minify and validate JSON syntax with readable indentation. Check malformed JSON before using it in an application." },
     "base64-encoder-decoder": { title: "Base64 Encoder & Decoder – Convert Text Online", description: "Encode text to Base64 or decode Base64 back to text in your browser. Base64 is an encoding, not encryption." },
     "url-encoder-decoder": { title: "URL Encoder & Decoder – Percent Encode URL Components", description: "Encode or decode URL query values and components with percent encoding. Avoid double-encoding and preserve URL structure." },
@@ -465,6 +466,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     ],
   };
   return <>
+    <ToolViewAnalytics toolSlug={slug} toolCategory={tool.category} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(software) }} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
     <ToolWorkspace slug={slug} />

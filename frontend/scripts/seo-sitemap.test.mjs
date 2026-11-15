@@ -18,6 +18,9 @@ const niroj77ToolSource = read("components/Niroj77Tool.tsx");
 const nepseLabPageSource = read("app/nepse-lab/page.tsx");
 const ocrPageSource = read("app/ocr-pdf/page.tsx");
 const generatedBlogPageSource = read("app/blog/[slug]/page.tsx");
+const blogToolCtaSource = read("components/BlogToolCTA.tsx");
+const analyticsClientSource = read("lib/analytics-client.ts");
+const toolViewAnalyticsSource = read("components/ToolViewAnalytics.tsx");
 const blogPostsSource = read("lib/blog-posts.ts");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
@@ -41,19 +44,20 @@ assert.ok(homepageSource.includes("Explore free online PDF, finance, math, text,
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
 assert.ok(englishToolPageSource.includes('title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
 assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Tip: 15%, 18% & 20% Examples"'), "The tip guide title must match the 486-impression Search Console query");
-assert.ok(englishEditorialBlogSource.includes('description: "Learn how to calculate tip with the formula, 15%, 18% and 20% examples'), "The tip guide description must lead with its actual Search Console query");
+assert.ok(englishEditorialBlogSource.includes('description: "Calculate the tip, add it to the bill and split the total per person.'), "The tip guide description must lead with the actual calculator benefit");
 assert.ok(englishEditorialBlogSource.includes('heading: "How to calculate tip: formula and worked examples"'), "The tip guide must answer the primary query in its first instructional section");
 assert.ok(catalogToolSeoSource.includes("SEO Title Checker: Review Your Page Title Before Publishing"), "The SEO title checker content must state its primary search intent");
 assert.ok(catalogToolSeoSource.includes("Use this SEO title checker with the exact HTML title"), "The SEO title checker intro must match its primary query");
 assert.ok(catalogToolSeoSource.includes("Meta Description Checker: Preview Your Search Snippet"), "The meta description checker content must state its primary search intent");
 assert.ok(catalogToolSeoSource.includes("Use this meta description checker with the exact description"), "The meta description checker intro must match its primary query");
-assert.ok(englishToolPageSource.includes('title: "Reading Time Calculator – Estimate Minutes & Speaking"'), "Reading Time metadata must target the calculator intent");
-assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Weekly & Monthly Deposits"'), "Savings Goal metadata must target deposit-planning intent");
-assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Increase or Decrease"'), "Percentage Change metadata must target calculation intent");
+assert.ok(englishToolPageSource.includes('title: "Free Reading Time Calculator – Estimate Minutes & WPM"'), "Reading Time metadata must target the calculator intent");
+assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Monthly & Weekly Savings"'), "Savings Goal metadata must target deposit-planning intent");
+assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Increase or Decrease"'), "Percentage Change metadata must target calculation intent with a concise search title");
+assert.ok("Percentage Change Calculator – Increase or Decrease".length <= 60, "Percentage Change title must remain concise for search snippets");
 assert.ok(englishToolPageSource.includes('title: "Prime Number Checker – Test Prime or Composite"'), "Prime Number Checker metadata must target the 114-impression GSC query");
-assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Reading Time: WPM Formula & Examples"'), "Reading Time guide must retain informational search intent");
-assert.ok(englishEditorialBlogSource.includes('title: "How to Set a Savings Goal: Monthly Plan & Formula"'), "Savings guide must retain informational search intent");
-assert.ok(englishEditorialBlogSource.includes('title: "Percentage Change Formula: Increase & Decrease Examples"'), "Percentage Change guide must retain informational search intent");
+assert.ok(englishEditorialBlogSource.includes('title: "Reading Time Calculator: WPM Formula & Examples"'), "Reading Time guide must target the calculator query while retaining its formula guide intent");
+assert.ok(englishEditorialBlogSource.includes('title: "Savings Goal Calculator: Monthly & Weekly Savings Plan"'), "Savings guide must target the calculator query while retaining its planning intent");
+assert.ok(englishEditorialBlogSource.includes('title: "Percentage Change Calculator: Formula & Examples"'), "Percentage Change guide must target the calculator query while retaining formula intent");
 assert.ok(englishToolPageSource.includes("It estimates periodic interest when you enter an annual rate."), "Savings Goal FAQ must match the interest calculation");
 assert.ok(catalogToolSeoSource.includes("compounds monthly or weekly"), "Savings Goal guidance must disclose periodic compounding");
 assert.ok(nepaliLocalizedBlogSource.includes("मासिक वा साप्ताहिक अवधिअनुसार चक्रवृद्धि"), "Nepali savings guide must disclose periodic compounding");
@@ -70,7 +74,7 @@ for (const href of ["/pdf-to-excel", "/rotate-pdf"]) {
 }
 assert.ok(pdfToolSeoCoreSource.includes('"rotate-pdf": { title: "Rotate PDF Online Free – Turn Pages 90°, 180° or 270°"'), "The Rotate PDF snippet must match its page operation and free-online intent");
 assert.ok(pdfToolSeoCoreSource.includes('"pdf-to-excel": { title: "PDF to Excel Converter Online Free – Extract Tables"'), "The PDF to Excel snippet must match its conversion intent");
-assert.ok(pdfToolSeoCoreSource.includes('"delete-pages": { title: "Delete PDF Pages Online Free – Remove Selected"'), "Delete Pages metadata must match the actual Search Console query order");
+assert.ok(pdfToolSeoCoreSource.includes('"delete-pages": { title: "Delete PDF Pages Online Free – Remove Selected Pages"'), "Delete Pages metadata must match the actual Search Console query order");
 assert.ok(pdfToolSeoCoreSource.includes('"extract-pages": { title: "Extract PDF Pages Online Free – Save Selected"'), "Extract Pages metadata must match the actual Search Console query order");
 assert.ok(read("app/rotate-pdf/page.tsx").includes("Rotate PDF Online Free</h1>"), "The Rotate PDF page heading must match the primary tool intent");
 assert.ok(pdfToExcelPageSource.includes("PDF to Excel Converter Online"), "The PDF to Excel page heading must match the primary conversion intent");
@@ -110,6 +114,11 @@ for (const slug of reportedNepaliLongTitleSlugs) {
   assert.match(nepaliBlogPageSource, new RegExp('"' + slug + '"\\s*:'), "Search Console title recovery missing for " + slug);
 }
 assert.match(nepaliBlogPageSource, /title: searchTitle/, "Nepali blog metadata must use concise search titles without changing visible article headlines");
+assert.match(nepaliBlogPageSource, /post\.toolLinks\.length > 0/, "Every Nepali editorial guide with a primary tool must show an above-the-fold CTA");
+assert.ok(nepaliBlogPageSource.includes("यो काम आफ्नै उदाहरणसँग गर्न चाहनुहुन्छ?"), "Nepali blog CTA copy must be localized");
+assert.ok(nepaliBlogPageSource.includes("function toNepaliToolHref"), "Nepali blog links must normalize both catalog and legacy PDF routes");
+assert.ok(nepaliBlogPageSource.includes("href={toNepaliToolHref(tool.href)}"), "Related-tool links must use localized route normalization");
+assert.ok(blogToolCtaSource.includes('locale === "ne"'), "Shared blog CTA must support Nepali copy");
 for (const [slug, title] of [["percentage-change-calculator-guide", "Percentage Change: प्रतिशत कसरी निकाल्ने?"], ["tip-calculator-guide", "Tip Calculator: टिप र बिल कसरी बाँड्ने?"]]) {
   assert.ok(title.length <= 60, `${slug} search title must stay within 60 characters`);
   assert.ok(nepaliBlogPageSource.includes(`"${slug}": "${title}"`), `${slug} must retain its reviewed concise search title`);
@@ -163,6 +172,16 @@ assert.doesNotMatch(sitemapSource, /\/api\//, "API endpoints must never be submi
 assert.match(sitemapSource, /tool\.slug !== "ocr-pdf"/, "Unavailable OCR must be explicitly filtered out of the sitemap");
 assert.match(ocrPageSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unavailable OCR page must remain intentionally noindex");
 assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unreviewed generated guide pages must remain noindex until editorial review");
+assert.match(generatedBlogPageSource, /!isCatalogGeneratedGuide\(post\.slug\)\s*&&\s*post\.toolLinks\[0\]/, "Every reviewed editorial guide with a primary tool link must show an above-the-fold tool CTA");
+assert.ok(blogToolCtaSource.includes("Ready to try this workflow? Open the matching tool."), "Non-calculator editorial guides must explain the next practical tool action");
+assert.match(generatedBlogPageSource, /<BlogToolCTA/, "Reviewed editorial guides must use the shared tracked CTA component");
+assert.match(analyticsClientSource, /preferences\?\.analytics !== true/, "All analytics events must respect the saved analytics consent choice");
+assert.ok(analyticsClientSource.includes("sendGAEvent"), "Consent-approved events must be sent to GA4");
+assert.ok(blogToolCtaSource.includes('"blog_to_tool_click"'), "Blog-to-tool clicks must be measurable as a GA4 event");
+assert.ok(blogToolCtaSource.includes("blog_slug") && blogToolCtaSource.includes("tool_path"), "Conversion events must identify the guide and destination tool without collecting document data");
+assert.ok(toolViewAnalyticsSource.includes('"tool_view"'), "All catalog tool categories must report consented tool views");
+assert.ok(toolViewAnalyticsSource.includes("tool_slug") && toolViewAnalyticsSource.includes("tool_category"), "Tool view events must identify the tool and category");
+assert.ok(niroj77ToolSource.includes('"tool_start"') && niroj77ToolSource.includes('"tool_complete"') && niroj77ToolSource.includes('"tool_error"'), "PDF tool processing must measure starts, completions and errors");
 const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);

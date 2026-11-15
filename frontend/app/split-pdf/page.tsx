@@ -23,13 +23,13 @@ export default function Page() {
             </p>
 
             <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
-              Split PDF Online
+              Split PDF Online – Extract Selected Pages
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-              Split PDF files online and extract the pages you need into a
-              separate PDF document. PDFora makes splitting PDFs simple, fast
-              and easy to use on phones, tablets and computers.
+              Upload a PDF, choose individual pages or ranges, and create a
+              separate PDF containing only the pages you select. Download the
+              result and check page order and readability before sharing.
             </p>
           </div>
 

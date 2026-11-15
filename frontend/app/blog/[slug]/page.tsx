@@ -2,12 +2,20 @@ import Link from "next/link";
 import AdsterraNative from "../../components/AdsterraNative";
 import AdsterraSkyscraper from "../../components/AdsterraSkyscraper";
 import BlogPopunder from "../../components/BlogPopunder";
+import BlogToolCTA from "../../../components/BlogToolCTA";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
 import { hreflangMap } from "../../../lib/i18n/routing";
 
 const baseUrl = "https://pd-fora.vercel.app";
+
+const conversionFocusedGuideSlugs = new Set([
+  "reading-time-calculator-guide",
+  "savings-goal-calculator-guide",
+  "tip-calculator-guide",
+  "percentage-change-calculator-guide",
+]);
 
 function fitMetaDescription(value: string, max = 155): string {
   const clean = value.replace(/\s+/g, " ").trim();
@@ -77,6 +85,14 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora Guide · {post.readTime}</p>
           <h1 className="mt-4 break-words text-2xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
+          {!isCatalogGeneratedGuide(post.slug) && post.toolLinks[0] && (
+            <BlogToolCTA
+              blogSlug={post.slug}
+              href={post.toolLinks[0].href}
+              label={post.toolLinks[0].label}
+              calculator={conversionFocusedGuideSlugs.has(post.slug)}
+            />
+          )}
           <p className="mt-5 text-xs text-slate-500">Published by PDFora · Last updated {new Date(post.updated + "T00:00:00Z").toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</p>
         </header>
         <div className="mt-6"><AdsterraSkyscraper /></div>

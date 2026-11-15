@@ -276,8 +276,8 @@ const editorialBlogPosts: BlogPost[] = [
 const priorityEditorialBlogPosts: BlogPost[] = [
   {
     slug: "savings-goal-calculator-guide",
-    title: "How to Set a Savings Goal: Monthly Plan & Formula",
-    description: "Set a savings target, calculate regular deposits from your balance and deadline, and compare a zero-interest plan with periodic compounding.",
+    title: "Savings Goal Calculator: Monthly & Weekly Savings Plan",
+    description: "Enter your target, current balance and deadline to estimate regular deposits. Compare a zero-interest plan with an assumed savings rate.",
     keyword: "how to set a savings goal monthly plan formula",
     updated: "2026-11-13",
     readTime: "5 min read",
@@ -300,8 +300,8 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "reading-time-calculator-guide",
-    title: "How to Calculate Reading Time: WPM Formula & Examples",
-    description: "Paste text to estimate minutes and seconds. Compare 150, 200 and 250 WPM, calculate speaking time and plan article or presentation length.",
+    title: "Reading Time Calculator: WPM Formula & Examples",
+    description: "Paste text to estimate reading time in minutes and seconds. Compare 150, 200 and 250 WPM, then estimate speaking time for a script.",
     keyword: "how to calculate reading time words per minute",
     updated: "2026-11-13",
     readTime: "5 min read",
@@ -326,7 +326,7 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   {
     slug: "tip-calculator-guide",
     title: "How to Calculate Tip: 15%, 18% & 20% Examples",
-    description: "Learn how to calculate tip with the formula, 15%, 18% and 20% examples, a bill total and an equal per-person split.",
+    description: "Calculate the tip, add it to the bill and split the total per person. Compare 15%, 18% and 20% examples, then check any service charge.",
     keyword: "how to calculate tip tip calculator",
     updated: "2026-11-12",
     readTime: "5 min read",
@@ -349,8 +349,8 @@ const priorityEditorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "percentage-change-calculator-guide",
-    title: "Percentage Change Formula: Increase & Decrease Examples",
-    description: "Learn the percentage-change formula with worked increase and decrease examples. Compare reverse changes and percentage points.",
+    title: "Percentage Change Calculator: Formula & Examples",
+    description: "Calculate a percentage increase or decrease with worked examples. Check the formula, reverse a change and distinguish percentage change from points.",
     keyword: "percentage change formula increase decrease examples",
     updated: "2026-11-13",
     readTime: "5 min read",

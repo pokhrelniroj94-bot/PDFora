@@ -56,7 +56,7 @@ function SignatureTool({locale="en"}:{locale?:ToolLocale}) {
     const c = accent;
     const link = (label: string, href: string) => href ? '<a href="' + escapeHtml(href) + '" style="color:' + c + ';text-decoration:none">' + escapeHtml(label) + "</a>" : "";
     return '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,Helvetica,sans-serif;color:#1f2937;border-collapse:collapse"><tr><td style="border-left:4px solid ' + c + ';padding:2px 0 2px 14px"><div style="font-size:16px;font-weight:700;color:#111827">' + escapeHtml(name || (locale === "ne" ? "तपाईंको नाम" : "Your name")) + '</div><div style="font-size:13px;color:#475569;padding-top:3px">' + escapeHtml([role, company].filter(Boolean).join(" · ")) + '</div><div style="font-size:13px;line-height:1.8;padding-top:8px">' + (email ? link(email, "mailto:" + email) : "") + (phone ? (email ? " &nbsp;|&nbsp; " : "") + escapeHtml(phone) : "") + (safeWebsite ? '<br>' + link(safeWebsite.replace(/^https?:\/\//i, ""), safeWebsite) : "") + '</div></td></tr></table>';
-  }, [name, role, company, email, phone, safeWebsite, accent]);
+  }, [name, role, company, email, phone, safeWebsite, accent, locale]);
   const ui = <div className="space-y-5">
     <div className="grid gap-4 sm:grid-cols-2">
       <Field label="Full name"><input className={inputClass} value={name} onChange={e => setName(e.target.value)} maxLength={80} /></Field>

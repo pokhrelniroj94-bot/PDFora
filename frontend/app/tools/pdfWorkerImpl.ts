@@ -105,7 +105,7 @@ export async function processPdf(
     for (const file of files) {
       const imageBuffer = typeof file.arrayBuffer === "function"
         ? await file.arrayBuffer()
-        : await new Promise((resolve, reject) => {
+        : await new Promise<ArrayBuffer>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => {
               if (reader.result instanceof ArrayBuffer) resolve(reader.result);

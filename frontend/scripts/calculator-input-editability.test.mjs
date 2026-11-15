@@ -23,6 +23,10 @@ assert.ok(all.includes('const num=(k:string,d?:number)=>{const raw=v(k,d===undef
 assert.ok(all.includes('type="number" inputMode="decimal" step="any"'), "Finance calculator fields must use editable numeric inputs");
 assert.ok(all.includes("const clearCalculatorInputs=()=>{setValues({});setOutput(\"\");}"), "Finance calculators must expose a clear action");
 assert.ok(all.includes('field("principal","Loan amount (NPR)","e.g. 1000000")'), "Finance examples must be hints rather than prefilled numbers");
+assert.ok(all.includes('const complete=["principal","rate","months"].every(k=>v(k).trim()!=="")'), "EMI must wait until all required inputs are entered before validating");
+assert.ok(all.includes('const complete=["monthly","years","rate"].every(k=>v(k).trim()!=="")'), "SIP must wait until all required inputs are entered before validating");
+assert.ok(all.includes('const complete=["price","discount","part","whole"].every(k=>v(k).trim()!=="")'), "Discount and percentage must wait until all required inputs are entered before validating");
+assert.ok(all.includes('role="status" className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600"'), "Incomplete calculator inputs must show neutral guidance instead of an error");
 
 assert.ok(specialist.includes('const [width, setWidth] = useState("")') && specialist.includes('const [minutes, setMinutes] = useState("")'), "DPI and bitrate calculator examples must start empty");
 assert.ok(specialist.includes('setWidth("");setHeight("");setPrintWidth("");setPrintHeight("")') && specialist.includes('setMinutes("");setSeconds("");setSize("");setAudio("");setOverhead("")'), "Specialist calculators must expose clear-input actions");

@@ -15,6 +15,9 @@ export type PdfCommand =
   | { type: "sign"; text: string }
   | { type: "pageCount" }
   | { type: "info" }
+  | { type: "editMetadata"; title?: string; author?: string; subject?: string; keywords?: string }
+  | { type: "removeMetadata" }
+  | { type: "flatten" }
   | { type: "split"; pages: string } // e.g. "1,3-5"
   | { type: "extract"; pages: string }
   | { type: "deletePages"; pages: string }
@@ -330,6 +333,45 @@ export async function processPdf(
         }
         outputDoc.addPage(p);
       });
+      break;
+    }
+    case "editMetadata": {
+      const src = pdfDocs[0];
+      if (cmd.title !== undefined) src.setTitle(cmd.title.slice(0, 240));
+      if (cmd.author !== undefined) src.setAuthor(cmd.author.slice(0, 160));
+      if (cmd.subject !== undefined) src.setSubject(cmd.subject.slice(0, 240));
+      if (cmd.keywords !== undefined) src.setKeywords(cmd.keywords.split(",").map((item) => item.trim()).filter(Boolean).slice(0, 30));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      outputDoc.setTitle(src.getTitle() || "");
+      outputDoc.setAuthor(src.getAuthor() || "");
+      outputDoc.setSubject(src.getSubject() || "");
+      outputDoc.setKeywords(src.getKeywords() || []);
+      break;
+    }
+    case "removeMetadata": {
+      const src = pdfDocs[0];
+      src.setTitle("");
+      src.setAuthor("");
+      src.setSubject("");
+      src.setKeywords([]);
+      src.setCreator("");
+      src.setProducer("");
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      outputDoc.setTitle("");
+      outputDoc.setAuthor("");
+      outputDoc.setSubject("");
+      outputDoc.setKeywords([]);
+      outputDoc.setCreator("");
+      outputDoc.setProducer("");
+      break;
+    }
+    case "flatten": {
+      const src = pdfDocs[0];
+      try { src.getForm().flatten(); } catch { throw new Error("This PDF form could not be flattened safely in the browser."); }
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
       break;
     }
     case "watermark": {

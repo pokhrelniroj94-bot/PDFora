@@ -80,6 +80,18 @@ export default function NirojToolsTool({
 
   function applyFiles(selectedFiles: File[]) {
     const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
+    if (browserOnly && selected.reduce((total, file) => total + file.size, 0) > 50 * 1024 * 1024) {
+      setFiles([]);
+      setMessage(locale === "ne" ? "ब्राउजर प्रोसेसिङका लागि जम्मा फाइल आकार ५० MB भित्र राख्नुहोस्।" : "Keep the combined file size under 50 MB for browser processing.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+    if (endpoint === "/api/merge" && selected.length > 20) {
+      setFiles([]);
+      setMessage(locale === "ne" ? "एकपटकमा अधिकतम २० PDF फाइल छान्नुहोस्।" : "Choose no more than 20 PDF files at once.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
     const invalidImage = imageUpload && selected.find((file) =>
       file.type
         ? !["image/jpeg", "image/png", "image/webp"].includes(file.type)
@@ -250,7 +262,7 @@ export default function NirojToolsTool({
   }
 
   const success =
-    message === ui.completed;
+    message === ui.completed || (browserOnly && (message.startsWith("फाइल ब्राउजरमै") || message.startsWith("Processed locally")));
 
   return (
     <div className="pdfora-workspace min-h-screen text-slate-950">

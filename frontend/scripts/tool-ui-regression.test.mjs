@@ -108,5 +108,7 @@ assert.ok(consent.includes('new CustomEvent("pdfora:consent-updated"'), "Consent
 assert.ok(consent.includes("if (revokingAdvertising) window.location.reload()"), "Revoking advertising consent must reload without previously injected ad scripts");
 assert.ok(nativeAds.includes('JSON.parse(saved).advertising === true') && nativeAds.includes('if (!allowed) return null;'), "Native ad placements must remain absent until advertising consent is granted");
 assert.ok(!rootLayout.includes("bauval.org/14/38ed7250c45fe280d3bdcf13969b4498"), "Root layout must not load advertising scripts unconditionally");
+assert.ok(rootLayout.includes('import AdsterraNative from "./components/AdsterraNative"') && (rootLayout.match(/<AdsterraNative \/>/g) || []).length === 1, "A single consent-aware native ad slot must be mounted sitewide");
+assert.ok(!utilities.includes("<AdsterraNative") && !read("../app/blog/page.tsx").includes("<AdsterraNative") && !read("../app/blog/[slug]/page.tsx").includes("<AdsterraNative"), "Native ad placements must not duplicate the global sitewide slot");
 
 console.log("Tool UI regression checks passed: image upload copy, validation, object URL lifecycle and homepage guidance.");

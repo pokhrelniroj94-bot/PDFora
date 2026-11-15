@@ -34,6 +34,7 @@ export default function Page() {
           <div className="mt-10">
             <Niroj77Tool
               endpoint="/api/split"
+              showSeoContent={false}
               title="Split PDF"
               description="Split a PDF or extract selected pages into a new PDF document."
               multiple={false}

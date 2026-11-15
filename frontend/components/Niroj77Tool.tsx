@@ -85,8 +85,10 @@ export default function NirojToolsTool({
       case "/api/metadata": return { type: "editMetadata", title: extraValues.title || "", author: extraValues.author || "", subject: extraValues.subject || "", keywords: extraValues.keywords || "" } as const;
       case "/api/remove-metadata": return { type: "removeMetadata" } as const;
       case "/api/flatten": return { type: "flatten" } as const;
+      case "/api/remove-annotations": return { type: "removeAnnotations" } as const;
+      case "/api/remove-attachments": return { type: "removeAttachments" } as const;
       case "/api/add-background": return /^[\\x20-\\x7E]+$/.test(extraValues.text || "DRAFT")
-        ? { type: "watermark", text: extraValues.text || "DRAFT", opacity: 0.12 } as const : null;
+        ? { type: "watermark", text: extraValues.text || "DRAFT", opacity: 0.12, color: extraValues.color || "#E5E7EB" } as const : null;
       case "/api/rotate": { const angle = Number(value); return [90, 180, 270].includes(angle) ? { type: "rotate", angle } as const : null; }
       case "/api/rotate-selected-pages": {
         const angle = Number.parseInt(extraValues.degrees || "90", 10);

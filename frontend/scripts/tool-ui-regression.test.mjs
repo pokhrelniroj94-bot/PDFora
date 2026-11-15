@@ -43,4 +43,8 @@ assert.ok(nepalTools.includes('number.trim()!==""&&Number.isSafeInteger(n)'), "N
 assert.ok(nepalTools.includes('weight.trim()!==""&&Number.isFinite(n)'), "Tola/gram conversion must reject blank weight");
 assert.ok(nepalTools.includes('shares,buyPrice,sellPrice,brokerRate,sebonRate,dpCharge,cgtRate].every(x=>x.trim()!=="")'), "NEPSE share calculator must require every charge and price input");
 
+const pdfToJpgPage = read("../app/pdf-to-jpg/page.tsx");
+assert.ok(pdfToJpgPage.includes("processing service"), "PDF to JPG must disclose that the selected PDF uses the processing service");
+assert.doesNotMatch(pdfToJpgPage, /browser-based workflow|directly from your browser on desktop/i, "PDF to JPG must not claim local browser processing while it uses the server endpoint");
+
 console.log("Tool UI regression checks passed: image upload copy, validation, object URL lifecycle and homepage guidance.");

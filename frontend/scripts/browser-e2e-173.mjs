@@ -552,11 +552,21 @@ async function runTool(tool, index) {
       row.downloadedFiles = validatedDownloads;
       statusText = finalState?.statuses?.map((status) => status.text).join(" | ") ?? statusText;
       const statusClass = finalState?.statuses?.map((status) => status.className).join(" ") ?? "";
+      // Start invalid-file validation from a fresh component mount. Processing
+      // clears native file inputs; re-mounting avoids testing stale React state.
+      await page.send("Page.navigate", { url: new URL(tool.url, baseUrl).toString() });
+      const invalidPageStarted = Date.now();
+      while (Date.now() - invalidPageStarted < 20000) {
+        const ready = await page.evaluate("document.readyState");
+        if (ready === "interactive" || ready === "complete") break;
+        await delay(100);
+      }
+      await delay(700);
       const invalidPdfNode = await page.send("DOM.getDocument", { depth: 1 });
       const invalidPdfInput = await page.send("DOM.querySelector", { nodeId: invalidPdfNode.root.nodeId, selector: 'input[type="file"]' });
       if (!invalidPdfInput.nodeId) throw new Error("PDF tool lost its file input before invalid-file testing.");
       await page.send("DOM.setFileInputFiles", { nodeId: invalidPdfInput.nodeId, files: [invalidPdfPath] });
-      // Explicitly dispatch file input events for React-controlled file pickers in headless Chromium.
+      // Dispatch React's delegated file-selection events after setting the native file list.
       await page.evaluate(`() => { const input = document.querySelector('input[type="file"]'); if (input) { input.dispatchEvent(new Event("input", { bubbles: true })); input.dispatchEvent(new Event("change", { bubbles: true })); } }`);
       if (tool.slug !== "images-to-pdf") {
         // React file-input state updates asynchronously; wait for the primary action to become enabled.

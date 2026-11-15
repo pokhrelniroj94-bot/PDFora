@@ -624,7 +624,7 @@ export default function NirojToolsTool({
         ) : (
         <section className="pdfora-trust-panel mt-6 rounded-3xl border p-5 sm:p-7" aria-labelledby="pdfora-trust-title">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="pdfora-trust-icon" aria-hidden="true">{browserOnly ? "🛡️" : "🔐"}</span>
+            <span className="pdfora-trust-icon" aria-hidden="true">{conditionalProcessingNotice ? "ℹ️" : browserOnly ? "🛡️" : "🔐"}</span>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-teal-800">PDFora privacy details</p>
             {browserOnly && <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">Runs in your browser</span>}
           </div>

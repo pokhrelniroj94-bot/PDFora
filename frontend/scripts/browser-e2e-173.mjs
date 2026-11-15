@@ -7,7 +7,8 @@ import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
-const reportPath = path.resolve("../docs/qa/BROWSER_E2E_174_REPORT.json");
+const reportPath = path.resolve(process.env.E2E_REPORT_PATH || "../docs/qa/BROWSER_E2E_174_REPORT.json");
+const localePrefix = process.env.E2E_LOCALE === "ne" ? "/ne" : "";
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
 const downloadsDir = path.join(tempDir, "downloads");
@@ -33,9 +34,9 @@ if (pdfRoutes.length !== 49 || catalogTools.length !== 125 || allTools.length !=
     pdfRoutes.length + " + " + catalogTools.length + " = " + allTools.length);
 }
 const requestedToolFilters = (process.env.E2E_TOOL_FILTER || "").split(",").map((value) => value.trim()).filter(Boolean);
-const tools = requestedToolFilters.length
+const tools = (requestedToolFilters.length
   ? allTools.filter((tool) => requestedToolFilters.includes(tool.slug))
-  : allTools;
+  : allTools).map((tool) => ({ ...tool, url: localePrefix + (tool.kind === "catalog" ? "/tools/" + tool.slug : "/" + tool.slug) }));
 if (requestedToolFilters.length && tools.length !== requestedToolFilters.length) {
   throw new Error("Requested E2E tool filter did not match the catalog: " + requestedToolFilters.join(", "));
 }

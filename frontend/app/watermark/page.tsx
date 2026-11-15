@@ -23,8 +23,9 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Add a custom text watermark to your PDF document online.
-              PDFora provides a simple way to watermark PDF files directly
-              from your browser.
+              PDFora supports browser processing for compatible ASCII watermark text.
+              Other text, including Nepali characters, may use the processing
+              service. Check the processing notice for your selected text.
             </p>
           </div>
 
@@ -138,14 +139,16 @@ export default function Page() {
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
             PDFora provides an online PDF watermark tool that lets you add
-            custom text to a PDF document. Watermarks can be useful for
-            identifying documents, adding ownership information or marking
-            files for a particular purpose.
+            custom text to a PDF document. Compatible ASCII text can be
+            processed in your browser; unsupported text, including Nepali
+            characters, may use the processing service. Watermarks can help
+            identify documents or mark files for a particular purpose.
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Upload your PDF, enter the watermark text and process the
-            document directly through your browser.
+            Select your PDF and enter the watermark text. Compatible ASCII text is
+            processed in your browser; other text may be sent to the PDFora
+            processing service. Check the tool's privacy notice before starting.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">

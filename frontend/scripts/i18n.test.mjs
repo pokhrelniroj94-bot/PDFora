@@ -418,6 +418,18 @@ test("localized SEO descriptions are capped at 155 characters", () => {
   }
 });
 
+test("metadata: English catalog tools retain indexability and gain reciprocal Nepali hreflang", () => {
+  const english = metadata.buildLocaleMetadata({
+    locale: "en",
+    path: "/tools/loan-emi-calculator",
+    title: "Loan EMI Calculator",
+    description: "Estimate monthly loan payments.",
+  });
+  assert.deepEqual(english.robots, { index: true, follow: true });
+  assert.equal(english.alternates.languages?.en, "https://pd-fora.vercel.app/tools/loan-emi-calculator");
+  assert.equal(english.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/tools/loan-emi-calculator");
+});
+
 test("metadata: all registered Nepali PDF routes are indexable with reciprocal hreflang", () => {
   const approved = metadata.buildLocaleMetadata({
     locale: "ne",

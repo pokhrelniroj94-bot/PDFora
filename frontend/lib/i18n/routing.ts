@@ -76,9 +76,9 @@ export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
 
 const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
 
-// Only pages that are eligible for indexing may participate in hreflang.
-// The fully reviewed Nepali tools directory is indexable; the NEPSE analysis
-// shell remains excluded until its market-data content is fully reviewed.
+// Only published localized destinations that are in the shared index registry
+// participate in reciprocal hreflang. Human/native review status is tracked
+// separately and is not inferred from this automated registry.
 const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set();
 
 export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean {

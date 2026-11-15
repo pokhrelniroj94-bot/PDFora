@@ -494,8 +494,11 @@ export const blogPosts: BlogPost[] = [
 // Catalog-wide guide pages are generated from a shared template. Keep them
 // accessible from their relevant tools, but do not expose them as indexable
 // editorial articles until each has been individually reviewed and expanded.
-export function isCatalogGeneratedGuide(slug: string): boolean {
-  return !existingArticleSlugs.has(slug) && toolCatalog.some((tool) => tool.slug !== "pdf-tools" && slug === `${tool.slug}-guide`);
+export function isGeneratedGuide(slug: string): boolean {
+  // Shared-template PDF guides remain accessible from their tools, but are not
+  // promoted to the editorial blog, sitemap or search index until reviewed.
+  return additionalToolBlogPosts.some((post) => post.slug === slug) ||
+    (!existingArticleSlugs.has(slug) && toolCatalog.some((tool) => tool.slug !== "pdf-tools" && slug === `${tool.slug}-guide`));
 }
 
 export function getBlogPost(slug: string) {

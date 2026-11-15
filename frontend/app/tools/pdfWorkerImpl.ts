@@ -103,7 +103,18 @@ export async function processPdf(
   if (cmd.type === "imagesToPdf") {
     const output = await PDFDocument.create();
     for (const file of files) {
-      const bytes = new Uint8Array(await file.arrayBuffer());
+      const imageBuffer = typeof file.arrayBuffer === "function"
+        ? await file.arrayBuffer()
+        : await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              if (reader.result instanceof ArrayBuffer) resolve(reader.result);
+              else reject(new Error("Unable to read image file."));
+            };
+            reader.onerror = () => reject(reader.error ?? new Error("Unable to read image file."));
+            reader.readAsArrayBuffer(file);
+          });
+      const bytes = new Uint8Array(imageBuffer);
       let image;
       if (file.type === "image/jpeg" || /\\.jpe?g$/i.test(file.name)) {
         image = await output.embedJpg(bytes);

@@ -30,10 +30,10 @@ assert.ok(indexPage.includes("nepaliLocalizedBlogPosts.map"), "Nepali blog index
 assert.ok(articlePage.includes('inLanguage: "ne"'), "Nepali article structured data must declare Nepali");
 assert.ok(articlePage.includes('"@type": "BreadcrumbList"') && articlePage.includes("breadcrumbSchema"), "Nepali articles must include localized breadcrumb structured data");
 assert.ok(articlePage.includes("generateStaticParams"), "Nepali articles must be statically enumerable");
-assert.ok(sitemap.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be included in sitemap");
+assert.ok(sitemap.includes("nepaliLocalizedBlogPosts.filter((post) => isLocalizedPageIndexable(\"ne\", `/blog/${post.slug}`))"), "Only native-reviewed Nepali blog articles may enter the sitemap");
 assert.ok(sitemap.includes("isLocalizedToolIndexable") && sitemap.includes("filter((slug) => isLocalizedToolIndexable(\"ne\", slug))"), "Only verified, indexable Nepali tool pages may enter the sitemap");
 assert.ok(sitemap.includes("nepaliLocalizedUtilitySlugs") && sitemap.includes("nepaliLocalizedFinancialSlugs"), "The candidate list must cover all localized Nepali tool groups");
-assert.ok(englishArticlePage.includes("const languages = hreflangMap") && englishArticlePage.includes("languages"), "English articles must publish reciprocal hreflang for genuine Nepali equivalents");
+assert.ok(englishArticlePage.includes("const languages = hreflangMap") && englishArticlePage.includes("languages"), "English articles must use the shared localized hreflang gate");
 assert.ok(sitemap.includes("/ne/market") && sitemap.includes("/ne/resume-builder"), "Published Nepali market and resume pages must be included in sitemap");
 assert.ok(routing.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be registered for language switching and hreflang");
 

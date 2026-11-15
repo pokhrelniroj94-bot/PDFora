@@ -110,7 +110,7 @@ assert.ok(nativeAds.includes('JSON.parse(saved).advertising === true') && native
 assert.ok(!rootLayout.includes("bauval.org/14/38ed7250c45fe280d3bdcf13969b4498"), "Root layout must not load advertising scripts unconditionally");
 assert.ok(!rootLayout.includes('import AdsterraNative from "./components/AdsterraNative"') && !rootLayout.includes("<AdsterraNative />"), "Ads must use page-specific placements rather than a global root slot");
 assert.ok(utilities.includes('import AdsterraNative from "../app/components/AdsterraNative"') && (utilities.match(/<AdsterraNative \/>/g) || []).length >= 4, "Tool pages and directory must retain their individual native ad placements");
-assert.ok(utilities.includes("<AdsterraSkyscraper />"), "Tool pages must retain the skyscraper ad format where previously placed");
+assert.ok(!utilities.includes("AdsterraSkyscraper"), "Skyscraper/banner ads must be restricted to blog pages");
 assert.ok(read("../app/blog/page.tsx").includes("<AdsterraNative />") && read("../app/blog/page.tsx").includes("<AdsterraSkyscraper />"), "Blog listing must retain its distinct native and skyscraper placements");
 assert.ok(read("../app/blog/[slug]/page.tsx").includes("<AdsterraNative />") && read("../app/blog/[slug]/page.tsx").includes("<AdsterraSkyscraper />"), "Blog articles must retain their distinct native and skyscraper placements");
 

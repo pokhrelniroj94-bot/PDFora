@@ -153,6 +153,7 @@ const enSlugs = new Set([
 const neSlugs = new Set(articleBlocks(read("lib/nepali-localized-blog-posts.ts")).map((item) => item.slug));
 for (const slug of enSlugs) assert.ok(neSlugs.has(slug), "Missing Nepali article translation: " + slug);
 
+const englishBlogSource = read("lib/blog-posts.ts");
 const englishArticlePage = read("app/blog/[slug]/page.tsx");
 const nepaliArticlePage = read("app/[locale]/blog/[slug]/page.tsx");
 assert.ok(englishArticlePage.includes('"@type": "BlogPosting"'), "English article needs BlogPosting structured data");
@@ -167,7 +168,6 @@ assert.ok(englishArticlePage.includes("post.title}</span>"), "English breadcrumb
 assert.ok(nepaliArticlePage.includes("post.title}</span>"), "Nepali breadcrumb should identify the current article");
 assert.ok(nepaliArticlePage.includes("post.sources.map"), "Nepali articles should render cited sources when provided");
 
-const englishBlogSource = read("lib/blog-posts.ts");
 const nepaliBlogSource = read("lib/nepali-localized-blog-posts.ts");
 assert.doesNotMatch(englishBlogSource, /updateBlogProcessingGuidance|browserProcessedPdfSlugs|How PDFora processes this PDF/, "English articles must not receive repeated generic processing boilerplate");
 assert.doesNotMatch(nepaliBlogSource, /updateNepaliBlogProcessingGuidance|browserProcessedNepaliPdfSlugs|PDFora मा PDF कसरी प्रशोधन हुन्छ/, "Nepali articles must not receive repeated generic processing boilerplate");

@@ -565,10 +565,10 @@ async function runTool(tool, index) {
       const invalidPdfNode = await page.send("DOM.getDocument", { depth: 1 });
       const invalidPdfInput = await page.send("DOM.querySelector", { nodeId: invalidPdfNode.root.nodeId, selector: 'input[type="file"]' });
       if (!invalidPdfInput.nodeId) throw new Error("PDF tool lost its file input before invalid-file testing.");
-      await page.send("DOM.setFileInputFiles", { nodeId: invalidPdfInput.nodeId, files: [invalidPdfPath] });
+      await page.send("DOM.setFileInputFiles", { nodeId: invalidPdfInput.nodeId, files: [tool.slug === "images-to-pdf" ? invalidImagePath : invalidPdfPath] });
       // Dispatch React's delegated file-selection events after setting the native file list.
       await page.evaluate(`() => { const input = document.querySelector('input[type="file"]'); if (input) { input.dispatchEvent(new Event("input", { bubbles: true })); input.dispatchEvent(new Event("change", { bubbles: true })); } }`);
-      if (tool.slug !== "images-to-pdf") {
+      {
         // React file-input state updates asynchronously; wait for the primary action to become enabled.
         let invalidPdfAction = false;
         const actionReadyStarted = Date.now();

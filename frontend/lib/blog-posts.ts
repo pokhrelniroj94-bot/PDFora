@@ -509,6 +509,11 @@ function updateBlogProcessingGuidance(post: BlogPost): BlogPost {
                 "Browser processing uses device memory and performance. Very large image sets may be slower on older phones; the current browser workflow has a combined 50 MB input limit.",
                 "Local processing reduces file-upload exposure, but it does not make your device, browser extensions or downloaded files risk-free. Keep your browser updated and use a trusted device."
               ]
+            : slug === "bates-numbering"
+              ? [
+                  "ASCII prefixes and zero-padded Bates numbers are added in your browser. A Nepali or other non-ASCII prefix may use the compatible server path; check the processing notice before choosing a file.",
+                  "Browser processing uses device memory and has a combined 50 MB input limit. Local processing reduces upload exposure, but does not make your device or browser risk-free."
+                ]
             : slug === "watermark" || slug === "add-background"
               ? [
                   "ASCII text watermarks and background labels are added in a Web Worker on your device and are not uploaded to PDFora's PDF processing server. Non-ASCII text, including Nepali characters, uses the compatible server path; check the notice shown by the tool.",

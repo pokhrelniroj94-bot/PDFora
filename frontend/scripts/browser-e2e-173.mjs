@@ -302,10 +302,117 @@ async function validateDownloadedFile(filePath) {
   return { file: path.basename(filePath), bytes: bytes.length, extension, valid: true };
 }
 
+// Processing / completion wording in BOTH locales. The Nepali strings are copied from the shipped UI
+// (lib/i18n/pdf-tool-ui.ts); they are matched explicitly, never produced by the code under test.
+const processingStatusPattern = /processing|please wait|merging|locally|प्रोसेस हुँदै|प्रक्रिया हुँदै|पर्खनुहोस्|जडान हुँदै|मर्ज हुँदै/i;
+const completedStatusPattern = /download (?:started|ready)|completed successfully|डाउनलोड सुरु भयो|सफलतापूर्वक पूरा भयो/i;
 const results = [];
 const nepaliRouteResults = [];
 let browserFailures = 0;
 let fatalBrowserError = false;
+
+// ---------------------------------------------------------------------------------------------
+// Nepali functional specs. Each spec is an explicit, hand-written fixture: Nepali control labels,
+// inputs, and expected output. Expected numbers were derived independently of the implementation
+// (Python reference calculations recorded in docs/qa/NEPALI_FUNCTIONAL_SPECS.md). A catalog tool
+// without a spec is reported NOT_TESTED, never PASS and never an English-assertion FAIL.
+// ---------------------------------------------------------------------------------------------
+const nepaliCatalogSpecs = {
+  "loan-emi-calculator": { expect: [/मासिक EMI:\s*NPR 21,247\.04/, /कुल भुक्तानी:\s*NPR 12,74,822\.68/, /कुल ब्याज:\s*NPR 2,74,822\.68/] },
+  "compound-interest-sip-calculator": { expect: [/अनुमानित भविष्य मूल्य:\s*NPR 10,24,224\.89/, /कुल लगानी:\s*NPR 6,00,000\.00/, /अनुमानित लाभ:\s*NPR 4,24,224\.89/] },
+  "discount-percentage-calculator": { expect: [/छुटपछि मूल्य:\s*NPR 800\.00/, /बचत:\s*NPR 200\.00/] },
+  "savings-goal-calculator": {
+    click: "गणना गर्नुहोस्",
+    expect: [/मासिक \(१२ पटक\)/, /प्रति महिना चाहिने निक्षेप: NPR 7,288\.01/, /अनुमानित कुल रकम: NPR 97,967\.70/],
+    invalid: { fill: [["लक्ष्यसम्म पुग्ने महिना", "0"]], click: "गणना गर्नुहोस्", alert: /महिना शून्यभन्दा ठूलो/ },
+  },
+  "nepal-share-calculator": {
+    click: "नाफा–नोक्सान गणना गर्नुहोस्",
+    expect: [/कुल खरिद लागत: NPR 20,075\.00/, /CGT अघिको नाफा\/नोक्सान: NPR 1,817\.50/, /खुद नाफा\/नोक्सान अनुमान: NPR 1,726\.63/],
+    invalid: { fill: [["सेयर सङ्ख्या", "0"]], click: "नाफा–नोक्सान गणना गर्नुहोस्", alert: /शून्यभन्दा ठूलो पूर्ण सङ्ख्या/ },
+  },
+  "xml-formatter-validator": {
+    click: "XML जाँच्नुहोस् र सजाउनुहोस्",
+    expect: ["<root>\n  <item id=\"1\">नमस्ते</item>\n</root>"],
+    invalid: { fill: [["XML इनपुट", "<root><unclosed></root>"]], click: "XML जाँच्नुहोस् र सजाउनुहोस्", alert: /XML मान्य छैन/ },
+  },
+  "html-tag-stripper": {
+    click: "Tag हटाउनुहोस्",
+    expect: ["नमस्ते" + "स्वागत छ फेरि।"],
+    absent: [/<h1>/, /<b>/],
+    invalid: { fill: [["HTML इनपुट", ""]], click: "Tag हटाउनुहोस्", alert: /कृपया HTML प्रविष्ट गर्नुहोस्/ },
+  },
+  "notes-to-pdf": { notesToPdf: true },
+};
+
+async function setFieldByAccessibleLabel(page, labelText, value) {
+  return page.evaluate(`(() => {
+    const expected = ${JSON.stringify(labelText)}.trim();
+    const label = [...document.querySelectorAll("main label")].find((element) => element.innerText.trim().startsWith(expected));
+    const field = label?.control;
+    if (!field) return false;
+    const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : field instanceof HTMLSelectElement ? HTMLSelectElement.prototype : HTMLInputElement.prototype;
+    Object.getOwnPropertyDescriptor(prototype, "value")?.set?.call(field, ${JSON.stringify(value)});
+    field.dispatchEvent(new Event("input", { bubbles: true }));
+    field.dispatchEvent(new Event("change", { bubbles: true }));
+    return true;
+  })()`);
+}
+async function clickExactButton(page, text) {
+  return page.evaluate(`(() => { const b = [...document.querySelectorAll("main button")].find((x) => !x.disabled && x.innerText.trim() === ${JSON.stringify(text)}); if (!b) return false; b.click(); return true; })()`);
+}
+const readMain = (page) => page.evaluate(`(() => ({ text: document.querySelector("main")?.innerText || "", result: [...document.querySelectorAll("main pre")].map((e) => e.innerText).join("\\n"), alerts: [...document.querySelectorAll('main [role="alert"]')].map((e) => e.innerText.trim()) }))()`);
+const unexpectedEnglish = /\b(?:Invalid|Enter a|must be|Please |Error:|undefined|NaN|\[object Object\])\b/;
+
+async function runNepaliSpec(page, row, slug, spec) {
+  if (spec.notesToPdf) {
+    await page.evaluate(`(() => {
+      window.__pdforaPrintCapture = { html: "", printed: false };
+      window.open = () => { const popup = { document: { open() {}, write(v) { window.__pdforaPrintCapture.html += v; }, close() { popup.print(); } }, focus() {}, print() { window.__pdforaPrintCapture.printed = true; } }; return popup; };
+    })()`);
+    if (!(await clickExactButton(page, "PDF बनाउनुहोस्"))) throw new Error("Notes-to-PDF Nepali action button is missing.");
+    await delay(150);
+    const empty = await readMain(page);
+    if (!empty.alerts.some((alert) => /कृपया पहिले नोट लेख्नुहोस्/.test(alert))) throw new Error("Empty notes did not show the Nepali validation error.");
+    row.checks.push("empty-notes validation message is Nepali and exposed as role=alert");
+    const hostile = "पहिलो लाइन <b>bold</b> & \"quoted\" <script>alert(1)</script>";
+    if (!(await setFieldByAccessibleLabel(page, "कागजातको शीर्षक", "नमूना <शीर्षक>")) || !(await setFieldByAccessibleLabel(page, "तपाईंका नोटहरू", hostile))) throw new Error("Notes-to-PDF Nepali fields were not found.");
+    if (!(await clickExactButton(page, "PDF बनाउनुहोस्"))) throw new Error("Notes-to-PDF action button disappeared.");
+    await delay(150);
+    const capture = await page.evaluate("window.__pdforaPrintCapture");
+    if (!capture.printed) throw new Error("Notes-to-PDF did not invoke the print flow.");
+    for (const needle of ["<html lang='ne'>", "@page{size:A4", "नमूना &lt;शीर्षक&gt;", "&lt;b&gt;bold&lt;/b&gt; &amp; &quot;quoted&quot; &lt;script&gt;alert(1)&lt;/script&gt;"]) {
+      if (!capture.html.includes(needle)) throw new Error("Notes-to-PDF print document is missing expected content: " + needle);
+    }
+    if (/<b>bold<\/b>/.test(capture.html.replace(/<script>window\.onload[\s\S]*$/, ""))) throw new Error("Notes-to-PDF leaked unescaped user HTML into the print document.");
+    row.checks.push("print document is Nepali (lang=ne), A4, user text HTML-escaped, print flow invoked");
+    return;
+  }
+  const before = await readMain(page);
+  if (spec.click) {
+    if (!(await clickExactButton(page, spec.click))) throw new Error("Nepali action button not found: " + spec.click);
+    await delay(200);
+  }
+  const after = await readMain(page);
+  const haystack = after.result || after.text;
+  for (const expected of spec.expect) {
+    const matched = typeof expected === "string" ? haystack.includes(expected) : expected.test(haystack);
+    if (!matched) throw new Error("Expected Nepali output not found for " + slug + ": " + String(expected) + "; actual: " + haystack.slice(0, 300));
+  }
+  for (const pattern of spec.absent || []) if (pattern.test(after.result)) throw new Error("Output unexpectedly contains " + pattern + " for " + slug);
+  if (/\bNaN\b|\bInfinity\b|\[object Object\]/.test(after.text)) throw new Error("Output contains NaN/Infinity/object placeholder.");
+  row.checks.push("explicit Nepali expected output verified" + (before.result === after.result && spec.click ? "" : ""));
+  if (spec.invalid) {
+    for (const [label, value] of spec.invalid.fill) if (!(await setFieldByAccessibleLabel(page, label, value))) throw new Error("Nepali field not found for invalid-input test: " + label);
+    if (!(await clickExactButton(page, spec.invalid.click))) throw new Error("Nepali action button not found for invalid-input test.");
+    await delay(200);
+    const bad = await readMain(page);
+    if (!bad.alerts.some((alert) => spec.invalid.alert.test(alert))) throw new Error("Invalid input did not produce the expected Nepali error alert; alerts: " + JSON.stringify(bad.alerts));
+    if (unexpectedEnglish.test(bad.alerts.join(" "))) throw new Error("Error alert contains unexpected English text: " + bad.alerts.join(" "));
+    row.checks.push("invalid input shows the expected Nepali error alert (role=alert, no English fallback)");
+  }
+}
+
 async function runTool(tool, index) {
   const row = { index: index + 1, kind: tool.kind, slug: tool.slug, status: "FAIL", checks: [], errors: [] };
   let page;
@@ -449,6 +556,18 @@ async function runTool(tool, index) {
       throw new Error("Tool rendered a missing/unimplemented configuration message.");
     }
 
+    if (localePrefix && tool.kind === "catalog") {
+      const spec = nepaliCatalogSpecs[tool.slug];
+      if (!spec) {
+        row.status = "NOT_TESTED";
+        row.notTestedReason = "No explicit Nepali functional spec exists for this tool yet. Route, language, semantics, mobile overflow and keyboard checks above passed; the tool's computation/output was NOT browser-verified in Nepali.";
+        return row;
+      }
+      await runNepaliSpec(page, row, tool.slug, spec);
+      row.outputVerified = true;
+      row.status = "PASS";
+      return row;
+    }
     if (tool.kind === "pdf") {
       const inputNode = await page.send("DOM.getDocument", { depth: 1 });
       const queries = await page.send("DOM.querySelectorAll", {
@@ -468,14 +587,14 @@ async function runTool(tool, index) {
       row.checks.push("PDF file selected");
       if (tool.slug === "merge-pdf") {
         const readMergeOrder = () => page.evaluate(`(() => [...new Set(
-          [...document.querySelectorAll('button[aria-label^="Move "]')]
-            .map((button) => button.getAttribute("aria-label")?.match(/^Move (.+) (?:up|down)$/)?.[1])
+          [...document.querySelectorAll('button[aria-label]')]
+            .map((button) => { const label = button.getAttribute("aria-label") || ""; return label.match(/^Move (.+) (?:up|down)$/)?.[1] || label.match(/^(.+) (?:माथि|तल) सार्नुहोस्$/)?.[1]; })
             .filter(Boolean)
         )])()`);
         const beforeOrder = await readMergeOrder();
         const moveDown = await page.evaluate(`(() => {
           const button = [...document.querySelectorAll('button[aria-label]')]
-            .find((item) => item.getAttribute("aria-label") === ${JSON.stringify("Move " + path.basename(fixturePath) + " down")});
+            .find((item) => item.getAttribute("aria-label") === ${JSON.stringify(localePrefix ? path.basename(fixturePath) + " तल सार्नुहोस्" : "Move " + path.basename(fixturePath) + " down")});
           if (!button || button.disabled) return false;
           button.click();
           return true;
@@ -523,11 +642,11 @@ async function runTool(tool, index) {
         }))()`);
         const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name)).length;
         statusText = finalState.statuses.map((status) => status.text).join(" | ");
-        if (downloadCount > 0 || finalState.links.length || (statusText && !/processing|please wait|merging|locally/i.test(statusText)) || finalState.alerts.length) break;
+        if (downloadCount > 0 || finalState.links.length || (statusText && !processingStatusPattern.test(statusText)) || finalState.alerts.length) break;
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));
-      const downloadSignal = /download (?:started|ready)|completed successfully/i.test(statusText) || Boolean(finalState?.links?.length);
+      const downloadSignal = completedStatusPattern.test(statusText) || Boolean(finalState?.links?.length);
       if (downloadSignal) {
         const downloadWaitStarted = Date.now();
         while (Date.now() - downloadWaitStarted < 15000) {
@@ -628,10 +747,21 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepal-public-holidays-2083") {
+        let holidayLiveVerified = false;
         const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "", search: !!document.querySelector("input") }))()');
         if (state.rows < 30) throw new Error("2083 public-holiday table is missing expected entries.");
         if (!state.links.some((href) => href.includes("moha.gov.np/en/page/government-and-public-holidays-in-2083"))) throw new Error("Official MoHA public-holiday source link is missing.");
-        if (!/Last Updated:\s*2083-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/.test(state.body)) throw new Error("Holiday page must disclose the MoHA source page update date and time.");
+        const disclosed = state.body.match(/Last Updated:\s*(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/)?.[1];
+        if (!disclosed) throw new Error("Holiday page must disclose the MoHA source page 'Last Updated' timestamp.");
+        let liveStamp = null;
+        try {
+          const response = await fetch("https://moha.gov.np/en/page/government-and-public-holidays-in-2083", { signal: AbortSignal.timeout(20000) });
+          liveStamp = (await response.text()).match(/Last Updated:\s*(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/)?.[1] || null;
+        } catch { liveStamp = null; }
+        row.disclosedSourceTimestamp = disclosed;
+        row.liveSourceTimestamp = liveStamp;
+        if (liveStamp && liveStamp !== disclosed) throw new Error("Holiday page discloses MoHA 'Last Updated: " + disclosed + "' but the live official page shows '" + liveStamp + "'. Re-verify the transcription and update the disclosure.");
+        holidayLiveVerified = Boolean(liveStamp);
         if (!state.search) throw new Error("Holiday list is missing its search input.");
         await page.evaluate(`(() => {
           const input = document.querySelector("input");
@@ -654,9 +784,10 @@ async function runTool(tool, index) {
         await delay(150);
         const filtered = await page.evaluate('({ rows: document.querySelectorAll("tbody tr").length, body: document.querySelector("tbody")?.innerText || "" })');
         if (!filtered.rows || !/Haritalika Teej|Jitiya Parwa|Muhammad Jayanti|Guru Nanak Jayanti|Siruwa Pawani/.test(filtered.body)) throw new Error("Community holiday filter did not show community observances.");
-        row.checks.push("2083 holiday table, search, community filter and official MoHA source verified");
+        row.checks.push("2083 holiday table, search, community filter and official MoHA source link verified");
         row.outputVerified = true;
-        row.status = "PASS";
+        if (holidayLiveVerified) { row.checks.push("disclosed 'Last Updated' timestamp equals the live official MoHA page"); row.status = "PASS"; }
+        else { row.status = "BLOCKED"; row.blockedReason = "Official MoHA page was unreachable or its timestamp could not be parsed from this runner; the disclosed timestamp (" + disclosed + ") was NOT independently verified."; }
         return row;
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
@@ -1323,17 +1454,17 @@ async function runTool(tool, index) {
 }
 
 try {
-  for (let index = 0; !localePrefix && index < tools.length; index += 1) {
+  for (let index = 0; index < tools.length; index += 1) {
     const result = await runTool(tools[index], index);
     results.push(result);
-    console.log((result.status === "PASS" ? "PASS " : result.status === "PARTIAL" ? "PARTIAL " : "FAIL ") +
+    console.log((["PASS", "PARTIAL", "NOT_TESTED", "BLOCKED"].includes(result.status) ? result.status + " " : "FAIL ") +
       result.index + "/174 " + result.slug + " — " +
-      (result.errors[0] || result.checks.join(", ")));
+      (result.errors[0] || result.notTestedReason || result.blockedReason || result.checks.join(", ")));
     if (fatalBrowserError) break;
   }
 
   // Dedicated locale pass across every one of the 174 registered Nepali tool routes.
-  const nepaliRoutes = allTools.map((tool) => ({
+  const nepaliRoutes = (localePrefix ? allTools : []).map((tool) => ({
     slug: tool.slug,
     kind: tool.kind,
     url: tool.kind === "pdf" ? "/ne/" + tool.slug : "/ne/tools/" + tool.slug,
@@ -1427,7 +1558,7 @@ const report = {
   generatedAt: new Date().toISOString(),
   sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
-  localeMode: localePrefix ? "ne-route-smoke" : "en-functional",
+  localeMode: localePrefix ? "ne-explicit-specs-plus-route-pass" : "en-functional",
   scope: requestedToolFilters.length ? requestedToolFilters : "all-174-tools",
   expected: requestedToolFilters.length
     ? { pdf: tools.filter((tool) => tool.kind === "pdf").length, catalog: tools.filter((tool) => tool.kind === "catalog").length, total: tools.length }
@@ -1442,6 +1573,8 @@ const report = {
     total: results.length,
     pass: results.filter((row) => row.status === "PASS").length,
     partial: results.filter((row) => row.status === "PARTIAL").length,
+    notTested: results.filter((row) => row.status === "NOT_TESTED").length,
+    blocked: results.filter((row) => row.status === "BLOCKED").length,
     fail: results.filter((row) => row.status === "FAIL").length,
     pdf: results.filter((row) => row.kind === "pdf").length,
     catalog: results.filter((row) => row.kind === "catalog").length,

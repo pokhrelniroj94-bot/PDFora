@@ -21,6 +21,7 @@ import NepaliEncodingCaseWorkspace from "../../../../components/NepaliEncodingCa
 import NepaliNepalToolsWorkspace from "../../../../components/NepaliNepalToolsWorkspace";
 import NepalLiveTools from "../../../../components/NepalLiveTools";
 import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinanceCalculatorWorkspace";
+import NepaliFinalToolsWorkspace from "../../../../components/NepaliFinalToolsWorkspace";
 import NepaliRemainingToolsWorkspace from "../../../../components/NepaliRemainingToolsWorkspace";
 import NepaliTypingTool from "../../../../components/NepaliTypingTool";
 import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
@@ -315,14 +316,15 @@ export default async function LocalizedToolPage({ params }: Props) {
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
   if (request.locale === "ne" && toolSlug === "nepali-unicode-typing") { return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTypingTool locale="ne" /></section></main>; }
-  if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator", "password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "currency-converter", "image-compressor", "image-format-converter", "preeti-unicode-converter"].includes(toolSlug)) {
+  if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator"].includes(toolSlug)) {
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliFinalToolsWorkspace slug={toolSlug} /></section></main>;
+  }
+  if (request.locale === "ne" && ["password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "currency-converter", "image-compressor", "image-format-converter", "preeti-unicode-converter"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliRemainingToolsWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && toolSlug === "resume-builder") {
-    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
-      <div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली करियर टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div>
-      <ResumeBuilder locale="ne" />
-    </main>;
+    // ResumeBuilder renders its own <main> and <h1>; wrapping it in another <main>/<h1> produced two landmarks and two h1 elements.
+    return <div lang="ne" dir="ltr"><ResumeBuilder locale="ne" /></div>;
   }
   if (request.locale === "ne" && ["email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliExtraTextWorkspace slug={toolSlug} /></section></main>;
@@ -352,8 +354,8 @@ export default async function LocalizedToolPage({ params }: Props) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली डेटा, जाँच तथा डेभलपर टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliDataToolsWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"].includes(toolSlug)) {
-    const titles:Record<string,string>={"email-signature-generator":"व्यावसायिक इमेल हस्ताक्षर निर्माता","timezone-meeting-planner":"समय क्षेत्र बैठक योजनाकार","image-dpi-calculator":"तस्बिर DPI तथा PPI क्याल्कुलेटर","video-bitrate-calculator":"भिडियो बिटरेट क्याल्कुलेटर","markdown-table-generator":"Markdown तालिका निर्माता"};
-    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><h1 className="mb-6 text-3xl font-black">{titles[toolSlug]}</h1><NepaliBrowserOnlyGrowthTools slug={toolSlug as "email-signature-generator"|"timezone-meeting-planner"|"image-dpi-calculator"|"video-bitrate-calculator"|"markdown-table-generator"}/></main>;
+    // BrowserOnlyGrowthTools renders its own <main> and <h1>; do not wrap it in a second landmark/heading.
+    return <div lang="ne" dir="ltr"><NepaliBrowserOnlyGrowthTools slug={toolSlug as "email-signature-generator"|"timezone-meeting-planner"|"image-dpi-calculator"|"video-bitrate-calculator"|"markdown-table-generator"}/></div>;
   }
   if (request.locale === "ne" && nepaliLocalizedUtilitySlugs.includes(toolSlug as (typeof nepaliLocalizedUtilitySlugs)[number])) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">यो पृष्ठका मुख्य निर्देशन र नतिजा नेपालीमा उपलब्ध छन्।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliUtilityWorkspace slug={toolSlug} /></section></main>;

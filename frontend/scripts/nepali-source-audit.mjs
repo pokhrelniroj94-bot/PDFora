@@ -57,6 +57,33 @@ const blog = read("lib/nepali-localized-blog-posts.ts");
 const blogSlugs = parse(blog, /^\s*slug:\s*"([^"]+)"/gm);
 const blogTitles = parse(blog, /^\s*title:\s*"([^"]+)"/gm);
 const blogDescriptions = parse(blog, /^\s*description:\s*"([^"]+)"/gm);
+
+const blogEntries = [...blog.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => ({ slug: match[1], offset: match.index }));
+const legacyPdfSlugs = new Set(parse(read("lib/legacy-tool-slugs.ts"), /"([a-z0-9-]+)"/g));
+const utilitySlugs = new Set(parse(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g));
+const blogEditorial = blogEntries.map((entry, index) => {
+  const source = blog.slice(entry.offset, blogEntries[index + 1]?.offset ?? blog.length);
+  const title = source.match(/title:\s*"([^"]+)"/)?.[1] ?? "";
+  const description = source.match(/description:\s*"([^"]+)"/)?.[1] ?? "";
+  const intro = source.match(/intro:\s*"([^"]+)"/)?.[1] ?? "";
+  const internalLinks = parse(source, /href:\s*"([^"]+)"/g);
+  const sourceUrls = parse(source, /url:\s*"([^"]+)"/g);
+  const brokenInternalLinks = internalLinks.filter((href) => {
+    const utility = href.match(/^\/tools\/([a-z0-9-]+)$/);
+    const pdfTool = href.match(/^\/([a-z0-9-]+)$/);
+    return utility ? !utilitySlugs.has(utility[1]) : pdfTool ? !legacyPdfSlugs.has(pdfTool[1]) : true;
+  });
+  const invalidSourceUrls = sourceUrls.filter((url) => !/^https:\/\//i.test(url));
+  return {
+    slug: entry.slug, titleLength: title.length, descriptionLength: description.length,
+    introLength: intro.length, hasNepaliScript: /[\u0900-\u097F]/u.test(source),
+    hasSections: /sections:\s*\[/u.test(source), hasFaqs: /faqs:\s*\[/u.test(source),
+    internalLinks, brokenInternalLinks, sourceUrls, missingSources: sourceUrls.length === 0,
+    invalidSourceUrls, indexable: false
+  };
+});
+const missingBlogSources = blogEditorial.filter((post) => post.missingSources).map((post) => post.slug);
+
 const sourceFiles = [
   "scripts/nepali-text-tools.test.mjs","scripts/nepali-extra-text-tools.test.mjs",
   "scripts/nepali-math-tools.test.mjs","scripts/nepali-date-time-tools.test.mjs",

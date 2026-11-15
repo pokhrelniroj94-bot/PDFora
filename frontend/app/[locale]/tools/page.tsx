@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { hreflangMap } from "../../../lib/i18n/routing";
 import { nepaliPdfRoutes } from "../../../lib/i18n/nepali-pdf-routes";
 import { nepaliToolNames } from "../../../lib/i18n/pdf-tool-names-ne";
 import {
@@ -14,7 +15,7 @@ type Props = { params: Promise<{ locale: string }> };
 export const metadata: Metadata = {
   title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
   description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
-  alternates: { canonical: "https://pd-fora.vercel.app/ne/tools" },
+  alternates: { canonical: "https://pd-fora.vercel.app/ne/tools", languages: hreflangMap("/tools") },
   robots: { index: true, follow: true },
 };
 

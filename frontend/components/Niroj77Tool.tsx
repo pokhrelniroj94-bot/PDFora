@@ -8,7 +8,7 @@ import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne";
 
-import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "https://pdfora-493r.onrender.com";
@@ -62,10 +62,25 @@ export default function NirojToolsTool({
   const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((field) => [field.name, locale === "ne" ? getNepaliPdfFieldText(field.defaultValue) || field.defaultValue || "" : field.defaultValue || ""])));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [localDownloads, setLocalDownloads] = useState<{ url: string; name: string }[]>([]);
   const [dragActive, setDragActive] = useState(false);
+  useEffect(() => () => { localDownloads.forEach((item) => URL.revokeObjectURL(item.url)); }, [localDownloads]);
   const browserCommand = (() => {
     switch (endpoint) {
       case "/api/merge": return { type: "merge" } as const;
+      case "/api/split": return value.trim() ? { type: "split", pages: value } as const : null;
+      case "/api/crop": {
+        const margin = Number.parseFloat(value || "36");
+        return Number.isFinite(margin) && margin >= 0
+          ? { type: "crop", margin, pages: extraValues.pages || "all" } as const : null;
+      }
+      case "/api/add-blank-pages": {
+        const count = Number.parseInt(extraValues.count || "1", 10);
+        return Number.isInteger(count) && count >= 1 && count <= 50 ? { type: "addBlankPages", count } as const : null;
+      }
+      case "/api/sign": return value.trim() ? { type: "sign", text: value.trim() } as const : null;
+      case "/api/page-counter": return { type: "pageCount" } as const;
+      case "/api/pdf-info": return { type: "info" } as const;
       case "/api/rotate": { const angle = Number(value); return [90, 180, 270].includes(angle) ? { type: "rotate", angle } as const : null; }
       case "/api/rotate-selected-pages": {
         const angle = Number.parseInt(extraValues.degrees || "90", 10);
@@ -168,19 +183,25 @@ export default function NirojToolsTool({
     try {
       if (browserCommand) {
         const worker = new Worker(new URL("../app/tools/pdfWorker.ts", import.meta.url), { type: "module" });
-        const result = await new Promise<{ blob?: Blob; error?: string; warnings?: string[] }>((resolve, reject) => {
-          worker.onmessage = (event: MessageEvent<{ blob?: Blob; error?: string; warnings?: string[] }>) => resolve(event.data);
+        const result = await new Promise<{ blob?: Blob; blobs?: { blob: Blob; filename: string }[]; error?: string; warnings?: string[] }>((resolve, reject) => {
+          worker.onmessage = (event: MessageEvent<{ blob?: Blob; blobs?: { blob: Blob; filename: string }[]; error?: string; warnings?: string[] }>) => resolve(event.data);
           worker.onerror = () => reject(new Error(locale === "ne" ? "ब्राउजर प्रोसेसिङ सुरु हुन सकेन।" : "Browser processing could not start."));
           worker.postMessage({ cmd: browserCommand, files });
         }).finally(() => worker.terminate());
-        if (result.error || !result.blob) throw new Error(result.error || ui.processingFailed);
-        const localUrl = window.URL.createObjectURL(result.blob);
-        const localLink = document.createElement("a");
-        localLink.href = localUrl; localLink.download = downloadName;
-        document.body.appendChild(localLink); localLink.click(); localLink.remove();
-        window.setTimeout(() => window.URL.revokeObjectURL(localUrl), 1000);
+        if (result.error || (!result.blob && !result.blobs?.length)) throw new Error(result.error || ui.processingFailed);
+        const outputs = result.blobs?.length ? result.blobs : result.blob ? [{ blob: result.blob, filename: downloadName }] : [];
+        if (outputs.length > 1) {
+          setLocalDownloads(outputs.map((item) => ({ url: window.URL.createObjectURL(item.blob), name: item.filename })));
+          setMessage(locale === "ne" ? "PDF भागहरू ब्राउजरमै तयार भए। तलबाट प्रत्येक फाइल डाउनलोड गर्नुहोस्।" : "PDF parts were created locally. Download each part below.");
+        } else {
+          const localUrl = window.URL.createObjectURL(outputs[0].blob);
+          const localLink = document.createElement("a");
+          localLink.href = localUrl; localLink.download = outputs[0].filename || downloadName;
+          document.body.appendChild(localLink); localLink.click(); localLink.remove();
+          window.setTimeout(() => window.URL.revokeObjectURL(localUrl), 1000);
+          setMessage(locale === "ne" ? "फाइल ब्राउजरमै प्रोसेस भयो; सर्भरमा पठाइएको छैन।" : "Processed locally; your file was not uploaded.");
+        }
         setFiles([]); if (inputRef.current) inputRef.current.value = "";
-        setMessage(locale === "ne" ? "फाइल ब्राउजरमै प्रोसेस भयो; सर्भरमा पठाइएको छैन।" : "Processed locally; your file was not uploaded.");
         return;
       }
       const formData = new FormData();
@@ -275,7 +296,7 @@ export default function NirojToolsTool({
   }
 
   const success =
-    message === ui.completed || (browserOnly && (message.startsWith("फाइल ब्राउजरमै") || message.startsWith("Processed locally")));
+    message === ui.completed || (browserOnly && (message.startsWith("फाइल ब्राउजरमै") || message.startsWith("Processed locally") || message.startsWith("PDF parts were created locally") || message.startsWith("PDF भागहरू ब्राउजरमै")));
 
   return (
     <div className="pdfora-workspace min-h-screen text-slate-950">
@@ -466,6 +487,14 @@ export default function NirojToolsTool({
           </button>
 
           {/* Message */}
+          {localDownloads.length > 0 && (
+            <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4" aria-label={locale === "ne" ? "डाउनलोड फाइलहरू" : "Download files"}>
+              <p className="mb-3 text-sm font-bold text-emerald-900">{locale === "ne" ? "तयार भएका PDF फाइलहरू" : "Created PDF files"}</p>
+              <ul className="space-y-2">
+                {localDownloads.map((item) => <li key={item.name}><a className="inline-flex min-h-11 items-center rounded-lg bg-white px-3 py-2 text-sm font-semibold text-emerald-800 underline" href={item.url} download={item.name}>{item.name}</a></li>)}
+              </ul>
+            </div>
+          )}
           {message && (
             <div
               role="status"

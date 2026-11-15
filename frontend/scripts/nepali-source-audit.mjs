@@ -81,6 +81,7 @@ const report = {
     duplicateBlogSlugs: duplicate(blogSlugs),
     duplicateBlogTitles: duplicate(blogTitles),
     duplicateBlogDescriptions: duplicate(blogDescriptions),
+    blogEditorial: { total: blogEditorial.length, missingSources: missingBlogSources, brokenInternalLinks: blogEditorial.flatMap((post) => post.brokenInternalLinks.map((href) => ({ slug: post.slug, href }))), invalidSourceUrls: blogEditorial.flatMap((post) => post.invalidSourceUrls.map((url) => ({ slug: post.slug, url }))), allIndexable: blogEditorial.every((post) => post.indexable) },
     indexableToolSlugs: [...indexable].sort(),
     nativeSpeakerReviewCertified: false,
     browserQaCertified: false
@@ -116,6 +117,8 @@ Generated from current source by \`npm run i18n:nepali-audit\`.
 - Missing dedicated workspace dispatch (PDF tools use the PDF workspace): ${missingDispatch.length}.
 - Missing localized title in the catalog route source (PDF titles are sourced from the PDF name dictionary): ${missingTitles.length}.
 - Duplicate blog slugs/titles/descriptions: ${duplicate(blogSlugs).length}/${duplicate(blogTitles).length}/${duplicate(blogDescriptions).length}.
+- Nepali blog editorial records checked: ${blogEditorial.length}; articles without cited sources: ${missingBlogSources.length}; broken internal tool links: ${blogEditorial.reduce((sum, post) => sum + post.brokenInternalLinks.length, 0)}.
+- All Nepali blogs remain noindex until factual/source and native-speaker editorial review is documented.
 - Explicitly indexable localized tool slugs: ${indexable.size}.
 - Native-speaker review certified: **No**.
 - Per-tool Nepali browser QA certified by this static report: **No**.

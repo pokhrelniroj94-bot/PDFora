@@ -56,6 +56,8 @@ for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "ima
   const pageSource = read("../app/" + page + "/page.tsx");
   assert.doesNotMatch(pageSource, /ToolGuide|getRequiredToolGuide/, page + " must not duplicate the shared SEO guide rendered by Niroj77Tool");
   assert.ok(pageSource.includes("showSeoContent={false}"), page + " must use its own page-specific SEO guide without appending the shared duplicate");
+  const pageLayout = read("../app/" + page + "/layout.tsx");
+  assert.doesNotMatch(pageLayout, /ToolSEOContent/, page + " must not append the same shared SEO guide from its layout");
   assert.doesNotMatch(pageSource, /How to use/, page + " must not render a second page-level how-to block beside the shared tool guide");
 }
 

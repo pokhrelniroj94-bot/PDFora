@@ -163,6 +163,15 @@ describe('PDF Worker Core', () => {
     expect(blob.size).toBeGreaterThan(0);
   });
 
+  test('remove PDF annotations and embedded-file references locally', async () => {
+    const file = await createSamplePdf('annotations.pdf');
+    const annotations = await processPdf({ type: 'removeAnnotations' }, [file]);
+    const attachments = await processPdf({ type: 'removeAttachments' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    expect((await PDFDocument.load(await readBlob(annotations.blob))).getPageCount()).toBe(2);
+    expect((await PDFDocument.load(await readBlob(attachments.blob))).getPageCount()).toBe(2);
+  });
+
   test('invalid PDF throws', async () => {
     const badFile = new File([new Uint8Array([1, 2, 3])], 'bad.txt', { type: 'text/plain' });
     const cmd: PdfCommand = { type: 'merge' };

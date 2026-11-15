@@ -557,8 +557,16 @@ async function runTool(tool, index) {
       if (!invalidPdfInput.nodeId) throw new Error("PDF tool lost its file input before invalid-file testing.");
       await page.send("DOM.setFileInputFiles", { nodeId: invalidPdfInput.nodeId, files: [invalidPdfPath] });
       if (tool.slug !== "images-to-pdf") {
-        const invalidPdfAction = await page.evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((item) => item.innerText.trim() === ${JSON.stringify(action)} && !item.disabled); if (!button) return false; button.click(); return true; })()`);
-        if (!invalidPdfAction) throw new Error("PDF tool did not expose its processing action for invalid-file testing.");
+        // React file-input state updates asynchronously; wait for the primary action to become enabled.
+        let invalidPdfAction = false;
+        const actionReadyStarted = Date.now();
+        while (Date.now() - actionReadyStarted < 3000) {
+          invalidPdfAction = await page.evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((item) => item.innerText.trim() === ${JSON.stringify(action)}); return Boolean(button && !button.disabled); })()`);
+          if (invalidPdfAction) break;
+          await delay(100);
+        }
+        if (!invalidPdfAction) throw new Error("PDF tool did not enable its processing action after the invalid file was selected.");
+        await page.evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((item) => item.innerText.trim() === ${JSON.stringify(action)} && !item.disabled); if (button) button.click(); })()`);
       }
       let invalidPdfStatus = null;
       const invalidPdfStarted = Date.now();

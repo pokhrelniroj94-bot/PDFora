@@ -55,6 +55,7 @@ assert.ok(sharedPdfGuide.includes("!isGeneratedGuide(guide.blogSlug)") && shared
 for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "images-to-pdf", "delete-pages", "extract-pages", "add-background", "bates-numbering", "pdf-to-csv", "pdf-to-bmp", "pdf-to-tiff", "pdf-to-json", "page-counter", "extract-fonts", "add-bookmarks", "pdf-to-markdown", "remove-pdf-links", "remove-attachments", "remove-annotations", "split-by-bookmarks", "remove-pdf-metadata", "pdf-information"]) {
   const pageSource = read("../app/" + page + "/page.tsx");
   assert.doesNotMatch(pageSource, /ToolGuide|getRequiredToolGuide/, page + " must not duplicate the shared SEO guide rendered by Niroj77Tool");
+  assert.ok(pageSource.includes("showSeoContent={false}"), page + " must use its own page-specific SEO guide without appending the shared duplicate");
   assert.doesNotMatch(pageSource, /How to use/, page + " must not render a second page-level how-to block beside the shared tool guide");
 }
 

@@ -81,7 +81,6 @@ assert.ok(pdfToExcelPageSource.includes("PDF to Excel Converter Online"), "The P
 const nepaliBlogPageSource = read("app/[locale]/blog/[slug]/page.tsx");
 const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;
-const isLocalizedPageIndexable = modules["localized-verification"].isLocalizedPageIndexable;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
 const isLocalizedToolIndexable = modules["localized-verification"].isLocalizedToolIndexable;
 const pdfRoutes = Object.keys(modules["nepali-pdf-routes"].nepaliPdfRoutes);

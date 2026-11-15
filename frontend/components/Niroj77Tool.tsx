@@ -2,6 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import BrandMark from "./BrandMark";
+import ToolViewAnalytics from "./ToolViewAnalytics";
+import { trackConsentAwareEvent } from "../lib/analytics-client";
 import ToolSEOContent from "./ToolSEOContent";
 import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
@@ -185,6 +187,7 @@ export default function NirojToolsTool({
       return;
     }
 
+    trackConsentAwareEvent("tool_start", { tool_slug: currentSlug, tool_category: "pdf", processing_mode: browserOnly ? "browser" : "server" });
     setLocalDownloads([]);
     setLoading(true);
     setMessage(browserOnly ? (locale === "ne" ? "तपाईंको ब्राउजरमै फाइल प्रोसेस हुँदैछ…" : "Processing locally in your browser…") : "");
@@ -210,6 +213,7 @@ export default function NirojToolsTool({
           window.setTimeout(() => window.URL.revokeObjectURL(localUrl), 1000);
           setMessage(locale === "ne" ? "फाइल ब्राउजरमै प्रोसेस भयो; सर्भरमा पठाइएको छैन।" : "Processed locally; your file was not uploaded.");
         }
+        trackConsentAwareEvent("tool_complete", { tool_slug: currentSlug, tool_category: "pdf", processing_mode: "browser" });
         setFiles([]); if (inputRef.current) inputRef.current.value = "";
         return;
       }
@@ -284,7 +288,9 @@ export default function NirojToolsTool({
       setFiles([]);
       if (inputRef.current) inputRef.current.value = "";
       setMessage(ui.completed);
+      trackConsentAwareEvent("tool_complete", { tool_slug: currentSlug, tool_category: "pdf", processing_mode: "server" });
     } catch (error) {
+      trackConsentAwareEvent("tool_error", { tool_slug: currentSlug, tool_category: "pdf", processing_mode: browserOnly ? "browser" : "server" });
       console.error(error);
 
       const timedOut =
@@ -309,6 +315,7 @@ export default function NirojToolsTool({
 
   return (
     <div className="pdfora-workspace min-h-screen text-slate-950">
+      <ToolViewAnalytics toolSlug={currentSlug} toolCategory="PDF" />
       {/* Header */}
       <header className="pdfora-workspace-header sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 shadow-[0_8px_30px_rgba(15,23,42,.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">

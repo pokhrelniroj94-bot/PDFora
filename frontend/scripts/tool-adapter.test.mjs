@@ -132,7 +132,12 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
       assert.ok(m.alternates.canonical.startsWith("https://pd-fora.vercel.app/"));
       assert.notEqual(m.alternates.canonical, absoluteUrl(`/tools/${entry.slug}`, "en"), "must not canonicalize to English");
       assert.notEqual(m.alternates.canonical, absoluteUrl("/", l), "must not canonicalize to the homepage");
-      assert.equal(m.alternates.languages, undefined, "no hreflang until a translation genuinely exists");
+      if (l === "ne" && expectIndex) {
+        assert.equal(m.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/tools/${entry.slug}`);
+        assert.equal(m.alternates.languages?.en, `https://pd-fora.vercel.app/tools/${entry.slug}`);
+      } else {
+        assert.equal(m.alternates.languages, undefined, "unpublished locales must not emit hreflang");
+      }
       assert.equal(m.title, `${entry.name} | PDFora`);
       assert.equal(m.description, entry.description);
     }

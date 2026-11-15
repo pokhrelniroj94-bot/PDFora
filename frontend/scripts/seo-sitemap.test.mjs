@@ -41,19 +41,19 @@ assert.ok(homepageSource.includes("Explore free online PDF, finance, math, text,
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
 assert.ok(englishToolPageSource.includes('title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
 assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Tip: 15%, 18% & 20% Examples"'), "The tip guide title must match the 486-impression Search Console query");
-assert.ok(englishEditorialBlogSource.includes('description: "Learn how to calculate tip with the formula, 15%, 18% and 20% examples'), "The tip guide description must lead with its actual Search Console query");
+assert.ok(englishEditorialBlogSource.includes('description: "Calculate the tip, add it to the bill and split the total per person.'), "The tip guide description must lead with the actual calculator benefit");
 assert.ok(englishEditorialBlogSource.includes('heading: "How to calculate tip: formula and worked examples"'), "The tip guide must answer the primary query in its first instructional section");
 assert.ok(catalogToolSeoSource.includes("SEO Title Checker: Review Your Page Title Before Publishing"), "The SEO title checker content must state its primary search intent");
 assert.ok(catalogToolSeoSource.includes("Use this SEO title checker with the exact HTML title"), "The SEO title checker intro must match its primary query");
 assert.ok(catalogToolSeoSource.includes("Meta Description Checker: Preview Your Search Snippet"), "The meta description checker content must state its primary search intent");
 assert.ok(catalogToolSeoSource.includes("Use this meta description checker with the exact description"), "The meta description checker intro must match its primary query");
-assert.ok(englishToolPageSource.includes('title: "Reading Time Calculator – Estimate Minutes & Speaking"'), "Reading Time metadata must target the calculator intent");
-assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Weekly & Monthly Deposits"'), "Savings Goal metadata must target deposit-planning intent");
-assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Increase or Decrease"'), "Percentage Change metadata must target calculation intent");
+assert.ok(englishToolPageSource.includes('title: "Free Reading Time Calculator – Estimate Minutes & WPM"'), "Reading Time metadata must target the calculator intent");
+assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Monthly & Weekly Savings"'), "Savings Goal metadata must target deposit-planning intent");
+assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Calculate Increase or Decrease"'), "Percentage Change metadata must target calculation intent");
 assert.ok(englishToolPageSource.includes('title: "Prime Number Checker – Test Prime or Composite"'), "Prime Number Checker metadata must target the 114-impression GSC query");
-assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Reading Time: WPM Formula & Examples"'), "Reading Time guide must retain informational search intent");
-assert.ok(englishEditorialBlogSource.includes('title: "How to Set a Savings Goal: Monthly Plan & Formula"'), "Savings guide must retain informational search intent");
-assert.ok(englishEditorialBlogSource.includes('title: "Percentage Change Formula: Increase & Decrease Examples"'), "Percentage Change guide must retain informational search intent");
+assert.ok(englishEditorialBlogSource.includes('title: "Reading Time Calculator: WPM Formula & Examples"'), "Reading Time guide must target the calculator query while retaining its formula guide intent");
+assert.ok(englishEditorialBlogSource.includes('title: "Savings Goal Calculator: Monthly & Weekly Savings Plan"'), "Savings guide must target the calculator query while retaining its planning intent");
+assert.ok(englishEditorialBlogSource.includes('title: "Percentage Change Calculator: Formula & Examples"'), "Percentage Change guide must target the calculator query while retaining formula intent");
 assert.ok(englishToolPageSource.includes("It estimates periodic interest when you enter an annual rate."), "Savings Goal FAQ must match the interest calculation");
 assert.ok(catalogToolSeoSource.includes("compounds monthly or weekly"), "Savings Goal guidance must disclose periodic compounding");
 assert.ok(nepaliLocalizedBlogSource.includes("मासिक वा साप्ताहिक अवधिअनुसार चक्रवृद्धि"), "Nepali savings guide must disclose periodic compounding");
@@ -70,7 +70,7 @@ for (const href of ["/pdf-to-excel", "/rotate-pdf"]) {
 }
 assert.ok(pdfToolSeoCoreSource.includes('"rotate-pdf": { title: "Rotate PDF Online Free – Turn Pages 90°, 180° or 270°"'), "The Rotate PDF snippet must match its page operation and free-online intent");
 assert.ok(pdfToolSeoCoreSource.includes('"pdf-to-excel": { title: "PDF to Excel Converter Online Free – Extract Tables"'), "The PDF to Excel snippet must match its conversion intent");
-assert.ok(pdfToolSeoCoreSource.includes('"delete-pages": { title: "Delete PDF Pages Online Free – Remove Selected"'), "Delete Pages metadata must match the actual Search Console query order");
+assert.ok(pdfToolSeoCoreSource.includes('"delete-pages": { title: "Delete PDF Pages Online Free – Remove Selected Pages"'), "Delete Pages metadata must match the actual Search Console query order");
 assert.ok(pdfToolSeoCoreSource.includes('"extract-pages": { title: "Extract PDF Pages Online Free – Save Selected"'), "Extract Pages metadata must match the actual Search Console query order");
 assert.ok(read("app/rotate-pdf/page.tsx").includes("Rotate PDF Online Free</h1>"), "The Rotate PDF page heading must match the primary tool intent");
 assert.ok(pdfToExcelPageSource.includes("PDF to Excel Converter Online"), "The PDF to Excel page heading must match the primary conversion intent");

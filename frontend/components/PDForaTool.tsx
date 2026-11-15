@@ -26,6 +26,7 @@ type Props = {
   queryField?: string;
   queryDefault?: string;
   showSeoContent?: boolean;
+  showInlineGuide?: boolean;
 };
 
 export default function PDForaTool({
@@ -41,6 +42,7 @@ export default function PDForaTool({
   queryField,
   queryDefault = "",
   showSeoContent = true,
+  showInlineGuide = true,
 }: Props) {
   const pathname = usePathname();
   const currentSlug = pathname.split("/").filter(Boolean).pop() ?? "";
@@ -541,34 +543,42 @@ export default function PDForaTool({
         </section>
 
         )}
-        {/* Crawlable tool guidance: keep useful content ahead of the ad unit. */}
+        {showInlineGuide && (
         <section
           aria-labelledby="how-to-use-title"
           className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7"
         >
-          <h2 id="how-to-use-title" className="text-xl font-black tracking-tight">
-            {ui.howToUse} {displayTitle}
-          </h2>
-          <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-600">
-            <li>{ui.stepSelect}</li>
-            <li>{ui.stepOptions}</li>
-            <li>{ui.stepProcess}</li>
-            <li>{ui.stepDownload}</li>
-          </ol>
+          {!showSeoContent && (
+            <>
+              <h2 className="text-xl font-black tracking-tight">
+                {ui.howToUse} {displayTitle}
+              </h2>
+              <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-6 text-slate-600">
+                <li>{ui.stepSelect}</li>
+                <li>{ui.stepOptions}</li>
+                <li>{ui.stepProcess}</li>
+                <li>{ui.stepDownload}</li>
+              </ol>
+            </>
+          )}
           <h2 className="mt-6 text-lg font-black tracking-tight">
             {ui.freeQuestion}
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">
             {ui.freeAnswer}
           </p>
-          <h2 className="mt-6 text-lg font-black tracking-tight">
-            {ui.privacyQuestion}
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            {browserOnly ? (locale === "ne" ? "यो टुलमा PDF फाइल तपाईंको ब्राउजरमै प्रक्रिया हुन्छ र PDFora सर्भरमा पठाइँदैन। ब्राउजर मेमोरीमा रहेको डेटा पेज बन्द वा रिफ्रेस गर्दा हट्छ।" : "This tool processes PDF files locally in your browser; files are not sent to PDFora's server. In-memory data is released when you close or refresh the page.") : ui.privacyAnswer}
-          </p>
+          {!showSeoContent && (
+            <>
+              <h2 className="mt-6 text-lg font-black tracking-tight">
+                {ui.privacyQuestion}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                {browserOnly ? (locale === "ne" ? "यो टुलमा PDF फाइल तपाईंको ब्राउजरमै प्रक्रिया हुन्छ र PDFora सर्भरमा पठाइँदैन। ब्राउजर मेमोरीमा रहेको डेटा पेज बन्द वा रिफ्रेस गर्दा हट्छ।" : "This tool processes PDF files locally in your browser; files are not sent to PDFora's server. In-memory data is released when you close or refresh the page.") : ui.privacyAnswer}
+              </p>
+            </>
+          )}
         </section>
-
+        )}
         {/* Advertisement is intentionally outside the upload and processing flow. */}
         <div className="mt-8 border-t border-slate-200 pt-2">
         </div>

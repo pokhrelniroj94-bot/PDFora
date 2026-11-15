@@ -18,9 +18,9 @@ export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string)
   const url = `${SITE}/${slug}`;
   const overrides: Record<string,{title:string;description:string}> = {
     "merge-pdf": { title: "Merge PDF Files Online – Combine Multiple PDFs", description: "Combine 2–20 PDF files into one document. Reorder files, merge and download a single PDF. Combined upload limit: 50 MB." },
-    "split-pdf": { title: "Split PDF Online – Extract Pages into Separate Files", description: "Split a PDF into smaller documents by selecting page ranges. Extract the pages you need, then check page order and readability before sharing." },
+    "split-pdf": { title: "Split PDF Online Free – Extract Selected Pages", description: "Choose page numbers or ranges to create a separate PDF. Download the extracted pages and check page order and readability before sharing." },
     "extract-pages": { title: "Extract PDF Pages Online Free – Save Selected", description: "Extract pages from PDF by entering page numbers or ranges (1, 3, 5–8). Download a separate PDF and check the extracted pages and order." },
-    "delete-pages": { title: "Delete PDF Pages Online Free – Remove Selected", description: "Delete pages from a PDF online by entering page numbers or ranges (2, 4, 6–8). Download a new PDF and check the remaining pages and order." },
+    "delete-pages": { title: "Delete PDF Pages Online Free – Remove Selected Pages", description: "Delete PDF pages by entering page numbers or ranges (2, 4, 6–8). Download a new PDF with the remaining pages in order, then review it before sharing." },
     "rotate-pdf": { title: "Rotate PDF Online Free – Turn Pages 90°, 180° or 270°", description: "Rotate a PDF online by 90°, 180° or 270° to fix sideways or upside-down pages. Download the corrected file and check each page orientation." },
     "pdf-to-excel": { title: "PDF to Excel Converter Online Free – Extract Tables", description: "Convert selectable PDF tables to an editable Excel XLSX workbook online. Review columns, dates, decimals and totals; scanned pages may need OCR." }
   };

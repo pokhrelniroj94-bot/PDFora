@@ -506,16 +506,19 @@ function updateBlogProcessingGuidance(post: BlogPost): BlogPost {
           paragraphs: slug === "images-to-pdf"
             ? [
                 "JPG and PNG images are converted to PDF in a Web Worker on your device and are not uploaded to PDFora's PDF processing server. WebP files are not currently handled by this local worker and may use the server path; check the notice on the tool before selecting WebP.",
-                "Browser processing uses device memory and performance. Very large image sets may be slower on older phones; the current browser workflow has a combined 50 MB input limit."
+                "Browser processing uses device memory and performance. Very large image sets may be slower on older phones; the current browser workflow has a combined 50 MB input limit.",
+                "Local processing reduces file-upload exposure, but it does not make your device, browser extensions or downloaded files risk-free. Keep your browser updated and use a trusted device."
               ]
             : slug === "watermark" || slug === "add-background"
               ? [
                   "ASCII text watermarks and background labels are added in a Web Worker on your device and are not uploaded to PDFora's PDF processing server. Non-ASCII text, including Nepali characters, uses the compatible server path; check the notice shown by the tool.",
-                  "Browser processing uses device memory and performance. Very large or unusually complex PDFs may be slower on older phones; the current browser workflow has a combined 50 MB input limit."
+                  "Browser processing uses device memory and performance. Very large or unusually complex PDFs may be slower on older phones; the current browser workflow has a combined 50 MB input limit.",
+                  "Local processing reduces file-upload exposure, but it does not make your device, browser extensions or downloaded files risk-free. Keep your browser updated and use a trusted device."
                 ]
               : [
                   "This operation runs in a Web Worker in your browser. The selected PDF is processed on your device and is not uploaded to PDFora's PDF processing server. Keep a backup of the original file and review the downloaded result before sharing it.",
-                  "Browser processing uses device memory and performance. Very large or unusually complex PDFs may be slower or may not work on older phones; the current browser workflow has a combined 50 MB input limit."
+                  "Browser processing uses device memory and performance. Very large or unusually complex PDFs may be slower or may not work on older phones; the current browser workflow has a combined 50 MB input limit.",
+                  "Local processing reduces file-upload exposure, but it does not make your device, browser extensions or downloaded files risk-free. Keep your browser updated and use a trusted device."
                 ]
         }
       : {

@@ -185,8 +185,9 @@ I </div>
 
       <p className="mt-4 text-sm leading-7 text-slate-600">
         Select one or more PNG images using the PDFora Images to PDF tool.
-        After uploading the images, process them to create a PDF document
-        that can be downloaded to your device.
+        Select the images and process them to create a PDF document that
+        can be downloaded to your device. JPG, JPEG and PNG files are handled
+        locally in your browser; WebP may use the processing service.
       </p>
 
       <h2 className="mt-10 text-2xl font-black">

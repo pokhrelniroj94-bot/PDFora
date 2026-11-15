@@ -54,7 +54,7 @@ assert.ok(toolGuideSource.includes("The processing method depends on the operati
 assert.ok(!toolGuideSource.includes("PDFora provides this workflow in a browser"), "Generic PDF guides must not imply that every operation processes locally");
 
 const deletePagesPage = read("../app/delete-pages/page.tsx");
-assert.ok(deletePagesPage.includes("runs locally in your browser") && deletePagesPage.includes("not uploaded to PDFora's processing server"), "Delete Pages must disclose its local processing method");
+assert.ok(deletePagesPage.includes("sent to PDFora's processing service") && deletePagesPage.includes("does not run locally in your browser"), "Delete Pages must disclose its server processing method");
 
 const pdfToJpgPage = read("../app/pdf-to-jpg/page.tsx");
 assert.ok(pdfToJpgPage.includes("processing service"), "PDF to JPG must disclose that the selected PDF uses the processing service");

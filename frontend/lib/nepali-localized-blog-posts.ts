@@ -330,6 +330,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के नतिजा Word र Facebook मा राख्न मिल्छ?", answer: "Unicode पाठ धेरै आधुनिक अनुप्रयोगमा प्रतिलिपि गर्न मिल्छ; प्रयोग गर्नुअघि अक्षर ठीक देखिएको जाँच्नुहोस्।" },
       { question: "के यसले पुरानो Preeti फाइल पनि बदल्छ?", answer: "त्यसका लागि Preeti–Unicode रूपान्तरण उपकरण प्रयोग गर्नुहोस्।" }
     ],
+    sources: [{ label: "Nepalify open-source typing library", url: "https://github.com/suvash/nepalify" }],
     toolLinks: [{ label: "नेपाली Unicode टाइपिङ", href: "/tools/nepali-unicode-typing" }]
   },
   {
@@ -349,6 +350,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "+977 लाई १० अङ्कभित्र गनिन्छ?", answer: "गनिँदैन। +977 देश कोड हो; त्यसपछि राष्ट्रिय नम्बर आउँछ।" },
       { question: "के उपकरणले SIM सक्रिय छ कि छैन बताउँछ?", answer: "बताउँदैन। यसले नम्बरको ढाँचा मात्र जाँच्न सक्छ।" }
     ],
+    sources: [{ label: "Nepal Telecommunications Authority: National Numbering Allocation Plan", url: "https://nta.gov.np/uploads/contents/National%20Numbering%20Allocation%20Plan.pdf" }, { label: "Ncell announcement of the 971 number range", url: "https://www.ncell.com.np/en/about/media-room/press-release/ncell-begins-issuing-new-mobile-numbers-starting-with-971" }],
     toolLinks: [{ label: "नेपाल मोबाइल नम्बर जाँचक", href: "/tools/nepal-phone-validator" }]
   },
   {

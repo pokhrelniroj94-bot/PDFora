@@ -72,7 +72,7 @@ const editorialAudit = entries.map((entry, index) => {
   const invalidSources = sourceUrls.filter((url) => {
     try { return new URL(url).protocol !== "https:"; } catch { return true; }
   });
-  const bodyText = source.replace(/https?:\/\/[^"\s]+/g, "").replace(/\\n/g, " ");
+  const bodyText = source.replace(/https?:\/\/[^"\s]+/g, "").replace(/\n/g, " ");
   const hasNepaliBody = /[\u0900-\u097F]/u.test(bodyText);
   const hasSections = /sections:\s*\[/u.test(source) && /heading:\s*"/u.test(source);
   const hasFaqs = /faqs:\s*\[/u.test(source) && /question:\s*"/u.test(source) && /answer:\s*"/u.test(source);

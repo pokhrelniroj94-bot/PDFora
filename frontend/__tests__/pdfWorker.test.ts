@@ -66,6 +66,16 @@ describe('PDF Worker Core', () => {
     expect(doc.getPageCount()).toBe(1);
   });
 
+  test('rotate only selected pages', async () => {
+    const file = await createSamplePdf('selected-rotation.pdf');
+    const { blob } = await processPdf({ type: 'rotateSelected', angle: 90, pages: '2' }, [file]);
+    const { PDFDocument, degrees } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(2);
+    expect(doc.getPage(0).getRotation().angle).toBe(0);
+    expect(doc.getPage(1).getRotation().angle).toBe(90);
+  });
+
   test('add page numbers with layout options', async () => {
     const file = await createSamplePdf('numbered.pdf');
     const { blob } = await processPdf({

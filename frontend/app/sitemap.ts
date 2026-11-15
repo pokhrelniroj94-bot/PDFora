@@ -1,4 +1,4 @@
-import { blogPosts, isCatalogGeneratedGuide } from "../lib/blog-posts";
+import { blogPosts, isGeneratedGuide } from "../lib/blog-posts";
 import type { MetadataRoute } from "next";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";

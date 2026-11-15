@@ -46,7 +46,7 @@ assert.ok(nepalTools.includes('shares,buyPrice,sellPrice,brokerRate,sebonRate,dp
 const sharedPdfGuide = read("../components/ToolSEOContent.tsx");
 assert.ok(sharedPdfGuide.includes("some supported operations run locally in your browser") && sharedPdfGuide.includes("PDFora&apos;s processing service"), "Shared PDF guidance must explain both local and service processing");
 assert.ok(sharedPdfGuide.includes("If the PDF is not accepted or processing does not start"), "Shared PDF troubleshooting must not imply every tool uploads files");
-assert.ok(sharedPdfGuide.includes("appropriate viewer or app") && !sharedPdfGuide.includes("another PDF reader rather than relying only on a success message"), "Shared PDF guide must not assume every tool downloads a PDF");
+assert.ok(sharedPdfGuide.includes("appropriate viewer or app") && sharedPdfGuide.includes("supports its output format") && !sharedPdfGuide.includes("another PDF reader"), "Shared PDF guide must check the actual output format, not assume every tool downloads a PDF");
 
 const mergeLimitCopy = read("../components/PDForaTool.tsx");
 assert.ok(mergeLimitCopy.includes('endpoint === "/api/merge"') && mergeLimitCopy.includes("Combined PDF upload limit: 50 MB total"), "Merge PDF must display its combined 50 MB limit, not a per-file limit");
@@ -55,7 +55,7 @@ assert.ok(toolGuideSource.includes("The processing method depends on the operati
 assert.ok(!toolGuideSource.includes("PDFora provides this workflow in a browser"), "Generic PDF guides must not imply that every operation processes locally");
 
 const deletePagesPage = read("../app/delete-pages/page.tsx");
-assert.ok(deletePagesPage.includes("sent to PDFora&apos;s processing service") && deletePagesPage.includes("does not run locally in your browser"), "Delete Pages must disclose its server processing method");
+assert.ok(deletePagesPage.includes("runs locally in your browser") && deletePagesPage.includes("not uploaded to PDFora&apos;s processing server"), "Delete Pages must disclose its local browser processing method");
 
 const pdfToJpgPage = read("../app/pdf-to-jpg/page.tsx");
 assert.ok(pdfToJpgPage.includes("processing service"), "PDF to JPG must disclose that the selected PDF uses the processing service");

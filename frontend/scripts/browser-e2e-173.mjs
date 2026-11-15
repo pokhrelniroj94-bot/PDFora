@@ -517,7 +517,7 @@ async function runTool(tool, index) {
         }))()`);
         const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name)).length;
         statusText = finalState.statuses.map((status) => status.text).join(" | ");
-        if (downloadCount > 0 || finalState.links.length || (statusText && !/processing|please wait/i.test(statusText)) || finalState.alerts.length) break;
+        if (downloadCount > 0 || finalState.links.length || (statusText && !/processing|please wait|merging|locally/i.test(statusText)) || finalState.alerts.length) break;
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));

@@ -217,7 +217,7 @@ for (const slug of approvedNepali) {
   const alternates = hreflangMap(localeFreePath);
   assert.equal(alternates?.en, `https://pd-fora.vercel.app${localeFreePath}`);
   assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne${localeFreePath}`);
-  assert.equal(alternates?.["x-default"], undefined, `${localeFreePath} must not publish x-default without an approved alternate`);
+  assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
 }
 for (const slug of toolRoutes) {
   assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), false, `${slug} must not enter English hreflang before explicit approval`);

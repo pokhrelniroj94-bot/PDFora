@@ -68,7 +68,7 @@ export default function NirojToolsTool({
   const browserCommand = (() => {
     switch (endpoint) {
       case "/api/merge": return { type: "merge" } as const;
-      case "/api/images-to-pdf": return files.length > 0 && files.every((file) => file.type === "image/jpeg" || file.type === "image/png" || /\\.(jpe?g|png)$/i.test(file.name)) ? { type: "imagesToPdf" } as const : null;
+      case "/api/images-to-pdf": return files.length > 0 && files.every((file) => file.type === "image/jpeg" || file.type === "image/png" || file.name.toLowerCase().endsWith(".jpg") || file.name.toLowerCase().endsWith(".jpeg") || file.name.toLowerCase().endsWith(".png")) ? { type: "imagesToPdf" } as const : null;
       case "/api/split": return value.trim() ? { type: "split", pages: value } as const : null;
       case "/api/crop": {
         const margin = Number.parseFloat(value || "36");
@@ -87,7 +87,7 @@ export default function NirojToolsTool({
       case "/api/flatten": return { type: "flatten" } as const;
       case "/api/remove-annotations": return { type: "removeAnnotations" } as const;
       case "/api/remove-attachments": return { type: "removeAttachments" } as const;
-      case "/api/add-background": return /^[\\x20-\\x7E]+$/.test(extraValues.text || "DRAFT")
+      case "/api/add-background": return Array.from(extraValues.text || "DRAFT").every((char) => char.charCodeAt(0) >= 32 && char.charCodeAt(0) <= 126) ? { type: "watermark", text: extraValues.text || "DRAFT", opacity: 0.12, color: extraValues.color || "#E5E7EB" } as const : null;
         ? { type: "watermark", text: extraValues.text || "DRAFT", opacity: 0.12, color: extraValues.color || "#E5E7EB" } as const : null;
       case "/api/rotate": { const angle = Number(value); return [90, 180, 270].includes(angle) ? { type: "rotate", angle } as const : null; }
       case "/api/rotate-selected-pages": {

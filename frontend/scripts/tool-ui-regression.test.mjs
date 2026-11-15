@@ -46,6 +46,7 @@ assert.ok(nepalTools.includes('shares,buyPrice,sellPrice,brokerRate,sebonRate,dp
 const sharedPdfGuide = read("../components/ToolSEOContent.tsx");
 assert.ok(sharedPdfGuide.includes("some supported operations run locally in your browser") && sharedPdfGuide.includes("PDFora&apos;s processing service"), "Shared PDF guidance must explain both local and service processing");
 assert.ok(sharedPdfGuide.includes("If the PDF is not accepted or processing does not start"), "Shared PDF troubleshooting must not imply every tool uploads files");
+assert.ok(sharedPdfGuide.includes("appropriate viewer or app") && !sharedPdfGuide.includes("another PDF reader rather than relying only on a success message"), "Shared PDF guide must not assume every tool downloads a PDF");
 
 const mergeLimitCopy = read("../components/PDForaTool.tsx");
 assert.ok(mergeLimitCopy.includes('endpoint === "/api/merge"') && mergeLimitCopy.includes("Combined PDF upload limit: 50 MB total"), "Merge PDF must display its combined 50 MB limit, not a per-file limit");

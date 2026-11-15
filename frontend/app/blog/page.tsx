@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Fragment } from "react";
 import { hreflangMap } from "../../lib/i18n/routing";
 import { blogPosts, isGeneratedGuide } from "../../lib/blog-posts";
-import AdsterraNative from "../components/AdsterraNative";
 import AdsterraSkyscraper from "../components/AdsterraSkyscraper";
 import BlogPopunder from "../components/BlogPopunder";
 
@@ -45,7 +44,7 @@ export default function BlogIndexPage() {
               </article>
               {index === 3 && (
                 <div className="md:col-span-2">
-                  <AdsterraNative />
+                  
                 </div>
               )}
             </Fragment>

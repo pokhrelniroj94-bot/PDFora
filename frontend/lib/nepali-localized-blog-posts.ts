@@ -687,11 +687,53 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
   },
 ];
 
-export const nepaliLocalizedBlogPosts: BlogPost[] = [...priorityNepaliLocalizedBlogPosts,
+const browserProcessedNepaliPdfSlugs = new Set([
+  "merge-pdf", "split-pdf", "rotate-pdf", "rotate-selected-pages", "extract-pages",
+  "delete-pages", "reorder-pdf", "add-page-numbers", "watermark", "crop-pdf",
+  "add-blank-pages", "sign-pdf", "page-counter", "pdf-information",
+]);
+
+function updateNepaliBlogProcessingGuidance(post: BlogPost): BlogPost {
+  const primaryHref = post.toolLinks[0]?.href ?? "";
+  const isPdfTool = primaryHref.startsWith("/") && !primaryHref.startsWith("/tools/") &&
+    !primaryHref.startsWith("/ne/tools/") && primaryHref !== "/";
+  const slug = primaryHref.replace(/^\\//, "").replace(/^ne\\//, "");
+  const section = isPdfTool
+    ? browserProcessedNepaliPdfSlugs.has(slug)
+      ? {
+          heading: "PDFora मा PDF कसरी प्रशोधन हुन्छ?",
+          paragraphs: [
+            "यो काम PDFora को Web Worker मार्फत तपाईंको आफ्नै ब्राउजरमा हुन्छ। छानिएको PDF तपाईंको डिभाइसमा नै प्रशोधन हुन्छ र PDFora को PDF processing server मा अपलोड हुँदैन। मूल फाइलको प्रतिलिपि सुरक्षित राख्नुहोस् र नतिजा साझा गर्नुअघि जाँच्नुहोस्।",
+            "ब्राउजर प्रशोधनमा तपाईंको डिभाइसको RAM र गति प्रयोग हुन्छ। ठूला वा जटिल PDF पुरानो मोबाइलमा ढिलो हुन सक्छन्। हाल browser workflow मा जम्मा ५० MB सम्मको फाइल सीमा लागू हुन्छ।"
+          ]
+        }
+      : {
+          heading: "PDFora मा PDF कसरी प्रशोधन हुन्छ?",
+          paragraphs: [
+            "यो काम हाल PDFora को browser-only PDF worker मा उपलब्ध छैन। काम पूरा गर्न छानिएको फाइल PDFora को processing server मा पठाइन्छ। फाइल छान्नुअघि टुलमा देखाइएको गोपनीयता सूचना पढ्नुहोस् र मूल फाइल सुरक्षित राख्नुहोस्।",
+            "फाइलको गुणस्तर र compatibility जाँच्न सकेपछि मात्र थप PDF काम browser मा सारिन्छ। सबै PDF operation browser मै हुन्छन् भन्ने नठान्नुहोस्।"
+          ]
+        }
+    : {
+        heading: "ब्राउजर प्रशोधन, गोपनीयता र डाटाको ताजापन",
+        paragraphs: [
+          "PDFora का utility टुलमा पाठ, गणना र समर्थित फाइल रूपान्तरण सामान्यतया तपाईंको ब्राउजरमै हुन्छ। तर ताजा विनिमय दर, बजार समाचार र परिवर्तन भइरहने सार्वजनिक जानकारी बाह्य स्रोत वा PDFora को data endpoint बाट आउन सक्छ।",
+          "टुलमा देखाइएको स्रोत, समय र गणनाको आधार जाँच्नुहोस्। महत्त्वपूर्ण आर्थिक, कानुनी वा व्यावसायिक निर्णयअघि नतिजा स्वतन्त्र रूपमा पुष्टि गर्नुहोस्।"
+        ]
+      };
+  return {
+    ...post,
+    updated: "2026-11-15",
+    sections: [...post.sections.filter((item) => item.heading !== section.heading), section],
+  };
+}
+
+export const nepaliLocalizedBlogPosts: BlogPost[] = [
+  ...priorityNepaliLocalizedBlogPosts,
   ...coreNepaliLocalizedBlogPosts,
   ...additionalNepaliLocalizedBlogPosts,
   ...nepaliPdfBlogPosts,
-];
+].map(updateNepaliBlogProcessingGuidance);
 
 export function getNepaliLocalizedBlogPost(slug: string) {
   return nepaliLocalizedBlogPosts.find((post) => post.slug === slug);

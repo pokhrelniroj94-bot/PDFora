@@ -116,9 +116,9 @@ export async function processPdf(
           });
       const bytes = new Uint8Array(imageBuffer);
       let image;
-      if (file.type === "image/jpeg" || /\\.jpe?g$/i.test(file.name)) {
+      if (file.type === "image/jpeg" || file.name.toLowerCase().endsWith(".jpg") || file.name.toLowerCase().endsWith(".jpeg")) {
         image = await output.embedJpg(bytes);
-      } else if (file.type === "image/png" || /\\.png$/i.test(file.name)) {
+      } else if (file.type === "image/png" || file.name.toLowerCase().endsWith(".png")) {
         image = await output.embedPng(bytes);
       } else {
         throw new Error("Browser image-to-PDF supports JPG and PNG files. Convert WebP to PNG first.");

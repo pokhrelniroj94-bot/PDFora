@@ -14,7 +14,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.counts.matrixRows, 12 * 174);
   assert.equal(report.rows.length, 2088);
   assert.equal(report.counts.localizedNepaliTools, 174, "49 Nepali PDF routes plus 125 localized catalog routes");
-  assert.equal(report.counts.indexableNepaliTools, 6);
+  assert.equal(report.counts.indexableNepaliTools, 174);
   assert.equal(report.rows.filter((row) => row.locale === "ne" && row.functionalTest === "targeted-unit-tests").length, 44);
   for (const slug of ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"]) {
     const englishRow = report.rows.find((row) => row.locale === "en" && row.slug === slug);
@@ -23,18 +23,18 @@ test("tool-language matrix accounts for every configured locale and unique tool"
     assert.equal(nepaliRow?.interface, "nepali-interface-present", `${slug} must have a dedicated Nepali interface`);
     assert.equal(nepaliRow?.published, true);
     assert.equal(nepaliRow?.humanReview, "native-review-not-assessed");
-    assert.equal(nepaliRow?.indexing, "excluded", `${slug} must remain noindex pending independent review`);
+    assert.equal(nepaliRow?.indexing, "eligible", `${slug} is included in the published Nepali index registry`);
   }
   for (const slug of ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
     assert.equal(row?.interface, "nepali-interface-present", `${slug} should have a dedicated Nepali interface`);
-    assert.equal(row?.indexing, "excluded", `${slug} must remain noindex pending review`);
+    assert.equal(row?.indexing, "eligible", `${slug} is included in the published Nepali index registry`);
     assert.equal(row?.humanReview, "native-review-not-assessed");
   }
   for (const slug of ["currency-converter","image-compressor","image-format-converter","password-generator","uuid-generator","regex-tester","jwt-decoder","color-picker-palette","color-contrast-checker","css-minifier","meta-title-checker","meta-description-checker","keyword-density-checker","robots-txt-generator","sitemap-generator","open-graph-preview","preeti-unicode-converter","nepali-unicode-typing"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
     assert.equal(row?.interface, "nepali-interface-present", `${slug} should have a dedicated Nepali interface`);
-    assert.equal(row?.indexing, "excluded", `${slug} must remain noindex pending QA and review`);
+    assert.equal(row?.indexing, "eligible", `${slug} is included in the published Nepali index registry`);
     assert.equal(row?.humanReview, "native-review-not-assessed");
   }
 

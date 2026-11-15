@@ -589,6 +589,9 @@ test("PDF SEO metadata is unique, canonical and within search description length
     descriptions.add(metadata.description);
     assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
     assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
+    assert.equal(metadata.alternates.languages?.en, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " English hreflang");
+    assert.equal(metadata.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/${guide.slug}`, guide.slug + " reciprocal Nepali hreflang");
+    assert.equal(metadata.alternates.languages?.["x-default"], metadata.alternates.languages?.en, guide.slug + " x-default hreflang");
   }
   const deletePages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "delete-pages"), "delete-pages");
   const extractPages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "extract-pages"), "extract-pages");

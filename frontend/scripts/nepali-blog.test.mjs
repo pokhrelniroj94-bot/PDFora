@@ -44,6 +44,8 @@ console.log(`Nepali blog coverage passed: ${expected.length} editorial articles 
 const entries = [...nepali.matchAll(/slug:\\s*"([^"]+)"/g)].map((match) => ({ slug: match[1], offset: match.index }));
 const toolRouteSource = read("lib/i18n/nepali-tool-routes.ts");
 const pdfRouteSource = read("lib/i18n/nepali-pdf-routes.ts");
+const legacyPdfSource = read("lib/legacy-tool-slugs.ts");
+const knownPdfSlugs = new Set([...legacyPdfSource.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]));
 const knownToolSlugs = new Set([
   ...[...toolRouteSource.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]),
   ...[...pdfRouteSource.matchAll(/^  "([a-z0-9-]+)":/gm)].map((match) => match[1]),
@@ -63,8 +65,9 @@ const editorialAudit = entries.map((entry, index) => {
   const toolLinks = [...source.matchAll(/href:\\s*"([^"]+)"/g)].map((match) => match[1]);
   const sourceUrls = [...source.matchAll(/url:\\s*"([^"]+)"/g)].map((match) => match[1]);
   const invalidLinks = toolLinks.filter((href) => {
-    const match = href.match(/^\\/tools\\/([a-z0-9-]+)$/);
-    return !match || !knownToolSlugs.has(match[1]);
+    const utilityMatch = href.match(/^\\/tools\\/([a-z0-9-]+)$/);
+    const pdfMatch = href.match(/^\\/([a-z0-9-]+)$/);
+    return utilityMatch ? !knownToolSlugs.has(utilityMatch[1]) : pdfMatch ? !knownPdfSlugs.has(pdfMatch[1]) : true;
   });
   const invalidSources = sourceUrls.filter((url) => {
     try { return new URL(url).protocol !== "https:"; } catch { return true; }

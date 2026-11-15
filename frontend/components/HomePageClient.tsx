@@ -32,7 +32,7 @@ const faqs = [
   {
     question: "How are my files processed?",
     answer:
-      "Files selected for processing are temporarily sent to the PDFora processing backend so the requested operation can be completed.",
+      "Processing depends on the tool and selected options. Tools marked as browser-based process files on your device without uploading them to PDFora. Other tools or unsupported formats may use the PDFora processing service. Check the notice on each tool before selecting a file.",
   },
   {
     question: "Are my uploaded files stored permanently?",

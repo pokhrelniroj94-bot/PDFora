@@ -1,8 +1,28 @@
-﻿"use client";
+"use client";
+
+import { useEffect, useState } from "react";
 
 import Script from "next/script";
 
 export default function AdsterraNative() {
+  const [allowed, setAllowed] = useState(false);
+
+  useEffect(() => {
+    const readConsent = () => {
+      try {
+        const saved = localStorage.getItem("pdfora-cookie-preferences-v1");
+        setAllowed(!!saved && JSON.parse(saved).advertising === true);
+      } catch {
+        setAllowed(false);
+      }
+    };
+    readConsent();
+    window.addEventListener("pdfora:consent-updated", readConsent);
+    return () => window.removeEventListener("pdfora:consent-updated", readConsent);
+  }, []);
+
+  if (!allowed) return null;
+
   return (
     <section
       aria-label="Advertisement"

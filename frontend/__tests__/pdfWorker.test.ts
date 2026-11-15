@@ -1,6 +1,13 @@
 ﻿import { processPdf, PdfCommand } from "../app/tools/pdfWorkerImpl";
 
 describe('PDF Worker Core', () => {
+  const readTextBlob = (blob: Blob): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result ?? ""));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsText(blob);
+    });
   const readBlob = (blob: Blob): Promise<ArrayBuffer> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -140,8 +147,8 @@ describe('PDF Worker Core', () => {
     const file = await createSamplePdf('report.pdf');
     const count = await processPdf({ type: 'pageCount' }, [file]);
     const info = await processPdf({ type: 'info' }, [file]);
-    expect(new TextDecoder().decode(await readBlob(count.blob))).toContain('Pages: 2');
-    expect(new TextDecoder().decode(await readBlob(info.blob))).toContain('Page dimensions:');
+    expect(await readTextBlob(count.blob)).toContain('Pages: 2');
+    expect(await readTextBlob(info.blob)).toContain('Page dimensions:');
   });
 
   test('edit and remove PDF metadata locally', async () => {

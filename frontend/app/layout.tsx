@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { headers } from "next/headers";
 import CookieConsent from "../components/CookieConsent";
-import AdsterraNative from "./components/AdsterraNative";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
 import SiteFooter from "../components/SiteFooter";
@@ -28,7 +27,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body className="min-h-full flex flex-col">
         <SiteLanguageBar />
         {children}
-        <AdsterraNative />
         <SiteFooter />
         <ToolDirectory />
         <Script id="pdfora-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({

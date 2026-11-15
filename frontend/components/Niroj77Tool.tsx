@@ -63,6 +63,18 @@ export default function NirojToolsTool({
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [dragActive, setDragActive] = useState(false);
+  const browserCommand = (() => {
+    switch (endpoint) {
+      case "/api/merge": return { type: "merge" } as const;
+      case "/api/rotate": { const angle = Number(value); return [90, 180, 270].includes(angle) ? { type: "rotate", angle } as const : null; }
+      case "/api/extract-pages": return { type: "extract", pages: value } as const;
+      case "/api/delete-pages": return { type: "deletePages", pages: value } as const;
+      case "/api/reorder": return { type: "reorder", order: value } as const;
+      case "/api/watermark": return { type: "watermark", text: value } as const;
+      default: return null;
+    }
+  })();
+  const browserOnly = browserCommand !== null;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -126,9 +138,26 @@ export default function NirojToolsTool({
     }
 
     setLoading(true);
-    setMessage("");
+    setMessage(browserOnly ? (locale === "ne" ? "तपाईंको ब्राउजरमै फाइल प्रोसेस हुँदैछ…" : "Processing locally in your browser…") : "");
 
     try {
+      if (browserCommand) {
+        const worker = new Worker(new URL("../app/tools/pdfWorker.ts", import.meta.url), { type: "module" });
+        const result = await new Promise<{ blob?: Blob; error?: string; warnings?: string[] }>((resolve, reject) => {
+          worker.onmessage = (event: MessageEvent<{ blob?: Blob; error?: string; warnings?: string[] }>) => resolve(event.data);
+          worker.onerror = () => reject(new Error(locale === "ne" ? "ब्राउजर प्रोसेसिङ सुरु हुन सकेन।" : "Browser processing could not start."));
+          worker.postMessage({ cmd: browserCommand, files });
+        }).finally(() => worker.terminate());
+        if (result.error || !result.blob) throw new Error(result.error || ui.processingFailed);
+        const localUrl = window.URL.createObjectURL(result.blob);
+        const localLink = document.createElement("a");
+        localLink.href = localUrl; localLink.download = downloadName;
+        document.body.appendChild(localLink); localLink.click(); localLink.remove();
+        window.setTimeout(() => window.URL.revokeObjectURL(localUrl), 1000);
+        setFiles([]); if (inputRef.current) inputRef.current.value = "";
+        setMessage(locale === "ne" ? "फाइल ब्राउजरमै प्रोसेस भयो; सर्भरमा पठाइएको छैन।" : "Processed locally; your file was not uploaded.");
+        return;
+      }
       const formData = new FormData();
 
       if (multiple) {

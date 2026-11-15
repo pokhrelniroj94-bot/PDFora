@@ -129,6 +129,12 @@ jobs:
             docs/qa/BROWSER_E2E_174_REPORT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.md
+            docs/i18n/TRANSLATION_COVERAGE.json
+            docs/i18n/TRANSLATION_COVERAGE.md
+            docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.json
+            docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.md
+            docs/i18n/NEPALI_SOURCE_AUDIT.json
+            docs/i18n/NEPALI_SOURCE_AUDIT.md
           if-no-files-found: warn
       - name: Fail CI when any individual E2E check fails
         if: always() && steps.browser-e2e.outcome == 'failure'

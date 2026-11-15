@@ -23,12 +23,13 @@ const { buildPdfToolMetadata } = pdfToolSeoCore;
 const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
-test("every curated Nepali blog article is a real localized route with hreflang", () => {
+test("every curated Nepali blog article is a real localized route but remains noindex pending native review", () => {
   assert.equal(nepaliLocalizedBlogPosts.length, 35);
   for (const post of nepaliLocalizedBlogPosts) {
     const localizedPath = "/blog/" + post.slug;
     assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);
-    assert.equal(routing.hreflangMap(localizedPath)?.ne, "https://pd-fora.vercel.app/ne" + localizedPath);
+    assert.equal(routing.hasIndexableLocalizedPage(localizedPath, "ne"), false, "Unreviewed article must remain noindex: " + localizedPath);
+    assert.equal(routing.hreflangMap(localizedPath)?.ne, undefined, "Unreviewed article must not advertise hreflang: " + localizedPath);
   }
 });
 
@@ -377,9 +378,9 @@ test("routing: absolute URLs keep existing canonical conventions", () => {
   assert.equal(routing.absoluteUrl("/tools/x", "de"), "https://pd-fora.vercel.app/de/tools/x");
 });
 
-test("hreflang: only reviewed English/Nepali equivalents are advertised", () => {
+test("hreflang: only explicitly approved English/Nepali equivalents are advertised", () => {
   const homeMap = routing.hreflangMap("/");
-  assert.deepEqual(Object.keys(homeMap).sort(), ["en", "ne", "x-default"]);
+  assert.equal(homeMap, undefined, "Nepali homepage must not publish hreflang until native review is approved");
   const avail = new Set(["ne", "ar"]);
   const map = routing.hreflangMap("/tools/x", { isAvailable: (l) => avail.has(l) });
   assert.deepEqual(Object.keys(map).sort(), ["ar", "en", "ne", "x-default"]);

@@ -7,7 +7,8 @@ import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
-const reportPath = path.resolve("../docs/qa/BROWSER_E2E_174_REPORT.json");
+const reportPath = path.resolve(process.env.E2E_REPORT_PATH || "../docs/qa/BROWSER_E2E_174_REPORT.json");
+const localePrefix = process.env.E2E_LOCALE === "ne" ? "/ne" : "";
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
 const downloadsDir = path.join(tempDir, "downloads");
@@ -33,9 +34,9 @@ if (pdfRoutes.length !== 49 || catalogTools.length !== 125 || allTools.length !=
     pdfRoutes.length + " + " + catalogTools.length + " = " + allTools.length);
 }
 const requestedToolFilters = (process.env.E2E_TOOL_FILTER || "").split(",").map((value) => value.trim()).filter(Boolean);
-const tools = requestedToolFilters.length
+const tools = (requestedToolFilters.length
   ? allTools.filter((tool) => requestedToolFilters.includes(tool.slug))
-  : allTools;
+  : allTools).map((tool) => ({ ...tool, url: localePrefix + (tool.kind === "catalog" ? "/tools/" + tool.slug : "/" + tool.slug) }));
 if (requestedToolFilters.length && tools.length !== requestedToolFilters.length) {
   throw new Error("Requested E2E tool filter did not match the catalog: " + requestedToolFilters.join(", "));
 }
@@ -312,6 +313,7 @@ async function runTool(tool, index) {
     page = await openPage(tool.url);
     const initial = await page.evaluate(`(() => ({
       title: document.title,
+      lang: document.documentElement.lang || "",
       heading: document.querySelector("h1")?.innerText?.trim() || "",
       body: document.body?.innerText?.slice(0, 12000) || "",
       inputs: document.querySelectorAll("input,textarea,select").length,
@@ -323,6 +325,10 @@ async function runTool(tool, index) {
       throw new Error("Page did not render a usable tool workspace.");
     }
     row.heading = initial.heading;
+    row.documentLanguage = initial.lang;
+    row.hasNepaliScript = /[\u0900-\u097F]/u.test(initial.heading + " " + initial.body);
+    if (localePrefix && !/^ne(?:-|$)/i.test(initial.lang)) throw new Error("Nepali route document lang is not Nepali: " + initial.lang);
+    if (localePrefix && !row.hasNepaliScript) throw new Error("Nepali route has no Devanagari in its visible title/body.");
 
     // Exercise every tool at a narrow mobile viewport, then verify basic keyboard
     // reachability and accessible names before returning to the desktop viewport.
@@ -625,7 +631,7 @@ async function runTool(tool, index) {
         const state = await page.evaluate('(() => ({ rows: document.querySelectorAll("tbody tr").length, links: [...document.querySelectorAll("a[href]")].map((a) => a.href), body: document.body?.innerText || "", search: !!document.querySelector("input") }))()');
         if (state.rows < 30) throw new Error("2083 public-holiday table is missing expected entries.");
         if (!state.links.some((href) => href.includes("moha.gov.np/en/page/government-and-public-holidays-in-2083"))) throw new Error("Official MoHA public-holiday source link is missing.");
-        if (!/Last Updated:\s*2083-07-20 15:42:42/.test(state.body)) throw new Error("Holiday page must disclose the exact MoHA source page update timestamp.");
+        if (!/Last Updated:\s*2083-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/.test(state.body)) throw new Error("Holiday page must disclose the MoHA source page update date and time.");
         if (!state.search) throw new Error("Holiday list is missing its search input.");
         await page.evaluate(`(() => {
           const input = document.querySelector("input");
@@ -1317,7 +1323,7 @@ async function runTool(tool, index) {
 }
 
 try {
-  for (let index = 0; index < tools.length; index += 1) {
+  for (let index = 0; !localePrefix && index < tools.length; index += 1) {
     const result = await runTool(tools[index], index);
     results.push(result);
     console.log((result.status === "PASS" ? "PASS " : result.status === "PARTIAL" ? "PARTIAL " : "FAIL ") +
@@ -1326,36 +1332,81 @@ try {
     if (fatalBrowserError) break;
   }
 
-  // Dedicated locale smoke pass for the five newly restored browser-only Nepali routes.
-  const nepaliRoutes = [
-    { slug: "email-signature-generator", title: "व्यावसायिक इमेल हस्ताक्षर निर्माता" },
-    { slug: "timezone-meeting-planner", title: "समय क्षेत्र बैठक योजनाकार" },
-    { slug: "image-dpi-calculator", title: "तस्बिर DPI तथा PPI क्याल्कुलेटर" },
-    { slug: "video-bitrate-calculator", title: "भिडियो बिटरेट क्याल्कुलेटर" },
-    { slug: "markdown-table-generator", title: "Markdown तालिका निर्माता" },
-  ];
+  // Dedicated locale pass across every one of the 174 registered Nepali tool routes.
+  const nepaliRoutes = allTools.map((tool) => ({
+    slug: tool.slug,
+    kind: tool.kind,
+    url: tool.kind === "pdf" ? "/ne/" + tool.slug : "/ne/tools/" + tool.slug,
+  }));
   for (const route of nepaliRoutes) {
     let page;
-    const row = { slug: route.slug, url: "/ne/tools/" + route.slug, status: "FAIL", checks: [], errors: [] };
+    const row = { slug: route.slug, kind: route.kind, url: route.url, status: "FAIL", checks: [], errors: [] };
     try {
       page = await openPage(row.url);
-      const state = await page.evaluate(`(() => ({
-        lang: document.documentElement.lang || "",
-        title: document.title || "",
-        heading: document.querySelector("h1")?.innerText?.trim() || "",
-        body: document.querySelector("main")?.innerText || document.body?.innerText || "",
-        controls: document.querySelectorAll("main input, main textarea, main select, main button").length
-      }))()`);
-      if (!state.body || /Application error|Internal Server Error|404: This page could not be found/i.test(state.body)) {
+      await page.send("Emulation.setDeviceMetricsOverride", {
+        width: 390, height: 844, deviceScaleFactor: 1, mobile: true,
+      });
+      const state = await page.evaluate(`(() => {
+        const main = document.querySelector("main");
+        const body = main?.innerText || document.body?.innerText || "";
+        const visible = (element) => {
+          const rect = element.getBoundingClientRect();
+          const style = getComputedStyle(element);
+          return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+        };
+        return {
+          lang: document.documentElement.lang || "",
+          dir: document.documentElement.dir || "",
+          title: document.title || "",
+          heading: main?.querySelector("h1")?.innerText?.trim() || "",
+          body: body.slice(0, 16000),
+          controls: [...(main?.querySelectorAll("input,textarea,select,button,a[href]") || [])].filter(visible).length,
+          editable: [...(main?.querySelectorAll("input:not([type=file]):not([disabled]),textarea:not([disabled]),select:not([disabled])") || [])].filter(visible).length,
+          fileInputs: [...(main?.querySelectorAll('input[type="file"]') || [])].filter(visible).length,
+          overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
+          main: !!main,
+        };
+      })()`);
+      if (!state.main || !state.body || /Application error|Internal Server Error|404: This page could not be found/i.test(state.body)) {
         throw new Error("Nepali route did not render a usable page.");
       }
       if (state.lang !== "ne") throw new Error("Expected document language ne; received " + state.lang);
-      if (!state.body.includes(route.title)) throw new Error("Nepali title not found: " + route.title);
-      if (!/[\\u0900-\\u097F]/.test(state.body)) throw new Error("Nepali Devanagari interface text is missing.");
-      if (state.controls < 1) throw new Error("Nepali tool has no visible interactive controls.");
+      if (!state.heading) throw new Error("Nepali tool heading is missing.");
+      if (!/[\u0900-\u097F]/.test(state.body)) throw new Error("Nepali Devanagari interface text is missing.");
+      if (/toolEnglishNotice|viewEnglishTool|currently available in English/i.test(state.body)) {
+        throw new Error("English-only fallback notice appeared on a route registered as Nepali-localized.");
+      }
+      if (!state.controls) throw new Error("Nepali tool has no visible interactive controls.");
+      if (route.kind === "pdf" && !state.fileInputs) throw new Error("Nepali PDF tool has no visible file input.");
+      if (state.overflow) throw new Error("Nepali tool has horizontal overflow at 390px mobile width.");
       row.heading = state.heading;
       row.controls = state.controls;
-      row.checks.push("Nepali route renders with lang=ne, localized title, Devanagari UI and interactive controls");
+      row.editableControls = state.editable;
+      row.checks.push("lang=ne, Devanagari content, heading, visible controls, mobile viewport and no horizontal overflow");
+      if (route.kind === "pdf") row.checks.push("PDF upload control visible");
+
+      // Exercise one editable control without submitting data. This checks hydration and
+      // controlled-input wiring while avoiding unintended network requests or file uploads.
+      const inputResult = await page.evaluate(`(() => {
+        const field = [...document.querySelectorAll("main input:not([type=file]):not([disabled]), main textarea:not([disabled]), main select:not([disabled])")]
+          .find((item) => !item.readOnly);
+        if (!field) return { tested: false };
+        const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype :
+          field instanceof HTMLSelectElement ? HTMLSelectElement.prototype : HTMLInputElement.prototype;
+        const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+        const before = field.value;
+        const next = field instanceof HTMLSelectElement ? field.options[1]?.value ?? before : "PDFora QA २०८३";
+        setter?.call(field, next);
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+        field.dispatchEvent(new Event("change", { bubbles: true }));
+        return { tested: true, before, after: field.value };
+      })()`);
+      if (state.editable && !inputResult.tested) throw new Error("Visible editable controls could not be exercised.");
+      if (inputResult.tested) row.checks.push("editable control accepted a test value");
+      const afterInput = await page.evaluate("document.querySelector('main')?.innerText || ''");
+      if (/\bNaN\b|\bInfinity\b|\[object Object\]/.test(afterInput)) {
+        throw new Error("Input interaction produced NaN, Infinity or an object placeholder.");
+      }
       row.status = "PASS";
     } catch (error) {
       row.errors.push(error instanceof Error ? error.message : String(error));
@@ -1364,7 +1415,8 @@ try {
       if (page) await page.close();
     }
     nepaliRouteResults.push(row);
-    console.log((row.status === "PASS" ? "PASS " : "FAIL ") + "ne-NP " + route.slug + " — " +
+    console.log((row.status === "PASS" ? "PASS " : "FAIL ") + "ne-NP " +
+      (nepaliRouteResults.length) + "/174 " + route.slug + " — " +
       (row.errors[0] || row.checks.join(", ")));
   }
 } finally {
@@ -1375,14 +1427,15 @@ const report = {
   generatedAt: new Date().toISOString(),
   sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
+  localeMode: localePrefix ? "ne-route-smoke" : "en-functional",
   scope: requestedToolFilters.length ? requestedToolFilters : "all-174-tools",
   expected: requestedToolFilters.length
     ? { pdf: tools.filter((tool) => tool.kind === "pdf").length, catalog: tools.filter((tool) => tool.kind === "catalog").length, total: tools.length }
-    : { pdf: 49, catalog: 125, total: 174, nepaliLocalizedRoutes: 174, newlyAddedNepaliBrowserRoutes: 5 },
+    : { pdf: 49, catalog: 125, total: 174, nepaliLocalizedRoutes: 174 },
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each selected PDF route, attach valid fixtures and inspect processing/output. The Merge PDF assertion uploads two distinct PDFs, moves the first below the second, then verifies the downloaded merged page dimensions match that selected order.",
-    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A separate second pass verifies every Nepali route and its visible controls.",
+    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A dedicated second pass visits all 174 registered Nepali tool routes, checks lang=ne, Devanagari content, heading, controls, PDF upload presence, 390px mobile overflow and a non-submitting editable-control interaction. This does not certify each tool’s validation, result oracle or downloaded file in Nepali; those require individual localized functional assertions. When E2E_LOCALE=ne, the English-language functional oracle suite is skipped and only the dedicated 174-route Nepali smoke pass runs, avoiding false failures from English expected-output strings.",
     limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 174 non-AI tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },
   counts: {

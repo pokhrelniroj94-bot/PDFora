@@ -258,5 +258,59 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
 
   if (slug === "open-graph-preview") return <section className="space-y-4"><h2 className="text-xl font-black">Open Graph Preview</h2><label><span className={label}>og:title</span><input className={input} value={source} onChange={(e) => setSource(e.target.value)} placeholder="पृष्ठ शीर्षक" /></label><label><span className={label}>og:description</span><textarea className={input} value={secondary} onChange={(e) => setSecondary(e.target.value)} /></label><label><span className={label}>og:image URL</span><input className={input} value={third} onChange={(e) => setThird(e.target.value)} placeholder="https://example.com/image.jpg" /></label><div className="overflow-hidden rounded-2xl border border-slate-200"><div className="relative aspect-[1.91/1] bg-slate-100">{third && <NextImage src={third} alt="Open Graph preview" fill unoptimized sizes="(max-width: 768px) 100vw, 600px" className="object-cover" onError={() => setError("तस्बिर URL लोड भएन।")} />}</div><div className="p-4"><p className="text-xs uppercase text-slate-500">WEBSITE PREVIEW</p><h3 className="font-bold">{source || "पृष्ठ शीर्षक"}</h3><p className="text-sm text-slate-600">{secondary || "पृष्ठको संक्षिप्त विवरण यहाँ देखिन्छ।"}</p>{error && <p role="alert" className="text-xs text-red-700">{error}</p>}</div></div></section>;
 
+
+  if (slug === "xml-formatter-validator") {
+    const validateXml = () => {
+      setError("");
+      try {
+        if (!source.trim()) throw new Error("पहिले XML सामग्री राख्नुहोस्।");
+        const parsed = new DOMParser().parseFromString(source, "application/xml");
+        const parserError = parsed.querySelector("parsererror");
+        if (parserError) throw new Error("XML syntax अमान्य छ। Tag, attribute र closing tag जाँच गर्नुहोस्।");
+        const serialized = new XMLSerializer().serializeToString(parsed);
+        const formatted = serialized.replace(/>\\s*</g, ">\\n<").split("\\n").map((line) => line.trim()).filter(Boolean).map((line, index, lines) => {
+          const depth = Math.max(0, lines.slice(0, index).filter((item) => /^<[^!?/][^>]*>$/.test(item) && !/\\/>$/.test(item)).length - lines.slice(0, index).filter((item) => /^<\\//.test(item)).length);
+          return "  ".repeat(depth) + line;
+        }).join("\\n");
+        setGenerated(formatted);
+      } catch (cause) { setGenerated(""); setError(cause instanceof Error ? cause.message : "XML जाँच गर्न सकिएन।"); }
+    };
+    return <section className="space-y-4"><h2 className="text-xl font-black">XML फर्म्याट तथा जाँच</h2><label className="block"><span className={label}>XML सामग्री</span><textarea className={input + " min-h-48 font-mono"} value={source} onChange={(e) => { setSource(e.target.value); setGenerated(""); setError(""); }} placeholder="<root><item>नमूना</item></root>" /></label><button className="rounded-xl bg-teal-700 px-4 py-2.5 font-bold text-white" onClick={validateXml}>XML जाँच तथा फर्म्याट गर्नुहोस्</button>{error && <p role="alert" className="text-sm text-red-700">{error}</p>}{generated && <><pre role="status" className={panel + " whitespace-pre-wrap break-all"}>{generated}</pre><button className="underline" onClick={() => copy(generated)}>XML कपी गर्नुहोस्</button></>}</section>;
+  }
+
+  if (slug === "html-tag-stripper") {
+    const strip = () => {
+      setError("");
+      try {
+        if (!source.trim()) throw new Error("HTML सामग्री राख्नुहोस्।");
+        const template = document.createElement("template");
+        template.innerHTML = source;
+        template.content.querySelectorAll("script,style,iframe,object,embed").forEach((node) => node.remove());
+        setGenerated((template.content.textContent || "").replace(/[ \\t]+/g, " ").replace(/\\n{3,}/g, "\\n\\n").trim());
+      } catch { setError("HTML सामग्री प्रक्रिया गर्न सकिएन।"); setGenerated(""); }
+    };
+    return <section className="space-y-4"><h2 className="text-xl font-black">HTML Tag हटाउने</h2><label className="block"><span className={label}>HTML सामग्री</span><textarea className={input + " min-h-40 font-mono"} value={source} onChange={(e) => { setSource(e.target.value); setGenerated(""); }} placeholder="<p>नमस्कार <strong>नेपाल</strong></p>" /></label><button className="rounded-xl bg-teal-700 px-4 py-2.5 font-bold text-white" onClick={strip}>HTML Tag हटाउनुहोस्</button>{error && <p role="alert" className="text-sm text-red-700">{error}</p>}{generated && <><pre role="status" className={panel + " whitespace-pre-wrap"}>{generated}</pre><button className="underline" onClick={() => copy(generated)}>पाठ कपी गर्नुहोस्</button></>}</section>;
+  }
+
+  if (slug === "notes-to-pdf") return <section className="space-y-4"><h2 className="text-xl font-black">नोटबाट PDF</h2><label className="block"><span className={label}>शीर्षक</span><input className={input} value={secondary} onChange={(e) => setSecondary(e.target.value)} placeholder="मेरो नोट" /></label><label className="block"><span className={label}>नोट लेख्नुहोस्</span><textarea className={input + " min-h-64"} value={source} onChange={(e) => setSource(e.target.value)} placeholder="यहाँ आफ्ना नोट लेख्नुहोस्..." /></label><button disabled={!source.trim()} className="rounded-xl bg-teal-700 px-4 py-2.5 font-bold text-white disabled:opacity-50" onClick={() => { const win = window.open("", "_blank", "noopener,noreferrer"); if (!win) { setError("Print window खोल्न सकिएन। Pop-up अनुमति दिनुहोस्।"); return; } win.document.write("<!doctype html><html lang='ne'><head><meta charset='utf-8'><title>" + (secondary || "नोट").replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c] || c)) + "</title><style>body{font-family:Arial,sans-serif;padding:32px;white-space:pre-wrap;line-height:1.7}h1{font-size:22px}</style></head><body><h1>" + (secondary || "नोट").replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c] || c)) + "</h1><main>" + source.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;") + "</main></body></html>"); win.document.close(); win.focus(); win.print(); setError(""); }} >PDF का रूपमा सुरक्षित गर्नुहोस्</button>{error && <p role="alert" className="text-sm text-red-700">{error}</p>}<p className="text-xs text-slate-500">ब्राउजरको Print संवादमा “Save as PDF” छान्नुहोस्। नोटहरू PDFora सर्भरमा पठाइँदैनन्।</p></section>;
+
+  if (slug === "savings-goal-calculator") {
+    const target = Number(third), saved = Number(secondary), months = Number(length), rate = Number(flags);
+    const valid = [target, saved, months, rate].every(Number.isFinite) && target > 0 && saved >= 0 && saved < target && Number.isInteger(months) && months > 0 && rate >= 0 && rate <= 100;
+    const monthlyRate = rate / 1200;
+    const monthly = valid ? (target - saved) * (monthlyRate === 0 ? 1 / months : monthlyRate / (Math.pow(1 + monthlyRate, months) - 1)) : null;
+    return <section className="space-y-4"><h2 className="text-xl font-black">बचत लक्ष्य क्याल्कुलेटर</h2><label className="block"><span className={label}>लक्ष्य रकम (रु.)</span><input className={input} type="number" min="1" value={third} onChange={(e) => setThird(e.target.value)} /></label><label className="block"><span className={label}>हालको बचत (रु.)</span><input className={input} type="number" min="0" value={secondary} onChange={(e) => setSecondary(e.target.value)} /></label><label className="block"><span className={label}>अवधि (महिना)</span><input className={input} type="number" min="1" value={length} onChange={(e) => setLength(e.target.value)} /></label><label className="block"><span className={label}>अनुमानित वार्षिक ब्याज (%)</span><input className={input} type="number" min="0" max="100" step="0.1" value={flags} onChange={(e) => setFlags(e.target.value)} /></label>{monthly === null ? <p role="alert" className="text-sm text-red-700">लक्ष्य हालको बचतभन्दा बढी, अवधि सकारात्मक पूर्ण महिना र ब्याज ०–१००% हुनुपर्छ।</p> : <div role="status" className={panel}>आवश्यक मासिक बचत: <strong>रु. {monthly.toLocaleString("en-IN",{maximumFractionDigits:2})}</strong><p className="text-xs text-slate-500">स्थिर मासिक जम्मा र मासिक चक्रवृद्धि ब्याजको अनुमान; कर, शुल्क र दर परिवर्तन समावेश छैन।</p></div>}</section>;
+  }
+
+  if (slug === "nepal-share-calculator") {
+    const qty = Number(length), buy = Number(source), sell = Number(secondary), broker = Number(third), sebon = Number(flags);
+    const valid = [qty,buy,sell,broker,sebon].every(Number.isFinite) && Number.isInteger(qty) && qty > 0 && buy > 0 && sell >= 0 && broker >= 0 && broker <= 5 && sebon >= 0 && sebon <= 1;
+    const turnover = valid ? qty * (buy + sell) : 0;
+    const gross = valid ? qty * (sell - buy) : 0;
+    const charges = valid ? qty * buy * broker / 100 + qty * sell * broker / 100 + qty * sell * sebon / 100 + 25 : 0;
+    const net = gross - charges;
+    return <section className="space-y-4"><h2 className="text-xl font-black">शेयर नाफा–नोक्सान क्याल्कुलेटर</h2><div className="grid gap-3 sm:grid-cols-2"><label><span className={label}>कित्ता</span><input className={input} type="number" min="1" step="1" value={length} onChange={(e) => setLength(e.target.value)} /></label><label><span className={label}>खरिद मूल्य प्रति कित्ता (रु.)</span><input className={input} type="number" min="0.01" value={source} onChange={(e) => setSource(e.target.value)} /></label><label><span className={label}>बिक्री मूल्य प्रति कित्ता (रु.)</span><input className={input} type="number" min="0" value={secondary} onChange={(e) => setSecondary(e.target.value)} /></label><label><span className={label}>Broker शुल्क (%)</span><input className={input} type="number" min="0" max="5" step="0.01" value={third} onChange={(e) => setThird(e.target.value)} /></label><label><span className={label}>SEBON शुल्क (%)</span><input className={input} type="number" min="0" max="1" step="0.001" value={flags} onChange={(e) => setFlags(e.target.value)} /></label></div>{!valid ? <p role="alert" className="text-sm text-red-700">कित्ता पूर्ण सकारात्मक संख्या, खरिद मूल्य सकारात्मक, बिक्री मूल्य शून्य वा बढी र शुल्क मान्य दायरामा राख्नुहोस्।</p> : <div role="status" className={panel}>कुल खरिद/बिक्री कारोबार: रु. {turnover.toLocaleString("en-IN",{maximumFractionDigits:2})}<br/>कुल नाफा/नोक्सान: रु. {gross.toLocaleString("en-IN",{maximumFractionDigits:2})}<br/>अनुमानित शुल्क: रु. {charges.toLocaleString("en-IN",{maximumFractionDigits:2})}<br/><strong>शुल्कपछिको अनुमानित नाफा/नोक्सान: रु. {net.toLocaleString("en-IN",{maximumFractionDigits:2})}</strong><p className="text-xs text-slate-500">Broker/SEBON शुल्क प्रयोगकर्ताले राखेको दर हो; DP शुल्क रु. २५ अनुमान गरिएको छ। पूँजीगत लाभकर, बजारको वास्तविक दर र लागू हुने नियम छुट्टै पुष्टि गर्नुहोस्।</p></div>}</section>;
+  }
+
   return null;
 }

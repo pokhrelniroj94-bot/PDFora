@@ -56,6 +56,10 @@ for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "ima
   if (page === "add-background" || page === "bates-numbering") assert.doesNotMatch(pageSource, /How to use (Add PDF Background|Bates Numbering PDF)/, page + " must not render a second generic how-to block");
 }
 
+const mergePage = read("../app/merge-pdf/page.tsx");
+assert.ok(mergePage.includes("showSeoContent={false}") && mergePage.includes("showInlineGuide={false}"), "Merge PDF must use its hand-written guide without a second shared guide block");
+assert.ok(pdfora.includes("showInlineGuide = true") && pdfora.includes("{!showSeoContent && ("), "PDForaTool must not render duplicate how-to and privacy sections beside the shared SEO guide");
+
 const mergeLimitCopy = read("../components/PDForaTool.tsx");
 assert.ok(mergeLimitCopy.includes('endpoint === "/api/merge"') && mergeLimitCopy.includes("Combined PDF upload limit: 50 MB total"), "Merge PDF must display its combined 50 MB limit, not a per-file limit");
 assert.ok(mergeLimitCopy.includes("Merging PDFs locally in your browser") && mergeLimitCopy.includes("No files were uploaded to the server"), "Merge PDF must disclose its actual browser-only processing path");

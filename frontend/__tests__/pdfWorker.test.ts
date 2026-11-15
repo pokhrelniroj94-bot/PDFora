@@ -58,6 +58,29 @@ describe('PDF Worker Core', () => {
     expect(page.getRotation().angle).toBe(90);
   });
 
+  test('extract selected pages', async () => {
+    const file = await createSamplePdf('extract.pdf');
+    const { blob } = await processPdf({ type: 'extract', pages: '2' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(1);
+  });
+
+  test('add page numbers with layout options', async () => {
+    const file = await createSamplePdf('numbered.pdf');
+    const { blob } = await processPdf({
+      type: 'addPageNumbers',
+      start: 1,
+      position: 'top-center',
+      skipFirst: true,
+      fontSize: 10,
+    }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(2);
+    expect(blob.size).toBeGreaterThan(0);
+  });
+
   test('watermark adds text', async () => {
     const file = await createSamplePdf('e.pdf');
     const cmd: PdfCommand = { type: 'watermark', text: 'TEST' };

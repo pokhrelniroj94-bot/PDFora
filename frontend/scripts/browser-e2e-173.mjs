@@ -1256,24 +1256,23 @@ async function runTool(tool, index) {
           const alert = document.querySelector('main [role="alert"]')?.innerText || "";
           return { count: fields.length, values: fields.map((field) => field.value), alert };
         })()`);
-        if (invalidState.count !== 3 || !/loan amount|interest rate|loan term/i.test(invalidState.alert)) {
-          throw new Error("EMI validation must keep all three editable fields visible and explain invalid input.");
+        const status = await page.locator('main [role="status"]').innerText().catch(() => "");
+        if (invalidState.count !== 3 || invalidState.alert || !/enter the loan amount/i.test(status)) {
+          throw new Error("Empty EMI fields must remain visible without a premature validation error and show neutral guidance.");
         }
-        await page.evaluate(`(() => {
-          const field = document.querySelectorAll('main input:not([type="file"])')[0];
-          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
-          setter?.call(field, "1000000");
-          field.dispatchEvent(new Event("input", { bubbles: true }));
-          field.dispatchEvent(new Event("change", { bubbles: true }));
-        })()`);
-        await delay(150);
-        await page.evaluate(`(() => {
-          const field = document.querySelectorAll('main input:not([type="file"])')[2];
-          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
-          setter?.call(field, "60.5");
-          field.dispatchEvent(new Event("input", { bubbles: true }));
-          field.dispatchEvent(new Event("change", { bubbles: true }));
-        })()`);
+        const setEmiField = async (index, value) => {
+          await page.evaluate(`(([index, value]) => {
+            const field = document.querySelectorAll('main input:not([type="file"])')[index];
+            const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+            setter?.call(field, value);
+            field.dispatchEvent(new Event("input", { bubbles: true }));
+            field.dispatchEvent(new Event("change", { bubbles: true }));
+          })(${JSON.stringify([index, value])})`);
+          await delay(150);
+        };
+        await setEmiField(0, "1000000");
+        await setEmiField(1, "10");
+        await setEmiField(2, "60.5");
         await delay(150);
         const fractionalState = await page.evaluate(`(() => ({
           count: document.querySelectorAll('main input:not([type="file"])').length,
@@ -1282,14 +1281,7 @@ async function runTool(tool, index) {
         if (fractionalState.count !== 3 || !/whole-number|whole number/i.test(fractionalState.alert)) {
           throw new Error("EMI must reject fractional months without hiding editable controls.");
         }
-        await page.evaluate(`(() => {
-          const field = document.querySelectorAll('main input:not([type="file"])')[2];
-          const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
-          setter?.call(field, "60");
-          field.dispatchEvent(new Event("input", { bubbles: true }));
-          field.dispatchEvent(new Event("change", { bubbles: true }));
-        })()`);
-        await delay(150);
+        await setEmiField(2, "60");
         const recovered = await page.evaluate("document.querySelector('main')?.innerText || ''");
         if (!recovered.includes("Monthly EMI:") || !recovered.includes("21,247.04")) {
           throw new Error("EMI did not recover after correcting invalid values.");

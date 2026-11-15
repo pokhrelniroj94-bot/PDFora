@@ -3,10 +3,7 @@ import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
 export const metadata = getPdfToolMetadata("delete-pages");
 
 import Niroj77Tool from "../../components/Niroj77Tool";
-import ToolGuide from "../../components/ToolGuide";
-import { getRequiredToolGuide } from "../../lib/tool-guides";
 
-const guide = getRequiredToolGuide("delete-pages");
 
 export default function Page() {
   return (
@@ -236,7 +233,7 @@ export default function Page() {
         </div>
       </section>
       <section className="mx-auto max-w-4xl px-4 pb-10 sm:px-6"><h2 className="text-xl font-black">PDF page management reference</h2><p className="mt-2 text-sm leading-6 text-slate-600">For another explanation of page numbering, document restrictions and page deletion workflows, see the <a className="font-semibold text-blue-700 underline" href="https://helpx.adobe.com/acrobat/desktop/edit-documents/organize-pages/delete-pages.html" target="_blank" rel="noopener noreferrer">Adobe Acrobat guide to deleting PDF pages</a>. The steps may differ between software; this reference is not an endorsement or a requirement to use Acrobat.</p></section>
-      <div className="mx-auto max-w-4xl px-4 pb-10 sm:px-6"><ToolGuide guide={guide}/></div>
+      <div className="mx-auto max-w-4xl px-4 pb-10 sm:px-6"></div>
     </main>
   );
 }

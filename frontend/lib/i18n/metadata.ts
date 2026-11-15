@@ -34,9 +34,9 @@ export function buildLocaleMetadata({ locale, path, title, description }: Locale
   const isCatalogTool = Boolean(catalogToolSlug);
   const indexable = published && (
     isPdfTool
-      ? isLocalizedToolIndexable(locale, pdfSlug)
+      ? locale === "en" || isLocalizedToolIndexable(locale, pdfSlug)
       : isCatalogTool
-        ? isLocalizedToolIndexable(locale, catalogToolSlug!)
+        ? locale === "en" || isLocalizedToolIndexable(locale, catalogToolSlug!)
         : locale === "en" || isLocalizedPageIndexable(locale, path)
   );
   const languages = indexable ? hreflangMap(path) : undefined;

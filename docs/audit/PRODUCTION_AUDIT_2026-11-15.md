@@ -2,7 +2,6 @@
 
 ## Scope and evidence
 
-- The first SEO guide patch exposed a missing comma during CI lint; it was corrected in commit `7950bdd94476f1fb58048dab9deac480fa14d6a0`. The corrected commit still requires its own passing CI run.
 
 Reviewed the `master` source at `a4fabaaf143dc5fda2e43a97c3d7c1ad401cc881`, the completed production QA workflow [#43681868550](https://github.com/pokhrelniroj94-bot/PDFora/actions/runs/43681868550), its functional browser report, the production Lighthouse artifact, selected SEO tool pages, the FastAPI route definitions, and the Render service inventory.
 
@@ -46,7 +45,7 @@ The backend currently declares 56 FastAPI routes (51 POST, 5 GET). The frontend 
 - The six catalog SEO tools are browser-tested: Meta Title Checker, Meta Description Checker, Keyword Density Checker, Robots.txt Generator, XML Sitemap Generator and Open Graph Preview.
 - Shared SEO utility tests cover Unicode character counts, keyword phrase matching, robots.txt line-injection prevention, HTTP(S)-only sitemap URLs, XML escaping, duplicate URL removal, fragment rejection and Open Graph attribute escaping.
 - The live Meta Title Checker page has task-specific guidance and correctly explains that Google can rewrite title links.
-- The live Robots.txt Generator page was found to use generic, repeated step-by-step copy rather than instructions tailored to robots.txt. This is a content-quality/SEO issue, not a runtime failure. PR #171 adds specific steps and accuracy guidance for the Keyword Density, Robots.txt, Sitemap and Open Graph tools.
+- The live Robots.txt Generator page was found to use generic, repeated step-by-step copy rather than instructions tailored to robots.txt. This is a content-quality/SEO issue, not a runtime failure. PR #172 adds specific steps and accuracy guidance for the Keyword Density, Robots.txt, Sitemap and Open Graph tools.
 - The SEO audit is not a claim that every page is indexed, ranks, or has unique editorial content. Tool-page SEO status remains separate from functional PASS. Continue manual review of page-specific usefulness, visible output, internal links, canonical/robots metadata, and native-language quality before indexing more localized pages.
 - Do not use keyword density as a ranking target. Do not publish duplicate/near-duplicate pages or generic boilerplate as a substitute for tool-specific instructions.
 
@@ -73,6 +72,8 @@ Render lists two active Free web services, both connected to the same repository
 - `PDFora-backend` → `https://pdfora-backend.onrender.com` (no reference found in the current repository source).
 
 Both report the same live backend commit. The second service appears redundant, but it was not deleted or changed because it may have external consumers not visible in this repository.
+
+- CI on the intermediate patch revisions caught a missing comma and then duplicate SEO advice object keys. Both were corrected before the current PR head; the current head still needs a clean full CI run.
 
 ## Release status
 

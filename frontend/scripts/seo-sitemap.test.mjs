@@ -18,6 +18,7 @@ const niroj77ToolSource = read("components/Niroj77Tool.tsx");
 const nepseLabPageSource = read("app/nepse-lab/page.tsx");
 const ocrPageSource = read("app/ocr-pdf/page.tsx");
 const generatedBlogPageSource = read("app/blog/[slug]/page.tsx");
+const blogToolCtaSource = read("components/BlogToolCTA.tsx");
 const blogPostsSource = read("lib/blog-posts.ts");
 const robotsSource = read("app/robots.ts");
 const layoutSource = read("app/layout.tsx");
@@ -166,6 +167,10 @@ assert.match(ocrPageSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\
 assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unreviewed generated guide pages must remain noindex until editorial review");
 assert.match(generatedBlogPageSource, /!isCatalogGeneratedGuide\(post\.slug\)\s*&&\s*post\.toolLinks\[0\]/, "Every reviewed editorial guide with a primary tool link must show an above-the-fold tool CTA");
 assert.ok(generatedBlogPageSource.includes("Ready to try this workflow? Open the matching tool."), "Non-calculator editorial guides must explain the next practical tool action");
+assert.match(generatedBlogPageSource, /<BlogToolCTA/, "Reviewed editorial guides must use the shared tracked CTA component");
+assert.match(blogToolCtaSource, /preferences\?\.analytics !== true/, "Blog-to-tool analytics must respect the saved analytics consent choice");
+assert.ok(blogToolCtaSource.includes('event: "blog_to_tool_click"'), "Blog-to-tool clicks must be measurable as a GA4 event");
+assert.ok(blogToolCtaSource.includes("blog_slug") && blogToolCtaSource.includes("tool_path"), "Conversion events must identify the guide and destination tool without collecting document data");
 const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);

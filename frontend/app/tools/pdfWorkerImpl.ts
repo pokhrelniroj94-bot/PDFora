@@ -14,6 +14,7 @@ export type PdfCommand =
   | { type: "deletePages"; pages: string }
   | { type: "reorder"; order: string } // e.g. "3,1,2"
   | { type: "rotate"; angle: number } // 0,90,180,270
+  | { type: "rotateSelected"; angle: number; pages: string }
   | { type: "addPageNumbers"; start: number; format?: string; position?: string; skipFirst?: boolean; fontSize?: number }
   | { type: "watermark"; text: string; opacity?: number }
   | { type: "compress" };
@@ -202,6 +203,19 @@ export async function processPdf(
       const pages = await outputDoc.copyPages(src, src.getPageIndices());
       pages.forEach((p) => p.setRotation(degree));
       pages.forEach((p) => outputDoc.addPage(p));
+      break;
+    }
+    case "rotateSelected": {
+      const src = pdfDocs[0];
+      if (![90, 180, 270].includes(cmd.angle)) throw new Error("Rotation must be 90, 180 or 270 degrees");
+      const selected = cmd.pages.trim().toLowerCase() === "all"
+        ? new Set(src.getPageIndices())
+        : new Set(parsePageList(cmd.pages, src.getPageCount()));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page, index) => {
+        if (selected.has(index)) page.setRotation(degrees(cmd.angle));
+        outputDoc.addPage(page);
+      });
       break;
     }
     case "addPageNumbers": {

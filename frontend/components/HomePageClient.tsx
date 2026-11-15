@@ -448,7 +448,7 @@ export default function HomePageClient() {
             <InfoCard
               icon="🔒"
               title="Temporary processing"
-              description="Uploaded files are sent to the processing backend for the requested operation rather than being presented as a permanent file library."
+              description="Processing depends on the selected tool and options. Browser-based tools keep supported files on your device; other operations use the processing service. Temporary server files are cleaned according to the Privacy Policy."
             />
           </div>
         </div>

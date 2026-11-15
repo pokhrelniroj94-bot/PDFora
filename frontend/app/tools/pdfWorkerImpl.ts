@@ -9,6 +9,11 @@ import { PDFDocument, StandardFonts, degrees, rgb } from "pdf-lib";
  */
 export type PdfCommand =
   | { type: "merge" }
+  | { type: "crop"; margin: number; pages?: string }
+  | { type: "addBlankPages"; count: number }
+  | { type: "sign"; text: string }
+  | { type: "pageCount" }
+  | { type: "info" }
   | { type: "split"; pages: string } // e.g. "1,3-5"
   | { type: "extract"; pages: string }
   | { type: "deletePages"; pages: string }
@@ -138,6 +143,63 @@ export async function processPdf(
         const pages = await outputDoc.copyPages(doc, doc.getPageIndices());
         pages.forEach((p) => outputDoc.addPage(p));
       }
+      break;
+    }
+    case "crop": {
+      const src = pdfDocs[0];
+      const margin = Number.isFinite(cmd.margin) ? Math.max(0, cmd.margin) : 0;
+      const selected = !cmd.pages || cmd.pages.trim().toLowerCase() === "all"
+        ? new Set(src.getPageIndices())
+        : new Set(parsePageList(cmd.pages, src.getPageCount()));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page, index) => {
+        if (selected.has(index)) {
+          const { width, height } = page.getSize();
+          if (margin * 2 >= width || margin * 2 >= height) throw new Error("Crop margin is too large for page " + (index + 1));
+          page.setCropBox(margin, margin, width - margin * 2, height - margin * 2);
+        }
+        outputDoc.addPage(page);
+      });
+      break;
+    }
+    case "addBlankPages": {
+      const src = pdfDocs[0];
+      const count = Math.max(1, Math.min(50, Math.floor(cmd.count)));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      const last = src.getPages()[src.getPageCount() - 1];
+      const { width, height } = last.getSize();
+      for (let index = 0; index < count; index += 1) outputDoc.addPage([width, height]);
+      break;
+    }
+    case "sign": {
+      const src = pdfDocs[0];
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      const lastPage = outputDoc.getPages()[outputDoc.getPageCount() - 1];
+      const font = await outputDoc.embedFont(StandardFonts.HelveticaOblique);
+      lastPage.drawText(cmd.text.slice(0, 120), { x: 48, y: 48, size: 20, font, color: rgb(0.08, 0.2, 0.42) });
+      break;
+    }
+    case "pageCount": {
+      const src = pdfDocs[0];
+      resultBlob = new Blob(["PDFora PDF page report\nFile: " + files[0].name + "\nPages: " + src.getPageCount() + "\nFile size: " + files[0].size + " bytes\n"], { type: "text/plain;charset=utf-8" });
+      break;
+    }
+    case "info": {
+      const src = pdfDocs[0];
+      const pages = src.getPages().map((page, index) => {
+        const { width, height } = page.getSize();
+        return (index + 1) + ": " + Math.round(width) + " × " + Math.round(height) + " pt";
+      });
+      const report = [
+        "PDFora PDF information", "File: " + files[0].name, "Size: " + files[0].size + " bytes",
+        "Pages: " + src.getPageCount(), "Title: " + (src.getTitle() || "Not set"),
+        "Author: " + (src.getAuthor() || "Not set"), "Subject: " + (src.getSubject() || "Not set"),
+        "Creator: " + (src.getCreator() || "Not set"), "Producer: " + (src.getProducer() || "Not set"),
+        "Page dimensions:", ...pages,
+      ].join("\n");
+      resultBlob = new Blob([report], { type: "text/plain;charset=utf-8" });
       break;
     }
     case "split": {

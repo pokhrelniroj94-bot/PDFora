@@ -24,7 +24,7 @@ export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly st
  * Keep this empty until a page has documented native-speaker review and owner approval.
  */
 export const verifiedLocalizedNonToolPaths: Readonly<Partial<Record<Locale, readonly string[]>>> = {
-  ne: ["/tools"],
+  ne: [],
 };
 
 export function isLocalizedPageIndexable(locale: Locale, path: string): boolean {

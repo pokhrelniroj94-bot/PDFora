@@ -669,6 +669,30 @@ export default function CatalogToolSEOContent({
       "For a round-trip check, encode a harmless sample such as Hello and decode the result back to the original text.",
       "Do not use Base64 as encryption or as password protection; anyone can decode a Base64 string."
     ]
+    "keyword-density-checker": [
+      "Paste the body copy of one page, excluding navigation and unrelated site-wide text if you want a content-only measurement.",
+      "Enter the exact target word or phrase, preserving the spelling and word order you want to count.",
+      "Run the check and review total words, phrase occurrences and the approximate percentage.",
+      "Use the number only to spot accidental repetition; edit for clarity and natural language rather than aiming for a density target."
+    ],
+    "robots-txt-generator": [
+      "Enter only the crawler path you intend to restrict, such as /admin/; leave the field empty when no path should be blocked.",
+      "Add the absolute HTTPS sitemap URL if the site has a public XML sitemap.",
+      "Generate the file and inspect every User-agent, Allow, Disallow and Sitemap line.",
+      "Save the result as robots.txt at the domain root, then test important URLs with the relevant search-engine robots testing tools."
+    ],
+    "sitemap-generator": [
+      "Paste one absolute canonical HTTP or HTTPS URL per line; include only public pages you want search engines to discover.",
+      "Remove duplicate URLs, tracking parameters, fragments, redirected URLs, error pages and pages marked noindex before generating.",
+      "Generate the XML and check that each URL is correctly escaped and belongs to the intended site.",
+      "Validate the XML, publish it at the intended sitemap path and submit that URL in Google Search Console; submission does not guarantee indexing."
+    ],
+    "open-graph-preview": [
+      "Enter the exact title and concise description that describe the page being shared.",
+      "Use the full public HTTPS URL for the page and a publicly accessible image URL, not a local file path.",
+      "Generate the preview and inspect the HTML attribute values, image address and page URL.",
+      "Add the matching Open Graph tags to the live page, then test the published URL with the destination platform's sharing debugger."
+    ],
   };
   const title = tool.name;
   const taskDescription = tool.description.replace(/[.!?]$/, "");

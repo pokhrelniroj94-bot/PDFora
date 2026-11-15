@@ -162,9 +162,9 @@ export default function Page() {
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            The PDFora Compress PDF tool is designed to provide a simple
-            browser-based workflow. Select your PDF, process the document and
-            download the resulting file.
+            The current Compress PDF workflow sends the selected document to
+            PDFora's processing service. Review the privacy notice before
+            uploading, then download and inspect the compressed result.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">

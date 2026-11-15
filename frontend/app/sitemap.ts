@@ -4,7 +4,7 @@ import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
 import { nepaliLocalizedBlogPosts } from "../lib/nepali-localized-blog-posts";
 import { nepaliLocalizedFinancialSlugs, nepaliLocalizedUtilitySlugs } from "../lib/i18n/nepali-tool-routes";
-import { isLocalizedToolIndexable } from "../lib/tools/localized-verification";
+import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../lib/tools/localized-verification";
 import { nepaliPdfRoutes } from "../lib/i18n/nepali-pdf-routes";
 
 const baseUrl = "https://pd-fora.vercel.app";
@@ -44,10 +44,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
-    { url: `${baseUrl}/ne`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/ne/tools`, changeFrequency: "weekly", priority: 0.75 },
-    { url: `${baseUrl}/ne/market`, changeFrequency: "daily", priority: 0.75 },
-    { url: `${baseUrl}/ne/resume-builder`, changeFrequency: "monthly", priority: 0.65 },
+    ...(isLocalizedPageIndexable("ne", "/") ? [{ url: `${baseUrl}/ne`, changeFrequency: "weekly" as const, priority: 0.8 }] : []),
+    ...(isLocalizedPageIndexable("ne", "/tools") ? [{ url: `${baseUrl}/ne/tools`, changeFrequency: "weekly" as const, priority: 0.75 }] : []),
+    ...(isLocalizedPageIndexable("ne", "/market") ? [{ url: `${baseUrl}/ne/market`, changeFrequency: "daily" as const, priority: 0.75 }] : []),
+    ...(isLocalizedPageIndexable("ne", "/resume-builder") ? [{ url: `${baseUrl}/ne/resume-builder`, changeFrequency: "monthly" as const, priority: 0.65 }] : []),
     ...nepaliToolSlugs.map((slug) => ({
       url: nepaliPdfRoutes[slug]
         ? `${baseUrl}/ne/${slug}`
@@ -56,13 +56,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.65,
     })),
 
-    ...["privacy", "terms", "about", "contact"].map((slug) => ({
+    ...["privacy", "terms", "about", "contact"].filter((slug) => isLocalizedPageIndexable("ne", `/${slug}`)).map((slug) => ({
       url: `${baseUrl}/ne/${slug}`,
       changeFrequency: "yearly" as const,
       priority: 0.35,
     })),
-    { url: `${baseUrl}/ne/blog`, changeFrequency: "weekly" as const, priority: 0.7 },
-    ...nepaliLocalizedBlogPosts.map((post) => ({
+    ...(isLocalizedPageIndexable("ne", "/blog") ? [{ url: `${baseUrl}/ne/blog`, changeFrequency: "weekly" as const, priority: 0.7 }] : []),
+    ...nepaliLocalizedBlogPosts.filter((post) => isLocalizedPageIndexable("ne", `/blog/${post.slug}`)).map((post) => ({
       url: `${baseUrl}/ne/blog/${post.slug}`,
       lastModified: new Date(post.updated),
       changeFrequency: "monthly" as const,

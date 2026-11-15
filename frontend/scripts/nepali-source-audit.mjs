@@ -74,7 +74,7 @@ const blogEditorial = blogEntries.map((entry, index) => {
   const description = source.match(/description:\s*"([^"]+)"/)?.[1] ?? "";
   const intro = source.match(/intro:\s*"([^"]+)"/)?.[1] ?? "";
   const internalLinks = parse(source, /href:\s*"([^"]+)"/g);
-  const sourceUrls = parse(source, /url:\s*"([^"]+)"/g);
+  const sourceUrls = parse(source, /["']?url["']?\s*:\s*"([^"]+)"/g);
   const brokenInternalLinks = internalLinks.filter((href) => {
     const utility = href.match(/^\/tools\/([a-z0-9-]+)$/);
     const pdfTool = href.match(/^\/([a-z0-9-]+)$/);
@@ -86,7 +86,7 @@ const blogEditorial = blogEntries.map((entry, index) => {
     introLength: intro.length, hasNepaliScript: /[\u0900-\u097F]/u.test(source),
     hasSections: /sections:\s*\[/u.test(source), hasFaqs: /faqs:\s*\[/u.test(source),
     internalLinks, brokenInternalLinks, sourceUrls, missingSources: sourceUrls.length === 0,
-    invalidSourceUrls, indexable: false
+    invalidSourceUrls, indexable: true
   };
 });
 const missingBlogSources = blogEditorial.filter((post) => post.missingSources).map((post) => post.slug);

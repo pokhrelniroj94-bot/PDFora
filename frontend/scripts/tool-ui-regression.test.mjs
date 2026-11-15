@@ -57,6 +57,7 @@ for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "ima
 
 const mergeLimitCopy = read("../components/PDForaTool.tsx");
 assert.ok(mergeLimitCopy.includes('endpoint === "/api/merge"') && mergeLimitCopy.includes("Combined PDF upload limit: 50 MB total"), "Merge PDF must display its combined 50 MB limit, not a per-file limit");
+assert.ok(mergeLimitCopy.includes("Merging PDFs locally in your browser") && mergeLimitCopy.includes("No files were uploaded to the server"), "Merge PDF must disclose its actual browser-only processing path");
 const toolGuideSource = read("../lib/tool-guides.ts");
 assert.ok(toolGuideSource.includes("The processing method depends on the operation and supported options"), "Generic PDF guides must distinguish browser access from processing location");
 assert.ok(!toolGuideSource.includes("PDFora provides this workflow in a browser"), "Generic PDF guides must not imply that every operation processes locally");

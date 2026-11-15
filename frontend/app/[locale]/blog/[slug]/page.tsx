@@ -4,8 +4,14 @@ import { notFound } from "next/navigation";
 import { isLocale, isRoutable } from "../../../../lib/i18n/config";
 import { getNepaliLocalizedBlogPost, nepaliLocalizedBlogPosts } from "../../../../lib/nepali-localized-blog-posts";
 import { buildLocaleMetadata } from "../../../../lib/i18n/metadata";
+import BlogToolCTA from "../../../../components/BlogToolCTA";
 
 const baseUrl = "https://pd-fora.vercel.app";
+
+function toNepaliToolHref(href: string): string {
+  if (href === "/ne" || href.startsWith("/ne/")) return href;
+  return `/ne${href.startsWith("/") ? href : `/${href}`}`;
+}
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export function generateStaticParams() {
@@ -86,6 +92,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora नेपाली मार्गदर्शिका · {post.readTime}</p>
           <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
+          {post.toolLinks[0] && <BlogToolCTA blogSlug={post.slug} href={toNepaliToolHref(post.toolLinks[0].href)} label={post.toolLinks[0].label} locale="ne" />}
           <p className="mt-5 text-xs text-slate-500">प्रकाशक: PDFora · अन्तिम अद्यावधिक: {post.updated}</p>
         </header>
         <div className="mt-6 space-y-6">
@@ -109,7 +116,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
           <section className="rounded-3xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">सम्बन्धित टुल</h2>
             <div className="mt-4 flex flex-wrap gap-3">
-              {post.toolLinks.map((tool) => <Link key={tool.href} href={tool.href.replace(/^\/tools/, "/ne/tools")} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
+              {post.toolLinks.map((tool) => <Link key={tool.href} href={toNepaliToolHref(tool.href)} className="rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}
             </div>
           </section>
         </div>

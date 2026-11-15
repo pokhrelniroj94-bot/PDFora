@@ -778,3 +778,30 @@ html:lang(ne) .nepali-tool-card {
   box-shadow:0 10px 28px rgb(71 54 33 / 6%);
 }
 html:lang(ne) .nepali-tool-card:hover { border-color:#c68a55; box-shadow:0 16px 34px rgb(71 54 33 / 10%); }
+
+/* Apply the Nepal palette to existing Tailwind-based Nepali page shells too. */
+html:lang(ne) .bg-slate-50 { background-color:#f6f1e7 !important; }
+html:lang(ne) .bg-white { background-color:#fffaf1 !important; }
+html:lang(ne) .bg-slate-100 { background-color:#eee7d9 !important; }
+html:lang(ne) .border-slate-200,
+html:lang(ne) .border-slate-300 { border-color:#e5dac8 !important; }
+html:lang(ne) .text-slate-950,
+html:lang(ne) .text-slate-900 { color:#203c30 !important; }
+html:lang(ne) .text-slate-700,
+html:lang(ne) .text-slate-600,
+html:lang(ne) .text-slate-500 { color:#5c655a !important; }
+html:lang(ne) .text-blue-600,
+html:lang(ne) .text-blue-700,
+html:lang(ne) .text-teal-700,
+html:lang(ne) .text-teal-800 { color:#285b45 !important; }
+html:lang(ne) .bg-blue-600,
+html:lang(ne) .bg-teal-600 { background-color:#285b45 !important; }
+html:lang(ne) .bg-blue-100,
+html:lang(ne) .bg-teal-50 { background-color:#f5e9d5 !important; }
+html:lang(ne) .hover\\:bg-slate-50:hover { background-color:#f5eee1 !important; }
+html:lang(ne) a { text-underline-offset:3px; }
+html:lang(ne) button:focus-visible,
+html:lang(ne) a:focus-visible,
+html:lang(ne) input:focus-visible,
+html:lang(ne) textarea:focus-visible,
+html:lang(ne) select:focus-visible { outline:3px solid rgb(217 119 50 / 55%); outline-offset:3px; }

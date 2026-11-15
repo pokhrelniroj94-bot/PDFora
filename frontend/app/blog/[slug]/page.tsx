@@ -79,6 +79,10 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
           <p className="mt-5 text-xs text-slate-500">Published by PDFora · Last updated {new Date(post.updated + "T00:00:00Z").toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</p>
         </header>
+        <aside className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-7 text-emerald-950" aria-label="Processing and privacy">
+          <h2 className="font-bold">Processing and file privacy</h2>
+          <p className="mt-1">PDFora processes supported tasks directly in your browser, so those files stay on your device. Some advanced PDF operations and live-data tools still use a processing server or an external public source. Check the processing and privacy notice shown on the tool page before selecting a file; do not assume every PDF operation is local.</p>
+        </aside>
         <div className="mt-6"><AdsterraSkyscraper /></div>
 
         <div className="mt-6 space-y-6">

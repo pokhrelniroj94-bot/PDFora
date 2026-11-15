@@ -9,11 +9,11 @@ const page = fs.readFileSync(path.join(root, "app/tools/[slug]/page.tsx"), "utf8
 const calc = fs.readFileSync(path.join(root, "lib/catalog-calculations.ts"), "utf8");
 
 for (const phrase of [
-  "month-end SIP contributions",
-  "annual rate divided by 12",
+  "month-end deposits",
+  "nominal rate divided by 12",
   "market volatility",
   "expense ratio",
-  "initial lump-sum",
+  "initial lump sum",
   "total contributed principal"
 ]) {
   assert.ok(guide.toLowerCase().includes(phrase.toLowerCase()), `SIP guide must explain: ${phrase}`);

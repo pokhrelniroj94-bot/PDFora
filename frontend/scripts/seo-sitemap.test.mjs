@@ -114,6 +114,11 @@ for (const slug of reportedNepaliLongTitleSlugs) {
   assert.match(nepaliBlogPageSource, new RegExp('"' + slug + '"\\s*:'), "Search Console title recovery missing for " + slug);
 }
 assert.match(nepaliBlogPageSource, /title: searchTitle/, "Nepali blog metadata must use concise search titles without changing visible article headlines");
+assert.match(nepaliBlogPageSource, /<BlogToolCTA/, "Every reviewed Nepali editorial guide must show an above-the-fold tool CTA");
+assert.ok(nepaliBlogPageSource.includes('locale="ne"'), "Nepali blog CTAs must render localized copy and analytics language");
+assert.ok(nepaliBlogPageSource.includes("function toNepaliToolHref"), "Nepali blog links must normalize both catalog and legacy PDF routes");
+assert.ok(nepaliBlogPageSource.includes("href={toNepaliToolHref(tool.href)}"), "Related-tool links must use localized route normalization");
+assert.ok(blogToolCtaSource.includes('locale === "ne"'), "Shared blog CTA must support Nepali copy");
 for (const [slug, title] of [["percentage-change-calculator-guide", "Percentage Change: प्रतिशत कसरी निकाल्ने?"], ["tip-calculator-guide", "Tip Calculator: टिप र बिल कसरी बाँड्ने?"]]) {
   assert.ok(title.length <= 60, `${slug} search title must stay within 60 characters`);
   assert.ok(nepaliBlogPageSource.includes(`"${slug}": "${title}"`), `${slug} must retain its reviewed concise search title`);

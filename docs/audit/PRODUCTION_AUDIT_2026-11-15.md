@@ -2,6 +2,8 @@
 
 ## Scope and evidence
 
+- The first SEO guide patch exposed a missing comma during CI lint; it was corrected in commit `7950bdd94476f1fb58048dab9deac480fa14d6a0`. The corrected commit still requires its own passing CI run.
+
 Reviewed the `master` source at `a4fabaaf143dc5fda2e43a97c3d7c1ad401cc881`, the completed production QA workflow [#43681868550](https://github.com/pokhrelniroj94-bot/PDFora/actions/runs/43681868550), its functional browser report, the production Lighthouse artifact, selected SEO tool pages, the FastAPI route definitions, and the Render service inventory.
 
 ### Verified results

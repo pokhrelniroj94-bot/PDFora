@@ -33,7 +33,31 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
           { key: "X-DNS-Prefetch-Control", value: "off" },
-          { key: "Content-Security-Policy", value: "object-src 'none'; base-uri 'self'; frame-ancestors 'none'" },
+          {
+            key: "Content-Security-Policy",
+            // Next.js App Router currently emits inline bootstrap scripts. Keep the
+            // script allowlist explicit and do not enable unsafe-eval; a nonce-based
+            // policy can replace unsafe-inline once the app is served with per-request
+            // nonce propagation across every route and worker.
+            value: [
+              "default-src 'self'",
+              "base-uri 'self'",
+              "object-src 'none'",
+              "frame-ancestors 'none'",
+              "form-action 'self'",
+              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://bauval.org https://abscloud.org https://*.adsterra.com https://*.adsterra.org",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' data: https:",
+              "connect-src 'self' https://pdfora-493r.onrender.com https://*.sentry.io https://www.google-analytics.com https://region1.google-analytics.com https://stats.g.doubleclick.net https://bauval.org https://abscloud.org https://*.adsterra.com https://*.adsterra.org",
+              "worker-src 'self' blob:",
+              "child-src 'self' blob:",
+              "frame-src 'self' blob: https://bauval.org https://abscloud.org https://*.doubleclick.net https://*.googlesyndication.com https://*.adsterra.com https://*.adsterra.org",
+              "media-src 'self' blob:",
+              "manifest-src 'self'",
+              "upgrade-insecure-requests",
+            ].join("; "),
+          },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "DENY" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },

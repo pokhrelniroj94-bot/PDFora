@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useAdvertisingConsent } from "./useAdvertisingConsent";
 
 declare global {
   interface Window {
@@ -15,11 +16,12 @@ declare global {
 }
 
 export default function AdsterraSkyscraper() {
+  const allowed = useAdvertisingConsent();
   const slotRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const slot = slotRef.current;
-    if (!slot || slot.dataset.loaded === "true") return;
+    if (!allowed || !slot || slot.dataset.loaded === "true") return;
 
     window.atOptions = {
       key: "df82e8fddbed0dbc2cf5e53b28bc3d77",
@@ -39,8 +41,9 @@ export default function AdsterraSkyscraper() {
     return () => {
       script.remove();
     };
-  }, []);
+  }, [allowed]);
 
+  if (!allowed) return null;
   return (
     <aside
       aria-label="Advertisement"
@@ -49,10 +52,7 @@ export default function AdsterraSkyscraper() {
       <p className="mb-2 text-center text-[10px] font-semibold uppercase tracking-widest text-slate-400">
         Advertisement
       </p>
-      <div
-        ref={slotRef}
-        className="h-[600px] w-[160px] overflow-hidden bg-white"
-      />
+      <div ref={slotRef} className="h-[600px] w-[160px] overflow-hidden bg-white" />
     </aside>
   );
 }

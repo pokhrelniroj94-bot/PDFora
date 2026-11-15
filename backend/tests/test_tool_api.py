@@ -494,11 +494,9 @@ def test_temp_job_is_removed_after_file_response():
 
 
 
-def test_render_client_ip_prefers_cloudflare_visitor_ip(monkeypatch):
-    from main import _client_ip
+def _request_with_proxy_headers(peer: str = "10.0.0.1"):
     from starlette.requests import Request
 
-    monkeypatch.setenv("RENDER", "true")
     scope = {
         "type": "http",
         "method": "POST",
@@ -507,15 +505,30 @@ def test_render_client_ip_prefers_cloudflare_visitor_ip(monkeypatch):
             (b"cf-connecting-ip", b"203.0.113.7"),
             (b"x-forwarded-for", b"198.51.100.8, 192.0.2.9"),
         ],
-        "client": ("10.0.0.1", 1234),
+        "client": (peer, 1234),
         "server": ("testserver", 80),
         "scheme": "https",
         "query_string": b"",
         "root_path": "",
         "http_version": "1.1",
     }
-    request = Request(scope)
-    assert _client_ip(request) == "203.0.113.7"
+    return Request(scope)
+
+
+def test_untrusted_forwarding_headers_cannot_spoof_rate_limit_ip(monkeypatch):
+    from main import _client_ip
+
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.delenv("PDFORA_TRUSTED_PROXY_CIDRS", raising=False)
+    assert _client_ip(_request_with_proxy_headers()) == "10.0.0.1"
+
+
+def test_cloudflare_ip_is_used_only_from_explicitly_trusted_proxy(monkeypatch):
+    from main import _client_ip
+
+    monkeypatch.setenv("RENDER", "true")
+    monkeypatch.setenv("PDFORA_TRUSTED_PROXY_CIDRS", "10.0.0.1/32")
+    assert _client_ip(_request_with_proxy_headers()) == "203.0.113.7"
 
 
 

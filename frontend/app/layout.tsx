@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { headers } from "next/headers";
 import CookieConsent from "../components/CookieConsent";
 import "./globals.css";

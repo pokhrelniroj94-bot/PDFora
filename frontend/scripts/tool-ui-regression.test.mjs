@@ -50,10 +50,10 @@ assert.doesNotMatch(sharedPdfGuide, /\{labels\[(?:5|6|7|8|9|10)\]\}/, "Shared PD
 assert.ok(sharedPdfGuide.includes("app that supports its output format") && sharedPdfGuide.includes("spreadsheets or text exports"), "Shared PDF guide must check the actual output format, not assume every tool downloads a PDF");
 assert.ok(sharedPdfGuide.includes("!isGeneratedGuide(guide.blogSlug)") && sharedPdfGuide.includes("/ne/blog/${guide.blogSlug}"), "Tool pages must link only to curated blog guides and use the Nepali guide URL when localized");
 
-for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "images-to-pdf", "delete-pages", "extract-pages", "add-background", "bates-numbering"]) {
+for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "images-to-pdf", "delete-pages", "extract-pages", "add-background", "bates-numbering", "pdf-to-csv", "pdf-to-bmp", "pdf-to-tiff", "pdf-to-json", "page-counter", "extract-fonts", "add-bookmarks", "pdf-to-markdown", "remove-pdf-links", "remove-attachments", "remove-annotations", "split-by-bookmarks", "remove-pdf-metadata", "pdf-information"]) {
   const pageSource = read("../app/" + page + "/page.tsx");
   assert.doesNotMatch(pageSource, /ToolGuide|getRequiredToolGuide/, page + " must not duplicate the shared SEO guide rendered by Niroj77Tool");
-  if (page === "add-background" || page === "bates-numbering") assert.doesNotMatch(pageSource, /How to use (Add PDF Background|Bates Numbering PDF)/, page + " must not render a second generic how-to block");
+  assert.doesNotMatch(pageSource, /How to use/, page + " must not render a second page-level how-to block beside the shared tool guide");
 }
 
 const mergePage = read("../app/merge-pdf/page.tsx");

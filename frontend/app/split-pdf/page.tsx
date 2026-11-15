@@ -1,11 +1,8 @@
 import { getPdfToolMetadata } from "../../lib/i18n/pdf-tool-seo";
-import { getRequiredToolGuide } from "../../lib/tool-guides";
 
-const guide = getRequiredToolGuide("split-pdf");
 export const metadata = getPdfToolMetadata("split-pdf");
 
 import Niroj77Tool from "../../components/Niroj77Tool";
-import ToolGuide from "../../components/ToolGuide";
 
 export default function Page() {
   return (
@@ -308,7 +305,6 @@ export default function Page() {
         </div>
       </section>
       <section className="mx-auto max-w-4xl px-4 pb-10 sm:px-6"><h2 className="text-xl font-black">PDF splitting reference</h2><p className="mt-2 text-sm leading-6 text-slate-600">Adobe’s <a className="font-semibold text-blue-700 underline" href="https://helpx.adobe.com/acrobat/desktop/edit-documents/organize-pages/split-pdfs.html" target="_blank" rel="noopener noreferrer">PDF splitting guide</a> describes splitting by page count, file size or top-level bookmarks in Acrobat. PDFora’s available options may differ, so use the controls shown above and verify the downloaded files.</p></section>
-      <ToolGuide guide={guide} />
     </main>
   );
 }

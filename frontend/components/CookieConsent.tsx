@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 import { getSharedUiCopy, localeFromPathname } from "../lib/i18n/shared-ui";
 import { localizedOrFallbackPath } from "../lib/i18n/routing";
 

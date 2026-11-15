@@ -32,6 +32,7 @@ export default function Page() {
           <div className="mt-10">
             <Niroj77Tool
               endpoint="/api/extract-pages"
+              showSeoContent={false}
               title="Extract PDF Pages"
               description="Extract selected pages and create a new PDF file."
               multiple={false}

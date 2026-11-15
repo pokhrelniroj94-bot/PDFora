@@ -491,7 +491,7 @@ const browserProcessedPdfSlugs = new Set([
   "merge-pdf", "split-pdf", "rotate-pdf", "rotate-selected-pages", "extract-pages",
   "delete-pages", "reorder-pdf", "add-page-numbers", "watermark", "crop-pdf",
   "add-blank-pages", "sign-pdf", "page-counter", "pdf-information", "edit-pdf-metadata",
-  "remove-pdf-metadata", "flatten-pdf", "remove-annotations", "remove-attachments", "add-background",
+  "remove-pdf-metadata", "flatten-pdf", "remove-annotations", "remove-attachments", "add-background", "images-to-pdf",
 ]);
 
 function updateBlogProcessingGuidance(post: BlogPost): BlogPost {

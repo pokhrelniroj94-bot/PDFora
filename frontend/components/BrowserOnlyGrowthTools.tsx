@@ -123,29 +123,30 @@ function TimezoneTool({locale="en"}:{locale?:ToolLocale}) {
 }
 
 function DpiTool({locale="en"}:{locale?:ToolLocale}) {
-  const [width, setWidth] = useState("2400");
-  const [height, setHeight] = useState("3000");
-  const [printWidth, setPrintWidth] = useState("8");
-  const [printHeight, setPrintHeight] = useState("10");
+  const [width, setWidth] = useState("");
+  const [height, setHeight] = useState("");
+  const [printWidth, setPrintWidth] = useState("");
+  const [printHeight, setPrintHeight] = useState("");
   const [unit, setUnit] = useState("in");
   const [target, setTarget] = useState("300");
 
   const w = Number(width), h = Number(height), pw = Number(printWidth), ph = Number(printHeight), dpi = Number(target);
   const factor = unit === "in" ? 1 : unit === "cm" ? 1 / 2.54 : 1 / 25.4;
-  const valid = [w,h,pw,ph,dpi].every(Number.isFinite) && w > 0 && h > 0 && pw > 0 && ph > 0 && dpi > 0 && dpi <= 9600;
+  const valid = [width,height,printWidth,printHeight,target].every(value=>value.trim()!=="") && [w,h,pw,ph,dpi].every(Number.isFinite) && w > 0 && h > 0 && pw > 0 && ph > 0 && dpi > 0 && dpi <= 9600;
   const ppiX = valid ? w / (pw * factor) : 0;
   const ppiY = valid ? h / (ph * factor) : 0;
   const reqW = valid ? Math.round(pw * factor * dpi) : 0;
   const reqH = valid ? Math.round(ph * factor * dpi) : 0;
   const ui = <div className="space-y-5">
     <div className="grid gap-4 sm:grid-cols-2">
-      <Field label="Image width (pixels)"><input className={inputClass} type="number" min="1" value={width} onChange={e => setWidth(e.target.value)} /></Field>
-      <Field label="Image height (pixels)"><input className={inputClass} type="number" min="1" value={height} onChange={e => setHeight(e.target.value)} /></Field>
-      <Field label="Printed width"><input className={inputClass} type="number" min="0.01" step="any" value={printWidth} onChange={e => setPrintWidth(e.target.value)} /></Field>
-      <Field label="Printed height"><input className={inputClass} type="number" min="0.01" step="any" value={printHeight} onChange={e => setPrintHeight(e.target.value)} /></Field>
+      <Field label="Image width (pixels)"><input className={inputClass} type="number" min="1" placeholder="e.g. 2400" value={width} onChange={e => setWidth(e.target.value)} /></Field>
+      <Field label="Image height (pixels)"><input className={inputClass} type="number" min="1" placeholder="e.g. 3000" value={height} onChange={e => setHeight(e.target.value)} /></Field>
+      <Field label="Printed width"><input className={inputClass} type="number" min="0.01" step="any" placeholder="e.g. 8" value={printWidth} onChange={e => setPrintWidth(e.target.value)} /></Field>
+      <Field label="Printed height"><input className={inputClass} type="number" min="0.01" step="any" placeholder="e.g. 10" value={printHeight} onChange={e => setPrintHeight(e.target.value)} /></Field>
       <Field label="Print measurement unit"><select className={inputClass} value={unit} onChange={e => setUnit(e.target.value)}><option value="in">Inches</option><option value="cm">Centimetres</option><option value="mm">Millimetres</option></select></Field>
       <Field label="Target print resolution (PPI)"><select className={inputClass} value={target} onChange={e => setTarget(e.target.value)}><option value="72">72 PPI — screen / draft</option><option value="150">150 PPI — basic print</option><option value="300">300 PPI — common high-quality print</option><option value="600">600 PPI — detailed print</option></select></Field>
     </div>
+    <button type="button" onClick={()=>{setWidth("");setHeight("");setPrintWidth("");setPrintHeight("");}} className={secondaryClass}>Clear inputs</button>
     {valid ? <div className="grid gap-3 sm:grid-cols-2"><div className={panelClass}><p className="text-sm text-slate-500">Effective horizontal resolution</p><p className="mt-2 text-3xl font-black text-teal-800">{ppiX.toFixed(1)} <span className="text-base">PPI</span></p></div><div className={panelClass}><p className="text-sm text-slate-500">Effective vertical resolution</p><p className="mt-2 text-3xl font-black text-teal-800">{ppiY.toFixed(1)} <span className="text-base">PPI</span></p></div><div className={panelClass + " sm:col-span-2"}><p className="font-bold text-slate-900">Pixels needed at {dpi} PPI</p><p className="mt-2 text-xl font-black text-slate-950">{reqW.toLocaleString()} × {reqH.toLocaleString()} px</p><p className="mt-1 text-sm text-slate-600">Your current image is {Math.min(ppiX, ppiY) >= dpi ? "at or above" : "below"} the selected target on its lower-resolution dimension.</p></div></div> : <p role="alert" className="text-sm text-red-700">Enter positive pixel dimensions, print sizes and a target resolution.</p>}
     <p className="text-xs leading-6 text-slate-500">PPI describes image pixels per printed inch. DPI technically describes printer dot placement; many print services use DPI informally when they mean image PPI. This calculator does not resample or upload your image.</p>
   </div>;
@@ -153,26 +154,27 @@ function DpiTool({locale="en"}:{locale?:ToolLocale}) {
 }
 
 function VideoBitrateTool({locale="en"}:{locale?:ToolLocale}) {
-  const [minutes, setMinutes] = useState("10");
-  const [seconds, setSeconds] = useState("0");
-  const [size, setSize] = useState("500");
-  const [audio, setAudio] = useState("192");
-  const [overhead, setOverhead] = useState("5");
+  const [minutes, setMinutes] = useState("");
+  const [seconds, setSeconds] = useState("");
+  const [size, setSize] = useState("");
+  const [audio, setAudio] = useState("");
+  const [overhead, setOverhead] = useState("");
   const duration = Number(minutes) * 60 + Number(seconds);
   const sizeMb = Number(size), audioKbps = Number(audio), overheadPct = Number(overhead);
-  const valid = [duration,sizeMb,audioKbps,overheadPct,Number(seconds)].every(Number.isFinite) && duration > 0 && sizeMb > 0 && audioKbps >= 0 && Number(seconds) >= 0 && Number(seconds) <= 59 && Number.isInteger(Number(seconds)) && overheadPct >= 0 && overheadPct < 50;
+  const valid = [minutes,seconds,size,audio,overhead].every(value=>value.trim()!=="") && [duration,sizeMb,audioKbps,overheadPct,Number(seconds)].every(Number.isFinite) && duration > 0 && sizeMb > 0 && audioKbps >= 0 && Number(seconds) >= 0 && Number(seconds) <= 59 && Number.isInteger(Number(seconds)) && overheadPct >= 0 && overheadPct < 50;
   const totalKbps = valid ? sizeMb * 8 * 1000 / duration : 0;
   const usableKbps = totalKbps * (1 - overheadPct / 100);
   const videoKbps = usableKbps - audioKbps;
   const estimateMb = valid ? (Math.max(0, videoKbps) + audioKbps) * duration / 8000 / (1 - overheadPct / 100) : 0;
   const ui = <div className="space-y-5">
     <div className="grid gap-4 sm:grid-cols-2">
-      <Field label="Video duration (minutes)"><input className={inputClass} type="number" min="0" value={minutes} onChange={e => setMinutes(e.target.value)} /></Field>
-      <Field label="Additional seconds"><input className={inputClass} type="number" min="0" max="59" value={seconds} onChange={e => setSeconds(e.target.value)} /></Field>
-      <Field label="Target file size (MB, decimal)"><input className={inputClass} type="number" min="0.01" step="any" value={size} onChange={e => setSize(e.target.value)} /></Field>
-      <Field label="Audio bitrate (kbps)"><input className={inputClass} type="number" min="0" value={audio} onChange={e => setAudio(e.target.value)} /></Field>
-      <Field label="Container / overhead allowance (%)"><input className={inputClass} type="number" min="0" max="49" step="0.5" value={overhead} onChange={e => setOverhead(e.target.value)} /></Field>
+      <Field label="Video duration (minutes)"><input className={inputClass} type="number" min="0" placeholder="e.g. 10" value={minutes} onChange={e => setMinutes(e.target.value)} /></Field>
+      <Field label="Additional seconds"><input className={inputClass} type="number" min="0" max="59" placeholder="e.g. 0" value={seconds} onChange={e => setSeconds(e.target.value)} /></Field>
+      <Field label="Target file size (MB, decimal)"><input className={inputClass} type="number" min="0.01" step="any" placeholder="e.g. 500" value={size} onChange={e => setSize(e.target.value)} /></Field>
+      <Field label="Audio bitrate (kbps)"><input className={inputClass} type="number" min="0" placeholder="e.g. 192" value={audio} onChange={e => setAudio(e.target.value)} /></Field>
+      <Field label="Container / overhead allowance (%)"><input className={inputClass} type="number" min="0" max="49" step="0.5" placeholder="e.g. 5" value={overhead} onChange={e => setOverhead(e.target.value)} /></Field>
     </div>
+    <button type="button" onClick={()=>{setMinutes("");setSeconds("");setSize("");setAudio("");setOverhead("");}} className={secondaryClass}>Clear inputs</button>
     {valid && videoKbps > 0 ? <div className="grid gap-3 sm:grid-cols-2"><div className={panelClass}><p className="text-sm text-slate-500">Estimated total bitrate</p><p className="mt-2 text-3xl font-black text-teal-800">{Math.round(totalKbps).toLocaleString()} <span className="text-base">kbps</span></p></div><div className={panelClass}><p className="text-sm text-slate-500">Suggested video bitrate</p><p className="mt-2 text-3xl font-black text-teal-800">{Math.round(videoKbps).toLocaleString()} <span className="text-base">kbps</span></p></div><div className={panelClass + " sm:col-span-2"}><p className="font-bold text-slate-900">Estimated size at these bitrates</p><p className="mt-2 text-2xl font-black text-slate-950">{estimateMb.toFixed(1)} MB</p><p className="mt-1 text-sm text-slate-600">{locale === "ne" ? `अडियो: ${audioKbps} kbps · अतिरिक्त स्थान: ${overheadPct}%` : `Audio: ${audioKbps} kbps · Overhead allowance: ${overheadPct}%`}</p></div></div> : <p role="alert" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{valid ? "The target file size is too small for the selected audio bitrate and overhead. Increase the size or lower the audio bitrate." : "Enter a positive duration and file size, a non-negative audio bitrate, and overhead from 0% to under 50%."}</p>}
     <p className="text-xs leading-6 text-slate-500">This is a planning estimate using average bitrate. Variable-bitrate encoding, codec efficiency, frame rate, scene complexity, subtitles and container metadata can change the actual file size.</p>
   </div>;

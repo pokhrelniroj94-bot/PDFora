@@ -44,9 +44,9 @@ assert.ok(nepalTools.includes('weight.trim()!==""&&Number.isFinite(n)'), "Tola/g
 assert.ok(nepalTools.includes('shares,buyPrice,sellPrice,brokerRate,sebonRate,dpCharge,cgtRate].every(x=>x.trim()!=="")'), "NEPSE share calculator must require every charge and price input");
 
 const sharedPdfGuide = read("../components/ToolSEOContent.tsx");
-assert.ok(sharedPdfGuide.includes("some supported operations run locally in your browser") && sharedPdfGuide.includes("PDFora&apos;s processing service"), "Shared PDF guidance must explain both local and service processing");
+assert.ok(sharedPdfGuide.includes("Depending on the tool and selected options") && sharedPdfGuide.includes("PDFora&apos;s processing service"), "Shared PDF guidance must explain both local and service processing");
 assert.ok(sharedPdfGuide.includes("Read the processing notice shown above") && sharedPdfGuide.includes("Avoid submitting the same request repeatedly"), "Shared PDF guidance must keep accurate processing and troubleshooting advice");
-assert.doesNotMatch(sharedPdfGuide, /When is this PDF operation useful\?|Preparing PDFs for study, work and online forms/, "Shared PDF guide must not repeat generic SEO boilerplate across every tool page");
+assert.doesNotMatch(sharedPdfGuide, /\{labels\[(?:5|6|7|8|9|10)\]\}/, "Shared PDF guide must not render generic boilerplate sections on every tool page");
 assert.ok(sharedPdfGuide.includes("app that supports its output format") && sharedPdfGuide.includes("spreadsheets or text exports"), "Shared PDF guide must check the actual output format, not assume every tool downloads a PDF");
 
 const mergeLimitCopy = read("../components/PDForaTool.tsx");

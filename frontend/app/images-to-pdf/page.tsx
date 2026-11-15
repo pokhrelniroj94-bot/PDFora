@@ -24,7 +24,7 @@ I </div>
           Convert JPG, JPEG, PNG and WebP images into a single PDF
           document online. JPG, JPEG and PNG files are processed in your
           browser; WebP files may use the PDFora processing service. Check
-          the tool's notice for the selected formats.
+          the tool&apos;s notice for the selected formats.
         </p>
       </div>
 

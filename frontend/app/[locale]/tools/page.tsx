@@ -16,7 +16,20 @@ export const metadata: Metadata = {
   title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
   description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
   alternates: { canonical: "https://pd-fora.vercel.app/ne/tools", languages: hreflangMap("/tools") },
-  robots: { index: false, follow: true },
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: "website",
+    url: "https://pd-fora.vercel.app/ne/tools",
+    siteName: "PDFora",
+    title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
+    description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
+    locale: "ne_NP",
+  },
+  twitter: {
+    card: "summary",
+    title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
+    description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
+  },
 };
 
 const names: Record<string, string> = {

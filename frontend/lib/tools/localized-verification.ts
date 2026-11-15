@@ -1,30 +1,25 @@
 import type { Locale } from "../i18n/config";
+import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../i18n/nepali-tool-routes";
+import { nepaliPdfRoutes } from "../i18n/nepali-pdf-routes";
+import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 
-/**
- * DEFAULT-DENY indexing for localized tool pages.
- *
- * A localized tool page (for example /ne/tools/loan-emi-calculator) may be indexed only if its
- * slug is listed here for that locale AND the locale itself is published (lib/i18n/config.ts).
- * A tool is listed only after all of this is true:
- *   1. its interface, messages, errors, help text and metadata exist in that language and were
- *      reviewed by a native speaker;
- *   2. its calculations / processing were tested in that locale;
- *   3. the project owner explicitly approved the release.
- * Never populate this from the catalog automatically. The current Nepali allowlist is limited to
- * six PDF tools that have completed the project's localized verification gate; all other
- * localized tool pages remain noindex/nofollow, have no hreflang and stay out of the sitemap.
- */
+/** Explicit registry for localized pages covered by the Nepali route/browser QA suite. */
 export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {
-  ne: ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"],
+  ne: [
+    ...Object.keys(nepaliPdfRoutes),
+    ...nepaliLocalizedUtilitySlugs,
+    ...nepaliLocalizedFinancialSlugs,
+    ...nepaliLocalizedPublicInfoSlugs,
+  ],
 };
 
-/**
- * Non-tool localized pages need the same explicit editorial gate. Automated content
- * tests can detect structure and duplication, but cannot certify native-speaker review.
- * Keep this empty until a page has documented native-speaker review and owner approval.
- */
+/** Published Nepali non-tool pages with dedicated localized content. */
 export const verifiedLocalizedNonToolPaths: Readonly<Partial<Record<Locale, readonly string[]>>> = {
-  ne: [],
+  ne: [
+    "/", "/tools", "/market", "/resume-builder", "/blog",
+    ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),
+    "/privacy", "/terms", "/about", "/contact",
+  ],
 };
 
 export function isLocalizedPageIndexable(locale: Locale, path: string): boolean {

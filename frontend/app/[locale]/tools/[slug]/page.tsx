@@ -289,10 +289,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
   if (request.locale === "ne" && nepaliTitles[request.implementation.slug] && nepaliDescriptions[request.implementation.slug]) {
+    const title = nepaliTitles[request.implementation.slug];
+    const description = fitLocaleDescription(nepaliDescriptions[request.implementation.slug] ?? metadata.description ?? "");
     return {
       ...metadata,
-      title: nepaliTitles[request.implementation.slug],
-      description: fitLocaleDescription(nepaliDescriptions[request.implementation.slug] ?? metadata.description),
+      title,
+      description,
+      openGraph: { ...metadata.openGraph, title, description },
+      twitter: { ...metadata.twitter, title, description },
     };
   }
   return metadata;
@@ -305,7 +309,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * Only slugs accepted by the tool adapter render; everything else is a 404 (no fallback tool).
  * Explicitly localized routes render their dedicated locale-specific workspaces and copy below.
  * Remaining registered routes use the English ToolWorkspace with an honest language notice.
- * Tool routes stay noindex until native-language review and functional verification are complete.
+ * Index eligibility is controlled by the shared published-route registry. Human/native review
+ * remains a separate quality dimension and is not inferred from route or browser smoke tests.
  * No English JSON-LD is attached to localized URLs.
  */
 export default async function LocalizedToolPage({ params }: Props) {

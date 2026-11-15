@@ -76,9 +76,9 @@ export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
 
 const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
 
-// Only pages that are eligible for indexing may participate in hreflang.
-// The fully reviewed Nepali tools directory is indexable; the NEPSE analysis
-// shell remains excluded until its market-data content is fully reviewed.
+// Only published localized destinations that are in the shared index registry
+// participate in reciprocal hreflang. Human/native review status is tracked
+// separately and is not inferred from this automated registry.
 const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set();
 
 export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean {
@@ -86,6 +86,8 @@ export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean
   if (locale !== "ne" || !isPublished(locale)) return false;
   const normalized = normalizePath(path);
   if (nepaliIndexableNonToolPaths.has(normalized) || isLocalizedPageIndexable(locale, normalized)) return true;
+  const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];
+  if (catalogToolSlug && isLocalizedToolIndexable(locale, catalogToolSlug)) return true;
   const pdfSlug = normalized.startsWith("/") ? normalized.slice(1) : normalized;
   return nepaliPdfRoutes[pdfSlug] !== undefined && isLocalizedToolIndexable(locale, pdfSlug);
 }

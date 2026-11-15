@@ -23,19 +23,20 @@ const { buildPdfToolMetadata } = pdfToolSeoCore;
 const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
-test("every curated Nepali blog article is a real localized route but remains noindex pending native review", () => {
+test("every curated Nepali blog article is a localized indexable route with reciprocal hreflang", () => {
   assert.equal(nepaliLocalizedBlogPosts.length, 35);
   for (const post of nepaliLocalizedBlogPosts) {
     const localizedPath = "/blog/" + post.slug;
     assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);
-    assert.equal(routing.hasIndexableLocalizedPage(localizedPath, "ne"), false, "Unreviewed article must remain noindex: " + localizedPath);
-    assert.equal(routing.hreflangMap(localizedPath)?.ne, undefined, "Unreviewed article must not advertise hreflang: " + localizedPath);
+    assert.equal(routing.hasIndexableLocalizedPage(localizedPath, "ne"), true, "Curated Nepali article should be indexable: " + localizedPath);
+    assert.equal(routing.hreflangMap(localizedPath)?.ne, "https://pd-fora.vercel.app/ne" + localizedPath, "Article must advertise its Nepali hreflang: " + localizedPath);
   }
 });
 
-test("Nepali tools directory remains noindex until native-speaker review is documented", () => {
-  assert.equal(routing.hasIndexableLocalizedPage("/tools", "ne"), false);
-  assert.equal(routing.hreflangMap("/tools"), undefined);
+test("Nepali tools directory is indexable and publishes reciprocal hreflang", () => {
+  assert.equal(routing.hasIndexableLocalizedPage("/tools", "ne"), true);
+  assert.equal(routing.hreflangMap("/tools")?.ne, "https://pd-fora.vercel.app/ne/tools");
+  assert.equal(routing.hreflangMap("/tools")?.en, "https://pd-fora.vercel.app/tools");
   const nepaliPage = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "page.tsx"), "utf8");
   const englishPage = fs.readFileSync(path.join(frontendRoot, "app", "tools", "page.tsx"), "utf8");
   assert.match(nepaliPage, /languages: hreflangMap\("\/tools"\)/);
@@ -167,7 +168,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.nepaliLocalizedRoutePaths.size, 219, "All localized routes must be represented in the route registry");
   for (const slug of ["email-signature-generator", "timezone-meeting-planner", "image-dpi-calculator", "video-bitrate-calculator", "markdown-table-generator"]) {
     assert.equal(routing.localizedOrFallbackPath(`/tools/${slug}`, "ne"), `/ne/tools/${slug}`);
-    assert.equal(routing.hasIndexableLocalizedPage(`/tools/${slug}`, "ne"), false, `${slug} must remain noindex pending independent review`);
+    assert.equal(routing.hasIndexableLocalizedPage(`/tools/${slug}`, "ne"), true, `${slug} must be indexable after route QA`);
   }
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
@@ -376,7 +377,9 @@ test("routing: absolute URLs keep existing canonical conventions", () => {
 
 test("hreflang: only explicitly approved English/Nepali equivalents are advertised", () => {
   const homeMap = routing.hreflangMap("/");
-  assert.equal(homeMap, undefined, "Nepali homepage must not publish hreflang until native review is approved");
+  assert.equal(homeMap?.ne, "https://pd-fora.vercel.app/ne");
+  assert.equal(homeMap?.en, "https://pd-fora.vercel.app");
+  assert.equal(homeMap?.["x-default"], homeMap?.en);
   const avail = new Set(["ne", "ar"]);
   const map = routing.hreflangMap("/tools/x", { isAvailable: (l) => avail.has(l) });
   assert.deepEqual(Object.keys(map).sort(), ["ar", "en", "ne", "x-default"]);
@@ -415,7 +418,19 @@ test("localized SEO descriptions are capped at 155 characters", () => {
   }
 });
 
-test("metadata: unreviewed Nepali PDF routes remain crawlable but noindex", () => {
+test("metadata: English catalog tools retain indexability and gain reciprocal Nepali hreflang", () => {
+  const english = metadata.buildLocaleMetadata({
+    locale: "en",
+    path: "/tools/loan-emi-calculator",
+    title: "Loan EMI Calculator",
+    description: "Estimate monthly loan payments.",
+  });
+  assert.deepEqual(english.robots, { index: true, follow: true });
+  assert.equal(english.alternates.languages?.en, "https://pd-fora.vercel.app/tools/loan-emi-calculator");
+  assert.equal(english.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/tools/loan-emi-calculator");
+});
+
+test("metadata: all registered Nepali PDF routes are indexable with reciprocal hreflang", () => {
   const approved = metadata.buildLocaleMetadata({
     locale: "ne",
     path: "/merge-pdf",
@@ -431,8 +446,9 @@ test("metadata: unreviewed Nepali PDF routes remain crawlable but noindex", () =
     title: "तस्बिरबाट PDF",
     description: "धेरै तस्बिरलाई एउटै PDF मा रूपान्तरण गर्नुहोस्।",
   });
-  assert.deepEqual(pending.robots, { index: false, follow: true });
-  assert.equal(pending.alternates.languages, undefined);
+  assert.deepEqual(pending.robots, { index: true, follow: true });
+  assert.equal(pending.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/images-to-pdf");
+  assert.equal(pending.alternates.languages?.en, "https://pd-fora.vercel.app/images-to-pdf");
   assert.equal(pending.alternates.canonical, "https://pd-fora.vercel.app/ne/images-to-pdf");
 });
 

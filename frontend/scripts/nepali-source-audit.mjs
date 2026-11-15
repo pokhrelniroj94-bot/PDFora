@@ -99,7 +99,7 @@ const report = {
 const out = path.resolve(root, "../docs/i18n");
 fs.mkdirSync(out, { recursive: true });
 fs.writeFileSync(path.join(out, "NEPALI_SOURCE_AUDIT.json"), JSON.stringify(report, null, 2) + "\n");
-const md = \`# Nepali source audit
+const md = `# Nepali source audit
 
 Generated from current source by \`npm run i18n:nepali-audit\`.
 

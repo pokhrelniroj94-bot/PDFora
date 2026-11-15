@@ -18,6 +18,19 @@ export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly st
   ne: ["merge-pdf", "split-pdf", "compress-pdf", "rotate-pdf", "pdf-to-word", "pdf-to-jpg"],
 };
 
+/**
+ * Non-tool localized pages need the same explicit editorial gate. Automated content
+ * tests can detect structure and duplication, but cannot certify native-speaker review.
+ * Keep this empty until a page has documented native-speaker review and owner approval.
+ */
+export const verifiedLocalizedNonToolPaths: Readonly<Partial<Record<Locale, readonly string[]>>> = {
+  ne: [],
+};
+
+export function isLocalizedPageIndexable(locale: Locale, path: string): boolean {
+  return verifiedLocalizedNonToolPaths[locale]?.includes(path) === true;
+}
+
 export function isLocalizedToolIndexable(locale: Locale, slug: string): boolean {
   return verifiedLocalizedTools[locale]?.includes(slug) === true;
 }

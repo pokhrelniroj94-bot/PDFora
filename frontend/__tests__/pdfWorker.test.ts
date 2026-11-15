@@ -99,6 +99,22 @@ describe('PDF Worker Core', () => {
     expect(blob.size).toBeGreaterThan(0);
   });
 
+  test('convert JPG and PNG images to PDF in the browser worker', async () => {
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.create();
+    doc.addPage([120, 80]);
+    const pngBytes = await doc.save();
+    const pdf = new File([pngBytes], 'sample.pdf', { type: 'application/pdf' });
+    const sourceDoc = await PDFDocument.load(await pdf.arrayBuffer());
+    const image = await sourceDoc.embedPng(new Uint8Array(pngBytes));
+    const imageBytes = await sourceDoc.save();
+    const pngFile = new File([imageBytes], 'sample.png', { type: 'image/png' });
+    const { blob } = await processPdf({ type: 'imagesToPdf' }, [pngFile]);
+    const output = await PDFDocument.load(await readBlob(blob));
+    expect(output.getPageCount()).toBe(1);
+    expect(blob.type).toBe('application/pdf');
+  });
+
   test('crop selected pages in the browser worker', async () => {
     const file = await createSamplePdf('crop.pdf');
     const { blob } = await processPdf({ type: 'crop', margin: 12, pages: '1' }, [file]);

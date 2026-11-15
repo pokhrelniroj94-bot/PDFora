@@ -29,6 +29,7 @@ I </div>
       <div className="mt-10">
         <Niroj77Tool
           endpoint="/api/images-to-pdf"
+          showSeoContent={false}
           title="Images to PDF"
           description="Convert JPG, PNG and WebP images into a single PDF document."
           multiple

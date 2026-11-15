@@ -272,3 +272,5 @@ jobs:
         run: pip install -r backend/requirements.txt requests pytest httpx
       - name: Verify deployed Render backend
         run: python backend/tests/live_production_smoke.py
+
+# Keep pull-request validation active after the master reconciliation merge.

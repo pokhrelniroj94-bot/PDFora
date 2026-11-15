@@ -2,6 +2,7 @@ import Link from "next/link";
 import AdsterraNative from "../../components/AdsterraNative";
 import AdsterraSkyscraper from "../../components/AdsterraSkyscraper";
 import BlogPopunder from "../../components/BlogPopunder";
+import BlogToolCTA from "../../components/BlogToolCTA";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";
@@ -85,16 +86,12 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <h1 className="mt-4 break-words text-2xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
           {!isCatalogGeneratedGuide(post.slug) && post.toolLinks[0] && (
-            <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-teal-100 bg-teal-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm font-semibold text-slate-800">
-                {conversionFocusedGuideSlugs.has(post.slug)
-                  ? "Ready to use your own numbers? Open the interactive calculator."
-                  : "Ready to try this workflow? Open the matching tool."}
-              </p>
-              <Link href={post.toolLinks[0].href} className="inline-flex items-center justify-center rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800">
-                Open {post.toolLinks[0].label}
-              </Link>
-            </div>
+            <BlogToolCTA
+              blogSlug={post.slug}
+              href={post.toolLinks[0].href}
+              label={post.toolLinks[0].label}
+              calculator={conversionFocusedGuideSlugs.has(post.slug)}
+            />
           )}
           <p className="mt-5 text-xs text-slate-500">Published by PDFora · Last updated {new Date(post.updated + "T00:00:00Z").toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}</p>
         </header>

@@ -50,9 +50,10 @@ assert.doesNotMatch(sharedPdfGuide, /\{labels\[(?:5|6|7|8|9|10)\]\}/, "Shared PD
 assert.ok(sharedPdfGuide.includes("app that supports its output format") && sharedPdfGuide.includes("spreadsheets or text exports"), "Shared PDF guide must check the actual output format, not assume every tool downloads a PDF");
 assert.ok(sharedPdfGuide.includes("!isGeneratedGuide(guide.blogSlug)") && sharedPdfGuide.includes("/ne/blog/${guide.blogSlug}"), "Tool pages must link only to curated blog guides and use the Nepali guide URL when localized");
 
-for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "images-to-pdf", "delete-pages", "extract-pages"]) {
+for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "images-to-pdf", "delete-pages", "extract-pages", "add-background", "bates-numbering"]) {
   const pageSource = read("../app/" + page + "/page.tsx");
   assert.doesNotMatch(pageSource, /ToolGuide|getRequiredToolGuide/, page + " must not duplicate the shared SEO guide rendered by Niroj77Tool");
+  if (page === "add-background" || page === "bates-numbering") assert.doesNotMatch(pageSource, /How to use (Add PDF Background|Bates Numbering PDF)/, page + " must not render a second generic how-to block");
 }
 
 const mergeLimitCopy = read("../components/PDForaTool.tsx");

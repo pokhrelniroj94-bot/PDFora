@@ -38,9 +38,9 @@ export default function PrivacyPage() {
             <p>
               PDFora uses different processing methods depending on the tool and the
               selected format or options. Tools explicitly marked as browser-based process
-              files on your device and do not send those files to PDFora's processing server
+              files on your device and do not send those files to PDFora&apos;s processing server
               for that operation. Other tools, or unsupported options within a tool, may send
-              selected files to PDFora's processing service. Always read the processing and
+              selected files to PDFora&apos;s processing service. Always read the processing and
               privacy notice shown on the individual tool before choosing a file.
             </p>
             <p className="mt-2">

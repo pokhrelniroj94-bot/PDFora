@@ -545,7 +545,7 @@ export default function PDForaTool({
         )}
         {showInlineGuide && (
         <section
-          aria-labelledby="how-to-use-title"
+          aria-labelledby={showSeoContent ? "free-question-title" : "how-to-use-title"}
           className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7"
         >
           {!showSeoContent && (
@@ -561,7 +561,7 @@ export default function PDForaTool({
               </ol>
             </>
           )}
-          <h2 className="mt-6 text-lg font-black tracking-tight">
+          <h2 id="free-question-title" className="mt-6 text-lg font-black tracking-tight">
             {ui.freeQuestion}
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">

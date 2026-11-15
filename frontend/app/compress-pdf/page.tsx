@@ -163,7 +163,7 @@ export default function Page() {
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
             The current Compress PDF workflow sends the selected document to
-            PDFora's processing service. Review the privacy notice before
+            PDFora&apos;s processing service. Review the privacy notice before
             uploading, then download and inspect the compressed result.
           </p>
 

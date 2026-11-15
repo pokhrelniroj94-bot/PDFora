@@ -28,8 +28,9 @@ export default function Page() {
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
               Convert PDF pages into JPG images online with PDFora. Turn your
-              PDF documents into easy-to-view JPG images directly from your
-              browser on desktop, tablet or mobile.
+              PDF documents into JPG images online. The selected PDF is sent to
+              PDFora&apos;s processing service for conversion; processing does
+              not run locally in your browser.
             </p>
           </div>
 
@@ -74,8 +75,8 @@ export default function Page() {
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Upload your PDF and start the conversion with a simple
-                browser-based workflow.
+                Select your PDF and start conversion through the PDFora processing
+                service. Review the privacy notice before uploading.
               </p>
             </div>
 
@@ -171,9 +172,10 @@ export default function Page() {
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Instead of installing desktop software, you can use the PDFora
-            PDF to JPG tool directly from a modern web browser. Upload your
-            PDF, start the conversion and download the resulting images.
+            Instead of installing desktop software, you can open the PDFora PDF to
+            JPG tool in a modern web browser. The selected PDF is processed by
+            PDFora&apos;s service; review the privacy notice before uploading.
+            Download the resulting images when conversion is complete.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">

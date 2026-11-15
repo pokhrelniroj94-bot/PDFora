@@ -26,7 +26,7 @@ export type PdfCommand =
   | { type: "reorder"; order: string } // e.g. "3,1,2"
   | { type: "rotate"; angle: number } // 0,90,180,270
   | { type: "rotateSelected"; angle: number; pages: string }
-  | { type: "addPageNumbers"; start: number; format?: string; position?: string; skipFirst?: boolean; fontSize?: number }
+  | { type: "addPageNumbers"; start: number; format?: string; digits?: number; position?: string; skipFirst?: boolean; fontSize?: number }
   | { type: "watermark"; text: string; opacity?: number; color?: string }
   | { type: "compress" };
 
@@ -333,7 +333,8 @@ export async function processPdf(
         const skip = Boolean(cmd.skipFirst) && idx === 0;
         if (!skip) {
           const number = cmd.start + idx;
-          const txt = cmd.format ? cmd.format.replace("%d", String(number)) : String(number);
+          const numberText = String(number).padStart(Math.max(0, Math.min(12, cmd.digits ?? 0)), "0");
+          const txt = cmd.format ? cmd.format.replace("%d", numberText) : numberText;
           const { width, height } = p.getSize();
           const textWidth = font.widthOfTextAtSize(txt, fontSize);
           const position = cmd.position || "bottom-center";

@@ -144,7 +144,7 @@ export default function NirojToolsTool({
         avoid: "Choose the watermark text first and read the updated processing notice before using a sensitive PDF."
       };
     }
-    if (endpoint === "/api/sign" && (!value.trim() || !/^[\\x20-\\x7E]+$/.test(value.trim()))) {
+    if (endpoint === "/api/sign" && (!value.trim() || !/^[\x20-\x7E]+$/.test(value.trim()))) {
       return locale === "ne" ? {
         title: "ब्राउजरमै हस्ताक्षर",
         description: "टाइप गरिएको हस्ताक्षरका लागि अंग्रेजी/ASCII अक्षर मात्र प्रयोग गर्नुहोस्। असमर्थित अक्षर फाइल अपलोड हुनुअघि अस्वीकार गरिन्छन्।",

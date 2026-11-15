@@ -64,6 +64,7 @@ const coreNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "यो क्याल्कुलेटर कानूनी जग्गा नापका लागि हो?", answer: "होइन। यो एकाइ रूपान्तरणका लागि मात्र हो। कानूनी मापनका लागि आधिकारिक सर्वेक्षण अभिलेख प्रयोग गर्नुहोस्।" },
     ],
     toolLinks: [{ label: "रोपनी–आना कन्भर्टर", href: "/tools/nepal-land-area-converter" }],
+    sources: [{ label: "नेपाल सरकार: कक्षा ९ कम्प्युटर तथा ड्रइङ पाठ्यसामग्रीमा जग्गा एकाइ", url: "https://giwmscdnone.gov.np/media/pdf_upload/Compress-Combine-1.%20Computer%20and%20Drawing%20Grade%209_yoxzmi3.pdf" }],
   },
 ];
 

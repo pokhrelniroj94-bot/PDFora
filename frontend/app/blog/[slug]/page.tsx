@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: post.title,
     description,
     alternates: { canonical: url, ...(languages ? { languages } : {}) },
-    robots: isCatalogGeneratedGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
+    robots: isGeneratedGuide(post.slug) ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: { type: "article", url, siteName: "PDFora", title: post.title, description, modifiedTime: `${post.updated}T00:00:00+05:45` },
     twitter: { card: "summary", title: post.title, description },
   };
@@ -85,7 +85,7 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora Guide · {post.readTime}</p>
           <h1 className="mt-4 break-words text-2xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
-          {!isCatalogGeneratedGuide(post.slug) && post.toolLinks[0] && (
+          {!isGeneratedGuide(post.slug) && post.toolLinks[0] && (
             <BlogToolCTA
               blogSlug={post.slug}
               href={post.toolLinks[0].href}

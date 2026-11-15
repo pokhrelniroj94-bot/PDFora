@@ -32,6 +32,19 @@ test("every curated Nepali blog article is a real localized route with hreflang"
   }
 });
 
+test("Nepali tools directory is indexable with reciprocal hreflang", () => {
+  assert.equal(routing.hasIndexableLocalizedPage("/tools", "ne"), true);
+  assert.deepEqual(routing.hreflangMap("/tools"), {
+    en: "https://pd-fora.vercel.app/tools",
+    ne: "https://pd-fora.vercel.app/ne/tools",
+    "x-default": "https://pd-fora.vercel.app/tools",
+  });
+  const nepaliPage = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "page.tsx"), "utf8");
+  const englishPage = fs.readFileSync(path.join(frontendRoot, "app", "tools", "page.tsx"), "utf8");
+  assert.match(nepaliPage, /languages: hreflangMap\("\/tools"\)/);
+  assert.match(englishPage, /languages: hreflangMap\("\/tools"\)/);
+});
+
 test("Nepali homepage has a clearly visible cultural visual identity", () => {
   const home = fs.readFileSync(path.join(frontendRoot, "components", "NepaliHomePage.tsx"), "utf8");
   const css = fs.readFileSync(path.join(frontendRoot, "app", "globals.css"), "utf8");

@@ -77,10 +77,10 @@ export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
 const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
 
 // Only pages that are eligible for indexing may participate in hreflang.
-// Existing localized routes such as the full tools directory and the NEPSE
-// analysis shell intentionally remain noindex until their content is fully reviewed.
+// The fully reviewed Nepali tools directory is indexable; the NEPSE analysis
+// shell remains excluded until its market-data content is fully reviewed.
 const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set([
-  "/", "/market", "/resume-builder", "/blog",
+  "/", "/market", "/tools", "/resume-builder", "/blog",
   ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),
   "/privacy", "/terms", "/about", "/contact",
 ]);

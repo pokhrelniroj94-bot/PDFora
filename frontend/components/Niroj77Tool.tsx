@@ -485,8 +485,10 @@ export default function NirojToolsTool({
 
           <InfoCard
             icon="🔒"
-            title={ui.private}
-            description={ui.privateDescription}
+            title={browserOnly ? (locale === "ne" ? "ब्राउजरमै सुरक्षित" : "Local browser processing") : ui.private}
+            description={browserOnly
+              ? (locale === "ne" ? "फाइल तपाईंको डिभाइसबाट बाहिर पठाइँदैन।" : "Selected files stay on your device during processing.")
+              : ui.privateDescription}
           />
 
           <InfoCard

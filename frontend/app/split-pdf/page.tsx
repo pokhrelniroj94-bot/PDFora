@@ -40,6 +40,8 @@ export default function Page() {
               title="Split PDF"
               description="Split a PDF or extract selected pages into a new PDF document."
               multiple={false}
+              formField="pages"
+              formPlaceholder="Page ranges (e.g. 1-3,4-6)"
               downloadName="PDFora-Split.pdf"
             />
           </div>

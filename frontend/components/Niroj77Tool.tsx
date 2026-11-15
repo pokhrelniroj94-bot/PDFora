@@ -71,6 +71,13 @@ export default function NirojToolsTool({
       case "/api/delete-pages": return { type: "deletePages", pages: value } as const;
       case "/api/reorder": return { type: "reorder", order: value } as const;
       case "/api/watermark": return { type: "watermark", text: value } as const;
+      case "/api/page-numbers": return {
+        type: "addPageNumbers",
+        start: Math.max(1, Number.parseInt(extraValues.start_number || "1", 10) || 1),
+        position: extraValues.position || "bottom-center",
+        skipFirst: extraValues.skip_first === "true",
+        fontSize: Math.max(6, Math.min(48, Number.parseInt(extraValues.font_size || "11", 10) || 11)),
+      } as const;
       default: return null;
     }
   })();

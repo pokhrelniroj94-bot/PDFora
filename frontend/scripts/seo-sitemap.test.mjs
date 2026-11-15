@@ -197,8 +197,7 @@ for (const [relativePath, localeFreePath] of reciprocalEnglishPages) {
   assert.match(source, /hreflangMap\(/, `${relativePath} must publish alternates for its reviewed Nepali equivalent`);
   assert.match(source, /languages:\s*localizedAlternates/, `${relativePath} must emit the shared hreflang map`);
   const alternates = hreflangMap(localeFreePath);
-  assert.equal(alternates?.en, `https://pd-fora.vercel.app${localeFreePath}`);
-  assert.equal(alternates?.ne, undefined, `${localeFreePath} must not advertise an unreviewed Nepali alternate`);
+  assert.equal(alternates, undefined, `${localeFreePath} must not publish a partial hreflang map before native review`);
 }
 
 const englishBlogSlugs = new Set([...englishNepalBlogSource.matchAll(/slug:\s*"([^"]+)"/g), ...englishEditorialBlogSource.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => match[1]));
@@ -206,8 +205,7 @@ const nepaliBlogSlugs = [...nepaliLocalizedBlogSource.matchAll(/slug:\s*"([^"]+)
 for (const slug of nepaliBlogSlugs) {
   assert.ok(englishBlogSlugs.has(slug), `Nepali blog ${slug} must have a real English equivalent before publishing hreflang`);
   const alternates = hreflangMap(`/blog/${slug}`);
-  assert.equal(alternates?.en, `https://pd-fora.vercel.app/blog/${slug}`);
-  assert.equal(alternates?.ne, undefined, `Nepali blog ${slug} must not advertise hreflang before native-speaker review`);
+  assert.equal(alternates, undefined, `Nepali blog ${slug} must not advertise hreflang before native-speaker review`);
 }
 
 assert.match(englishToolPageSource, /isLocalizedToolIndexable\("ne", slug\)/, "English tool pages must gate Nepali hreflang on explicit indexing approval");

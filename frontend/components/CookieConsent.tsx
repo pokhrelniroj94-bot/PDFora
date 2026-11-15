@@ -48,12 +48,14 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
     setAnalytics(nextAnalytics);
     setAdvertising(nextAdvertising);
     setOpen(false);
+    window.dispatchEvent(new CustomEvent("pdfora:consent-updated", { detail: next }));
   };
 
   if (!ready) return null;
 
   return <>
     {gaId && preferences?.analytics && <GoogleAnalytics gaId={gaId} />}
+    {preferences?.advertising && <Script src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498" strategy="afterInteractive" data-cfasync="false" /> }
 
     {!preferences && !open && <section role="dialog" aria-label={copy.consentLabel} className="fixed inset-x-3 bottom-16 z-[70] mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl sm:inset-x-auto sm:right-4 sm:bottom-16">
       <h2 className="font-bold text-slate-900">{copy.privacyChoices}</h2>

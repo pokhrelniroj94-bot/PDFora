@@ -95,7 +95,7 @@ const sourceFiles = [
   "scripts/nepali-nepal-tools.test.mjs","scripts/nepali-encoding-case-tools.test.mjs",
   "scripts/nepali-data-tools.test.mjs","scripts/nepali-remaining-tools.test.mjs"
 ].map((p) => read(p)).join("\n");
-const targetedSlugs = new Set(parse(sourceFiles, /"([a-z0-9-]+)"/g));
+const targetedSlugs = new Set(parse(sourceFiles, /"([a-z0-9-]+)"/g).filter((slug) => unique.includes(slug)));
 const duplicate = (xs) => xs.filter((v, i) => xs.indexOf(v) !== i);
 const missingRoutes = unique.filter((s) => !routeSet.has(s));
 const missingDispatch = [...routeSet].filter((s) => !dispatchSet.has(s) && !pdf.includes(s));
@@ -103,7 +103,7 @@ const missingTitles = [...routeSet].filter((s) => !titles.has(s) && !pdf.include
 const report = {
   generatedAt: new Date().toISOString(),
   methodology: "Derived from current catalog, canonical PDF inventory, Nepali route allowlists, page dispatch source, localized verification allowlist and registered Nepali blog records. Static source evidence is not runtime/browser or human review evidence.",
-  inventory: { uniqueTools: unique.length, pdfTools: pdf.length, catalogTools: catalog.length, nepaliToolRoutes: routeSet.size, nepaliPdfRoutes: pdfRoutes.length, nepaliCatalogRoutes: utility.length, nepaliNonToolRoutes: nonToolStaticRoutes.length + blogSlugs.length, nepaliRouteEquivalents, targetedUnitTestSlugCount: targetedSlugs.size, nepaliBlogArticles: blogSlugs.length },
+  inventory: { uniqueTools: unique.length, pdfTools: pdf.length, catalogTools: catalog.length, nepaliToolRoutes: routeSet.size, nepaliPdfRoutes: pdfRoutes.length, nepaliCatalogRoutes: utility.length, nepaliNonToolRoutes: nonToolStaticRoutes.length + blogSlugs.length, nepaliRouteEquivalents, targetedUnitTestToolCount: targetedSlugs.size, nepaliBlogArticles: blogSlugs.length },
   checks: {
     duplicateCatalogSlugs: duplicate(all),
     missingNepaliRoutes: missingRoutes,

@@ -211,7 +211,7 @@ export default function Page() {
                 How can I remove pages from a PDF online?
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                Select your PDF, enter the page numbers you want to remove, and click the delete button. The selected PDF is sent to PDFora's processing service for page removal; this operation does not run locally in your browser. Review the Privacy Policy before choosing a sensitive document. A new PDF is created for download.
+                Select your PDF, enter the page numbers you want to remove, and click the delete button. The selected PDF is sent to PDFora&apos;s processing service for page removal; this operation does not run locally in your browser. Review the Privacy Policy before choosing a sensitive document. A new PDF is created for download.
               </p>
             </details>
 

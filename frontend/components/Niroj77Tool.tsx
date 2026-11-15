@@ -81,7 +81,7 @@ export default function NirojToolsTool({
         const count = Number.parseInt(extraValues.count || "1", 10);
         return Number.isInteger(count) && count >= 1 && count <= 50 ? { type: "addBlankPages", count } as const : null;
       }
-      case "/api/sign": return value.trim() ? { type: "sign", text: value.trim() } as const : null;
+      case "/api/sign": return /^[\x20-\x7E]+$/.test(value.trim()) ? { type: "sign", text: value.trim() } as const : null;
       case "/api/page-counter": return { type: "pageCount" } as const;
       case "/api/pdf-info": return { type: "info" } as const;
       case "/api/metadata": return { type: "editMetadata", title: extraValues.title || "", author: extraValues.author || "", subject: extraValues.subject || "", keywords: extraValues.keywords || "" } as const;
@@ -235,6 +235,11 @@ export default function NirojToolsTool({
 
     if ((formField || queryField) && !value.trim() && endpoint !== "/api/header-footer") {
       setMessage(ui.requiredInfo);
+      return;
+    }
+
+    if (endpoint === "/api/sign" && !/^[\x20-\x7E]+$/.test(value.trim())) {
+      setMessage(locale === "ne" ? "हस्ताक्षरका लागि अंग्रेजी/ASCII अक्षर मात्र प्रयोग गर्नुहोस्। नेपाली अक्षर हाल समर्थित छैनन्; PDF सर्भरमा अपलोड गरिने छैन।" : "Use basic English/ASCII characters for the typed signature. Nepali characters are not supported yet; the PDF will not be uploaded.");
       return;
     }
 

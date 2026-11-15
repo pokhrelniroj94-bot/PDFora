@@ -491,15 +491,16 @@ export default function NirojToolsTool({
         {locale === "ne" ? (
         <section className="pdfora-trust-panel mt-6 rounded-3xl border p-5 sm:p-7" aria-labelledby="pdfora-trust-title">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="pdfora-trust-icon" aria-hidden="true">🔐</span>
+            <span className="pdfora-trust-icon" aria-hidden="true">{browserOnly ? "🛡️" : "🔐"}</span>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-teal-800">PDFora गोपनीयता जानकारी</p>
+            {browserOnly && <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">ब्राउजरमै चल्ने</span>}
           </div>
           <h2 id="pdfora-trust-title" className="mt-3 text-xl font-black tracking-tight sm:text-2xl">तपाईंको फाइल कसरी ह्यान्डल हुन्छ?</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <div className="pdfora-trust-detail"><h3>फाइल कहाँ जान्छ?</h3><p>{browserOnly ? "यो टुलको फाइल प्रोसेसिङ तपाईंको आफ्नै ब्राउजरमा हुन्छ। फाइल PDFora को प्रोसेसिङ सर्भरमा पठाइँदैन।" : "प्रक्रिया सुरु गर्दा फाइल अनुरोध पूरा गर्न PDFora को प्रोसेसिङ सर्भरमा पठाइन्छ। यो टुल पूर्ण रूपमा तपाईंको ब्राउजरभित्र मात्र चल्दैन।"}</p></div>
             <div className="pdfora-trust-detail"><h3>कहिले हटाइन्छ?</h3><p>{browserOnly ? "फाइल ब्राउजर मेमोरीमा रहन्छ र पेज बन्द वा रिफ्रेस गर्दा हट्छ। डाउनलोड गरिएको नतिजा तपाईंको डिभाइसमा रहन्छ।" : "सामान्य अवस्थामा नतिजा पठाइसकेपछि अनुरोधका अस्थायी फाइलहरू सफा गरिन्छन्। अनुरोध बीचमै अवरुद्ध भए बाँकी फाइलहरू अर्को प्रोसेसिङ अनुरोधमा ६ घण्टाभन्दा पुराना भेटिएपछि सफा गरिन्छन्।"}</p></div>
             <div className="pdfora-trust-detail"><h3>स्थायी फाइल इतिहास राखिन्छ?</h3><p>PDFora मा प्रयोगकर्ताको स्थायी फाइल लाइब्रेरी वा अकाउन्टमा आधारित फाइल इतिहास छैन। डाउनलोड गरिएको नतिजा आफ्नै डिभाइसमा सुरक्षित राख्नुहोस्।</p></div>
-            <div className="pdfora-trust-detail"><h3>कस्तो फाइल अपलोड नगर्ने?</h3><p>इन्टरनेटमार्फत होस्ट गरिएको सर्भरमा प्रोसेस गर्न नचाहने अत्यन्त संवेदनशील कागजात अपलोड नगर्नुहोस्। इन्टरनेट प्रसारण वा सर्भर प्रणालीलाई शतप्रतिशत जोखिमरहित भन्न सकिँदैन।</p></div>
+            <div className="pdfora-trust-detail"><h3>कस्तो फाइल अपलोड नगर्ने?</h3><p>{browserOnly ? "यो टुलले फाइल सर्भरमा अपलोड गर्दैन। साझा डिभाइसमा डाउनलोड भएको नतिजा खुला नराख्नुहोस्।" : "इन्टरनेटमार्फत होस्ट गरिएको सर्भरमा प्रोसेस गर्न नचाहने अत्यन्त संवेदनशील कागजात अपलोड नगर्नुहोस्। इन्टरनेट प्रसारण वा सर्भर प्रणालीलाई शतप्रतिशत जोखिमरहित भन्न सकिँदैन।"}</p></div>
           </div>
           <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/ne/privacy">विस्तृत गोपनीयता नीति पढ्नुहोस् <span aria-hidden="true">↗</span></a>
         </section>
@@ -507,15 +508,16 @@ export default function NirojToolsTool({
         ) : (
         <section className="pdfora-trust-panel mt-6 rounded-3xl border p-5 sm:p-7" aria-labelledby="pdfora-trust-title">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="pdfora-trust-icon" aria-hidden="true">🔐</span>
+            <span className="pdfora-trust-icon" aria-hidden="true">{browserOnly ? "🛡️" : "🔐"}</span>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-teal-800">PDFora privacy details</p>
+            {browserOnly && <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">Runs in your browser</span>}
           </div>
           <h2 id="pdfora-trust-title" className="mt-3 text-xl font-black tracking-tight sm:text-2xl">How your files are handled</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <div className="pdfora-trust-detail"><h3>Where does my file go?</h3><p>{browserOnly ? "This tool processes your file locally in your browser. The file is not sent to the PDFora processing server." : "When you start processing, your file is sent to the PDFora processing server to complete your request. This tool does not run entirely inside your browser."}</p></div>
             <div className="pdfora-trust-detail"><h3>When is it deleted?</h3><p>{browserOnly ? "Files remain in browser memory during processing and are released when you close or refresh the page. The downloaded result remains on your device." : "Under normal operation, temporary request files are cleaned up after the result has been sent. If a request is interrupted, leftover files are cleaned when a later processing request finds them more than six hours old."}</p></div>
             <div className="pdfora-trust-detail"><h3>Is a permanent file history kept?</h3><p>PDFora does not provide a permanent user file library or account-based file history. Save your downloaded result on your own device.</p></div>
-            <div className="pdfora-trust-detail"><h3>What should I avoid uploading?</h3><p>Do not upload highly sensitive documents that you are not comfortable processing on an internet-hosted server. No internet transmission or server system can be described as completely risk-free.</p></div>
+            <div className="pdfora-trust-detail"><h3>What should I avoid uploading?</h3><p>{browserOnly ? "This tool does not upload files to a server. Avoid leaving downloaded results on shared devices." : "Do not upload highly sensitive documents that you are not comfortable processing on an internet-hosted server. No internet transmission or server system can be described as completely risk-free."}</p></div>
           </div>
           <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/privacy">Read the full Privacy Policy <span aria-hidden="true">↗</span></a>
         </section>

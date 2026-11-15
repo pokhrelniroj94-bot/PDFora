@@ -6,7 +6,7 @@ import { runNepaliBusinessTool, type NepaliBusinessToolSlug } from "../lib/i18n/
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const configs: Record<NepaliBusinessToolSlug, { title: string; description: string; fields: Array<[string, string]> }> = {
   "profit-margin-calculator": { title: "नाफा मार्जिन क्याल्कुलेटर", description: "बिक्री रकम र लागतबाट नाफा वा घाटा तथा बिक्रीमा आधारित मार्जिन निकाल्नुहोस्।", fields: [["revenue","बिक्री रकम (NPR)"],["cost","कुल लागत (NPR)"]] },
-  "markup-calculator": { title: "Markup क्याल्कुलेटर", description: "लागतमा markup प्रतिशत थपेर बिक्री मूल्य र मार्जिन निकाल्नुहोस्।", fields: [["cost","लागत (NPR)"],["markup","Markup (%)"]] },
+  "markup-calculator": { title: "Markup क्याल्कुलेटर", description: "लागतमा markup प्रतिशत थपेर बिक्री मूल्य र मार्जिन निकाल्नुहोस्।", fields: [["cost","लागत (NPR)"],["markup","लागतमा थपिने प्रतिशत (%)"]] },
   "break-even-calculator": { title: "ब्रेक-इभेन क्याल्कुलेटर", description: "स्थिर लागत, प्रति एकाइ चल लागत र बिक्री मूल्यबाट लागत उठ्ने मात्रा निकाल्नुहोस्।", fields: [["fixed","कुल स्थिर लागत (NPR)"],["variable","प्रति एकाइ चल लागत (NPR)"],["price","प्रति एकाइ बिक्री मूल्य (NPR)"]] },
   "sales-tax-calculator": { title: "बिक्री कर क्याल्कुलेटर", description: "आफूले दिएको करदर प्रयोग गरी कर रकम र करसहितको मूल्य निकाल्नुहोस्।", fields: [["price","करअघिको मूल्य (NPR)"],["rate","करदर (%)"]] },
   "salary-breakdown-calculator": { title: "तलब विवरण क्याल्कुलेटर", description: "मासिक कुल तलबबाट तपाईंले दिएको कर, सञ्चय कोष र अन्य कटौती घटाउनुहोस्।", fields: [["gross","मासिक कुल तलब (NPR)"],["tax","कर कटौती (NPR)"],["provident","सञ्चय कोष/निवृत्तिभरण कटौती (NPR)"],["other","अन्य कटौती (NPR)"]] },

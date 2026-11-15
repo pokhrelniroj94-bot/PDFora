@@ -278,7 +278,7 @@ test("Nepali developer and text tools have localized routes and interfaces", () 
     if (slug === "hash-generator") assert.ok(logic.includes("runNepaliHashTool"), `${slug} must have processing logic`);
     else assert.ok(logic.includes(`slug === "${slug}"`), `${slug} must have processing logic`);
   }
-  for (const phrase of ["JSON फर्म्याट तथा जाँच", "Base64 Encode / Decode", "Text Diff Checker", "नेपाली Unicode अक्षर सुरक्षित"]) {
+  for (const phrase of ["JSON फर्म्याट तथा जाँच", "Base64 रूपान्तरण", "दुई पाठ तुलना गर्ने टुल", "नेपाली Unicode अक्षर सुरक्षित"]) {
     assert.ok(component.includes(phrase) || route.includes(phrase), `Nepali developer UI must include ${phrase}`);
   }
 });

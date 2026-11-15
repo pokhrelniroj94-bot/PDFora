@@ -326,7 +326,7 @@ async function runTool(tool, index) {
     }
     row.heading = initial.heading;
     row.documentLanguage = initial.lang;
-    row.hasNepaliScript = /[\\u0900-\\u097F]/u.test(initial.heading + " " + initial.body);
+    row.hasNepaliScript = /[\u0900-\u097F]/u.test(initial.heading + " " + initial.body);
     if (localePrefix && !/^ne(?:-|$)/i.test(initial.lang)) throw new Error("Nepali route document lang is not Nepali: " + initial.lang);
     if (localePrefix && !row.hasNepaliScript) throw new Error("Nepali route has no Devanagari in its visible title/body.");
 

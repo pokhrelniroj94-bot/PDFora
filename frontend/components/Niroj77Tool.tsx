@@ -68,6 +68,7 @@ export default function NirojToolsTool({
   const browserCommand = (() => {
     switch (endpoint) {
       case "/api/merge": return { type: "merge" } as const;
+      case "/api/images-to-pdf": return files.length > 0 && files.every((file) => file.type === "image/jpeg" || file.type === "image/png" || /\\.(jpe?g|png)$/i.test(file.name)) ? { type: "imagesToPdf" } as const : null;
       case "/api/split": return value.trim() ? { type: "split", pages: value } as const : null;
       case "/api/crop": {
         const margin = Number.parseFloat(value || "36");

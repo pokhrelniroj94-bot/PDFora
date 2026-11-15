@@ -99,4 +99,14 @@ assert.ok(niroj.includes('case "/api/delete-pages": return { type: "deletePages"
 const pdfWorker = read("../app/tools/pdfWorkerImpl.ts");
 assert.ok(pdfWorker.includes('case "deletePages":'), "Delete Pages browser processing must have a matching worker implementation");
 
+
+const consent = read("../components/CookieConsent.tsx");
+const nativeAds = read("../app/components/AdsterraNative.tsx");
+const rootLayout = read("../app/layout.tsx");
+assert.ok(consent.includes('preferences?.advertising && <Script src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498"'), "Global advertising script must load only after explicit advertising consent");
+assert.ok(consent.includes('new CustomEvent("pdfora:consent-updated"'), "Consent changes must notify advertising placements immediately");
+assert.ok(consent.includes("if (revokingAdvertising) window.location.reload()"), "Revoking advertising consent must reload without previously injected ad scripts");
+assert.ok(nativeAds.includes('JSON.parse(saved).advertising === true') && nativeAds.includes('if (!allowed) return null;'), "Native ad placements must remain absent until advertising consent is granted");
+assert.ok(!rootLayout.includes("bauval.org/14/38ed7250c45fe280d3bdcf13969b4498"), "Root layout must not load advertising scripts unconditionally");
+
 console.log("Tool UI regression checks passed: image upload copy, validation, object URL lifecycle and homepage guidance.");

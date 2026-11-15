@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ToolGuide } from "../tool-guides";
+import { hreflangMap } from "./routing";
 
 const SITE = "https://pd-fora.vercel.app";
 
@@ -34,11 +35,13 @@ export function buildPdfToolMetadata(guide: ToolGuide | undefined, slug: string)
     "PDFora PDF tool"
   ];
 
+  const languages = hreflangMap(`/${slug}`);
+
   return {
     title,
     description,
     keywords,
-    alternates: { canonical: url },
+    alternates: { canonical: url, ...(languages ? { languages } : {}) },
     robots: { index: true, follow: true },
     openGraph: { type: "website", title: brandedTitle, description, url, siteName: "PDFora" },
     twitter: { card: "summary", title: brandedTitle, description }

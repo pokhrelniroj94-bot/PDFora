@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 import { getSharedUiCopy, localeFromPathname } from "../lib/i18n/shared-ui";
 import { localizedOrFallbackPath } from "../lib/i18n/routing";
 
@@ -42,18 +43,22 @@ export default function CookieConsent({ gaId }: { gaId?: string }) {
   }, []);
 
   const save = (nextAnalytics: boolean, nextAdvertising: boolean) => {
+    const revokingAdvertising = preferences?.advertising === true && !nextAdvertising;
     const next: Preferences = { necessary: true, analytics: nextAnalytics, advertising: nextAdvertising, savedAt: new Date().toISOString() };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     setPreferences(next);
     setAnalytics(nextAnalytics);
     setAdvertising(nextAdvertising);
     setOpen(false);
+    window.dispatchEvent(new CustomEvent("pdfora:consent-updated", { detail: next }));
+    if (revokingAdvertising) window.location.reload();
   };
 
   if (!ready) return null;
 
   return <>
     {gaId && preferences?.analytics && <GoogleAnalytics gaId={gaId} />}
+    {preferences?.advertising && <Script src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498" strategy="afterInteractive" data-cfasync="false" /> }
 
     {!preferences && !open && <section role="dialog" aria-label={copy.consentLabel} className="fixed inset-x-3 bottom-16 z-[70] mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl sm:inset-x-auto sm:right-4 sm:bottom-16">
       <h2 className="font-bold text-slate-900">{copy.privacyChoices}</h2>

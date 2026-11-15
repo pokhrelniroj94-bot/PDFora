@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import Script from "next/script";
+import { headers } from "next/headers";
 import CookieConsent from "../components/CookieConsent";
 import "./globals.css";
 import ToolDirectory from "../components/ToolDirectory";
@@ -29,11 +29,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         {children}
         <SiteFooter />
         <ToolDirectory />
-        <Script
-          src="https://bauval.org/14/38ed7250c45fe280d3bdcf13969b4498"
-          strategy="afterInteractive"
-          data-cfasync="false"
-        />
         <Script id="pdfora-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@graph": [

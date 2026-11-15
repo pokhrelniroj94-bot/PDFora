@@ -212,26 +212,42 @@ PDF_HEADER_PATTERN = re.compile(rb"%PDF-(?:1\.[0-7]|2\.0)")
 
 
 def _client_ip(request: Request) -> str:
-    """Resolve the client IP using Render/Cloudflare's visitor-IP header.
+    """Resolve a client IP without trusting headers supplied by arbitrary clients.
 
-    CF-Connecting-IP is set by Cloudflare at the edge and is preferred over
-    X-Forwarded-For, which can contain a chain of client-supplied/proxy values.
-    If the trusted edge header is absent, use the socket peer rather than
-    trusting an arbitrary forwarded value for security-sensitive rate limits.
+    The Render hostname is directly reachable, so the presence of RENDER or a
+    CF-Connecting-IP header alone does not prove that the request came through
+    a trusted proxy. Operators may explicitly list proxy networks in
+    PDFORA_TRUSTED_PROXY_CIDRS (comma-separated IPv4/IPv6 CIDRs). Only then is
+    CF-Connecting-IP accepted. X-Forwarded-For is intentionally never trusted.
+    With no trusted proxy configuration, the socket peer is used safely.
     """
-    if os.getenv("RENDER", "").lower() == "true":
-        edge_ip = request.headers.get("cf-connecting-ip", "").strip()
-        if edge_ip:
-            try:
-                return str(ipaddress.ip_address(edge_ip))
-            except ValueError:
-                pass
-
-    peer = request.client.host if request.client else "unknown"
+    peer_text = request.client.host if request.client else ""
     try:
-        return str(ipaddress.ip_address(peer))
+        peer_ip = ipaddress.ip_address(peer_text)
     except ValueError:
         return "unknown"
+
+    trusted_networks = []
+    for raw_network in os.getenv("PDFORA_TRUSTED_PROXY_CIDRS", "").split(","):
+        value = raw_network.strip()
+        if not value:
+            continue
+        try:
+            trusted_networks.append(ipaddress.ip_network(value, strict=False))
+        except ValueError:
+            import logging
+            logging.getLogger("pdfora.security").warning(
+                "Ignoring invalid PDFORA_TRUSTED_PROXY_CIDRS entry"
+            )
+
+    if any(peer_ip in network for network in trusted_networks):
+        edge_ip = request.headers.get("cf-connecting-ip", "").strip()
+        try:
+            return str(ipaddress.ip_address(edge_ip))
+        except ValueError:
+            pass
+
+    return str(peer_ip)
 
 
 async def _redis_rate_count(key: str, window_seconds: int) -> int | None:

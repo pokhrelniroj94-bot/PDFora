@@ -48,6 +48,7 @@ assert.ok(sharedPdfGuide.includes("Depending on the tool and selected options") 
 assert.ok(sharedPdfGuide.includes("Read the processing notice shown above") && sharedPdfGuide.includes("Avoid submitting the same request repeatedly"), "Shared PDF guidance must keep accurate processing and troubleshooting advice");
 assert.doesNotMatch(sharedPdfGuide, /\{labels\[(?:5|6|7|8|9|10)\]\}/, "Shared PDF guide must not render generic boilerplate sections on every tool page");
 assert.ok(sharedPdfGuide.includes("app that supports its output format") && sharedPdfGuide.includes("spreadsheets or text exports"), "Shared PDF guide must check the actual output format, not assume every tool downloads a PDF");
+assert.ok(sharedPdfGuide.includes("!isGeneratedGuide(guide.blogSlug)") && sharedPdfGuide.includes("/ne/blog/${guide.blogSlug}"), "Tool pages must link only to curated blog guides and use the Nepali guide URL when localized");
 
 for (const page of ["rotate-pdf", "pdf-to-jpg", "pdf-to-word", "split-pdf", "images-to-pdf", "delete-pages", "extract-pages"]) {
   const pageSource = read("../app/" + page + "/page.tsx");

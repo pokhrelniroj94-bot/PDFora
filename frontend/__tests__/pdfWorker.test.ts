@@ -99,6 +99,41 @@ describe('PDF Worker Core', () => {
     expect(blob.size).toBeGreaterThan(0);
   });
 
+  test('crop selected pages in the browser worker', async () => {
+    const file = await createSamplePdf('crop.pdf');
+    const { blob } = await processPdf({ type: 'crop', margin: 12, pages: '1' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(2);
+    expect(doc.getPage(0).getCropBox().width).toBeLessThan(doc.getPage(0).getSize().width);
+    expect(doc.getPage(1).getCropBox().width).toBe(doc.getPage(1).getSize().width);
+  });
+
+  test('append blank pages in the browser worker', async () => {
+    const file = await createSamplePdf('blank-pages.pdf');
+    const { blob } = await processPdf({ type: 'addBlankPages', count: 2 }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(4);
+  });
+
+  test('add a visible typed signature in the browser worker', async () => {
+    const file = await createSamplePdf('signed.pdf');
+    const { blob } = await processPdf({ type: 'sign', text: 'PDFora E2E' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(2);
+    expect(blob.size).toBeGreaterThan(0);
+  });
+
+  test('generate page count and PDF information reports locally', async () => {
+    const file = await createSamplePdf('report.pdf');
+    const count = await processPdf({ type: 'pageCount' }, [file]);
+    const info = await processPdf({ type: 'info' }, [file]);
+    expect(await count.blob.text()).toContain('Pages: 2');
+    expect(await info.blob.text()).toContain('Page dimensions:');
+  });
+
   test('invalid PDF throws', async () => {
     const badFile = new File([new Uint8Array([1, 2, 3])], 'bad.txt', { type: 'text/plain' });
     const cmd: PdfCommand = { type: 'merge' };

@@ -14,7 +14,7 @@ export type PdfCommand =
   | { type: "deletePages"; pages: string }
   | { type: "reorder"; order: string } // e.g. "3,1,2"
   | { type: "rotate"; angle: number } // 0,90,180,270
-  | { type: "addPageNumbers"; start: number; format?: string }
+  | { type: "addPageNumbers"; start: number; format?: string; position?: string; skipFirst?: boolean; fontSize?: number }
   | { type: "watermark"; text: string; opacity?: number }
   | { type: "compress" };
 
@@ -208,17 +208,22 @@ export async function processPdf(
       const src = pdfDocs[0];
       const pages = await outputDoc.copyPages(src, src.getPageIndices());
       const font = await outputDoc.embedFont(StandardFonts.Helvetica);
+      const fontSize = cmd.fontSize && Number.isFinite(cmd.fontSize) ? Math.min(48, Math.max(6, cmd.fontSize)) : 11;
       pages.forEach((p, idx) => {
-        const number = cmd.start + idx;
-        const txt = cmd.format ? cmd.format.replace("%d", String(number)) : String(number);
-        const { width } = p.getSize();
-        p.drawText(txt, {
-          x: width - 50,
-          y: 20,
-          size: 12,
-          font,
-          color: rgb(0, 0, 0),
-        });
+        const skip = Boolean(cmd.skipFirst) && idx === 0;
+        if (!skip) {
+          const number = cmd.start + idx - (cmd.skipFirst ? 1 : 0);
+          const txt = cmd.format ? cmd.format.replace("%d", String(number)) : String(number);
+          const { width, height } = p.getSize();
+          const textWidth = font.widthOfTextAtSize(txt, fontSize);
+          const position = cmd.position || "bottom-center";
+          const left = position.endsWith("left");
+          const right = position.endsWith("right");
+          const top = position.startsWith("top");
+          const x = left ? 28 : right ? width - textWidth - 28 : (width - textWidth) / 2;
+          const y = top ? height - fontSize - 24 : 20;
+          p.drawText(txt, { x: Math.max(8, x), y: Math.max(8, y), size: fontSize, font, color: rgb(0, 0, 0) });
+        }
         outputDoc.addPage(p);
       });
       break;

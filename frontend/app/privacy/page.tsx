@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <h1 className="mb-4 text-4xl font-bold">Privacy Policy</h1>
 
         <p className="mb-8 text-gray-600">
-          Last updated: November 14, 2026
+          Last updated: November 15, 2026
         </p>
 
         <section className="space-y-6 leading-7">
@@ -36,19 +36,23 @@ export default function PrivacyPage() {
               2. Files You Upload
             </h2>
             <p>
-              PDFora processes files that you voluntarily upload to use our tools. Files are
-              transmitted to our processing backend so the requested operation can
-              be completed; tools using this service do not process the uploaded
-              document entirely on your device.
+              PDFora uses different processing methods depending on the tool and the
+              selected format or options. Tools explicitly marked as browser-based process
+              files on your device and do not send those files to PDFora's processing server
+              for that operation. Other tools, or unsupported options within a tool, may send
+              selected files to PDFora's processing service. Always read the processing and
+              privacy notice shown on the individual tool before choosing a file.
             </p>
             <p className="mt-2">
-              Under normal operation, request-scoped temporary files are cleaned after the
-              processing response has been sent. If a request is interrupted or the
-              service stops before cleanup, the backend checks for abandoned temporary
-              job folders during a later processing request and removes folders older
-              than six hours. This is best-effort cleanup, not a guarantee that every
-              interrupted file is erased at an exact time. We do not intentionally
-              maintain a permanent user file library or account-based file history.
+              For requests handled by the processing service, request-scoped temporary
+              files are normally cleaned after the response has been sent. If a request is
+              interrupted or the service stops before cleanup, the backend checks for
+              abandoned temporary job folders during a later processing request and removes
+              folders older than six hours. This is best-effort cleanup, not a guarantee that
+              every interrupted file is erased at an exact time. Browser-processed files
+              remain in browser memory during the operation; downloaded results remain on
+              your device. PDFora does not intentionally maintain a permanent user file
+              library or account-based file history.
             </p>
           </div>
 

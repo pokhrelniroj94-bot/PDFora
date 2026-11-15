@@ -113,6 +113,54 @@ export default function NirojToolsTool({
     }
   })();
   const browserOnly = browserCommand !== null;
+  const conditionalProcessingNotice = (() => {
+    if (endpoint === "/api/images-to-pdf" && files.length === 0) {
+      return locale === "ne" ? {
+        title: "तस्बिरको ढाँचाअनुसार प्रशोधन",
+        description: "JPG/JPEG/PNG ब्राउजरमै प्रशोधन हुन्छन्; WebP फाइल PDFora प्रशोधन सेवामा जान्छन्।",
+        where: "JPG/JPEG/PNG फाइल तपाईंको ब्राउजरमै प्रशोधन हुन्छन्। WebP फाइल PDFora को प्रशोधन सेवामा पठाइन्छ।",
+        when: "ब्राउजरमा प्रशोधन भएका फाइल पेज बन्द वा रिफ्रेस गर्दा मेमोरीबाट हट्छन्। WebP का अस्थायी फाइल नतिजा पठाएपछि सफा गरिन्छन्; अवरुद्ध अनुरोधका फाइल पछि सफा हुन्छन्।",
+        avoid: "संवेदनशील कागजातका लागि JPG/JPEG/PNG ब्राउजरमै राखिन्छन्। WebP प्रयोग गर्दा फाइल सेवा-सर्भरमा पठाइन्छ भन्ने कुरा ध्यान दिनुहोस्।"
+      } : {
+        title: "Processing depends on image format",
+        description: "JPG/JPEG/PNG files are processed locally; WebP files use the PDFora processing service.",
+        where: "JPG/JPEG/PNG files are processed in your browser. WebP files are sent to the PDFora processing service.",
+        when: "Browser-processed files are released from memory when you close or refresh the page. Temporary WebP service files are cleaned after the result is sent; interrupted-job files are cleaned later.",
+        avoid: "JPG/JPEG/PNG files stay on your device. WebP files are sent to the processing service, so avoid WebP for sensitive documents unless you accept that handling."
+      };
+    }
+    if (endpoint === "/api/watermark" && !value.trim()) {
+      return locale === "ne" ? {
+        title: "वाटरमार्कको text अनुसार प्रशोधन",
+        description: "समर्थित ASCII text ब्राउजरमै चल्छ; अन्य text प्रशोधन सेवामा जान सक्छ।",
+        where: "साधारण ASCII वाटरमार्क text तपाईंको ब्राउजरमै प्रशोधन हुन्छ। अन्य text PDFora प्रशोधन सेवामा पठाइन्छ।",
+        when: "ASCII text को फाइल ब्राउजर मेमोरीमा रहन्छ र पेज बन्द वा रिफ्रेस गर्दा हट्छ। सेवामा पठाइएका अस्थायी फाइल नतिजा पठाएपछि सफा गरिन्छन्।",
+        avoid: "संवेदनशील फाइल प्रयोग गर्नुअघि वाटरमार्क text छान्नुहोस् र त्यसपछि देखिने प्रशोधन सूचना पढ्नुहोस्।"
+      } : {
+        title: "Processing depends on watermark text",
+        description: "Supported ASCII text runs locally; other text may use the PDFora processing service.",
+        where: "Basic ASCII watermark text is processed in your browser. Other text is sent to the PDFora processing service.",
+        when: "For ASCII text, the file remains in browser memory and is released when you close or refresh the page. Service-processed temporary files are cleaned after the result is sent.",
+        avoid: "Choose the watermark text first and read the updated processing notice before using a sensitive PDF."
+      };
+    }
+    if (endpoint === "/api/sign" && (!value.trim() || !/^[\\x20-\\x7E]+$/.test(value.trim()))) {
+      return locale === "ne" ? {
+        title: "ब्राउजरमै हस्ताक्षर",
+        description: "टाइप गरिएको हस्ताक्षरका लागि अंग्रेजी/ASCII अक्षर मात्र प्रयोग गर्नुहोस्। असमर्थित अक्षर फाइल अपलोड हुनुअघि अस्वीकार गरिन्छन्।",
+        where: "समर्थित ASCII हस्ताक्षर तपाईंको ब्राउजरमै प्रशोधन हुन्छ। नेपाली वा अन्य असमर्थित अक्षर राखे फाइल सर्भरमा नपठाई अनुरोध रोकिन्छ।",
+        when: "समर्थित हस्ताक्षर प्रक्रिया गर्दा फाइल ब्राउजर मेमोरीमा रहन्छ र पेज बन्द वा रिफ्रेस गर्दा हट्छ।",
+        avoid: "नेपाली हस्ताक्षर हाल समर्थित छैन। अंग्रेजी/ASCII अक्षर प्रयोग गर्नुहोस्; यो दृश्य हस्ताक्षर हो, प्रमाणपत्रमा आधारित डिजिटल हस्ताक्षर होइन।"
+      } : {
+        title: "Local typed-signature processing",
+        description: "Use basic English/ASCII characters. Unsupported characters are rejected before the PDF is uploaded.",
+        where: "Supported typed signatures are processed in your browser. Nepali and other unsupported characters are rejected without sending the PDF to the server.",
+        when: "The PDF remains in browser memory during processing and is released when you close or refresh the page.",
+        avoid: "Nepali signature text is not currently supported. Use basic English/ASCII characters; this is a visible typed signature, not a certificate-based digital signature."
+      };
+    }
+    return null;
+  })();
 
   const inputRef = useRef<HTMLInputElement>(null);
 

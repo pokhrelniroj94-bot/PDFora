@@ -798,7 +798,7 @@ html:lang(ne) .bg-blue-600,
 html:lang(ne) .bg-teal-600 { background-color:#285b45 !important; }
 html:lang(ne) .bg-blue-100,
 html:lang(ne) .bg-teal-50 { background-color:#f5e9d5 !important; }
-html:lang(ne) .hover\\:bg-slate-50:hover { background-color:#f5eee1 !important; }
+html:lang(ne) .hover\:bg-slate-50:hover { background-color:#f5eee1 !important; }
 html:lang(ne) a { text-underline-offset:3px; }
 html:lang(ne) button:focus-visible,
 html:lang(ne) a:focus-visible,

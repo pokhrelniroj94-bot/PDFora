@@ -212,7 +212,7 @@ export async function processPdf(
       pages.forEach((p, idx) => {
         const skip = Boolean(cmd.skipFirst) && idx === 0;
         if (!skip) {
-          const number = cmd.start + idx - (cmd.skipFirst ? 1 : 0);
+          const number = cmd.start + idx;
           const txt = cmd.format ? cmd.format.replace("%d", String(number)) : String(number);
           const { width, height } = p.getSize();
           const textWidth = font.widthOfTextAtSize(txt, fontSize);

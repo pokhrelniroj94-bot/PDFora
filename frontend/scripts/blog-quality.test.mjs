@@ -162,4 +162,9 @@ assert.ok(englishArticlePage.includes("post.title}</span>"), "English breadcrumb
 assert.ok(nepaliArticlePage.includes("post.title}</span>"), "Nepali breadcrumb should identify the current article");
 assert.ok(nepaliArticlePage.includes("post.sources.map"), "Nepali articles should render cited sources when provided");
 
+const englishBlogSource = read("lib/blog-posts.ts");
+const nepaliBlogSource = read("lib/nepali-localized-blog-posts.ts");
+assert.doesNotMatch(englishBlogSource, /updateBlogProcessingGuidance|browserProcessedPdfSlugs|How PDFora processes this PDF/, "English articles must not receive repeated generic processing boilerplate");
+assert.doesNotMatch(nepaliBlogSource, /updateNepaliBlogProcessingGuidance|browserProcessedNepaliPdfSlugs|PDFora मा PDF कसरी प्रशोधन हुन्छ/, "Nepali articles must not receive repeated generic processing boilerplate");
+
 console.log("Editorial content checks passed: " + [...seenByCollection].map(([name, count]) => name + " " + count).join(", ") + ". No arbitrary word-count target is enforced.");

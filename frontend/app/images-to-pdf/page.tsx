@@ -22,8 +22,9 @@ I </div>
 
         <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
           Convert JPG, JPEG, PNG and WebP images into a single PDF
-          document online. PDFora makes it simple to combine multiple
-          images into one PDF file from your phone, tablet or computer.
+          document online. JPG, JPEG and PNG files are processed in your
+          browser; WebP files may use the PDFora processing service. Check
+          the tool's notice for the selected formats.
         </p>
       </div>
 
@@ -70,8 +71,8 @@ I </div>
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Upload your images and create a PDF with a straightforward
-            workflow designed for everyday document tasks.
+            Select your images and create a PDF. JPG, JPEG and PNG are processed
+            in your browser; WebP may use the PDFora processing service.
           </p>
         </div>
 
@@ -123,11 +124,13 @@ I </div>
           <span className="text-xs font-black text-blue-600">02</span>
 
           <h3 className="mt-3 text-base font-black">
-            Upload your images
+            Select your images
           </h3>
 
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Upload your selected images to the PDFora Images to PDF tool.
+            JPG, JPEG and PNG stay in your browser for processing. WebP
+            files use the compatible processing-service path; check the
+            privacy notice before selecting them.
           </p>
         </div>
 
@@ -172,7 +175,7 @@ I </div>
 
       <p className="mt-4 text-sm leading-7 text-slate-600">
         To convert JPG images to PDF, open the Images to PDF tool, select
-        your JPG or JPEG files, upload them and start the conversion.
+        your JPG or JPEG files and start the conversion in your browser.
         PDFora creates a single PDF document from the selected images.
       </p>
 

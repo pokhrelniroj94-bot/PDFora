@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Fragment } from "react";
 import { hreflangMap } from "../../lib/i18n/routing";
-import { blogPosts, isCatalogGeneratedGuide } from "../../lib/blog-posts";
+import { blogPosts, isGeneratedGuide } from "../../lib/blog-posts";
 import AdsterraNative from "../components/AdsterraNative";
 import AdsterraSkyscraper from "../components/AdsterraSkyscraper";
 import BlogPopunder from "../components/BlogPopunder";

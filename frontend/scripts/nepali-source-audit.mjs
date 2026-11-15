@@ -57,6 +57,10 @@ const blog = read("lib/nepali-localized-blog-posts.ts");
 const blogSlugs = parse(blog, /^\s*slug:\s*"([^"]+)"/gm);
 const blogTitles = parse(blog, /^\s*title:\s*"([^"]+)"/gm);
 const blogDescriptions = parse(blog, /^\s*description:\s*"([^"]+)"/gm);
+const routingSource = read("lib/i18n/routing.ts");
+const nonToolBlock = routingSource.split("export const nepaliLocalizedNonToolPaths = [")[1]?.split("] as const")[0] ?? "";
+const nonToolStaticRoutes = parse(nonToolBlock, /"([^"]+)"/g);
+const nepaliRouteEquivalents = routeSet.size + nonToolStaticRoutes.length + blogSlugs.length;
 
 const blogEntries = [...blog.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => ({ slug: match[1], offset: match.index }));
 const legacyPdfSlugs = new Set(parse(read("lib/legacy-tool-slugs.ts"), /"([a-z0-9-]+)"/g));

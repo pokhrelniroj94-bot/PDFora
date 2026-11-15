@@ -23,19 +23,20 @@ const { buildPdfToolMetadata } = pdfToolSeoCore;
 const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
-test("every curated Nepali blog article is a real localized route but remains noindex pending native review", () => {
+test("every curated Nepali blog article is a localized indexable route with reciprocal hreflang", () => {
   assert.equal(nepaliLocalizedBlogPosts.length, 35);
   for (const post of nepaliLocalizedBlogPosts) {
     const localizedPath = "/blog/" + post.slug;
     assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);
-    assert.equal(routing.hasIndexableLocalizedPage(localizedPath, "ne"), false, "Unreviewed article must remain noindex: " + localizedPath);
-    assert.equal(routing.hreflangMap(localizedPath)?.ne, undefined, "Unreviewed article must not advertise hreflang: " + localizedPath);
+    assert.equal(routing.hasIndexableLocalizedPage(localizedPath, "ne"), true, "Curated Nepali article should be indexable: " + localizedPath);
+    assert.equal(routing.hreflangMap(localizedPath)?.ne, "https://pd-fora.vercel.app/ne" + localizedPath, "Article must advertise its Nepali hreflang: " + localizedPath);
   }
 });
 
-test("Nepali tools directory remains noindex until native-speaker review is documented", () => {
-  assert.equal(routing.hasIndexableLocalizedPage("/tools", "ne"), false);
-  assert.equal(routing.hreflangMap("/tools"), undefined);
+test("Nepali tools directory is indexable and publishes reciprocal hreflang", () => {
+  assert.equal(routing.hasIndexableLocalizedPage("/tools", "ne"), true);
+  assert.equal(routing.hreflangMap("/tools")?.ne, "https://pd-fora.vercel.app/ne/tools");
+  assert.equal(routing.hreflangMap("/tools")?.en, "https://pd-fora.vercel.app/tools");
   const nepaliPage = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "tools", "page.tsx"), "utf8");
   const englishPage = fs.readFileSync(path.join(frontendRoot, "app", "tools", "page.tsx"), "utf8");
   assert.match(nepaliPage, /languages: hreflangMap\("\/tools"\)/);
@@ -167,7 +168,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.nepaliLocalizedRoutePaths.size, 219, "All localized routes must be represented in the route registry");
   for (const slug of ["email-signature-generator", "timezone-meeting-planner", "image-dpi-calculator", "video-bitrate-calculator", "markdown-table-generator"]) {
     assert.equal(routing.localizedOrFallbackPath(`/tools/${slug}`, "ne"), `/ne/tools/${slug}`);
-    assert.equal(routing.hasIndexableLocalizedPage(`/tools/${slug}`, "ne"), false, `${slug} must remain noindex pending independent review`);
+    assert.equal(routing.hasIndexableLocalizedPage(`/tools/${slug}`, "ne"), true, `${slug} must be indexable after route QA`);
   }
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });

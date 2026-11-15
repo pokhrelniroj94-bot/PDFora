@@ -99,6 +99,7 @@ export default function NirojToolsTool({
       case "/api/delete-pages": return { type: "deletePages", pages: value } as const;
       case "/api/reorder": return { type: "reorder", order: value } as const;
       case "/api/watermark": return /^[\x20-\x7E]+$/.test(value) ? { type: "watermark", text: value } as const : null;
+      case "/api/bates-numbering": return { type: "addPageNumbers", start: Math.max(1, Number.parseInt(extraValues.start || "1", 10) || 1), format: `${(extraValues.prefix || "").replace(/[^\x20-\x7E]/g, "").slice(0, 24)}%d`, digits: Math.max(1, Math.min(12, Number.parseInt(extraValues.digits || "6", 10) || 6)) } as const;
       case "/api/page-numbers": return {
         type: "addPageNumbers",
         start: Math.max(1, Number.parseInt(extraValues.start_number || "1", 10) || 1),

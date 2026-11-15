@@ -148,7 +148,7 @@ export default function Page() {
           <p className="mt-4 text-sm leading-7 text-slate-600">
             Select your PDF and enter the watermark text. Compatible ASCII text is
             processed in your browser; other text may be sent to the PDFora
-            processing service. Check the tool's privacy notice before starting.
+            processing service. Check the tool&apos;s privacy notice before starting.
           </p>
 
           <h2 className="mt-10 text-2xl font-black">

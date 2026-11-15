@@ -313,6 +313,7 @@ async function runTool(tool, index) {
     page = await openPage(tool.url);
     const initial = await page.evaluate(`(() => ({
       title: document.title,
+      lang: document.documentElement.lang || "",
       heading: document.querySelector("h1")?.innerText?.trim() || "",
       body: document.body?.innerText?.slice(0, 12000) || "",
       inputs: document.querySelectorAll("input,textarea,select").length,
@@ -324,6 +325,10 @@ async function runTool(tool, index) {
       throw new Error("Page did not render a usable tool workspace.");
     }
     row.heading = initial.heading;
+    row.documentLanguage = initial.lang;
+    row.hasNepaliScript = /[\\u0900-\\u097F]/u.test(initial.heading + " " + initial.body);
+    if (localePrefix && !/^ne(?:-|$)/i.test(initial.lang)) throw new Error("Nepali route document lang is not Nepali: " + initial.lang);
+    if (localePrefix && !row.hasNepaliScript) throw new Error("Nepali route has no Devanagari in its visible title/body.");
 
     // Exercise every tool at a narrow mobile viewport, then verify basic keyboard
     // reachability and accessible names before returning to the desktop viewport.

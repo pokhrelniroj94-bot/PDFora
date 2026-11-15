@@ -45,8 +45,9 @@ assert.ok(nepalTools.includes('shares,buyPrice,sellPrice,brokerRate,sebonRate,dp
 
 const sharedPdfGuide = read("../components/ToolSEOContent.tsx");
 assert.ok(sharedPdfGuide.includes("some supported operations run locally in your browser") && sharedPdfGuide.includes("PDFora&apos;s processing service"), "Shared PDF guidance must explain both local and service processing");
-assert.ok(sharedPdfGuide.includes("If the PDF is not accepted or processing does not start"), "Shared PDF troubleshooting must not imply every tool uploads files");
-assert.ok(sharedPdfGuide.includes("appropriate app") && sharedPdfGuide.includes("supports its output format") && !sharedPdfGuide.includes("another PDF reader"), "Shared PDF guide must check the actual output format, not assume every tool downloads a PDF");
+assert.ok(sharedPdfGuide.includes("Read the processing notice shown above") && sharedPdfGuide.includes("Avoid submitting the same request repeatedly"), "Shared PDF guidance must keep accurate processing and troubleshooting advice");
+assert.doesNotMatch(sharedPdfGuide, /When is this PDF operation useful\?|Preparing PDFs for study, work and online forms/, "Shared PDF guide must not repeat generic SEO boilerplate across every tool page");
+assert.ok(sharedPdfGuide.includes("app that supports its output format") && sharedPdfGuide.includes("spreadsheets or text exports"), "Shared PDF guide must check the actual output format, not assume every tool downloads a PDF");
 
 const mergeLimitCopy = read("../components/PDForaTool.tsx");
 assert.ok(mergeLimitCopy.includes('endpoint === "/api/merge"') && mergeLimitCopy.includes("Combined PDF upload limit: 50 MB total"), "Merge PDF must display its combined 50 MB limit, not a per-file limit");

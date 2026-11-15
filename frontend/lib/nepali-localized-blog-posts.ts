@@ -506,7 +506,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { heading: "स्क्यान गरिएको PDF को सीमा", paragraphs: ["स्क्यान गरिएको PDF पृष्ठका छविहरू हुन्। तिनको पाठ सम्पादन गर्न OCR चाहिन्छ र नतिजा scan को गुणस्तर तथा भाषामा निर्भर हुन्छ। PDFora को OCR सुविधा हाल processing server मा उपलब्ध छैन, त्यसैले स्क्यान गरिएको फाइलका लागि छुट्टै OCR प्रक्रिया आवश्यक पर्न सक्छ। नाम, मिति र रकम विशेष ध्यान दिएर जाँच्नुहोस्।"] }
     ],
     faqs: [{ question: "के कुनै पनि PDF editable Word बन्छ?", answer: "Text-based PDF राम्रोसँग रूपान्तरण हुन सक्छ। Scan भएका PDF मा OCR आवश्यक पर्न सक्छ।" }, { question: "के फोटो र तालिका उही ठाउँमा रहन्छन्?", answer: "सधैँ होइन। रूपान्तरणपछि फोटो, तालिका र page break जाँच्नुहोस्।" }, { question: "के Word फाइल तुरुन्त बुझाउन मिल्छ?", answer: "मूल PDF सँग तुलना, formatting सुधार र proofreading गरेपछि मात्र प्रयोग गर्नुहोस्।" }],
-    sources: [{"label":"Adobe Acrobat Help: Export PDF to other file formats","url":"https://helpx.adobe.com/acrobat/using/exporting-pdfs-file-formats.html"}],
+    sources: [{"label":"Adobe Acrobat Help: Export PDF to other file formats","url":"https://helpx.adobe.com/reader/desktop/export-pdf.html"}],
     toolLinks: [{ label: "PDF बाट Word", href: "/pdf-to-word" }, { label: "PDF बाट Text", href: "/pdf-to-text" }]
   },
   {

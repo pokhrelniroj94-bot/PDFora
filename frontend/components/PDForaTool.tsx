@@ -59,6 +59,7 @@ export default function PDForaTool({
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [dragActive, setDragActive] = useState(false);
+  const browserOnly = endpoint === "/api/merge";
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -143,11 +144,32 @@ export default function PDForaTool({
     }
 
     setLoading(true);
-    setMessage(
-      ui.connectingServer
-    );
+    setMessage(browserOnly
+      ? (locale === "ne" ? "तपाईंको ब्राउजरमै PDF फाइलहरू जोडिँदैछन्…" : "Merging PDFs locally in your browser…")
+      : ui.connectingServer);
 
     try {
+      if (browserOnly) {
+        const worker = new Worker(new URL("../app/tools/pdfWorker.ts", import.meta.url), { type: "module" });
+        const result = await new Promise<{ blob?: Blob; error?: string }>((resolve, reject) => {
+          worker.onmessage = (event: MessageEvent<{ blob?: Blob; error?: string }>) => resolve(event.data);
+          worker.onerror = () => reject(new Error(locale === "ne" ? "ब्राउजर प्रोसेसिङ सुरु हुन सकेन।" : "Browser processing could not start."));
+          worker.postMessage({ cmd: { type: "merge" }, files });
+        }).finally(() => worker.terminate());
+        if (result.error || !result.blob) throw new Error(result.error || ui.processingFailed);
+        const localUrl = window.URL.createObjectURL(result.blob);
+        const link = document.createElement("a");
+        link.href = localUrl;
+        link.download = downloadName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => window.URL.revokeObjectURL(localUrl), 1000);
+        setFiles([]);
+        if (inputRef.current) inputRef.current.value = "";
+        setMessage(locale === "ne" ? "PDF फाइलहरू तपाईंको ब्राउजरमै जोडिए। कुनै फाइल सर्भरमा अपलोड गरिएको छैन।" : "PDFs merged in your browser. No files were uploaded to the server.");
+        return;
+      }
       const formData = new FormData();
 
       if (multiple) {
@@ -240,7 +262,7 @@ export default function PDForaTool({
   }
 
   const success =
-    message === ui.completed;
+    message === ui.completed || (browserOnly && (message.startsWith("PDF फाइलहरू") || message.startsWith("PDFs merged")));
 
   return (
     <div className="pdfora-workspace min-h-screen text-slate-950">
@@ -473,9 +495,11 @@ export default function PDForaTool({
           />
 
           <InfoCard
-            icon="🔒"
-            title={ui.private}
-            description={ui.privateDescription}
+            icon={browserOnly ? "🛡️" : "🔒"}
+            title={browserOnly ? (locale === "ne" ? "ब्राउजरमै सुरक्षित" : "Local processing") : ui.private}
+            description={browserOnly
+              ? (locale === "ne" ? "फाइलहरू तपाईंको डिभाइसको ब्राउजरमै प्रोसेस हुन्छन्; PDFora सर्भरमा पठाइँदैनन्।" : "Files are processed in your device browser and are not sent to PDFora's server.")
+              : ui.privateDescription}
           />
 
           <InfoCard

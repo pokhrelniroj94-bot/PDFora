@@ -8,7 +8,7 @@ import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne";
 
-import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "https://pdfora-493r.onrender.com";
@@ -62,12 +62,72 @@ export default function NirojToolsTool({
   const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((field) => [field.name, locale === "ne" ? getNepaliPdfFieldText(field.defaultValue) || field.defaultValue || "" : field.defaultValue || ""])));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [localDownloads, setLocalDownloads] = useState<{ url: string; name: string }[]>([]);
   const [dragActive, setDragActive] = useState(false);
+  useEffect(() => () => { localDownloads.forEach((item) => URL.revokeObjectURL(item.url)); }, [localDownloads]);
+  const browserCommand = (() => {
+    switch (endpoint) {
+      case "/api/merge": return { type: "merge" } as const;
+      case "/api/images-to-pdf": return files.length > 0 && files.every((file) => file.type === "image/jpeg" || file.type === "image/png" || file.name.toLowerCase().endsWith(".jpg") || file.name.toLowerCase().endsWith(".jpeg") || file.name.toLowerCase().endsWith(".png")) ? { type: "imagesToPdf" } as const : null;
+      case "/api/split": return value.trim() ? { type: "split", pages: value } as const : null;
+      case "/api/crop": {
+        const margin = Number.parseFloat(value || "36");
+        return Number.isFinite(margin) && margin >= 0
+          ? { type: "crop", margin, pages: extraValues.pages || "all" } as const : null;
+      }
+      case "/api/add-blank-pages": {
+        const count = Number.parseInt(extraValues.count || "1", 10);
+        return Number.isInteger(count) && count >= 1 && count <= 50 ? { type: "addBlankPages", count } as const : null;
+      }
+      case "/api/sign": return value.trim() ? { type: "sign", text: value.trim() } as const : null;
+      case "/api/page-counter": return { type: "pageCount" } as const;
+      case "/api/pdf-info": return { type: "info" } as const;
+      case "/api/metadata": return { type: "editMetadata", title: extraValues.title || "", author: extraValues.author || "", subject: extraValues.subject || "", keywords: extraValues.keywords || "" } as const;
+      case "/api/remove-metadata": return { type: "removeMetadata" } as const;
+      case "/api/flatten": return { type: "flatten" } as const;
+      case "/api/remove-annotations": return { type: "removeAnnotations" } as const;
+      case "/api/remove-attachments": return { type: "removeAttachments" } as const;
+      case "/api/add-background": return Array.from(extraValues.text || "DRAFT").every((char) => char.charCodeAt(0) >= 32 && char.charCodeAt(0) <= 126) ? { type: "watermark", text: extraValues.text || "DRAFT", opacity: 0.12, color: extraValues.color || "#E5E7EB" } as const : null;
+      case "/api/rotate": { const angle = Number(value); return [90, 180, 270].includes(angle) ? { type: "rotate", angle } as const : null; }
+      case "/api/rotate-selected-pages": {
+        const angle = Number.parseInt(extraValues.degrees || "90", 10);
+        const pages = extraValues.pages || "all";
+        return [90, 180, 270].includes(angle) && (pages.trim().toLowerCase() === "all" || pages.trim().length > 0)
+          ? { type: "rotateSelected", angle, pages } as const : null;
+      }
+      case "/api/extract-pages": return { type: "extract", pages: value } as const;
+      case "/api/delete-pages": return { type: "deletePages", pages: value } as const;
+      case "/api/reorder": return { type: "reorder", order: value } as const;
+      case "/api/watermark": return /^[\x20-\x7E]+$/.test(value) ? { type: "watermark", text: value } as const : null;
+      case "/api/bates-numbering": { const prefix = extraValues.prefix || ""; return Array.from(prefix).every((char) => char.charCodeAt(0) >= 32 && char.charCodeAt(0) <= 126) ? { type: "addPageNumbers", start: Math.max(1, Number.parseInt(extraValues.start || "1", 10) || 1), format: `${prefix.replace(/%/g, "").slice(0, 24)}%d`, digits: Math.max(1, Math.min(12, Number.parseInt(extraValues.digits || "6", 10) || 6)) } as const : null; }
+      case "/api/page-numbers": return {
+        type: "addPageNumbers",
+        start: Math.max(1, Number.parseInt(extraValues.start_number || "1", 10) || 1),
+        position: extraValues.position || "bottom-center",
+        skipFirst: extraValues.skip_first === "true",
+        fontSize: Math.max(6, Math.min(48, Number.parseInt(extraValues.font_size || "11", 10) || 11)),
+      } as const;
+      default: return null;
+    }
+  })();
+  const browserOnly = browserCommand !== null;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   function applyFiles(selectedFiles: File[]) {
     const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
+    if (browserOnly && selected.reduce((total, file) => total + file.size, 0) > 50 * 1024 * 1024) {
+      setFiles([]);
+      setMessage(locale === "ne" ? "ब्राउजर प्रोसेसिङका लागि जम्मा फाइल आकार ५० MB भित्र राख्नुहोस्।" : "Keep the combined file size under 50 MB for browser processing.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+    if (endpoint === "/api/merge" && selected.length > 20) {
+      setFiles([]);
+      setMessage(locale === "ne" ? "एकपटकमा अधिकतम २० PDF फाइल छान्नुहोस्।" : "Choose no more than 20 PDF files at once.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
     const invalidImage = imageUpload && selected.find((file) =>
       file.type
         ? !["image/jpeg", "image/png", "image/webp"].includes(file.type)
@@ -125,10 +185,34 @@ export default function NirojToolsTool({
       return;
     }
 
+    setLocalDownloads([]);
     setLoading(true);
-    setMessage("");
+    setMessage(browserOnly ? (locale === "ne" ? "तपाईंको ब्राउजरमै फाइल प्रोसेस हुँदैछ…" : "Processing locally in your browser…") : "");
 
     try {
+      if (browserCommand) {
+        const worker = new Worker(new URL("../app/tools/pdfWorker.ts", import.meta.url), { type: "module" });
+        const result = await new Promise<{ blob?: Blob; blobs?: { blob: Blob; filename: string }[]; error?: string; warnings?: string[] }>((resolve, reject) => {
+          worker.onmessage = (event: MessageEvent<{ blob?: Blob; blobs?: { blob: Blob; filename: string }[]; error?: string; warnings?: string[] }>) => resolve(event.data);
+          worker.onerror = () => reject(new Error(locale === "ne" ? "ब्राउजर प्रोसेसिङ सुरु हुन सकेन।" : "Browser processing could not start."));
+          worker.postMessage({ cmd: browserCommand, files });
+        }).finally(() => worker.terminate());
+        if (result.error || (!result.blob && !result.blobs?.length)) throw new Error(result.error || ui.processingFailed);
+        const outputs = result.blobs?.length ? result.blobs : result.blob ? [{ blob: result.blob, filename: downloadName }] : [];
+        if (outputs.length > 1) {
+          setLocalDownloads(outputs.map((item) => ({ url: window.URL.createObjectURL(item.blob), name: item.filename })));
+          setMessage(locale === "ne" ? "PDF भागहरू ब्राउजरमै तयार भए। तलबाट प्रत्येक फाइल डाउनलोड गर्नुहोस्।" : "PDF parts were created locally. Download each part below.");
+        } else {
+          const localUrl = window.URL.createObjectURL(outputs[0].blob);
+          const localLink = document.createElement("a");
+          localLink.href = localUrl; localLink.download = outputs[0].filename || downloadName;
+          document.body.appendChild(localLink); localLink.click(); localLink.remove();
+          window.setTimeout(() => window.URL.revokeObjectURL(localUrl), 1000);
+          setMessage(locale === "ne" ? "फाइल ब्राउजरमै प्रोसेस भयो; सर्भरमा पठाइएको छैन।" : "Processed locally; your file was not uploaded.");
+        }
+        setFiles([]); if (inputRef.current) inputRef.current.value = "";
+        return;
+      }
       const formData = new FormData();
 
       if (multiple) {
@@ -221,7 +305,7 @@ export default function NirojToolsTool({
   }
 
   const success =
-    message === ui.completed;
+    message === ui.completed || (browserOnly && (message.startsWith("फाइल ब्राउजरमै") || message.startsWith("Processed locally") || message.startsWith("PDF parts were created locally") || message.startsWith("PDF भागहरू ब्राउजरमै")));
 
   return (
     <div className="pdfora-workspace min-h-screen text-slate-950">
@@ -412,6 +496,14 @@ export default function NirojToolsTool({
           </button>
 
           {/* Message */}
+          {localDownloads.length > 0 && (
+            <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4" aria-label={locale === "ne" ? "डाउनलोड फाइलहरू" : "Download files"}>
+              <p className="mb-3 text-sm font-bold text-emerald-900">{locale === "ne" ? "तयार भएका PDF फाइलहरू" : "Created PDF files"}</p>
+              <ul className="space-y-2">
+                {localDownloads.map((item) => <li key={item.name}><a className="inline-flex min-h-11 items-center rounded-lg bg-white px-3 py-2 text-sm font-semibold text-emerald-800 underline" href={item.url} download={item.name}>{item.name}</a></li>)}
+              </ul>
+            </div>
+          )}
           {message && (
             <div
               role="status"
@@ -437,8 +529,10 @@ export default function NirojToolsTool({
 
           <InfoCard
             icon="🔒"
-            title={ui.private}
-            description={ui.privateDescription}
+            title={browserOnly ? (locale === "ne" ? "ब्राउजरमै सुरक्षित" : "Local browser processing") : ui.private}
+            description={browserOnly
+              ? (locale === "ne" ? "फाइल तपाईंको डिभाइसबाट बाहिर पठाइँदैन।" : "Selected files stay on your device during processing.")
+              : ui.privateDescription}
           />
 
           <InfoCard
@@ -450,15 +544,16 @@ export default function NirojToolsTool({
         {locale === "ne" ? (
         <section className="pdfora-trust-panel mt-6 rounded-3xl border p-5 sm:p-7" aria-labelledby="pdfora-trust-title">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="pdfora-trust-icon" aria-hidden="true">🔐</span>
+            <span className="pdfora-trust-icon" aria-hidden="true">{browserOnly ? "🛡️" : "🔐"}</span>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-teal-800">PDFora गोपनीयता जानकारी</p>
+            {browserOnly && <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">ब्राउजरमै चल्ने</span>}
           </div>
           <h2 id="pdfora-trust-title" className="mt-3 text-xl font-black tracking-tight sm:text-2xl">तपाईंको फाइल कसरी ह्यान्डल हुन्छ?</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <div className="pdfora-trust-detail"><h3>फाइल कहाँ जान्छ?</h3><p>प्रक्रिया सुरु गर्दा फाइल अनुरोध पूरा गर्न PDFora को प्रोसेसिङ सर्भरमा पठाइन्छ। यो टुल पूर्ण रूपमा तपाईंको ब्राउजरभित्र मात्र चल्दैन।</p></div>
-            <div className="pdfora-trust-detail"><h3>कहिले हटाइन्छ?</h3><p>सामान्य अवस्थामा नतिजा पठाइसकेपछि अनुरोधका अस्थायी फाइलहरू सफा गरिन्छन्। अनुरोध बीचमै अवरुद्ध भए बाँकी फाइलहरू अर्को प्रोसेसिङ अनुरोधमा ६ घण्टाभन्दा पुराना भेटिएपछि सफा गरिन्छन्।</p></div>
+            <div className="pdfora-trust-detail"><h3>फाइल कहाँ जान्छ?</h3><p>{browserOnly ? "यो टुलको फाइल प्रोसेसिङ तपाईंको आफ्नै ब्राउजरमा हुन्छ। फाइल PDFora को प्रोसेसिङ सर्भरमा पठाइँदैन।" : "प्रक्रिया सुरु गर्दा फाइल अनुरोध पूरा गर्न PDFora को प्रोसेसिङ सर्भरमा पठाइन्छ। यो टुल पूर्ण रूपमा तपाईंको ब्राउजरभित्र मात्र चल्दैन।"}</p></div>
+            <div className="pdfora-trust-detail"><h3>कहिले हटाइन्छ?</h3><p>{browserOnly ? "फाइल ब्राउजर मेमोरीमा रहन्छ र पेज बन्द वा रिफ्रेस गर्दा हट्छ। डाउनलोड गरिएको नतिजा तपाईंको डिभाइसमा रहन्छ।" : "सामान्य अवस्थामा नतिजा पठाइसकेपछि अनुरोधका अस्थायी फाइलहरू सफा गरिन्छन्। अनुरोध बीचमै अवरुद्ध भए बाँकी फाइलहरू अर्को प्रोसेसिङ अनुरोधमा ६ घण्टाभन्दा पुराना भेटिएपछि सफा गरिन्छन्।"}</p></div>
             <div className="pdfora-trust-detail"><h3>स्थायी फाइल इतिहास राखिन्छ?</h3><p>PDFora मा प्रयोगकर्ताको स्थायी फाइल लाइब्रेरी वा अकाउन्टमा आधारित फाइल इतिहास छैन। डाउनलोड गरिएको नतिजा आफ्नै डिभाइसमा सुरक्षित राख्नुहोस्।</p></div>
-            <div className="pdfora-trust-detail"><h3>कस्तो फाइल अपलोड नगर्ने?</h3><p>इन्टरनेटमार्फत होस्ट गरिएको सर्भरमा प्रोसेस गर्न नचाहने अत्यन्त संवेदनशील कागजात अपलोड नगर्नुहोस्। इन्टरनेट प्रसारण वा सर्भर प्रणालीलाई शतप्रतिशत जोखिमरहित भन्न सकिँदैन।</p></div>
+            <div className="pdfora-trust-detail"><h3>कस्तो फाइल अपलोड नगर्ने?</h3><p>{browserOnly ? "यो टुलले फाइल सर्भरमा अपलोड गर्दैन। साझा डिभाइसमा डाउनलोड भएको नतिजा खुला नराख्नुहोस्।" : "इन्टरनेटमार्फत होस्ट गरिएको सर्भरमा प्रोसेस गर्न नचाहने अत्यन्त संवेदनशील कागजात अपलोड नगर्नुहोस्। इन्टरनेट प्रसारण वा सर्भर प्रणालीलाई शतप्रतिशत जोखिमरहित भन्न सकिँदैन।"}</p></div>
           </div>
           <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/ne/privacy">विस्तृत गोपनीयता नीति पढ्नुहोस् <span aria-hidden="true">↗</span></a>
         </section>
@@ -466,15 +561,16 @@ export default function NirojToolsTool({
         ) : (
         <section className="pdfora-trust-panel mt-6 rounded-3xl border p-5 sm:p-7" aria-labelledby="pdfora-trust-title">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="pdfora-trust-icon" aria-hidden="true">🔐</span>
+            <span className="pdfora-trust-icon" aria-hidden="true">{browserOnly ? "🛡️" : "🔐"}</span>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-teal-800">PDFora privacy details</p>
+            {browserOnly && <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">Runs in your browser</span>}
           </div>
           <h2 id="pdfora-trust-title" className="mt-3 text-xl font-black tracking-tight sm:text-2xl">How your files are handled</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <div className="pdfora-trust-detail"><h3>Where does my file go?</h3><p>When you start processing, your file is sent to the PDFora processing server to complete your request. This tool does not run entirely inside your browser.</p></div>
-            <div className="pdfora-trust-detail"><h3>When is it deleted?</h3><p>Under normal operation, temporary request files are cleaned up after the result has been sent. If a request is interrupted, leftover files are cleaned when a later processing request finds them more than six hours old.</p></div>
+            <div className="pdfora-trust-detail"><h3>Where does my file go?</h3><p>{browserOnly ? "This tool processes your file locally in your browser. The file is not sent to the PDFora processing server." : "When you start processing, your file is sent to the PDFora processing server to complete your request. This tool does not run entirely inside your browser."}</p></div>
+            <div className="pdfora-trust-detail"><h3>When is it deleted?</h3><p>{browserOnly ? "Files remain in browser memory during processing and are released when you close or refresh the page. The downloaded result remains on your device." : "Under normal operation, temporary request files are cleaned up after the result has been sent. If a request is interrupted, leftover files are cleaned when a later processing request finds them more than six hours old."}</p></div>
             <div className="pdfora-trust-detail"><h3>Is a permanent file history kept?</h3><p>PDFora does not provide a permanent user file library or account-based file history. Save your downloaded result on your own device.</p></div>
-            <div className="pdfora-trust-detail"><h3>What should I avoid uploading?</h3><p>Do not upload highly sensitive documents that you are not comfortable processing on an internet-hosted server. No internet transmission or server system can be described as completely risk-free.</p></div>
+            <div className="pdfora-trust-detail"><h3>What should I avoid uploading?</h3><p>{browserOnly ? "This tool does not upload files to a server. Avoid leaving downloaded results on shared devices." : "Do not upload highly sensitive documents that you are not comfortable processing on an internet-hosted server. No internet transmission or server system can be described as completely risk-free."}</p></div>
           </div>
           <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/privacy">Read the full Privacy Policy <span aria-hidden="true">↗</span></a>
         </section>

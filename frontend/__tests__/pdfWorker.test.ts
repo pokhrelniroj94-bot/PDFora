@@ -1,6 +1,13 @@
 ﻿import { processPdf, PdfCommand } from "../app/tools/pdfWorkerImpl";
 
 describe('PDF Worker Core', () => {
+  const readTextBlob = (blob: Blob): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result ?? ""));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsText(blob);
+    });
   const readBlob = (blob: Blob): Promise<ArrayBuffer> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -58,12 +65,120 @@ describe('PDF Worker Core', () => {
     expect(page.getRotation().angle).toBe(90);
   });
 
+  test('extract selected pages', async () => {
+    const file = await createSamplePdf('extract.pdf');
+    const { blob } = await processPdf({ type: 'extract', pages: '2' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(1);
+  });
+
+  test('rotate only selected pages', async () => {
+    const file = await createSamplePdf('selected-rotation.pdf');
+    const { blob } = await processPdf({ type: 'rotateSelected', angle: 90, pages: '2' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(2);
+    expect(doc.getPage(0).getRotation().angle).toBe(0);
+    expect(doc.getPage(1).getRotation().angle).toBe(90);
+  });
+
+  test('add page numbers with layout options', async () => {
+    const file = await createSamplePdf('numbered.pdf');
+    const { blob } = await processPdf({
+      type: 'addPageNumbers',
+      start: 1,
+      format: 'CASE-%d',
+      digits: 6,
+      position: 'top-center',
+      skipFirst: true,
+      fontSize: 10,
+    }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(2);
+    expect(blob.size).toBeGreaterThan(0);
+  });
+
   test('watermark adds text', async () => {
     const file = await createSamplePdf('e.pdf');
     const cmd: PdfCommand = { type: 'watermark', text: 'TEST' };
     const { blob } = await processPdf(cmd, [file]);
     // Cannot easily verify visual content; ensure no error and blob size > 0
     expect(blob.size).toBeGreaterThan(0);
+  });
+
+  test('convert a PNG image to PDF in the browser worker', async () => {
+    const { PDFDocument } = await import('pdf-lib');
+    const pngBytes = new Uint8Array(Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNgAAAAAgABSK+kcQAAAABJRU5ErkJggg==', 'base64'));
+    const pngFile = new File([pngBytes], 'sample.png', { type: 'image/png' });
+    const { blob } = await processPdf({ type: 'imagesToPdf' }, [pngFile]);
+    const output = await PDFDocument.load(await readBlob(blob));
+    expect(output.getPageCount()).toBe(1);
+    expect(blob.type).toBe('application/pdf');
+  });
+
+  test('crop selected pages in the browser worker', async () => {
+    const file = await createSamplePdf('crop.pdf');
+    const { blob } = await processPdf({ type: 'crop', margin: 12, pages: '1' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(2);
+    expect(doc.getPage(0).getCropBox().width).toBeLessThan(doc.getPage(0).getSize().width);
+    expect(doc.getPage(1).getCropBox().width).toBe(doc.getPage(1).getSize().width);
+  });
+
+  test('append blank pages in the browser worker', async () => {
+    const file = await createSamplePdf('blank-pages.pdf');
+    const { blob } = await processPdf({ type: 'addBlankPages', count: 2 }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(4);
+  });
+
+  test('add a visible typed signature in the browser worker', async () => {
+    const file = await createSamplePdf('signed.pdf');
+    const { blob } = await processPdf({ type: 'sign', text: 'PDFora E2E' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const doc = await PDFDocument.load(await readBlob(blob));
+    expect(doc.getPageCount()).toBe(2);
+    expect(blob.size).toBeGreaterThan(0);
+  });
+
+  test('generate page count and PDF information reports locally', async () => {
+    const file = await createSamplePdf('report.pdf');
+    const count = await processPdf({ type: 'pageCount' }, [file]);
+    const info = await processPdf({ type: 'info' }, [file]);
+    expect(await readTextBlob(count.blob)).toContain('Pages: 2');
+    expect(await readTextBlob(info.blob)).toContain('Page dimensions:');
+  });
+
+  test('edit and remove PDF metadata locally', async () => {
+    const file = await createSamplePdf('metadata.pdf');
+    const edited = await processPdf({ type: 'editMetadata', title: 'PDFora test', author: 'PDFora', subject: 'Browser worker', keywords: 'test,pdf' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const editedDoc = await PDFDocument.load(await readBlob(edited.blob));
+    expect(editedDoc.getTitle()).toBe('PDFora test');
+    expect(editedDoc.getAuthor()).toBe('PDFora');
+    const cleared = await processPdf({ type: 'removeMetadata' }, [file]);
+    const clearedDoc = await PDFDocument.load(await readBlob(cleared.blob));
+    expect(clearedDoc.getTitle()).toBeFalsy();
+    expect(clearedDoc.getAuthor()).toBeFalsy();
+  });
+
+  test('flatten PDF form appearances locally', async () => {
+    const file = await createSamplePdf('flatten.pdf');
+    const { blob } = await processPdf({ type: 'flatten' }, [file]);
+    expect(blob.size).toBeGreaterThan(0);
+  });
+
+  test('remove PDF annotations and embedded-file references locally', async () => {
+    const file = await createSamplePdf('annotations.pdf');
+    const annotations = await processPdf({ type: 'removeAnnotations' }, [file]);
+    const attachments = await processPdf({ type: 'removeAttachments' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    expect((await PDFDocument.load(await readBlob(annotations.blob))).getPageCount()).toBe(2);
+    expect((await PDFDocument.load(await readBlob(attachments.blob))).getPageCount()).toBe(2);
   });
 
   test('invalid PDF throws', async () => {

@@ -27,12 +27,12 @@ const editorialBlogPosts: BlogPost[] = [
     title: "How to Compress a PDF to Under 1MB Online",
     description: "Learn practical ways to reduce a PDF to under 1MB for online forms, email and document uploads, and find out why some files cannot reach an exact size.",
     keyword: "how to compress PDF to under 1MB online",
-    updated: "2026-11-01",
+    updated: "2026-11-15",
     readTime: "5 min read",
     intro: "A PDF that is too large can be rejected by an online application, email service or document portal. You can try compressing it in your browser, but reaching an exact target such as 1MB depends on what the PDF contains. Image-heavy scans usually need more reduction than text-only documents.",
     sections: [
       { heading: "1. Check the PDF before compressing it", paragraphs: ["First, check the current file size and open the document to make sure every page is readable. A 12MB scanned document and a 12MB text-based report need different treatment: scanned pages contain images, while text-based PDFs are often already compact.", "If the file contains high-resolution photos, those images are usually the biggest opportunity for reducing size. If it is mostly selectable text, aggressive compression may make very little difference."] },
-      { heading: "2. Compress the PDF with an online tool", paragraphs: ["Open PDFora's Compress PDF tool, select the PDF from your device and start processing. When the result is ready, download it and check the new file size. You do not need to install a desktop application for this browser-based workflow.", "Try the compression once before changing the original. Keep an untouched copy in case the smaller version is not clear enough for printing or official submission."], bullets: ["Open the Compress PDF page.", "Choose the PDF you need to reduce.", "Start compression and wait for processing to finish.", "Download the result, then check its size and readability."] },
+      { heading: "2. Compress the PDF with an online tool", paragraphs: ["Open PDFora's Compress PDF tool, select the PDF from your device and start processing. When the result is ready, download it and check the new file size. PDFora's current compression workflow uses its processing service rather than the browser-only PDF worker. The selected PDF is sent for server-side processing, so read the tool's privacy notice before uploading.", "Try the compression once before changing the original. Keep an untouched copy in case the smaller version is not clear enough for printing or official submission."], bullets: ["Open the Compress PDF page.", "Choose the PDF you need to reduce.", "Start compression and wait for processing to finish.", "Download the result, then check its size and readability."] },
       { heading: "3. What if the PDF is still larger than 1MB?", paragraphs: ["A tool cannot always reduce every PDF to a requested size without affecting quality. If the result is still too large, consider whether the document contains unnecessary pages or oversized images. Remove pages only when you are certain they are not required, or split a large document into separate files if the receiving website accepts multiple uploads.", "Avoid repeatedly compressing an already compressed PDF. Each additional pass can reduce image quality without delivering a meaningful size improvement."] },
       { heading: "4. Check readability before uploading", paragraphs: ["Open the downloaded PDF and inspect small text, signatures, tables and scanned stamps. Make sure the document is complete and the pages are in the correct order. For an application or official form, readability matters more than achieving an arbitrary file size.", "If a portal specifies a strict maximum, compare the final file size with that limit and follow the portal's own instructions about PDF format and page count."] }
     ],
@@ -487,7 +487,69 @@ const catalogGuides: BlogPost[] = toolCatalog
   });
 
 
-export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...priorityEditorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides];
+const browserProcessedPdfSlugs = new Set([
+  "merge-pdf", "split-pdf", "rotate-pdf", "rotate-selected-pages", "extract-pages",
+  "delete-pages", "reorder-pdf", "add-page-numbers", "watermark", "crop-pdf",
+  "add-blank-pages", "sign-pdf", "bates-numbering", "page-counter", "pdf-information", "edit-pdf-metadata",
+  "remove-pdf-metadata", "flatten-pdf", "remove-annotations", "remove-attachments", "add-background", "images-to-pdf",
+]);
+
+function updateBlogProcessingGuidance(post: BlogPost): BlogPost {
+  const primaryHref = post.toolLinks[0]?.href ?? "";
+  const isPdfTool = primaryHref.startsWith("/") && !primaryHref.startsWith("/tools/") &&
+    !primaryHref.startsWith("/ne/tools/") && primaryHref !== "/";
+  const slug = (primaryHref.startsWith("/ne/") ? primaryHref.slice(4) : primaryHref.startsWith("/") ? primaryHref.slice(1) : primaryHref);
+  const section: BlogSection = isPdfTool
+    ? browserProcessedPdfSlugs.has(slug)
+      ? {
+          heading: "How PDFora processes this PDF",
+          paragraphs: slug === "images-to-pdf"
+            ? [
+                "JPG and PNG images are converted to PDF in a Web Worker on your device and are not uploaded to PDFora's PDF processing server. WebP files are not currently handled by this local worker and may use the server path; check the notice on the tool before selecting WebP.",
+                "Browser processing uses device memory and performance. Very large image sets may be slower on older phones; the current browser workflow has a combined 50 MB input limit.",
+                "Local processing reduces file-upload exposure, but it does not make your device, browser extensions or downloaded files risk-free. Keep your browser updated and use a trusted device."
+              ]
+            : slug === "bates-numbering"
+              ? [
+                  "ASCII prefixes and zero-padded Bates numbers are added in your browser. A Nepali or other non-ASCII prefix may use the compatible server path; check the processing notice before choosing a file.",
+                  "Browser processing uses device memory and has a combined 50 MB input limit. Local processing reduces upload exposure, but does not make your device or browser risk-free."
+                ]
+            : slug === "watermark" || slug === "add-background"
+              ? [
+                  "ASCII text watermarks and background labels are added in a Web Worker on your device and are not uploaded to PDFora's PDF processing server. Non-ASCII text, including Nepali characters, uses the compatible server path; check the notice shown by the tool.",
+                  "Browser processing uses device memory and performance. Very large or unusually complex PDFs may be slower on older phones; the current browser workflow has a combined 50 MB input limit.",
+                  "Local processing reduces file-upload exposure, but it does not make your device, browser extensions or downloaded files risk-free. Keep your browser updated and use a trusted device."
+                ]
+              : [
+                  "This operation runs in a Web Worker in your browser. The selected PDF is processed on your device and is not uploaded to PDFora's PDF processing server. Keep a backup of the original file and review the downloaded result before sharing it.",
+                  "Browser processing uses device memory and performance. Very large or unusually complex PDFs may be slower or may not work on older phones; the current browser workflow has a combined 50 MB input limit.",
+                  "Local processing reduces file-upload exposure, but it does not make your device, browser extensions or downloaded files risk-free. Keep your browser updated and use a trusted device."
+                ]
+        }
+      : {
+          heading: "How PDFora processes this PDF",
+          paragraphs: [
+            "This operation is not yet available in PDFora's browser-only PDF worker. The selected file is sent to PDFora's processing server to complete the task. Read the tool's privacy notice before uploading and keep an original copy.",
+            "The browser-first migration is being expanded only where output quality and document compatibility can be tested reliably. Do not assume every PDF operation is local."
+          ]
+        }
+    : {
+        heading: "Browser processing, privacy and data freshness",
+        paragraphs: [
+          "Text, calculations and supported file conversions in PDFora's utility tools are generally processed in your browser. Live rates, market headlines and other changing public information may still be retrieved from an external source or PDFora's data endpoint.",
+          "Check the source, timestamp and assumptions shown by the tool. Verify important financial, legal or business results independently before relying on them."
+        ]
+      };
+  return {
+    ...post,
+    updated: "2026-11-15",
+    sections: [...post.sections.filter((item) => item.heading !== section.heading), section],
+  };
+}
+
+export const blogPosts: BlogPost[] = [
+  ...editorialBlogPosts, ...priorityEditorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides,
+].map(updateBlogProcessingGuidance);
 
 // Catalog-wide guide pages are generated from a shared template. Keep them
 // accessible from their relevant tools, but do not expose them as indexable

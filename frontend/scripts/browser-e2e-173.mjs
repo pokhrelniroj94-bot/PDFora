@@ -517,7 +517,7 @@ async function runTool(tool, index) {
         }))()`);
         const downloadCount = fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name)).length;
         statusText = finalState.statuses.map((status) => status.text).join(" | ");
-        if (downloadCount > 0 || finalState.links.length || (statusText && !/processing|please wait/i.test(statusText)) || finalState.alerts.length) break;
+        if (downloadCount > 0 || finalState.links.length || (statusText && !/processing|please wait|merging|locally/i.test(statusText)) || finalState.alerts.length) break;
         await delay(500);
       }
       if (finalState?.alerts.length) throw new Error(finalState.alerts.join(" | "));
@@ -552,13 +552,33 @@ async function runTool(tool, index) {
       row.downloadedFiles = validatedDownloads;
       statusText = finalState?.statuses?.map((status) => status.text).join(" | ") ?? statusText;
       const statusClass = finalState?.statuses?.map((status) => status.className).join(" ") ?? "";
+      // Start invalid-file validation from a fresh component mount. Processing
+      // clears native file inputs; re-mounting avoids testing stale React state.
+      await page.send("Page.navigate", { url: new URL(tool.url, baseUrl).toString() });
+      const invalidPageStarted = Date.now();
+      while (Date.now() - invalidPageStarted < 20000) {
+        const ready = await page.evaluate("document.readyState");
+        if (ready === "interactive" || ready === "complete") break;
+        await delay(100);
+      }
+      await delay(700);
       const invalidPdfNode = await page.send("DOM.getDocument", { depth: 1 });
       const invalidPdfInput = await page.send("DOM.querySelector", { nodeId: invalidPdfNode.root.nodeId, selector: 'input[type="file"]' });
       if (!invalidPdfInput.nodeId) throw new Error("PDF tool lost its file input before invalid-file testing.");
-      await page.send("DOM.setFileInputFiles", { nodeId: invalidPdfInput.nodeId, files: [invalidPdfPath] });
-      if (tool.slug !== "images-to-pdf") {
-        const invalidPdfAction = await page.evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((item) => item.innerText.trim() === ${JSON.stringify(action)} && !item.disabled); if (!button) return false; button.click(); return true; })()`);
-        if (!invalidPdfAction) throw new Error("PDF tool did not expose its processing action for invalid-file testing.");
+      await page.send("DOM.setFileInputFiles", { nodeId: invalidPdfInput.nodeId, files: [tool.slug === "images-to-pdf" ? invalidImagePath : invalidPdfPath] });
+      // Dispatch React's delegated file-selection events after setting the native file list.
+      await page.evaluate(`() => { const input = document.querySelector('input[type="file"]'); if (input) { input.dispatchEvent(new Event("input", { bubbles: true })); input.dispatchEvent(new Event("change", { bubbles: true })); } }`);
+      {
+        // React file-input state updates asynchronously; wait for the primary action to become enabled.
+        let invalidPdfAction = false;
+        const actionReadyStarted = Date.now();
+        while (Date.now() - actionReadyStarted < 3000) {
+          invalidPdfAction = await page.evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((item) => item.innerText.trim() === ${JSON.stringify(action)}); return Boolean(button && !button.disabled); })()`);
+          if (invalidPdfAction) break;
+          await delay(100);
+        }
+        if (!invalidPdfAction) throw new Error("PDF tool did not enable its processing action after the invalid file was selected.");
+        await page.evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((item) => item.innerText.trim() === ${JSON.stringify(action)} && !item.disabled); if (button) button.click(); })()`);
       }
       let invalidPdfStatus = null;
       const invalidPdfStarted = Date.now();
@@ -578,7 +598,8 @@ async function runTool(tool, index) {
         row.evidenceLevel = "expected-negative-path-verified";
         return row;
       }
-      if (/red-\d{2,3}|text-red/i.test(statusClass) || /error|failed|invalid|could not|unavailable/i.test(statusText)) {
+      const verifiedLocalImageSuccess = tool.slug === "images-to-pdf" && /Processed locally; your file was not uploaded\./i.test(statusText) && validatedDownloads.length > 0;
+      if (!verifiedLocalImageSuccess && (/red-\d{2,3}|text-red/i.test(statusClass) || /error|failed|invalid|could not|unavailable/i.test(statusText))) {
         throw new Error(statusText || "PDF tool reported a processing error.");
       }
       if (!finalState || (!finalState.links.length && row.downloadCount === 0 && !statusText)) {

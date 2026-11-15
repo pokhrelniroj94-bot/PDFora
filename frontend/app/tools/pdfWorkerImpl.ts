@@ -2,20 +2,32 @@
 // This file contains the core PDF manipulation logic that can be imported
 // both by the WebWorker (frontend/app/tools/pdfWorker.ts) and the Jest unit tests.
 
-import { PDFDocument, StandardFonts, degrees, rgb } from "pdf-lib";
+import { PDFDict, PDFDocument, PDFName, StandardFonts, degrees, rgb } from "pdf-lib";
 
 /**
  * Supported PDF commands. Each command carries the minimal parameters required.
  */
 export type PdfCommand =
   | { type: "merge" }
+  | { type: "imagesToPdf" }
+  | { type: "crop"; margin: number; pages?: string }
+  | { type: "addBlankPages"; count: number }
+  | { type: "sign"; text: string }
+  | { type: "pageCount" }
+  | { type: "info" }
+  | { type: "editMetadata"; title?: string; author?: string; subject?: string; keywords?: string }
+  | { type: "removeMetadata" }
+  | { type: "flatten" }
+  | { type: "removeAnnotations" }
+  | { type: "removeAttachments" }
   | { type: "split"; pages: string } // e.g. "1,3-5"
   | { type: "extract"; pages: string }
   | { type: "deletePages"; pages: string }
   | { type: "reorder"; order: string } // e.g. "3,1,2"
   | { type: "rotate"; angle: number } // 0,90,180,270
-  | { type: "addPageNumbers"; start: number; format?: string }
-  | { type: "watermark"; text: string; opacity?: number }
+  | { type: "rotateSelected"; angle: number; pages: string }
+  | { type: "addPageNumbers"; start: number; format?: string; digits?: number; position?: string; skipFirst?: boolean; fontSize?: number }
+  | { type: "watermark"; text: string; opacity?: number; color?: string }
   | { type: "compress" };
 
 /** Utility: parse a page list like "1,3-5" into zeroÃ¢â‚¬â€˜based indices */
@@ -85,6 +97,41 @@ export async function processPdf(
 ): Promise<{ blob: Blob; blobs?: {blob: Blob; filename: string}[]; warnings?: string[] }> {
   if (!files.length) throw new Error("No files provided");
 
+  // Keep browser memory use bounded on mobile devices.
+  const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+  if (totalBytes > 50 * 1024 * 1024) throw new Error("Browser processing is limited to 50 MB combined input.");
+  if (cmd.type === "imagesToPdf") {
+    const output = await PDFDocument.create();
+    for (const file of files) {
+      const imageBuffer = typeof file.arrayBuffer === "function"
+        ? await file.arrayBuffer()
+        : await new Promise<ArrayBuffer>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              if (reader.result instanceof ArrayBuffer) resolve(reader.result);
+              else reject(new Error("Unable to read image file."));
+            };
+            reader.onerror = () => reject(reader.error ?? new Error("Unable to read image file."));
+            reader.readAsArrayBuffer(file);
+          });
+      const bytes = new Uint8Array(imageBuffer);
+      let image;
+      if (file.type === "image/jpeg" || file.name.toLowerCase().endsWith(".jpg") || file.name.toLowerCase().endsWith(".jpeg")) {
+        image = await output.embedJpg(bytes);
+      } else if (file.type === "image/png" || file.name.toLowerCase().endsWith(".png")) {
+        image = await output.embedPng(bytes);
+      } else {
+        throw new Error("Browser image-to-PDF supports JPG and PNG files. Convert WebP to PNG first.");
+      }
+      const page = output.addPage([image.width, image.height]);
+      page.drawImage(image, { x: 0, y: 0, width: image.width, height: image.height });
+    }
+    const bytes = await output.save();
+    const buffer = new ArrayBuffer(bytes.byteLength);
+    new Uint8Array(buffer).set(bytes);
+    return { blob: new Blob([buffer], { type: "application/pdf" }) };
+  }
+
   // Load all PDFs first
   const pdfDocs = await Promise.all(
     files.map(async (f) => {
@@ -112,6 +159,9 @@ export async function processPdf(
     })
   );
 
+  const totalPages = pdfDocs.reduce((sum, doc) => sum + doc.getPageCount(), 0);
+  if (totalPages > 500) throw new Error("Browser processing is limited to 500 pages per job on this device.");
+
   // Helper to create a new empty document
   const outputDoc = await PDFDocument.create();
   const warnings: string[] = [];
@@ -137,6 +187,63 @@ export async function processPdf(
         const pages = await outputDoc.copyPages(doc, doc.getPageIndices());
         pages.forEach((p) => outputDoc.addPage(p));
       }
+      break;
+    }
+    case "crop": {
+      const src = pdfDocs[0];
+      const margin = Number.isFinite(cmd.margin) ? Math.max(0, cmd.margin) : 0;
+      const selected = !cmd.pages || cmd.pages.trim().toLowerCase() === "all"
+        ? new Set(src.getPageIndices())
+        : new Set(parsePageList(cmd.pages, src.getPageCount()));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page, index) => {
+        if (selected.has(index)) {
+          const { width, height } = page.getSize();
+          if (margin * 2 >= width || margin * 2 >= height) throw new Error("Crop margin is too large for page " + (index + 1));
+          page.setCropBox(margin, margin, width - margin * 2, height - margin * 2);
+        }
+        outputDoc.addPage(page);
+      });
+      break;
+    }
+    case "addBlankPages": {
+      const src = pdfDocs[0];
+      const count = Math.max(1, Math.min(50, Math.floor(cmd.count)));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      const last = src.getPages()[src.getPageCount() - 1];
+      const { width, height } = last.getSize();
+      for (let index = 0; index < count; index += 1) outputDoc.addPage([width, height]);
+      break;
+    }
+    case "sign": {
+      const src = pdfDocs[0];
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      const lastPage = outputDoc.getPages()[outputDoc.getPageCount() - 1];
+      const font = await outputDoc.embedFont(StandardFonts.HelveticaOblique);
+      lastPage.drawText(cmd.text.slice(0, 120), { x: 48, y: 48, size: 20, font, color: rgb(0.08, 0.2, 0.42) });
+      break;
+    }
+    case "pageCount": {
+      const src = pdfDocs[0];
+      resultBlob = new Blob(["PDFora PDF page report\nFile: " + files[0].name + "\nPages: " + src.getPageCount() + "\nFile size: " + files[0].size + " bytes\n"], { type: "text/plain;charset=utf-8" });
+      break;
+    }
+    case "info": {
+      const src = pdfDocs[0];
+      const pages = src.getPages().map((page, index) => {
+        const { width, height } = page.getSize();
+        return (index + 1) + ": " + Math.round(width) + " × " + Math.round(height) + " pt";
+      });
+      const report = [
+        "PDFora PDF information", "File: " + files[0].name, "Size: " + files[0].size + " bytes",
+        "Pages: " + src.getPageCount(), "Title: " + (src.getTitle() || "Not set"),
+        "Author: " + (src.getAuthor() || "Not set"), "Subject: " + (src.getSubject() || "Not set"),
+        "Creator: " + (src.getCreator() || "Not set"), "Producer: " + (src.getProducer() || "Not set"),
+        "Page dimensions:", ...pages,
+      ].join("\n");
+      resultBlob = new Blob([report], { type: "text/plain;charset=utf-8" });
       break;
     }
     case "split": {
@@ -204,23 +311,96 @@ export async function processPdf(
       pages.forEach((p) => outputDoc.addPage(p));
       break;
     }
+    case "rotateSelected": {
+      const src = pdfDocs[0];
+      if (![90, 180, 270].includes(cmd.angle)) throw new Error("Rotation must be 90, 180 or 270 degrees");
+      const selected = cmd.pages.trim().toLowerCase() === "all"
+        ? new Set(src.getPageIndices())
+        : new Set(parsePageList(cmd.pages, src.getPageCount()));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page, index) => {
+        if (selected.has(index)) page.setRotation(degrees(cmd.angle));
+        outputDoc.addPage(page);
+      });
+      break;
+    }
     case "addPageNumbers": {
       const src = pdfDocs[0];
       const pages = await outputDoc.copyPages(src, src.getPageIndices());
       const font = await outputDoc.embedFont(StandardFonts.Helvetica);
+      const fontSize = cmd.fontSize && Number.isFinite(cmd.fontSize) ? Math.min(48, Math.max(6, cmd.fontSize)) : 11;
       pages.forEach((p, idx) => {
-        const number = cmd.start + idx;
-        const txt = cmd.format ? cmd.format.replace("%d", String(number)) : String(number);
-        const { width } = p.getSize();
-        p.drawText(txt, {
-          x: width - 50,
-          y: 20,
-          size: 12,
-          font,
-          color: rgb(0, 0, 0),
-        });
+        const skip = Boolean(cmd.skipFirst) && idx === 0;
+        if (!skip) {
+          const number = cmd.start + idx;
+          const numberText = String(number).padStart(Math.max(0, Math.min(12, cmd.digits ?? 0)), "0");
+          const txt = cmd.format ? cmd.format.replace("%d", numberText) : numberText;
+          const { width, height } = p.getSize();
+          const textWidth = font.widthOfTextAtSize(txt, fontSize);
+          const position = cmd.position || "bottom-center";
+          const left = position.endsWith("left");
+          const right = position.endsWith("right");
+          const top = position.startsWith("top");
+          const x = left ? 28 : right ? width - textWidth - 28 : (width - textWidth) / 2;
+          const y = top ? height - fontSize - 24 : 20;
+          p.drawText(txt, { x: Math.max(8, x), y: Math.max(8, y), size: fontSize, font, color: rgb(0, 0, 0) });
+        }
         outputDoc.addPage(p);
       });
+      break;
+    }
+    case "editMetadata": {
+      const src = pdfDocs[0];
+      if (cmd.title !== undefined) src.setTitle(cmd.title.slice(0, 240));
+      if (cmd.author !== undefined) src.setAuthor(cmd.author.slice(0, 160));
+      if (cmd.subject !== undefined) src.setSubject(cmd.subject.slice(0, 240));
+      if (cmd.keywords !== undefined) src.setKeywords(cmd.keywords.split(",").map((item) => item.trim()).filter(Boolean).slice(0, 30));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      outputDoc.setTitle(src.getTitle() || "");
+      outputDoc.setAuthor(src.getAuthor() || "");
+      outputDoc.setSubject(src.getSubject() || "");
+      outputDoc.setKeywords((src.getKeywords() || "").split(",").map((item) => item.trim()).filter(Boolean));
+      break;
+    }
+    case "removeMetadata": {
+      const src = pdfDocs[0];
+      src.setTitle("");
+      src.setAuthor("");
+      src.setSubject("");
+      src.setKeywords([]);
+      src.setCreator("");
+      src.setProducer("");
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      outputDoc.setTitle("");
+      outputDoc.setAuthor("");
+      outputDoc.setSubject("");
+      outputDoc.setKeywords([]);
+      outputDoc.setCreator("");
+      outputDoc.setProducer("");
+      break;
+    }
+    case "flatten": {
+      const src = pdfDocs[0];
+      try { src.getForm().flatten(); } catch { throw new Error("This PDF form could not be flattened safely in the browser."); }
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      break;
+    }
+    case "removeAnnotations": {
+      const src = pdfDocs[0];
+      src.getPages().forEach((page) => page.node.delete(PDFName.of("Annots")));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
+      break;
+    }
+    case "removeAttachments": {
+      const src = pdfDocs[0];
+      const names = src.catalog.lookupMaybe(PDFName.of("Names"), PDFDict);
+      names?.delete(PDFName.of("EmbeddedFiles"));
+      const pages = await outputDoc.copyPages(src, src.getPageIndices());
+      pages.forEach((page) => outputDoc.addPage(page));
       break;
     }
     case "watermark": {
@@ -228,6 +408,9 @@ export async function processPdf(
       const pages = await outputDoc.copyPages(src, src.getPageIndices());
       const font = await outputDoc.embedFont(StandardFonts.HelveticaBold);
       const opacity = typeof cmd.opacity === "number" ? cmd.opacity : 0.3;
+      const colorHex = (cmd.color || "#BFBFBF").replace(/^#/, "");
+      if (!/^[0-9a-fA-F]{6}$/.test(colorHex)) throw new Error("Enter a valid six-digit HEX colour.");
+      const color = rgb(parseInt(colorHex.slice(0, 2), 16) / 255, parseInt(colorHex.slice(2, 4), 16) / 255, parseInt(colorHex.slice(4, 6), 16) / 255);
       pages.forEach((p) => {
         const { width, height } = p.getSize();
         p.drawText(cmd.text, {
@@ -235,7 +418,7 @@ export async function processPdf(
           y: height / 2,
           size: 48,
           font,
-          color: rgb(0.75, 0.75, 0.75),
+          color,
           rotate: degrees(45),
           opacity,
         });

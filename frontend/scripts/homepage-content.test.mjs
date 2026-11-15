@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const homepage = fs.readFileSync(path.join(root, "components/HomePageClient.tsx"), "utf8");
 const catalog = fs.readFileSync(path.join(root, "components/toolCatalog.ts"), "utf8");
+const css = fs.readFileSync(path.join(root, "app/globals.css"), "utf8");
 
 const expected = [
   ["/tools/loan-emi-calculator", "annual interest rate", "total interest"],
@@ -44,3 +45,7 @@ console.log("Homepage content checks passed: all-category discovery, mixed-categ
 assert.ok(homepage.includes('pdfora-home-footer'), "Homepage footer must use its scoped brand surface to preserve wordmark contrast");
 assert.ok(css.includes('body > div > footer.pdfora-home-footer'), "Homepage footer styles must override the shared footer surface rule");
 assert.ok(css.includes('background: #071b1b !important'), "Homepage footer must retain its dark background");
+
+for (const href of ["/tools/tip-calculator", "/tools/savings-goal-calculator", "/tools/reading-time-calculator", "/tools/percentage-change-calculator"]) {
+  assert.ok(homepage.includes(`href="${href}"`), `Homepage footer should link to the high-impression calculator destination: ${href}`);
+}

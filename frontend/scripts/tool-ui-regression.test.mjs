@@ -47,6 +47,15 @@ const sharedPdfGuide = read("../components/ToolSEOContent.tsx");
 assert.ok(sharedPdfGuide.includes("some supported operations run locally in your browser") && sharedPdfGuide.includes("PDFora&apos;s processing service"), "Shared PDF guidance must explain both local and service processing");
 assert.ok(sharedPdfGuide.includes("If the PDF is not accepted or processing does not start"), "Shared PDF troubleshooting must not imply every tool uploads files");
 
+const mergeLimitCopy = read("../components/PDForaTool.tsx");
+assert.ok(mergeLimitCopy.includes('endpoint === "/api/merge"') && mergeLimitCopy.includes("Combined PDF upload limit: 50 MB total"), "Merge PDF must display its combined 50 MB limit, not a per-file limit");
+const toolGuideSource = read("../lib/tool-guides.ts");
+assert.ok(toolGuideSource.includes("The processing method depends on the operation and supported options"), "Generic PDF guides must distinguish browser access from processing location");
+assert.ok(!toolGuideSource.includes("PDFora provides this workflow in a browser"), "Generic PDF guides must not imply that every operation processes locally");
+
+const deletePagesPage = read("../app/delete-pages/page.tsx");
+assert.ok(deletePagesPage.includes("runs locally in your browser") && deletePagesPage.includes("not uploaded to PDFora's processing server"), "Delete Pages must disclose its local processing method");
+
 const pdfToJpgPage = read("../app/pdf-to-jpg/page.tsx");
 assert.ok(pdfToJpgPage.includes("processing service"), "PDF to JPG must disclose that the selected PDF uses the processing service");
 assert.doesNotMatch(pdfToJpgPage, /browser-based workflow|directly from your browser on desktop/i, "PDF to JPG must not claim local browser processing while it uses the server endpoint");

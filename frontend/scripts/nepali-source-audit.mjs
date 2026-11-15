@@ -99,9 +99,9 @@ const report = {
 const out = path.resolve(root, "../docs/i18n");
 fs.mkdirSync(out, { recursive: true });
 fs.writeFileSync(path.join(out, "NEPALI_SOURCE_AUDIT.json"), JSON.stringify(report, null, 2) + "\n");
-const md = `# Nepali source audit
+const md = \`# Nepali source audit
 
-Generated from current source by `npm run i18n:nepali-audit`.
+Generated from current source by \`npm run i18n:nepali-audit\`.
 
 ## Inventory
 
@@ -124,7 +124,7 @@ Generated from current source by `npm run i18n:nepali-audit`.
 
 Route registration is not proof that every label, hint, validation message, error, output, download, keyboard interaction or mobile state is translated or correct. Dedicated workspace dispatch is not the same as an individually tested implementation. Native-speaker review is never inferred from source text. Keep pages noindex until content and functional review have actually passed.
 
-See `NEPALI_SOURCE_AUDIT.json` for per-tool evidence and explicit gaps.
+See \`NEPALI_SOURCE_AUDIT.json\` for per-tool evidence and explicit gaps.
 `;
 fs.writeFileSync(path.join(out, "NEPALI_SOURCE_AUDIT.md"), md);
 console.log(`Nepali source audit generated: ${routeSet.size} localized route registrations / ${unique.length} canonical tools; ${targetedSlugs.size} tool slugs referenced by targeted unit-test files.`);

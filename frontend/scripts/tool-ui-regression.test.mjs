@@ -61,4 +61,14 @@ const pdfToJpgPage = read("../app/pdf-to-jpg/page.tsx");
 assert.ok(pdfToJpgPage.includes("processing service"), "PDF to JPG must disclose that the selected PDF uses the processing service");
 assert.doesNotMatch(pdfToJpgPage, /browser-based workflow|directly from your browser on desktop/i, "PDF to JPG must not claim local browser processing while it uses the server endpoint");
 
+const compressPage = read("../app/compress-pdf/page.tsx");
+assert.ok(compressPage.includes("PDFora processing service") && compressPage.includes("not compressed") && compressPage.includes("locally in your browser"), "Compress PDF must disclose server processing");
+const imagesToPdfPage = read("../app/images-to-pdf/page.tsx");
+assert.ok(imagesToPdfPage.includes("JPG, JPEG and PNG files are processed in your") && imagesToPdfPage.includes("WebP files may use the PDFora processing service"), "Images to PDF must distinguish browser-supported formats from WebP service fallback");
+const watermarkPage = read("../app/watermark/page.tsx");
+assert.ok(watermarkPage.includes("Compatible ASCII text") && watermarkPage.includes("Nepali characters") && watermarkPage.includes("processing service"), "Watermark must disclose the ASCII browser and non-ASCII service paths");
+assert.ok(niroj.includes('case "/api/delete-pages": return { type: "deletePages", pages: value } as const;'), "Delete Pages must be wired to the browser worker when local processing is advertised");
+const pdfWorker = read("../app/tools/pdfWorkerImpl.ts");
+assert.ok(pdfWorker.includes('case "deletePages":'), "Delete Pages browser processing must have a matching worker implementation");
+
 console.log("Tool UI regression checks passed: image upload copy, validation, object URL lifecycle and homepage guidance.");

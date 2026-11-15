@@ -53,7 +53,7 @@ export default function NirojToolsTool({
   const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const imageUpload = accept.includes("image/");
   const chooseDropLabel = imageUpload ? (locale === "ne" ? "तस्बिर फाइल छान्नुहोस् वा यहाँ छोड्नुहोस्" : "Choose or drop image files") : (multiple ? ui.chooseDropMultiple : ui.chooseDropSingle);
-  const uploadLimitLabel = imageUpload ? (locale === "ne" ? "प्रत्येक तस्बिर अधिकतम ५० MB" : "Image files up to 50 MB each") : ui.pdfFilesLimit;
+  const uploadLimitLabel = endpoint === "/api/images-to-pdf" ? (locale === "ne" ? "सबै तस्बिरको जम्मा आकार अधिकतम ५० MB" : "Combined image upload limit: 50 MB total") : imageUpload ? (locale === "ne" ? "प्रत्येक तस्बिर अधिकतम ५० MB" : "Image files up to 50 MB each") : ui.pdfFilesLimit;
   const homeHref = locale === "en" ? "/" : `/${locale}`;
   const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
   const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;
@@ -118,9 +118,12 @@ export default function NirojToolsTool({
 
   function applyFiles(selectedFiles: File[]) {
     const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
-    if (browserOnly && selected.reduce((total, file) => total + file.size, 0) > 50 * 1024 * 1024) {
+    const combinedSize = selected.reduce((total, file) => total + file.size, 0);
+    if ((endpoint === "/api/images-to-pdf" || browserOnly) && combinedSize > 50 * 1024 * 1024) {
       setFiles([]);
-      setMessage(locale === "ne" ? "ब्राउजर प्रोसेसिङका लागि जम्मा फाइल आकार ५० MB भित्र राख्नुहोस्।" : "Keep the combined file size under 50 MB for browser processing.");
+      setMessage(endpoint === "/api/images-to-pdf"
+        ? (locale === "ne" ? "सबै छानिएका तस्बिरको जम्मा आकार ५० MB भन्दा बढी हुनु हुँदैन।" : "The combined size of all selected images must not exceed 50 MB.")
+        : (locale === "ne" ? "ब्राउजर प्रोसेसिङका लागि जम्मा फाइल आकार ५० MB भित्र राख्नुहोस्।" : "Keep the combined file size under 50 MB for browser processing."));
       if (inputRef.current) inputRef.current.value = "";
       return;
     }

@@ -268,10 +268,10 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
         const parserError = parsed.querySelector("parsererror");
         if (parserError) throw new Error("XML syntax अमान्य छ। Tag, attribute र closing tag जाँच गर्नुहोस्।");
         const serialized = new XMLSerializer().serializeToString(parsed);
-        const formatted = serialized.replace(/>\\s*</g, ">\\n<").split("\\n").map((line) => line.trim()).filter(Boolean).map((line, index, lines) => {
-          const depth = Math.max(0, lines.slice(0, index).filter((item) => /^<[^!?/][^>]*>$/.test(item) && !/\\/>$/.test(item)).length - lines.slice(0, index).filter((item) => /^<\\//.test(item)).length);
+        const formatted = serialized.replace(/>\s*</g, ">\n<").split("\n").map((line) => line.trim()).filter(Boolean).map((line, index, lines) => {
+          const depth = Math.max(0, lines.slice(0, index).filter((item) => /^<[^!?/][^>]*>$/.test(item) && !/\/>$/.test(item)).length - lines.slice(0, index).filter((item) => /^<\//.test(item)).length);
           return "  ".repeat(depth) + line;
-        }).join("\\n");
+        }).join("\n");
         setGenerated(formatted);
       } catch (cause) { setGenerated(""); setError(cause instanceof Error ? cause.message : "XML जाँच गर्न सकिएन।"); }
     };
@@ -286,7 +286,7 @@ export default function NepaliRemainingToolsWorkspace({ slug }: { slug: string }
         const template = document.createElement("template");
         template.innerHTML = source;
         template.content.querySelectorAll("script,style,iframe,object,embed").forEach((node) => node.remove());
-        setGenerated((template.content.textContent || "").replace(/[ \\t]+/g, " ").replace(/\\n{3,}/g, "\\n\\n").trim());
+        setGenerated((template.content.textContent || "").replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim());
       } catch { setError("HTML सामग्री प्रक्रिया गर्न सकिएन।"); setGenerated(""); }
     };
     return <section className="space-y-4"><h2 className="text-xl font-black">HTML Tag हटाउने</h2><label className="block"><span className={label}>HTML सामग्री</span><textarea className={input + " min-h-40 font-mono"} value={source} onChange={(e) => { setSource(e.target.value); setGenerated(""); }} placeholder="<p>नमस्कार <strong>नेपाल</strong></p>" /></label><button className="rounded-xl bg-teal-700 px-4 py-2.5 font-bold text-white" onClick={strip}>HTML Tag हटाउनुहोस्</button>{error && <p role="alert" className="text-sm text-red-700">{error}</p>}{generated && <><pre role="status" className={panel + " whitespace-pre-wrap"}>{generated}</pre><button className="underline" onClick={() => copy(generated)}>पाठ कपी गर्नुहोस्</button></>}</section>;

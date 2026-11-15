@@ -144,6 +144,25 @@ describe('PDF Worker Core', () => {
     expect(await info.blob.text()).toContain('Page dimensions:');
   });
 
+  test('edit and remove PDF metadata locally', async () => {
+    const file = await createSamplePdf('metadata.pdf');
+    const edited = await processPdf({ type: 'editMetadata', title: 'PDFora test', author: 'PDFora', subject: 'Browser worker', keywords: 'test,pdf' }, [file]);
+    const { PDFDocument } = await import('pdf-lib');
+    const editedDoc = await PDFDocument.load(await readBlob(edited.blob));
+    expect(editedDoc.getTitle()).toBe('PDFora test');
+    expect(editedDoc.getAuthor()).toBe('PDFora');
+    const cleared = await processPdf({ type: 'removeMetadata' }, [file]);
+    const clearedDoc = await PDFDocument.load(await readBlob(cleared.blob));
+    expect(clearedDoc.getTitle()).toBeFalsy();
+    expect(clearedDoc.getAuthor()).toBeFalsy();
+  });
+
+  test('flatten PDF form appearances locally', async () => {
+    const file = await createSamplePdf('flatten.pdf');
+    const { blob } = await processPdf({ type: 'flatten' }, [file]);
+    expect(blob.size).toBeGreaterThan(0);
+  });
+
   test('invalid PDF throws', async () => {
     const badFile = new File([new Uint8Array([1, 2, 3])], 'bad.txt', { type: 'text/plain' });
     const cmd: PdfCommand = { type: 'merge' };

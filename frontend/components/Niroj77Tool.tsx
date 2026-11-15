@@ -185,6 +185,7 @@ export default function NirojToolsTool({
       return;
     }
 
+    setLocalDownloads([]);
     setLoading(true);
     setMessage(browserOnly ? (locale === "ne" ? "तपाईंको ब्राउजरमै फाइल प्रोसेस हुँदैछ…" : "Processing locally in your browser…") : "");
 

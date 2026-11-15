@@ -705,3 +705,44 @@ main:has(#pdf-tools) #pdf-tools > div > a:hover { border-color: var(--brand); }
   .pdfora-workspace-hero, .pdfora-tool-card, .pdfora-trust-panel { animation: pdfora-rise-in .48s cubic-bezier(.2,.7,.2,1) both; }
   .pdfora-trust-panel { animation-delay: 90ms; }
 }
+
+/* Site-wide Nepali Himalayan identity, scoped to Nepali routes only. */
+html:lang(ne) {
+  --np-ink:#243b32; --np-forest:#285b45; --np-forest-deep:#173f31;
+  --np-saffron:#d97732; --np-terracotta:#a94f3c; --np-paper:#fbf7ef;
+  background:var(--np-paper); color:var(--np-ink);
+}
+html:lang(ne) body { background:var(--np-paper); color:var(--np-ink); }
+html:lang(ne) ::selection { background:#f2c48d; color:#3f2b1e; }
+html:lang(ne) :focus-visible { outline-color:var(--np-saffron); }
+html:lang(ne) .pdfora-workspace {
+  background:radial-gradient(ellipse at 8% 2%,rgb(217 119 50 / 10%),transparent 28rem),
+    radial-gradient(ellipse at 92% 14%,rgb(40 91 69 / 10%),transparent 30rem),
+    linear-gradient(180deg,#f8f4eb 0%,#f4f0e6 52%,#fbf8f1 100%);
+  color:var(--np-ink);
+}
+html:lang(ne) .pdfora-workspace-header { border-color:#e6ddcf; background:rgb(251 248 241 / 92%); }
+html:lang(ne) .pdfora-workspace-hero { position:relative; isolation:isolate; padding:1.5rem 1rem 2rem; }
+html:lang(ne) .pdfora-workspace-hero::before {
+  content:""; position:absolute; z-index:-1; inset:0 -1rem; opacity:.62;
+  background:linear-gradient(145deg,transparent 0 48%,rgb(40 91 69 / 10%) 48.2% 49%,transparent 49.2%),
+    linear-gradient(35deg,transparent 0 55%,rgb(217 119 50 / 11%) 55.2% 56%,transparent 56.2%);
+  border-bottom:1px solid #e9dfcf;
+}
+html:lang(ne) .pdfora-workspace-hero > p:first-child { color:var(--np-terracotta); }
+html:lang(ne) .pdfora-workspace-hero h2 { color:var(--np-forest-deep); }
+html:lang(ne) .pdfora-tool-card { border-color:#eadfce; background:rgb(255 253 248 / 96%); box-shadow:0 24px 70px rgb(71 54 33 / 11%); }
+html:lang(ne) .pdfora-dropzone { border-color:#c8d7c9; background:radial-gradient(ellipse at 50% 0%,rgb(217 119 50 / 8%),transparent 55%),#f8f6ef; }
+html:lang(ne) .pdfora-dropzone:hover { border-color:var(--np-forest); background-color:#f0f4eb; }
+html:lang(ne) .pdfora-primary-action { background:linear-gradient(105deg,#285b45 0%,#34704f 62%,#b96a37 140%); box-shadow:0 12px 26px rgb(40 91 69 / 18%); }
+html:lang(ne) .pdfora-trust-panel { border-color:#e5d8c5; background:linear-gradient(145deg,#fffaf0 0%,#f4f0e5 100%); box-shadow:0 12px 32px rgb(71 54 33 / 6%); }
+html:lang(ne) .pdfora-trust-panel h2,html:lang(ne) .pdfora-trust-detail h3 { color:var(--np-forest-deep); }
+html:lang(ne) .pdfora-trust-detail { border:1px solid #e8dece; border-radius:16px; background:rgb(255 255 255 / 68%); padding:1rem; }
+html:lang(ne) .pdfora-trust-link { color:var(--np-terracotta); }
+html:lang(ne) .pdfora-workspace section[aria-labelledby="how-to-use-title"] { border-color:#e8dece; background:#fffdf8; }
+html:lang(ne) .pdfora-workspace .text-teal-700,html:lang(ne) .pdfora-workspace .text-teal-800 { color:var(--np-forest); }
+@media(max-width:639px) {
+  html:lang(ne) .pdfora-workspace-content { padding-top:1.25rem; }
+  html:lang(ne) .pdfora-workspace-hero { padding:1rem .25rem 1.5rem; }
+  html:lang(ne) .pdfora-tool-card { border-radius:1.5rem; padding:.9rem; }
+}

@@ -487,7 +487,50 @@ const catalogGuides: BlogPost[] = toolCatalog
   });
 
 
-export const blogPosts: BlogPost[] = [...editorialBlogPosts, ...priorityEditorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides];
+const browserProcessedPdfSlugs = new Set([
+  "merge-pdf", "split-pdf", "rotate-pdf", "rotate-selected-pages", "extract-pages",
+  "delete-pages", "reorder-pdf", "add-page-numbers", "watermark", "crop-pdf",
+  "add-blank-pages", "sign-pdf", "page-counter", "pdf-information",
+]);
+
+function updateBlogProcessingGuidance(post: BlogPost): BlogPost {
+  const primaryHref = post.toolLinks[0]?.href ?? "";
+  const isPdfTool = primaryHref.startsWith("/") && !primaryHref.startsWith("/tools/") &&
+    !primaryHref.startsWith("/ne/tools/") && primaryHref !== "/";
+  const slug = primaryHref.replace(/^\\//, "").replace(/^ne\\//, "");
+  const section: BlogSection = isPdfTool
+    ? browserProcessedPdfSlugs.has(slug)
+      ? {
+          heading: "How PDFora processes this PDF",
+          paragraphs: [
+            "This operation runs in a Web Worker in your browser. The selected PDF is processed on your device and is not uploaded to PDFora's PDF processing server. Keep a backup of the original file and review the downloaded result before sharing it.",
+            "Browser processing uses device memory and performance. Very large or unusually complex PDFs may be slower or may not work on older phones; the current browser workflow has a combined 50 MB input limit."
+          ]
+        }
+      : {
+          heading: "How PDFora processes this PDF",
+          paragraphs: [
+            "This operation is not yet available in PDFora's browser-only PDF worker. The selected file is sent to PDFora's processing server to complete the task. Read the tool's privacy notice before uploading and keep an original copy.",
+            "The browser-first migration is being expanded only where output quality and document compatibility can be tested reliably. Do not assume every PDF operation is local."
+          ]
+        }
+    : {
+        heading: "Browser processing, privacy and data freshness",
+        paragraphs: [
+          "Text, calculations and supported file conversions in PDFora's utility tools are generally processed in your browser. Live rates, market headlines and other changing public information may still be retrieved from an external source or PDFora's data endpoint.",
+          "Check the source, timestamp and assumptions shown by the tool. Verify important financial, legal or business results independently before relying on them."
+        ]
+      };
+  return {
+    ...post,
+    updated: "2026-11-15",
+    sections: [...post.sections.filter((item) => item.heading !== section.heading), section],
+  };
+}
+
+export const blogPosts: BlogPost[] = [
+  ...editorialBlogPosts, ...priorityEditorialBlogPosts, ...additionalToolBlogPosts, ...nepalBlogPosts, ...catalogGuides,
+].map(updateBlogProcessingGuidance);
 
 // Catalog-wide guide pages are generated from a shared template. Keep them
 // accessible from their relevant tools, but do not expose them as indexable

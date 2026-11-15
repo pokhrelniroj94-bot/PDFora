@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { isPublished, localeInfo, type Locale } from "./config";
 import { absoluteUrl, hreflangMap } from "./routing";
-import { isLocalizedToolIndexable } from "../tools/localized-verification";
+import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 
 interface LocaleMetadataInput {
@@ -30,7 +30,7 @@ export function buildLocaleMetadata({ locale, path, title, description }: Locale
   const canonical = absoluteUrl(path, locale);
   const pdfSlug = path.replace(/^\/+/, "");
   const isPdfTool = Object.prototype.hasOwnProperty.call(nepaliPdfRoutes, pdfSlug);
-  const indexable = published && (!isPdfTool || isLocalizedToolIndexable(locale, pdfSlug));
+  const indexable = published && (isPdfTool ? isLocalizedToolIndexable(locale, pdfSlug) : locale === "en" || isLocalizedPageIndexable(locale, path));
   const languages = indexable ? hreflangMap(path) : undefined;
   return {
     title,

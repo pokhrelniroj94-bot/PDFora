@@ -2,7 +2,7 @@ import Link from "next/link";
 import AdsterraNative from "../../components/AdsterraNative";
 import AdsterraSkyscraper from "../../components/AdsterraSkyscraper";
 import BlogPopunder from "../../components/BlogPopunder";
-import BlogToolCTA from "../../components/BlogToolCTA";
+import BlogToolCTA from "../../../components/BlogToolCTA";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { blogPosts, getBlogPost, isCatalogGeneratedGuide } from "../../../lib/blog-posts";

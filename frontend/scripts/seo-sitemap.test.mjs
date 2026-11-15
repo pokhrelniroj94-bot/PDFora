@@ -233,7 +233,7 @@ for (const slug of nepaliBlogSlugs) {
 assert.match(englishToolPageSource, /isLocalizedToolIndexable\("ne", slug\)/, "English tool pages must gate Nepali hreflang on explicit indexing approval");
 assert.match(englishToolPageSource, /languages\s*\?\s*\{\s*languages\s*\}/, "Approved English PDF pages must emit the reciprocal hreflang map");
 for (const slug of approvedNepali) {
-  const localeFreePath = `/${slug}`;
+  const localeFreePath = pdfRoutes.includes(slug) ? `/${slug}` : `/tools/${slug}`;
   const alternates = hreflangMap(localeFreePath);
   assert.equal(alternates?.en, `https://pd-fora.vercel.app${localeFreePath}`);
   assert.equal(alternates?.ne, `https://pd-fora.vercel.app/ne${localeFreePath}`);

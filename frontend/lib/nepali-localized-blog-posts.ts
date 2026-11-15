@@ -107,6 +107,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "एक करोड कति हुन्छ?", answer: "एक करोड बराबर १,००,००,००० हुन्छ।" },
       { question: "के उपकरणले सबै नेपाली शब्दरूप सही लेख्छ?", answer: "हालको उपयोगिताले ९९,९९,९९,९९९ सम्मका मानलाई लाख/करोड समूहमा देखाउँछ; नेपाली शब्दमा पढ्ने सुविधा सीमित हुन सक्छ। औपचारिक कागजातमा नतिजा आफैँ जाँच्नुहोस्।" }
     ],
+    sources: [{"label":"Unicode CLDR: Number formatting patterns for South Asian grouping","url":"https://unicode.org/reports/tr35/tr35-numbers.html"}],
     toolLinks: [{ label: "नेपाली नम्बर कन्भर्टर", href: "/tools/nepali-number-converter" }]
   },
   {
@@ -223,6 +224,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के यसले Kantipur वा PCS font पनि बदल्छ?", answer: "Preeti का लागि बनेको रूपान्तरणलाई अन्य legacy font मा भरपर्दो मान्न मिल्दैन। सम्बन्धित font को छुट्टै converter चाहिन सक्छ।" },
       { question: "के रूपान्तरणपछि पाठ जाँच्नुपर्छ?", answer: "पर्छ। विशेष गरी नाम, अंक, संयुक्त अक्षर र आधिकारिक विवरण मूल कागजातसँग मिलाउनुहोस्।" }
     ],
+    sources: [{"label":"Unicode Consortium: What is Unicode?","url":"https://www.unicode.org/standard/WhatIsUnicode.html"}],
     toolLinks: [{ label: "Preeti–Unicode कन्भर्टर", href: "/tools/preeti-unicode-converter" }]
   },
   {
@@ -529,6 +531,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { question: "मर्मत गरिएको PDF मूल फाइलजस्तै हुन्छ?", answer: "सधैँ होइन। पृष्ठ, text, image, table, bookmark र signature जाँच्नुहोस्।" },
       { question: "मूल फाइल नै upload गर्ने?", answer: "पहिले प्रतिलिपि बनाउनुहोस्। मूल फाइल सुरक्षित राखेर प्रतिलिपिमा मात्र प्रक्रिया गर्नुहोस्।" }
     ],
+    sources: [{"label":"Adobe Acrobat Help: Repair a damaged PDF","url":"https://helpx.adobe.com/acrobat/kb/quick-fix-corrupt-pdf.html"}],
     toolLinks: [{ label: "PDF मर्मत", href: "/repair-pdf" }, { label: "PDF जानकारी", href: "/pdf-information" }, { label: "PDF कम्प्रेस", href: "/compress-pdf" }]
   },
   {

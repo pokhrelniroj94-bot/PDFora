@@ -49,7 +49,8 @@ assert.ok(catalogToolSeoSource.includes("Meta Description Checker: Preview Your 
 assert.ok(catalogToolSeoSource.includes("Use this meta description checker with the exact description"), "The meta description checker intro must match its primary query");
 assert.ok(englishToolPageSource.includes('title: "Free Reading Time Calculator – Estimate Minutes & WPM"'), "Reading Time metadata must target the calculator intent");
 assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Monthly & Weekly Savings"'), "Savings Goal metadata must target deposit-planning intent");
-assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Calculate Increase or Decrease"'), "Percentage Change metadata must target calculation intent");
+assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Increase or Decrease"'), "Percentage Change metadata must target calculation intent with a concise search title");
+assert.ok("Percentage Change Calculator – Increase or Decrease".length <= 60, "Percentage Change title must remain concise for search snippets");
 assert.ok(englishToolPageSource.includes('title: "Prime Number Checker – Test Prime or Composite"'), "Prime Number Checker metadata must target the 114-impression GSC query");
 assert.ok(englishEditorialBlogSource.includes('title: "Reading Time Calculator: WPM Formula & Examples"'), "Reading Time guide must target the calculator query while retaining its formula guide intent");
 assert.ok(englishEditorialBlogSource.includes('title: "Savings Goal Calculator: Monthly & Weekly Savings Plan"'), "Savings guide must target the calculator query while retaining its planning intent");
@@ -163,6 +164,8 @@ assert.doesNotMatch(sitemapSource, /\/api\//, "API endpoints must never be submi
 assert.match(sitemapSource, /tool\.slug !== "ocr-pdf"/, "Unavailable OCR must be explicitly filtered out of the sitemap");
 assert.match(ocrPageSource, /robots:\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unavailable OCR page must remain intentionally noindex");
 assert.match(generatedBlogPageSource, /isCatalogGeneratedGuide\(post\.slug\)\s*\?\s*\{\s*index:\s*false,\s*follow:\s*true\s*\}/, "Unreviewed generated guide pages must remain noindex until editorial review");
+assert.match(generatedBlogPageSource, /!isCatalogGeneratedGuide\(post\.slug\)\s*&&\s*post\.toolLinks\[0\]/, "Every reviewed editorial guide with a primary tool link must show an above-the-fold tool CTA");
+assert.ok(generatedBlogPageSource.includes("Ready to try this workflow? Open the matching tool."), "Non-calculator editorial guides must explain the next practical tool action");
 const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);

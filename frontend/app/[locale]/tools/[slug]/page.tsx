@@ -19,6 +19,7 @@ import HindiDateTimeWorkspace from "../../../../components/HindiDateTimeWorkspac
 import HindiFinanceCalculatorWorkspace from "../../../../components/HindiFinanceCalculatorWorkspace";
 import HindiNepalToolsWorkspace from "../../../../components/HindiNepalToolsWorkspace";
 import HindiTextToolsWorkspace from "../../../../components/HindiTextToolsWorkspace";
+import HindiDeveloperToolsWorkspace from "../../../../components/HindiDeveloperToolsWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -453,6 +454,18 @@ export default async function LocalizedToolPage({ params }: Props) {
         <HindiTextToolsWorkspace slug={toolSlug} />
       </main>
     );
+  }
+  if (request.locale === "hi" && ["json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator", "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug"].includes(toolSlug)) {
+    const titles: Record<string, string> = {
+      "json-formatter-validator": "JSON फ़ॉर्मेटर और वैलिडेटर", "base64-encoder-decoder": "Base64 एन्कोडर / डिकोडर",
+      "url-encoder-decoder": "URL एन्कोडर / डिकोडर", "hash-generator": "हैश जनरेटर",
+      "text-diff-checker": "टेक्स्ट अंतर जाँच", "lorem-ipsum-generator": "Lorem Ipsum जनरेटर",
+      "html-encoder-decoder": "HTML एन्कोडर / डिकोडर", "text-to-slug": "टेक्स्ट से URL Slug",
+    };
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+      <div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी डेवलपर टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1></div>
+      <HindiDeveloperToolsWorkspace slug={toolSlug} />
+    </main>;
   }
   if (request.locale === "hi" && isHindiMathSlug(toolSlug)) {
     return (

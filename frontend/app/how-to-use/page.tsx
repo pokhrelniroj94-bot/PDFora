@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 const canonicalUrl = "https://pd-fora.vercel.app/how-to-use";
-const videoUrl = "https://www.youtube-nocookie.com/embed/vFnTvA0TkpA";
+const videoUrl = "https://www.youtube.com/embed/vFnTvA0TkpA";
 
 export const metadata: Metadata = {
   title: "How to Use PDFora | Quick Video Guide",
@@ -43,13 +43,24 @@ export default function HowToUsePage() {
               className="h-full w-full"
               src={videoUrl}
               title="How to use PDFora — video walkthrough"
-              loading="lazy"
+              loading="eager"
               referrerPolicy="strict-origin-when-cross-origin"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
             />
           </div>
         </section>
+        <p className="mt-3 text-sm text-slate-600">
+          If the video does not appear or play,{" "}
+          <a
+            href="https://www.youtube.com/watch?v=vFnTvA0TkpA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-blue-700 underline underline-offset-2"
+          >
+            watch the PDFora walkthrough on YouTube
+          </a>.
+        </p>
 
         <section className="mt-9 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <h2 className="text-xl font-semibold">Use a PDFora tool</h2>

@@ -16,6 +16,7 @@ import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtility
 import HindiBusinessCalculatorWorkspace, { hindiBusinessConfigs, isHindiBusinessSlug } from "../../../../components/HindiBusinessCalculatorWorkspace";
 import HindiMathUtilityWorkspace, { hindiMathTitles, isHindiMathSlug } from "../../../../components/HindiMathUtilityWorkspace";
 import HindiDateTimeWorkspace from "../../../../components/HindiDateTimeWorkspace";
+import HindiFinanceCalculatorWorkspace from "../../../../components/HindiFinanceCalculatorWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -389,6 +390,22 @@ export default async function LocalizedToolPage({ params }: Props) {
           <h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1>
         </div>
         <HindiDateTimeWorkspace slug={toolSlug} />
+      </main>
+    );
+  }
+  if (request.locale === "hi" && ["loan-emi-calculator", "compound-interest-sip-calculator", "discount-percentage-calculator"].includes(toolSlug)) {
+    const titles: Record<string, string> = {
+      "loan-emi-calculator": "ऋण EMI कैलकुलेटर",
+      "compound-interest-sip-calculator": "चक्रवृद्धि ब्याज और SIP कैलकुलेटर",
+      "discount-percentage-calculator": "छूट प्रतिशत कैलकुलेटर",
+    };
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी वित्तीय कैलकुलेटर</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1>
+        </div>
+        <HindiFinanceCalculatorWorkspace slug={toolSlug} />
       </main>
     );
   }

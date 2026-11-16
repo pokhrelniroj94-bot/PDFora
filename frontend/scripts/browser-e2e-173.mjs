@@ -777,7 +777,7 @@ async function runTool(tool, index) {
         "percentage-change-calculator": [["Original value", "100"], ["New value", "120"]],
         "average-calculator": [["Numbers separated by commas, semicolons or spaces", "10, 20, 30, 40"]],
         "ratio-simplifier": [["First part", "12"], ["Second part", "18"]],
-        "fraction-calculator": [["First numerator", "1"], ["First denominator", "2"], ["Second numerator", "1"], ["Second denominator", "3"]],
+        "fraction-calculator": [["First numerator", "1"], ["First denominator", "2"], ["Second numerator", "1"], ["Second denominator", "3"], ["Operation (+ - * /)", "+"]],
         "unit-converter": [["Value", "1"], ["From unit (m km cm mm in ft kg g lb l ml c f)", "km"], ["To unit", "m"]],
         "profit-margin-calculator": [["Cost", "60"], ["Selling price", "100"]],
         "markup-calculator": [["Cost", "60"], ["Markup (%)", "40"]],

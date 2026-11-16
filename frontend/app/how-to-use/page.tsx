@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 const canonicalUrl = "https://pd-fora.vercel.app/how-to-use";
-const videoUrl = "https://www.youtube.com/embed/vFnTvA0TkpA";
+const videoUrl = "https://www.youtube.com/shorts/vFnTvA0TkpA";
+const videoThumbnail = "https://i.ytimg.com/vi/vFnTvA0TkpA/hqdefault.jpg";
 
 export const metadata: Metadata = {
   title: "How to Use PDFora | Quick Video Guide",
@@ -9,13 +10,12 @@ export const metadata: Metadata = {
     "Watch a short video walkthrough to learn how to use PDFora's online PDF tools, upload documents, complete a task, and download your result.",
   alternates: { canonical: canonicalUrl },
   openGraph: {
-    type: "video.other",
+    type: "website",
     url: canonicalUrl,
     siteName: "PDFora",
     title: "How to Use PDFora",
     description:
       "A short walkthrough showing how to use PDFora online tools.",
-    videos: [{ url: videoUrl, secureUrl: videoUrl, type: "text/html", width: 1280, height: 720 }],
   },
   robots: { index: true, follow: true },
 };
@@ -37,29 +37,30 @@ export default function HowToUsePage() {
           </p>
         </header>
 
-        <section aria-label="PDFora video walkthrough" className="overflow-hidden rounded-2xl border border-slate-200 bg-black shadow-sm">
-          <div className="aspect-video w-full">
-            <iframe
-              className="h-full w-full"
-              src={videoUrl}
-              title="How to use PDFora — video walkthrough"
-              loading="eager"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
-        </section>
-        <p className="mt-3 text-sm text-slate-600">
-          If the video does not appear or play,{" "}
+        <section aria-label="PDFora video walkthrough" className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-sm">
           <a
-            href="https://www.youtube.com/watch?v=vFnTvA0TkpA"
+            href={videoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-blue-700 underline underline-offset-2"
+            aria-label="Play the PDFora walkthrough on YouTube"
+            className="group relative block aspect-video w-full overflow-hidden"
           >
-            watch the PDFora walkthrough on YouTube
-          </a>.
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-[1.02]"
+              style={{ backgroundImage: `url("${videoThumbnail}")` }}
+            />
+            <div className="absolute inset-0 bg-black/25 transition-colors group-hover:bg-black/40" />
+            <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-red-600 text-2xl text-white shadow-lg transition-transform group-hover:scale-110" aria-hidden="true">
+              ▶
+            </span>
+            <span className="absolute bottom-3 left-3 rounded bg-black/70 px-3 py-1 text-sm font-medium text-white">
+              Watch video on YouTube
+            </span>
+          </a>
+        </section>
+        <p className="mt-3 text-sm text-slate-600">
+          The video opens directly on YouTube so playback is not blocked by embedded-player restrictions.
         </p>
 
         <section className="mt-9 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">

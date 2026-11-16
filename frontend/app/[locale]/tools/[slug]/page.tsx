@@ -18,6 +18,7 @@ import HindiMathUtilityWorkspace, { hindiMathTitles, isHindiMathSlug } from "../
 import HindiDateTimeWorkspace from "../../../../components/HindiDateTimeWorkspace";
 import HindiFinanceCalculatorWorkspace from "../../../../components/HindiFinanceCalculatorWorkspace";
 import HindiNepalToolsWorkspace from "../../../../components/HindiNepalToolsWorkspace";
+import HindiTextToolsWorkspace from "../../../../components/HindiTextToolsWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -427,6 +428,17 @@ export default async function LocalizedToolPage({ params }: Props) {
           <h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1>
         </div>
         <HindiNepalToolsWorkspace slug={toolSlug} />
+      </main>
+    );
+  }
+  if (request.locale === "hi" && ["word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text", "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator", "line-counter", "sentence-counter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"].includes(toolSlug)) {
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी टेक्स्ट टूल</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{toolSlug.replace(/-/g, " ")}</h1>
+        </div>
+        <HindiTextToolsWorkspace slug={toolSlug} />
       </main>
     );
   }

@@ -15,7 +15,7 @@ assert.ok(quick.includes("placeholder={isCalculator&&numeric.has(key)?example[ke
 assert.ok(quick.includes("Clear inputs") && quick.includes("setV(example)"), "Quick calculators must offer clear and restore-example actions");
 
 assert.ok(extra.includes('isCalculator&&f.type!=="select"?"":f.value'), "Catalog calculator inputs must start empty except selectors");
-assert.ok(extra.includes('placeholder={isCalculator&&f.type!=="select"?f.value:undefined}'), "Catalog calculator examples must be placeholders");
+assert.ok(extra.includes("placeholder={isCalculator?f.value:undefined}"), "Catalog calculator examples must be placeholders on non-selector inputs");
 assert.ok(extra.includes("Clear inputs") && extra.includes("Restore example"), "Catalog calculators must offer clear and restore actions");
 assert.ok(!extra.includes('a:e.target.value==="reverse"?"120":"100"'), "Changing percentage mode must not silently reinsert sample values");
 

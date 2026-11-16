@@ -5,7 +5,9 @@ function parseCalendarDate(value: string): CalendarDate {
     throw new Error("Enter dates in YYYY-MM-DD format.");
   }
   const [year, month, day] = value.split("-").map(Number);
-  const parsed = new Date(Date.UTC(year, month - 1, day));
+  const parsed = new Date(0);
+  parsed.setUTCHours(0, 0, 0, 0);
+  parsed.setUTCFullYear(year, month - 1, day);
   if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) {
     throw new Error("Enter a valid calendar date.");
   }
@@ -13,14 +15,20 @@ function parseCalendarDate(value: string): CalendarDate {
 }
 
 function toUtcDate({ year, month, day }: CalendarDate): Date {
-  return new Date(Date.UTC(year, month - 1, day));
+  const date = new Date(0);
+  date.setUTCHours(0, 0, 0, 0);
+  date.setUTCFullYear(year, month - 1, day);
+  return date;
 }
 
 function addMonthsClamped(date: CalendarDate, months: number): CalendarDate {
   const targetMonthIndex = date.year * 12 + date.month - 1 + months;
   const year = Math.floor(targetMonthIndex / 12);
   const month = targetMonthIndex % 12 + 1;
-  const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const monthEnd = new Date(0);
+  monthEnd.setUTCHours(0, 0, 0, 0);
+  monthEnd.setUTCFullYear(year, month, 0);
+  const daysInMonth = monthEnd.getUTCDate();
   return { year, month, day: Math.min(date.day, daysInMonth) };
 }
 

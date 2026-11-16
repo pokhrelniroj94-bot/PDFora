@@ -8,8 +8,11 @@ Hindi (`hi`) is **unpublished**: routes are preview-only (`PDFORA_I18N_PREVIEW=1
 - 7 business calculators: `lib/i18n/hindi-business-tools.ts`, `components/HindiBusinessCalculatorWorkspace.tsx`, `scripts/hindi-business-tools.test.mjs`.
 - Currency: Hindi money results use NPR with lakh/crore grouping, matching the Nepali tools. Use ₹ only for a tool with an explicit India context or currency choice.
 
+## Implemented in current batch (build/test pending)
+- 3 date/time calculator workspaces: age, date difference and time duration (`components/HindiDateTimeWorkspace.tsx`), wired into the Hindi localized tool route. Includes invalid-date checks, UTC calendar-day arithmetic, age in years/months/days, and overnight time-duration handling.
+
 ## Pending
-- Calculators: age, date difference, time duration, savings goal, loan EMI, compound interest/SIP, discount, NEB GPA, VAT, share, land area, gold tola, forex, salary tax, dividend, others.
+- Calculators: savings goal, loan EMI, compound interest/SIP, discount, NEB GPA, VAT, share, land area, gold tola, forex, salary tax, dividend, others. The three date/time calculators above are implemented but not yet build/test verified.
 - Text tools (counters, case, duplicates, diff, lorem, password, extractors, etc.), developer/encoding tools, image tools, Nepal tools.
 - PDF tool pages (Hindi UI wired to real tool workspaces) and tool pages that still show English with a notice.
 - 16 English blog articles plus Nepali-parity review.

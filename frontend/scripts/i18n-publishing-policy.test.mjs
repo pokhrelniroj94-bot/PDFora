@@ -1,17 +1,19 @@
 import assert from "node:assert/strict";
-import { ensureTypeStripping, loadI18n } from "./lib/load-i18n.mjs";
+import { ensureTypeStripping, loadI18n, loadToolAdapter } from "./lib/load-i18n.mjs";
 
 ensureTypeStripping();
 
 // Production publishing must never be widened by a preview environment variable.
 delete process.env.PDFORA_I18N_PREVIEW;
 
-const { config, routing } = await loadI18n();
-const { getSwitcherOptions } = await import("../lib/i18n/switcher.ts");
-const { buildLocaleMetadata } = await import("../lib/i18n/metadata.ts");
-const { legacyToolSlugs } = await import("../lib/legacy-tool-slugs.ts");
-const { toolCatalog } = await import("../components/toolCatalog.ts");
-const { nepaliLocalizedBlogPosts } = await import("../lib/nepali-localized-blog-posts.ts");
+const i18n = await loadI18n();
+const tools = await loadToolAdapter();
+const { config, routing, switcher } = i18n;
+const { metadata, "legacy-tool-slugs": legacyModule, toolCatalog, "nepali-localized-blog-posts": blogModule } = tools;
+const { getSwitcherOptions } = switcher;
+const { buildLocaleMetadata } = metadata;
+const { legacyToolSlugs } = legacyModule;
+const { nepaliLocalizedBlogPosts } = blogModule;
 
 const legacy = new Set(legacyToolSlugs);
 const toolPaths = new Set([

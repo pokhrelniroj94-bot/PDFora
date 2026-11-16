@@ -392,10 +392,11 @@ test("hreflang: only explicitly approved English/Nepali equivalents are advertis
 test("switcher: never offers an unavailable page", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
   assert.deepEqual(switcher.getSwitcherOptions("/").map((o) => o.locale), ["en", "ne"]);
+  assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"], "unpublished Hindi must never be offered in production");
   process.env.PDFORA_I18N_PREVIEW = "1";
   const home = switcher.getSwitcherOptions("/");
   assert.deepEqual(home.map((o) => o.locale), ["en", "ne"]);
-  assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"]);
+  assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne", "hi"], "Hindi PDF tool pages are real routes (preview only)");
   assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne"], "only reviewed static pages offer Nepali");
   delete process.env.PDFORA_I18N_PREVIEW;
 });

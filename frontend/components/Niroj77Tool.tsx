@@ -9,6 +9,9 @@ import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne";
+import { hindiToolNames } from "../lib/i18n/pdf-tool-names-hi";
+import { hindiToolGuides } from "../lib/i18n/tool-guides-hi";
+import { getHindiPdfFieldText } from "../lib/i18n/pdf-tool-fields-hi";
 
 import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 
@@ -52,16 +55,16 @@ export default function NirojToolsTool({
   const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
   const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const imageUpload = accept.includes("image/");
-  const chooseDropLabel = imageUpload ? (locale === "ne" ? "तस्बिर फाइल छान्नुहोस् वा यहाँ छोड्नुहोस्" : "Choose or drop image files") : (multiple ? ui.chooseDropMultiple : ui.chooseDropSingle);
-  const uploadLimitLabel = endpoint === "/api/images-to-pdf" ? (locale === "ne" ? "सबै तस्बिरको जम्मा आकार अधिकतम ५० MB" : "Combined image upload limit: 50 MB total") : imageUpload ? (locale === "ne" ? "प्रत्येक तस्बिर अधिकतम ५० MB" : "Image files up to 50 MB each") : ui.pdfFilesLimit;
+  const chooseDropLabel = imageUpload ? (locale === "ne" ? "तस्बिर फाइल छान्नुहोस् वा यहाँ छोड्नुहोस्" : locale === "hi" ? "चित्र फ़ाइलें चुनें या यहाँ छोड़ें" : "Choose or drop image files") : (multiple ? ui.chooseDropMultiple : ui.chooseDropSingle);
+  const uploadLimitLabel = endpoint === "/api/images-to-pdf" ? (locale === "ne" ? "सबै तस्बिरको जम्मा आकार अधिकतम ५० MB" : locale === "hi" ? "सभी चित्रों का कुल आकार अधिकतम 50 MB" : "Combined image upload limit: 50 MB total") : imageUpload ? (locale === "ne" ? "प्रत्येक तस्बिर अधिकतम ५० MB" : locale === "hi" ? "हर चित्र अधिकतम 50 MB" : "Image files up to 50 MB each") : ui.pdfFilesLimit;
   const homeHref = locale === "en" ? "/" : `/${locale}`;
-  const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
-  const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;
-  const localizedFormPlaceholder = locale === "ne" ? getNepaliPdfFieldText(formPlaceholder) : formPlaceholder;
-  const localizedExtraFields = locale === "ne" ? extraFields.map((field) => ({ ...field, label: getNepaliPdfFieldText(field.label) || field.label, placeholder: getNepaliPdfFieldText(field.placeholder), defaultValue: getNepaliPdfFieldText(field.defaultValue) || field.defaultValue })) : extraFields;
+  const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : locale === "hi" ? hindiToolNames[currentSlug] || title : title;
+  const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : locale === "hi" ? hindiToolGuides[currentSlug]?.purpose || description : description;
+  const localizedFormPlaceholder = locale === "ne" ? getNepaliPdfFieldText(formPlaceholder) : locale === "hi" ? getHindiPdfFieldText(formPlaceholder) : formPlaceholder;
+  const localizedExtraFields = locale === "ne" ? extraFields.map((field) => ({ ...field, label: getNepaliPdfFieldText(field.label) || field.label, placeholder: getNepaliPdfFieldText(field.placeholder), defaultValue: getNepaliPdfFieldText(field.defaultValue) || field.defaultValue })) : locale === "hi" ? extraFields.map((field) => ({ ...field, label: getHindiPdfFieldText(field.label) || field.label, placeholder: getHindiPdfFieldText(field.placeholder), defaultValue: getHindiPdfFieldText(field.defaultValue) || field.defaultValue })) : extraFields;
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
-  const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((field) => [field.name, locale === "ne" ? getNepaliPdfFieldText(field.defaultValue) || field.defaultValue || "" : field.defaultValue || ""])));
+  const [extraValues, setExtraValues] = useState<Record<string, string>>(() => Object.fromEntries(extraFields.map((field) => [field.name, locale === "ne" ? getNepaliPdfFieldText(field.defaultValue) || field.defaultValue || "" : locale === "hi" ? getHindiPdfFieldText(field.defaultValue) || field.defaultValue || "" : field.defaultValue || ""])));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [localDownloads, setLocalDownloads] = useState<{ url: string; name: string }[]>([]);
@@ -121,6 +124,12 @@ export default function NirojToolsTool({
         where: "JPG/JPEG/PNG फाइल तपाईंको ब्राउजरमै प्रशोधन हुन्छन्। WebP फाइल PDFora को प्रशोधन सेवामा पठाइन्छ।",
         when: "ब्राउजरमा प्रशोधन भएका फाइल पेज बन्द वा रिफ्रेस गर्दा मेमोरीबाट हट्छन्। WebP का अस्थायी फाइल नतिजा पठाएपछि सफा गरिन्छन्; अवरुद्ध अनुरोधका फाइल पछि सफा हुन्छन्।",
         avoid: "संवेदनशील कागजातका लागि JPG/JPEG/PNG ब्राउजरमै राखिन्छन्। WebP प्रयोग गर्दा फाइल सेवा-सर्भरमा पठाइन्छ भन्ने कुरा ध्यान दिनुहोस्।"
+      } : locale === "hi" ? {
+        title: "चित्र के प्रारूप के अनुसार प्रोसेसिंग",
+        description: "JPG/JPEG/PNG आपके ब्राउज़र में ही प्रोसेस होते हैं; WebP फ़ाइलें PDFora की प्रोसेसिंग सेवा पर जाती हैं।",
+        where: "JPG/JPEG/PNG फ़ाइलें आपके ब्राउज़र में ही प्रोसेस होती हैं। WebP फ़ाइलें PDFora की प्रोसेसिंग सेवा को भेजी जाती हैं।",
+        when: "ब्राउज़र में प्रोसेस हुई फ़ाइलें पेज बंद या रीफ़्रेश करने पर मेमोरी से हट जाती हैं। WebP की अस्थायी फ़ाइलें नतीजा भेजने के बाद साफ़ की जाती हैं; बीच में रुके अनुरोधों की फ़ाइलें बाद में साफ़ होती हैं।",
+        avoid: "संवेदनशील दस्तावेज़ों के लिए JPG/JPEG/PNG आपके डिवाइस पर ही रहते हैं। WebP इस्तेमाल करने पर फ़ाइल प्रोसेसिंग सेवा को भेजी जाती है, इस बात का ध्यान रखें।"
       } : {
         title: "Processing depends on image format",
         description: "JPG/JPEG/PNG files are processed locally; WebP files use the PDFora processing service.",
@@ -136,6 +145,12 @@ export default function NirojToolsTool({
         where: "साधारण ASCII वाटरमार्क text तपाईंको ब्राउजरमै प्रशोधन हुन्छ। अन्य text PDFora प्रशोधन सेवामा पठाइन्छ।",
         when: "ASCII text को फाइल ब्राउजर मेमोरीमा रहन्छ र पेज बन्द वा रिफ्रेस गर्दा हट्छ। सेवामा पठाइएका अस्थायी फाइल नतिजा पठाएपछि सफा गरिन्छन्।",
         avoid: "संवेदनशील फाइल प्रयोग गर्नुअघि वाटरमार्क text छान्नुहोस् र त्यसपछि देखिने प्रशोधन सूचना पढ्नुहोस्।"
+      } : locale === "hi" ? {
+        title: "वॉटरमार्क के टेक्स्ट के अनुसार प्रोसेसिंग",
+        description: "समर्थित ASCII टेक्स्ट ब्राउज़र में ही चलता है; अन्य टेक्स्ट प्रोसेसिंग सेवा पर जा सकता है।",
+        where: "सामान्य ASCII वॉटरमार्क टेक्स्ट आपके ब्राउज़र में ही प्रोसेस होता है। अन्य टेक्स्ट PDFora की प्रोसेसिंग सेवा को भेजा जाता है।",
+        when: "ASCII टेक्स्ट होने पर फ़ाइल ब्राउज़र की मेमोरी में रहती है और पेज बंद या रीफ़्रेश करने पर हट जाती है। सेवा को भेजी गई अस्थायी फ़ाइलें नतीजा भेजने के बाद साफ़ की जाती हैं।",
+        avoid: "संवेदनशील फ़ाइल इस्तेमाल करने से पहले वॉटरमार्क का टेक्स्ट चुनें और उसके बाद दिखने वाली प्रोसेसिंग सूचना पढ़ें।"
       } : {
         title: "Processing depends on watermark text",
         description: "Supported ASCII text runs locally; other text may use the PDFora processing service.",
@@ -151,6 +166,12 @@ export default function NirojToolsTool({
         where: "समर्थित ASCII हस्ताक्षर तपाईंको ब्राउजरमै प्रशोधन हुन्छ। नेपाली वा अन्य असमर्थित अक्षर राखे फाइल सर्भरमा नपठाई अनुरोध रोकिन्छ।",
         when: "समर्थित हस्ताक्षर प्रक्रिया गर्दा फाइल ब्राउजर मेमोरीमा रहन्छ र पेज बन्द वा रिफ्रेस गर्दा हट्छ।",
         avoid: "नेपाली हस्ताक्षर हाल समर्थित छैन। अंग्रेजी/ASCII अक्षर प्रयोग गर्नुहोस्; यो दृश्य हस्ताक्षर हो, प्रमाणपत्रमा आधारित डिजिटल हस्ताक्षर होइन।"
+      } : locale === "hi" ? {
+        title: "ब्राउज़र में ही हस्ताक्षर",
+        description: "टाइप किए गए हस्ताक्षर के लिए केवल अंग्रेज़ी/ASCII अक्षर इस्तेमाल करें। असमर्थित अक्षर फ़ाइल अपलोड होने से पहले ही अस्वीकार कर दिए जाते हैं।",
+        where: "समर्थित ASCII हस्ताक्षर आपके ब्राउज़र में ही प्रोसेस होता है। देवनागरी या अन्य असमर्थित अक्षर होने पर PDF को सर्वर पर भेजे बिना अनुरोध रोक दिया जाता है।",
+        when: "समर्थित हस्ताक्षर की प्रक्रिया के दौरान फ़ाइल ब्राउज़र की मेमोरी में रहती है और पेज बंद या रीफ़्रेश करने पर हट जाती है।",
+        avoid: "हिंदी (देवनागरी) हस्ताक्षर टेक्स्ट अभी समर्थित नहीं है। अंग्रेज़ी/ASCII अक्षर इस्तेमाल करें; यह दिखने वाला टाइप किया हुआ हस्ताक्षर है, प्रमाणपत्र-आधारित डिजिटल हस्ताक्षर नहीं।"
       } : {
         title: "Local typed-signature processing",
         description: "Use basic English/ASCII characters. Unsupported characters are rejected before the PDF is uploaded.",
@@ -170,14 +191,14 @@ export default function NirojToolsTool({
     if ((endpoint === "/api/images-to-pdf" || browserOnly) && combinedSize > 50 * 1024 * 1024) {
       setFiles([]);
       setMessage(endpoint === "/api/images-to-pdf"
-        ? (locale === "ne" ? "सबै छानिएका तस्बिरको जम्मा आकार ५० MB भन्दा बढी हुनु हुँदैन।" : "The combined size of all selected images must not exceed 50 MB.")
-        : (locale === "ne" ? "ब्राउजर प्रोसेसिङका लागि जम्मा फाइल आकार ५० MB भित्र राख्नुहोस्।" : "Keep the combined file size under 50 MB for browser processing."));
+        ? (locale === "ne" ? "सबै छानिएका तस्बिरको जम्मा आकार ५० MB भन्दा बढी हुनु हुँदैन।" : locale === "hi" ? "चुने गए सभी चित्रों का कुल आकार 50 MB से अधिक नहीं होना चाहिए।" : "The combined size of all selected images must not exceed 50 MB.")
+        : (locale === "ne" ? "ब्राउजर प्रोसेसिङका लागि जम्मा फाइल आकार ५० MB भित्र राख्नुहोस्।" : locale === "hi" ? "ब्राउज़र प्रोसेसिंग के लिए कुल फ़ाइल आकार 50 MB के भीतर रखें।" : "Keep the combined file size under 50 MB for browser processing."));
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
     if (endpoint === "/api/merge" && selected.length > 20) {
       setFiles([]);
-      setMessage(locale === "ne" ? "एकपटकमा अधिकतम २० PDF फाइल छान्नुहोस्।" : "Choose no more than 20 PDF files at once.");
+      setMessage(locale === "ne" ? "एकपटकमा अधिकतम २० PDF फाइल छान्नुहोस्।" : locale === "hi" ? "एक बार में अधिकतम 20 PDF फ़ाइलें चुनें।" : "Choose no more than 20 PDF files at once.");
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
@@ -188,7 +209,7 @@ export default function NirojToolsTool({
     );
     if (invalidImage) {
       setFiles([]);
-      setMessage(locale === "ne" ? "JPG, JPEG, PNG वा WebP तस्बिर मात्र छान्नुहोस्।" : "Choose JPG, JPEG, PNG or WebP image files only.");
+      setMessage(locale === "ne" ? "JPG, JPEG, PNG वा WebP तस्बिर मात्र छान्नुहोस्।" : locale === "hi" ? "केवल JPG, JPEG, PNG या WebP चित्र फ़ाइलें चुनें।" : "Choose JPG, JPEG, PNG or WebP image files only.");
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
@@ -239,35 +260,35 @@ export default function NirojToolsTool({
     }
 
     if (endpoint === "/api/sign" && !/^[\x20-\x7E]+$/.test(value.trim())) {
-      setMessage(locale === "ne" ? "हस्ताक्षरका लागि अंग्रेजी/ASCII अक्षर मात्र प्रयोग गर्नुहोस्। नेपाली अक्षर हाल समर्थित छैनन्; PDF सर्भरमा अपलोड गरिने छैन।" : "Use basic English/ASCII characters for the typed signature. Nepali characters are not supported yet; the PDF will not be uploaded.");
+      setMessage(locale === "ne" ? "हस्ताक्षरका लागि अंग्रेजी/ASCII अक्षर मात्र प्रयोग गर्नुहोस्। नेपाली अक्षर हाल समर्थित छैनन्; PDF सर्भरमा अपलोड गरिने छैन।" : locale === "hi" ? "हस्ताक्षर के लिए केवल अंग्रेज़ी/ASCII अक्षर इस्तेमाल करें। देवनागरी जैसे अन्य अक्षर अभी समर्थित नहीं हैं; PDF सर्वर पर अपलोड नहीं की जाएगी।" : "Use basic English/ASCII characters for the typed signature. Nepali characters are not supported yet; the PDF will not be uploaded.");
       return;
     }
 
     trackConsentAwareEvent("tool_start", { tool_slug: currentSlug, tool_category: "pdf", processing_mode: browserOnly ? "browser" : "server" });
     setLocalDownloads([]);
     setLoading(true);
-    setMessage(browserOnly ? (locale === "ne" ? "तपाईंको ब्राउजरमै फाइल प्रोसेस हुँदैछ…" : "Processing locally in your browser…") : "");
+    setMessage(browserOnly ? (locale === "ne" ? "तपाईंको ब्राउजरमै फाइल प्रोसेस हुँदैछ…" : locale === "hi" ? "आपके ब्राउज़र में ही फ़ाइल प्रोसेस हो रही है…" : "Processing locally in your browser…") : "");
 
     try {
       if (browserCommand) {
         const worker = new Worker(new URL("../app/tools/pdfWorker.ts", import.meta.url), { type: "module" });
         const result = await new Promise<{ blob?: Blob; blobs?: { blob: Blob; filename: string }[]; error?: string; warnings?: string[] }>((resolve, reject) => {
           worker.onmessage = (event: MessageEvent<{ blob?: Blob; blobs?: { blob: Blob; filename: string }[]; error?: string; warnings?: string[] }>) => resolve(event.data);
-          worker.onerror = () => reject(new Error(locale === "ne" ? "ब्राउजर प्रोसेसिङ सुरु हुन सकेन।" : "Browser processing could not start."));
+          worker.onerror = () => reject(new Error(locale === "ne" ? "ब्राउजर प्रोसेसिङ सुरु हुन सकेन।" : locale === "hi" ? "ब्राउज़र में प्रोसेसिंग शुरू नहीं हो सकी।" : "Browser processing could not start."));
           worker.postMessage({ cmd: browserCommand, files });
         }).finally(() => worker.terminate());
         if (result.error || (!result.blob && !result.blobs?.length)) throw new Error(result.error || ui.processingFailed);
         const outputs = result.blobs?.length ? result.blobs : result.blob ? [{ blob: result.blob, filename: downloadName }] : [];
         if (outputs.length > 1) {
           setLocalDownloads(outputs.map((item) => ({ url: window.URL.createObjectURL(item.blob), name: item.filename })));
-          setMessage(locale === "ne" ? "PDF भागहरू ब्राउजरमै तयार भए। तलबाट प्रत्येक फाइल डाउनलोड गर्नुहोस्।" : "PDF parts were created locally. Download each part below.");
+          setMessage(locale === "ne" ? "PDF भागहरू ब्राउजरमै तयार भए। तलबाट प्रत्येक फाइल डाउनलोड गर्नुहोस्।" : locale === "hi" ? "PDF के भाग ब्राउज़र में ही तैयार हो गए। नीचे से हर फ़ाइल डाउनलोड करें।" : "PDF parts were created locally. Download each part below.");
         } else {
           const localUrl = window.URL.createObjectURL(outputs[0].blob);
           const localLink = document.createElement("a");
           localLink.href = localUrl; localLink.download = outputs[0].filename || downloadName;
           document.body.appendChild(localLink); localLink.click(); localLink.remove();
           window.setTimeout(() => window.URL.revokeObjectURL(localUrl), 1000);
-          setMessage(locale === "ne" ? "फाइल ब्राउजरमै प्रोसेस भयो; सर्भरमा पठाइएको छैन।" : "Processed locally; your file was not uploaded.");
+          setMessage(locale === "ne" ? "फाइल ब्राउजरमै प्रोसेस भयो; सर्भरमा पठाइएको छैन।" : locale === "hi" ? "फ़ाइल ब्राउज़र में ही प्रोसेस हुई; सर्वर पर नहीं भेजी गई।" : "Processed locally; your file was not uploaded.");
         }
         trackConsentAwareEvent("tool_complete", { tool_slug: currentSlug, tool_category: "pdf", processing_mode: "browser" });
         setFiles([]); if (inputRef.current) inputRef.current.value = "";
@@ -355,7 +376,7 @@ export default function NirojToolsTool({
       setMessage(
         timedOut
           ? ui.serverTimeout
-          : locale === "ne"
+          : locale === "ne" || locale === "hi"
             ? ui.processingFailed
             : error instanceof Error
               ? error.message
@@ -455,7 +476,7 @@ export default function NirojToolsTool({
             accept={accept}
             multiple={multiple}
             onChange={handleFiles}
-            aria-label={locale === "ne" ? (imageUpload ? "तस्बिर फाइल छान्नुहोस्" : "PDF फाइल छान्नुहोस्") : (imageUpload ? "Choose image files" : "Choose PDF files")}
+            aria-label={locale === "ne" ? (imageUpload ? "तस्बिर फाइल छान्नुहोस्" : "PDF फाइल छान्नुहोस्") : locale === "hi" ? (imageUpload ? "चित्र फ़ाइलें चुनें" : "PDF फ़ाइलें चुनें") : (imageUpload ? "Choose image files" : "Choose PDF files")}
             className="hidden"
           />
 
@@ -560,8 +581,8 @@ export default function NirojToolsTool({
 
           {/* Message */}
           {localDownloads.length > 0 && (
-            <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4" aria-label={locale === "ne" ? "डाउनलोड फाइलहरू" : "Download files"}>
-              <p className="mb-3 text-sm font-bold text-emerald-900">{locale === "ne" ? "तयार भएका PDF फाइलहरू" : "Created PDF files"}</p>
+            <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4" aria-label={locale === "ne" ? "डाउनलोड फाइलहरू" : locale === "hi" ? "डाउनलोड फ़ाइलें" : "Download files"}>
+              <p className="mb-3 text-sm font-bold text-emerald-900">{locale === "ne" ? "तयार भएका PDF फाइलहरू" : locale === "hi" ? "तैयार PDF फ़ाइलें" : "Created PDF files"}</p>
               <ul className="space-y-2">
                 {localDownloads.map((item) => <li key={item.name}><a className="inline-flex min-h-11 items-center rounded-lg bg-white px-3 py-2 text-sm font-semibold text-emerald-800 underline" href={item.url} download={item.name}>{item.name}</a></li>)}
               </ul>
@@ -592,9 +613,9 @@ export default function NirojToolsTool({
 
           <InfoCard
             icon={conditionalProcessingNotice ? "ℹ️" : browserOnly ? "🛡️" : "🔒"}
-            title={conditionalProcessingNotice?.title ?? (browserOnly ? (locale === "ne" ? "ब्राउजरमै सुरक्षित" : "Local browser processing") : ui.private)}
+            title={conditionalProcessingNotice?.title ?? (browserOnly ? (locale === "ne" ? "ब्राउजरमै सुरक्षित" : locale === "hi" ? "ब्राउज़र में ही सुरक्षित" : "Local browser processing") : ui.private)}
             description={conditionalProcessingNotice?.description ?? (browserOnly
-              ? (locale === "ne" ? "फाइल तपाईंको डिभाइसबाट बाहिर पठाइँदैन।" : "Selected files stay on your device during processing.")
+              ? (locale === "ne" ? "फाइल तपाईंको डिभाइसबाट बाहिर पठाइँदैन।" : locale === "hi" ? "चुनी गई फ़ाइलें प्रोसेसिंग के दौरान आपके डिवाइस पर ही रहती हैं।" : "Selected files stay on your device during processing.")
               : ui.privateDescription)}
           />
 
@@ -619,6 +640,23 @@ export default function NirojToolsTool({
             <div className="pdfora-trust-detail"><h3>कस्तो फाइल अपलोड नगर्ने?</h3><p>{conditionalProcessingNotice?.avoid ?? (browserOnly ? "यो टुलले फाइल सर्भरमा अपलोड गर्दैन। साझा डिभाइसमा डाउनलोड भएको नतिजा खुला नराख्नुहोस्।" : "इन्टरनेटमार्फत होस्ट गरिएको सर्भरमा प्रोसेस गर्न नचाहने अत्यन्त संवेदनशील कागजात अपलोड नगर्नुहोस्। इन्टरनेट प्रसारण वा सर्भर प्रणालीलाई शतप्रतिशत जोखिमरहित भन्न सकिँदैन।")}</p></div>
           </div>
           <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/ne/privacy">विस्तृत गोपनीयता नीति पढ्नुहोस् <span aria-hidden="true">↗</span></a>
+        </section>
+
+        ) : locale === "hi" ? (
+        <section className="pdfora-trust-panel mt-6 rounded-3xl border p-5 sm:p-7" aria-labelledby="pdfora-trust-title">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="pdfora-trust-icon" aria-hidden="true">{conditionalProcessingNotice ? "ℹ️" : browserOnly ? "🛡️" : "🔐"}</span>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-teal-800">PDFora गोपनीयता जानकारी</p>
+            {browserOnly && <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">ब्राउज़र में ही चलता है</span>}
+          </div>
+          <h2 id="pdfora-trust-title" className="mt-3 text-xl font-black tracking-tight sm:text-2xl">आपकी फ़ाइल कैसे संभाली जाती है?</h2>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="pdfora-trust-detail"><h3>फ़ाइल कहाँ जाती है?</h3><p>{conditionalProcessingNotice?.where ?? (browserOnly ? "इस टूल में फ़ाइल की प्रोसेसिंग आपके अपने ब्राउज़र में होती है। फ़ाइल PDFora के प्रोसेसिंग सर्वर पर नहीं भेजी जाती।" : "प्रोसेसिंग शुरू करने पर आपका अनुरोध पूरा करने के लिए फ़ाइल PDFora के प्रोसेसिंग सर्वर पर भेजी जाती है। यह टूल पूरी तरह आपके ब्राउज़र के भीतर नहीं चलता।")}</p></div>
+            <div className="pdfora-trust-detail"><h3>कब हटाई जाती है?</h3><p>{conditionalProcessingNotice?.when ?? (browserOnly ? "फ़ाइल ब्राउज़र की मेमोरी में रहती है और पेज बंद या रीफ़्रेश करने पर हट जाती है। डाउनलोड किया गया नतीजा आपके डिवाइस पर रहता है।" : "सामान्य स्थिति में नतीजा भेजने के बाद अनुरोध की अस्थायी फ़ाइलें साफ़ कर दी जाती हैं। अनुरोध बीच में रुक जाए तो बची हुई फ़ाइलें अगले प्रोसेसिंग अनुरोध में 6 घंटे से पुरानी मिलने पर साफ़ की जाती हैं।")}</p></div>
+            <div className="pdfora-trust-detail"><h3>क्या स्थायी फ़ाइल इतिहास रखा जाता है?</h3><p>PDFora में उपयोगकर्ता की स्थायी फ़ाइल लाइब्रेरी या खाते पर आधारित फ़ाइल इतिहास नहीं है। डाउनलोड किया गया नतीजा अपने ही डिवाइस पर सुरक्षित रखें।</p></div>
+            <div className="pdfora-trust-detail"><h3>कौन-सी फ़ाइल अपलोड न करें?</h3><p>{conditionalProcessingNotice?.avoid ?? (browserOnly ? "यह टूल फ़ाइल को सर्वर पर अपलोड नहीं करता। साझा डिवाइस पर डाउनलोड किया गया नतीजा खुला न छोड़ें।" : "ऐसे बेहद संवेदनशील दस्तावेज़ अपलोड न करें जिन्हें आप इंटरनेट पर होस्ट किए गए सर्वर पर प्रोसेस करने में सहज नहीं हैं। इंटरनेट ट्रांसमिशन या सर्वर प्रणाली को पूरी तरह जोखिम-मुक्त नहीं कहा जा सकता।")}</p></div>
+          </div>
+          <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/privacy">पूरी गोपनीयता नीति (अंग्रेज़ी में) पढ़ें <span aria-hidden="true">↗</span></a>
         </section>
 
         ) : (

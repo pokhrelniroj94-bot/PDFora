@@ -70,7 +70,7 @@ export default function HowToUsePage() {
           <h2 className="font-semibold text-slate-900">A quick privacy reminder</h2>
           <p className="mt-1">
             Only upload documents you are authorized to use. If a document
-            contains sensitive information, review the tool's privacy details
+            contains sensitive information, review the tool&apos;s privacy details
             before uploading it and keep your downloaded result in a secure place.
           </p>
         </aside>

@@ -63,7 +63,7 @@ const editorialAudit = entries.map((entry, index) => {
   add(normalizedTitles, title);
   add(normalizedIntros, intro);
   const toolLinks = [...source.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1]);
-  const sourceUrls = [...source.matchAll(/url:\s*"([^"]+)"/g)].map((match) => match[1]);
+  const sourceUrls = [...source.matchAll(/["']?url["']?\s*:\s*"([^"]+)"/g)].map((match) => match[1]);
   const invalidLinks = toolLinks.filter((href) => {
     const utilityMatch = href.match(/^\/tools\/([a-z0-9-]+)$/);
     const pdfMatch = href.match(/^\/([a-z0-9-]+)$/);

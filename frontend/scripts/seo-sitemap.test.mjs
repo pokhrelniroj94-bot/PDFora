@@ -142,6 +142,17 @@ for (const slug of ["case-converter", "prime-number-checker", "json-to-yaml", "d
   assert.match(catalogToolSeoSource, new RegExp('"' + slug + '"'), `${slug} must have page-specific Search Console recovery guidance`);
 }
 assert.match(catalogToolSeoSource, /toolSpecificSteps\[tool\.slug\]/, "Reviewed tools must render their own instructions instead of repeated generic steps");
+const highIntentTaskGuides = [
+  ["reading-time-calculator", "Set the reading speed in words per minute (WPM).", "Set the speaking speed separately"],
+  ["savings-goal-calculator", "Use the same currency", "Choose monthly or weekly deposits"],
+  ["percentage-change-calculator", "Choose Calculate percentage change", "For a reverse calculation"],
+];
+for (const [slug, ...phrases] of highIntentTaskGuides) {
+  assert.ok(catalogToolSeoSource.includes('"'+slug+'": ['), `${slug} must have a dedicated task-specific instruction list`);
+  for (const phrase of phrases) {
+    assert.ok(catalogToolSeoSource.includes(phrase), `${slug} task guidance must include: ${phrase}`);
+  }
+}
 assert.doesNotMatch(pdfToExcelLayoutSource, /<ToolSEOContent/, "PDF to Excel layout must not append a duplicate generic guide");
 assert.match(pdfToExcelPageSource, /showSeoContent=\{false\}/, "PDF to Excel must disable the nested generic guide because its page contains a bespoke XLSX guide");
 assert.match(niroj77ToolSource, /showSeoContent\?: boolean/, "Niroj77Tool must allow bespoke pages to suppress its generic SEO block");

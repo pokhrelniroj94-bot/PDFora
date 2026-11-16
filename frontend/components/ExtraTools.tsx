@@ -8,7 +8,7 @@ import { parseNumberList, parseRequiredNumber, randomIntegerBelow } from "../lib
 type F={key:string;label:string;type?:"number"|"date"|"time"|"color"|"select";multiline?:boolean;value:string;options?:{value:string;label:string}[]};
 const config:Record<string,F[]> = {
 "percentage-change-calculator":[{key:"mode",label:"Calculation mode",type:"select",value:"forward",options:[{value:"forward",label:"Calculate percentage change"},{value:"reverse",label:"Find original value from final value"}]},{key:"a",label:"Original value",type:"number",value:"100"},{key:"b",label:"New value",type:"number",value:"120"}],
-"average-calculator":[{key:"text",label:"Numbers separated by commas or spaces",value:"10, 20, 30, 40"}],
+"average-calculator":[{key:"text",label:"Numbers separated by commas, semicolons or spaces",value:"10, 20, 30, 40"}],
 "ratio-simplifier":[{key:"a",label:"First part",type:"number",value:"12"},{key:"b",label:"Second part",type:"number",value:"18"}],
 "fraction-calculator":[{key:"a",label:"First numerator",type:"number",value:"1"},{key:"b",label:"First denominator",type:"number",value:"2"},{key:"c",label:"Second numerator",type:"number",value:"1"},{key:"d",label:"Second denominator",type:"number",value:"3"},{key:"op",label:"Operation (+ - * /)",value:"+"}],
 "unit-converter":[{key:"n",label:"Value",type:"number",value:"1"},{key:"from",label:"From unit (m km cm mm in ft kg g lb l ml c f)",value:"km"},{key:"to",label:"To unit",value:"m"}],

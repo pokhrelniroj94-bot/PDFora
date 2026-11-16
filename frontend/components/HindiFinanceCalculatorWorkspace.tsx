@@ -17,6 +17,10 @@ export default function HindiFinanceCalculatorWorkspace({ slug }: { slug: string
   const [initial, setInitial] = useState("0");
   const [price, setPrice] = useState("1000");
   const [discount, setDiscount] = useState("20");
+  const [target, setTarget] = useState("500000");
+  const [saved, setSaved] = useState("50000");
+  const [saveMonths, setSaveMonths] = useState("24");
+  const [saveRate, setSaveRate] = useState("5");
   const p = Number(principal), annual = Number(rate), term = Number(months);
   const validLoan = [p, annual, term].every(Number.isFinite) && p > 0 && annual >= 0 && annual <= 100 && Number.isInteger(term) && term > 0 && term <= 1200;
   let emi: number | null = null;
@@ -47,5 +51,18 @@ export default function HindiFinanceCalculatorWorkspace({ slug }: { slug: string
     <div className="grid gap-3 sm:grid-cols-2"><NumberInput label="मूल कीमत (NPR)" value={price} onChange={setPrice}/><NumberInput label="छूट (%)" value={discount} onChange={setDiscount}/></div>
     {discountValid ? <div aria-live="polite" className="rounded-xl bg-teal-50 p-4 text-sm leading-7 text-teal-950">छूट के बाद कीमत: <b>{money(originalPrice * (1 - discountRate / 100))}</b><br/>कुल बचत: <b>{money(originalPrice * discountRate / 100)}</b></div> : <p role="alert" className="text-sm text-red-700">0 से 100 प्रतिशत के बीच मान्य छूट दर्ज करें।</p>}
   </section>;
+  if (slug === "savings-goal-calculator") {
+    const goal = Number(target), current = Number(saved), duration = Number(saveMonths), yearlyRate = Number(saveRate);
+    const valid = [goal, current, duration, yearlyRate].every(Number.isFinite) && goal > 0 && current >= 0 && duration > 0 && Number.isInteger(duration) && duration <= 1200 && yearlyRate >= 0 && yearlyRate <= 100;
+    const remaining = Math.max(0, goal - current), monthlyRate = yearlyRate / 1200;
+    const factor = monthlyRate === 0 ? duration : (Math.pow(1 + monthlyRate, duration) - 1) / monthlyRate;
+    const deposit = remaining === 0 ? 0 : remaining / factor;
+    return <section className="space-y-4">
+      <div><h2 className="text-xl font-black text-slate-950">बचत लक्ष्य कैलकुलेटर</h2><p className="mt-1 text-sm text-slate-600">लक्ष्य, मौजूदा बचत, समय और अनुमानित ब्याज दर के आधार पर आवश्यक मासिक बचत का अनुमान लगाएँ।</p></div>
+      <div className="grid gap-3 sm:grid-cols-2"><NumberInput label="बचत लक्ष्य (NPR)" value={target} onChange={setTarget}/><NumberInput label="मौजूदा बचत (NPR)" value={saved} onChange={setSaved}/><NumberInput label="समय (महीने)" value={saveMonths} onChange={setSaveMonths}/><NumberInput label="अनुमानित वार्षिक ब्याज (%)" value={saveRate} onChange={setSaveRate}/></div>
+      {valid ? <div aria-live="polite" className="rounded-xl bg-teal-50 p-4 text-sm leading-7 text-teal-950">बाकी लक्ष्य: <b>{money(remaining)}</b><br/>आवश्यक मासिक बचत: <b>{money(deposit)}</b><br/>बिना ब्याज के मासिक बचत: <b>{money(remaining / duration)}</b></div> : <p role="alert" className="text-sm text-red-700">लक्ष्य धनात्मक, बचत शून्य या अधिक, अवधि 1–1200 महीने और ब्याज दर 0–100% दर्ज करें।</p>}
+      <p className="text-xs leading-5 text-slate-500">महीने के अंत में जमा और स्थिर मासिक ब्याज मानकर अनुमान लगाया गया है। बैंक शुल्क, कर और बदलती दरें शामिल नहीं हैं।</p>
+    </section>;
+  }
   return <p role="alert" className="text-sm text-slate-600">यह वित्तीय कैलकुलेटर उपलब्ध नहीं है।</p>;
 }

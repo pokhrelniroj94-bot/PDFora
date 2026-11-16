@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { bmi, bmr, businessDaysInclusive, simplifyDecimalRatio } from "../lib/catalog-calculations";
+import { bmi, bmr, businessDaysInclusive, gcd, simplifyDecimalRatio } from "../lib/catalog-calculations";
 import { addCalendarDays } from "../lib/date-time-calculations";
 import { jsonToYaml, parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
 import { csvToJson } from "../lib/catalog-text";

@@ -16,6 +16,9 @@ const cited = {
   "savings-goal-calculator-guide": "investor.gov",
   "reading-time-calculator-guide": "sciencedirect.com",
   "pdf-to-csv-guide-online": "rfc-editor.org",
+  "loksewa-online-form-photo-resizer-guide": "psc.koshi.gov.np",
+  "tip-calculator-guide": "checkedmath.com",
+  "percentage-change-calculator-guide": "georgebrown.ca",
   "nepali-number-to-words-lakh-crore-guide": "unicode.org",
   "preeti-to-unicode-nepali-font-converter-guide": "unicode.org",
   "repair-pdf-guide-online": "helpx.adobe.com",
@@ -29,5 +32,5 @@ for (const [slug, host] of Object.entries(cited)) {
   assert.match(record, /sources:\s*\[/, `missing sources array: ${slug}`);
   assert.ok(record.includes(host), `missing expected source host: ${slug}`);
 }
-assert.equal(Object.keys(cited).length, 16);
-console.log("Nepali blog source review checks passed: 16 cited records");
+assert.equal(Object.keys(cited).length, 19);
+console.log("Nepali blog source review checks passed: 19 cited records");

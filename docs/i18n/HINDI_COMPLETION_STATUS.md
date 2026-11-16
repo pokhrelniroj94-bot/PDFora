@@ -3,7 +3,7 @@
 Hindi (`hi`) is **unpublished**: routes are preview-only (`PDFORA_I18N_PREVIEW=1`), noindex, and absent from hreflang, sitemap and the language selector. Do not change `status` in `lib/i18n/config.ts` until every section below is done and verified.
 
 ## Done (preview-only, Node-tested)
-- 49 PDF tool names, guides, field text and UI messages (earlier work).
+- 49 PDF tool pages are wired to the existing PDFora/Niroj processing workspaces (`app/[locale]/[slug]/page.tsx`), Hindi names and guides, translated PDF UI messages, and translated field placeholders. Routes remain preview-only/noindex; runtime/build verification for this branch is still pending.
 - 13 math calculators: `lib/i18n/hindi-math-tools.ts`, `components/HindiMathUtilityWorkspace.tsx`, `scripts/hindi-math-tools.test.mjs`.
 - 7 business calculators: `lib/i18n/hindi-business-tools.ts`, `components/HindiBusinessCalculatorWorkspace.tsx`, `scripts/hindi-business-tools.test.mjs`.
 - Currency: Hindi money results use NPR with lakh/crore grouping, matching the Nepali tools. Use ₹ only for a tool with an explicit India context or currency choice.
@@ -18,7 +18,7 @@ Hindi (`hi`) is **unpublished**: routes are preview-only (`PDFORA_I18N_PREVIEW=1
 ## Pending
 - Calculators/Nepal tools: forex, salary tax, dividend, Nepali date conversion, calendar, photo resizer, other tools. The date/time, finance and Nepal utility components above are implemented but not yet build/test verified.
 - Remaining text tools (password and other catalog tools), image tools, and remaining Nepal tools.
-- PDF tool pages (Hindi UI wired to real tool workspaces) and tool pages that still show English with a notice.
+- Remaining catalog tool families and any catalog pages that still use the English fallback notice.
 - 16 English blog articles plus Nepali-parity review.
 - Homepage, tools directory, categories, Resume Builder, About, Contact, Privacy, Terms, help, cookie consent, nav/footer, 404.
 - Per-page SEO metadata, canonical/hreflang, sitemap eligibility, language selector, publish switch.

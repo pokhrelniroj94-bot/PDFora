@@ -39,7 +39,7 @@ for (const locale of config.locales) {
       title: config.localeFallbackCopy[locale].title,
       description: config.localeFallbackCopy[locale].message,
     });
-    assert.deepEqual(fallbackMetadata.robots, { index: false, follow: true }, `${locale} fallback must stay noindex,follow`);
+    assert.deepEqual(fallbackMetadata.robots, { index: false, follow: false }, `${locale} unpublished metadata must stay noindex,nofollow`);
     assert.equal(fallbackMetadata.alternates?.languages, undefined, `${locale} fallback must not emit hreflang`);
     continue;
   }

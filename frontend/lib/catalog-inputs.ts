@@ -5,6 +5,25 @@ export function parseRequiredNumber(value: string): number {
   return parsed;
 }
 
+export function splitWords(value: string): string[] {
+  return value.trim().split(/\s+/).filter(Boolean);
+}
+
+export function parseNumberList(value: string): number[] {
+  const input = value.trim();
+  if (!input) throw new Error("Enter at least one number.");
+  if (/^[,;]|[,;]\s*[,;]|[,;]$/.test(input)) {
+    throw new Error("Check the list separators; do not leave an empty value.");
+  }
+  const tokens = input.split(/[\s,;]+/);
+  if (tokens.length > 10000) throw new Error("Enter no more than 10,000 numbers at a time.");
+  const values = tokens.map((token) => Number(token));
+  if (values.some((number) => !Number.isFinite(number))) {
+    throw new Error("Use only valid finite numbers separated by commas, semicolons or spaces.");
+  }
+  return values;
+}
+
 export function jsonToYaml(value: unknown): string {
   const scalar = (item: unknown): string => JSON.stringify(item) ?? "null";
   const emit = (item: unknown, indent: number): string => {

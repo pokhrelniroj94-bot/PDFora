@@ -9,10 +9,11 @@ delete process.env.PDFORA_I18N_PREVIEW;
 const i18n = await loadI18n();
 const tools = await loadToolAdapter();
 const { config, routing, switcher } = i18n;
-const { metadata, "legacy-tool-slugs": legacyModule, toolCatalog, "nepali-localized-blog-posts": blogModule } = tools;
+const { metadata, "legacy-tool-slugs": legacyModule, toolCatalog: catalogModule, "nepali-localized-blog-posts": blogModule } = tools;
 const { getSwitcherOptions } = switcher;
 const { buildLocaleMetadata } = metadata;
 const { legacyToolSlugs } = legacyModule;
+const { toolCatalog } = catalogModule;
 const { nepaliLocalizedBlogPosts } = blogModule;
 
 const legacy = new Set(legacyToolSlugs);

@@ -411,13 +411,14 @@ export default async function LocalizedToolPage({ params }: Props) {
       </main>
     );
   }
-  if (request.locale === "hi" && ["nepali-vat-calculator", "nepal-land-area-converter", "gold-tola-gram-converter", "nepal-phone-validator", "neb-gpa-calculator"].includes(toolSlug)) {
+  if (request.locale === "hi" && ["nepali-vat-calculator", "nepal-land-area-converter", "gold-tola-gram-converter", "nepal-phone-validator", "neb-gpa-calculator", "nepal-share-calculator"].includes(toolSlug)) {
     const titles: Record<string, string> = {
       "nepali-vat-calculator": "नेपाल VAT कैलकुलेटर",
       "nepal-land-area-converter": "नेपाल भूमि क्षेत्रफल कनवर्टर",
       "gold-tola-gram-converter": "तोला और ग्राम कनवर्टर",
       "nepal-phone-validator": "नेपाल मोबाइल नंबर जाँच",
       "neb-gpa-calculator": "NEB GPA कैलकुलेटर",
+      "nepal-share-calculator": "NEPSE शेयर लाभ/हानि कैलकुलेटर",
     };
     return (
       <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">

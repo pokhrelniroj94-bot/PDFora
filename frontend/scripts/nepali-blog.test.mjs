@@ -63,7 +63,7 @@ const editorialAudit = entries.map((entry, index) => {
   add(normalizedTitles, title);
   add(normalizedIntros, intro);
   const toolLinks = [...source.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1]);
-  const sourceUrls = [...source.matchAll(/url:\s*"([^"]+)"/g)].map((match) => match[1]);
+  const sourceUrls = [...source.matchAll(/["']?url["']?\s*:\s*"([^"]+)"/g)].map((match) => match[1]);
   const invalidLinks = toolLinks.filter((href) => {
     const utilityMatch = href.match(/^\/tools\/([a-z0-9-]+)$/);
     const pdfMatch = href.match(/^\/([a-z0-9-]+)$/);
@@ -89,4 +89,5 @@ const editorialAudit = entries.map((entry, index) => {
 assert.equal([...normalizedTitles.values()].filter((count) => count > 1).length, 0, "Nepali blog titles must not duplicate after normalization");
 assert.equal([...normalizedIntros.values()].filter((count) => count > 1).length, 0, "Nepali blog introductions must not duplicate after normalization");
 assert.equal(editorialAudit.length, 35, "Expected 35 Nepali blog articles in the editorial inventory");
+assert.equal(missingSources.length, 0, `Every Nepali blog must have a cited source: ${missingSources.join(", ")}`);
 console.log(`Nepali editorial QA: ${editorialAudit.length} articles checked; ${missingSources.length} have no cited source and require factual/editorial review before indexing.`);

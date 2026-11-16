@@ -165,6 +165,7 @@ const additionalNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "के फोटो ठ्याक्कै ५०KB बनाउन सकिन्छ?", answer: "उपकरणले लक्ष्य आकार नजिक वा तोकिएको सीमाभित्र ल्याउन सक्छ; वास्तविक नतिजा मूल फोटो र सेटिङमा निर्भर हुन्छ।" },
       { question: "के ५०KB भएपछि फारामले फोटो स्वीकार गर्छ?", answer: "ग्यारेन्टी हुँदैन। पिक्सेल आयाम, अनुपात, पृष्ठभूमि र आवेदनको अन्य सर्त पनि मिल्नुपर्छ।" }
     ],
+    sources: [{"label":"Koshi Province Public Service Commission: Document upload FAQ","url":"https://psc.koshi.gov.np/faq/"},{"label":"Public Service Commission Nepal: Official portal","url":"https://psc.gov.np/"}],
     toolLinks: [{ label: "फोटो रिसाइजर", href: "/tools/loksewa-photo-resizer" }]
   },
   {
@@ -628,6 +629,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "करअघि कि करपछि टिप राख्ने?", answer: "यो स्थानीय चलन र तपाईंको रोजाइमा निर्भर हुन्छ। करअघिको subtotal वा करसहितको कुल रकममध्ये कुन आधार प्रयोग गर्ने भनेर छान्नुहोस्।" },
       { question: "Receipt मा service charge पहिले नै छ भने के गर्ने?", answer: "थप टिप राख्नुअघि receipt र रेस्टुरेन्टको नियम जाँच्नुहोस्। क्याल्कुलेटरले service charge आफैँ पत्ता लगाउँदैन।" }
     ],
+    sources: [{"label":"Checked Math: Tip Calculator formula and worked examples","url":"https://checkedmath.com/math/tip-calculator"},{"label":"RLM Tools: Bill-Tip-Split worksheet","url":"https://www.rlmtools.com/PDFs/TIP.pdf"}],
     toolLinks: [{ label: "Tip Calculator", href: "/tools/tip-calculator" }, { label: "Split Bill Calculator", href: "/tools/split-bill-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }]
   },
   {
@@ -650,6 +652,7 @@ const priorityNepaliLocalizedBlogPosts: BlogPost[] = [
       { question: "सुरुको मान शून्य भए percentage change निकाल्न मिल्छ?", answer: "मिल्दैन। सूत्रले सुरुको मानले भाग गर्ने भएकाले शून्यमा अपरिभाषित हुन्छ। वास्तविक अन्तर देखाउनुहोस् वा परिवर्तनलाई शब्दमा वर्णन गर्नुहोस्।" },
       { question: "Percentage change र percentage points एउटै हुन्?", answer: "होइन। Percentage change सुरुको मानको तुलनामा सापेक्ष परिवर्तन हो; percentage points दुई प्रतिशतबीचको सीधा अन्तर हो। 10% बाट 12% हुँदा 2 percentage points हुन्छ।" }
     ],
+    sources: [{"label":"George Brown College: Percentage Change","url":"https://www.georgebrown.ca/sites/default/files/uploadedfiles/tlc/_documents/percentage_change.pdf"},{"label":"Khan Academy: Percentages and calculating percent change","url":"https://www.khanacademy.org/test-prep/v2-sat-math/x0fcc98a58ba3bea7%3Aproblem-solving-and-data-analysis-medium/x0fcc98a58ba3bea7%3Apercentages-medium/a/v2-sat-lesson-percentages"}],
     toolLinks: [{ label: "Percentage Change Calculator", href: "/tools/percentage-change-calculator" }, { label: "Percentage of Number Calculator", href: "/tools/percentage-of-number-calculator" }, { label: "Tip Calculator", href: "/tools/tip-calculator" }]
   },
   {

@@ -36,6 +36,9 @@ assert.deepEqual(breakEvenUnits(0, 500, 300), { units: 0, revenue: 0 });
 assert.throws(() => breakEvenUnits(1000, 300, 300));
 assert.ok(sipFutureValue(5000, 10, 0, 0) === 600000);
 
+const extraTools = fs.readFileSync(new URL("../components/ExtraTools.tsx", import.meta.url), "utf8");
+assert.ok(extraTools.includes('label:"Numbers separated by commas, semicolons or spaces"'), "average calculator label must match accepted separators");
+
 const allTools = fs.readFileSync(new URL("../components/AllTools.tsx", import.meta.url), "utf8");
 const discountStart = allTools.indexOf('if(slug==="discount-percentage-calculator")');
 const discountEnd = allTools.indexOf('if(slug==="currency-converter")', discountStart);

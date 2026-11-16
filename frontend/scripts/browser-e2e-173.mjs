@@ -666,6 +666,20 @@ async function runTool(tool, index) {
         row.status = "PASS";
         return row;
       }
+      }
+      if (tool.slug === "nepali-unicode-typing") {
+        const readyStarted = Date.now();
+        let readyButton = false;
+        while (Date.now() - readyStarted < 25000 && !readyButton) {
+          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
+          if (!readyButton) await delay(250);
+        }
+        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
+        await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
+        await delay(300);
+        const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
+        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output.");
+      }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
       } else if (tool.slug === "base64-encoder-decoder") {
@@ -759,17 +773,6 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "nepal-forex-rates") await delay(20000);
       else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter"].includes(tool.slug)) await delay(5000);
-      if (tool.slug === "nepali-unicode-typing") {
-        const readyStarted = Date.now();
-        let readyButton = false;
-        while (Date.now() - readyStarted < 25000 && !readyButton) {
-          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
-          if (!readyButton) await delay(250);
-        }
-        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
-        await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
-        await delay(300);
-      }
       const calculatorSeeds = {
         "loan-emi-calculator": [["Loan amount", "1000000"], ["Annual interest rate (%)", "10"], ["Loan term (months)", "60"]],
         "compound-interest-sip-calculator": [["Monthly SIP (NPR)", "5000"], ["Years", "10"], ["Expected annual return (%)", "10"], ["Initial investment (NPR)", "0"]],
@@ -797,7 +800,7 @@ async function runTool(tool, index) {
         "gcd-lcm-calculator": [["First value / colour", "24"], ["Second value / colour", "36"]],
         "prime-number-checker": [["Integer", "97"]],
         "date-add-subtract-calculator": [["Starting date", "2026-11-01"], ["Days to add/subtract", "30"]],
-        "aspect-ratio-calculator": [["Width (px)", "1920"], ["Height (px)", "1080"]],
+        "aspect-ratio-calculator": [["Width (px)", "1920"], ["Height (cm)", "1080"]],
         "random-number-generator": [["Minimum", "1"], ["Maximum", "100"], ["Count", "5"]],
         "dice-roller": [["Count", "2"]],
         "image-dpi-calculator": [["Image width (pixels)", "2400"], ["Image height (pixels)", "3000"], ["Printed width", "8"], ["Printed height", "10"]],
@@ -1309,7 +1312,7 @@ async function runTool(tool, index) {
           const alert = document.querySelector('main [role="alert"]')?.innerText || "";
           return { count: fields.length, values: fields.map((field) => field.value), alert };
         })()`);
-        const status = await page.locator('main [role="status"]').innerText().catch(() => "");
+        const status = await page.evaluate('document.querySelector(\'main [role="status"]\')?.innerText || ""');
         if (invalidState.count !== 3 || invalidState.alert || !/enter the loan amount/i.test(status)) {
           throw new Error("Empty EMI fields must remain visible without a premature validation error and show neutral guidance.");
         }

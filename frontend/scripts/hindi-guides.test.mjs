@@ -32,3 +32,28 @@ test("Hindi guides preserve numeric limits and ranges from the English source", 
   assert.match(hi["rotate-pdf"].steps[1], /90°.*180°.*270°/);
   assert.match(hi["delete-pages"].steps[1], /6-8/);
 });
+
+test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", async () => {
+  const { "pdf-tool-names-hi": names, "pdf-tool-fields-hi": fields, "nepali-pdf-routes": pdfRoutes, routing, config } = await loadI18n();
+  const slugs = Object.keys(pdfRoutes.nepaliPdfRoutes);
+  assert.equal(slugs.length, 49);
+  assert.deepEqual(Object.keys(names.hindiToolNames).sort(), [...slugs].sort());
+  for (const slug of slugs) {
+    assert.ok(DEVANAGARI.test(names.hindiToolNames[slug]), `${slug}: Hindi name`);
+    assert.equal(routing.hasLocalizedPage(`/${slug}`, "hi"), true, `${slug}: Hindi route registered`);
+    // A real Hindi page must never be presented as indexable while Hindi is unpublished.
+    assert.equal(routing.hasIndexableLocalizedPage(`/${slug}`, "hi"), false, `${slug}: must stay non-indexable`);
+  }
+  assert.equal(config.isPublished("hi"), false);
+  assert.equal(routing.hasLocalizedPage("/blog", "hi"), false, "no Hindi blog index yet");
+  assert.equal(routing.hasLocalizedPage("/", "hi"), false, "no Hindi homepage yet");
+  // Every translatable field string in the PDF route table has a Hindi equivalent (technical values excepted).
+  const technical = new Set(["90", "bottom-center", "1", "false", "11", "all", "10", "85", "1,3,5", "#E5E7EB", "6"]);
+  for (const route of Object.values(pdfRoutes.nepaliPdfRoutes)) {
+    const strings = [route.formPlaceholder, route.queryDefault, ...(route.extraFields ?? []).flatMap((f) => [f.label, f.placeholder, f.defaultValue])].filter(Boolean);
+    for (const value of strings) {
+      if (technical.has(value)) continue;
+      assert.ok(fields.hindiFieldKeys.includes(value), `${route.slug}: missing Hindi field copy for ${JSON.stringify(value)}`);
+    }
+  }
+});

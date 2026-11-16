@@ -76,6 +76,13 @@ export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([
 
 const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
 
+/**
+ * Hindi pages that exist as real localized routes. Hindi is still "unpublished" in config.ts,
+ * so these routes are only reachable in preview and are never indexed or listed in hreflang.
+ * Grow this set only as each Hindi page is genuinely translated.
+ */
+export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set(Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`));
+
 // Only published localized destinations that are in the shared index registry
 // participate in reciprocal hreflang. Human/native review status is tracked
 // separately and is not inferred from this automated registry.
@@ -95,6 +102,7 @@ export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean
 export function hasLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
   const normalized = normalizePath(path);
+  if (locale === "hi") return hindiLocalizedRoutePaths.has(normalized);
   if (locale !== "ne") return false;
   if (localizedPaths.has(normalized)) return true;
   return false;

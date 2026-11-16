@@ -7,6 +7,9 @@ import { getPdfToolCopy } from "../lib/i18n/pdf-tool-ui";
 import { nepaliToolNames } from "../lib/i18n/pdf-tool-names-ne";
 import { nepaliToolGuides } from "../lib/i18n/tool-guides-ne";
 import { getNepaliPdfFieldText } from "../lib/i18n/pdf-tool-fields-ne";
+import { hindiToolNames } from "../lib/i18n/pdf-tool-names-hi";
+import { hindiToolGuides } from "../lib/i18n/tool-guides-hi";
+import { getHindiPdfFieldText } from "../lib/i18n/pdf-tool-fields-hi";
 
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
@@ -50,12 +53,12 @@ export default function PDForaTool({
   const localeSegment = pathname.split("/").filter(Boolean)[0] ?? "en";
   const locale = ["ne", "hi", "es", "fr", "de", "ar", "zh", "ja", "ko"].includes(localeSegment) ? localeSegment : "en";
   const imageUpload = accept.includes("image/");
-  const chooseDropLabel = imageUpload ? (locale === "ne" ? "तस्बिर फाइल छान्नुहोस् वा यहाँ छोड्नुहोस्" : "Choose or drop image files") : (multiple ? ui.chooseDropMultiple : ui.chooseDropSingle);
-  const uploadLimitLabel = endpoint === "/api/merge" ? (locale === "ne" ? "सबै PDF फाइलको जम्मा आकार अधिकतम ५० MB" : "Combined PDF upload limit: 50 MB total") : imageUpload ? (locale === "ne" ? "प्रत्येक तस्बिर अधिकतम ५० MB" : "Image files up to 50 MB each") : ui.pdfFilesLimit;
+  const chooseDropLabel = imageUpload ? (locale === "ne" ? "तस्बिर फाइल छान्नुहोस् वा यहाँ छोड्नुहोस्" : locale === "hi" ? "चित्र फ़ाइलें चुनें या यहाँ छोड़ें" : "Choose or drop image files") : (multiple ? ui.chooseDropMultiple : ui.chooseDropSingle);
+  const uploadLimitLabel = endpoint === "/api/merge" ? (locale === "ne" ? "सबै PDF फाइलको जम्मा आकार अधिकतम ५० MB" : locale === "hi" ? "सभी PDF फ़ाइलों का कुल आकार अधिकतम 50 MB" : "Combined PDF upload limit: 50 MB total") : imageUpload ? (locale === "ne" ? "प्रत्येक तस्बिर अधिकतम ५० MB" : locale === "hi" ? "हर चित्र अधिकतम 50 MB" : "Image files up to 50 MB each") : ui.pdfFilesLimit;
   const homeHref = locale === "en" ? "/" : `/${locale}`;
-  const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : title;
-  const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : description;
-  const localizedFormPlaceholder = locale === "ne" ? getNepaliPdfFieldText(formPlaceholder) : formPlaceholder;
+  const displayTitle = locale === "ne" ? nepaliToolNames[currentSlug] || title : locale === "hi" ? hindiToolNames[currentSlug] || title : title;
+  const displayDescription = locale === "ne" ? nepaliToolGuides[currentSlug]?.purpose || description : locale === "hi" ? hindiToolGuides[currentSlug]?.purpose || description : description;
+  const localizedFormPlaceholder = locale === "ne" ? getNepaliPdfFieldText(formPlaceholder) : locale === "hi" ? getHindiPdfFieldText(formPlaceholder) : formPlaceholder;
   const [files, setFiles] = useState<File[]>([]);
   const [value, setValue] = useState(queryDefault);
   const [loading, setLoading] = useState(false);
@@ -69,12 +72,12 @@ export default function PDForaTool({
     const selected = multiple ? selectedFiles : selectedFiles.slice(0, 1);
     if (currentSlug === "merge-pdf" && selected.length > 20) {
       setFiles([]);
-      setMessage(locale === "ne" ? "एकपटकमा अधिकतम २० PDF फाइल छान्नुहोस्।" : "Choose no more than 20 PDF files for one merge.");
+      setMessage(locale === "ne" ? "एकपटकमा अधिकतम २० PDF फाइल छान्नुहोस्।" : locale === "hi" ? "एक बार में अधिकतम 20 PDF फ़ाइलें चुनें।" : "Choose no more than 20 PDF files for one merge.");
       return;
     }
     if (currentSlug === "merge-pdf" && selected.reduce((total, file) => total + file.size, 0) > 50 * 1024 * 1024) {
       setFiles([]);
-      setMessage(locale === "ne" ? "सबै PDF फाइलको जम्मा आकार ५० MB भन्दा बढी हुनु हुँदैन।" : "The combined size of all selected PDFs must not exceed 50 MB.");
+      setMessage(locale === "ne" ? "सबै PDF फाइलको जम्मा आकार ५० MB भन्दा बढी हुनु हुँदैन।" : locale === "hi" ? "चुनी गई सभी PDF फ़ाइलों का कुल आकार 50 MB से अधिक नहीं होना चाहिए।" : "The combined size of all selected PDFs must not exceed 50 MB.");
       return;
     }
     const invalidImage = imageUpload && selected.find((file) =>
@@ -84,7 +87,7 @@ export default function PDForaTool({
     );
     if (invalidImage) {
       setFiles([]);
-      setMessage(locale === "ne" ? "JPG, JPEG, PNG वा WebP तस्बिर मात्र छान्नुहोस्।" : "Choose JPG, JPEG, PNG or WebP image files only.");
+      setMessage(locale === "ne" ? "JPG, JPEG, PNG वा WebP तस्बिर मात्र छान्नुहोस्।" : locale === "hi" ? "केवल JPG, JPEG, PNG या WebP चित्र फ़ाइलें चुनें।" : "Choose JPG, JPEG, PNG or WebP image files only.");
       if (inputRef.current) inputRef.current.value = "";
       return;
     }
@@ -147,7 +150,7 @@ export default function PDForaTool({
 
     setLoading(true);
     setMessage(browserOnly
-      ? (locale === "ne" ? "तपाईंको ब्राउजरमै PDF फाइलहरू जोडिँदैछन्…" : "Merging PDFs locally in your browser…")
+      ? (locale === "ne" ? "तपाईंको ब्राउजरमै PDF फाइलहरू जोडिँदैछन्…" : locale === "hi" ? "आपके ब्राउज़र में ही PDF फ़ाइलें जोड़ी जा रही हैं…" : "Merging PDFs locally in your browser…")
       : ui.connectingServer);
 
     try {
@@ -155,7 +158,7 @@ export default function PDForaTool({
         const worker = new Worker(new URL("../app/tools/pdfWorker.ts", import.meta.url), { type: "module" });
         const result = await new Promise<{ blob?: Blob; error?: string }>((resolve, reject) => {
           worker.onmessage = (event: MessageEvent<{ blob?: Blob; error?: string }>) => resolve(event.data);
-          worker.onerror = () => reject(new Error(locale === "ne" ? "ब्राउजर प्रोसेसिङ सुरु हुन सकेन।" : "Browser processing could not start."));
+          worker.onerror = () => reject(new Error(locale === "ne" ? "ब्राउजर प्रोसेसिङ सुरु हुन सकेन।" : locale === "hi" ? "ब्राउज़र में प्रोसेसिंग शुरू नहीं हो सकी।" : "Browser processing could not start."));
           worker.postMessage({ cmd: { type: "merge" }, files });
         }).finally(() => worker.terminate());
         if (result.error || !result.blob) throw new Error(result.error || ui.processingFailed);
@@ -169,7 +172,7 @@ export default function PDForaTool({
         window.setTimeout(() => window.URL.revokeObjectURL(localUrl), 1000);
         setFiles([]);
         if (inputRef.current) inputRef.current.value = "";
-        setMessage(locale === "ne" ? "PDF फाइलहरू तपाईंको ब्राउजरमै जोडिए। कुनै फाइल सर्भरमा अपलोड गरिएको छैन।" : "PDFs merged in your browser. No files were uploaded to the server.");
+        setMessage(locale === "ne" ? "PDF फाइलहरू तपाईंको ब्राउजरमै जोडिए। कुनै फाइल सर्भरमा अपलोड गरिएको छैन।" : locale === "hi" ? "PDF फ़ाइलें आपके ब्राउज़र में ही जोड़ दी गईं। कोई फ़ाइल सर्वर पर अपलोड नहीं की गई।" : "PDFs merged in your browser. No files were uploaded to the server.");
         return;
       }
       const formData = new FormData();
@@ -252,7 +255,7 @@ export default function PDForaTool({
           ? ui.serverTimeout
           : error instanceof TypeError
             ? ui.connectionFailed
-            : locale === "ne"
+            : locale === "ne" || locale === "hi"
               ? ui.processingFailed
               : error instanceof Error
                 ? error.message
@@ -351,7 +354,7 @@ export default function PDForaTool({
             accept={accept}
             multiple={multiple}
             onChange={handleFiles}
-            aria-label={locale === "ne" ? "PDF फाइल छान्नुहोस्" : "Choose PDF files"}
+            aria-label={locale === "ne" ? "PDF फाइल छान्नुहोस्" : locale === "hi" ? "PDF फ़ाइलें चुनें" : "Choose PDF files"}
             className="hidden"
           />
 
@@ -364,7 +367,7 @@ export default function PDForaTool({
                 </p>
                 {multiple && currentSlug === "merge-pdf" && (
                   <p className="mt-1 text-xs text-slate-500">
-                    {locale === "ne" ? "↑ र ↓ बटनबाट फाइलको क्रम मिलाउनुहोस्।" : "Use ↑ and ↓ to set the order of the merged PDF."}
+                    {locale === "ne" ? "↑ र ↓ बटनबाट फाइलको क्रम मिलाउनुहोस्।" : locale === "hi" ? "↑ और ↓ बटन से फ़ाइलों का क्रम तय करें।" : "Use ↑ and ↓ to set the order of the merged PDF."}
                   </p>
                 )}
               </div>
@@ -396,8 +399,8 @@ export default function PDForaTool({
                           onClick={() => moveFile(index, -1)}
                           disabled={index === 0}
                           className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-base font-bold text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30"
-                          aria-label={locale === "ne" ? `${file.name} माथि सार्नुहोस्` : `Move ${file.name} up`}
-                          title={locale === "ne" ? "माथि सार्नुहोस्" : "Move up"}
+                          aria-label={locale === "ne" ? `${file.name} माथि सार्नुहोस्` : locale === "hi" ? `${file.name} को ऊपर ले जाएँ` : `Move ${file.name} up`}
+                          title={locale === "ne" ? "माथि सार्नुहोस्" : locale === "hi" ? "ऊपर ले जाएँ" : "Move up"}
                         >
                           ↑
                         </button>
@@ -406,8 +409,8 @@ export default function PDForaTool({
                           onClick={() => moveFile(index, 1)}
                           disabled={index === files.length - 1}
                           className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-base font-bold text-slate-600 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-30"
-                          aria-label={locale === "ne" ? `${file.name} तल सार्नुहोस्` : `Move ${file.name} down`}
-                          title={locale === "ne" ? "तल सार्नुहोस्" : "Move down"}
+                          aria-label={locale === "ne" ? `${file.name} तल सार्नुहोस्` : locale === "hi" ? `${file.name} को नीचे ले जाएँ` : `Move ${file.name} down`}
+                          title={locale === "ne" ? "तल सार्नुहोस्" : locale === "hi" ? "नीचे ले जाएँ" : "Move down"}
                         >
                           ↓
                         </button>
@@ -498,9 +501,9 @@ export default function PDForaTool({
 
           <InfoCard
             icon={browserOnly ? "🛡️" : "🔒"}
-            title={browserOnly ? (locale === "ne" ? "ब्राउजरमै सुरक्षित" : "Local processing") : ui.private}
+            title={browserOnly ? (locale === "ne" ? "ब्राउजरमै सुरक्षित" : locale === "hi" ? "ब्राउज़र में ही सुरक्षित" : "Local processing") : ui.private}
             description={browserOnly
-              ? (locale === "ne" ? "फाइलहरू तपाईंको डिभाइसको ब्राउजरमै प्रोसेस हुन्छन्; PDFora सर्भरमा पठाइँदैनन्।" : "Files are processed in your device browser and are not sent to PDFora's server.")
+              ? (locale === "ne" ? "फाइलहरू तपाईंको डिभाइसको ब्राउजरमै प्रोसेस हुन्छन्; PDFora सर्भरमा पठाइँदैनन्।" : locale === "hi" ? "फ़ाइलें आपके डिवाइस के ब्राउज़र में ही प्रोसेस होती हैं; PDFora के सर्वर पर नहीं भेजी जातीं।" : "Files are processed in your device browser and are not sent to PDFora's server.")
               : ui.privateDescription}
           />
 
@@ -524,6 +527,22 @@ export default function PDForaTool({
             <div className="pdfora-trust-detail"><h3>कस्तो फाइल अपलोड नगर्ने?</h3><p>{browserOnly ? "यो टुलले PDF फाइल सर्भरमा अपलोड गर्दैन। तैपनि संवेदनशील कागजात प्रयोग गर्दा आफ्नो डिभाइस सुरक्षित राख्नुहोस् र साझा डिभाइसमा फाइल नछोड्नुहोस्।" : "इन्टरनेटमार्फत होस्ट गरिएको सर्भरमा प्रोसेस गर्न नचाहने अत्यन्त संवेदनशील कागजात अपलोड नगर्नुहोस्। इन्टरनेट प्रसारण वा सर्भर प्रणालीलाई शतप्रतिशत जोखिमरहित भन्न सकिँदैन।"}</p></div>
           </div>
           <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/ne/privacy">विस्तृत गोपनीयता नीति पढ्नुहोस् <span aria-hidden="true">↗</span></a>
+        </section>
+
+        ) : locale === "hi" ? (
+        <section className="pdfora-trust-panel mt-6 rounded-3xl border p-5 sm:p-7" aria-labelledby="pdfora-trust-title">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="pdfora-trust-icon" aria-hidden="true">🔐</span>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-teal-800">PDFora गोपनीयता जानकारी</p>
+          </div>
+          <h2 id="pdfora-trust-title" className="mt-3 text-xl font-black tracking-tight sm:text-2xl">आपकी फ़ाइल कैसे संभाली जाती है?</h2>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="pdfora-trust-detail"><h3>फ़ाइल कहाँ जाती है?</h3><p>{browserOnly ? "यह टूल आपकी PDF को अपने डिवाइस के ब्राउज़र में ही प्रोसेस करता है। फ़ाइल PDFora के प्रोसेसिंग सर्वर पर अपलोड नहीं होती।" : "प्रोसेसिंग शुरू करने पर आपका अनुरोध पूरा करने के लिए फ़ाइल PDFora के प्रोसेसिंग सर्वर पर भेजी जाती है। यह टूल पूरी तरह आपके ब्राउज़र के भीतर नहीं चलता।"}</p></div>
+            <div className="pdfora-trust-detail"><h3>कब हटाई जाती है?</h3><p>{browserOnly ? "प्रोसेसिंग के दौरान फ़ाइल ब्राउज़र की मेमोरी में रहती है। पेज बंद या रीफ़्रेश करने पर वह मेमोरी डेटा हट जाता है; डाउनलोड किया गया नतीजा आपके डिवाइस पर रहता है।" : "सामान्य स्थिति में नतीजा भेजने के बाद अनुरोध की अस्थायी फ़ाइलें साफ़ कर दी जाती हैं। अनुरोध बीच में रुक जाए तो बची हुई फ़ाइलें अगले प्रोसेसिंग अनुरोध में 6 घंटे से पुरानी मिलने पर साफ़ की जाती हैं।"}</p></div>
+            <div className="pdfora-trust-detail"><h3>क्या स्थायी फ़ाइल इतिहास रखा जाता है?</h3><p>PDFora में उपयोगकर्ता की स्थायी फ़ाइल लाइब्रेरी या खाते पर आधारित फ़ाइल इतिहास नहीं है। डाउनलोड किया गया नतीजा अपने ही डिवाइस पर सुरक्षित रखें।</p></div>
+            <div className="pdfora-trust-detail"><h3>कौन-सी फ़ाइल अपलोड न करें?</h3><p>{browserOnly ? "यह टूल PDF फ़ाइलें सर्वर पर अपलोड नहीं करता। फिर भी संवेदनशील दस्तावेज़ों के साथ अपना डिवाइस सुरक्षित रखें और साझा डिवाइस पर फ़ाइलें न छोड़ें।" : "ऐसे बेहद संवेदनशील दस्तावेज़ अपलोड न करें जिन्हें आप इंटरनेट पर होस्ट किए गए सर्वर पर प्रोसेस करने में सहज नहीं हैं। इंटरनेट ट्रांसमिशन या सर्वर प्रणाली को पूरी तरह जोखिम-मुक्त नहीं कहा जा सकता।"}</p></div>
+          </div>
+          <a className="pdfora-trust-link mt-5 inline-flex items-center gap-2 text-sm font-bold" href="/privacy">पूरी गोपनीयता नीति (अंग्रेज़ी में) पढ़ें <span aria-hidden="true">↗</span></a>
         </section>
 
         ) : (
@@ -573,7 +592,7 @@ export default function PDForaTool({
                 {ui.privacyQuestion}
               </h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                {browserOnly ? (locale === "ne" ? "यो टुलमा PDF फाइल तपाईंको ब्राउजरमै प्रक्रिया हुन्छ र PDFora सर्भरमा पठाइँदैन। ब्राउजर मेमोरीमा रहेको डेटा पेज बन्द वा रिफ्रेस गर्दा हट्छ।" : "This tool processes PDF files locally in your browser; files are not sent to PDFora's server. In-memory data is released when you close or refresh the page.") : ui.privacyAnswer}
+                {browserOnly ? (locale === "ne" ? "यो टुलमा PDF फाइल तपाईंको ब्राउजरमै प्रक्रिया हुन्छ र PDFora सर्भरमा पठाइँदैन। ब्राउजर मेमोरीमा रहेको डेटा पेज बन्द वा रिफ्रेस गर्दा हट्छ।" : locale === "hi" ? "इस टूल में PDF फ़ाइल आपके ब्राउज़र में ही प्रोसेस होती है और PDFora के सर्वर पर नहीं भेजी जाती। ब्राउज़र की मेमोरी में रखा डेटा पेज बंद या रीफ़्रेश करने पर हट जाता है।" : "This tool processes PDF files locally in your browser; files are not sent to PDFora's server. In-memory data is released when you close or refresh the page.") : ui.privacyAnswer}
               </p>
             </>
           )}

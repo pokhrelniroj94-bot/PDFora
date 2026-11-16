@@ -16,7 +16,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 | Locale | Published tool rows | Interface-present rows | Content-present rows | Index-eligible rows |
 |---|---:|---:|---:|---:|
 | en | 174 | 174 | 49 | 174 |
-| ne | 169 | 169 | 49 | 6 |
+| ne | 174 | 174 | 49 | 174 |
 | hi | 0 | 0 | 0 | 0 |
 | bn | 0 | 0 | 0 | 0 |
 | ur | 0 | 0 | 0 | 0 |
@@ -30,7 +30,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 
 ## Current blockers
 
-- Nepali has route/workspace coverage for 169 of 174 tools. The five restored legacy utilities remain English-only, unpublished on the Nepali route and excluded from localized indexing. The 18 newly added Nepali catalog utilities remain individually unverified and noindex; native-language review is not independently established.
+- Nepali has 174 route registrations out of 174 catalogued tools. Route registration is not proof that every interface string, validation, error, output or download is localized or functionally verified. Native-speaker review is not certified by this matrix.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
-- Only explicitly tested workflows are marked as targeted unit tests; all other tools remain unverified until tested against their handlers.
+- The targeted-test slug registry is a source-level indicator only; it must not be interpreted as full browser QA. The separate Nepali source audit reports current test references and per-tool route evidence.
 - OCR is not counted among the 174 available tools because it remains excluded from the canonical PDF inventory.

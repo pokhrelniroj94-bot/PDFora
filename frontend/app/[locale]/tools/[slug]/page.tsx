@@ -393,7 +393,7 @@ export default async function LocalizedToolPage({ params }: Props) {
       </main>
     );
   }
-  if (request.locale === "hi" && ["loan-emi-calculator", "compound-interest-sip-calculator", "discount-percentage-calculator"].includes(toolSlug)) {
+  if (request.locale === "hi" && ["loan-emi-calculator", "compound-interest-sip-calculator", "discount-percentage-calculator", "savings-goal-calculator"].includes(toolSlug)) {
     const titles: Record<string, string> = {
       "loan-emi-calculator": "ऋण EMI कैलकुलेटर",
       "compound-interest-sip-calculator": "चक्रवृद्धि ब्याज और SIP कैलकुलेटर",

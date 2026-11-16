@@ -4,7 +4,7 @@ import { average, convertUnit, fractionOperation, percentageChange, simplifyRati
 import { calculateAge, dateDifferenceDays, timeDurationMinutes } from "../lib/date-time-calculations";
 import { analyzeMetaTitle, analyzeMetaDescription, calculateKeywordDensity, generateRobotsTxt, generateSitemapXml, buildOpenGraphPreview } from "../lib/seo-utilities";
 import { jsonObjectsToCsv } from "../lib/catalog-text";
-import { parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
+import { parseNumberList, parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
 type F={key:string;label:string;type?:"number"|"date"|"time"|"color"|"select";multiline?:boolean;value:string;options?:{value:string;label:string}[]};
 const config:Record<string,F[]> = {
 "percentage-change-calculator":[{key:"mode",label:"Calculation mode",type:"select",value:"forward",options:[{value:"forward",label:"Calculate percentage change"},{value:"reverse",label:"Find original value from final value"}]},{key:"a",label:"Original value",type:"number",value:"100"},{key:"b",label:"New value",type:"number",value:"120"}],
@@ -52,7 +52,7 @@ export default function ExtraTools({slug}:{slug:string}){
  const run=()=>{setErr("");setOut("");try{let s="";
  switch(slug){
  case "percentage-change-calculator":{const a=num("a"),b=num("b");if(val("mode")==="reverse"){if(a===0||b<=-100)throw Error("Final value must be non-zero and percentage change must be greater than -100%.");const original=a/(1+b/100);if(!Number.isFinite(original))throw Error("Calculated original value is outside the supported range.");s="Estimated original value: "+original.toFixed(2)+"\nFinal value: "+a.toFixed(2)+"\nPercentage change: "+b.toFixed(2)+"%";}else{const change=percentageChange(a,b);s=change.toFixed(2)+"% "+(change>=0?"increase":"decrease")+"\nChange amount: "+(b-a).toFixed(2);}break;}
- case "average-calculator":{const raw=val("text").trim();const values=raw?raw.split(/[\s,;]+/).map(Number):[];const stats=average(values);s="Count: "+values.length+"\nMean: "+stats.mean+"\nMedian: "+stats.median+"\nMode: "+(stats.mode.length?stats.mode.join(", "):"No repeated value")+"\nRange: "+stats.range;break;}
+ case "average-calculator":{const values=parseNumberList(val("text"));const stats=average(values);s="Count: "+values.length+"\nMean: "+stats.mean+"\nMedian: "+stats.median+"\nMode: "+(stats.mode.length?stats.mode.join(", "):"No repeated value")+"\nRange: "+stats.range;break;}
  case "ratio-simplifier":s=simplifyRatio(num("a"),num("b"));break;
  case "fraction-calculator":{const result=fractionOperation(num("a"),num("b"),num("c"),num("d"),val("op"));s=result.numerator+"/"+result.denominator+" = "+result.value;break;}
  case "unit-converter":{const a=val("from").toLowerCase(),b=val("to").toLowerCase();s=convertUnit(num("n"),a,b).toPrecision(8)+" "+b;if((a==="c"||a==="f")&&(b==="c"||b==="f"))s=convertUnit(num("n"),a,b).toFixed(4)+" °"+b.toUpperCase();break;}

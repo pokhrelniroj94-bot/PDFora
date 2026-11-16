@@ -45,6 +45,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
+    { url: `${baseUrl}/how-to-use`, changeFrequency: "monthly", priority: 0.6 },
     ...(isLocalizedPageIndexable("ne", "/") ? [{ url: `${baseUrl}/ne`, changeFrequency: "weekly" as const, priority: 0.8 }] : []),
     ...(isLocalizedPageIndexable("ne", "/tools") ? [{ url: `${baseUrl}/ne/tools`, changeFrequency: "weekly" as const, priority: 0.75 }] : []),
     ...(isLocalizedPageIndexable("ne", "/market") ? [{ url: `${baseUrl}/ne/market`, changeFrequency: "daily" as const, priority: 0.75 }] : []),

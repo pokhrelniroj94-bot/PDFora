@@ -15,6 +15,7 @@ import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWork
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
 import HindiBusinessCalculatorWorkspace, { hindiBusinessConfigs, isHindiBusinessSlug } from "../../../../components/HindiBusinessCalculatorWorkspace";
 import HindiMathUtilityWorkspace, { hindiMathTitles, isHindiMathSlug } from "../../../../components/HindiMathUtilityWorkspace";
+import HindiDateTimeWorkspace from "../../../../components/HindiDateTimeWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -374,6 +375,22 @@ export default async function LocalizedToolPage({ params }: Props) {
       return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली वित्तीय टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliFinanceCalculatorWorkspace slug={toolSlug} /></section></main>;
     }
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली वित्तीय टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">आधिकारिक स्रोत वा स्पष्ट गणना धारणासहितको नेपाली इन्टरफेस। बजार र दरसम्बन्धी डेटा उपलब्ध नभएमा त्यसैको सूचना देखाइन्छ।</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepalLiveTools slug={toolSlug} locale="ne" /></section></main>;
+  }
+  if (request.locale === "hi" && ["age-calculator", "date-difference-calculator", "time-duration-calculator"].includes(toolSlug)) {
+    const titles: Record<string, string> = {
+      "age-calculator": "आयु कैलकुलेटर",
+      "date-difference-calculator": "तिथि अंतर कैलकुलेटर",
+      "time-duration-calculator": "समय अवधि कैलकुलेटर",
+    };
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी तिथि और समय कैलकुलेटर</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1>
+        </div>
+        <HindiDateTimeWorkspace slug={toolSlug} />
+      </main>
+    );
   }
   if (request.locale === "hi" && isHindiMathSlug(toolSlug)) {
     return (

@@ -5,7 +5,7 @@ import { ensureTypeStripping } from "./lib/load-i18n.mjs";
 ensureTypeStripping();
 
 const { parseNumberList, splitWords } = await import("../lib/catalog-inputs.ts");
-const { average, discountedPrice, loanEmi, simplifyDecimalRatio, sipFutureValue } = await import("../lib/catalog-calculations.ts");
+const { average, breakEvenUnits, discountedPrice, loanEmi, simplifyDecimalRatio, sipFutureValue } = await import("../lib/catalog-calculations.ts");
 const { addCalendarDays, calculateAge, dateDifferenceDays } = await import("../lib/date-time-calculations.ts");
 
 assert.deepEqual(parseNumberList("10, 20 30; 40"), [10, 20, 30, 40]);
@@ -31,6 +31,9 @@ assert.equal(dateDifferenceDays("0099-01-01", "0099-01-03"), 2);
 assert.ok(Math.abs(loanEmi(1_000_000, 10, 60) - 21247.039) < 0.01);
 assert.equal(loanEmi(1200, 0, 12), 100);
 assert.equal(discountedPrice(1000, 20).final, 800);
+assert.deepEqual(breakEvenUnits(1001, 500, 300), { units: 6, revenue: 3000 });
+assert.deepEqual(breakEvenUnits(0, 500, 300), { units: 0, revenue: 0 });
+assert.throws(() => breakEvenUnits(1000, 300, 300));
 assert.ok(sipFutureValue(5000, 10, 0, 0) === 600000);
 
 const allTools = fs.readFileSync(new URL("../components/AllTools.tsx", import.meta.url), "utf8");

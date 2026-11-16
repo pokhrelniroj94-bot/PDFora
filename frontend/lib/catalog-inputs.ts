@@ -5,6 +5,10 @@ export function parseRequiredNumber(value: string): number {
   return parsed;
 }
 
+export function splitWords(value: string): string[] {
+  return value.trim().split(/\\s+/).filter(Boolean);
+}
+
 export function parseNumberList(value: string): number[] {
   const input = value.trim();
   if (!input) throw new Error("Enter at least one number.");

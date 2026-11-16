@@ -432,11 +432,23 @@ export default async function LocalizedToolPage({ params }: Props) {
     );
   }
   if (request.locale === "hi" && ["word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text", "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator", "line-counter", "sentence-counter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"].includes(toolSlug)) {
+    const titles: Record<string, string> = {
+      "word-character-counter": "शब्द और अक्षर गणक", "case-converter": "अक्षर शैली कनवर्टर",
+      "remove-duplicate-lines": "दोहराई गई पंक्तियाँ हटाएँ", "sort-lines": "पंक्तियाँ क्रमबद्ध करें",
+      "reverse-text": "पाठ उलटें", "whitespace-cleaner": "अतिरिक्त रिक्त स्थान साफ़ करें",
+      "character-frequency": "अक्षर आवृत्ति गणक", "word-frequency-counter": "शब्द आवृत्ति गणक",
+      "reading-time-calculator": "पढ़ने का समय कैलकुलेटर", "line-counter": "पंक्ति गणक",
+      "sentence-counter": "वाक्य गणक", "email-extractor": "ईमेल पता निकालें",
+      "url-extractor": "URL निकालें", "phone-number-extractor": "फोन नंबर निकालें",
+      "number-extractor": "संख्याएँ निकालें", "hashtag-extractor": "हैशटैग निकालें",
+      "remove-duplicate-words": "दोहराए गए शब्द हटाएँ", "find-replace-text": "खोजें और बदलें",
+      "palindrome-checker": "Palindrome जाँच", "acronym-generator": "संक्षिप्त नाम बनाएँ",
+    };
     return (
       <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
         <div className="mb-7">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी टेक्स्ट टूल</p>
-          <h1 className="mt-2 text-3xl font-black text-slate-950">{toolSlug.replace(/-/g, " ")}</h1>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1>
         </div>
         <HindiTextToolsWorkspace slug={toolSlug} />
       </main>

@@ -157,3 +157,47 @@ Primary guidance:
 - Added dedicated, real-input instructions to the Reading Time Calculator, Savings Goal Calculator and Percentage Change Calculator SEO content. The guidance matches the current controls and calculation assumptions rather than repeating generic steps.
 - Added regression assertions to keep these three high-intent pages task-specific.
 - This is a focused first implementation, not a complete site-wide SEO execution. Full sitemap crawling, Core Web Vitals, all-page browser QA, index coverage reconciliation and authority work remain separate execution gates.
+
+
+## Additional homepage audit reconciliation — 16 November 2026
+
+A third-party SEO Ninja scan of the homepage reported 98/100, grade A, 31 passes, 7 warnings and 0 issues. Its own disclaimer confirms this is a **single-URL/page-level report**, not a site-wide audit. It should be treated as a diagnostic checklist, not a Google score or ranking forecast.
+
+### Live checks against the production response
+
+The live homepage was fetched successfully on 16 November 2026 at 14:29 UTC (HTTP 200). Its response headers and rendered HTML show:
+
+| SEO Ninja finding | Live evidence | Assessment |
+|---|---|---|
+| HSTS missing | `strict-transport-security: max-age=31536000; includeSubDomains; preload` | False positive |
+| Content Security Policy missing | A CSP header is present with explicit source directives and `frame-ancestors 'none'` | False positive; policy can be hardened later, but it is not absent |
+| X-Frame-Options missing | `x-frame-options: DENY` | False positive; stricter than SAMEORIGIN for embedding |
+| Server compression not detected | Homepage response and CSS asset return `content-encoding: br` | False positive |
+| Browser caching: no Cache-Control header | Homepage HTML has `private, no-cache, no-store, max-age=0, must-revalidate`; hashed CSS has `public,max-age=31536000,immutable` | Header exists; HTML caching is intentionally disabled while static assets are long-cached |
+| Canonical domain redirect | Plain HTTP homepage returned HTTP 308 to HTTPS | HTTP-to-HTTPS redirect confirmed; project has only `pd-fora.vercel.app` attached, with no `www.pd-fora.vercel.app` project domain |
+| Entity schema missing | Live homepage contains WebSite and Organization JSON-LD in the root layout, plus SoftwareApplication markup on the homepage | False positive / parser gap |
+
+The project-domain lookup for `www.pd-fora.vercel.app` returned not found. Do not add a `www` alias for a Vercel-owned `vercel.app` hostname solely to satisfy a generic checker. Keep the one configured canonical hostname. Revisit domain variants only if PDFora moves to a custom domain that it controls.
+
+### Recommendations from the scanner that should not be implemented blindly
+
+- **llms.txt:** Google Search Central's AI optimization guidance updated in June 2026 says these files are not needed for Google Search or its generative AI features and do not improve or harm visibility/rankings. Do not spend ranking work on this file.
+- **FAQPage schema:** Google removed its FAQ rich-result documentation in June 2026 because the feature is no longer shown in Google Search. Keep useful visible FAQs for readers, but do not add FAQPage markup as an SEO shortcut.
+- **Question-style headings and 40–60-word answers:** This can help a reader when a page naturally answers a question, but there is no Google rule requiring every heading to be a question or every answer to contain 40–60 words. Do not restructure the homepage around a third-party AEO score.
+- **Flesch 19/100:** Treat it as an editorial signal, not a Google score. The homepage hero lead sentence was rewritten as shorter task-focused sentences and the H1 now emits an explicit text space between “for” and “PDF”. The page contains technical product names, so do not distort accurate feature descriptions just to hit an arbitrary readability number.
+- **1,476-word homepage:** Word count is not a ranking target. Keep sections that help users discover tools; remove copy only when it is genuinely repetitive or unhelpful.
+
+### Further work retained
+
+1. Investigate whether public caching can safely be enabled for the homepage HTML without leaking/serving the wrong language or stale data. Do not change the global Cache-Control policy until route variation and live-data pages have been checked.
+2. The current CSP is present but still allows inline scripts for the Next.js App Router. A nonce-based tightening can be considered as a separate security hardening task after complete route/worker compatibility tests.
+3. Run PageSpeed Insights/Lighthouse and Search Console Core Web Vitals when data is available; this scan did not provide field data and must not be treated as a CWV result.
+4. Expand the scan to representative tool and guide pages, then the entire canonical sitemap. Do not call the 98/100 homepage score a domain-wide score.
+
+### Authoritative Google references checked 16 November 2026
+
+- Helpful, reliable, people-first content: https://developers.google.com/search/docs/fundamentals/creating-helpful-content
+- Page experience and ranking context: https://developers.google.com/search/docs/appearance/page-experience
+- Core Web Vitals: https://developers.google.com/search/docs/appearance/core-web-vitals
+- Google AI optimization guidance (including llms.txt clarification): https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
+- Search documentation updates, including June 2026 llms.txt and FAQ feature changes: https://developers.google.com/search/updates

@@ -7,6 +7,7 @@ import {
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
 import { hindiMathToolSlugs } from "./hindi-math-tools";
+import { hindiBusinessToolSlugs } from "./hindi-business-tools";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 
 /**
@@ -85,6 +86,7 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
 export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
   ...Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`),
   ...hindiMathToolSlugs.map((slug) => `/tools/${slug}`),
+  ...hindiBusinessToolSlugs.map((slug) => `/tools/${slug}`),
 ]);
 
 // Only published localized destinations that are in the shared index registry

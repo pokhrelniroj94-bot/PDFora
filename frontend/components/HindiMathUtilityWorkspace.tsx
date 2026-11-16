@@ -24,8 +24,8 @@ export const hindiMathTitles: Record<HindiMathToolSlug, { title: string; descrip
 
 const inputLabels: Record<string, string> = {
   from: "शुरुआती मान", to: "नया मान", number: "संख्या", percentage: "प्रतिशत (%)", amount: "मात्रा",
-  weight: "वज़न (kg)", height: "लंबाई (cm)", age: "आयु (वर्ष)", bill: "बिल राशि (₹)", tip: "टिप (%)",
-  people: "व्यक्तियों की संख्या", total: "कुल बिल (₹)", principal: "मूलधन (₹)", rate: "वार्षिक ब्याज दर (%)", years: "अवधि (वर्ष)",
+  weight: "वज़न (kg)", height: "लंबाई (cm)", age: "आयु (वर्ष)", bill: "बिल राशि (NPR)", tip: "टिप (%)",
+  people: "व्यक्तियों की संख्या", total: "कुल बिल (NPR)", principal: "मूलधन (NPR)", rate: "वार्षिक ब्याज दर (%)", years: "अवधि (वर्ष)",
 };
 
 const unitOptions: [string, string][] = [

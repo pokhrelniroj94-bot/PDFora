@@ -19,9 +19,9 @@ assert.match(run("unit-converter", { amount: "1", fromUnit: "km", toUnit: "m" })
 assert.match(run("unit-converter", { amount: "1", fromUnit: "kg", toUnit: "m" }), /एक ही प्रकार/);
 assert.match(run("bmi-calculator", { weight: "65", height: "170" }), /BMI: 22.49134948/);
 assert.match(run("bmr-calculator", { weight: "65", height: "170", age: "25", sex: "male" }), /1,592.5 kcal/);
-assert.match(run("tip-calculator", { bill: "1000", tip: "10", people: "2" }), /प्रति व्यक्ति: ₹550/);
-assert.match(run("split-bill-calculator", { total: "2400", people: "3" }), /देय राशि: ₹800/);
-assert.match(run("simple-interest-calculator", { principal: "100000", rate: "10", years: "2" }), /साधारण ब्याज: ₹20,000/);
+assert.match(run("tip-calculator", { bill: "1000", tip: "10", people: "2" }), /प्रति व्यक्ति: NPR 550/);
+assert.match(run("split-bill-calculator", { total: "2400", people: "3" }), /देय राशि: NPR 800/);
+assert.match(run("simple-interest-calculator", { principal: "100000", rate: "10", years: "2" }), /साधारण ब्याज: NPR 20,000/);
 assert.match(run("simple-interest-calculator", { principal: "-1", rate: "10", years: "2" }), /मूलधन धनात्मक/);
 
 // Cleared inputs must never throw or show NaN; they produce a validation message.

@@ -13,6 +13,7 @@ import NepaliBrowserOnlyGrowthTools from "../../../../components/NepaliBrowserOn
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
+import HindiBusinessCalculatorWorkspace, { hindiBusinessConfigs, isHindiBusinessSlug } from "../../../../components/HindiBusinessCalculatorWorkspace";
 import HindiMathUtilityWorkspace, { hindiMathTitles, isHindiMathSlug } from "../../../../components/HindiMathUtilityWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
@@ -382,6 +383,17 @@ export default async function LocalizedToolPage({ params }: Props) {
           <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiMathTitles[toolSlug].title}</h1>
         </div>
         <HindiMathUtilityWorkspace slug={toolSlug} />
+      </main>
+    );
+  }
+  if (request.locale === "hi" && isHindiBusinessSlug(toolSlug)) {
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी व्यावसायिक कैलकुलेटर</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiBusinessConfigs[toolSlug].title}</h1>
+        </div>
+        <HindiBusinessCalculatorWorkspace slug={toolSlug} />
       </main>
     );
   }

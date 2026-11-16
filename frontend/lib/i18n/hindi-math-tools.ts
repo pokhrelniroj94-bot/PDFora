@@ -19,9 +19,9 @@ const gcd = (left: number, right: number): number => {
   while (b !== 0) [a, b] = [b, a % b];
   return a;
 };
-/** Indian digit grouping (1,00,000) with Western numerals, as used in everyday Hindi-language UIs. */
+/** Lakh/crore digit grouping (1,00,000) with Western numerals, which is also the usual grouping in Nepal. Money is shown as NPR, matching the Nepali tools; no currency conversion is done. */
 const num = (value: number) => (Number.isFinite(value) ? value.toLocaleString("en-IN", { maximumFractionDigits: 8 }) : "—");
-const rupees = (value: number) => `₹${num(value)}`;
+const rupees = (value: number) => `NPR ${num(value)}`;
 const lengthToMeters: Record<string, number> = { m: 1, km: 1000, cm: 0.01, mm: 0.001, ft: 0.3048, in: 0.0254 };
 const massToGrams: Record<string, number> = { g: 1, kg: 1000, lb: 453.59237 };
 

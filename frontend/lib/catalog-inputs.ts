@@ -6,7 +6,7 @@ export function parseRequiredNumber(value: string): number {
 }
 
 export function splitWords(value: string): string[] {
-  return value.trim().split(/\\s+/).filter(Boolean);
+  return value.trim().split(/\s+/).filter(Boolean);
 }
 
 export function parseNumberList(value: string): number[] {

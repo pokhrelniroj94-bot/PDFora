@@ -666,7 +666,6 @@ async function runTool(tool, index) {
         row.status = "PASS";
         return row;
       }
-      }
       if (tool.slug === "nepali-unicode-typing") {
         const readyStarted = Date.now();
         let readyButton = false;

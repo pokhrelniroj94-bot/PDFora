@@ -831,8 +831,8 @@ async function runTool(tool, index) {
       }
       const calculatorSeeds = {
         "loan-emi-calculator": [["Loan amount", "1000000"], ["Annual interest rate (%)", "10"], ["Loan term (months)", "60"]],
-        "compound-interest-sip-calculator": [["Monthly investment", "5000"], ["Annual return rate (%)", "10"], ["Investment period (years)", "10"], ["Initial investment", "0"]],
-        "discount-percentage-calculator": [["Original price", "1000"], ["Discount (%)", "20"]],
+        "compound-interest-sip-calculator": [["Monthly SIP (NPR)", "5000"], ["Years", "10"], ["Expected annual return (%)", "10"], ["Initial investment (NPR)", "0"]],
+        "discount-percentage-calculator": [["Original price", "1000"], ["Discount (%)", "20"], ["Value / part", "25"], ["Total / whole", "100"]],
         "percentage-change-calculator": [["Original value", "100"], ["New value", "120"]],
         "average-calculator": [["Numbers separated by commas, semicolons or spaces", "10, 20, 30, 40"]],
         "ratio-simplifier": [["First part", "12"], ["Second part", "18"]],
@@ -844,7 +844,7 @@ async function runTool(tool, index) {
         "sales-tax-calculator": [["Amount", "1000"], ["Tax rate (%)", "13"]],
         "salary-breakdown-calculator": [["Gross monthly salary", "50000"], ["Estimated deduction (%)", "10"]],
         "savings-goal-calculator": [["Savings target", "100000"], ["Already saved", "10000"], ["Months to goal", "12"], ["Annual interest rate (%)", "5"]],
-        "reading-time-calculator": [["Text or input", "one two three four"]],
+        "reading-time-calculator": [["Text or input", "one two three four"], ["Reading speed (words/min)", "200"], ["Speaking speed (words/min)", "130"]],
         "bmi-calculator": [["Weight (kg)", "65"], ["Height (cm)", "170"]],
         "bmr-calculator": [["Weight (kg)", "65"], ["Height (cm)", "170"], ["Age (years)", "25"]],
         "tip-calculator": [["Bill amount", "2500"], ["Tip (%)", "10"], ["People", "2"]],
@@ -853,7 +853,7 @@ async function runTool(tool, index) {
         "commission-calculator": [["Sales amount", "100000"], ["Rate (%)", "5"]],
         "hourly-to-salary-calculator": [["Hourly wage", "15"], ["Hours per week", "40"]],
         "percentage-of-number-calculator": [["Value", "250"], ["Rate (%)", "15"]],
-        "gcd-lcm-calculator": [["First number", "24"], ["Second number", "36"]],
+        "gcd-lcm-calculator": [["First value / colour", "24"], ["Second value / colour", "36"]],
         "prime-number-checker": [["Integer", "97"]],
         "date-add-subtract-calculator": [["Starting date", "2026-11-01"], ["Days to add/subtract", "30"]],
         "aspect-ratio-calculator": [["Width (px)", "1920"], ["Height (px)", "1080"]]

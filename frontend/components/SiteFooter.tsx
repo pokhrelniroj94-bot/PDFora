@@ -18,6 +18,8 @@ export default function SiteFooter() {
         <span aria-hidden="true">·</span>
         <a href={guidesHref} className="font-semibold text-blue-700 hover:underline">{copy.guides}</a>
         <span aria-hidden="true">·</span>
+        <a href="/how-to-use" className="font-semibold text-blue-700 hover:underline">How to use</a>
+        <span aria-hidden="true">·</span>
         <a href={localizedOrFallbackPath("/about", locale)} className="hover:underline">{copy.about}</a>
         <span aria-hidden="true">·</span>
         <a href={localizedOrFallbackPath("/contact", locale)} className="hover:underline">{copy.contact}</a>

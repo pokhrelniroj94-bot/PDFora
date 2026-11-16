@@ -634,6 +634,27 @@ export default function CatalogToolSEOContent({
     "base64-encoder-decoder": "Convert text to Base64 or decode a Base64 value back to text. Base64 is a transport encoding, not a way to protect confidential information.",
   };
   const toolSpecificSteps: Record<string, string[]> = {
+    "reading-time-calculator": [
+      "Paste the complete article, lesson, email or speech script into the text field, including the sections you want counted.",
+      "Set the reading speed in words per minute (WPM). Compare 150, 200 and 250 WPM as planning assumptions rather than treating one speed as universal.",
+      "Set the speaking speed separately when estimating a presentation or narrated script, then run the calculator.",
+      "Review the word count, estimated reading time and estimated speaking time. Add pauses, slide changes and audience questions separately for a live presentation.",
+      "The tool counts whitespace-separated words; tables, code, unfamiliar terms and text in a second language can take longer to understand than the estimate."
+    ],
+    "savings-goal-calculator": [
+      "Enter the full savings target and the amount already saved. Use the same currency and include only money actually set aside for this goal.",
+      "Enter the number of whole months remaining until the target date. The tool accepts 1–1,200 months.",
+      "Enter the annual interest-rate assumption, from 0% to 100%. Use 0% first to see a no-interest baseline.",
+      "Choose monthly or weekly deposits, run the calculation and review the required deposit per period, projected existing balance, estimated interest and projected total.",
+      "Deposits are modelled at the end of each period with the annual rate divided across 12 or 52 periods. Check the account's real compounding, tax and fee rules before relying on the estimate."
+    ],
+    "percentage-change-calculator": [
+      "Choose Calculate percentage change for a normal before-and-after comparison, or Find original value from final value when working backwards.",
+      "For a normal change, enter the starting amount as Original value and the later amount as New value. Keep both values in the same unit and on the same measurement basis.",
+      "For a reverse calculation, enter the known Final value and the Percentage change (%); the calculator estimates the original value.",
+      "Run the calculation and check the percentage direction and change amount. A positive result is an increase and a negative result is a decrease.",
+      "The forward formula needs a non-zero original value. Reverse mode requires a non-zero final value and a percentage change greater than -100%."
+    ],
     "compound-interest-sip-calculator": [
       "Enter the amount you plan to invest at the end of each month in Monthly SIP (NPR). Enter 0 if you are not making monthly contributions.",
       "Enter the investment period in whole years, from more than 0 up to 100 years.",

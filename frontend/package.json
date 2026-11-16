@@ -17,7 +17,8 @@
     "i18n:matrix": "node scripts/coverage-matrix.mjs",
     "prebuild": "npm run verify:tools && npm run tools:test && npm test -- --runInBand && npm run i18n:test && npm run i18n:check && npm run lint",
     "blog:test": "node scripts/blog-quality.test.mjs",
-    "i18n:nepali-audit": "node scripts/nepali-source-audit.mjs"
+    "i18n:nepali-audit": "node scripts/nepali-source-audit.mjs",
+    "i18n:hi-pdf-smoke": "node scripts/hindi-pdf-route-smoke.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.1",

@@ -54,10 +54,15 @@ export function calculateAge(birthDate: string, asOfDate: string): { years: numb
 
 
 export function addCalendarDays(dateValue: string, days: number): string {
-  if (!Number.isInteger(days)) throw new Error("Enter a whole number of days.");
+  if (!Number.isSafeInteger(days)) throw new Error("Enter a whole number of days within the supported range.");
   const date = toUtcDate(parseCalendarDate(dateValue));
   date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
+  const year = date.getUTCFullYear();
+  if (!Number.isFinite(date.getTime()) || year < 0 || year > 9999) {
+    throw new Error("The resulting date must remain between years 0000 and 9999.");
+  }
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${String(year).padStart(4, "0")}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
 }
 
 export function timeDurationMinutes(start: string, end: string): number {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { bmi, bmr, businessDaysInclusive, gcd } from "../lib/catalog-calculations";
+import { bmi, bmr, businessDaysInclusive, simplifyDecimalRatio } from "../lib/catalog-calculations";
 import { addCalendarDays } from "../lib/date-time-calculations";
 import { jsonToYaml, parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
 import { csvToJson } from "../lib/catalog-text";
@@ -97,7 +97,7 @@ export default function QuickUtilityTools({slug}:{slug:string}) {
  case "date-add-subtract-calculator":{result=addCalendarDays(get("date"),n("days"));break;}
  case "business-days-calculator":result="Weekdays (inclusive): "+businessDaysInclusive(get("start"),get("end"))+"\nPublic holidays are not excluded.";break;
  case "px-rem-converter":{const x=n("value"),root=n("root");if(root<=0)throw Error("Root font size must be positive.");result=get("mode")==="rem-to-px"?(x*root).toFixed(4)+" px":(x/root).toFixed(4)+" rem";break;}
- case "aspect-ratio-calculator":{const w=n("width"),h=n("height");if(w<=0||h<=0)throw Error("Width and height must be positive.");const g=gcd(Math.round(w*1000),Math.round(h*1000));result="Aspect ratio: "+Math.round(w*1000)/g+":"+Math.round(h*1000)/g+"\nDecimal: "+(w/h).toFixed(5);break;}
+ case "aspect-ratio-calculator":{const w=n("width"),h=n("height");result="Aspect ratio: "+simplifyDecimalRatio(w,h)+"\nDecimal: "+(w/h).toFixed(5);break;}
  case "color-converter":{const m=t.trim().match(/^#?([0-9a-f]{6})$/i);if(!m)throw Error("Enter a six-digit HEX colour.");const x=parseInt(m[1],16),r=x>>16,g=(x>>8)&255,b=x&255,rr=r/255,gg=g/255,bb=b/255,mx=Math.max(rr,gg,bb),mn=Math.min(rr,gg,bb),delta=mx-mn;let h=0;if(delta){if(mx===rr)h=60*(((gg-bb)/delta)%6);else if(mx===gg)h=60*((bb-rr)/delta+2);else h=60*((rr-gg)/delta+4);}if(h<0)h+=360;const l=(mx+mn)/2,s=delta?delta/(1-Math.abs(2*l-1)):0;result="HEX: #"+m[1].toUpperCase()+"\nRGB: "+r+", "+g+", "+b+"\nHSL: "+Math.round(h)+"°, "+Math.round(s*100)+"%, "+Math.round(l*100)+"%";break;}
  case "css-gradient-generator":if(!/^#[0-9a-f]{6}$/i.test(get("a"))||!/^#[0-9a-f]{6}$/i.test(get("b")))throw Error("Choose valid six-digit HEX colours.");result="background: linear-gradient("+n("angle")+"deg, "+get("a")+", "+get("b")+");";break;
  case "roman-numeral-converter":{result=convertRomanNumeral(t);break;}

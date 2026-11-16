@@ -163,6 +163,33 @@ export function convertUnit(value: number, from: string, to: string): number {
   return converted;
 }
 
+function decimalFraction(value: number): { numerator: bigint; denominator: bigint } {
+  const [mantissa, exponentText] = value.toString().toLowerCase().split("e");
+  const exponent = exponentText === undefined ? 0 : Number(exponentText);
+  const [whole, fraction = ""] = mantissa.split(".");
+  let numerator = BigInt(whole + fraction);
+  const scale = fraction.length - exponent;
+  let denominator = BigInt(1);
+  if (scale > 0) denominator = BigInt(10) ** BigInt(scale);
+  else if (scale < 0) numerator *= BigInt(10) ** BigInt(-scale);
+  const divisor = bigintGcd(numerator, denominator);
+  return { numerator: numerator / divisor, denominator: denominator / divisor };
+}
+
+export function simplifyDecimalRatio(width: number, height: number): string {
+  if (![width, height].every(Number.isFinite) || width <= 0 || height <= 0) {
+    throw new Error("Width and height must be positive finite numbers.");
+  }
+  const a = decimalFraction(width);
+  const b = decimalFraction(height);
+  let numerator = a.numerator * b.denominator;
+  let denominator = b.numerator * a.denominator;
+  const divisor = bigintGcd(numerator, denominator);
+  numerator /= divisor;
+  denominator /= divisor;
+  return `${numerator}:${denominator}`;
+}
+
 export function bmi(weightKg: number, heightCm: number): number {
   if (!Number.isFinite(weightKg) || !Number.isFinite(heightCm) || weightKg <= 0 || heightCm <= 0) {
     throw new Error("Weight and height must be positive.");

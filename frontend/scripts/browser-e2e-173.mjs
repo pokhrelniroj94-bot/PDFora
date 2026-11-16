@@ -770,6 +770,40 @@ async function runTool(tool, index) {
         await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
         await delay(300);
       }
+      const calculatorSeeds = {
+        "loan-emi-calculator": [["Loan amount", "1000000"], ["Annual interest rate (%)", "10"], ["Loan term (months)", "60"]],
+        "compound-interest-sip-calculator": [["Monthly SIP (NPR)", "5000"], ["Years", "10"], ["Expected annual return (%)", "10"], ["Initial investment (NPR)", "0"]],
+        "discount-percentage-calculator": [["Original price", "1000"], ["Discount (%)", "20"], ["Value / part", "25"], ["Total / whole", "100"]],
+        "percentage-change-calculator": [["Original value", "100"], ["New value", "120"]],
+        "average-calculator": [["Numbers separated by commas, semicolons or spaces", "10, 20, 30, 40"]],
+        "ratio-simplifier": [["First part", "12"], ["Second part", "18"]],
+        "fraction-calculator": [["First numerator", "1"], ["First denominator", "2"], ["Second numerator", "1"], ["Second denominator", "3"]],
+        "unit-converter": [["Value", "1"], ["From unit (m km cm mm in ft kg g lb l ml c f)", "km"], ["To unit", "m"]],
+        "profit-margin-calculator": [["Cost", "60"], ["Selling price", "100"]],
+        "markup-calculator": [["Cost", "60"], ["Markup (%)", "40"]],
+        "break-even-calculator": [["Fixed costs", "100000"], ["Selling price per unit", "500"], ["Variable cost per unit", "300"]],
+        "sales-tax-calculator": [["Amount", "1000"], ["Tax rate (%)", "13"]],
+        "salary-breakdown-calculator": [["Gross monthly salary", "50000"], ["Estimated deduction (%)", "10"]],
+        "savings-goal-calculator": [["Savings target", "100000"], ["Already saved", "10000"], ["Months to goal", "12"], ["Annual interest rate (%)", "5"]],
+        "reading-time-calculator": [["Text or input", "one two three four"], ["Reading speed (words/min)", "200"], ["Speaking speed (words/min)", "130"]],
+        "bmi-calculator": [["Weight (kg)", "65"], ["Height (cm)", "170"]],
+        "bmr-calculator": [["Weight (kg)", "65"], ["Height (cm)", "170"], ["Age (years)", "25"]],
+        "tip-calculator": [["Bill amount", "2500"], ["Tip (%)", "10"], ["People", "2"]],
+        "split-bill-calculator": [["Bill amount", "3000"], ["Extra amount", "0"], ["People", "3"]],
+        "simple-interest-calculator": [["Principal", "10000"], ["Rate (%)", "8"], ["Years", "3"]],
+        "commission-calculator": [["Sales amount", "100000"], ["Rate (%)", "5"]],
+        "hourly-to-salary-calculator": [["Hourly wage", "15"], ["Hours per week", "40"]],
+        "percentage-of-number-calculator": [["Value", "250"], ["Rate (%)", "15"]],
+        "gcd-lcm-calculator": [["First value / colour", "24"], ["Second value / colour", "36"]],
+        "prime-number-checker": [["Integer", "97"]],
+        "date-add-subtract-calculator": [["Starting date", "2026-11-01"], ["Days to add/subtract", "30"]],
+        "aspect-ratio-calculator": [["Width (px)", "1920"], ["Height (px)", "1080"]],
+        "random-number-generator": [["Minimum", "1"], ["Maximum", "100"], ["Count", "5"]],
+        "dice-roller": [["Count", "2"]],
+        "image-dpi-calculator": [["Image width (pixels)", "2400"], ["Image height (pixels)", "3000"], ["Printed width", "8"], ["Printed height", "10"]],
+        "video-bitrate-calculator": [["Video duration (minutes)", "10"], ["Additional seconds", "0"], ["Target file size (MB, decimal)", "500"], ["Audio bitrate (kbps)", "192"], ["Container / overhead allowance (%)", "5"]]
+      };
+      if (calculatorSeeds[tool.slug]) await setFieldsByLabel(page, calculatorSeeds[tool.slug]);
       const catalogDownloadsBefore = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
       const clicked = tool.slug === "nepal-forex-rates" ? "" : await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
@@ -829,38 +863,8 @@ async function runTool(tool, index) {
         row.evidenceLevel = "timezone-conversion-and-dst-edge-case-verified";
         return row;
       }
-      const calculatorSeeds = {
-        "loan-emi-calculator": [["Loan amount", "1000000"], ["Annual interest rate (%)", "10"], ["Loan term (months)", "60"]],
-        "compound-interest-sip-calculator": [["Monthly SIP (NPR)", "5000"], ["Years", "10"], ["Expected annual return (%)", "10"], ["Initial investment (NPR)", "0"]],
-        "discount-percentage-calculator": [["Original price", "1000"], ["Discount (%)", "20"], ["Value / part", "25"], ["Total / whole", "100"]],
-        "percentage-change-calculator": [["Original value", "100"], ["New value", "120"]],
-        "average-calculator": [["Numbers separated by commas, semicolons or spaces", "10, 20, 30, 40"]],
-        "ratio-simplifier": [["First part", "12"], ["Second part", "18"]],
-        "fraction-calculator": [["First numerator", "1"], ["First denominator", "2"], ["Second numerator", "1"], ["Second denominator", "3"]],
-        "unit-converter": [["Value", "1"], ["From unit (m km cm mm in ft kg g lb l ml c f)", "km"], ["To unit", "m"]],
-        "profit-margin-calculator": [["Cost", "60"], ["Selling price", "100"]],
-        "markup-calculator": [["Cost", "60"], ["Markup (%)", "40"]],
-        "break-even-calculator": [["Fixed costs", "100000"], ["Selling price per unit", "500"], ["Variable cost per unit", "300"]],
-        "sales-tax-calculator": [["Amount", "1000"], ["Tax rate (%)", "13"]],
-        "salary-breakdown-calculator": [["Gross monthly salary", "50000"], ["Estimated deduction (%)", "10"]],
-        "savings-goal-calculator": [["Savings target", "100000"], ["Already saved", "10000"], ["Months to goal", "12"], ["Annual interest rate (%)", "5"]],
-        "reading-time-calculator": [["Text or input", "one two three four"], ["Reading speed (words/min)", "200"], ["Speaking speed (words/min)", "130"]],
-        "bmi-calculator": [["Weight (kg)", "65"], ["Height (cm)", "170"]],
-        "bmr-calculator": [["Weight (kg)", "65"], ["Height (cm)", "170"], ["Age (years)", "25"]],
-        "tip-calculator": [["Bill amount", "2500"], ["Tip (%)", "10"], ["People", "2"]],
-        "split-bill-calculator": [["Bill amount", "3000"], ["Extra amount", "0"], ["People", "3"]],
-        "simple-interest-calculator": [["Principal", "10000"], ["Rate (%)", "8"], ["Years", "3"]],
-        "commission-calculator": [["Sales amount", "100000"], ["Rate (%)", "5"]],
-        "hourly-to-salary-calculator": [["Hourly wage", "15"], ["Hours per week", "40"]],
-        "percentage-of-number-calculator": [["Value", "250"], ["Rate (%)", "15"]],
-        "gcd-lcm-calculator": [["First value / colour", "24"], ["Second value / colour", "36"]],
-        "prime-number-checker": [["Integer", "97"]],
-        "date-add-subtract-calculator": [["Starting date", "2026-11-01"], ["Days to add/subtract", "30"]],
-        "aspect-ratio-calculator": [["Width (px)", "1920"], ["Height (px)", "1080"]]
-      };
-      if (calculatorSeeds[tool.slug]) await setFieldsByLabel(page, calculatorSeeds[tool.slug]);
+
       if (tool.slug === "image-dpi-calculator") {
-        await setFieldsByLabel(page, [["Image width (pixels)", "2400"], ["Image height (pixels)", "3000"], ["Printed width", "8"], ["Printed height", "10"]]);
         const dpi = await page.evaluate('document.querySelector("main")?.innerText || ""');
         if (!/300\.0\s+PPI/.test(dpi) || !/2,400 × 3,000 px/.test(dpi) || !/at or above/i.test(dpi)) {
           throw new Error("Image DPI calculator default 2400×3000px at 8×10in did not produce 300 PPI.");
@@ -877,7 +881,6 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "video-bitrate-calculator") {
-        await setFieldsByLabel(page, [["Video duration (minutes)", "10"], ["Additional seconds", "0"], ["Target file size (MB, decimal)", "500"], ["Audio bitrate (kbps)", "192"], ["Container / overhead allowance (%)", "5"]]);
         const bitrate = await page.evaluate('document.querySelector("main")?.innerText || ""');
         if (!/6,667\s+kbps/.test(bitrate) || !/6,141\s+kbps/.test(bitrate) || !/500\.0 MB/.test(bitrate)) {
           throw new Error("Video bitrate calculator did not match the 10-minute, 500MB baseline.");

@@ -6,7 +6,7 @@ The report deliberately separates source-language content from translated conten
 
 **Method limits:** frontend page source-file counts are not runtime route counts. Dynamic route equivalents are reported as counts only, not percentages of source files. Shared UI coverage measures only the dedicated `shared-ui.ts` module, not every component, form, validation message, or error surface.
 
-Inventory: 70 frontend page source files, 6 API route source files, 49 English PDF guides, 49 Nepali PDF guides, 16 editorial articles and 19 Nepal articles.
+Inventory: 71 frontend page source files, 6 API route source files, 49 English PDF guides, 49 Nepali PDF guides, 16 editorial articles and 19 Nepal articles.
 
 | Code | Language | Status | Localized route equivalents | Shared UI module | PDF guides | Blog content |
 |---|---|---|---:|---:|---:|---:|---:|

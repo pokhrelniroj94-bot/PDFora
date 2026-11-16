@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-16T07:24:57.872Z",
-  "sourceCommit": "bdf4a94f0d506b674f61bfa900f5eb8c95300ea2",
+  "generatedAt": "2026-11-16T12:57:44.889Z",
+  "sourceCommit": "34dd16a8f1f75d3b56cfaf74f4eb852f39ffd51d",
   "methodology": {
     "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
     "routeCoverage": "Dynamic route handlers serve multiple slugs; localized route equivalents are reported as counts only, not percentages of page source files.",
@@ -10,7 +10,7 @@
     "review": "Automation cannot certify native-speaker or human editorial review."
   },
   "inventory": {
-    "frontendPageSourceFiles": 70,
+    "frontendPageSourceFiles": 71,
     "apiRouteSourceFiles": 6,
     "pdfGuides": 49,
     "nepaliPdfGuides": 49,
@@ -31,7 +31,7 @@
     "en": {
       "status": "Source language; translation review not assessed",
       "published": true,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": null,
       "routeCoveragePercent": null,
       "sharedUiModuleCoveragePercent": 100,
@@ -52,7 +52,7 @@
     "ne": {
       "status": "Partially translated",
       "published": true,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 219,
       "routeCoveragePercent": null,
       "sharedUiModuleCoveragePercent": 100,
@@ -73,7 +73,7 @@
     "hi": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,
@@ -93,7 +93,7 @@
     "bn": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,
@@ -113,7 +113,7 @@
     "ur": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,
@@ -133,7 +133,7 @@
     "ar": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,
@@ -153,7 +153,7 @@
     "es": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,
@@ -173,7 +173,7 @@
     "fr": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,
@@ -193,7 +193,7 @@
     "de": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,
@@ -213,7 +213,7 @@
     "pt": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,
@@ -233,7 +233,7 @@
     "zh": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,
@@ -253,7 +253,7 @@
     "ja": {
       "status": "Not published",
       "published": false,
-      "sourceRouteFiles": 70,
+      "sourceRouteFiles": 71,
       "translatedRoutes": 0,
       "routeCoveragePercent": 0,
       "sharedUiModuleCoveragePercent": 0,

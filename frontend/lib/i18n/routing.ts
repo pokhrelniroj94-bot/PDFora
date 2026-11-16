@@ -6,6 +6,7 @@ import {
 } from "./nepali-tool-routes";
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
+import { hindiMathToolSlugs } from "./hindi-math-tools";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 
 /**
@@ -81,7 +82,10 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
  * so these routes are only reachable in preview and are never indexed or listed in hreflang.
  * Grow this set only as each Hindi page is genuinely translated.
  */
-export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set(Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`));
+export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
+  ...Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`),
+  ...hindiMathToolSlugs.map((slug) => `/tools/${slug}`),
+]);
 
 // Only published localized destinations that are in the shared index registry
 // participate in reciprocal hreflang. Human/native review status is tracked

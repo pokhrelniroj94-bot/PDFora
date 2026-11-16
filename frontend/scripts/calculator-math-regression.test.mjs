@@ -14,7 +14,7 @@ for (const input of ["", ",1", "1,", "1,,2", "1,;2", "1, nope", "Infinity"]) {
   assert.throws(() => parseNumberList(input), undefined, `reject malformed list: ${JSON.stringify(input)}`);
 }
 assert.equal(average(parseNumberList("1, 2, 3, 4")).mean, 2.5);
-assert.deepEqual(splitWords("one two\\nthree\\tfour"), ["one", "two", "three", "four"]);
+assert.deepEqual(splitWords("one two\nthree\tfour"), ["one", "two", "three", "four"]);
 assert.deepEqual(splitWords("   "), []);
 
 assert.equal(simplifyDecimalRatio(1920, 1080), "16:9");

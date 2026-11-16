@@ -13,10 +13,11 @@ Hindi (`hi`) is **unpublished**: routes are preview-only (`PDFORA_I18N_PREVIEW=1
 - 4 finance calculator workspaces: loan EMI, compound interest/SIP, discount percentage and savings goal (`components/HindiFinanceCalculatorWorkspace.tsx`), wired into the Hindi localized tool route. Includes input bounds, NPR formatting and calculation assumptions.
 - 6 Nepal utility/calculator workspaces: VAT, land-area conversion, tola/gram conversion, Nepal mobile-number format checking, credit-weighted NEB GPA and an editable-assumptions NEPSE share profit/loss estimate (`components/HindiNepalToolsWorkspace.tsx`), wired into Hindi routes. These are local calculations/format checks, not live official data.
 - 20 text utility routes wired to a Hindi workspace (`components/HindiTextToolsWorkspace.tsx`): counters, case conversion, line/word operations, reading time, extractors, find/replace, palindrome and acronym tools. Browser-local processing; extractor outputs are pattern matches, not verified contact data.
+- 8 developer/encoding routes wired to a Hindi workspace (`components/HindiDeveloperToolsWorkspace.tsx`): JSON format/validation, Base64, URL encoding, SHA-256, line diff, Lorem Ipsum, HTML entities and URL slug generation.
 
 ## Pending
 - Calculators/Nepal tools: forex, salary tax, dividend, Nepali date conversion, calendar, photo resizer, other tools. The date/time, finance and Nepal utility components above are implemented but not yet build/test verified.
-- Remaining text tools (diff, lorem, password, etc.), developer/encoding tools, image tools, and remaining Nepal tools.
+- Remaining text tools (password and other catalog tools), image tools, and remaining Nepal tools.
 - PDF tool pages (Hindi UI wired to real tool workspaces) and tool pages that still show English with a notice.
 - 16 English blog articles plus Nepali-parity review.
 - Homepage, tools directory, categories, Resume Builder, About, Contact, Privacy, Terms, help, cookie consent, nav/footer, 404.

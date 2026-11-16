@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { bmi, bmr, businessDaysInclusive, gcd, simplifyDecimalRatio } from "../lib/catalog-calculations";
 import { addCalendarDays } from "../lib/date-time-calculations";
-import { jsonToYaml, parseRequiredNumber, randomIntegerBelow } from "../lib/catalog-inputs";
+import { jsonToYaml, parseRequiredNumber, randomIntegerBelow, splitWords } from "../lib/catalog-inputs";
 import { csvToJson } from "../lib/catalog-text";
 import { convertRomanNumeral } from "../lib/roman-numerals";
 
@@ -44,7 +44,7 @@ const defaults: Record<string, Values> = {
 const labels: Record<string, string> = {text:"Text or input",wpm:"Reading speed (words/min)",speakingWpm:"Speaking speed (words/min)",find:"Find",replace:"Replace with",mode:"Mode",weight:"Weight (kg)",height:"Height (cm)",age:"Age (years)",sex:"Sex (male/female)",bill:"Bill amount",tip:"Tip (%)",people:"People",extra:"Extra amount",principal:"Principal",rate:"Rate (%)",years:"Years",sales:"Sales amount",wage:"Hourly wage",hours:"Hours per week",value:"Value",a:"First value / colour",b:"Second value / colour",n:"Integer",min:"Minimum",max:"Maximum",count:"Count",date:"Starting date",days:"Days to add/subtract",start:"Start date",end:"End date",root:"Root font size (px)",width:"Width (px)",angle:"Angle (degrees)"};
 const numeric = new Set(["wpm","speakingWpm","weight","height","age","bill","tip","people","extra","principal","rate","years","sales","wage","hours","value","a","b","n","min","max","count","days","root","width","angle"]);
 const calculatorSlugs = new Set(["reading-time-calculator","age-calculator","date-difference-calculator","time-duration-calculator","bmi-calculator","bmr-calculator","tip-calculator","split-bill-calculator","simple-interest-calculator","commission-calculator","hourly-to-salary-calculator","percentage-of-number-calculator","gcd-lcm-calculator","prime-number-checker","random-number-generator","dice-roller","date-add-subtract-calculator","business-days-calculator","aspect-ratio-calculator"]);
-const words=(s:string)=>s.trim().split(/\\s+/).filter(Boolean);
+const words=splitWords;
 const tokens=(s:string)=>s.normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/([a-z0-9])([A-Z])/g,"$1 $2").toLowerCase().match(/[a-z0-9]+/g)||[];
 const morse:Record<string,string>={a:".-",b:"-...",c:"-.-.",d:"-..",e:".",f:"..-.",g:"--.",h:"....",i:"..",j:".---",k:"-.-",l:".-..",m:"--",n:"-.",o:"---",p:".--.",q:"--.-",r:".-.",s:"...",t:"-",u:"..-",v:"...-",w:".--",x:"-..-",y:"-.--",z:"--..",0:"-----",1:".----",2:"..---",3:"...--",4:"....-",5:".....",6:"-....",7:"--...",8:"---..",9:"----."," ":"/"};
 export default function QuickUtilityTools({slug}:{slug:string}) {

@@ -190,6 +190,19 @@ export function simplifyDecimalRatio(width: number, height: number): string {
   return `${numerator}:${denominator}`;
 }
 
+export function breakEvenUnits(fixedCosts: number, sellingPrice: number, variableCost: number): { units: number; revenue: number } {
+  if (![fixedCosts, sellingPrice, variableCost].every(Number.isFinite) ||
+      fixedCosts < 0 || variableCost < 0 || sellingPrice <= variableCost) {
+    throw new Error("Fixed and variable costs must be non-negative, and selling price must exceed variable cost.");
+  }
+  const theoreticalUnits = fixedCosts / (sellingPrice - variableCost);
+  if (!Number.isFinite(theoreticalUnits)) throw new Error("Break-even quantity exceeds the supported numeric range.");
+  const units = Math.ceil(theoreticalUnits);
+  const revenue = units * sellingPrice;
+  if (!Number.isFinite(revenue)) throw new Error("Break-even revenue exceeds the supported numeric range.");
+  return { units, revenue };
+}
+
 export function bmi(weightKg: number, heightCm: number): number {
   if (!Number.isFinite(weightKg) || !Number.isFinite(heightCm) || weightKg <= 0 || heightCm <= 0) {
     throw new Error("Weight and height must be positive.");

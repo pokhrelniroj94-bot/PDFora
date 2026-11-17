@@ -13,8 +13,10 @@ import NepaliBrowserOnlyGrowthTools from "../../../../components/NepaliBrowserOn
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
-import HindiBusinessCalculatorWorkspace, { hindiBusinessConfigs, isHindiBusinessSlug } from "../../../../components/HindiBusinessCalculatorWorkspace";
-import HindiMathUtilityWorkspace, { hindiMathTitles, isHindiMathSlug } from "../../../../components/HindiMathUtilityWorkspace";
+import HindiBusinessCalculatorWorkspace, { hindiBusinessConfigs } from "../../../../components/HindiBusinessCalculatorWorkspace";
+import HindiMathUtilityWorkspace, { hindiMathTitles } from "../../../../components/HindiMathUtilityWorkspace";
+import { hindiMathToolSlugs } from "../../../../lib/i18n/hindi-math-tools";
+import { hindiBusinessToolSlugs } from "../../../../lib/i18n/hindi-business-tools";
 import HindiDateTimeWorkspace from "../../../../components/HindiDateTimeWorkspace";
 import HindiFinanceCalculatorWorkspace from "../../../../components/HindiFinanceCalculatorWorkspace";
 import HindiNepalToolsWorkspace from "../../../../components/HindiNepalToolsWorkspace";
@@ -477,7 +479,7 @@ export default async function LocalizedToolPage({ params }: Props) {
       <HindiDeveloperToolsWorkspace slug={toolSlug} />
     </main>;
   }
-  if (request.locale === "hi" && isHindiMathSlug(toolSlug)) {
+  if (request.locale === "hi" && hindiMathToolSlugs.includes(toolSlug)) {
     return (
       <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
         <div className="mb-7">
@@ -501,7 +503,7 @@ export default async function LocalizedToolPage({ params }: Props) {
     const titles: Record<string, string> = { "image-compressor": "इमेज कंप्रेसर", "image-format-converter": "इमेज फ़ॉर्मेट कनवर्टर", "image-dpi-calculator": "इमेज DPI कैलकुलेटर" };
     return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी इमेज टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1></div><HindiImageToolsWorkspace slug={toolSlug} /></main>;
   }
-  if (request.locale === "hi" && isHindiBusinessSlug(toolSlug)) {
+  if (request.locale === "hi" && hindiBusinessToolSlugs.includes(toolSlug)) {
     return (
       <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
         <div className="mb-7">

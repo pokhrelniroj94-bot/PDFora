@@ -42,6 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...nepaliLocalizedUtilitySlugs,
     ...nepaliLocalizedFinancialSlugs,
     ...nepaliLocalizedPublicInfoSlugs,
+    "qr-code-generator",
   ].filter((slug) => isLocalizedToolIndexable("ne", slug));
 
   return [

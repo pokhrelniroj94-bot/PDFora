@@ -17,8 +17,8 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.counts.indexableNepaliTools, 175);
   assert.equal(report.counts.localizedHindiTools, 175, "49 Hindi PDF tools, 125 catalog tools and the separately localized QR generator");
   assert.equal(report.rows.filter((row) => row.locale === "hi" && row.interface === "hindi-interface-present").length, 175);
-  assert.equal(report.rows.filter((row) => row.locale === "hi" && row.indexing === "eligible").length, 0, "Hindi remains noindex until all publication gates pass");
-  assert.equal(report.rows.filter((row) => row.locale === "hi" && row.published).length, 0);
+  assert.equal(report.rows.filter((row) => row.locale === "hi" && row.slug !== "qr-code-generator" && row.indexing === "eligible").length, 0, "Hindi remains noindex except the already-published QR tool");
+  assert.equal(report.rows.filter((row) => row.locale === "hi" && row.slug !== "qr-code-generator" && row.published).length, 0);
   for (const locale of ["ne","hi","bn","ur","ar","es","fr","de","pt","zh","ja"]) {
     const qr = report.rows.find((row) => row.locale === locale && row.slug === "qr-code-generator");
     assert.equal(qr?.published, true, "QR generator is the reviewed multilingual publication exception");

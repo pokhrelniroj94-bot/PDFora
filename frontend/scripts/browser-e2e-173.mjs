@@ -29,8 +29,8 @@ const allTools = [
   ...catalogTools.map((tool) => ({ kind: "catalog", ...tool, url: "/tools/" + tool.slug })),
 ];
 
-if (pdfRoutes.length !== 49 || catalogTools.length !== 125 || allTools.length !== 174) {
-  throw new Error("Expected 49 PDF routes + 125 catalog tools = 174; got " +
+if (pdfRoutes.length !== 49 || catalogTools.length !== 126 || allTools.length !== 175) {
+  throw new Error("Expected 49 PDF routes + 126 catalog tools = 175; got " +
     pdfRoutes.length + " + " + catalogTools.length + " = " + allTools.length);
 }
 const requestedToolFilters = (process.env.E2E_TOOL_FILTER || "").split(",").map((value) => value.trim()).filter(Boolean);
@@ -1319,7 +1319,7 @@ try {
     const result = await runTool(tools[index], index);
     results.push(result);
     console.log((result.status === "PASS" ? "PASS " : result.status === "PARTIAL" ? "PARTIAL " : "FAIL ") +
-      result.index + "/174 " + result.slug + " — " +
+      result.index + "/175 " + result.slug + " — " +
       (result.errors[0] || result.checks.join(", ")));
     if (fatalBrowserError) break;
   }
@@ -1408,7 +1408,7 @@ try {
     }
     nepaliRouteResults.push(row);
     console.log((row.status === "PASS" ? "PASS " : "FAIL ") + "ne-NP " +
-      (nepaliRouteResults.length) + "/174 " + route.slug + " — " +
+      (nepaliRouteResults.length) + "/175 " + route.slug + " — " +
       (row.errors[0] || row.checks.join(", ")));
   }
 } finally {
@@ -1420,15 +1420,15 @@ const report = {
   sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
   localeMode: localePrefix ? "ne-route-smoke" : "en-functional",
-  scope: requestedToolFilters.length ? requestedToolFilters : "all-174-tools",
+  scope: requestedToolFilters.length ? requestedToolFilters : "all-175-tools",
   expected: requestedToolFilters.length
     ? { pdf: tools.filter((tool) => tool.kind === "pdf").length, catalog: tools.filter((tool) => tool.kind === "catalog").length, total: tools.length }
-    : { pdf: 49, catalog: 125, total: 174, nepaliLocalizedRoutes: 174 },
+    : { pdf: 49, catalog: 126, total: 175, nepaliLocalizedRoutes: 175 },
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each selected PDF route, attach valid fixtures and inspect processing/output. The Merge PDF assertion uploads two distinct PDFs, moves the first below the second, then verifies the downloaded merged page dimensions match that selected order.",
-    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A dedicated second pass visits all 174 registered Nepali tool routes, checks lang=ne, Devanagari content, heading, controls, PDF upload presence, 390px mobile overflow and a non-submitting editable-control interaction. This does not certify each tool’s validation, result oracle or downloaded file in Nepali; those require individual localized functional assertions. When E2E_LOCALE=ne, the English-language functional oracle suite is skipped and only the dedicated 174-route Nepali smoke pass runs, avoiding false failures from English expected-output strings.",
-    limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 174 non-AI tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
+    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A dedicated second pass visits all 174 registered Nepali tool routes, checks lang=ne, Devanagari content, heading, controls, PDF upload presence, 390px mobile overflow and a non-submitting editable-control interaction. This does not certify each tool’s validation, result oracle or downloaded file in Nepali; those require individual localized functional assertions. When E2E_LOCALE=ne, the English-language functional oracle suite is skipped and only the dedicated 175-route Nepali smoke pass runs, avoiding false failures from English expected-output strings.",
+    limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 175 non-AI tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },
   counts: {
     total: results.length,

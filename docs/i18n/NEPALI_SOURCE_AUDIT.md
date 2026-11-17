@@ -19,7 +19,7 @@ Generated from current source by `npm run i18n:nepali-audit`.
 - Duplicate blog slugs/titles/descriptions: 0/0/0.
 - Nepali blog editorial records checked: 35; articles without cited sources: 0; broken internal tool links: 0.
 - All 35 curated Nepali blog routes are configured indexable; 0 articles still lack external citations and need factual/source follow-up where claims require independent evidence.
-- Explicitly indexable localized tool slugs: 174.
+- Explicitly indexable localized tool slugs: 6 (`merge-pdf`, `split-pdf`, `compress-pdf`, `pdf-to-word`, `pdf-to-jpg`, `rotate-pdf`).
 - Native-speaker review certified: **No**.
 - Per-tool Nepali browser QA certified by this static report: **No**.
 

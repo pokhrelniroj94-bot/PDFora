@@ -696,7 +696,7 @@ async function runTool(tool, index) {
       } else if (tool.slug === "notes-to-pdf") {
         await setFirstTextArea(page, "PDFora E2E Notes\\nThis is a browser-generated test document.");
       } else if (tool.slug === "jwt-decoder") {
-        await setFirstTextArea(page, "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
+        await setFieldByLabel(page, "JWT token", "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
       } else if (tool.slug === "nepali-unicode-typing") {
         await setFirstTextArea(page, "Namaste Nepal");
       } else if (tool.slug === "nepali-date-converter") {
@@ -1302,7 +1302,7 @@ async function runTool(tool, index) {
           const alert = document.querySelector('main [role="alert"]')?.innerText || "";
           return { count: fields.length, values: fields.map((field) => field.value), alert };
         })()`);
-        const status = await page.locator('main [role="status"]').innerText().catch(() => "");
+        const status = await page.evaluate('document.querySelector("main [role=status]")?.innerText || ""');
         if (invalidState.count !== 3 || invalidState.alert || !/enter the loan amount/i.test(status)) {
           throw new Error("Empty EMI fields must remain visible without a premature validation error and show neutral guidance.");
         }

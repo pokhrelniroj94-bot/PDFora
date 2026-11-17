@@ -17,7 +17,9 @@ export type LocalizedToolRequest =
  */
 export function resolveLocalizedToolRequest(localeParam: unknown, slugParam: unknown): LocalizedToolRequest {
   if (!isLocale(localeParam)) return { status: "not-found", reason: "invalid-locale" };
-  if (!isRoutable(localeParam)) return { status: "not-found", reason: "locale-not-served" };
+  // QR Generator is independently translated and published in all supported locales.
+  // Keep every other tool behind the normal locale publishing gate.
+  if (!isRoutable(localeParam) && slugParam !== "qr-code-generator") return { status: "not-found", reason: "locale-not-served" };
   const resolution = resolveCatalogTool(slugParam);
   if (!resolution.ok) return { status: "not-found", reason: resolution.reason };
   return { status: "ok", locale: localeParam, implementation: resolution.implementation };

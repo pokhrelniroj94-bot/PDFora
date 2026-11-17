@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-17T10:59:43.748Z",
-  "sourceCommit": "84758d2bf27b03b24d9bbf22b86035ad1bc22a93",
+  "generatedAt": "2026-11-17T11:02:14.403Z",
+  "sourceCommit": "a4fe1061ea86378d0f89ffe9c1f027eec4f71ae1",
   "methodology": {
     "sourceOfTruth": "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
     "expectedUniqueTools": 174,
@@ -19,7 +19,7 @@
     ],
     "localizedNepaliTools": 174,
     "indexableNepaliTools": 174,
-    "localizedHindiTools": 159
+    "localizedHindiTools": 163
   },
   "tools": [
     {
@@ -7089,11 +7089,11 @@
       "kind": "utility",
       "route": "/tools/currency-converter",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "hindi-interface-present",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
       "published": false,
       "direction": "ltr"
@@ -8589,11 +8589,11 @@
       "kind": "utility",
       "route": "/tools/nepali-number-converter",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "hindi-interface-present",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
       "published": false,
       "direction": "ltr"
@@ -8649,11 +8649,11 @@
       "kind": "utility",
       "route": "/tools/nepali-digit-converter",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "hindi-interface-present",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
       "published": false,
       "direction": "ltr"
@@ -8814,11 +8814,11 @@
       "kind": "utility",
       "route": "/tools/nepse-dividend-calculator",
       "routeExists": true,
-      "handler": "not-published",
-      "interface": "not-implemented",
+      "handler": "localized-route-handler",
+      "interface": "hindi-interface-present",
       "content": "not-verified",
       "functionalTest": "not-individually-verified",
-      "humanReview": "not-reviewed",
+      "humanReview": "native-review-not-assessed",
       "indexing": "excluded",
       "published": false,
       "direction": "ltr"

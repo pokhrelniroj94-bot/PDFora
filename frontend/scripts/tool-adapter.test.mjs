@@ -110,7 +110,7 @@ test("localized route: preview mode serves every adaptable slug in every non-Eng
       }
     }
     assert.equal(resolveLocalizedToolRequest("en", "qr-code-generator").status, "not-found");
-    assert.equal(resolveLocalizedToolRequest("en", listAdaptableSlugs()[0]).status, "not-found");
+    assert.equal(resolveLocalizedToolRequest("en", listAdaptableSlugs().find((slug) => slug !== "qr-code-generator") ?? listAdaptableSlugs()[0]).status, "not-found");
   });
 });
 

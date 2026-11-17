@@ -32,7 +32,7 @@ function loadQr(): Promise<QRCodeApi> {
  const sources = [
   "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js",
   "https://unpkg.com/qrcode@1.5.4/lib/browser.min.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.0/qrcode.min.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.js",
  ];
  qrLoadPromise = (async () => {
   // Remove a stale failed script left by an earlier attempt. Its error event has

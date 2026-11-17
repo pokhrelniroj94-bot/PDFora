@@ -60,4 +60,7 @@ export const hindiToolSeo: Record<string,{title:string;description:string}> = {
 "lorem-ipsum-generator":{title:"Lorem Ipsum जनरेटर",description:"डिज़ाइन और लेआउट परीक्षण के लिए नमूना placeholder टेक्स्ट बनाएँ।"},
 "html-encoder-decoder":{title:"HTML एन्कोडर और डिकोडर",description:"HTML के विशेष अक्षरों को encode करें या समर्थित entities को decode करें।"},
 "text-to-slug":{title:"टेक्स्ट से URL Slug",description:"टेक्स्ट को URL-अनुकूल slug में बदलें और समर्थित Unicode अक्षर सुरक्षित रखें।"}
+"image-compressor":{title:"इमेज कंप्रेसर",description:"PNG, JPEG या WebP इमेज को ब्राउज़र में WebP में संपीड़ित करें और फ़ाइल आकार की तुलना करें।"},
+"image-format-converter":{title:"इमेज फ़ॉर्मेट कनवर्टर",description:"PNG, JPEG और WebP इमेज फ़ॉर्मेट के बीच बदलें। फ़ाइल आपके ब्राउज़र में प्रोसेस होती है।"},
+"image-dpi-calculator":{title:"इमेज DPI कैलकुलेटर",description:"पिक्सेल आयाम और प्रिंट आकार से इमेज का अनुमानित क्षैतिज और ऊर्ध्वाधर DPI निकालें।"},
 };

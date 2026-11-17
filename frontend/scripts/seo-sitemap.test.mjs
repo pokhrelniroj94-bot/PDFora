@@ -167,6 +167,7 @@ assert.doesNotMatch(sitemapSource, /\.\.\.\["merge-pdf",\s*"split-pdf",\s*"compr
 assert.match(sitemapSource, /!isGeneratedGuide\(post\.slug\)/, "Unreviewed generated PDF and catalogue guides must stay out of the sitemap");
 assert.ok(!["opengraph-image", "favicon.ico", "_next/", "/api/"].some((value) => sitemapSource.includes(value)), "Sitemap must contain canonical content pages only, never OG images, static assets or API endpoints");
 assert.ok(!["/hi", "/id", "/pt", "/es", "/fr", "/de", "/bn", "/ur", "/ar", "/zh", "/ja"].some((value) => sitemapSource.includes(value)), "Unpublished locale routes must not be included in the sitemap");
+assert.match(sitemapSource, /isLocalizedToolIndexable\(locale, "qr-code-generator"\)/, "Only explicitly verified QR locale routes may enter the additional locale sitemap entries");
 assert.ok(nextConfigSource.includes("Object.keys(nepaliPdfRoutes).map"), "Legacy /ne/tools/<pdf-slug> paths must redirect using the canonical Nepali PDF route registry");
 assert.ok(nextConfigSource.includes("source: " + String.fromCharCode(96) + "/ne/tools/${slug}" + String.fromCharCode(96)), "Legacy localized PDF route redirect must match /ne/tools/<slug>");
 assert.ok(nextConfigSource.includes("destination: " + String.fromCharCode(96) + "/ne/${slug}" + String.fromCharCode(96)), "Legacy localized PDF route redirect must point to /ne/<slug>");

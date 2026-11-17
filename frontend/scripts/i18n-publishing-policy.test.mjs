@@ -33,6 +33,10 @@ for (const locale of config.locales) {
     assert.equal(config.isRoutable(locale), false, `${locale} must remain unroutable in production`);
     assert.equal(routing.hasLocalizedPage("/", locale), false, `${locale} must not advertise an untranslated homepage`);
     assert.equal(routing.hasIndexableLocalizedPage("/", locale), false, `${locale} must not become indexable without reviewed content`);
+    assert.equal(routing.hasLocalizedPage("/tools/qr-code-generator", locale), true, `${locale} must serve the independently translated QR Generator`);
+    assert.equal(routing.hasIndexableLocalizedPage("/tools/qr-code-generator", locale), true, `${locale} QR Generator must be indexable`);
+    const qrMetadata = buildLocaleMetadata({ locale, path: "/tools/qr-code-generator", title: "QR Generator", description: "Create QR codes in your language." });
+    assert.deepEqual(qrMetadata.robots, { index: true, follow: true }, `${locale} QR Generator metadata must be indexable`);
 
     const fallbackMetadata = buildLocaleMetadata({
       locale,
@@ -106,5 +110,26 @@ assert.deepEqual(
   config.locales.filter((locale) => locale === "en" || config.isPublished(locale)),
   "language selector must show only production-published equivalents",
 );
+
+assert.deepEqual(
+  getSwitcherOptions("/tools/qr-code-generator").map((option) => option.locale),
+  config.locales,
+  "QR Generator language selector must offer all 12 independently published translations",
+);
+
+const qrHreflang = routing.hreflangMap("/tools/qr-code-generator");
+for (const locale of config.locales) {
+  const expected = locale === "en" ? "https://pd-fora.vercel.app/tools/qr-code-generator" : `https://pd-fora.vercel.app/${locale}/tools/qr-code-generator`;
+  assert.equal(qrHreflang?.[config.localeInfo[locale].hreflang], expected, `${locale} QR page needs reciprocal hreflang`);
+}
+assert.equal(qrHreflang?.["x-default"], qrHreflang?.en, "QR x-default must point to the English canonical page");
+
+for (const locale of config.locales) {
+  if (locale === "en") continue;
+  const request = tools["localized-route"].resolveLocalizedToolRequest(locale, "qr-code-generator");
+  assert.equal(request.status, "ok", `${locale} QR route must resolve`);
+  const unrelated = tools["localized-route"].resolveLocalizedToolRequest(locale, "average-calculator");
+  if (!config.isPublished(locale)) assert.equal(unrelated.status, "not-found", `${locale} must not expose unrelated catalog tools`);
+}
 
 console.log("i18n publishing policy: all published locales have complete tool-route coverage; unpublished locales remain noindex and absent from hreflang/switcher.");

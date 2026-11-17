@@ -27,6 +27,21 @@ import NepaliTypingTool from "../../../../components/NepaliTypingTool";
 import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
+
+const qrLocalizedCopy: Record<string, { title: string; description: string }> = {
+  en: { title: "Free QR Code Generator", description: "Create QR codes for URLs, text, Wi-Fi, email, phone, WhatsApp, contacts and events. Download PNG or SVG." },
+  ne: { title: "बहुभाषिक QR Code जेनेरेटर", description: "वेबसाइट, Wi-Fi, इमेल, फोन, सम्पर्क कार्ड र कार्यक्रमका लागि QR बनाउनुहोस्; PNG वा SVG डाउनलोड गर्नुहोस्।" },
+  hi: { title: "मुफ़्त QR कोड जनरेटर", description: "वेबसाइट, टेक्स्ट, Wi-Fi, ईमेल, फ़ोन, WhatsApp, संपर्क और कार्यक्रमों के लिए QR कोड बनाएँ। PNG या SVG डाउनलोड करें।" },
+  bn: { title: "বিনামূল্যে QR কোড জেনারেটর", description: "ওয়েবসাইট, লেখা, Wi-Fi, ইমেল, ফোন, WhatsApp, পরিচিতি ও ইভেন্টের QR কোড তৈরি করুন। PNG বা SVG ডাউনলোড করুন।" },
+  ur: { title: "مفت QR کوڈ جنریٹر", description: "ویب سائٹ، متن، Wi-Fi، ای میل، فون، WhatsApp، رابطوں اور تقریبات کے لیے QR کوڈ بنائیں۔ PNG یا SVG ڈاؤن لوڈ کریں۔" },
+  ar: { title: "مولّد رموز QR مجاني", description: "أنشئ رموز QR للمواقع والنصوص وشبكات Wi-Fi والبريد والهاتف وWhatsApp وجهات الاتصال والفعاليات." },
+  es: { title: "Generador gratuito de códigos QR", description: "Crea códigos QR para sitios web, texto, Wi-Fi, correo, teléfono, WhatsApp, contactos y eventos. Descarga PNG o SVG." },
+  fr: { title: "Générateur de QR code gratuit", description: "Créez des QR codes pour sites web, texte, Wi-Fi, e-mail, téléphone, WhatsApp, contacts et événements. Téléchargez en PNG ou SVG." },
+  de: { title: "Kostenloser QR-Code-Generator", description: "Erstellen Sie QR-Codes für Websites, Text, WLAN, E-Mail, Telefon, WhatsApp, Kontakte und Termine. Als PNG oder SVG herunterladen." },
+  pt: { title: "Gerador de QR Code grátis", description: "Crie QR Codes para sites, texto, Wi-Fi, e-mail, telefone, WhatsApp, contatos e eventos. Baixe em PNG ou SVG." },
+  zh: { title: "免费二维码生成器", description: "为网址、文本、Wi-Fi、电子邮件、电话、WhatsApp、联系人和活动创建二维码，并下载 PNG 或 SVG。" },
+  ja: { title: "無料 QRコードジェネレーター", description: "ウェブサイト、テキスト、Wi-Fi、メール、電話、WhatsApp、連絡先、イベント用のQRコードを作成し、PNGまたはSVGで保存できます。" },
+};
 const nepaliTitles: Record<string, string> = {
   "resume-builder": "व्यावसायिक रिजुमे तथा CV निर्माता",
   "csv-to-json": "CSV बाट JSON",
@@ -291,6 +306,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const request = resolveLocalizedToolRequest(locale, slug);
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
+  if (request.implementation.slug === "qr-code-generator" && qrLocalizedCopy[request.locale]) {
+    const { title, description } = qrLocalizedCopy[request.locale];
+    const fittedDescription = fitLocaleDescription(description);
+    return {
+      ...metadata,
+      title,
+      description: fittedDescription,
+      openGraph: { ...metadata.openGraph, title, description: fittedDescription },
+      twitter: { ...metadata.twitter, title, description: fittedDescription },
+    };
+  }
   if (request.locale === "ne" && nepaliTitles[request.implementation.slug] && nepaliDescriptions[request.implementation.slug]) {
     const title = nepaliTitles[request.implementation.slug];
     const description = fitLocaleDescription(nepaliDescriptions[request.implementation.slug] ?? metadata.description ?? "");
@@ -322,7 +348,16 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
-  if (request.locale === "ne" && toolSlug === "qr-code-generator") return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 max-w-3xl text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><QRCodeGenerator defaultLocale="ne" /></main>;
+  if (toolSlug === "qr-code-generator") {
+    const copy = qrLocalizedCopy[request.locale] ?? qrLocalizedCopy.en;
+    const guideLabels: Record<string, string> = {
+      en: "Read the QR code guide", ne: "QR Code बनाउने मार्गदर्शिका पढ्नुहोस्", hi: "QR कोड बनाने की गाइड पढ़ें",
+      bn: "QR কোড তৈরির নির্দেশিকা পড়ুন", ur: "QR کوڈ بنانے کی رہنمائی پڑھیں", ar: "اقرأ دليل إنشاء رمز QR",
+      es: "Leer la guía para crear códigos QR", fr: "Lire le guide de création de QR codes",
+      de: "QR-Code-Anleitung lesen", pt: "Ler o guia de criação de QR Code", zh: "阅读二维码制作指南", ja: "QRコード作成ガイドを読む",
+    };
+    return <main lang={request.locale} dir={request.locale === "ar" || request.locale === "ur" ? "rtl" : "ltr"} className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{copy.title}</h1><p className="mt-2 max-w-3xl text-slate-600">{copy.description}</p></div><QRCodeGenerator defaultLocale={request.locale} /><p className="mt-8 text-center text-sm"><Link className="font-semibold text-teal-700 underline underline-offset-4" href={"/" + request.locale + "/blog/qr-code-generator-guide"}>{guideLabels[request.locale]}</Link></p></main>;
+  }
   if (request.locale === "ne" && toolSlug === "nepali-unicode-typing") { return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTypingTool locale="ne" /></section></main>; }
   if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator", "password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "currency-converter", "image-compressor", "image-format-converter", "preeti-unicode-converter"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliRemainingToolsWorkspace slug={toolSlug} /></section></main>;

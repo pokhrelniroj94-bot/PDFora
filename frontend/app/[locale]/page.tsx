@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import LanguageSwitcher from "../../components/i18n/LanguageSwitcher";
-import { isLocale, isPublished, localeFallbackCopy, localeInfo } from "../../lib/i18n/config";
+import { isLocale, isPublished, isPreviewEnabled, localeFallbackCopy, localeInfo } from "../../lib/i18n/config";
 import { getTranslator } from "../../lib/i18n/messages";
 import { buildLocaleMetadata } from "../../lib/i18n/metadata";
 import { getSwitcherOptions } from "../../lib/i18n/switcher";
 import NepaliHomePage from "../../components/NepaliHomePage";
 import HindiHomePage from "../../components/HindiHomePage";
-import { isPreviewEnabled } from "../../lib/i18n/config";
 
 type Props = { params: Promise<{ locale: string }>; searchParams?: Promise<{ from?: string }> };
 

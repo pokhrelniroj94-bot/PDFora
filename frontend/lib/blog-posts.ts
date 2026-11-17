@@ -137,6 +137,7 @@ const editorialBlogPosts: BlogPost[] = [
       { question: "Can I split a PDF on my phone?", answer: "Yes. Open PDFora in a modern mobile browser, choose the PDF and enter the page ranges. Check each downloaded file before sharing it." },
       { question: "Can I split a scanned PDF?", answer: "You can split its pages, but splitting does not run OCR. Scanned pages remain images unless you use a separate OCR workflow." }
     ],
+    sources: [{ label: "Adobe Acrobat Help: Split PDFs", url: "https://helpx.adobe.com/acrobat/desktop/edit-documents/organize-pages/split-pdfs.html" }],
     toolLinks: [{ label: "Split PDF", href: "/split-pdf" }, { label: "Extract PDF Pages", href: "/extract-pages" }, { label: "Delete PDF Pages", href: "/delete-pages" }, { label: "Compress PDF", href: "/compress-pdf" }]
   },
   {

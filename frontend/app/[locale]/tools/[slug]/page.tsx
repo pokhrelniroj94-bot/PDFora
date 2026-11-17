@@ -350,7 +350,13 @@ export default async function LocalizedToolPage({ params }: Props) {
   const toolSlug = request.implementation.slug;
   if (toolSlug === "qr-code-generator") {
     const copy = qrLocalizedCopy[request.locale] ?? qrLocalizedCopy.en;
-    return <main lang={request.locale} dir={request.locale === "ar" || request.locale === "ur" ? "rtl" : "ltr"} className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{copy.title}</h1><p className="mt-2 max-w-3xl text-slate-600">{copy.description}</p></div><QRCodeGenerator defaultLocale={request.locale} /></main>;
+    const guideLabels: Record<string, string> = {
+      en: "Read the QR code guide", ne: "QR Code बनाउने मार्गदर्शिका पढ्नुहोस्", hi: "QR कोड बनाने की गाइड पढ़ें",
+      bn: "QR কোড তৈরির নির্দেশিকা পড়ুন", ur: "QR کوڈ بنانے کی رہنمائی پڑھیں", ar: "اقرأ دليل إنشاء رمز QR",
+      es: "Leer la guía para crear códigos QR", fr: "Lire le guide de création de QR codes",
+      de: "QR-Code-Anleitung lesen", pt: "Ler o guia de criação de QR Code", zh: "阅读二维码制作指南", ja: "QRコード作成ガイドを読む",
+    };
+    return <main lang={request.locale} dir={request.locale === "ar" || request.locale === "ur" ? "rtl" : "ltr"} className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{copy.title}</h1><p className="mt-2 max-w-3xl text-slate-600">{copy.description}</p></div><QRCodeGenerator defaultLocale={request.locale} /><p className="mt-8 text-center text-sm"><Link className="font-semibold text-teal-700 underline underline-offset-4" href={"/" + request.locale + "/blog/qr-code-generator-guide"}>{guideLabels[request.locale]}</Link></p></main>;
   }
   if (request.locale === "ne" && toolSlug === "nepali-unicode-typing") { return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTypingTool locale="ne" /></section></main>; }
   if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator", "password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "currency-converter", "image-compressor", "image-format-converter", "preeti-unicode-converter"].includes(toolSlug)) {

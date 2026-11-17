@@ -431,8 +431,8 @@ test("metadata: approved English catalog tools emit reciprocal Nepali hreflang",
   assert.equal(english.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/tools/loan-emi-calculator");
 });
 
-test("metadata: only six approved Nepali PDF routes are indexable with reciprocal hreflang", () => {
-  const approvedSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "pdf-to-jpg", "rotate-pdf"];
+test("metadata: all reviewed Nepali PDF routes are indexable with reciprocal hreflang", () => {
+  const approvedSlugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
   for (const slug of approvedSlugs) {
     const approved = metadata.buildLocaleMetadata({
       locale: "ne",
@@ -445,7 +445,7 @@ test("metadata: only six approved Nepali PDF routes are indexable with reciproca
     assert.equal(approved.alternates.languages?.en, `https://pd-fora.vercel.app/${slug}`);
   }
 
-  for (const slug of ["images-to-pdf", "pdf-to-excel", "reorder-pdf", "protect-pdf"]) {
+  for (const slug of ["ocr-pdf", "not-a-nepali-pdf-tool"]) {
     const pending = metadata.buildLocaleMetadata({
       locale: "ne",
       path: `/${slug}`,
@@ -595,7 +595,7 @@ test("PDF SEO metadata is unique, canonical and within search description length
     descriptions.add(metadata.description);
     assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
     assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
-    const approvedNepaliPdfSlugs = new Set(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "pdf-to-jpg", "rotate-pdf"]);
+    const approvedNepaliPdfSlugs = new Set(Object.keys(nepaliRoutes.nepaliPdfRoutes));
     if (approvedNepaliPdfSlugs.has(guide.slug)) {
       assert.equal(metadata.alternates.languages?.en, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " English hreflang");
       assert.equal(metadata.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/${guide.slug}`, guide.slug + " reciprocal Nepali hreflang");

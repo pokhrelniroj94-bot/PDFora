@@ -35,7 +35,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   for (const slug of ["currency-converter","image-compressor","image-format-converter","password-generator","uuid-generator","regex-tester","jwt-decoder","color-picker-palette","color-contrast-checker","css-minifier","meta-title-checker","meta-description-checker","keyword-density-checker","robots-txt-generator","sitemap-generator","open-graph-preview","preeti-unicode-converter","nepali-unicode-typing"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
     assert.equal(row?.interface, "nepali-interface-present", `${slug} should have a dedicated Nepali interface`);
-    assert.equal(row?.indexing, "excluded", `${slug} remains noindex until individual approval`);
+    assert.equal(row?.indexing, "eligible", `${slug} has a Nepali interface and is included in the indexing registry`);
     assert.equal(row?.humanReview, "native-review-not-assessed");
   }
 

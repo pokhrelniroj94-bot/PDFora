@@ -9,6 +9,12 @@ import BlogToolCTA from "../../../../components/BlogToolCTA";
 
 const baseUrl = "https://pd-fora.vercel.app";
 
+function toNepaliToolHref(href: string): string {
+  if (/^\/(ne|hi|bn|ur|ar|es|fr|de|pt|zh|ja)\//.test(href)) return href;
+  if (href === "/ne" || href.startsWith("/ne/")) return href;
+  return `/ne${href.startsWith("/") ? href : `/${href}`}`;
+}
+
 const nepaliSearchTitles: Record<string, string> = {
   "qr-code-generator-guide": "QR Code कसरी बनाउने? Wi-Fi र URL",
   "compress-pdf-under-200kb-nepal-online-forms": "PDF २००KB भित्र कसरी कम्प्रेस गर्ने?",
@@ -81,7 +87,7 @@ export default async function LocalizedBlogArticle({ params }: Props) {
   const isNepali = locale === "ne";
   const isRtl = localeInfo[locale].dir === "rtl";
   const root = `/${locale}`;
-  const toolHref = isNepali ? `/ne/tools/qr-code-generator` : `/${locale}/tools/qr-code-generator`;
+  const toolHref = isNepali ? toNepaliToolHref("/tools/qr-code-generator") : `/${locale}/tools/qr-code-generator`;
   const guideLabel: Record<string, string> = {
     ne: "मार्गदर्शिका", hi: "मार्गदर्शिका", bn: "নির্দেশিকা", ur: "رہنما", ar: "الأدلة",
     es: "Guías", fr: "Guides", de: "Anleitungen", pt: "Guias", zh: "使用指南", ja: "ガイド",
@@ -136,7 +142,7 @@ export default async function LocalizedBlogArticle({ params }: Props) {
           <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
           {post.toolLinks.length > 0 && (
-            <BlogToolCTA blogSlug={post.slug} href={toolHref} label="QR Code Generator" locale={locale} />
+            <BlogToolCTA blogSlug={post.slug} href={toolHref} label="QR Code Generator" locale={isNepali ? "ne" : locale} />
           )}
           <p className="mt-5 text-xs text-slate-500">{post.updated}</p>
         </header>
@@ -160,7 +166,7 @@ export default async function LocalizedBlogArticle({ params }: Props) {
           </section>
           <section className="rounded-3xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
             <h2 className="text-xl font-black text-slate-950">{relatedLabel[locale] ?? "Related tool"}</h2>
-            <div className="mt-4"><Link href={toolHref} className="inline-flex rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">QR Code Generator</Link></div>
+            <div className="mt-4 flex flex-wrap gap-3">{post.toolLinks.map((tool) => <Link key={tool.href} href={toNepaliToolHref(tool.href)} className="inline-flex rounded-xl bg-teal-700 px-4 py-2 text-sm font-bold text-white hover:bg-teal-800">{tool.label}</Link>)}</div>
           </section>
         </div>
         <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6 text-sm">

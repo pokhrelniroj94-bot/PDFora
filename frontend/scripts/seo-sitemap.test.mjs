@@ -195,6 +195,11 @@ assert.ok(blogToolCtaSource.includes("blog_slug") && blogToolCtaSource.includes(
 assert.ok(toolViewAnalyticsSource.includes('"tool_view"'), "All catalog tool categories must report consented tool views");
 assert.ok(toolViewAnalyticsSource.includes("tool_slug") && toolViewAnalyticsSource.includes("tool_category"), "Tool view events must identify the tool and category");
 assert.ok(niroj77ToolSource.includes('"tool_start"') && niroj77ToolSource.includes('"tool_complete"') && niroj77ToolSource.includes('"tool_error"'), "PDF tool processing must measure starts, completions and errors");
+const splitGuideSource = blogPostsSource.slice(blogPostsSource.indexOf('slug: "split-pdf-and-extract-selected-pages"'));
+for (const phrase of ["1-5;6-10", "1,3,8", "Split PDF", "Extract Pages", "does not perform OCR"]) {
+  assert.ok(splitGuideSource.includes(phrase), `Split PDF guide must explain the verified workflow: ${phrase}`);
+}
+assert.ok(splitGuideSource.includes("updated: \"2026-11-17\""), "Split PDF guide must record its substantive editorial update");
 const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);

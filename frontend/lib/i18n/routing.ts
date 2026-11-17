@@ -84,9 +84,22 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
  * Grow this set only as each Hindi page is genuinely translated.
  */
 export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
+  "/", "/tools", "/categories", "/blog", "/about", "/privacy", "/terms", "/contact",
+  "/blog/percentage-calculator-guide", "/blog/average-calculator-guide",
   ...Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`),
   ...hindiMathToolSlugs.map((slug) => `/tools/${slug}`),
   ...hindiBusinessToolSlugs.map((slug) => `/tools/${slug}`),
+  ...[
+    "age-calculator", "date-difference-calculator", "time-duration-calculator",
+    "loan-emi-calculator", "compound-interest-sip-calculator", "discount-percentage-calculator", "savings-goal-calculator",
+    "nepali-vat-calculator", "nepal-land-area-converter", "gold-tola-gram-converter", "nepal-phone-validator", "neb-gpa-calculator", "nepal-share-calculator",
+    "word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text", "whitespace-cleaner",
+    "character-frequency", "word-frequency-counter", "reading-time-calculator", "line-counter", "sentence-counter",
+    "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor",
+    "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator",
+    "json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator",
+    "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug",
+  ].map((slug) => `/tools/${slug}`),
 ]);
 
 // Only published localized destinations that are in the shared index registry

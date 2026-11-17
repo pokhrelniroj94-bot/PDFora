@@ -26,7 +26,8 @@ export function fitLocaleDescription(value: string, max = 155): string {
  */
 export function buildLocaleMetadata({ locale, path, title, description }: LocaleMetadataInput): Metadata {
   const fittedDescription = fitLocaleDescription(description);
-  const published = isPublished(locale);
+  // The QR Generator has complete, dedicated UI translations and is published independently.
+  const published = isPublished(locale) || (path === "/tools/qr-code-generator" && locale !== "en" && isLocalizedToolIndexable(locale, "qr-code-generator"));
   const canonical = absoluteUrl(path, locale);
   const pdfSlug = path.replace(/^\/+/, "");
   const isPdfTool = Object.prototype.hasOwnProperty.call(nepaliPdfRoutes, pdfSlug);

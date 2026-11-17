@@ -28,6 +28,7 @@ const nepaliPdfGuideSlugs = new Set(parseSlugs(read("lib/i18n/tool-guides-ne.ts"
 const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"];
 const rtlLocales = new Set(["ur", "ar"]);
 const publishedLocales = new Set(["en", "ne"]);
+const qrPublishedLocales = new Set(["ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
 const handlerEvidence = "catalog-handler-check";
 const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator", "text-to-binary", "binary-to-text", "text-to-hex", "hex-to-text", "morse-code-translator", "camel-case-converter", "snake-case-converter", "kebab-case-converter", "json-escape-unescape", "px-rem-converter", "roman-numeral-converter", "csv-to-json", "json-to-yaml", "json-to-csv", "url-validator", "email-validator", "password-strength-checker", "url-query-parser", "color-converter", "aspect-ratio-calculator", "css-gradient-generator", "unix-timestamp-converter", "date-add-subtract-calculator", "business-days-calculator", "random-number-generator", "dice-roller", "regex-tester", "jwt-decoder", "css-minifier", "color-contrast-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator"]);
 
@@ -36,9 +37,10 @@ for (const locale of locales) {
   for (const tool of tools) {
     const english = locale === "en";
     const nepaliInterfacePresent = locale === "ne" && localizedNepaliTools.has(tool.slug);
-    const localized = english || nepaliInterfacePresent;
-    const guide = english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug);
-    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug);
+    const qrLocalized = tool.slug === "qr-code-generator" && qrPublishedLocales.has(locale);
+    const localized = english || nepaliInterfacePresent || qrLocalized;
+    const guide = english ? guideSlugs.has(tool.slug) : qrLocalized || locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug);
+    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug) || qrLocalized;
     matrix.push({
       locale,
       slug: tool.slug,
@@ -46,12 +48,12 @@ for (const locale of locales) {
       route: tool.kind === "pdf" ? `/${tool.slug}` : `/tools/${tool.slug}`,
       routeExists: true,
       handler: english ? handlerEvidence : localized ? "localized-route-handler" : "not-published",
-      interface: english ? "source-language" : localized ? "nepali-interface-present" : "not-implemented",
-      content: guide ? (english ? "source-guide" : "nepali-guide-present") : "not-verified",
-      functionalTest: locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
+      interface: english ? "source-language" : qrLocalized ? "translated-interface-present" : nepaliInterfacePresent ? "nepali-interface-present" : "not-implemented",
+      content: guide ? (english ? "source-guide" : qrLocalized ? "localized-guide-present" : "nepali-guide-present") : "not-verified",
+      functionalTest: locale === "en" && tool.slug === "qr-code-generator" ? "browser-e2e" : locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
       humanReview: english ? "source-content-review-not-assessed" : localized ? "native-review-not-assessed" : "not-reviewed",
       indexing: indexable ? "eligible" : "excluded",
-      published: publishedLocales.has(locale) && localized,
+      published: publishedLocales.has(locale) && localized || qrLocalized,
       direction: rtlLocales.has(locale) ? "rtl" : "ltr",
     });
   }

@@ -109,4 +109,8 @@ export const hindiToolSeo: Record<string,{title:string;description:string}> = {
 "timezone-meeting-planner":{title:"समय क्षेत्र बैठक योजनाकार",description:"UTC समय से नेपाल और दूसरे प्रमुख समय क्षेत्रों में बैठक का स्थानीय समय देखें।"},
 "video-bitrate-calculator":{title:"वीडियो बिटरेट कैलकुलेटर",description:"वीडियो अवधि, लक्षित फ़ाइल आकार और ऑडियो बिटरेट से अनुमानित वीडियो बिटरेट निकालें।"},
 "markdown-table-generator":{title:"Markdown तालिका जनरेटर",description:"Tab से अलग पंक्तियों को Markdown तालिका में बदलें और परिणाम कॉपी करें।"},
+"nepali-digit-converter":{title:"देवनागरी अंक परिवर्तक",description:"अंग्रेज़ी 0–9 अंकों को देवनागरी ०–९ में बदलें और वापस लैटिन अंकों में परिवर्तित करें।"},
+"nepali-number-converter":{title:"देवनागरी संख्या प्रारूप परिवर्तक",description:"संख्याओं को भारतीय समूहों में फ़ॉर्मेट करें और देवनागरी अंकों में दिखाएँ।"},
+"currency-converter":{title:"मुद्रा परिवर्तक",description:"आपके द्वारा दर्ज विनिमय दर से दो मुद्राओं के बीच राशि बदलें; यह लाइव बाजार दर नहीं है।"},
+"nepse-dividend-calculator":{title:"NEPSE लाभांश और बोनस कैलकुलेटर",description:"शेयर संख्या, नकद लाभांश, बोनस दर और आपकी दर्ज कर दर से अनुमानित भुगतान निकालें।"},
 };

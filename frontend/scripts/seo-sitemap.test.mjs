@@ -208,11 +208,11 @@ assert.ok(nepaliSplitGuideSource.includes("updated: \"2026-11-17\""), "Nepali Sp
 
 const tipGuideSource = blogPostsSource.slice(blogPostsSource.indexOf('slug: "tip-calculator-guide"'));
 assert.ok(tipGuideSource.includes("Quick mental-math shortcuts"), "Tip guide must add useful mental-math instructions for its high-impression query");
-assert.ok(tipGuideSource.includes("18% = $10.80"), "Tip guide must include a verified 18% worked example");
+assert.ok(tipGuideSource.includes("$12.00 − $1.20 = $10.80"), "Tip guide must include a verified 18% worked example");
 assert.ok(tipGuideSource.includes("updated: \"2026-11-17\""), "Tip guide must record its substantive update");
 const nepaliTipGuideSource = nepaliLocalizedBlogSource.slice(nepaliLocalizedBlogSource.indexOf('slug: "tip-calculator-guide"'));
 assert.ok(nepaliTipGuideSource.includes("18%, 20% र 25% टिप छिटो निकाल्ने तरिका"), "Nepali tip guide must include the localized mental-math guidance");
-assert.ok(nepaliTipGuideSource.includes("18% = 10.80"), "Nepali tip guide must include the localized worked example");
+assert.ok(nepaliTipGuideSource.includes("12.00 − 1.20 = 10.80"), "Nepali tip guide must include the localized worked example");
 const nrbGuideSource = englishNepalBlogSource.slice(englishNepalBlogSource.indexOf('slug: "nepal-rastra-bank-daily-exchange-rates-guide"'));
 const nrbTitle = nrbGuideSource.match(/title: "([^"]+)"/)?.[1] ?? "";
 const nrbDescription = nrbGuideSource.match(/description: "([^"]+)"/)?.[1] ?? "";

@@ -91,8 +91,7 @@ test("localized route: invalid locales, English and unpublished locales are 404 
     }
     assert.deepEqual(resolveLocalizedToolRequest("en", slug), { status: "not-found", reason: "locale-not-served" }, "English is served unprefixed");
     const englishQr = resolveLocalizedToolRequest("en", "qr-code-generator");
-    assert.equal(englishQr.status, "ok", "English QR canonical route is served through the unprefixed URL");
-    assert.equal(englishQr.implementation.slug, "qr-code-generator");
+    assert.equal(englishQr.status, "not-found", "English QR is canonical only at the unprefixed URL, never under /en/");
     for (const l of nonEnglish) {
       assert.equal(isRoutable(l), isPublished(l));
       assert.equal(resolveLocalizedToolRequest(l, slug).status, isPublished(l) ? "ok" : "not-found", l);

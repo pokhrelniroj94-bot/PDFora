@@ -183,7 +183,7 @@ test("route file contract: validates through the resolver, 404s, no JSON-LD, Eng
   assert.doesNotMatch(page, /index:\s*true/, "indexing is decided only in lib/tools/localized-metadata.ts");
   assert.doesNotMatch(page, /generateStaticParams/, "no speculative static generation of localized tool pages");
   const meta = read("lib/tools/localized-metadata.ts");
-  assert.match(meta, /isLocalizedToolIndexable\\(locale, entry\\.slug\\)/, "localized metadata must use the explicit verification registry");
+  assert.ok(meta.includes("isLocalizedToolIndexable(locale, entry.slug)"), "localized metadata must use the explicit verification registry");
 });
 
 test("scope guards: English tool execution stays independent while approved hreflang is reciprocal", () => {

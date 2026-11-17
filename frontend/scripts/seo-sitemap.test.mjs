@@ -121,7 +121,7 @@ assert.ok(nepaliBlogPageSource.includes('locale="ne"'), "Nepali blog CTAs must r
 assert.ok(nepaliBlogPageSource.includes("function toNepaliToolHref"), "Nepali blog links must normalize both catalog and legacy PDF routes");
 assert.ok(nepaliBlogPageSource.includes("href={toNepaliToolHref(tool.href)}"), "Related-tool links must use localized route normalization");
 assert.ok(blogToolCtaSource.includes('locale === "ne"'), "Shared blog CTA must support Nepali copy");
-for (const [slug, title] of [["percentage-change-calculator-guide", "Percentage Change: प्रतिशत कसरी निकाल्ने?"], ["tip-calculator-guide", "Tip Calculator: टिप र बिल कसरी बाँड्ने?"]]) {
+for (const [slug, title] of [["percentage-change-calculator-guide", "Percentage Change: प्रतिशत कसरी निकाल्ने?"], ["tip-calculator-guide", "Tip Calculator: १५%, १८% र २०% कसरी निकाल्ने?"]]) {
   assert.ok(title.length <= 60, `${slug} search title must stay within 60 characters`);
   assert.ok(nepaliBlogPageSource.includes(`"${slug}": "${title}"`), `${slug} must retain its reviewed concise search title`);
 }
@@ -206,6 +206,13 @@ for (const phrase of ["1-5;6-10", "1,3,8", "Split PDF", "Extract Pages", "OCR �
 }
 assert.ok(nepaliSplitGuideSource.includes("updated: \"2026-11-17\""), "Nepali Split PDF guide must record its substantive editorial update");
 
+const tipGuideSource = blogPostsSource.slice(blogPostsSource.indexOf('slug: "tip-calculator-guide"'));
+assert.ok(tipGuideSource.includes("Quick mental-math shortcuts"), "Tip guide must add useful mental-math instructions for its high-impression query");
+assert.ok(tipGuideSource.includes("18% = $10.80"), "Tip guide must include a verified 18% worked example");
+assert.ok(tipGuideSource.includes("updated: \"2026-11-17\""), "Tip guide must record its substantive update");
+const nepaliTipGuideSource = nepaliLocalizedBlogSource.slice(nepaliLocalizedBlogSource.indexOf('slug: "tip-calculator-guide"'));
+assert.ok(nepaliTipGuideSource.includes("18% टिप छिटो निकाल्ने तरिका"), "Nepali tip guide must include the localized mental-math guidance");
+assert.ok(nepaliTipGuideSource.includes("18% = 10.80"), "Nepali tip guide must include the localized worked example");
 const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);

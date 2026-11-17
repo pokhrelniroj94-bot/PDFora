@@ -719,6 +719,23 @@ async function runTool(tool, index) {
       } else if (tool.slug === "notes-to-pdf") {
         await setFieldByLabel(page, "Document title", "PDFora E2E Notes");
       }
+      // Calculators intentionally start blank; use their published example values
+      // before asserting a result rather than treating an empty form as a defect.
+      if (tool.slug === "loan-emi-calculator") {
+        await setFieldByLabel(page, "Loan amount (NPR)", "1000000");
+        await setFieldByLabel(page, "Annual interest rate (%)", "10");
+        await setFieldByLabel(page, "Loan term (months)", "60");
+      } else if (tool.slug === "compound-interest-sip-calculator") {
+        await setFieldByLabel(page, "Monthly SIP (NPR)", "5000");
+        await setFieldByLabel(page, "Years", "10");
+        await setFieldByLabel(page, "Expected annual return (%)", "10");
+        await setFieldByLabel(page, "Initial investment (NPR)", "0");
+      } else if (tool.slug === "discount-percentage-calculator") {
+        await setFieldByLabel(page, "Original price", "1000");
+        await setFieldByLabel(page, "Discount (%)", "20");
+        await setFieldByLabel(page, "Value / part", "25");
+        await setFieldByLabel(page, "Total / whole", "100");
+      }
       if (tool.slug === "case-converter") {
         const buttonClicked = await page.evaluate("(() => { const button = [...document.querySelectorAll('button')].find((item) => item.innerText.trim().toUpperCase() === 'UPPERCASE' && !item.disabled); button?.click(); return !!button; })()");
         if (!buttonClicked) throw new Error("Case converter uppercase action is missing.");
@@ -752,6 +769,24 @@ async function runTool(tool, index) {
       }
       if (tool.slug === "nepal-forex-rates") await delay(20000);
       else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug)) await delay(5000);
+      if (tool.slug === "nepali-unicode-typing") {
+        const readyStarted = Date.now();
+        let ready = false;
+        while (Date.now() - readyStarted < 15000) {
+          ready = await page.evaluate('!!document.querySelector("main button:not([disabled])")');
+          if (ready) break;
+          await delay(250);
+        }
+        if (!ready) {
+          const state = await page.evaluate('({error:document.querySelector("main [role=alert]")?.innerText||"",scripts:[...document.scripts].map(s=>s.src).filter(Boolean).filter(s=>s.includes("nepalify"))})');
+          throw new Error("Nepali typing engine did not become ready: " + JSON.stringify(state));
+        }
+      }
+      // QuickUtilityTools and ExtraTools calculators deliberately clear their
+      // numeric defaults until the user chooses Restore example. Restore those
+      // published sample inputs so each output assertion exercises real math.
+      const restoredExample = await page.evaluate('(() => { const button=[...document.querySelectorAll("main button")].find(b=>/^restore example$/i.test(b.innerText.trim())&&!b.disabled); if(!button)return false; button.click(); return true; })()');
+      if (restoredExample) await delay(180);
       const catalogDownloadsBefore = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
       const clicked = tool.slug === "nepal-forex-rates" ? "" : await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
@@ -812,6 +847,11 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "image-dpi-calculator") {
+        await setFieldByLabel(page, "Image width (pixels)", "2400");
+        await setFieldByLabel(page, "Image height (pixels)", "3000");
+        await setFieldByLabel(page, "Printed width", "8");
+        await setFieldByLabel(page, "Printed height", "10");
+        await delay(150);
         const dpi = await page.evaluate('document.querySelector("main")?.innerText || ""');
         if (!/300\.0\s+PPI/.test(dpi) || !/2,400 × 3,000 px/.test(dpi) || !/at or above/i.test(dpi)) {
           throw new Error("Image DPI calculator default 2400×3000px at 8×10in did not produce 300 PPI.");
@@ -828,6 +868,12 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "video-bitrate-calculator") {
+        await setFieldByLabel(page, "Video duration (minutes)", "10");
+        await setFieldByLabel(page, "Additional seconds", "0");
+        await setFieldByLabel(page, "Target file size (MB, decimal)", "500");
+        await setFieldByLabel(page, "Audio bitrate (kbps)", "192");
+        await setFieldByLabel(page, "Container / overhead allowance (%)", "5");
+        await delay(150);
         const bitrate = await page.evaluate('document.querySelector("main")?.innerText || ""');
         if (!/6,667\s+kbps/.test(bitrate) || !/6,141\s+kbps/.test(bitrate) || !/500\.0 MB/.test(bitrate)) {
           throw new Error("Video bitrate calculator did not match the 10-minute, 500MB baseline.");

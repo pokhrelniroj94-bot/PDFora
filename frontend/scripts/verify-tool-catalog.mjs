@@ -146,4 +146,17 @@ assert.ok(catalogSource.includes("20 professional templates"), "Resume Builder c
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
+assert.ok(blogPostsSource.includes('slug: "qr-code-generator-guide"'), "QR Code Generator must have a dedicated guide");
+assert.ok(seoContent.includes('"qr-code-generator": { example:'), "QR Code Generator must have specific SEO guidance");
+assert.ok(toolPage.includes('"qr-code-generator": { title:'), "QR Code Generator must have unique metadata");
+const qrWorkspace = read("../components/QRCodeGenerator.tsx");
+const qrLibrary = read("../public/vendor/qrcode.min.js");
+const qrLicense = read("../public/vendor/qrcode-LICENSE.txt");
+assert.ok(allTools.includes('import QRCodeGenerator from "./QRCodeGenerator"'), "QR workspace must be imported by the existing tool dispatcher");
+assert.ok(allTools.includes('if(slug==="qr-code-generator")'), "QR workspace must be routed from the catalog tool dispatcher");
+for (const locale of ["en","ne","hi","bn","ur","ar","es","fr","de","pt","zh","ja"]) assert.ok(qrWorkspace.includes(locale+":"), `Missing QR UI locale ${locale}`);
+for (const feature of ["whatsapp","vcard","event","/vendor/qrcode.min.js","WPA","WEP","nopass"]) assert.ok(qrWorkspace.includes(feature), `Missing QR generator feature: ${feature}`);
+assert.ok(qrLibrary.includes("QRCode") && qrLibrary.includes("CorrectLevel"), "Local QR engine must expose the QRCode browser API");
+assert.ok(qrLicense.includes("MIT License"), "Vendored QR library must retain its MIT license");
+
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);

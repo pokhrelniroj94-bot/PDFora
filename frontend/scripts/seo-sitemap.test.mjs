@@ -251,12 +251,13 @@ for (const slug of approvedNepali) {
   assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
 }
 for (const slug of toolRoutes) {
-  assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), false, `${slug} must remain excluded until individual approval`);
+  assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), true, `${slug} has a dedicated Nepali workspace`);
   const request = modules["localized-route"].resolveLocalizedToolRequest("ne", slug);
   assert.equal(request.status, "ok", `Expected registered Nepali route: ${slug}`);
   const metadata = modules["localized-metadata"].buildLocalizedToolMetadata("ne", request.implementation.entry);
-  assert.deepEqual(metadata.robots, { index: false, follow: true }, `${slug} must remain crawlable but noindex until approved`);
-  assert.equal(metadata.alternates?.languages, undefined, `${slug} must not advertise unapproved hreflang`);
+  assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} should be indexable after localization`);
+  assert.equal(metadata.alternates?.languages?.ne, `https://pd-fora.vercel.app/ne/tools/${slug}`);
+  assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app/tools/${slug}`);
 }
 
 for (const slug of approvedNepali) {

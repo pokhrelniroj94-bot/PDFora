@@ -21,6 +21,7 @@ import HindiNepalToolsWorkspace from "../../../../components/HindiNepalToolsWork
 import HindiTextToolsWorkspace from "../../../../components/HindiTextToolsWorkspace";
 import HindiDeveloperToolsWorkspace from "../../../../components/HindiDeveloperToolsWorkspace";
 import HindiImageToolsWorkspace from "../../../../components/HindiImageToolsWorkspace";
+import HindiAdditionalToolsWorkspace from "../../../../components/HindiAdditionalToolsWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -484,6 +485,9 @@ export default async function LocalizedToolPage({ params }: Props) {
         <HindiMathUtilityWorkspace slug={toolSlug} />
       </main>
     );
+  }
+  if (request.locale === "hi" && ["password-generator","uuid-generator","regex-tester","jwt-decoder","color-picker-palette","color-contrast-checker","css-minifier","meta-title-checker","meta-description-checker","keyword-density-checker","robots-txt-generator","sitemap-generator","open-graph-preview","json-to-csv","url-query-parser","xml-formatter-validator","notes-to-pdf","text-to-binary","binary-to-text","text-to-hex","hex-to-text","morse-code-translator","camel-case-converter","snake-case-converter","kebab-case-converter","html-tag-stripper","csv-to-json","json-to-yaml","json-escape-unescape","url-validator","email-validator","password-strength-checker","random-number-generator","dice-roller","unix-timestamp-converter","date-add-subtract-calculator","business-days-calculator","px-rem-converter","aspect-ratio-calculator","color-converter","css-gradient-generator","roman-numeral-converter"].includes(toolSlug)) {
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी उपयोगिता टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1></div><HindiAdditionalToolsWorkspace slug={toolSlug} /></main>;
   }
   if (request.locale === "hi" && ["image-compressor", "image-format-converter", "image-dpi-calculator"].includes(toolSlug)) {
     const titles: Record<string, string> = { "image-compressor": "इमेज कंप्रेसर", "image-format-converter": "इमेज फ़ॉर्मेट कनवर्टर", "image-dpi-calculator": "इमेज DPI कैलकुलेटर" };

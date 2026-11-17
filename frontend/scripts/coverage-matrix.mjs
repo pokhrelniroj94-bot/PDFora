@@ -21,8 +21,10 @@ if (tools.length !== 175 || uniqueSlugs.size !== 175) {
 
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
 const localizedUtilitySlugs = parseSlugs(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g);
-const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs]);
-const indexedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs]);
+const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs, "qr-code-generator"]);
+const indexedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs, "qr-code-generator"]);
+const qrPublishedLocales = new Set(["ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
+const qrGuideLocales = new Set(["hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
 const guideSlugs = new Set(parseSlugs(read("lib/tool-guides.ts"), /"slug":\s*"([^"]+)"/g));
 const nepaliPdfGuideSlugs = new Set(parseSlugs(read("lib/i18n/tool-guides-ne.ts"), /"([^"]+)":\s*\{/g));
 const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"];
@@ -36,9 +38,12 @@ for (const locale of locales) {
   for (const tool of tools) {
     const english = locale === "en";
     const nepaliInterfacePresent = locale === "ne" && localizedNepaliTools.has(tool.slug);
-    const localized = english || nepaliInterfacePresent;
-    const guide = english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug);
-    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug);
+    const qrLocalized = tool.slug === "qr-code-generator" && qrPublishedLocales.has(locale);
+    const localized = english || nepaliInterfacePresent || qrLocalized;
+    const guide = english
+      ? guideSlugs.has(tool.slug)
+      : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug) || tool.slug === "qr-code-generator" && qrGuideLocales.has(locale);
+    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug) || qrLocalized;
     matrix.push({
       locale,
       slug: tool.slug,
@@ -46,12 +51,12 @@ for (const locale of locales) {
       route: tool.kind === "pdf" ? `/${tool.slug}` : `/tools/${tool.slug}`,
       routeExists: true,
       handler: english ? handlerEvidence : localized ? "localized-route-handler" : "not-published",
-      interface: english ? "source-language" : localized ? "nepali-interface-present" : "not-implemented",
+      interface: english ? "source-language" : qrLocalized ? "translated-interface-present" : nepaliInterfacePresent ? "nepali-interface-present" : "not-implemented",
       content: guide ? (english ? "source-guide" : "nepali-guide-present") : "not-verified",
       functionalTest: locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
       humanReview: english ? "source-content-review-not-assessed" : localized ? "native-review-not-assessed" : "not-reviewed",
       indexing: indexable ? "eligible" : "excluded",
-      published: publishedLocales.has(locale) && localized,
+      published: publishedLocales.has(locale) && localized || qrLocalized,
       direction: rtlLocales.has(locale) ? "rtl" : "ltr",
     });
   }

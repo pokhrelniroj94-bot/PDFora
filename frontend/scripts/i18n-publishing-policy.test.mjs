@@ -111,4 +111,18 @@ assert.deepEqual(
   "language selector must show only production-published equivalents",
 );
 
+assert.deepEqual(
+  getSwitcherOptions("/tools/qr-code-generator").map((option) => option.locale),
+  config.locales,
+  "QR Generator language selector must offer all 12 independently published translations",
+);
+
+for (const locale of config.locales) {
+  if (locale === "en") continue;
+  const request = tools["localized-route"].resolveLocalizedToolRequest(locale, "qr-code-generator");
+  assert.equal(request.status, "ok", `${locale} QR route must resolve`);
+  const unrelated = tools["localized-route"].resolveLocalizedToolRequest(locale, "average-calculator");
+  if (!config.isPublished(locale)) assert.equal(unrelated.status, "not-found", `${locale} must not expose unrelated catalog tools`);
+}
+
 console.log("i18n publishing policy: all published locales have complete tool-route coverage; unpublished locales remain noindex and absent from hreflang/switcher.");

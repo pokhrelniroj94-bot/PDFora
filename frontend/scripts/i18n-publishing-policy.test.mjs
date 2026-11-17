@@ -83,8 +83,9 @@ const unapprovedCatalogNepali = buildLocaleMetadata({
   title: "औसत क्याल्कुलेटर",
   description: "दिइएका संख्याको औसत निकाल्नुहोस्।",
 });
-assert.deepEqual(unapprovedCatalogNepali.robots, { index: false, follow: true });
-assert.equal(unapprovedCatalogNepali.alternates?.languages, undefined, "unapproved catalog tools must not emit hreflang");
+assert.deepEqual(unapprovedCatalogNepali.robots, { index: true, follow: true });
+assert.equal(unapprovedCatalogNepali.alternates?.languages?.ne, "https://pd-fora.vercel.app/ne/tools/average-calculator");
+assert.equal(unapprovedCatalogNepali.alternates?.languages?.en, "https://pd-fora.vercel.app/tools/average-calculator");
 
 const unverifiedNepali = buildLocaleMetadata({
   locale: "ne",

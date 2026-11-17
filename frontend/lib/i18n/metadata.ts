@@ -44,7 +44,7 @@ export function buildLocaleMetadata({ locale, path, title, description }: Locale
     title,
     description: fittedDescription,
     alternates: { canonical, ...(languages ? { languages } : {}) },
-    robots: !published ? { index: false, follow: false } : process.env.VERCEL_ENV === "preview" || !indexable ? { index: false, follow: true } : { index: true, follow: true },
+    robots: !published ? { index: false, follow: false } : indexable ? { index: true, follow: true } : { index: false, follow: true },
     openGraph: {
       type: "website",
       url: canonical,

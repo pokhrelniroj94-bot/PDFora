@@ -45,8 +45,11 @@ test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", asyn
     assert.equal(routing.hasIndexableLocalizedPage(`/${slug}`, "hi"), false, `${slug}: must stay non-indexable`);
   }
   assert.equal(config.isPublished("hi"), false);
-  assert.equal(routing.hasLocalizedPage("/blog", "hi"), false, "no Hindi blog index yet");
-  assert.equal(routing.hasLocalizedPage("/", "hi"), false, "no Hindi homepage yet");
+  assert.equal(routing.hasLocalizedPage("/blog", "hi"), true, "Hindi blog index is a real preview page");
+  assert.equal(routing.hasLocalizedPage("/", "hi"), true, "Hindi homepage is a real preview page");
+  assert.equal(routing.hasLocalizedPage("/tools", "hi"), true, "Hindi tools directory is a real preview page");
+  assert.equal(routing.hasLocalizedPage("/categories", "hi"), true, "Hindi categories page is a real preview page");
+  assert.equal(routing.hasLocalizedPage("/privacy", "hi"), true, "Hindi privacy page is a real preview page");
   // Every translatable field string in the PDF route table has a Hindi equivalent (technical values excepted).
   const technical = new Set(["90", "bottom-center", "1", "false", "11", "all", "10", "85", "1,3,5", "#E5E7EB", "6"]);
   for (const route of Object.values(pdfRoutes.nepaliPdfRoutes)) {

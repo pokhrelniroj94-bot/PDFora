@@ -80,7 +80,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.65,
     })),
     ...localizedQrBlogPosts.map((post, index) => ({
-      url: `${baseUrl}/${(["hi", "bn", "ur", "es", "fr", "de", "pt", "ar", "zh", "ja"] as const)[index]}/blog/${post.slug}`,
+      url: `${baseUrl}/${(["ne", "hi", "bn", "ur", "es", "fr", "de", "pt", "ar", "zh", "ja"] as const)[index]}/blog/${post.slug}`,
       lastModified: new Date(post.updated),
       changeFrequency: "monthly" as const,
       priority: 0.65,

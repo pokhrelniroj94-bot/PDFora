@@ -15,7 +15,8 @@ const { metadata, "legacy-tool-slugs": legacyModule, toolCatalog: catalogModule,
 const { getSwitcherOptions } = switcher;
 const siteLanguageBar = readFileSync(fileURLToPath(new URL("../components/SiteLanguageBar.tsx", import.meta.url)), "utf8");
 const qrComponent = readFileSync(fileURLToPath(new URL("../components/QRCodeGenerator.tsx", import.meta.url)), "utf8");
-const qrLibraryRoute = readFileSync(fileURLToPath(new URL("../app/api/qr-library/route.ts", import.meta.url)), "utf8");
+const qrLibraryBundle = readFileSync(fileURLToPath(new URL("../public/vendor/qrcode.min.js", import.meta.url)), "utf8");
+const qrLibraryLicense = readFileSync(fileURLToPath(new URL("../public/vendor/qrcode-LICENSE.txt", import.meta.url)), "utf8");
 const { buildLocaleMetadata } = metadata;
 const { legacyToolSlugs } = legacyModule;
 const { toolCatalog } = catalogModule;
@@ -123,9 +124,9 @@ assert.deepEqual(
 );
 
 assert.match(siteLanguageBar, /getSwitcherOptions\(path\)\.map\(\(option\) => option\.locale\)/, "global language bar must use page-specific translations so QR exposes all 12 locales");
-assert.ok(qrComponent.indexOf('"/api/qr-library"') < qrComponent.indexOf('"https://cdn.jsdelivr.net/npm/qrcode@1.5.4'), "QR generator must try the same-origin library endpoint before third-party CDNs");
-assert.ok(qrLibraryRoute.includes("qrcode@1.5.4/build/qrcode.min.js"), "same-origin QR endpoint must pin the reviewed QR library version");
-assert.ok(!qrLibraryRoute.includes("request.url") && !qrLibraryRoute.includes("searchParams"), "QR library endpoint must not become an open proxy");
+assert.ok(qrComponent.includes('"/vendor/qrcode.min.js"'), "QR generator must load its locally hosted library without a third-party network dependency");
+assert.ok(qrLibraryBundle.includes("CorrectLevel") && qrLibraryBundle.includes("QRCode"), "vendored QR library must expose the QRCode browser API");
+assert.ok(qrLibraryLicense.includes("MIT License") && qrLibraryLicense.includes("davidshimjs"), "vendored QR library must retain its MIT license notice");
 
 const qrHreflang = routing.hreflangMap("/tools/qr-code-generator");
 for (const locale of config.locales) {

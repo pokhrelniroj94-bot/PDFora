@@ -10,6 +10,7 @@ const nepalEditorial = read("lib/nepal-blog-posts.ts");
 const nepali = read("lib/nepali-localized-blog-posts.ts");
 const indexPage = read("app/[locale]/blog/page.tsx");
 const articlePage = read("app/[locale]/blog/[slug]/page.tsx");
+const localizedQrArticle = read("components/LocalizedQrBlogArticle.tsx");
 const englishArticlePage = read("app/blog/[slug]/page.tsx");
 const sitemap = read("app/sitemap.ts");
 const routing = read("lib/i18n/routing.ts");
@@ -27,7 +28,7 @@ for (const match of nepali.matchAll(/slug:\s*"([^"]+)"[\s\S]*?title:\s*"([^"]+)"
   assert.match(match[2], /[\u0900-\u097F]/u, `Blog title must be Nepali script: ${match[1]}`);
 }
 assert.ok(indexPage.includes("nepaliLocalizedBlogPosts.map"), "Nepali blog index must render the complete localized catalogue");
-assert.ok(articlePage.includes("inLanguage: localeInfo[locale].htmlLang"), "Localized article structured data must declare the active language, including Nepali");
+assert.ok(articlePage.includes("inLanguage: localeInfo[locale].htmlLang") || localizedQrArticle.includes("inLanguage: localeInfo[locale].htmlLang"), "Localized article structured data must declare the active language, including Nepali and QR guide translations");
 assert.ok(articlePage.includes('"@type": "BreadcrumbList"') && articlePage.includes("breadcrumbSchema"), "Nepali articles must include localized breadcrumb structured data");
 assert.ok(articlePage.includes("generateStaticParams"), "Nepali articles must be statically enumerable");
 assert.ok(sitemap.includes("nepaliLocalizedBlogPosts.filter((post) => isLocalizedPageIndexable(\"ne\", `/blog/${post.slug}`))"), "Only native-reviewed Nepali blog articles may enter the sitemap");

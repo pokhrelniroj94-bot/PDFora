@@ -44,6 +44,7 @@ const qrLocalizedCopy: Record<string, { title: string; description: string }> = 
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const nepaliTitles: Record<string, string> = {
+  "qr-code-generator": "QR कोड जेनेरेटर",
   "resume-builder": "व्यावसायिक रिजुमे तथा CV निर्माता",
   "csv-to-json": "CSV बाट JSON",
   "json-to-yaml": "JSON बाट YAML",
@@ -172,6 +173,7 @@ const nepaliTitles: Record<string, string> = {
   "markdown-table-generator": "Markdown तालिका निर्माता",
 };
 const nepaliDescriptions: Record<string, string> = {
+  "qr-code-generator": "वेबसाइट, पाठ, Wi-Fi, इमेल, फोन, WhatsApp, सम्पर्क र कार्यक्रमका लागि QR कोड बनाउनुहोस् र PNG वा SVG डाउनलोड गर्नुहोस्।",
   "xml-formatter-validator": "XML syntax जाँचेर सुरक्षित रूपमा indentation मिलाउनुहोस्।",
   "notes-to-pdf": "नोट ब्राउजरमै लेखेर Print संवादबाट PDF का रूपमा सुरक्षित गर्नुहोस्।",
   "html-tag-stripper": "HTML snippet बाट देखिने पाठ ब्राउजरमै निकाल्नुहोस्।",

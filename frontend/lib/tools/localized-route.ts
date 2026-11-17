@@ -17,7 +17,10 @@ export type LocalizedToolRequest =
  */
 export function resolveLocalizedToolRequest(localeParam: unknown, slugParam: unknown): LocalizedToolRequest {
   if (!isLocale(localeParam)) return { status: "not-found", reason: "invalid-locale" };
-  if (!isRoutable(localeParam)) return { status: "not-found", reason: "locale-not-served" };
+  // English stays unprefixed. QR is a reviewed, fully translated exception on every locale route.
+  if (localeParam === "en" || (!isRoutable(localeParam) && slugParam !== "qr-code-generator")) {
+    return { status: "not-found", reason: "locale-not-served" };
+  }
   const resolution = resolveCatalogTool(slugParam);
   if (!resolution.ok) return { status: "not-found", reason: resolution.reason };
   return { status: "ok", locale: localeParam, implementation: resolution.implementation };

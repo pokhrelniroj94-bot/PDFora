@@ -1,0 +1,60 @@
+export type HindiBusinessToolSlug =
+  | "profit-margin-calculator" | "markup-calculator" | "break-even-calculator"
+  | "sales-tax-calculator" | "salary-breakdown-calculator" | "commission-calculator"
+  | "hourly-to-salary-calculator";
+
+export const hindiBusinessToolSlugs: readonly HindiBusinessToolSlug[] = [
+  "profit-margin-calculator", "markup-calculator", "break-even-calculator",
+  "sales-tax-calculator", "salary-breakdown-calculator", "commission-calculator",
+  "hourly-to-salary-calculator",
+];
+
+type Values = Record<string, string>;
+const number = (value: string | undefined) => (value?.trim() ? Number(value) : NaN);
+const fmt = (value: number) => (Number.isFinite(value) ? value.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "—");
+
+/** Hindi runner for the business calculators. Same formulas as the Nepali and English versions; amounts are NPR. */
+export function runHindiBusinessTool(slug: HindiBusinessToolSlug, values: Values): string {
+  if (slug === "profit-margin-calculator") {
+    const revenue = number(values.revenue), cost = number(values.cost);
+    if (![revenue, cost].every(Number.isFinite) || revenue <= 0 || cost < 0) return "बिक्री राशि धनात्मक और लागत 0 या अधिक होनी चाहिए।";
+    const profit = revenue - cost;
+    return `कुल लाभ/हानि: NPR ${fmt(profit)}\nलाभ मार्जिन: ${fmt(profit / revenue * 100)}%\nयह गणना बिक्री राशि के आधार पर की गई है।`;
+  }
+  if (slug === "markup-calculator") {
+    const cost = number(values.cost), markup = number(values.markup);
+    if (![cost, markup].every(Number.isFinite) || cost <= 0 || markup < 0 || markup > 1000) return "लागत धनात्मक और मार्कअप 0–1000% के बीच होना चाहिए।";
+    const profit = cost * markup / 100, price = cost + profit;
+    return `बिक्री मूल्य: NPR ${fmt(price)}\nलाभ राशि: NPR ${fmt(profit)}\nबिक्री मूल्य पर लाभ मार्जिन: ${fmt(profit / price * 100)}%`;
+  }
+  if (slug === "break-even-calculator") {
+    const fixed = number(values.fixed), variable = number(values.variable), price = number(values.price);
+    if (![fixed, variable, price].every(Number.isFinite) || fixed < 0 || variable < 0 || price <= variable) return "स्थिर लागत और प्रति इकाई परिवर्ती लागत 0 या अधिक होनी चाहिए; बिक्री मूल्य परिवर्ती लागत से अधिक होना चाहिए।";
+    const units = fixed === 0 ? 0 : Math.ceil(fixed / (price - variable));
+    return `प्रति इकाई योगदान: NPR ${fmt(price - variable)}\nब्रेक-ईवन मात्रा: ${units.toLocaleString("en-IN")} इकाई\nउस मात्रा पर बिक्री: NPR ${fmt(units * price)}\nयह मानकर चला गया है कि स्थिर लागत और प्रति इकाई लागत नहीं बदलेगी।`;
+  }
+  if (slug === "sales-tax-calculator") {
+    const price = number(values.price), rate = number(values.rate);
+    if (![price, rate].every(Number.isFinite) || price < 0 || rate < 0 || rate > 100) return "मूल्य 0 या अधिक और कर दर 0–100% के बीच होनी चाहिए।";
+    const tax = price * rate / 100;
+    return `कर की राशि: NPR ${fmt(tax)}\nकर सहित कुल: NPR ${fmt(price + tax)}\nप्रयुक्त कर दर: ${fmt(rate)}%`;
+  }
+  if (slug === "salary-breakdown-calculator") {
+    const gross = number(values.gross), tax = number(values.tax), provident = number(values.provident), other = number(values.other);
+    if (![gross, tax, provident, other].every(Number.isFinite) || gross < 0 || tax < 0 || provident < 0 || other < 0 || tax + provident + other > gross) return "कुल वेतन और कटौतियाँ 0 या अधिक होनी चाहिए; कटौती कुल वेतन से अधिक नहीं हो सकती।";
+    const deductions = tax + provident + other, net = gross - deductions;
+    return `मासिक कुल वेतन: NPR ${fmt(gross)}\nकुल कटौती: NPR ${fmt(deductions)}\nअनुमानित हाथ में आने वाला वेतन: NPR ${fmt(net)}\nकटौती प्रतिशत: ${gross > 0 ? fmt(deductions / gross * 100) : "0"}%\nयह आपके दिए गए कटौती मानों पर आधारित हिसाब है; आयकर का निर्धारण नहीं।`;
+  }
+  if (slug === "commission-calculator") {
+    const sales = number(values.sales), rate = number(values.rate);
+    if (![sales, rate].every(Number.isFinite) || sales < 0 || rate < 0 || rate > 100) return "बिक्री राशि 0 या अधिक और कमीशन दर 0–100% के बीच होनी चाहिए।";
+    return `कमीशन राशि: NPR ${fmt(sales * rate / 100)}\nबिक्री राशि: NPR ${fmt(sales)}\nकमीशन दर: ${fmt(rate)}%`;
+  }
+  if (slug === "hourly-to-salary-calculator") {
+    const hourly = number(values.hourly), hours = number(values.hours), weeks = number(values.weeks);
+    if (![hourly, hours, weeks].every(Number.isFinite) || hourly < 0 || hours < 0 || hours > 168 || weeks < 1 || weeks > 52) return "प्रति घंटा दर और साप्ताहिक घंटे 0 या अधिक हों, घंटे 168 से अधिक न हों और सप्ताह 1–52 के बीच हों।";
+    const annual = hourly * hours * weeks;
+    return `साप्ताहिक अनुमान: NPR ${fmt(hourly * hours)}\nमासिक औसत: NPR ${fmt(annual / 12)}\nवार्षिक कुल: NPR ${fmt(annual)}\nकर, छुट्टी और अतिरिक्त सुविधाएँ शामिल नहीं हैं।`;
+  }
+  return "";
+}

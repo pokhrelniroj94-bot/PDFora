@@ -146,9 +146,8 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
   const nepaliCatalogTool = toolCatalog.find((entry) => entry.slug === "loan-emi-calculator");
   assert.ok(nepaliCatalogTool);
   const nepaliMetadata = buildLocalizedToolMetadata("ne", nepaliCatalogTool);
-  assert.deepEqual(nepaliMetadata.robots, { index: true, follow: true });
-  assert.equal(nepaliMetadata.alternates.languages.ne, "https://pd-fora.vercel.app/ne/tools/loan-emi-calculator");
-  assert.equal(nepaliMetadata.alternates.languages.en, "https://pd-fora.vercel.app/tools/loan-emi-calculator");
+  assert.deepEqual(nepaliMetadata.robots, { index: false, follow: true });
+  assert.equal(nepaliMetadata.alternates.languages, undefined, "catalog tools must not advertise hreflang before individual approval");
 });
 
 test("verification registry: only published locales and adaptable tools may ever be listed", () => {

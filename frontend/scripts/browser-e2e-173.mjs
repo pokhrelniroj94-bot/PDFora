@@ -1419,7 +1419,7 @@ try {
     const result = await runTool(tools[index], index);
     results.push(result);
     console.log((result.status === "PASS" ? "PASS " : result.status === "PARTIAL" ? "PARTIAL " : "FAIL ") +
-      result.index + "/175  + result.slug + " — " +
+      result.index + "/175 " + result.slug + " — " +
       (result.errors[0] || result.checks.join(", ")));
     if (fatalBrowserError) break;
   }
@@ -1508,7 +1508,7 @@ try {
     }
     nepaliRouteResults.push(row);
     console.log((row.status === "PASS" ? "PASS " : "FAIL ") + "ne-NP " +
-      (nepaliRouteResults.length) + "/175  + route.slug + " — " +
+      (nepaliRouteResults.length) + "/175 " + route.slug + " — " +
       (row.errors[0] || row.checks.join(", ")));
   }
 } finally {

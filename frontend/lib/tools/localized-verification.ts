@@ -10,7 +10,6 @@ import { nepaliPdfRoutes } from "../i18n/nepali-pdf-routes";
  * reciprocal hreflang, language switching and the XML sitemap.
  */
 export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {
-  en: ["qr-code-generator"],
   ne: [...nepaliLocalizedUtilitySlugs, ...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs, ...Object.keys(nepaliPdfRoutes)],
   hi: ["qr-code-generator"],
   bn: ["qr-code-generator"],

@@ -30,11 +30,24 @@ export default function NepaliTypingTool({ locale = "en" }: { locale?: "en" | "n
     script.src = "https://unpkg.com/nepalify@0.5.0/umd/nepalify.production.min.js";
     script.async = true;
     script.dataset.nepalifyScript = "true";
+    const fallbackToJsDelivr = () => {
+      script.remove();
+      const fallback = document.createElement("script");
+      fallback.src = "https://cdn.jsdelivr.net/npm/nepalify@0.5.0/umd/nepalify.production.min.js";
+      fallback.async = true;
+      fallback.dataset.nepalifyScript = "true";
+      fallback.onload = () => {
+        if (window.nepalify?.format) setReady(true);
+        else setError(ne ? "नेपाली टाइपिङ इन्जिनको API भेटिएन। Preeti converter प्रयोग गर्नुहोस्।" : "Nepali typing engine loaded without its expected API. Use the Preeti converter instead.");
+      };
+      fallback.onerror = () => setError(ne ? "नेपाली टाइपिङ library का दुवै स्रोत लोड भएनन्। इन्टरनेट जाँचेर फेरि प्रयास गर्नुहोस्।" : "Nepali typing could not load from either approved CDN. Check your connection and retry.");
+      document.head.appendChild(fallback);
+    };
     script.onload = () => {
       if (window.nepalify?.format) setReady(true);
-      else setError(ne ? "टाइपिङ script लोड भयो तर API भेटिएन। पृष्ठ पुनःलोड गर्नुहोस् वा Preeti converter प्रयोग गर्नुहोस्।" : "Nepali typing script loaded, but its API was not found. Please reload or use the Preeti converter.");
+      else fallbackToJsDelivr();
     };
-    script.onerror = () => setError(ne ? "नेपाली टाइपिङ library लोड भएन। इन्टरनेट जाँचेर फेरि प्रयास गर्नुहोस्।" : "Nepali typing library could not load. Check your internet connection and retry.");
+    script.onerror = fallbackToJsDelivr;
     document.head.appendChild(script);
     return () => { script.onload = null; script.onerror = null; };
   }, [ne]);

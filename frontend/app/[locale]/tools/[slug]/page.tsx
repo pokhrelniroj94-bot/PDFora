@@ -43,6 +43,7 @@ const qrLocalizedCopy: Record<string, { title: string; description: string }> = 
   ja: { title: "無料 QRコードジェネレーター", description: "ウェブサイト、テキスト、Wi-Fi、メール、電話、WhatsApp、連絡先、イベント用のQRコードを作成し、PNGまたはSVGで保存できます。" },
 };
 const nepaliTitles: Record<string, string> = {
+  "qr-code-generator": "बहुभाषिक QR Code जेनेरेटर",
   "resume-builder": "व्यावसायिक रिजुमे तथा CV निर्माता",
   "csv-to-json": "CSV बाट JSON",
   "json-to-yaml": "JSON बाट YAML",
@@ -171,6 +172,7 @@ const nepaliTitles: Record<string, string> = {
   "markdown-table-generator": "Markdown तालिका निर्माता",
 };
 const nepaliDescriptions: Record<string, string> = {
+  "qr-code-generator": "वेबसाइट, Wi-Fi, इमेल, फोन, सम्पर्क कार्ड र कार्यक्रमका लागि QR बनाउनुहोस्; PNG वा SVG डाउनलोड गर्नुहोस्।",
   "xml-formatter-validator": "XML syntax जाँचेर सुरक्षित रूपमा indentation मिलाउनुहोस्।",
   "notes-to-pdf": "नोट ब्राउजरमै लेखेर Print संवादबाट PDF का रूपमा सुरक्षित गर्नुहोस्।",
   "html-tag-stripper": "HTML snippet बाट देखिने पाठ ब्राउजरमै निकाल्नुहोस्।",

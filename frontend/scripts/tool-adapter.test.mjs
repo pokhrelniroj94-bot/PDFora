@@ -177,8 +177,8 @@ test("route file contract: validates through the resolver, 404s, no JSON-LD, Eng
   assert.match(page, /resolveLocalizedToolRequest\(/);
   assert.match(page, /notFound\(\)/);
   assert.match(page, /<ToolWorkspace slug=\{toolSlug\} \/>/, "must reuse the existing ToolWorkspace");
-  assert.match(page, /lang=\\{request\\.locale\\}/, "the QR workspace must declare its selected language");
-  assert.match(page, /QRCodeGenerator defaultLocale=\\{request\\.locale\\}/, "the QR workspace must receive the resolved locale");
+  assert.ok(page.includes("lang={request.locale}"), "the QR workspace must declare its selected language");
+  assert.ok(page.includes("QRCodeGenerator defaultLocale={request.locale}"), "the QR workspace must receive the resolved locale");
   assert.doesNotMatch(page, /ld\+json|SoftwareApplication|FAQPage/, "English structured data must not be attached to localized URLs");
   assert.doesNotMatch(page, /index:\s*true/, "indexing is decided only in lib/tools/localized-metadata.ts");
   assert.doesNotMatch(page, /generateStaticParams/, "no speculative static generation of localized tool pages");

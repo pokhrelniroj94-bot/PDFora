@@ -419,7 +419,7 @@ test("localized SEO descriptions are capped at 155 characters", () => {
   }
 });
 
-test("metadata: English catalog tools retain indexability and gain reciprocal Nepali hreflang", () => {
+test("metadata: English catalog tools remain indexable without unapproved Nepali hreflang", () => {
   const english = metadata.buildLocaleMetadata({
     locale: "en",
     path: "/tools/loan-emi-calculator",
@@ -428,7 +428,7 @@ test("metadata: English catalog tools retain indexability and gain reciprocal Ne
   });
   assert.deepEqual(english.robots, { index: true, follow: true });
   assert.equal(english.alternates.languages?.en, "https://pd-fora.vercel.app/tools/loan-emi-calculator");
-  assert.equal(english.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/tools/loan-emi-calculator");
+  assert.equal(english.alternates.languages?.ne, undefined, "unapproved catalog translations must not be advertised");
 });
 
 test("metadata: only six approved Nepali PDF routes are indexable with reciprocal hreflang", () => {

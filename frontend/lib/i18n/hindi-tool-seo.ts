@@ -105,4 +105,8 @@ export const hindiToolSeo: Record<string,{title:string;description:string}> = {
 "color-converter":{title:"HEX RGB HSL रंग कनवर्टर",description:"HEX रंग को RGB और HSL मानों में बदलें।"},
 "css-gradient-generator":{title:"CSS Gradient जनरेटर",description:"दो HEX रंग और कोण चुनकर CSS linear-gradient कोड बनाएँ।"},
 "roman-numeral-converter":{title:"रोमन अंक कनवर्टर",description:"1 से 3999 तक की संख्या को रोमन अंक में बदलें या वैध रोमन अंक पढ़ें।"},
+"email-signature-generator":{title:"ईमेल हस्ताक्षर जनरेटर",description:"नाम, पद, कंपनी और संपर्क जानकारी से कॉपी करने योग्य HTML ईमेल हस्ताक्षर बनाएँ।"},
+"timezone-meeting-planner":{title:"समय क्षेत्र बैठक योजनाकार",description:"UTC समय से नेपाल और दूसरे प्रमुख समय क्षेत्रों में बैठक का स्थानीय समय देखें।"},
+"video-bitrate-calculator":{title:"वीडियो बिटरेट कैलकुलेटर",description:"वीडियो अवधि, लक्षित फ़ाइल आकार और ऑडियो बिटरेट से अनुमानित वीडियो बिटरेट निकालें।"},
+"markdown-table-generator":{title:"Markdown तालिका जनरेटर",description:"Tab से अलग पंक्तियों को Markdown तालिका में बदलें और परिणाम कॉपी करें।"},
 };

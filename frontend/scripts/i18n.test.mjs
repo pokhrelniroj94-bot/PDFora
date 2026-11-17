@@ -24,7 +24,7 @@ const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
 test("every curated Nepali blog article is a localized indexable route with reciprocal hreflang", () => {
-  assert.equal(nepaliLocalizedBlogPosts.length, 36);
+  assert.equal(nepaliLocalizedBlogPosts.length, 37);
   for (const post of nepaliLocalizedBlogPosts) {
     const localizedPath = "/blog/" + post.slug;
     assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);
@@ -165,7 +165,7 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/nepse-technical-analysis", "ne"), "/ne/nepse-technical-analysis");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 220, "All localized routes must be represented in the route registry");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 222, "All localized routes must be represented in the route registry");
   for (const slug of ["email-signature-generator", "timezone-meeting-planner", "image-dpi-calculator", "video-bitrate-calculator", "markdown-table-generator"]) {
     assert.equal(routing.localizedOrFallbackPath(`/tools/${slug}`, "ne"), `/ne/tools/${slug}`);
     assert.equal(routing.hasIndexableLocalizedPage(`/tools/${slug}`, "ne"), true, `${slug} has a dedicated Nepali workspace and should be indexable`);
@@ -314,7 +314,7 @@ test("Nepali blog routes contain complete translated article content", () => {
   for (const phrase of ["नेपाली मिति कन्भर्टर", "नेपालमा १३% VAT", "रोपनी, आना, पैसा र दाम", "बारम्बार सोधिने प्रश्न"]) {
     assert.ok(source.includes(phrase) || page.includes(phrase), `Nepali blog content must include: ${phrase}`);
   }
-  assert.equal((source.match(/slug: "/g) ?? []).length, 36);
+  assert.equal((source.match(/slug: "/g) ?? []).length, 37);
   assert.ok(page.includes('inLanguage: "ne"'));
   assert.ok(page.includes('href="/ne/blog"'));
 });

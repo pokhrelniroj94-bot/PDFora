@@ -34,4 +34,4 @@ for (const [name, fn] of tests) {
   try { fn(); } catch (error) { failures++; console.error(`FAIL ${name}: ${error.message}`); }
 }
 console.log(`Nepali route regression: ${tests.length - failures}/${tests.length} passed; ${failures} failed.`);
-if (tests.length !== 174 || failures) process.exitCode = 1;
+if (tests.length !== 175 || failures) process.exitCode = 1;

@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (locale !== "ne" || !post) return { title: "Article not found", robots: { index: false, follow: true } };
   // Keep search titles concise without changing the reader-facing article headline.
   const searchTitles: Record<string, string> = {
+    "qr-code-generator-guide": "QR Code कसरी बनाउने? Wi-Fi र URL",
     "compress-pdf-under-200kb-nepal-online-forms": "PDF २००KB भित्र कसरी कम्प्रेस गर्ने?",
     "nepali-date-converter-bs-to-ad-guide": "नेपाली मिति BS–AD रूपान्तरण",
     "neb-gpa-calculator-nepal-guide": "NEB GPA क्याल्कुलेटर: ग्रेड र क्रेडिट",

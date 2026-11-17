@@ -9,12 +9,12 @@ const report = JSON.parse(fs.readFileSync(matrixPath, "utf8"));
 test("tool-language matrix accounts for every configured locale and unique tool", () => {
   assert.equal(report.counts.locales, 12);
   assert.equal(report.counts.pdfTools, 49);
-  assert.equal(report.counts.catalogUtilities, 125);
-  assert.equal(report.counts.tools, 174);
-  assert.equal(report.counts.matrixRows, 12 * 174);
-  assert.equal(report.rows.length, 2088);
-  assert.equal(report.counts.localizedNepaliTools, 174, "49 Nepali PDF routes plus 125 localized catalog routes");
-  assert.equal(report.counts.indexableNepaliTools, 174);
+  assert.equal(report.counts.catalogUtilities, 126);
+  assert.equal(report.counts.tools, 175);
+  assert.equal(report.counts.matrixRows, 12 * 175);
+  assert.equal(report.rows.length, 2100);
+  assert.equal(report.counts.localizedNepaliTools, 175, "49 Nepali PDF routes plus 126 localized catalog routes");
+  assert.equal(report.counts.indexableNepaliTools, 175);
   assert.deepEqual(report.rows.filter((row) => row.locale === "ne" && row.indexing === "eligible").map((row) => row.slug).sort(), report.tools.map((tool) => tool.slug).sort());
   assert.equal(report.rows.filter((row) => row.locale === "ne" && row.functionalTest === "targeted-unit-tests").length, 44);
   for (const slug of ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"]) {
@@ -46,6 +46,9 @@ test("tool-language matrix accounts for every configured locale and unique tool"
     assert.ok(englishCatalog.includes(`slug:"${slug}"`), `${slug} must remain in the English catalog`);
   }
   assert.ok(englishWorkspace.includes("BrowserOnlyGrowthTools"), "Restored browser-only utilities must be routed to their workspace");
+  const qrWorkspace = fs.readFileSync(path.resolve(new URL("../components/QRCodeGenerator.tsx", import.meta.url).pathname), "utf8");
+  for (const locale of ["en","ne","hi","bn","ur","ar","es","fr","de","pt","zh","ja"]) assert.ok(qrWorkspace.includes(locale+":"), `QR interface must include ${locale}`);
+  assert.ok(qrWorkspace.includes("QRCodeGenerator") && qrWorkspace.includes("whatsapp") && qrWorkspace.includes("vcard") && qrWorkspace.includes("event"), "QR workspace must support the full content formats");
   assert.equal(fs.existsSync(browserOnlyWorkspacePath), true, "Restored browser-only workspace source must exist");
 
   const localizedToolPage = fs.readFileSync(path.resolve(new URL("../app/[locale]/tools/[slug]/page.tsx", import.meta.url).pathname), "utf8");
@@ -61,7 +64,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.ok(nepaliBrowserWorkspace.includes('locale="ne"'));
   const browserToolSource = fs.readFileSync(browserOnlyWorkspacePath, "utf8");
   for (const translatedLabel of ["पूरा नाम", "बैठकको मिति", "तस्बिरको चौडाइ (पिक्सेल)", "भिडियो अवधि (मिनेट)", "Markdown नतिजा"]) assert.ok(browserToolSource.includes(translatedLabel), `Missing Nepali copy: ${translatedLabel}`);
-  assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 174);
+  assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 175);
   for (const slug of ["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator", "regex-tester", "jwt-decoder", "css-minifier", "color-contrast-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
     assert.equal(row?.functionalTest, "targeted-unit-tests", `${slug} should record only its executed targeted tests`);

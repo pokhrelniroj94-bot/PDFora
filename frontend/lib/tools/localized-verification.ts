@@ -8,7 +8,7 @@ import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLo
  * gated because only six have completed the separate PDF editorial/functional review.
  */
 export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {
-  ne: [...nepaliLocalizedUtilitySlugs, ...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs],
+  ne: [...nepaliLocalizedUtilitySlugs, ...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs, "merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "pdf-to-jpg", "rotate-pdf"],
 };
 
 /** Published Nepali non-tool pages with dedicated localized content. */

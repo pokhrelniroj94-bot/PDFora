@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     "nepali-number-to-words-lakh-crore-guide": "हजार, लाख र करोड: अङ्कलाई अक्षरमा",
     "nepal-mobile-number-format-checker-guide": "नेपाल मोबाइल नम्बरको ढाँचा जाँच",
     "nepal-public-holidays-2083-calendar-guide": "नेपालका सार्वजनिक बिदा २०८३",
-    "nepal-rastra-bank-daily-exchange-rates-guide": "NRB दैनिक विनिमय दर कसरी हेर्ने?",
+    "nepal-rastra-bank-daily-exchange-rates-guide": "NRB विनिमय दर आज: USD, INR र EUR",
     "nepal-salary-income-tax-calculator-2083-84-guide": "नेपाल तलब कर २०८३/८४",
     "nepse-cash-dividend-and-bonus-share-calculator-guide": "NEPSE नगद लाभांश र बोनस सेयर",
     "nepse-market-news-and-ipo-updates": "NEPSE समाचार र IPO सूचना पुष्टि",

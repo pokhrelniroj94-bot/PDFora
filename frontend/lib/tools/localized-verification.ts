@@ -11,6 +11,16 @@ export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly st
     ...nepaliLocalizedFinancialSlugs,
     ...nepaliLocalizedPublicInfoSlugs,
   ],
+  hi: ["qr-code-generator"],
+  bn: ["qr-code-generator"],
+  ur: ["qr-code-generator"],
+  ar: ["qr-code-generator"],
+  es: ["qr-code-generator"],
+  fr: ["qr-code-generator"],
+  de: ["qr-code-generator"],
+  pt: ["qr-code-generator"],
+  zh: ["qr-code-generator"],
+  ja: ["qr-code-generator"],
 };
 
 /** Published Nepali non-tool pages with dedicated localized content. */

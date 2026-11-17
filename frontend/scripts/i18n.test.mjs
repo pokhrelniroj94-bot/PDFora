@@ -431,26 +431,31 @@ test("metadata: English catalog tools retain indexability and gain reciprocal Ne
   assert.equal(english.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/tools/loan-emi-calculator");
 });
 
-test("metadata: all registered Nepali PDF routes are indexable with reciprocal hreflang", () => {
-  const approved = metadata.buildLocaleMetadata({
-    locale: "ne",
-    path: "/merge-pdf",
-    title: "पीडीएफ जोड्नुहोस्",
-    description: "धेरै पीडीएफ फाइललाई एउटै फाइलमा जोड्नुहोस्।",
-  });
-  assert.deepEqual(approved.robots, { index: true, follow: true });
-  assert.ok(approved.alternates.languages?.ne);
+test("metadata: only six approved Nepali PDF routes are indexable with reciprocal hreflang", () => {
+  const approvedSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "pdf-to-jpg", "rotate-pdf"];
+  for (const slug of approvedSlugs) {
+    const approved = metadata.buildLocaleMetadata({
+      locale: "ne",
+      path: `/${slug}`,
+      title: `नेपाली ${slug}`,
+      description: "नेपाली PDF उपकरण प्रयोग गर्ने स्पष्ट निर्देशन।",
+    });
+    assert.deepEqual(approved.robots, { index: true, follow: true }, `${slug} is approved`);
+    assert.equal(approved.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/${slug}`);
+    assert.equal(approved.alternates.languages?.en, `https://pd-fora.vercel.app/${slug}`);
+  }
 
-  const pending = metadata.buildLocaleMetadata({
-    locale: "ne",
-    path: "/images-to-pdf",
-    title: "तस्बिरबाट PDF",
-    description: "धेरै तस्बिरलाई एउटै PDF मा रूपान्तरण गर्नुहोस्।",
-  });
-  assert.deepEqual(pending.robots, { index: true, follow: true });
-  assert.equal(pending.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/images-to-pdf");
-  assert.equal(pending.alternates.languages?.en, "https://pd-fora.vercel.app/images-to-pdf");
-  assert.equal(pending.alternates.canonical, "https://pd-fora.vercel.app/ne/images-to-pdf");
+  for (const slug of ["images-to-pdf", "pdf-to-excel", "reorder-pdf", "protect-pdf"]) {
+    const pending = metadata.buildLocaleMetadata({
+      locale: "ne",
+      path: `/${slug}`,
+      title: `नेपाली ${slug}`,
+      description: "नेपाली PDF उपकरणको विवरण।",
+    });
+    assert.deepEqual(pending.robots, { index: false, follow: true }, `${slug} stays crawlable but noindex`);
+    assert.equal(pending.alternates.languages, undefined, `${slug} must not advertise hreflang before approval`);
+    assert.equal(pending.alternates.canonical, `https://pd-fora.vercel.app/ne/${slug}`);
+  }
 });
 
 test("metadata: unpublished locales are noindex with no hreflang; canonical is self-referencing", () => {

@@ -427,8 +427,7 @@ test("metadata: English catalog tools remain indexable without unapproved Nepali
     description: "Estimate monthly loan payments.",
   });
   assert.deepEqual(english.robots, { index: true, follow: true });
-  assert.equal(english.alternates.languages?.en, "https://pd-fora.vercel.app/tools/loan-emi-calculator");
-  assert.equal(english.alternates.languages?.ne, undefined, "unapproved catalog translations must not be advertised");
+  assert.equal(english.alternates.languages, undefined, "without an approved Nepali equivalent, a catalog page must not emit hreflang");
 });
 
 test("metadata: only six approved Nepali PDF routes are indexable with reciprocal hreflang", () => {
@@ -595,9 +594,14 @@ test("PDF SEO metadata is unique, canonical and within search description length
     descriptions.add(metadata.description);
     assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
     assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
-    assert.equal(metadata.alternates.languages?.en, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " English hreflang");
-    assert.equal(metadata.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/${guide.slug}`, guide.slug + " reciprocal Nepali hreflang");
-    assert.equal(metadata.alternates.languages?.["x-default"], metadata.alternates.languages?.en, guide.slug + " x-default hreflang");
+    const approvedNepaliPdfSlugs = new Set(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "pdf-to-jpg", "rotate-pdf"]);
+    if (approvedNepaliPdfSlugs.has(guide.slug)) {
+      assert.equal(metadata.alternates.languages?.en, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " English hreflang");
+      assert.equal(metadata.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/${guide.slug}`, guide.slug + " reciprocal Nepali hreflang");
+      assert.equal(metadata.alternates.languages?.["x-default"], metadata.alternates.languages?.en, guide.slug + " x-default hreflang");
+    } else {
+      assert.equal(metadata.alternates.languages, undefined, guide.slug + " must not advertise an unapproved Nepali equivalent");
+    }
   }
   const deletePages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "delete-pages"), "delete-pages");
   const extractPages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "extract-pages"), "extract-pages");

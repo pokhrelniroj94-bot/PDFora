@@ -38,10 +38,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LocalizedBlogArticle({ params }: Props) {
   const { locale: rawLocale, slug } = await params;
-  if (!isLocale(rawLocale) || !isRoutable(rawLocale)) notFound();
+  if (!isLocale(rawLocale)) notFound();
   const locale = rawLocale;
   const post = getPost(locale, slug);
-  if (!post) notFound();
+  const independentlyPublishedQrGuide = locale !== "en" && slug === "qr-code-generator-guide" && Boolean(post);
+  if ((!isRoutable(locale) && !independentlyPublishedQrGuide) || !post) notFound();
 
   const isNepali = locale === "ne";
   const isRtl = localeInfo[locale].dir === "rtl";

@@ -130,7 +130,7 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
   for (const l of nonEnglish) {
     for (const entry of toolCatalog.filter((t) => !RESERVED_CATALOG_SLUGS.has(t.slug))) {
       const m = buildLocalizedToolMetadata(l, entry);
-      const expectIndex = (isPublished(l) || entry.slug === "qr-code-generator") && isLocalizedToolIndexable(l, entry.slug);
+      const expectIndex = isPublished(l) && isLocalizedToolIndexable(l, entry.slug);
       assert.deepEqual(m.robots, expectIndex ? { index: true, follow: true } : { index: false, follow: isPublished(l) }, `${l}/${entry.slug}`);
       assert.equal(m.alternates.canonical, absoluteUrl(`/tools/${entry.slug}`, l), "canonical must be the localized URL itself");
       assert.ok(m.alternates.canonical.startsWith("https://pd-fora.vercel.app/"));

@@ -39,7 +39,7 @@ for (const locale of locales) {
     const nepaliInterfacePresent = locale === "ne" && localizedNepaliTools.has(tool.slug);
     const qrLocalized = tool.slug === "qr-code-generator" && qrPublishedLocales.has(locale);
     const localized = english || nepaliInterfacePresent || qrLocalized;
-    const guide = english ? guideSlugs.has(tool.slug) : qrLocalized || locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug);
+    const guide = tool.slug === "qr-code-generator" || (english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug));
     const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug) || qrLocalized;
     matrix.push({
       locale,

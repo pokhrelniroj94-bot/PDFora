@@ -30,9 +30,10 @@ function loadQr(): Promise<QRCodeApi> {
  if (current) return Promise.resolve(current);
  if (qrLoadPromise) return qrLoadPromise;
  const sources = [
+  // Same-origin proxy avoids browser extensions, network filters and third-party CSP issues.
+  "/api/qr-library",
   "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js",
   "https://unpkg.com/qrcode@1.5.4/lib/browser.min.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.js",
  ];
  qrLoadPromise = (async () => {
   // Remove a stale failed script left by an earlier attempt. Its error event has
@@ -49,7 +50,6 @@ function loadQr(): Promise<QRCodeApi> {
      }, 12000);
      script.src = src;
      script.async = true;
-     script.crossOrigin = "anonymous";
      script.referrerPolicy = "no-referrer";
      script.dataset.pdforaQr = "1";
      script.onload = () => {

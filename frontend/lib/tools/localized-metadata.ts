@@ -20,7 +20,9 @@ export function buildLocalizedToolMetadata(locale: Locale, entry: ToolInfo): Met
     title: `${entry.name} | PDFora`,
     description: entry.description,
   });
-  const indexable = isPublished(locale) && isLocalizedToolIndexable(locale, entry.slug);
+  // QR Generator is an independently reviewed, fully localized exception across all 12 locales.
+  // Other tools still require the locale itself to be published before indexing.
+  const indexable = isLocalizedToolIndexable(locale, entry.slug) && (entry.slug === "qr-code-generator" || isPublished(locale));
   if (indexable) return { ...base, robots: { index: true, follow: true } };
   return {
     ...base,

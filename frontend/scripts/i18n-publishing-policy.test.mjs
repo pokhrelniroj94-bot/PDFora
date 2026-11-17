@@ -67,30 +67,24 @@ for (const locale of config.locales) {
 
 const nepaliEligible = buildLocaleMetadata({
   locale: "ne",
+  path: "/merge-pdf",
+  title: "पीडीएफ जोड्नुहोस्",
+  description: "धेरै PDF फाइललाई एउटै फाइलमा जोड्नुहोस्।",
+});
+assert.deepEqual(nepaliEligible.robots, { index: true, follow: true });
+assert.equal(nepaliEligible.alternates?.canonical, "https://pd-fora.vercel.app/ne/merge-pdf", "approved localized pages need a self-referencing canonical");
+assert.equal(nepaliEligible.alternates?.languages?.en, "https://pd-fora.vercel.app/merge-pdf", "approved translations need reciprocal English hreflang");
+assert.equal(nepaliEligible.alternates?.languages?.ne, "https://pd-fora.vercel.app/ne/merge-pdf", "approved translations need reciprocal Nepali hreflang");
+assert.equal(nepaliEligible.alternates?.languages?.["x-default"], "https://pd-fora.vercel.app/merge-pdf");
+
+const unapprovedCatalogNepali = buildLocaleMetadata({
+  locale: "ne",
   path: "/tools/average-calculator",
   title: "औसत क्याल्कुलेटर",
   description: "दिइएका संख्याको औसत निकाल्नुहोस्।",
 });
-assert.deepEqual(nepaliEligible.robots, { index: true, follow: true });
-assert.equal(
-  nepaliEligible.alternates?.canonical,
-  "https://pd-fora.vercel.app/ne/tools/average-calculator",
-  "localized pages need a self-referencing canonical",
-);
-assert.equal(
-  nepaliEligible.alternates?.languages?.en,
-  "https://pd-fora.vercel.app/tools/average-calculator",
-  "eligible translations need reciprocal English hreflang",
-);
-assert.equal(
-  nepaliEligible.alternates?.languages?.ne,
-  "https://pd-fora.vercel.app/ne/tools/average-calculator",
-  "eligible translations need reciprocal Nepali hreflang",
-);
-assert.equal(
-  nepaliEligible.alternates?.languages?.["x-default"],
-  "https://pd-fora.vercel.app/tools/average-calculator",
-);
+assert.deepEqual(unapprovedCatalogNepali.robots, { index: false, follow: true });
+assert.equal(unapprovedCatalogNepali.alternates?.languages, undefined, "unapproved catalog tools must not emit hreflang");
 
 const unverifiedNepali = buildLocaleMetadata({
   locale: "ne",

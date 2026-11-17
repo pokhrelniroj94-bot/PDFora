@@ -100,6 +100,7 @@ export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
     "json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator",
     "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug",
     "image-compressor", "image-format-converter", "image-dpi-calculator",
+    "password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "json-to-csv", "url-query-parser", "xml-formatter-validator", "notes-to-pdf", "text-to-binary", "binary-to-text", "text-to-hex", "hex-to-text", "morse-code-translator", "camel-case-converter", "snake-case-converter", "kebab-case-converter", "html-tag-stripper", "csv-to-json", "json-to-yaml", "json-escape-unescape", "url-validator", "email-validator", "password-strength-checker", "random-number-generator", "dice-roller", "unix-timestamp-converter", "date-add-subtract-calculator", "business-days-calculator", "px-rem-converter", "aspect-ratio-calculator", "color-converter", "css-gradient-generator", "roman-numeral-converter",
   ].map((slug) => `/tools/${slug}`),
 ]);
 

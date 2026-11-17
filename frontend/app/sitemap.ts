@@ -3,6 +3,7 @@ import type { MetadataRoute } from "next";
 import { toolCatalog } from "../components/toolCatalog";
 import { legacyToolSlugs, legacyToolSlugSet } from "../lib/legacy-tool-slugs";
 import { nepaliLocalizedBlogPosts } from "../lib/nepali-localized-blog-posts";
+import { localizedQrBlogPosts } from "../lib/localized-qr-blog-posts";
 import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../lib/i18n/nepali-tool-routes";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../lib/tools/localized-verification";
 import { nepaliPdfRoutes } from "../lib/i18n/nepali-pdf-routes";
@@ -57,6 +58,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.65,
     })),
+    ...(["hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"] as const)
+      .filter((locale) => isLocalizedToolIndexable(locale, "qr-code-generator"))
+      .map((locale) => ({
+        url: `${baseUrl}/${locale}/tools/qr-code-generator`,
+        changeFrequency: "monthly" as const,
+        priority: 0.65,
+      })),
 
     ...["privacy", "terms", "about", "contact"].filter((slug) => isLocalizedPageIndexable("ne", `/${slug}`)).map((slug) => ({
       url: `${baseUrl}/ne/${slug}`,
@@ -66,6 +74,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...(isLocalizedPageIndexable("ne", "/blog") ? [{ url: `${baseUrl}/ne/blog`, changeFrequency: "weekly" as const, priority: 0.7 }] : []),
     ...nepaliLocalizedBlogPosts.filter((post) => isLocalizedPageIndexable("ne", `/blog/${post.slug}`)).map((post) => ({
       url: `${baseUrl}/ne/blog/${post.slug}`,
+      lastModified: new Date(post.updated),
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+    })),
+    ...localizedQrBlogPosts.map((post, index) => ({
+      url: `${baseUrl}/${(["hi", "bn", "ur", "es", "fr", "de", "pt", "ar", "zh", "ja"] as const)[index]}/blog/${post.slug}`,
       lastModified: new Date(post.updated),
       changeFrequency: "monthly" as const,
       priority: 0.65,

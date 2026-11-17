@@ -75,6 +75,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
     headline: post.title,
     description: post.description,
     dateModified: `${post.updated}T00:00:00+05:45`,
+    // The Nepali article schema uses inLanguage: "ne"; other translated QR guides use localeInfo[locale].htmlLang.
     inLanguage: localeInfo[locale].htmlLang,
     mainEntityOfPage: `${baseUrl}/ne/blog/${post.slug}`,
     author: { "@type": "Organization", name: "PDFora", url: `${baseUrl}/ne/about` },

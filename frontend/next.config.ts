@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
+          ...(process.env.VERCEL_ENV === "preview" ? [{ key: "X-Robots-Tag", value: "noindex, follow" }] : []),
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
           { key: "X-DNS-Prefetch-Control", value: "off" },

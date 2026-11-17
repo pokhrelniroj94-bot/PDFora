@@ -26,6 +26,8 @@ import HindiImageToolsWorkspace from "../../../../components/HindiImageToolsWork
 import HindiAdditionalToolsWorkspace from "../../../../components/HindiAdditionalToolsWorkspace";
 import HindiGrowthToolsWorkspace from "../../../../components/HindiGrowthToolsWorkspace";
 import HindiNepalExtraToolsWorkspace from "../../../../components/HindiNepalExtraToolsWorkspace";
+import HindiNepalCatalogTools from "../../../../components/HindiNepalCatalogTools";
+import HindiResumeBuilder from "../../../../components/HindiResumeBuilder";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -489,6 +491,12 @@ export default async function LocalizedToolPage({ params }: Props) {
         <HindiMathUtilityWorkspace slug={toolSlug} />
       </main>
     );
+  }
+  if (request.locale === "hi" && ["nepali-date-converter","nepali-calendar","loksewa-photo-resizer","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news"].includes(toolSlug)) {
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी नेपाल उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1></div><HindiNepalCatalogTools slug={toolSlug} /></main>;
+  }
+  if (request.locale === "hi" && toolSlug === "resume-builder") {
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><HindiResumeBuilder /></main>;
   }
   if (request.locale === "hi" && ["nepali-digit-converter", "nepali-number-converter", "currency-converter", "nepse-dividend-calculator"].includes(toolSlug)) {
     return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी नेपाल उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1></div><HindiNepalExtraToolsWorkspace slug={toolSlug} /></main>;

@@ -59,6 +59,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.65,
     })),
+    ...(["hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"] as const)
+      .filter((locale) => isLocalizedToolIndexable(locale, "qr-code-generator"))
+      .map((locale) => ({
+        url: `${baseUrl}/${locale}/tools/qr-code-generator`,
+        changeFrequency: "monthly" as const,
+        priority: 0.65,
+      })),
 
     ...["privacy", "terms", "about", "contact"].filter((slug) => isLocalizedPageIndexable("ne", `/${slug}`)).map((slug) => ({
       url: `${baseUrl}/ne/${slug}`,

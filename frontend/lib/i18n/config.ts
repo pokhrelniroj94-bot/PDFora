@@ -8,7 +8,9 @@
  * no hreflang). Flip a status here ONLY when `npm run i18n:check` passes for it.
  */
 
-export const SITE_URL = "https://pd-fora.vercel.app";
+import { PRODUCTION_ORIGIN } from "../seo";
+
+export const SITE_URL = PRODUCTION_ORIGIN;
 
 export const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"] as const;
 export type Locale = (typeof locales)[number];

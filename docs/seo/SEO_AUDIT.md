@@ -15,11 +15,12 @@ ranking, indexing, traffic or Search Console claim.
 - OCR is excluded from the sitemap and marked noindex.
 - Generated catalog-guide articles are excluded from the sitemap until editorial
   review.
-- The Nepali tool-indexing policy is default-deny. Only these six reviewed PDF routes
-  may be indexed and receive reciprocal English/Nepali hreflang: `merge-pdf`,
-  `split-pdf`, `compress-pdf`, `pdf-to-word`, `pdf-to-jpg`, and `rotate-pdf`.
-  Other localized tool routes remain crawlable with noindex,follow and are
-  excluded from localized tool sitemap entries and hreflang.
+- All **174 Nepali tool routes** (49 PDF + 125 catalog) now have localized tool
+  workspaces, unique Nepali titles/descriptions and localized instructions. They
+  are indexable and included in the Nepali sitemap/hreflang set. This is source and
+  content coverage, not proof that Google has indexed every URL. Targeted tool-specific
+  unit tests cover 44/174; continued functional QA and native-speaker review remain
+  open. Remove any route from the registry if it is found incomplete or inaccurate.
 - The Nepali home, market, Resume Builder, blog, legal pages and curated localized
   blog articles are listed as separate localized destinations; this is distinct
   from the six approved localized tool pages.

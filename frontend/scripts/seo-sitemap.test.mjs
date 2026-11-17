@@ -278,3 +278,18 @@ assert.match(sitemapSource, /\$\{baseUrl\}\/tools\/\$\{tool\.slug\}/, "The canon
 assert.ok(robotsSource.includes('disallow: ["/api/"]'), "The 27 API endpoints in the Search Console robots export must remain intentionally blocked");
 
 console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} Nepali tool URLs are indexable; ${toolRoutes.length} catalog and ${pdfRoutes.length} PDF tools are included.`);
+
+
+// SEOptimer 2026-11-17 follow-up: keep the homepage title descriptive and publish
+// a factual, privacy-aware discovery file without making unsupported capability claims.
+const homepageMetadataSource = read("app/page.tsx");
+const siteLayoutSource = read("app/layout.tsx");
+const llmsSource = read("public/llms.txt");
+const homepageTitle = homepageMetadataSource.match(/title:\s*"([^"]+)"/)?.[1] ?? "";
+assert.ok(homepageTitle.length >= 50 && homepageTitle.length <= 60, "Homepage title should meet the 50–60 character recommendation");
+assert.ok(homepageTitle.includes("PDF Tools") && homepageTitle.includes("Calculators"), "Homepage title must describe core search intent");
+assert.ok(siteLayoutSource.includes("Free Online PDF Tools & Calculators for Nepal | PDFora"), "Default site metadata must use the aligned brand title");
+assert.ok(llmsSource.startsWith("# PDFora"), "A factual llms.txt discovery file must be published");
+assert.ok(llmsSource.includes("https://pd-fora.vercel.app/sitemap.xml"), "llms.txt must point to the canonical XML sitemap");
+assert.ok(llmsSource.includes("OCR is not currently available"), "llms.txt must not claim unavailable OCR functionality");
+assert.ok(llmsSource.includes("privacy policy before uploading sensitive documents"), "llms.txt must explain file-processing privacy precautions");

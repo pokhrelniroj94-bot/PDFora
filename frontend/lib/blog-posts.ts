@@ -49,8 +49,7 @@ const editorialBlogPosts: BlogPost[] = [
       { label: "Compress PDF", href: "/compress-pdf" },
       { label: "PDF Information", href: "/pdf-information" },
       { label: "Images to PDF", href: "/images-to-pdf" },
-      { label: "Delete PDF Pages", href: "/delete-pages" },
-      { label: "How to compress a PDF under 1MB", href: "/blog/compress-pdf-to-under-1mb-online" }
+      { label: "Delete PDF Pages", href: "/delete-pages" }
     ],
     sources: [
       { label: "NIST: Definitions of the SI units and binary prefixes", url: "https://pml.nist.gov/cuu/Units/binary.html" },

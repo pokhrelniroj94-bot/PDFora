@@ -27,7 +27,7 @@ for (const match of nepali.matchAll(/slug:\s*"([^"]+)"[\s\S]*?title:\s*"([^"]+)"
   assert.match(match[2], /[\u0900-\u097F]/u, `Blog title must be Nepali script: ${match[1]}`);
 }
 assert.ok(indexPage.includes("nepaliLocalizedBlogPosts.map"), "Nepali blog index must render the complete localized catalogue");
-assert.ok(articlePage.includes('inLanguage: "ne"'), "Nepali article structured data must declare Nepali");
+assert.ok(articlePage.includes("inLanguage: localeInfo[locale].htmlLang"), "Localized article structured data must declare the active language, including Nepali and QR guide translations");
 assert.ok(articlePage.includes('"@type": "BreadcrumbList"') && articlePage.includes("breadcrumbSchema"), "Nepali articles must include localized breadcrumb structured data");
 assert.ok(articlePage.includes("generateStaticParams"), "Nepali articles must be statically enumerable");
 assert.ok(sitemap.includes("nepaliLocalizedBlogPosts.filter((post) => isLocalizedPageIndexable(\"ne\", `/blog/${post.slug}`))"), "Only native-reviewed Nepali blog articles may enter the sitemap");

@@ -1,16 +1,13 @@
 import type { Locale } from "../i18n/config";
-import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../i18n/nepali-tool-routes";
-import { nepaliPdfRoutes } from "../i18n/nepali-pdf-routes";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 
-/** Explicit registry for localized pages covered by the Nepali route/browser QA suite. */
+/**
+ * Only these six Nepali PDF equivalents have completed the editorial and functional
+ * release checks required for indexing. Route existence or translated labels alone
+ * never grants indexability. Add a slug only after its individual QA/review sign-off.
+ */
 export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {
-  ne: [
-    ...Object.keys(nepaliPdfRoutes),
-    ...nepaliLocalizedUtilitySlugs,
-    ...nepaliLocalizedFinancialSlugs,
-    ...nepaliLocalizedPublicInfoSlugs,
-  ],
+  ne: ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "pdf-to-jpg", "rotate-pdf"],
 };
 
 /** Published Nepali non-tool pages with dedicated localized content. */

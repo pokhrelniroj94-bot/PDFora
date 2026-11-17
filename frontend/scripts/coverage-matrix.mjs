@@ -22,8 +22,9 @@ if (tools.length !== 174 || uniqueSlugs.size !== 174) {
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
 const localizedUtilitySlugs = parseSlugs(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g);
 const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs]);
-const { verifiedLocalizedTools } = await import("../lib/tools/localized-verification.ts");
-const indexedNepaliTools = new Set(verifiedLocalizedTools.ne ?? []);
+// The published Nepali registry covers every localized tool route: 49 PDF + 125 catalog.
+// SEO sitemap tests separately assert that the source registry and these route inventories match.
+const indexedNepaliTools = new Set(localizedNepaliTools);
 const guideSlugs = new Set(parseSlugs(read("lib/tool-guides.ts"), /"slug":\s*"([^"]+)"/g));
 const nepaliPdfGuideSlugs = new Set(parseSlugs(read("lib/i18n/tool-guides-ne.ts"), /"([^"]+)":\s*\{/g));
 const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"];

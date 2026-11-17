@@ -123,7 +123,7 @@ export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean
 export function hasLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
   const normalized = normalizePath(path);
-  if (locale === "hi") return hindiLocalizedRoutePaths.has(normalized);
+  if (locale === "hi") return isRoutable(locale) && hindiLocalizedRoutePaths.has(normalized);
   if (locale !== "ne") return false;
   if (localizedPaths.has(normalized)) return true;
   return false;

@@ -15,6 +15,10 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.rows.length, 2088);
   assert.equal(report.counts.localizedNepaliTools, 174, "49 Nepali PDF routes plus 125 localized catalog routes");
   assert.equal(report.counts.indexableNepaliTools, 174);
+  assert.equal(report.counts.localizedHindiTools, 113, "49 Hindi PDF tools plus 64 Hindi catalog workspaces");
+  assert.equal(report.rows.filter((row) => row.locale === "hi" && row.interface === "hindi-interface-present").length, 113);
+  assert.equal(report.rows.filter((row) => row.locale === "hi" && row.indexing === "eligible").length, 0, "Hindi remains noindex until publication gates pass");
+  assert.equal(report.rows.filter((row) => row.locale === "hi" && row.published).length, 0);
   assert.equal(report.rows.filter((row) => row.locale === "ne" && row.functionalTest === "targeted-unit-tests").length, 44);
   for (const slug of ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"]) {
     const englishRow = report.rows.find((row) => row.locale === "en" && row.slug === slug);
@@ -76,5 +80,7 @@ test("tool-language matrix keeps unpublished locales and unverified workflows ou
     const rows = report.rows.filter((row) => row.locale === locale);
     assert.ok(rows.every((row) => row.published === false && row.indexing === "excluded"), `${locale} must remain unpublished`);
   }
+  const hindiRows = report.rows.filter((row) => row.locale === "hi");
+  assert.ok(hindiRows.filter((row) => row.interface === "hindi-interface-present").every((row) => row.humanReview === "native-review-not-assessed" && row.functionalTest === "not-individually-verified"), "Hindi source registration must not imply QA or native review");
   assert.ok(!report.tools.some((tool) => tool.slug === "ocr-pdf"), "OCR must remain outside the available-tool inventory");
 });

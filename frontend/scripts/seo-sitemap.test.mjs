@@ -213,6 +213,16 @@ assert.ok(tipGuideSource.includes("updated: \"2026-11-17\""), "Tip guide must re
 const nepaliTipGuideSource = nepaliLocalizedBlogSource.slice(nepaliLocalizedBlogSource.indexOf('slug: "tip-calculator-guide"'));
 assert.ok(nepaliTipGuideSource.includes("18%, 20% र 25% टिप छिटो निकाल्ने तरिका"), "Nepali tip guide must include the localized mental-math guidance");
 assert.ok(nepaliTipGuideSource.includes("18% = 10.80"), "Nepali tip guide must include the localized worked example");
+const nrbGuideSource = englishNepalBlogSource.slice(englishNepalBlogSource.indexOf('slug: "nepal-rastra-bank-daily-exchange-rates-guide"'));
+const nrbTitle = nrbGuideSource.match(/title: "([^"]+)"/)?.[1] ?? "";
+const nrbDescription = nrbGuideSource.match(/description: "([^"]+)"/)?.[1] ?? "";
+assert.ok(nrbTitle.length <= 60, "NRB guide title must remain concise for Google title links");
+assert.ok(nrbDescription.length <= 155, "NRB guide description must fit the reviewed snippet limit");
+assert.ok(nrbGuideSource.includes("foreign amount × buying rate ÷ unit"), "NRB guide must explain the buying-rate conversion formula");
+assert.ok(nrbGuideSource.includes("NPR amount × unit ÷ selling rate"), "NRB guide must explain the selling-rate conversion formula");
+const nepaliNrbGuideSource = nepaliLocalizedBlogSource.slice(nepaliLocalizedBlogSource.indexOf('slug: "nepal-rastra-bank-daily-exchange-rates-guide"'));
+assert.ok(nepaliNrbGuideSource.includes("विदेशी रकम × खरिद दर ÷ प्रकाशित एकाइ"), "Nepali NRB guide must include the correct buying-rate formula");
+assert.ok(nepaliNrbGuideSource.includes("NPR रकम × प्रकाशित एकाइ ÷ बिक्री दर"), "Nepali NRB guide must include the correct selling-rate formula");
 const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);

@@ -59,7 +59,7 @@ function nearestMetadataOwner(pageFile: string): { file?: string; scope: "route"
     if (dir === APP) break;
     dir = path.dirname(dir);
   }
-  return undefined;
+  return { scope: "missing" };
 }
 
 function extractStaticValues(source: string, key: "title" | "description"): string[] {
@@ -77,13 +77,16 @@ function main() {
   const routes: RouteRecord[] = pages.map((pageFile) => ({
     route: routeFromPage(pageFile),
     pageFile: path.relative(ROOT, pageFile),
-    metadataOwner: nearestMetadataOwner(pageFile),
+    metadataOwner: nearestMetadataOwner(pageFile).file,
+    metadataScope: nearestMetadataOwner(pageFile).scope,
     dynamic: routeFromPage(pageFile).includes("["),
   }));
 
   for (const route of routes) {
-    if (!route.metadataOwner) {
+    if (route.metadataScope === "missing") {
       issues.push({ severity: "error", file: route.pageFile, message: "No metadata export/generator found in page/layout ancestry." });
+    } else if (route.metadataScope === "root-fallback") {
+      issues.push({ severity: "warning", file: route.pageFile, message: "Route inherits only root metadata; verify unique rendered title and description." });
     }
   }
 

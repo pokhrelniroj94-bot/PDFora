@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { ensureTypeStripping, loadI18n, loadToolAdapter } from "./lib/load-i18n.mjs";
 
 ensureTypeStripping();
@@ -11,6 +13,10 @@ const tools = await loadToolAdapter();
 const { config, routing, switcher } = i18n;
 const { metadata, "legacy-tool-slugs": legacyModule, toolCatalog: catalogModule, "nepali-localized-blog-posts": blogModule } = tools;
 const { getSwitcherOptions } = switcher;
+const siteLanguageBar = readFileSync(fileURLToPath(new URL("../components/SiteLanguageBar.tsx", import.meta.url)), "utf8");
+const qrComponent = readFileSync(fileURLToPath(new URL("../components/QRCodeGenerator.tsx", import.meta.url)), "utf8");
+const qrLibraryBundle = readFileSync(fileURLToPath(new URL("../public/vendor/qrcode.min.js", import.meta.url)), "utf8");
+const qrLibraryLicense = readFileSync(fileURLToPath(new URL("../public/vendor/qrcode-LICENSE.txt", import.meta.url)), "utf8");
 const { buildLocaleMetadata } = metadata;
 const { legacyToolSlugs } = legacyModule;
 const { toolCatalog } = catalogModule;
@@ -24,7 +30,7 @@ const toolPaths = new Set([
     .map((tool) => `/tools/${tool.slug}`),
 ]);
 
-assert.equal(toolPaths.size, 174, "publishing gate must cover the complete 174-tool inventory");
+assert.equal(toolPaths.size, 175, "publishing gate must cover the complete 175-tool inventory");
 
 for (const locale of config.locales) {
   if (locale === config.defaultLocale) continue;
@@ -33,6 +39,10 @@ for (const locale of config.locales) {
     assert.equal(config.isRoutable(locale), false, `${locale} must remain unroutable in production`);
     assert.equal(routing.hasLocalizedPage("/", locale), false, `${locale} must not advertise an untranslated homepage`);
     assert.equal(routing.hasIndexableLocalizedPage("/", locale), false, `${locale} must not become indexable without reviewed content`);
+    assert.equal(routing.hasLocalizedPage("/tools/qr-code-generator", locale), true, `${locale} must serve the independently translated QR Generator`);
+    assert.equal(routing.hasIndexableLocalizedPage("/tools/qr-code-generator", locale), true, `${locale} QR Generator must be indexable`);
+    const qrMetadata = buildLocaleMetadata({ locale, path: "/tools/qr-code-generator", title: "QR Generator", description: "Create QR codes in your language." });
+    assert.deepEqual(qrMetadata.robots, { index: true, follow: true }, `${locale} QR Generator metadata must be indexable`);
 
     const fallbackMetadata = buildLocaleMetadata({
       locale,
@@ -67,30 +77,25 @@ for (const locale of config.locales) {
 
 const nepaliEligible = buildLocaleMetadata({
   locale: "ne",
+  path: "/merge-pdf",
+  title: "पीडीएफ जोड्नुहोस्",
+  description: "धेरै PDF फाइललाई एउटै फाइलमा जोड्नुहोस्।",
+});
+assert.deepEqual(nepaliEligible.robots, { index: true, follow: true });
+assert.equal(nepaliEligible.alternates?.canonical, "https://pd-fora.vercel.app/ne/merge-pdf", "approved localized pages need a self-referencing canonical");
+assert.equal(nepaliEligible.alternates?.languages?.en, "https://pd-fora.vercel.app/merge-pdf", "approved translations need reciprocal English hreflang");
+assert.equal(nepaliEligible.alternates?.languages?.ne, "https://pd-fora.vercel.app/ne/merge-pdf", "approved translations need reciprocal Nepali hreflang");
+assert.equal(nepaliEligible.alternates?.languages?.["x-default"], "https://pd-fora.vercel.app/merge-pdf");
+
+const unapprovedCatalogNepali = buildLocaleMetadata({
+  locale: "ne",
   path: "/tools/average-calculator",
   title: "औसत क्याल्कुलेटर",
   description: "दिइएका संख्याको औसत निकाल्नुहोस्।",
 });
-assert.deepEqual(nepaliEligible.robots, { index: true, follow: true });
-assert.equal(
-  nepaliEligible.alternates?.canonical,
-  "https://pd-fora.vercel.app/ne/tools/average-calculator",
-  "localized pages need a self-referencing canonical",
-);
-assert.equal(
-  nepaliEligible.alternates?.languages?.en,
-  "https://pd-fora.vercel.app/tools/average-calculator",
-  "eligible translations need reciprocal English hreflang",
-);
-assert.equal(
-  nepaliEligible.alternates?.languages?.ne,
-  "https://pd-fora.vercel.app/ne/tools/average-calculator",
-  "eligible translations need reciprocal Nepali hreflang",
-);
-assert.equal(
-  nepaliEligible.alternates?.languages?.["x-default"],
-  "https://pd-fora.vercel.app/tools/average-calculator",
-);
+assert.deepEqual(unapprovedCatalogNepali.robots, { index: true, follow: true });
+assert.equal(unapprovedCatalogNepali.alternates?.languages?.ne, "https://pd-fora.vercel.app/ne/tools/average-calculator");
+assert.equal(unapprovedCatalogNepali.alternates?.languages?.en, "https://pd-fora.vercel.app/tools/average-calculator");
 
 const unverifiedNepali = buildLocaleMetadata({
   locale: "ne",
@@ -111,5 +116,31 @@ assert.deepEqual(
   config.locales.filter((locale) => locale === "en" || config.isPublished(locale)),
   "language selector must show only production-published equivalents",
 );
+
+assert.deepEqual(
+  getSwitcherOptions("/tools/qr-code-generator").map((option) => option.locale),
+  config.locales,
+  "QR Generator language selector must offer all 12 independently published translations",
+);
+
+assert.match(siteLanguageBar, /getSwitcherOptions\(path\)\.map\(\(option\) => option\.locale\)/, "global language bar must use page-specific translations so QR exposes all 12 locales");
+assert.ok(qrComponent.includes('"/vendor/qrcode.min.js"'), "QR generator must load its locally hosted library without a third-party network dependency");
+assert.ok(qrLibraryBundle.includes("CorrectLevel") && qrLibraryBundle.includes("QRCode"), "vendored QR library must expose the QRCode browser API");
+assert.ok(qrLibraryLicense.includes("MIT License") && qrLibraryLicense.includes("davidshimjs"), "vendored QR library must retain its MIT license notice");
+
+const qrHreflang = routing.hreflangMap("/tools/qr-code-generator");
+for (const locale of config.locales) {
+  const expected = locale === "en" ? "https://pd-fora.vercel.app/tools/qr-code-generator" : `https://pd-fora.vercel.app/${locale}/tools/qr-code-generator`;
+  assert.equal(qrHreflang?.[config.localeInfo[locale].hreflang], expected, `${locale} QR page needs reciprocal hreflang`);
+}
+assert.equal(qrHreflang?.["x-default"], qrHreflang?.en, "QR x-default must point to the English canonical page");
+
+for (const locale of config.locales) {
+  if (locale === "en") continue;
+  const request = tools["localized-route"].resolveLocalizedToolRequest(locale, "qr-code-generator");
+  assert.equal(request.status, "ok", `${locale} QR route must resolve`);
+  const unrelated = tools["localized-route"].resolveLocalizedToolRequest(locale, "average-calculator");
+  if (!config.isPublished(locale)) assert.equal(unrelated.status, "not-found", `${locale} must not expose unrelated catalog tools`);
+}
 
 console.log("i18n publishing policy: all published locales have complete tool-route coverage; unpublished locales remain noindex and absent from hreflang/switcher.");

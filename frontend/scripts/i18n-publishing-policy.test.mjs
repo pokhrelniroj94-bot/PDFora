@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { ensureTypeStripping, loadI18n, loadToolAdapter } from "./lib/load-i18n.mjs";
 
 ensureTypeStripping();
@@ -11,6 +13,9 @@ const tools = await loadToolAdapter();
 const { config, routing, switcher } = i18n;
 const { metadata, "legacy-tool-slugs": legacyModule, toolCatalog: catalogModule, "nepali-localized-blog-posts": blogModule } = tools;
 const { getSwitcherOptions } = switcher;
+const siteLanguageBar = readFileSync(fileURLToPath(new URL("../components/SiteLanguageBar.tsx", import.meta.url)), "utf8");
+const qrComponent = readFileSync(fileURLToPath(new URL("../components/QRCodeGenerator.tsx", import.meta.url)), "utf8");
+const qrLibraryRoute = readFileSync(fileURLToPath(new URL("../app/api/qr-library/route.ts", import.meta.url)), "utf8");
 const { buildLocaleMetadata } = metadata;
 const { legacyToolSlugs } = legacyModule;
 const { toolCatalog } = catalogModule;
@@ -116,6 +121,11 @@ assert.deepEqual(
   config.locales,
   "QR Generator language selector must offer all 12 independently published translations",
 );
+
+assert.match(siteLanguageBar, /getSwitcherOptions\(path\)\.map\(\(option\) => option\.locale\)/, "global language bar must use page-specific translations so QR exposes all 12 locales");
+assert.ok(qrComponent.indexOf('"/api/qr-library"') < qrComponent.indexOf('"https://cdn.jsdelivr.net/npm/qrcode@1.5.4'), "QR generator must try the same-origin library endpoint before third-party CDNs");
+assert.ok(qrLibraryRoute.includes("qrcode@1.5.4/lib/browser.min.js"), "same-origin QR endpoint must pin the reviewed QR library version");
+assert.ok(!qrLibraryRoute.includes("request.url") && !qrLibraryRoute.includes("searchParams"), "QR library endpoint must not become an open proxy");
 
 const qrHreflang = routing.hreflangMap("/tools/qr-code-generator");
 for (const locale of config.locales) {

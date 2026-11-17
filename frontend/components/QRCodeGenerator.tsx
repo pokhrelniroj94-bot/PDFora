@@ -29,11 +29,7 @@ function loadQr(): Promise<QRCodeApi> {
  const current = getQrFromWindow();
  if (current) return Promise.resolve(current);
  if (qrLoadPromise) return qrLoadPromise;
- const sources = [
-  "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js",
-  "https://unpkg.com/qrcode@1.5.4/lib/browser.min.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.1/qrcode.js",
- ];
+ const sources = ["https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js"];
  qrLoadPromise = (async () => {
   // Remove a stale failed script left by an earlier attempt. Its error event has
   // already fired, so attaching another listener to it would never settle.

@@ -4,11 +4,13 @@ import { notFound } from "next/navigation";
 import { isLocale, isRoutable } from "../../../lib/i18n/config";
 import { nepaliLocalizedBlogPosts } from "../../../lib/nepali-localized-blog-posts";
 import { buildLocaleMetadata } from "../../../lib/i18n/metadata";
+import { HindiBlogIndex } from "../../../components/HindiBlogPages";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  if (locale === "hi") return buildLocaleMetadata({ locale, path: "/blog", title: "हिंदी गाइड और ट्यूटोरियल | PDFora", description: "प्रतिशत, औसत, विक्रम संवत् तारीख, Preeti Unicode और ऑनलाइन उपयोगिताओं के लिए स्पष्ट हिंदी गाइड और उदाहरण।" });
   if (locale !== "ne") return { title: "Page not found", robots: { index: false, follow: true } };
   return buildLocaleMetadata({
     locale,
@@ -20,6 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NepaliBlogIndex({ params }: Props) {
   const { locale } = await params;
+  if (locale === "hi" && isLocale(locale) && isRoutable(locale)) return <HindiBlogIndex />;
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale)) notFound();
   return (
     <main lang="ne" className="pdfora-blog-page min-h-screen bg-slate-50 px-4 py-10 sm:px-6">

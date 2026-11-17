@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { toolCatalog } from "./toolCatalog";
 import ResumeBuilder from "./ResumeBuilder";
+import QRCodeGenerator from "./QRCodeGenerator";
 import { allTools } from "../lib/tool-directory";
 import { discountedPrice, loanEmi, sipFutureValue } from "../lib/catalog-calculations";
 
@@ -91,6 +92,7 @@ function ToolBody({slug}:{slug:string}) {
  const [file,setFile]=useState<File|null>(null);
  const [quality,setQuality]=useState("0.8");
  const [format,setFormat]=useState("image/webp");
+ if(slug==="qr-code-generator") return <QRCodeGenerator defaultLocale="en" />;
  if(slug==="notes-to-pdf") return <NotesToPDF />;
  const processImage=async()=>{
   if(!file){result("Choose an image first.");return;}

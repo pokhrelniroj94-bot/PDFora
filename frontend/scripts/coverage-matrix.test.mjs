@@ -15,8 +15,8 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.rows.length, 2088);
   assert.equal(report.counts.localizedNepaliTools, 174, "49 Nepali PDF routes plus 125 localized catalog routes");
   assert.equal(report.counts.indexableNepaliTools, 174);
-  assert.equal(report.counts.localizedHindiTools, 113, "49 Hindi PDF tools plus 64 Hindi catalog workspaces");
-  assert.equal(report.rows.filter((row) => row.locale === "hi" && row.interface === "hindi-interface-present").length, 113);
+  assert.equal(report.counts.localizedHindiTools, 155, "49 Hindi PDF tools plus 106 Hindi catalog workspaces");
+  assert.equal(report.rows.filter((row) => row.locale === "hi" && row.interface === "hindi-interface-present").length, 155);
   assert.equal(report.rows.filter((row) => row.locale === "hi" && row.indexing === "eligible").length, 0, "Hindi remains noindex until publication gates pass");
   assert.equal(report.rows.filter((row) => row.locale === "hi" && row.published).length, 0);
   assert.equal(report.rows.filter((row) => row.locale === "ne" && row.functionalTest === "targeted-unit-tests").length, 44);

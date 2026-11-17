@@ -22,59 +22,46 @@ const input="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text
 const label="mb-1.5 block text-sm font-semibold text-slate-700";
 const panel="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6";
 function Field({id,children,labels}:{id:string;children:ReactNode;labels:Record<string,string>}){return <label className="block"><span className={label}>{labels[id]}</span>{children}</label>;}
-type QRCodeApi={toDataURL:(text:string,options:Record<string,unknown>)=>Promise<string>;create:(text:string,options:Record<string,unknown>)=>{modules:{size:number;data:ArrayLike<number>}}};
-function getQrFromWindow():QRCodeApi|null{return (window as unknown as {QRCode?:QRCodeApi}).QRCode??null;}
-let qrLoadPromise: Promise<QRCodeApi> | null = null;
-function loadQr(): Promise<QRCodeApi> {
+type QRCodeMatrix = { getModuleCount: () => number; isDark: (row: number, col: number) => boolean };
+type QRCodeInstance = { _oQRCode: QRCodeMatrix | null };
+type QRCodeConstructor = {
+ new (element: HTMLElement, options: { text: string; width: number; height: number; colorDark: string; colorLight: string; correctLevel: number }): QRCodeInstance;
+ CorrectLevel: { L: number; M: number; Q: number; H: number };
+};
+function getQrFromWindow(): QRCodeConstructor | null {
+ return (window as unknown as { QRCode?: QRCodeConstructor }).QRCode ?? null;
+}
+let qrLoadPromise: Promise<QRCodeConstructor> | null = null;
+function loadQr(): Promise<QRCodeConstructor> {
  const current = getQrFromWindow();
  if (current) return Promise.resolve(current);
  if (qrLoadPromise) return qrLoadPromise;
- const sources = [
-  // Same-origin proxy avoids browser extensions, network filters and third-party CSP issues.
-  "/api/qr-library",
-  "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js",
-  "https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js",
- ];
- qrLoadPromise = (async () => {
-  // Remove a stale failed script left by an earlier attempt. Its error event has
-  // already fired, so attaching another listener to it would never settle.
+ qrLoadPromise = new Promise<QRCodeConstructor>((resolve, reject) => {
   document.querySelectorAll<HTMLScriptElement>('script[data-pdfora-qr="1"]').forEach((node) => node.remove());
-  let lastError: Error = new Error("QR library could not load. Check your connection.");
-  for (const src of sources) {
-   try {
-    await new Promise<void>((resolve, reject) => {
-     const script = document.createElement("script");
-     const timeout = window.setTimeout(() => {
-      script.remove();
-      reject(new Error("QR library request timed out"));
-     }, 12000);
-     script.src = src;
-     script.async = true;
-     script.referrerPolicy = "no-referrer";
-     script.dataset.pdforaQr = "1";
-     script.onload = () => {
-      window.clearTimeout(timeout);
-      if (getQrFromWindow()) resolve();
-      else {
-       script.remove();
-       reject(new Error("QR library loaded without its API"));
-      }
-     };
-     script.onerror = () => {
-      window.clearTimeout(timeout);
-      script.remove();
-      reject(new Error("QR library source unavailable"));
-     };
-     document.head.appendChild(script);
-    });
-    const qr = getQrFromWindow();
-    if (qr) return qr;
-   } catch (error) {
-    lastError = error instanceof Error ? error : lastError;
+  const script = document.createElement("script");
+  const timeout = window.setTimeout(() => {
+   script.remove();
+   reject(new Error("QR library request timed out. Refresh the page and try again."));
+  }, 8000);
+  script.src = "/vendor/qrcode.min.js";
+  script.async = true;
+  script.dataset.pdforaQr = "1";
+  script.onload = () => {
+   window.clearTimeout(timeout);
+   const qr = getQrFromWindow();
+   if (qr?.CorrectLevel) resolve(qr);
+   else {
+    script.remove();
+    reject(new Error("The local QR library did not expose its API."));
    }
-  }
-  throw lastError;
- })().catch((error) => {
+  };
+  script.onerror = () => {
+   window.clearTimeout(timeout);
+   script.remove();
+   reject(new Error("The local QR library could not be loaded. Refresh the page and try again."));
+  };
+  document.head.appendChild(script);
+ }).catch((error) => {
   qrLoadPromise = null;
   throw error;
  });
@@ -97,7 +84,46 @@ function QRCodeGenerator({defaultLocale="en"}:{defaultLocale?:Locale}){
  const luminance=(hex:string)=>{const rgb=hex.replace("#","").match(/.{2}/g)?.map(v=>parseInt(v,16)/255).map(v=>v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4))??[0,0,0];return 0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2];};
  const l1=luminance(foreground),l2=luminance(background),lowContrast=(Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05)<4.5;
  const reset=()=>{setKind("url");setValue("");setSsid("");setPassword("");setSubject("");setMessage("");setName("");setOrg("");setJob("");setPhone("");setEmail("");setWebsite("");setAddress("");setEventDate("");setEventEnd("");setLocation("");setPng("");setSvg("");setPayload("");setError("");};
- const generate=async()=>{setError("");setPng("");setSvg("");const required=kind==="wifi"?!!ssid.trim()&&(security==="nopass"||!!password.trim()):kind==="vcard"?!!name.trim():kind==="event"?!!name.trim()&&!!eventDate:kind==="sms"||kind==="whatsapp"?!!phone.trim():!!value.trim();if(!required){setError(t.empty);return;}if(encoded.length>2900){setError(t.invalid);return;}setBusy(true);try{const QR=await loadQr();const options={width:Number(size),margin:Number(margin),errorCorrectionLevel:level,color:{dark:foreground,light:background}};const image=await QR.toDataURL(encoded,options);const matrix=QR.create(encoded,{errorCorrectionLevel:level}).modules;const quiet=Number(margin),side=matrix.size+quiet*2;let path="";for(let y=0;y<matrix.size;y++){for(let x=0;x<matrix.size;x++){if(matrix.data[y*matrix.size+x])path+="M"+(x+quiet)+" "+(y+quiet)+"h1v1h-1z";}}const vector='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+side+" "+side+'" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="'+background+'"/><path d="'+path+'" fill="'+foreground+'"/></svg>';setPng(image);setSvg(vector);setPayload(encoded);}catch(e){setError(e instanceof Error?e.message:t.error);}finally{setBusy(false);}};
+ const generate=async()=>{
+  setError("");setPng("");setSvg("");
+  const required=kind==="wifi"?!!ssid.trim()&&(security==="nopass"||!!password.trim()):kind==="vcard"?!!name.trim():kind==="event"?!!name.trim()&&!!eventDate:kind==="sms"||kind==="whatsapp"?!!phone.trim():!!value.trim();
+  if(!required){setError(t.empty);return;}
+  if(encoded.length>2900){setError(t.invalid);return;}
+  setBusy(true);
+  try{
+   const QR=await loadQr();
+   const levelMap={L:QR.CorrectLevel.L,M:QR.CorrectLevel.M,Q:QR.CorrectLevel.Q,H:QR.CorrectLevel.H};
+   const host=document.createElement("div");
+   host.setAttribute("aria-hidden","true");
+   host.style.position="fixed";host.style.left="-10000px";host.style.top="-10000px";
+   document.body.appendChild(host);
+   try{
+    const instance=new QR(host,{text:encoded,width:Number(size),height:Number(size),colorDark:foreground,colorLight:background,correctLevel:levelMap[level as keyof typeof levelMap]});
+    const matrix=instance._oQRCode;
+    if(!matrix)throw new Error("QR matrix was not created.");
+    const count=matrix.getModuleCount(),quiet=Number(margin),total=count+quiet*2,pixels=Number(size);
+    const canvas=document.createElement("canvas");
+    canvas.width=pixels;canvas.height=pixels;
+    const context=canvas.getContext("2d");
+    if(!context)throw new Error("Canvas is not available in this browser.");
+    context.fillStyle=background;context.fillRect(0,0,pixels,pixels);
+    context.fillStyle=foreground;
+    let path="";
+    for(let row=0;row<count;row++){
+     for(let col=0;col<count;col++){
+      if(!matrix.isDark(row,col))continue;
+      const x0=Math.round((col+quiet)*pixels/total),x1=Math.round((col+quiet+1)*pixels/total);
+      const y0=Math.round((row+quiet)*pixels/total),y1=Math.round((row+quiet+1)*pixels/total);
+      context.fillRect(x0,y0,x1-x0,y1-y0);
+      path+="M"+(col+quiet)+" "+(row+quiet)+"h1v1h-1z";
+     }
+    }
+    const vector='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+total+" "+total+'" width="'+pixels+'" height="'+pixels+'" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="'+background+'"/><path d="'+path+'" fill="'+foreground+'"/></svg>';
+    setPng(canvas.toDataURL("image/png"));setSvg(vector);setPayload(encoded);
+   }finally{host.remove();}
+  }catch(e){setError(e instanceof Error?e.message:t.error);}
+  finally{setBusy(false);}
+ };
  const download=(format:"png"|"svg")=>{const content=format==="png"?png:svg;if(!content)return;const url=format==="png"?content:URL.createObjectURL(new Blob([content],{type:"image/svg+xml"}));const a=document.createElement("a");a.href=url;a.download="pdfora-qr-code."+format;document.body.appendChild(a);a.click();a.remove();if(format==="svg")URL.revokeObjectURL(url);};
 
  return <div className="grid gap-5 lg:grid-cols-2" lang={locale} dir={rtl?"rtl":"ltr"}>

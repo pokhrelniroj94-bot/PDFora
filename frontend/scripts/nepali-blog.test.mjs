@@ -36,6 +36,9 @@ assert.ok(sitemap.includes("nepaliLocalizedUtilitySlugs") && sitemap.includes("n
 assert.ok(englishArticlePage.includes("const languages = hreflangMap") && englishArticlePage.includes("languages"), "English articles must use the shared localized hreflang gate");
 assert.ok(sitemap.includes("/ne/market") && sitemap.includes("/ne/resume-builder"), "Published Nepali market and resume pages must be included in sitemap");
 assert.ok(routing.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be registered for language switching and hreflang");
+assert.ok(englishEditorial.includes('slug: "compress-pdf-under-200kb-nepal-online-forms"'), "English 200KB Nepal upload guide must be published");
+assert.ok(nepali.includes('slug: "compress-pdf-under-200kb-nepal-online-forms"'), "Nepali 200KB Nepal upload guide must be localized");
+assert.ok(nepali.includes("लोकसेवा") && nepali.includes("२००KB"), "Nepali 200KB guide must include natural Devanagari content");
 
 console.log(`Nepali blog coverage passed: ${expected.length} editorial articles translated; ${localized.length} localized routes available.`);
 

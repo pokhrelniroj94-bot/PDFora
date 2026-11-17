@@ -33,6 +33,10 @@ for (const locale of config.locales) {
     assert.equal(config.isRoutable(locale), false, `${locale} must remain unroutable in production`);
     assert.equal(routing.hasLocalizedPage("/", locale), false, `${locale} must not advertise an untranslated homepage`);
     assert.equal(routing.hasIndexableLocalizedPage("/", locale), false, `${locale} must not become indexable without reviewed content`);
+    assert.equal(routing.hasLocalizedPage("/tools/qr-code-generator", locale), true, `${locale} must serve the independently translated QR Generator`);
+    assert.equal(routing.hasIndexableLocalizedPage("/tools/qr-code-generator", locale), true, `${locale} QR Generator must be indexable`);
+    const qrMetadata = buildLocaleMetadata({ locale, path: "/tools/qr-code-generator", title: "QR Generator", description: "Create QR codes in your language." });
+    assert.deepEqual(qrMetadata.robots, { index: true, follow: true }, `${locale} QR Generator metadata must be indexable`);
 
     const fallbackMetadata = buildLocaleMetadata({
       locale,

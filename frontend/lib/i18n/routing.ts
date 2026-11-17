@@ -105,7 +105,7 @@ export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean
 export function hasLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
   const normalized = normalizePath(path);
-  const catalogToolSlug = normalized.match(/^\\/tools\\/([^/]+)$/)?.[1];
+  const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];
   if (catalogToolSlug && isLocalizedToolIndexable(locale, catalogToolSlug)) return true;
   if (locale === "hi") return hindiLocalizedRoutePaths.has(normalized);
   if (locale !== "ne") return false;

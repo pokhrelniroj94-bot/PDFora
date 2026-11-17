@@ -706,7 +706,9 @@ async function runTool(tool, index) {
       } else if (tool.slug === "notes-to-pdf") {
         await setFirstTextArea(page, "PDFora E2E Notes\\nThis is a browser-generated test document.");
       } else if (tool.slug === "jwt-decoder") {
-        await setFieldByLabel(page, "JWT token", "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
+        const focused = await page.evaluate('(() => { const field=document.querySelector("main input:not([type=file]), main textarea"); if(!field)return false; field.focus(); if("select" in field) field.select(); return true; })()');
+        if (!focused) throw new Error("JWT decoder input could not be focused.");
+        await page.send("Input.insertText", { text: "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0." });
       } else if (tool.slug === "nepali-unicode-typing") {
         await setFirstTextArea(page, "Namaste Nepal");
       } else if (tool.slug === "nepali-date-converter") {

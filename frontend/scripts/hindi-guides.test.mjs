@@ -92,3 +92,26 @@ test("all newly completed Hindi utility routes are preview-only and have dedicat
   assert.match(resume, /हिंदी रिज़्यूमे बिल्डर/);
   delete process.env.PDFORA_I18N_PREVIEW;
 });
+
+test("Hindi homepage, directory and metadata cover all catalog utilities", async () => {
+  const [catalog, homepage, directory, seo] = await Promise.all([
+    readFile(new URL("../components/toolCatalog.ts", import.meta.url), "utf8"),
+    readFile(new URL("../components/HindiHomePage.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/[locale]/tools/HindiToolsDirectory.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../lib/i18n/hindi-tool-seo.ts", import.meta.url), "utf8"),
+  ]);
+  const slugs = [...catalog.matchAll(/\{slug:"([a-z0-9-]+)",name:"[^"]+",category:"[^"]+"/g)].map((m) => m[1]).filter((slug) => slug !== "pdf-tools");
+  assert.equal(slugs.length, 125);
+  const metadata = [...seo.matchAll(/"([a-z0-9-]+)":\{title:"([^"]+)",description:"([^"]+)"\}/g)];
+  assert.equal(metadata.length, 125);
+  assert.equal(new Set(metadata.map((m) => m[2])).size, 125, "Hindi catalog titles must be unique");
+  for (const [, slug, title, description] of metadata) {
+    assert.ok(title.length < 60, slug+" title should remain concise");
+    assert.ok(description.length <= 155, slug+" description should fit search snippet guidance");
+    assert.ok(DEVANAGARI.test(title), slug+" title must contain Hindi copy");
+  }
+  for (const slug of slugs) {
+    assert.ok(homepage.includes('"'+slug+'"'), "Hindi homepage must link "+slug);
+    assert.ok(directory.includes('"'+slug+'":'), "Hindi directory must have a translated label for "+slug);
+  }
+});

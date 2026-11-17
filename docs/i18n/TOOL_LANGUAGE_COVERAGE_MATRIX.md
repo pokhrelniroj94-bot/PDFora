@@ -16,7 +16,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 | Locale | Published tool rows | Interface-present rows | Content-present rows | Index-eligible rows |
 |---|---:|---:|---:|---:|
 | en | 175 | 175 | 49 | 175 |
-| ne | 175 | 175 | 50 | 7 |
+| ne | 175 | 175 | 50 | 175 |
 | hi | 1 | 175 | 50 | 1 |
 | bn | 1 | 1 | 1 | 1 |
 | ur | 1 | 1 | 1 | 1 |

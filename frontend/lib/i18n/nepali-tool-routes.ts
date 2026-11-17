@@ -1,5 +1,6 @@
 export const nepaliLocalizedUtilitySlugs = [
   "resume-builder",
+  "qr-code-generator",
   "xml-formatter-validator",
   "notes-to-pdf",
   "html-tag-stripper",

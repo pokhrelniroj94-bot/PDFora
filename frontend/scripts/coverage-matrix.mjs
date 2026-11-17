@@ -22,7 +22,9 @@ if (tools.length !== 174 || uniqueSlugs.size !== 174) {
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
 const localizedUtilitySlugs = parseSlugs(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g);
 const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs]);
-const indexedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs]);
+const verificationSource = read("lib/tools/localized-verification.ts");
+const approvalBlock = verificationSource.match(/ne:\s*\[([^\]]*)\]/)?.[1] ?? "";
+const indexedNepaliTools = new Set(parseSlugs(approvalBlock, /"([a-z0-9-]+)"/g));
 const guideSlugs = new Set(parseSlugs(read("lib/tool-guides.ts"), /"slug":\s*"([^"]+)"/g));
 const nepaliPdfGuideSlugs = new Set(parseSlugs(read("lib/i18n/tool-guides-ne.ts"), /"([^"]+)":\s*\{/g));
 const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"];

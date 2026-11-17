@@ -25,7 +25,7 @@ const NEPALI_CANDIDATES = [
 ];
 
 type Issue = { severity: "error" | "warning" | "review"; file: string; message: string };
-type RouteRecord = { route: string; pageFile: string; metadataOwner?: string; dynamic: boolean };
+type RouteRecord = { route: string; pageFile: string; metadataOwner?: string; metadataScope: "route" | "root-fallback" | "missing"; dynamic: boolean };
 
 function walk(dir: string): string[] {
   if (!fs.existsSync(dir)) return [];
@@ -49,12 +49,12 @@ function metadataIn(source: string): boolean {
   return /export\s+(?:const\s+metadata\s*:|async\s+function\s+generateMetadata|function\s+generateMetadata)/.test(source);
 }
 
-function nearestMetadataOwner(pageFile: string): string | undefined {
+function nearestMetadataOwner(pageFile: string): { file?: string; scope: "route" | "root-fallback" | "missing" } {
   let dir = path.dirname(pageFile);
   while (dir.startsWith(APP)) {
     for (const name of ["page.tsx", "page.ts", "layout.tsx", "layout.ts"]) {
       const candidate = path.join(dir, name);
-      if (fs.existsSync(candidate) && metadataIn(read(candidate))) return path.relative(ROOT, candidate);
+      if (fs.existsSync(candidate) && metadataIn(read(candidate))) return { file: path.relative(ROOT, candidate), scope: dir === APP ? "root-fallback" : "route" };
     }
     if (dir === APP) break;
     dir = path.dirname(dir);

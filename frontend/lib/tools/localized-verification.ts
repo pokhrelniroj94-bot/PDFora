@@ -10,7 +10,6 @@ export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly st
     ...nepaliLocalizedUtilitySlugs,
     ...nepaliLocalizedFinancialSlugs,
     ...nepaliLocalizedPublicInfoSlugs,
-    "qr-code-generator",
   ],
   hi: ["qr-code-generator"],
   bn: ["qr-code-generator"],

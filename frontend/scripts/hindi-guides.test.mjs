@@ -70,3 +70,25 @@ test("Hindi server route checks use server-safe slug registries", async () => {
   assert.match(route, /hindiMathToolSlugs\.includes\(toolSlug\)/);
   assert.match(route, /hindiBusinessToolSlugs\.includes\(toolSlug\)/);
 });
+
+test("all newly completed Hindi utility routes are preview-only and have dedicated visible UI", async () => {
+  process.env.PDFORA_I18N_PREVIEW = "1";
+  const routing = await import("../lib/i18n/routing.ts");
+  const slugs = ["resume-builder","nepali-date-converter","nepali-calendar","loksewa-photo-resizer","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news"];
+  for (const slug of slugs) {
+    assert.equal(routing.hasLocalizedPage("/tools/"+slug, "hi"), true, slug+" route");
+    assert.equal(routing.hasIndexableLocalizedPage("/tools/"+slug, "hi"), false, slug+" must remain noindex");
+  }
+  for (const path of ["/about","/privacy","/terms","/contact"]) {
+    assert.equal(routing.hasLocalizedPage(path, "hi"), true, path+" Hindi page");
+    assert.equal(routing.hasIndexableLocalizedPage(path, "hi"), false, path+" must remain noindex");
+  }
+  const page = await readFile(new URL("../components/HindiNepalCatalogTools.tsx", import.meta.url), "utf8");
+  assert.match(page, /window\.PreetiConverter/);
+  assert.match(page, /window\.nepalify/);
+  assert.match(page, /यह मैनुअल अनुमान है, लाइव बैंक\/बाजार दर नहीं/);
+  assert.match(page, /आधिकारिक 2083 छुट्टी सूची उपलब्ध नहीं है/);
+  const resume = await readFile(new URL("../components/HindiResumeBuilder.tsx", import.meta.url), "utf8");
+  assert.match(resume, /हिंदी रिज़्यूमे बिल्डर/);
+  delete process.env.PDFORA_I18N_PREVIEW;
+});

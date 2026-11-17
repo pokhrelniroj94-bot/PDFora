@@ -15,6 +15,13 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.rows.length, 2100);
   assert.equal(report.counts.localizedNepaliTools, 175, "49 Nepali PDF routes plus 126 localized catalog routes");
   assert.equal(report.counts.indexableNepaliTools, 175);
+  for (const locale of ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]) {
+    const qr = report.rows.find((row) => row.locale === locale && row.slug === "qr-code-generator");
+    assert.ok(qr, `QR Generator must be represented for ${locale}`);
+    assert.equal(qr.published, true, `QR Generator must be independently published for ${locale}`);
+    assert.equal(qr.indexing, "eligible", `QR Generator must be indexable for ${locale}`);
+    assert.equal(qr.interface, locale === "en" ? "source-language" : "translated-interface-present");
+  }
   assert.equal(report.rows.filter((row) => row.locale === "ne" && row.functionalTest === "targeted-unit-tests").length, 44);
   for (const slug of ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"]) {
     const englishRow = report.rows.find((row) => row.locale === "en" && row.slug === slug);

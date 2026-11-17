@@ -19,6 +19,7 @@ const checks = [
   ["CSP permits PDF worker blobs", /worker-src 'self' blob:/.test(config)],
   ["CSP permits PDF worker child contexts", /child-src 'self' blob:/.test(config)],
   ["CSP uses an explicit script host list", /script-src 'self' 'unsafe-inline' https:\/\/www\.googletagmanager\.com/.test(config)],
+  ["CSP permits the pinned QR runtime CDN", /script-src[^\n]*https:\/\/cdn\.jsdelivr\.net/.test(config)],
   ["shared consent defaults to denied", /useState\(false\)/.test(consentHook)],
   ["shared consent requires explicit advertising true", /advertising === true/.test(consentHook)],
   ["blog popunder uses shared consent", /useAdvertisingConsent/.test(popunder) && /if \(!allowed\) return null/.test(popunder)],

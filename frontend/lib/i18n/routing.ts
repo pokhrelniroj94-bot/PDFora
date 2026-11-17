@@ -1,4 +1,4 @@
-import { SITE_URL, defaultLocale, isLocale, isPublished, localeInfo, locales, type Locale } from "./config";
+import { SITE_URL, defaultLocale, isLocale, isPublished, isRoutable, localeInfo, locales, type Locale } from "./config";
 import {
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedPublicInfoSlugs,
@@ -8,6 +8,8 @@ import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 import { getLocalizedQrBlogPost } from "../localized-qr-blog-posts";
+import { hindiMathToolSlugs } from "./hindi-math-tools";
+import { hindiBusinessToolSlugs } from "./hindi-business-tools";
 
 /**
  * URL scheme: English keeps its existing unprefixed URLs (/merge-pdf, /tools/x, /blog/y).
@@ -110,7 +112,7 @@ export function hasLocalizedPage(path: string, locale: Locale): boolean {
   const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];
   if (catalogToolSlug && isLocalizedToolIndexable(locale, catalogToolSlug)) return true;
   if (normalized === "/blog/qr-code-generator-guide" && locale !== "en" && Boolean(getLocalizedQrBlogPost(locale, "qr-code-generator-guide"))) return true;
-  if (locale === "hi") return hindiLocalizedRoutePaths.has(normalized);
+  if (locale === "hi") return isRoutable(locale) && hindiLocalizedRoutePaths.has(normalized);
   if (locale !== "ne") return false;
   if (localizedPaths.has(normalized)) return true;
   return false;

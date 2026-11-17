@@ -479,12 +479,12 @@ export default async function LocalizedToolPage({ params }: Props) {
       <HindiDeveloperToolsWorkspace slug={toolSlug} />
     </main>;
   }
-  if (request.locale === "hi" && hindiMathToolSlugs.includes(toolSlug)) {
+  if (request.locale === "hi" && hindiMathToolSlugs.includes(toolSlug as (typeof hindiMathToolSlugs)[number])) {
     return (
       <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
         <div className="mb-7">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी कैलकुलेटर</p>
-          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiMathTitles[toolSlug].title}</h1>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiMathTitles[toolSlug as (typeof hindiMathToolSlugs)[number]].title}</h1>
         </div>
         <HindiMathUtilityWorkspace slug={toolSlug} />
       </main>
@@ -503,12 +503,12 @@ export default async function LocalizedToolPage({ params }: Props) {
     const titles: Record<string, string> = { "image-compressor": "इमेज कंप्रेसर", "image-format-converter": "इमेज फ़ॉर्मेट कनवर्टर", "image-dpi-calculator": "इमेज DPI कैलकुलेटर" };
     return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी इमेज टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1></div><HindiImageToolsWorkspace slug={toolSlug} /></main>;
   }
-  if (request.locale === "hi" && hindiBusinessToolSlugs.includes(toolSlug)) {
+  if (request.locale === "hi" && hindiBusinessToolSlugs.includes(toolSlug as (typeof hindiBusinessToolSlugs)[number])) {
     return (
       <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
         <div className="mb-7">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी व्यावसायिक कैलकुलेटर</p>
-          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiBusinessConfigs[toolSlug].title}</h1>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiBusinessConfigs[toolSlug as (typeof hindiBusinessToolSlugs)[number]].title}</h1>
         </div>
         <HindiBusinessCalculatorWorkspace slug={toolSlug} />
       </main>

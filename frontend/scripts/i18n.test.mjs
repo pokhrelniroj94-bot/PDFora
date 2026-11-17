@@ -315,8 +315,9 @@ test("Nepali blog routes contain complete translated article content", () => {
     assert.ok(source.includes(phrase) || page.includes(phrase), `Nepali blog content must include: ${phrase}`);
   }
   assert.equal((source.match(/slug: "/g) ?? []).length, 37);
-  assert.ok(page.includes('inLanguage: "ne"'));
-  assert.ok(page.includes('href="/ne/blog"'));
+  assert.ok(page.includes("inLanguage: localeInfo[locale].htmlLang"));
+  assert.ok(page.includes('const root = `/${locale}`'));
+  assert.ok(page.includes("getNepaliLocalizedBlogPost"));
 });
 
 test("Nepali legal and static routes contain complete localized copy", () => {

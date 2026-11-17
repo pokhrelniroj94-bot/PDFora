@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { trackConsentAwareEvent } from "../lib/analytics-client";
+import type { Locale } from "../lib/i18n/config";
 
 type BlogToolCTAProps = {
   blogSlug: string;
   href: string;
   label: string;
   calculator?: boolean;
-  locale?: "en" | "ne";
+  locale?: Locale;
 };
 
 export default function BlogToolCTA({ blogSlug, href, label, calculator = false, locale = "en" }: BlogToolCTAProps) {
@@ -33,10 +34,10 @@ export default function BlogToolCTA({ blogSlug, href, label, calculator = false,
       <Link
         href={href}
         onClick={trackClick}
-        aria-label={locale === "ne" ? label + " टुल खोल्नुहोस्" : "Open " + label + " from the " + blogSlug + " guide"}
+        aria-label={action[locale]}
         className="inline-flex items-center justify-center rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800"
       >
-        {locale === "ne" ? label + " खोल्नुहोस्" : "Open " + label}
+        {action[locale]}
       </Link>
     </div>
   );

@@ -42,9 +42,9 @@ assert.equal(homepageSource.split("Free Online PDF, Finance & Text Tools | PDFor
 assert.ok(!homepageSource.includes("Free Online PDF Tools – Merge, Split & Compress | PDFora"), "Legacy PDF-only social titles must be removed");
 assert.ok(homepageSource.includes("Explore free online PDF, finance, math, text, developer, image, SEO and Nepal tools."), "Homepage description must identify the wider tool categories");
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
-assert.ok(englishToolPageSource.includes('title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
-assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Tip: 15%, 18% & 20% Examples"'), "The tip guide title must match the 486-impression Search Console query");
-assert.ok(englishEditorialBlogSource.includes('description: "Calculate the tip, add it to the bill and split the total per person.'), "The tip guide description must lead with the actual calculator benefit");
+assert.ok(englishToolPageSource.includes('title: "Free Tip Calculator – 15%, 18%, 20% & Bill Split | PDFora"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
+assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate a Tip: Formula & 15%, 18%, 20% Examples"'), "The tip guide title must match the 1,021-impression Search Console query");
+assert.ok(englishEditorialBlogSource.includes('description: "Multiply your chosen tip base by the rate: a $60 bill at 18% gives a $10.80 tip.'), "The tip guide description must lead with the actual calculator benefit");
 assert.ok(englishEditorialBlogSource.includes('heading: "How to calculate tip: formula and worked examples"'), "The tip guide must answer the primary query in its first instructional section");
 assert.ok(catalogToolSeoSource.includes("SEO Title Checker: Review Your Page Title Before Publishing"), "The SEO title checker content must state its primary search intent");
 assert.ok(catalogToolSeoSource.includes("Use this SEO title checker with the exact HTML title"), "The SEO title checker intro must match its primary query");

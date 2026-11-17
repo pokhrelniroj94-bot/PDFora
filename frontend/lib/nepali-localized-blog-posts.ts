@@ -483,6 +483,7 @@ const nepaliPdfBlogPosts: BlogPost[] = [
       { question: "मोबाइलबाट PDF विभाजन गर्न मिल्छ?", answer: "मिल्छ। मोबाइल browser मा PDFora खोल्नुहोस्, फाइल छान्नुहोस् र page range लेखेर प्रक्रिया चलाउनुहोस्। डाउनलोड भएका फाइल जाँच्नुहोस्।" },
       { question: "स्क्यान गरिएको PDF split गर्दा text खोज्न मिल्छ?", answer: "हुँदैन। Split ले पृष्ठ छुट्याउँछ तर OCR गर्दैन। स्क्यान गरिएका पृष्ठ text खोज्न मिल्ने बनाउन छुट्टै OCR प्रक्रिया चाहिन्छ।" }
     ],
+    sources: [{ label: "Adobe Acrobat Help: PDF विभाजन गर्ने तरिका", url: "https://helpx.adobe.com/acrobat/desktop/edit-documents/organize-pages/split-pdfs.html" }],
     toolLinks: [{ label: "PDF विभाजन", href: "/split-pdf" }, { label: "PDF पृष्ठ निकाल्नुहोस्", href: "/extract-pages" }, { label: "PDF पृष्ठ हटाउनुहोस्", href: "/delete-pages" }, { label: "PDF कम्प्रेस गर्नुहोस्", href: "/compress-pdf" }]
   },
   {

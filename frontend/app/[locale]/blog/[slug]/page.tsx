@@ -5,6 +5,7 @@ import { isLocale, isRoutable } from "../../../../lib/i18n/config";
 import { getNepaliLocalizedBlogPost, nepaliLocalizedBlogPosts } from "../../../../lib/nepali-localized-blog-posts";
 import { buildLocaleMetadata } from "../../../../lib/i18n/metadata";
 import BlogToolCTA from "../../../../components/BlogToolCTA";
+import { HindiBlogArticle, getHindiGuide, hindiGuides } from "../../../../components/HindiBlogPages";
 
 const baseUrl = "https://pd-fora.vercel.app";
 
@@ -15,11 +16,12 @@ function toNepaliToolHref(href: string): string {
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export function generateStaticParams() {
-  return nepaliLocalizedBlogPosts.map((post) => ({ locale: "ne", slug: post.slug }));
+  return [...nepaliLocalizedBlogPosts.map((post) => ({ locale: "ne", slug: post.slug })), ...hindiGuides.map((post) => ({ locale: "hi", slug: post.slug }))];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
+  if (locale === "hi") { const guide = getHindiGuide(slug); return guide ? buildLocaleMetadata({ locale, path: `/blog/${slug}`, title: guide.title, description: guide.description }) : { title: "लेख उपलब्ध नहीं है", robots: { index: false, follow: true } }; }
   const post = getNepaliLocalizedBlogPost(slug);
   if (locale !== "ne" || !post) return { title: "Article not found", robots: { index: false, follow: true } };
   // Keep search titles concise without changing the reader-facing article headline.
@@ -58,6 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NepaliBlogArticle({ params }: Props) {
   const { locale, slug } = await params;
+  if (locale === "hi" && isLocale(locale) && isRoutable(locale)) { const article = <HindiBlogArticle slug={slug} />; if (article) return article; notFound(); }
   const post = getNepaliLocalizedBlogPost(slug);
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale) || !post) notFound();
   const articleSchema = {

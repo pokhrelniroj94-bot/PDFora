@@ -1,0 +1,50 @@
+# PDFora
+
+> PDFora is a free online toolkit for PDF document tasks, calculators, text and developer utilities, image tools, SEO checks, and Nepal-focused utilities.
+
+## Main pages
+
+- [Home](https://pd-fora.vercel.app/): Overview of PDFora and featured tools.
+- [All tools](https://pd-fora.vercel.app/tools): Searchable directory of available tools.
+- [Nepali home](https://pd-fora.vercel.app/ne): Reviewed Nepali-language overview and selected localized tools.
+- [Nepali tools](https://pd-fora.vercel.app/ne/tools): Directory of published Nepali tools.
+- [How to use PDFora](https://pd-fora.vercel.app/how-to-use): Product walkthrough and usage guidance.
+- [Blog](https://pd-fora.vercel.app/blog): Practical guides and tutorials.
+- [Market tools](https://pd-fora.vercel.app/market): Nepal market information tools; check source timestamps and freshness.
+- [NEPSE Lab](https://pd-fora.vercel.app/nepse-lab): Educational technical-analysis utilities and historical market context.
+- [About](https://pd-fora.vercel.app/about): Information about PDFora.
+- [Privacy policy](https://pd-fora.vercel.app/privacy): File handling and privacy information.
+- [Terms](https://pd-fora.vercel.app/terms): Terms of use.
+- [Contact](https://pd-fora.vercel.app/contact): Contact information.
+
+## Core PDF tools
+
+- [Merge PDF](https://pd-fora.vercel.app/merge-pdf)
+- [Split PDF](https://pd-fora.vercel.app/split-pdf)
+- [Compress PDF](https://pd-fora.vercel.app/compress-pdf)
+- [Rotate PDF](https://pd-fora.vercel.app/rotate-pdf)
+- [PDF to Word](https://pd-fora.vercel.app/pdf-to-word)
+- [PDF to Excel](https://pd-fora.vercel.app/pdf-to-excel)
+- [Images to PDF](https://pd-fora.vercel.app/images-to-pdf)
+- [Browse all PDF and utility tools](https://pd-fora.vercel.app/tools)
+
+## Nepal-focused tools
+
+- [Nepali date converter](https://pd-fora.vercel.app/tools/nepali-date-converter)
+- [Nepal forex rates](https://pd-fora.vercel.app/tools/nepal-forex-rates)
+- [Nepal salary tax calculator](https://pd-fora.vercel.app/tools/nepal-salary-tax-calculator)
+- [Nepal share calculator](https://pd-fora.vercel.app/tools/nepal-share-calculator)
+- [NEPSE market news](https://pd-fora.vercel.app/tools/nepse-market-news)
+
+## Important usage and privacy notes
+
+- PDFora tools have different processing methods. Some process files in the browser; other workflows may send files to the PDFora processing service. Users should read the notice on each tool and the privacy policy before uploading sensitive documents.
+- Calculators and market utilities provide informational estimates, not professional financial, legal, tax, or investment advice.
+- Market information can be delayed or unavailable. Always check the displayed source and update time.
+- OCR is not currently available as a working PDF service; do not describe it as an active capability.
+- Tool availability, supported formats, file limits, and features can change. Refer to the individual tool page for current details.
+
+## Discovery
+
+- [XML sitemap](https://pd-fora.vercel.app/sitemap.xml)
+- [Robots policy](https://pd-fora.vercel.app/robots.txt)

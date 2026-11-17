@@ -34,7 +34,7 @@ export default function BlogToolCTA({ blogSlug, href, label, calculator = false,
       <Link
         href={href}
         onClick={trackClick}
-        aria-label={action[locale]}
+        aria-label={isNepali ? action.ne : action[locale]}
         className="inline-flex items-center justify-center rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-teal-800"
       >
         {action[locale]}

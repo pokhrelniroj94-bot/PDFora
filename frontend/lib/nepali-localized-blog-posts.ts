@@ -26,7 +26,7 @@ const coreNepaliLocalizedBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "QR Code Generator", href: "/tools/qr-code-generator" }, { label: "URL Encoder & Decoder", href: "/tools/url-encoder-decoder" }, { label: "Password Generator", href: "/tools/password-generator" }],
     sources: [{ label: "DENSO WAVE: QR Code का विशेषता र error correction", url: "https://www.qrcode.com/en/about/" }, { label: "Google Search Central: उपयोगी र भरपर्दो सामग्री", url: "https://developers.google.com/search/docs/fundamentals/creating-helpful-content" }]
-  },,
+  },
   {
     slug: "nepali-date-converter-bs-to-ad-guide",
     title: "नेपाली मिति रूपान्तरण: BS र AD कसरी बदल्ने?",

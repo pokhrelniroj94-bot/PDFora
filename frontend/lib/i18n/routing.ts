@@ -90,8 +90,11 @@ const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set();
 
 export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
-  if (locale !== "ne" || !isPublished(locale)) return false;
   const normalized = normalizePath(path);
+  // QR Generator is a reviewed, independently translated exception; do not publish
+  // unrelated routes for locales whose wider site translation is still unpublished.
+  if (normalized === "/tools/qr-code-generator" && isLocalizedToolIndexable(locale, "qr-code-generator")) return true;
+  if (locale !== "ne" || !isPublished(locale)) return false;
   if (nepaliIndexableNonToolPaths.has(normalized) || isLocalizedPageIndexable(locale, normalized)) return true;
   const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];
   if (catalogToolSlug && isLocalizedToolIndexable(locale, catalogToolSlug)) return true;

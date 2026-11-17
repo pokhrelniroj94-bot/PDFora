@@ -13,12 +13,19 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.equal(report.counts.tools, 175);
   assert.equal(report.counts.matrixRows, 12 * 175);
   assert.equal(report.rows.length, 2100);
-  assert.equal(report.counts.localizedNepaliTools, 175, "49 Nepali PDF routes plus 126 localized catalog routes");
+  assert.equal(report.counts.localizedNepaliTools, 175, "49 Nepali PDF routes, 125 catalog routes and the multilingual QR generator");
   assert.equal(report.counts.indexableNepaliTools, 175);
   assert.equal(report.counts.localizedHindiTools, 175, "49 Hindi PDF tools, 125 catalog tools and the separately localized QR generator");
   assert.equal(report.rows.filter((row) => row.locale === "hi" && row.interface === "hindi-interface-present").length, 175);
   assert.equal(report.rows.filter((row) => row.locale === "hi" && row.indexing === "eligible").length, 0, "Hindi remains noindex until all publication gates pass");
   assert.equal(report.rows.filter((row) => row.locale === "hi" && row.published).length, 0);
+  for (const locale of ["ne","hi","bn","ur","ar","es","fr","de","pt","zh","ja"]) {
+    const qr = report.rows.find((row) => row.locale === locale && row.slug === "qr-code-generator");
+    assert.equal(qr?.published, true, "QR generator is the reviewed multilingual publication exception");
+    assert.equal(qr?.indexing, "eligible");
+    assert.notEqual(qr?.interface, "not-implemented");
+  }
+
   assert.ok(report.rows.filter((row) => row.locale === "hi" && row.interface === "hindi-interface-present").every((row) => row.humanReview === "native-review-not-assessed" && row.functionalTest === "not-individually-verified"), "Hindi interface coverage must not imply QA or native review");
 
   assert.deepEqual(report.rows.filter((row) => row.locale === "ne" && row.indexing === "eligible").map((row) => row.slug).sort(), report.tools.map((tool) => tool.slug).sort());
@@ -84,7 +91,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
 test("tool-language matrix keeps unpublished locales and unverified workflows out of indexing", () => {
   for (const locale of ["hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]) {
     const rows = report.rows.filter((row) => row.locale === locale);
-    assert.ok(rows.every((row) => row.published === false && row.indexing === "excluded"), `${locale} must remain unpublished`);
+    assert.ok(rows.filter((row) => row.slug !== "qr-code-generator").every((row) => row.published === false && row.indexing === "excluded"), `${locale} must remain unpublished except the QR generator`);
   }
   assert.ok(!report.tools.some((tool) => tool.slug === "ocr-pdf"), "OCR must remain outside the available-tool inventory");
 });

@@ -667,13 +667,10 @@ test("localized PDF metadata: self canonicals, reciprocal hreflang and indexing 
 });
 
 
-test("site language selector only advertises published locales", () => {
+test("site language selector advertises only page-specific published translations", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteLanguageBar.tsx"), "utf8");
-  assert.ok(
-    source.includes('locales.filter((item) => localeInfo[item].status === "published")'),
-    "the rendered selector must derive options from the central publication status",
-  );
-  assert.ok(source.includes("publishedLocales.map("), "only the filtered locale list may render options");
+  assert.ok(source.includes("getSwitcherOptions(path).map((option) => option.locale)"), "the rendered selector must use the central page-specific translation registry");
+  assert.ok(source.includes("publishedLocales.map("), "only page-approved locale options may render");
 });
 
 

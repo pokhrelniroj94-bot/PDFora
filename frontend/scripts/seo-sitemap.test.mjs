@@ -274,10 +274,10 @@ for (const slug of approvedNepali) {
   assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app${pathName}`);
 }
 
-// All localized PDF routes remain resolvable, but only the six reviewed equivalents are indexable.
+// All 49 localized PDF routes are resolvable and included in the indexability registry.
 for (const slug of ["pdf-information", "pdf-to-png", "pdf-to-html", "pdf-to-excel", "add-blank-pages"]) {
   assert.ok(pdfRoutes.includes(slug), `Historical localized URL /ne/${slug} must resolve to its registered page, not a 404`);
-  assert.equal(isLocalizedToolIndexable("ne", slug), false, `/ne/${slug} must remain noindex until individual approval`);
+  assert.equal(isLocalizedToolIndexable("ne", slug), true, `/ne/${slug} has a localized guide and workspace and should be indexable`);
 }
 assert.match(nepaliPdfPageSource, /Object\.keys\(nepaliPdfRoutes\)/, "All registered Nepali PDF routes must be generated so legacy URLs resolve");
 assert.ok(nextConfigSource.includes('{ source: "/nepali-date-converter", destination: "/tools/nepali-date-converter", permanent: true }'), "Legacy /nepali-date-converter must permanently redirect to the catalog canonical URL");

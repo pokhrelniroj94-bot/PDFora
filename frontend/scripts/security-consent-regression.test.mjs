@@ -21,7 +21,7 @@ const checks = [
   ["CSP uses an explicit script host list", /script-src 'self' 'unsafe-inline' https:\/\/www\.googletagmanager\.com/.test(config)],
   ["shared consent defaults to denied", /useState\(false\)/.test(consentHook)],
   ["shared consent requires explicit advertising true", /advertising === true/.test(consentHook)],
-  ["blog popunder uses shared consent", /useAdvertisingConsent/.test(popunder) && /if \(!allowed\) return null/.test(popunder)],
+  ["blog popunder is fully disabled", /return null/.test(popunder) && !/next\/script|abscloud\.org/.test(popunder)],
   ["skyscraper uses shared consent before loading", /useAdvertisingConsent/.test(skyscraper) && /!allowed/.test(skyscraper)],
   ["160x600 banner uses shared consent before loading", /useAdvertisingConsent/.test(banner) && /if \(!allowed\) return null/.test(banner)],
   ["native ad requires advertising consent", /advertising === true/.test(native)],

@@ -1,5 +1,6 @@
 import { defaultLocale, isRoutable, localeInfo, locales, type Locale } from "./config";
-import { hasLocalizedPage, localizePath } from "./routing";\nimport { isLocalizedToolIndexable } from "../tools/localized-verification";
+import { hasLocalizedPage, localizePath } from "./routing";
+import { isLocalizedToolIndexable } from "../tools/localized-verification";
 
 export interface SwitcherOption {
   locale: Locale;

@@ -117,6 +117,13 @@ assert.deepEqual(
   "QR Generator language selector must offer all 12 independently published translations",
 );
 
+const qrHreflang = routing.hreflangMap("/tools/qr-code-generator");
+for (const locale of config.locales) {
+  const expected = locale === "en" ? "https://pd-fora.vercel.app/tools/qr-code-generator" : `https://pd-fora.vercel.app/${locale}/tools/qr-code-generator`;
+  assert.equal(qrHreflang?.[config.localeInfo[locale].hreflang], expected, `${locale} QR page needs reciprocal hreflang`);
+}
+assert.equal(qrHreflang?.["x-default"], qrHreflang?.en, "QR x-default must point to the English canonical page");
+
 for (const locale of config.locales) {
   if (locale === "en") continue;
   const request = tools["localized-route"].resolveLocalizedToolRequest(locale, "qr-code-generator");

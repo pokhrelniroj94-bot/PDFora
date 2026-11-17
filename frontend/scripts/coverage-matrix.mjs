@@ -22,6 +22,9 @@ if (tools.length !== 175 || uniqueSlugs.size !== 175) {
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
 const localizedUtilitySlugs = parseSlugs(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g);
 const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs]);
+const hindiPdfSlugs = parseSlugs(read("lib/i18n/pdf-tool-names-hi.ts"), /"([a-z0-9-]+)":\\s*"/g);
+const hindiCatalogSlugs = parseSlugs(read("lib/i18n/hindi-tool-seo.ts"), /"([a-z0-9-]+)":\\s*\\{/g);
+const localizedHindiTools = new Set([...hindiPdfSlugs, ...hindiCatalogSlugs, "qr-code-generator"]);
 // The published Nepali registry covers every localized tool route: 49 PDF + 125 catalog.
 // SEO sitemap tests separately assert that the source registry and these route inventories match.
 const indexedNepaliTools = new Set(localizedNepaliTools);
@@ -38,8 +41,9 @@ for (const locale of locales) {
   for (const tool of tools) {
     const english = locale === "en";
     const nepaliInterfacePresent = locale === "ne" && localizedNepaliTools.has(tool.slug);
-    const localized = english || nepaliInterfacePresent;
-    const guide = english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug);
+    const hindiInterfacePresent = locale === "hi" && localizedHindiTools.has(tool.slug);
+    const localized = english || nepaliInterfacePresent || hindiInterfacePresent;
+    const guide = english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug) || locale === "hi" && tool.kind === "pdf" && hindiPdfSlugs.includes(tool.slug);
     const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug);
     matrix.push({
       locale,
@@ -48,8 +52,8 @@ for (const locale of locales) {
       route: tool.kind === "pdf" ? `/${tool.slug}` : `/tools/${tool.slug}`,
       routeExists: true,
       handler: english ? handlerEvidence : localized ? "localized-route-handler" : "not-published",
-      interface: english ? "source-language" : localized ? "nepali-interface-present" : "not-implemented",
-      content: guide ? (english ? "source-guide" : "nepali-guide-present") : "not-verified",
+      interface: english ? "source-language" : nepaliInterfacePresent ? "nepali-interface-present" : hindiInterfacePresent ? "hindi-interface-present" : "not-implemented",
+      content: guide ? (english ? "source-guide" : locale === "ne" ? "nepali-guide-present" : "hindi-guide-present") : "not-verified",
       functionalTest: locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
       humanReview: english ? "source-content-review-not-assessed" : localized ? "native-review-not-assessed" : "not-reviewed",
       indexing: indexable ? "eligible" : "excluded",
@@ -77,6 +81,7 @@ const inventory = {
     publishedLocales: [...publishedLocales],
     localizedNepaliTools: localizedNepaliTools.size,
     indexableNepaliTools: indexedNepaliTools.size,
+    localizedHindiTools: localizedHindiTools.size,
   },
   tools,
   rows: matrix,

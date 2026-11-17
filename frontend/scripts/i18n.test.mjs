@@ -319,6 +319,20 @@ test("Nepali blog routes contain complete translated article content", () => {
   assert.ok(page.includes('href="/ne/blog"'));
 });
 
+test("QR guide has localized editorial routes in ten additional languages", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "lib", "localized-qr-blog-posts.ts"), "utf8");
+  const page = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "blog", "[slug]", "page.tsx"), "utf8");
+  const article = fs.readFileSync(path.join(frontendRoot, "components", "LocalizedQrBlogArticle.tsx"), "utf8");
+  const sitemap = fs.readFileSync(path.join(frontendRoot, "app", "sitemap.ts"), "utf8");
+  for (const locale of ["hi", "bn", "ur", "es", "fr", "de", "pt", "ar", "zh", "ja"]) {
+    assert.ok(source.includes(`${locale}:`), `Missing QR guide locale: ${locale}`);
+  }
+  assert.ok(page.includes("getLocalizedQrBlogPost"));
+  assert.ok(page.includes("LocalizedQrBlogArticle"));
+  assert.ok(article.includes("BlogPosting"));
+  assert.ok(sitemap.includes("localizedQrBlogPosts"));
+});
+
 test("Nepali legal and static routes contain complete localized copy", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "NepaliStaticPage.tsx"), "utf8");
   const routeSource = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "[slug]", "page.tsx"), "utf8");

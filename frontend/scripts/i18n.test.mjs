@@ -395,9 +395,12 @@ test("switcher: never offers an unavailable page", () => {
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"], "unpublished Hindi must never be offered in production");
   process.env.PDFORA_I18N_PREVIEW = "1";
   const home = switcher.getSwitcherOptions("/");
-  assert.deepEqual(home.map((o) => o.locale), ["en", "ne"]);
+  assert.deepEqual(home.map((o) => o.locale), ["en", "ne", "hi"], "Hindi homepage is available only in preview");
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne", "hi"], "Hindi PDF tool pages are real routes (preview only)");
-  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne"], "only reviewed static pages offer Nepali");
+  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne", "hi"], "Hindi about page is available only in preview");
+  assert.deepEqual(switcher.getSwitcherOptions("/categories").map((o) => o.locale), ["en", "hi"], "Hindi categories page is a real preview route");
+  assert.deepEqual(switcher.getSwitcherOptions("/blog").map((o) => o.locale), ["en", "ne", "hi"], "Hindi blog index is available only in preview");
+  assert.deepEqual(switcher.getSwitcherOptions("/blog/percentage-calculator-guide").map((o) => o.locale), ["en", "hi"], "Hindi guide route is available only in preview");
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 

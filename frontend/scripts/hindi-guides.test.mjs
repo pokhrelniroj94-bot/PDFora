@@ -34,6 +34,7 @@ test("Hindi guides preserve numeric limits and ranges from the English source", 
 });
 
 test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", async () => {
+  process.env.PDFORA_I18N_PREVIEW = "1";
   const { "pdf-tool-names-hi": names, "pdf-tool-fields-hi": fields, "nepali-pdf-routes": pdfRoutes, routing, config } = await loadI18n();
   const slugs = Object.keys(pdfRoutes.nepaliPdfRoutes);
   assert.equal(slugs.length, 49);
@@ -45,6 +46,7 @@ test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", asyn
     assert.equal(routing.hasIndexableLocalizedPage(`/${slug}`, "hi"), false, `${slug}: must stay non-indexable`);
   }
   assert.equal(config.isPublished("hi"), false);
+  delete process.env.PDFORA_I18N_PREVIEW;
   assert.equal(routing.hasLocalizedPage("/blog", "hi"), true, "Hindi blog index is a real preview page");
   assert.equal(routing.hasLocalizedPage("/", "hi"), true, "Hindi homepage is a real preview page");
   assert.equal(routing.hasLocalizedPage("/tools", "hi"), true, "Hindi tools directory is a real preview page");

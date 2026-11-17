@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
+    "qr-code-generator": { title: "Free QR Code Generator – Wi-Fi, URL, vCard & More", description: "Create custom QR codes for URLs, text, Wi-Fi, email, phone, SMS, WhatsApp, contacts and events. Customize colour, size and error correction; download PNG or SVG." },
     "email-signature-generator": { title: "Free Email Signature Generator – HTML Signature | PDFora", description: "Create a professional HTML email signature with contact details, brand colour and a live preview. Copy or download it without uploading personal details." },
     "timezone-meeting-planner": { title: "Time Zone Meeting Planner – World Clock Converter", description: "Convert a meeting date and time across New York, London, Kathmandu, Tokyo and other time zones. Compare local times with daylight-saving support." },
     "image-dpi-calculator": { title: "Image DPI & PPI Calculator – Print Resolution", description: "Calculate image PPI from pixel dimensions and print size. Find the pixel dimensions needed for 72, 150, 300 or 600 PPI printing." },

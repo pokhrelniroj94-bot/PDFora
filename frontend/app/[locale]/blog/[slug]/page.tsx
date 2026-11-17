@@ -141,6 +141,7 @@ export default async function LocalizedBlogArticle({ params }: Props) {
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora · {post.readTime}</p>
           <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
+          {/* Nepali pages retain locale="ne"; every other published QR guide uses its own locale. */}
           {post.toolLinks.length > 0 && (
             <BlogToolCTA blogSlug={post.slug} href={toolHref} label="QR Code Generator" locale={isNepali ? "ne" : locale} />
           )}

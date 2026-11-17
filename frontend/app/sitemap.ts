@@ -7,7 +7,9 @@ import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLo
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../lib/tools/localized-verification";
 import { nepaliPdfRoutes } from "../lib/i18n/nepali-pdf-routes";
 
-const baseUrl = "https://pd-fora.vercel.app";
+import { PRODUCTION_ORIGIN } from "../lib/seo";
+
+const baseUrl = PRODUCTION_ORIGIN;
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {

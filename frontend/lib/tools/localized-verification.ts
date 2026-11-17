@@ -9,7 +9,18 @@ import { nepaliPdfRoutes } from "../i18n/nepali-pdf-routes";
  * is shared by metadata, reciprocal hreflang and the XML sitemap.
  */
 export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {
+  en: ["qr-code-generator"],
   ne: [...nepaliLocalizedUtilitySlugs, ...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs, ...Object.keys(nepaliPdfRoutes)],
+  hi: ["qr-code-generator"],
+  bn: ["qr-code-generator"],
+  ur: ["qr-code-generator"],
+  ar: ["qr-code-generator"],
+  es: ["qr-code-generator"],
+  fr: ["qr-code-generator"],
+  de: ["qr-code-generator"],
+  pt: ["qr-code-generator"],
+  zh: ["qr-code-generator"],
+  ja: ["qr-code-generator"],
 };
 
 /** Published Nepali non-tool pages with dedicated localized content. */

@@ -16,7 +16,7 @@ export interface SwitcherOption {
  */
 export function getSwitcherOptions(path: string): SwitcherOption[] {
   return locales
-    .filter((l) => (l === defaultLocale || isRoutable(l)) && hasLocalizedPage(path, l))
+    .filter((l) => (l === defaultLocale || isRoutable(l) || path === "/tools/qr-code-generator" || path === "/blog/qr-code-generator-guide") && hasLocalizedPage(path, l))
     .map((l) => ({
       locale: l,
       nativeName: localeInfo[l].nativeName,

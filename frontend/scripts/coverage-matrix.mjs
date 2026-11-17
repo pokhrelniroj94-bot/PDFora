@@ -15,8 +15,8 @@ const legacyPdfSlugs = parseSlugs(read("lib/legacy-tool-slugs.ts"), /"([a-z0-9-]
 const pdfTools = legacyPdfSlugs.map((slug) => ({ slug, name: slug, category: "PDF", kind: "pdf" }));
 const tools = [...pdfTools, ...catalog];
 const uniqueSlugs = new Set(tools.map((tool) => tool.slug));
-if (tools.length !== 174 || uniqueSlugs.size !== 174) {
-  throw new Error(`Expected 174 non-AI tools, found ${tools.length} entries and ${uniqueSlugs.size} unique slugs`);
+if (tools.length !== 175 || uniqueSlugs.size !== 175) {
+  throw new Error(`Expected 175 non-AI tools, found ${tools.length} entries and ${uniqueSlugs.size} unique slugs`);
 }
 
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
@@ -28,6 +28,7 @@ const nepaliPdfGuideSlugs = new Set(parseSlugs(read("lib/i18n/tool-guides-ne.ts"
 const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"];
 const rtlLocales = new Set(["ur", "ar"]);
 const publishedLocales = new Set(["en", "ne"]);
+const qrPublishedLocales = new Set(["ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
 const handlerEvidence = "catalog-handler-check";
 const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator", "text-to-binary", "binary-to-text", "text-to-hex", "hex-to-text", "morse-code-translator", "camel-case-converter", "snake-case-converter", "kebab-case-converter", "json-escape-unescape", "px-rem-converter", "roman-numeral-converter", "csv-to-json", "json-to-yaml", "json-to-csv", "url-validator", "email-validator", "password-strength-checker", "url-query-parser", "color-converter", "aspect-ratio-calculator", "css-gradient-generator", "unix-timestamp-converter", "date-add-subtract-calculator", "business-days-calculator", "random-number-generator", "dice-roller", "regex-tester", "jwt-decoder", "css-minifier", "color-contrast-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator"]);
 
@@ -36,9 +37,10 @@ for (const locale of locales) {
   for (const tool of tools) {
     const english = locale === "en";
     const nepaliInterfacePresent = locale === "ne" && localizedNepaliTools.has(tool.slug);
-    const localized = english || nepaliInterfacePresent;
-    const guide = english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug);
-    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug);
+    const qrLocalized = tool.slug === "qr-code-generator" && qrPublishedLocales.has(locale);
+    const localized = english || nepaliInterfacePresent || qrLocalized;
+    const guide = tool.slug === "qr-code-generator" || (english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug));
+    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug) || qrLocalized;
     matrix.push({
       locale,
       slug: tool.slug,
@@ -46,12 +48,12 @@ for (const locale of locales) {
       route: tool.kind === "pdf" ? `/${tool.slug}` : `/tools/${tool.slug}`,
       routeExists: true,
       handler: english ? handlerEvidence : localized ? "localized-route-handler" : "not-published",
-      interface: english ? "source-language" : localized ? "nepali-interface-present" : "not-implemented",
-      content: guide ? (english ? "source-guide" : "nepali-guide-present") : "not-verified",
-      functionalTest: locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
+      interface: english ? "source-language" : qrLocalized ? "translated-interface-present" : nepaliInterfacePresent ? "nepali-interface-present" : "not-implemented",
+      content: guide ? (english ? "source-guide" : qrLocalized ? "localized-guide-present" : "nepali-guide-present") : "not-verified",
+      functionalTest: locale === "en" && tool.slug === "qr-code-generator" ? "browser-e2e" : locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
       humanReview: english ? "source-content-review-not-assessed" : localized ? "native-review-not-assessed" : "not-reviewed",
       indexing: indexable ? "eligible" : "excluded",
-      published: publishedLocales.has(locale) && localized,
+      published: publishedLocales.has(locale) && localized || qrLocalized,
       direction: rtlLocales.has(locale) ? "rtl" : "ltr",
     });
   }
@@ -62,7 +64,7 @@ const inventory = {
   sourceCommit: execFileSync("git", ["-C", repoRoot, "rev-parse", "HEAD"], { encoding: "utf8" }).trim(),
   methodology: {
     sourceOfTruth: "legacy-tool-slugs.ts plus toolCatalog.ts, excluding the pdf-tools collection entry",
-    expectedUniqueTools: 174,
+    expectedUniqueTools: 175,
     statuses: "Catalog existence, route existence, handler evidence, interface localization, guide/content, functional test, human review and indexing are tracked independently.",
     limitations: "Source inspection is not proof of runtime correctness, native-language review or browser compatibility. Functional tests remain explicitly unverified until executed.",
   },
@@ -90,7 +92,7 @@ const markdown = `# PDFora tool/language coverage matrix
 
 Generated by \`npm run i18n:matrix\`.
 
-This matrix contains one row for every combination of **12 configured locales × 174 unique tools**. It separates catalog existence, route/handler evidence, visible interface localization, guide/content coverage, functional testing, human review and indexing eligibility. A generated row is not evidence that the workflow or translation is complete.
+This matrix contains one row for every combination of **12 configured locales × 175 unique tools**. It separates catalog existence, route/handler evidence, visible interface localization, guide/content coverage, functional testing, human review and indexing eligibility. A generated row is not evidence that the workflow or translation is complete.
 
 ## Inventory
 
@@ -110,7 +112,7 @@ ${summary}
 - Nepali has ${localizedNepaliTools.size} route registrations out of ${tools.length} catalogued tools. Route registration is not proof that every interface string, validation, error, output or download is localized or functionally verified. Native-speaker review is not certified by this matrix.
 - Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
 - The targeted-test slug registry is a source-level indicator only; it must not be interpreted as full browser QA. The separate Nepali source audit reports current test references and per-tool route evidence.
-- OCR is not counted among the 174 available tools because it remains excluded from the canonical PDF inventory.
+- OCR is not counted among the 175 available tools because it remains excluded from the canonical PDF inventory.
 `;
 fs.writeFileSync(path.join(outputDir, "TOOL_LANGUAGE_COVERAGE_MATRIX.md"), markdown);
 console.log(`Generated ${matrix.length} rows for ${tools.length} tools across ${locales.length} locales.`);

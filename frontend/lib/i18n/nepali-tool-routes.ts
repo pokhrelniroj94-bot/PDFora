@@ -114,6 +114,7 @@ export const nepaliLocalizedUtilitySlugs = [
   "timezone-meeting-planner",
   "image-dpi-calculator",
   "video-bitrate-calculator",
+  "qr-code-generator",
   "markdown-table-generator",
 ] as const;
 

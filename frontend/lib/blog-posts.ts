@@ -23,6 +23,32 @@ export type BlogPost = {
 
 const editorialBlogPosts: BlogPost[] = [
   {
+    slug: "qr-code-generator-guide",
+    title: "How to Create a QR Code: URLs, Wi-Fi, Contacts and Events",
+    description: "Learn how QR codes store information, choose a useful format, customize and download a QR image, and test it before printing or sharing.",
+    keyword: "how to create a QR code online",
+    updated: "2026-11-17",
+    readTime: "7 min read",
+    intro: "A QR code is a two-dimensional symbol that can encode a website address, short text, Wi-Fi connection details, contact information or event data. This guide explains how to choose a useful format, create a code with PDFora, check scan reliability and avoid exposing information that should remain private.",
+    sections: [
+      { heading: "1. Choose what the QR code should do", paragraphs: ["Start with the action you want someone to take. A website QR code is useful on a poster or menu; a Wi-Fi QR code can help guests join a network; a vCard can share business contact details; and an event QR can store a title, date and location. Plain text is suitable when the recipient only needs to read a short note.", "Keep the encoded content focused. Long paragraphs and unnecessary tracking parameters make a denser code that may be harder to scan at small sizes. Use a stable HTTPS address when linking to a website you control."] },
+      { heading: "2. Create a QR code with PDFora", paragraphs: ["Open the QR Code Generator and select the content type. Enter the requested details, review spelling and numbers, then choose image dimensions, margin, error correction and colours. Generate the preview and download PNG for common digital uses or SVG when you need a scalable graphic for a design or print workflow."], bullets: ["Choose URL, text, Wi-Fi, email, phone, SMS, WhatsApp, contact card or event.", "Enter only the information needed for that purpose.", "Choose a size and keep a visible quiet-zone margin around the symbol.", "Use a dark foreground on a light background for reliable contrast.", "Generate, download and test the code before sharing."] },
+      { heading: "3. Pick colours, size and error correction carefully", paragraphs: ["A QR reader needs to distinguish dark modules from the light background. Strong contrast is more important than decorative colours. Avoid pale foregrounds, patterned backgrounds, gradients or transparent backgrounds that blend into the surface where the code will appear.", "The error-correction setting adds redundancy so a code can sometimes still be read when part of it is damaged. Higher correction can make the symbol denser, so it is not automatically better for every use. Choose a practical level, then test the final exported image at its actual display or print size."] },
+      { heading: "4. Test the QR code before publishing", paragraphs: ["Scan the downloaded file from another phone rather than relying only on the preview on the same screen. Test it under normal lighting, at the distance people will use it and after printing if it will appear on paper. Check that the decoded URL, phone number, Wi-Fi name or event details are exactly what you intended.", "For printed material, leave a clear margin around the QR symbol and do not stretch it out of proportion. If the code is too small or dense for the intended distance, shorten the encoded content or increase the printed dimensions."] },
+      { heading: "5. Protect privacy and check links", paragraphs: ["A QR code is not encryption. Anyone who can scan it may read its contents, including Wi-Fi credentials or contact details. Only encode information you are comfortable sharing with the people who can access the code.", "Scanning a QR code does not prove that a destination is safe. Before opening a link, inspect the full domain and be cautious with unexpected login, payment or download prompts. PDFora creates the QR image; it does not audit or certify the destination website."] }
+    ],
+    faqs: [
+      { question: "Can I create a QR code for Wi-Fi?", answer: "Yes. Select the Wi-Fi option, enter the exact network name and password, choose the security type and generate the code. Test it with a device that is not already connected to the network." },
+      { question: "Can a QR code contain a phone number or email?", answer: "Yes. PDFora supports phone and email payloads, as well as SMS and WhatsApp links. Check the number, country code and message before downloading." },
+      { question: "Should I download PNG or SVG?", answer: "PNG is convenient for websites, messaging and everyday documents. SVG is vector artwork that can scale for design and print workflows, but you should still test the printed output." },
+      { question: "Can I change the QR code colours?", answer: "Yes. You can choose foreground and background colours. Keep strong contrast and test the exported code with more than one phone." },
+      { question: "Does a QR code expire?", answer: "A static QR code does not expire by itself. However, a website address, phone number or service encoded in it can change or stop working." },
+      { question: "Is it safe to put a Wi-Fi password in a QR code?", answer: "Only if you intend to share access with people who can scan the code. QR content is readable by scanners and is not encrypted by the QR format." }
+    ],
+    toolLinks: [{ label: "QR Code Generator", href: "/tools/qr-code-generator" }, { label: "URL Encoder & Decoder", href: "/tools/url-encoder-decoder" }, { label: "Password Generator", href: "/tools/password-generator" }],
+    sources: [{ label: "DENSO WAVE: QR Code features and error correction", url: "https://www.qrcode.com/en/about/" }, { label: "Google Search Central: Helpful, reliable, people-first content", url: "https://developers.google.com/search/docs/fundamentals/creating-helpful-content" }]
+  },
+  {
     slug: "compress-pdf-to-under-1mb-online",
     title: "How to Compress a PDF to Under 1MB Online",
     description: "Learn practical ways to reduce a PDF to under 1MB for online forms, email and document uploads, and find out why some files cannot reach an exact size.",

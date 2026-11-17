@@ -62,7 +62,7 @@ assert.ok(englishToolPageSource.includes("It estimates periodic interest when yo
 assert.ok(catalogToolSeoSource.includes("compounds monthly or weekly"), "Savings Goal guidance must disclose periodic compounding");
 assert.ok(nepaliLocalizedBlogSource.includes("मासिक वा साप्ताहिक अवधिअनुसार चक्रवृद्धि"), "Nepali savings guide must disclose periodic compounding");
 const nepaliPostMatches = [...nepaliLocalizedBlogSource.matchAll(/slug: "([^"]+)"/g)];
-assert.equal(nepaliPostMatches.length, 40, "Reviewed Nepali blog inventory must remain complete");
+assert.equal(nepaliPostMatches.length, 41, "Reviewed Nepali blog inventory must include the restored QR guide");
 for (let index = 0; index < nepaliPostMatches.length; index += 1) {
   const start = nepaliPostMatches[index].index;
   const end = nepaliPostMatches[index + 1]?.index ?? nepaliLocalizedBlogSource.length;
@@ -275,6 +275,7 @@ assert.match(nepaliPdfPageSource, /Object\.keys\(nepaliPdfRoutes\)/, "All regist
 assert.ok(nextConfigSource.includes('{ source: "/nepali-date-converter", destination: "/tools/nepali-date-converter", permanent: true }'), "Legacy /nepali-date-converter must permanently redirect to the catalog canonical URL");
 assert.doesNotMatch(legacyToolSlugsSource, /"nepali-date-converter"/, "Redirect-only Nepali date URL must not enter the canonical legacy PDF route registry");
 assert.match(sitemapSource, /\$\{baseUrl\}\/tools\/\$\{tool\.slug\}/, "The canonical catalog URL must remain in the sitemap");
+assert.match(sitemapSource, /isLocalizedToolIndexable\(locale, "qr-code-generator"\)/, "Only explicitly verified QR locale routes may enter the additional locale sitemap entries");
 assert.ok(robotsSource.includes('disallow: ["/api/"]'), "The 27 API endpoints in the Search Console robots export must remain intentionally blocked");
 
 console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} Nepali tool URLs are indexable; ${toolRoutes.length} catalog and ${pdfRoutes.length} PDF tools are included.`);

@@ -7,7 +7,7 @@ import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
-const reportPath = path.resolve(process.env.E2E_REPORT_PATH || "../docs/qa/BROWSER_E2E_174_REPORT.json");
+const reportPath = path.resolve(process.env.E2E_REPORT_PATH || "../docs/qa/BROWSER_E2E_175_REPORT.json");
 const localePrefix = process.env.E2E_LOCALE === "ne" ? "/ne" : "";
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
@@ -29,8 +29,8 @@ const allTools = [
   ...catalogTools.map((tool) => ({ kind: "catalog", ...tool, url: "/tools/" + tool.slug })),
 ];
 
-if (pdfRoutes.length !== 49 || catalogTools.length !== 125 || allTools.length !== 174) {
-  throw new Error("Expected 49 PDF routes + 125 catalog tools = 174; got " +
+if (pdfRoutes.length !== 49 || catalogTools.length !== 126 || allTools.length !== 175) {
+  throw new Error("Expected 49 PDF routes + 126 catalog tools = 175; got " +
     pdfRoutes.length + " + " + catalogTools.length + " = " + allTools.length);
 }
 const requestedToolFilters = (process.env.E2E_TOOL_FILTER || "").split(",").map((value) => value.trim()).filter(Boolean);
@@ -211,6 +211,13 @@ async function setFirstTextArea(page, value) {
     element.dispatchEvent(new Event("change", { bubbles: true }));
     return true;
   })()`);
+}
+
+async function setFieldsByLabel(page, fields) {
+  for (const [label, value] of fields) {
+    const updated = await setFieldByLabel(page, label, value);
+    if (!updated) throw new Error("Browser E2E could not find labelled field: " + label);
+  }
 }
 
 async function setFieldByLabel(page, labelText, value) {
@@ -507,6 +514,51 @@ async function runTool(tool, index) {
       if (!action) throw new Error("PDF tool has no enabled processing action.");
       row.action = action;
       row.checks.push("processing action clicked");
+      if (tool.slug === "qr-code-generator") {
+        const qrStarted = Date.now();
+        let qrPreview = null;
+        while (Date.now() - qrStarted < 45000) {
+          qrPreview = await page.evaluate(`() => {
+            const image = document.querySelector('img[alt="Generated QR code preview"]');
+            const alert = document.querySelector('main [role="alert"]')?.innerText || "";
+            return {
+              image: image?.getAttribute("src") || "",
+              png: [...document.querySelectorAll("main button")].some((button) => /download png/i.test(button.innerText)),
+              svg: [...document.querySelectorAll("main button")].some((button) => /download svg/i.test(button.innerText)),
+              alert,
+            };
+          }`);
+          if (qrPreview.image.startsWith("data:image/png;base64,")) break;
+          if (qrPreview.alert) throw new Error("QR generator reported an error: " + qrPreview.alert);
+          await delay(250);
+        }
+        if (!qrPreview?.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg) {
+          throw new Error("QR generator did not create a PNG preview and PNG/SVG download actions within 45 seconds.");
+        }
+        const downloadClicked = await page.evaluate(`() => {
+          const button = [...document.querySelectorAll("main button")].find((item) => /download png/i.test(item.innerText));
+          if (!button) return false;
+          button.click();
+          return true;
+        }`);
+        if (!downloadClicked) throw new Error("QR PNG download action was unavailable.");
+        let qrFile = "";
+        const qrDownloadStarted = Date.now();
+        while (Date.now() - qrDownloadStarted < 10000) {
+          qrFile = fs.readdirSync(downloadsDir).find((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name) && name.toLowerCase().endsWith(".png")) || "";
+          if (qrFile) break;
+          await delay(200);
+        }
+        if (!qrFile) throw new Error("QR PNG download did not complete.");
+        const qrDownload = await validateDownloadedFile(path.join(downloadsDir, qrFile));
+        row.checks.push("QR library loaded, PNG preview generated, SVG/PNG actions shown and downloaded PNG signature validated");
+        row.output = "QR preview generated; " + qrDownload.bytes + " byte PNG download validated";
+        row.outputVerified = true;
+        row.status = "PASS";
+        row.evidenceLevel = "qr-preview-and-png-download-verified";
+        row.downloadedFiles = [qrDownload];
+        return row;
+      }
       const start = Date.now();
       let finalState = null;
       let statusText = "";
@@ -659,6 +711,19 @@ async function runTool(tool, index) {
         row.status = "PASS";
         return row;
       }
+      if (tool.slug === "nepali-unicode-typing") {
+        const readyStarted = Date.now();
+        let readyButton = false;
+        while (Date.now() - readyStarted < 25000 && !readyButton) {
+          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
+          if (!readyButton) await delay(250);
+        }
+        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
+        await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
+        await delay(300);
+        const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
+        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output.");
+      }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
       } else if (tool.slug === "base64-encoder-decoder") {
@@ -751,7 +816,41 @@ async function runTool(tool, index) {
         row.checks.push("image file selected");
       }
       if (tool.slug === "nepal-forex-rates") await delay(20000);
-      else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter", "nepali-unicode-typing"].includes(tool.slug)) await delay(5000);
+      else if (["currency-converter", "nepse-market-news", "preeti-unicode-converter"].includes(tool.slug)) await delay(5000);
+      const calculatorSeeds = {
+        "loan-emi-calculator": [["Loan amount", "1000000"], ["Annual interest rate (%)", "10"], ["Loan term (months)", "60"]],
+        "compound-interest-sip-calculator": [["Monthly SIP (NPR)", "5000"], ["Years", "10"], ["Expected annual return (%)", "10"], ["Initial investment (NPR)", "0"]],
+        "discount-percentage-calculator": [["Original price", "1000"], ["Discount (%)", "20"], ["Value / part", "25"], ["Total / whole", "100"]],
+        "percentage-change-calculator": [["Original value", "100"], ["New value", "120"]],
+        "average-calculator": [["Numbers separated by commas, semicolons or spaces", "10, 20, 30, 40"]],
+        "ratio-simplifier": [["First part", "12"], ["Second part", "18"]],
+        "fraction-calculator": [["First numerator", "1"], ["First denominator", "2"], ["Second numerator", "1"], ["Second denominator", "3"], ["Operation (+ - * /)", "+"]],
+        "unit-converter": [["Value", "1"], ["From unit (m km cm mm in ft kg g lb l ml c f)", "km"], ["To unit", "m"]],
+        "profit-margin-calculator": [["Cost", "60"], ["Selling price", "100"]],
+        "markup-calculator": [["Cost", "60"], ["Markup (%)", "40"]],
+        "break-even-calculator": [["Fixed costs", "100000"], ["Selling price per unit", "500"], ["Variable cost per unit", "300"]],
+        "sales-tax-calculator": [["Amount", "1000"], ["Tax rate (%)", "13"]],
+        "salary-breakdown-calculator": [["Gross monthly salary", "50000"], ["Estimated deduction (%)", "10"]],
+        "savings-goal-calculator": [["Savings target", "100000"], ["Already saved", "10000"], ["Months to goal", "12"], ["Annual interest rate (%)", "5"]],
+        "reading-time-calculator": [["Text or input", "one two three four"], ["Reading speed (words/min)", "200"], ["Speaking speed (words/min)", "130"]],
+        "bmi-calculator": [["Weight (kg)", "65"], ["Height (cm)", "170"]],
+        "bmr-calculator": [["Weight (kg)", "65"], ["Height (cm)", "170"], ["Age (years)", "25"]],
+        "tip-calculator": [["Bill amount", "2500"], ["Tip (%)", "10"], ["People", "2"]],
+        "split-bill-calculator": [["Bill amount", "3000"], ["Extra amount", "0"], ["People", "3"]],
+        "simple-interest-calculator": [["Principal", "10000"], ["Rate (%)", "8"], ["Years", "3"]],
+        "commission-calculator": [["Sales amount", "100000"], ["Rate (%)", "5"]],
+        "hourly-to-salary-calculator": [["Hourly wage", "15"], ["Hours per week", "40"]],
+        "percentage-of-number-calculator": [["Value", "250"], ["Rate (%)", "15"]],
+        "gcd-lcm-calculator": [["First value / colour", "24"], ["Second value / colour", "36"]],
+        "prime-number-checker": [["Integer", "97"]],
+        "date-add-subtract-calculator": [["Starting date", "2026-11-01"], ["Days to add/subtract", "30"]],
+        "aspect-ratio-calculator": [["Width (px)", "1920"], ["Height (cm)", "1080"]],
+        "random-number-generator": [["Minimum", "1"], ["Maximum", "100"], ["Count", "5"]],
+        "dice-roller": [["Count", "2"]],
+        "image-dpi-calculator": [["Image width (pixels)", "2400"], ["Image height (pixels)", "3000"], ["Printed width", "8"], ["Printed height", "10"]],
+        "video-bitrate-calculator": [["Video duration (minutes)", "10"], ["Additional seconds", "0"], ["Target file size (MB, decimal)", "500"], ["Audio bitrate (kbps)", "192"], ["Container / overhead allowance (%)", "5"]]
+      };
+      if (calculatorSeeds[tool.slug]) await setFieldsByLabel(page, calculatorSeeds[tool.slug]);
       const catalogDownloadsBefore = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
       const clicked = tool.slug === "nepal-forex-rates" ? "" : await page.evaluate(`(() => {
         const buttons = [...document.querySelectorAll("button")].filter((b) => !b.disabled);
@@ -811,6 +910,7 @@ async function runTool(tool, index) {
         row.evidenceLevel = "timezone-conversion-and-dst-edge-case-verified";
         return row;
       }
+
       if (tool.slug === "image-dpi-calculator") {
         const dpi = await page.evaluate('document.querySelector("main")?.innerText || ""');
         if (!/300\.0\s+PPI/.test(dpi) || !/2,400 × 3,000 px/.test(dpi) || !/at or above/i.test(dpi)) {
@@ -1256,7 +1356,7 @@ async function runTool(tool, index) {
           const alert = document.querySelector('main [role="alert"]')?.innerText || "";
           return { count: fields.length, values: fields.map((field) => field.value), alert };
         })()`);
-        const status = await page.locator('main [role="status"]').innerText().catch(() => "");
+        const status = await page.evaluate('document.querySelector(\'main [role="status"]\')?.innerText || ""');
         if (invalidState.count !== 3 || invalidState.alert || !/enter the loan amount/i.test(status)) {
           throw new Error("Empty EMI fields must remain visible without a premature validation error and show neutral guidance.");
         }
@@ -1319,12 +1419,12 @@ try {
     const result = await runTool(tools[index], index);
     results.push(result);
     console.log((result.status === "PASS" ? "PASS " : result.status === "PARTIAL" ? "PARTIAL " : "FAIL ") +
-      result.index + "/174 " + result.slug + " — " +
+      result.index + "/175 " + result.slug + " — " +
       (result.errors[0] || result.checks.join(", ")));
     if (fatalBrowserError) break;
   }
 
-  // Dedicated locale pass across every one of the 174 registered Nepali tool routes.
+  // Dedicated locale pass across every one of the 175 registered Nepali tool routes.
   const nepaliRoutes = allTools.map((tool) => ({
     slug: tool.slug,
     kind: tool.kind,
@@ -1408,7 +1508,7 @@ try {
     }
     nepaliRouteResults.push(row);
     console.log((row.status === "PASS" ? "PASS " : "FAIL ") + "ne-NP " +
-      (nepaliRouteResults.length) + "/174 " + route.slug + " — " +
+      (nepaliRouteResults.length) + "/175 " + route.slug + " — " +
       (row.errors[0] || row.checks.join(", ")));
   }
 } finally {
@@ -1420,15 +1520,15 @@ const report = {
   sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
   localeMode: localePrefix ? "ne-route-smoke" : "en-functional",
-  scope: requestedToolFilters.length ? requestedToolFilters : "all-174-tools",
+  scope: requestedToolFilters.length ? requestedToolFilters : "all-175-tools",
   expected: requestedToolFilters.length
     ? { pdf: tools.filter((tool) => tool.kind === "pdf").length, catalog: tools.filter((tool) => tool.kind === "catalog").length, total: tools.length }
-    : { pdf: 49, catalog: 125, total: 174, nepaliLocalizedRoutes: 174 },
+    : { pdf: 49, catalog: 126, total: 175, nepaliLocalizedRoutes: 175 },
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each selected PDF route, attach valid fixtures and inspect processing/output. The Merge PDF assertion uploads two distinct PDFs, moves the first below the second, then verifies the downloaded merged page dimensions match that selected order.",
-    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A dedicated second pass visits all 174 registered Nepali tool routes, checks lang=ne, Devanagari content, heading, controls, PDF upload presence, 390px mobile overflow and a non-submitting editable-control interaction. This does not certify each tool’s validation, result oracle or downloaded file in Nepali; those require individual localized functional assertions. When E2E_LOCALE=ne, the English-language functional oracle suite is skipped and only the dedicated 174-route Nepali smoke pass runs, avoiding false failures from English expected-output strings.",
-    limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 174 non-AI tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
+    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A dedicated second pass visits all 175 registered Nepali tool routes, checks lang=ne, Devanagari content, heading, controls, PDF upload presence, 390px mobile overflow and a non-submitting editable-control interaction. This does not certify each tool’s validation, result oracle or downloaded file in Nepali; those require individual localized functional assertions. When E2E_LOCALE=ne, the English-language functional oracle suite is skipped and only the dedicated 175-route Nepali smoke pass runs, avoiding false failures from English expected-output strings.",
+    limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 175 non-AI tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },
   counts: {
     total: results.length,

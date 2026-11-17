@@ -9,12 +9,12 @@ const report = JSON.parse(fs.readFileSync(matrixPath, "utf8"));
 test("tool-language matrix accounts for every configured locale and unique tool", () => {
   assert.equal(report.counts.locales, 12);
   assert.equal(report.counts.pdfTools, 49);
-  assert.equal(report.counts.catalogUtilities, 125);
-  assert.equal(report.counts.tools, 174);
-  assert.equal(report.counts.matrixRows, 12 * 174);
-  assert.equal(report.rows.length, 2088);
-  assert.equal(report.counts.localizedNepaliTools, 174, "49 Nepali PDF routes plus 125 localized catalog routes");
-  assert.equal(report.counts.indexableNepaliTools, 174);
+  assert.equal(report.counts.catalogUtilities, 126);
+  assert.equal(report.counts.tools, 175);
+  assert.equal(report.counts.matrixRows, 12 * 175);
+  assert.equal(report.rows.length, 2100);
+  assert.equal(report.counts.localizedNepaliTools, 175, "49 Nepali PDF routes plus 126 localized catalog routes");
+  assert.equal(report.counts.indexableNepaliTools, 175);
   assert.equal(report.rows.filter((row) => row.locale === "ne" && row.functionalTest === "targeted-unit-tests").length, 44);
   for (const slug of ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"]) {
     const englishRow = report.rows.find((row) => row.locale === "en" && row.slug === slug);
@@ -60,21 +60,32 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.ok(nepaliBrowserWorkspace.includes('locale="ne"'));
   const browserToolSource = fs.readFileSync(browserOnlyWorkspacePath, "utf8");
   for (const translatedLabel of ["पूरा नाम", "बैठकको मिति", "तस्बिरको चौडाइ (पिक्सेल)", "भिडियो अवधि (मिनेट)", "Markdown नतिजा"]) assert.ok(browserToolSource.includes(translatedLabel), `Missing Nepali copy: ${translatedLabel}`);
-  assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 174);
+  assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 175);
+  for (const locale of ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]) {
+    const qr = report.rows.find((row) => row.locale === locale && row.slug === "qr-code-generator");
+    assert.ok(qr, `QR Generator row missing for ${locale}`);
+    assert.equal(qr.published, true, `QR Generator must be independently published for ${locale}`);
+    assert.equal(qr.indexing, "eligible", `QR Generator must be indexable for ${locale}`);
+    assert.equal(qr.interface, locale === "en" ? "source-language" : "translated-interface-present");
+    assert.equal(qr.content, locale === "en" ? "source-guide" : "localized-guide-present");
+  }
   for (const slug of ["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator", "regex-tester", "jwt-decoder", "css-minifier", "color-contrast-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator"]) {
     const row = report.rows.find((item) => item.locale === "ne" && item.slug === slug);
     assert.equal(row?.functionalTest, "targeted-unit-tests", `${slug} should record only its executed targeted tests`);
   }
-  assert.ok(report.rows.filter((row) => row.locale === "ne" && row.interface !== "not-implemented").every((row) => row.interface === "nepali-interface-present"), "Interface presence must not imply native-language review");
+  assert.ok(report.rows.filter((row) => row.locale === "ne" && row.slug !== "qr-code-generator" && row.interface !== "not-implemented").every((row) => row.interface === "nepali-interface-present"), "Interface presence must not imply native-language review");
   const nepaliGuides = report.rows.filter((row) => row.locale === "ne" && row.content !== "not-verified");
-  assert.equal(nepaliGuides.length, 49);
-  assert.ok(nepaliGuides.every((row) => row.content === "nepali-guide-present"), "Guide presence must not imply native-language review");
+  assert.equal(nepaliGuides.length, 50);
+  assert.ok(nepaliGuides.every((row) => row.content === "nepali-guide-present" || row.content === "localized-guide-present"), "Guide presence must not imply native-language review");
 });
 
 test("tool-language matrix keeps unpublished locales and unverified workflows out of indexing", () => {
   for (const locale of ["hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]) {
     const rows = report.rows.filter((row) => row.locale === locale);
-    assert.ok(rows.every((row) => row.published === false && row.indexing === "excluded"), `${locale} must remain unpublished`);
+    assert.ok(rows.filter((row) => row.slug !== "qr-code-generator").every((row) => row.published === false && row.indexing === "excluded"), `${locale} must remain unpublished except for the QR tool`);
+    const qr = rows.find((row) => row.slug === "qr-code-generator");
+    assert.equal(qr?.published, true, `${locale} QR exception must be published`);
+    assert.equal(qr?.indexing, "eligible", `${locale} QR exception must be indexable`);
   }
   assert.ok(!report.tools.some((tool) => tool.slug === "ocr-pdf"), "OCR must remain outside the available-tool inventory");
 });

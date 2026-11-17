@@ -24,7 +24,7 @@ const { getNepaliPdfFieldText } = pdfToolFields;
 const { nepaliLocalizedBlogPosts } = localizedBlogModule;
 
 test("every curated Nepali blog article is a localized indexable route with reciprocal hreflang", () => {
-  assert.equal(nepaliLocalizedBlogPosts.length, 40);
+  assert.equal(nepaliLocalizedBlogPosts.length, 41);
   for (const post of nepaliLocalizedBlogPosts) {
     const localizedPath = "/blog/" + post.slug;
     assert.equal(routing.hasLocalizedPage(localizedPath, "ne"), true, "Missing localized route: " + localizedPath);
@@ -165,10 +165,10 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/nepse-technical-analysis", "ne"), "/ne/nepse-technical-analysis");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 224, "All localized routes must be represented in the route registry");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 226, "All localized routes must be represented in the route registry");
   for (const slug of ["email-signature-generator", "timezone-meeting-planner", "image-dpi-calculator", "video-bitrate-calculator", "markdown-table-generator"]) {
     assert.equal(routing.localizedOrFallbackPath(`/tools/${slug}`, "ne"), `/ne/tools/${slug}`);
-    assert.equal(routing.hasIndexableLocalizedPage(`/tools/${slug}`, "ne"), true, `${slug} must be indexable after route QA`);
+    assert.equal(routing.hasIndexableLocalizedPage(`/tools/${slug}`, "ne"), true, `${slug} has a dedicated Nepali workspace and should be indexable`);
   }
   assert.equal(routing.localizedOrFallbackPath("/merge-pdf", "ne"), "/ne/merge-pdf");
 });
@@ -314,9 +314,24 @@ test("Nepali blog routes contain complete translated article content", () => {
   for (const phrase of ["नेपाली मिति कन्भर्टर", "नेपालमा १३% VAT", "रोपनी, आना, पैसा र दाम", "बारम्बार सोधिने प्रश्न"]) {
     assert.ok(source.includes(phrase) || page.includes(phrase), `Nepali blog content must include: ${phrase}`);
   }
-  assert.equal((source.match(/slug: "/g) ?? []).length, 40);
-  assert.ok(page.includes('inLanguage: "ne"'));
-  assert.ok(page.includes('href="/ne/blog"'));
+  assert.equal((source.match(/slug: "/g) ?? []).length, 41);
+  assert.ok(page.includes("inLanguage: localeInfo[locale].htmlLang"));
+  assert.ok(page.includes('const root = `/${locale}`'));
+  assert.ok(page.includes("getNepaliLocalizedBlogPost"));
+});
+
+test("QR guide has dedicated localized editorial content in ten additional languages", () => {
+  const source = fs.readFileSync(path.join(frontendRoot, "lib", "localized-qr-blog-posts.ts"), "utf8");
+  const page = fs.readFileSync(path.join(frontendRoot, "app", "[locale]", "blog", "[slug]", "page.tsx"), "utf8");
+  const sitemap = fs.readFileSync(path.join(frontendRoot, "app", "sitemap.ts"), "utf8");
+  for (const locale of ["hi", "bn", "ur", "es", "fr", "de", "pt", "ar", "zh", "ja"]) {
+    assert.ok(source.includes(`${locale}:`), `Missing QR guide locale: ${locale}`);
+  }
+  assert.equal((source.match(/heading: "/g) ?? []).length, 50, "Each of ten languages needs five original instructional sections");
+  assert.equal((source.match(/question: "/g) ?? []).length, 40, "Each of ten languages needs four localized FAQs");
+  assert.ok(page.includes("getLocalizedQrBlogPost"));
+  assert.ok(page.includes("independentlyPublishedQrGuide"));
+  assert.ok(sitemap.includes("localizedQrBlogPosts"));
 });
 
 test("Nepali legal and static routes contain complete localized copy", () => {
@@ -393,6 +408,7 @@ test("switcher: never offers an unavailable page", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
   assert.deepEqual(switcher.getSwitcherOptions("/").map((o) => o.locale), ["en", "ne"]);
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"], "unpublished Hindi must never be offered in production");
+  assert.deepEqual(switcher.getSwitcherOptions("/tools/qr-code-generator").map((o) => o.locale), config.locales, "only the independently translated QR page offers all 12 languages");
   process.env.PDFORA_I18N_PREVIEW = "1";
   const home = switcher.getSwitcherOptions("/");
   assert.deepEqual(home.map((o) => o.locale), ["en", "ne"]);
@@ -419,7 +435,7 @@ test("localized SEO descriptions are capped at 155 characters", () => {
   }
 });
 
-test("metadata: English catalog tools retain indexability and gain reciprocal Nepali hreflang", () => {
+test("metadata: approved English catalog tools emit reciprocal Nepali hreflang", () => {
   const english = metadata.buildLocaleMetadata({
     locale: "en",
     path: "/tools/loan-emi-calculator",
@@ -431,26 +447,31 @@ test("metadata: English catalog tools retain indexability and gain reciprocal Ne
   assert.equal(english.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/tools/loan-emi-calculator");
 });
 
-test("metadata: all registered Nepali PDF routes are indexable with reciprocal hreflang", () => {
-  const approved = metadata.buildLocaleMetadata({
-    locale: "ne",
-    path: "/merge-pdf",
-    title: "पीडीएफ जोड्नुहोस्",
-    description: "धेरै पीडीएफ फाइललाई एउटै फाइलमा जोड्नुहोस्।",
-  });
-  assert.deepEqual(approved.robots, { index: true, follow: true });
-  assert.ok(approved.alternates.languages?.ne);
+test("metadata: all reviewed Nepali PDF routes are indexable with reciprocal hreflang", () => {
+  const approvedSlugs = Object.keys(nepaliRoutes.nepaliPdfRoutes);
+  for (const slug of approvedSlugs) {
+    const approved = metadata.buildLocaleMetadata({
+      locale: "ne",
+      path: `/${slug}`,
+      title: `नेपाली ${slug}`,
+      description: "नेपाली PDF उपकरण प्रयोग गर्ने स्पष्ट निर्देशन।",
+    });
+    assert.deepEqual(approved.robots, { index: true, follow: true }, `${slug} is approved`);
+    assert.equal(approved.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/${slug}`);
+    assert.equal(approved.alternates.languages?.en, `https://pd-fora.vercel.app/${slug}`);
+  }
 
-  const pending = metadata.buildLocaleMetadata({
-    locale: "ne",
-    path: "/images-to-pdf",
-    title: "तस्बिरबाट PDF",
-    description: "धेरै तस्बिरलाई एउटै PDF मा रूपान्तरण गर्नुहोस्।",
-  });
-  assert.deepEqual(pending.robots, { index: true, follow: true });
-  assert.equal(pending.alternates.languages?.ne, "https://pd-fora.vercel.app/ne/images-to-pdf");
-  assert.equal(pending.alternates.languages?.en, "https://pd-fora.vercel.app/images-to-pdf");
-  assert.equal(pending.alternates.canonical, "https://pd-fora.vercel.app/ne/images-to-pdf");
+  for (const slug of ["ocr-pdf", "not-a-nepali-pdf-tool"]) {
+    const pending = metadata.buildLocaleMetadata({
+      locale: "ne",
+      path: `/${slug}`,
+      title: `नेपाली ${slug}`,
+      description: "नेपाली PDF उपकरणको विवरण।",
+    });
+    assert.deepEqual(pending.robots, { index: false, follow: true }, `${slug} stays crawlable but noindex`);
+    assert.equal(pending.alternates.languages, undefined, `${slug} must not advertise hreflang before approval`);
+    assert.equal(pending.alternates.canonical, `https://pd-fora.vercel.app/ne/${slug}`);
+  }
 });
 
 test("metadata: unpublished locales are noindex with no hreflang; canonical is self-referencing", () => {
@@ -590,9 +611,14 @@ test("PDF SEO metadata is unique, canonical and within search description length
     descriptions.add(metadata.description);
     assert.equal(metadata.alternates.canonical, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " canonical");
     assert.equal(metadata.robots.index, true, guide.slug + " is indexable in English");
-    assert.equal(metadata.alternates.languages?.en, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " English hreflang");
-    assert.equal(metadata.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/${guide.slug}`, guide.slug + " reciprocal Nepali hreflang");
-    assert.equal(metadata.alternates.languages?.["x-default"], metadata.alternates.languages?.en, guide.slug + " x-default hreflang");
+    const approvedNepaliPdfSlugs = new Set(Object.keys(nepaliRoutes.nepaliPdfRoutes));
+    if (approvedNepaliPdfSlugs.has(guide.slug)) {
+      assert.equal(metadata.alternates.languages?.en, `https://pd-fora.vercel.app/${guide.slug}`, guide.slug + " English hreflang");
+      assert.equal(metadata.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/${guide.slug}`, guide.slug + " reciprocal Nepali hreflang");
+      assert.equal(metadata.alternates.languages?.["x-default"], metadata.alternates.languages?.en, guide.slug + " x-default hreflang");
+    } else {
+      assert.equal(metadata.alternates.languages, undefined, guide.slug + " must not advertise an unapproved Nepali equivalent");
+    }
   }
   const deletePages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "delete-pages"), "delete-pages");
   const extractPages = buildPdfToolMetadata(toolGuides.find((guide) => guide.slug === "extract-pages"), "extract-pages");
@@ -641,13 +667,10 @@ test("localized PDF metadata: self canonicals, reciprocal hreflang and indexing 
 });
 
 
-test("site language selector only advertises published locales", () => {
+test("site language selector advertises only page-specific published translations", () => {
   const source = fs.readFileSync(path.join(frontendRoot, "components", "SiteLanguageBar.tsx"), "utf8");
-  assert.ok(
-    source.includes('locales.filter((item) => localeInfo[item].status === "published")'),
-    "the rendered selector must derive options from the central publication status",
-  );
-  assert.ok(source.includes("publishedLocales.map("), "only the filtered locale list may render options");
+  assert.ok(source.includes("getSwitcherOptions(path).map((option) => option.locale)"), "the rendered selector must use the central page-specific translation registry");
+  assert.ok(source.includes("publishedLocales.map("), "only page-approved locale options may render");
 });
 
 

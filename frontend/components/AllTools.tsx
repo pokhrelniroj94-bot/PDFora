@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { toolCatalog } from "./toolCatalog";
 import ResumeBuilder from "./ResumeBuilder";
+import QRCodeGenerator from "./QRCodeGenerator";
 import { allTools } from "../lib/tool-directory";
 import { discountedPrice, loanEmi, sipFutureValue } from "../lib/catalog-calculations";
 
@@ -64,6 +65,7 @@ export function ToolsDirectory() {
 }
 
 export default function ToolWorkspace({slug}:{slug:string}) {
+ if(slug==="qr-code-generator") return <main className="pdfora-tool-page mx-auto min-h-screen w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><header className="mb-7 mt-5"><p className="text-xs font-black uppercase tracking-widest text-teal-700">Free browser utility</p><h1 className="mt-2 text-3xl font-black text-slate-950">QR Code Generator</h1><p className="mt-2 max-w-3xl text-slate-600">Create QR codes for links, text, Wi-Fi, email, phone, SMS, WhatsApp, contact cards and events. Choose the interface language, colours, image size and error correction.</p></header><QRCodeGenerator/><AdsterraNative /></main>;
  const tool=toolCatalog.find(t=>t.slug===slug);
  if(slug==="resume-builder") return <><ResumeBuilder /></>;
  if(["nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepse-dividend-calculator","nepse-market-news"].includes(slug)) return <main className="pdfora-tool-page mx-auto min-h-screen w-full min-w-0 max-w-5xl px-4 py-8 sm:px-6 sm:py-12"><Link href="/tools" className="text-sm font-semibold text-teal-700 hover:underline">← All tools</Link><div className="mb-7 mt-5"><p className="text-xs font-black uppercase tracking-widest text-teal-700">Nepal utility</p><div className="mt-2 flex min-w-0 items-start gap-3 sm:items-center"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal-50 text-2xl" aria-hidden="true">{getToolIcon(slug, tool?.category ?? "PDF")}</span><h1 className="min-w-0 break-words text-2xl font-black leading-tight text-slate-950 sm:text-3xl">{tool?.name}</h1></div><p className="mt-2 text-slate-600">{tool?.description}</p></div><section className={panel}><NepalLiveTools slug={slug}/></section><p className="mt-6 text-xs leading-5 text-slate-500">Official rates and notices can change. Check the linked authority before making financial or legal decisions.</p>{slug !== "nepal-forex-rates" && <AdsterraNative />}</main>;

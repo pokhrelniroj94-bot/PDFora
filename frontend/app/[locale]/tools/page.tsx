@@ -33,6 +33,7 @@ export const metadata: Metadata = {
 };
 
 const names: Record<string, string> = {
+  "qr-code-generator": "QR Code जेनेरेटर",
   "nepali-digit-converter":"नेपाली अंक रूपान्तरण","nepali-number-converter":"नेपाली संख्या रूपान्तरण","nepali-date-converter":"वि.सं. र ई.सं. मिति रूपान्तरण",
   "nepal-land-area-converter":"रोपनी–आना–पैसा–दाम रूपान्तरण","nepali-vat-calculator":"नेपाल VAT हिसाब","neb-gpa-calculator":"NEB GPA हिसाब",
   "word-character-counter":"शब्द तथा अक्षर गणक","case-converter":"अक्षर शैली रूपान्तरण","remove-duplicate-lines":"दोहोरो लाइन हटाउने","sort-lines":"लाइन क्रम मिलाउने",

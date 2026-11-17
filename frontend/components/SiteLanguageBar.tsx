@@ -2,9 +2,10 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { defaultLocale, localeInfo, locales, type Locale } from "../lib/i18n/config";
+import { defaultLocale, localeInfo, type Locale } from "../lib/i18n/config";
 import { storeLocalePreference } from "../lib/i18n/preference";
 import { hasLocalizedPage, localizePath, stripLocale } from "../lib/i18n/routing";
+import { getSwitcherOptions } from "../lib/i18n/switcher";
 import { getSharedUiCopy } from "../lib/i18n/shared-ui";
 
 export default function SiteLanguageBar() {
@@ -13,9 +14,9 @@ export default function SiteLanguageBar() {
   const { locale, path } = stripLocale(pathname);
   const selectedLocale = localeInfo[locale];
   const copy = getSharedUiCopy(locale);
-  // Only advertise locales that are actually published. Preview-only locales remain
-  // reachable by direct URL during review but must not appear as supported languages.
-  const publishedLocales = locales.filter((item) => localeInfo[item].status === "published");
+  // Advertise only real translations for this page. The QR Generator is a narrowly
+  // reviewed 12-locale exception; other pages retain the normal published-locale gate.
+  const publishedLocales = getSwitcherOptions(path).map((option) => option.locale);
   const targetFor = (target: Locale) => {
     if (target !== defaultLocale && !hasLocalizedPage(path, target)) return `/${target}?from=${encodeURIComponent(path)}`;
     return localizePath(path, target);

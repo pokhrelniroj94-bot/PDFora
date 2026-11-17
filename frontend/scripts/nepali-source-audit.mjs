@@ -10,7 +10,7 @@ const catalog = parse(catalogSource, /\{slug:"([^"]+)",name:"[^"]+",category:"[^
 const pdf = parse(read("lib/legacy-tool-slugs.ts"), /"([a-z0-9-]+)"/g);
 const all = [...pdf, ...catalog];
 const unique = [...new Set(all)];
-if (all.length !== 174 || unique.length !== 174) throw new Error(`Tool inventory drift: ${all.length} entries / ${unique.length} unique; expected 174/174`);
+if (all.length !== 175 || unique.length !== 175) throw new Error(`Tool inventory drift: ${all.length} entries / ${unique.length} unique; expected 175/175`);
 
 const pdfRoutes = parse(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
 const utilitySource = read("lib/i18n/nepali-tool-routes.ts");

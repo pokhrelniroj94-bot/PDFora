@@ -85,14 +85,16 @@ test("every adaptable slug is actually referenced by an existing handler (no uni
 
 test("localized route: invalid locales, English and unpublished locales are 404 without preview", () => {
   withoutPreview(() => {
-    const slug = listAdaptableSlugs()[0];
+    const slug = listAdaptableSlugs().find((item) => item !== "qr-code-generator");
     for (const bad of [null, undefined, 7, "", "xx", "NE", "../ne", "ne/", "zh-CN"]) {
       assert.deepEqual(resolveLocalizedToolRequest(bad, slug), { status: "not-found", reason: "invalid-locale" }, String(bad));
     }
     assert.deepEqual(resolveLocalizedToolRequest("en", slug), { status: "not-found", reason: "locale-not-served" }, "English is served unprefixed");
+    assert.deepEqual(resolveLocalizedToolRequest("en", "qr-code-generator"), { status: "not-found", reason: "locale-not-served" }, "English QR URL is also unprefixed");
     for (const l of nonEnglish) {
       assert.equal(isRoutable(l), isPublished(l));
       assert.equal(resolveLocalizedToolRequest(l, slug).status, isPublished(l) ? "ok" : "not-found", l);
+      assert.equal(resolveLocalizedToolRequest(l, "qr-code-generator").status, "ok", `${l} QR Generator is independently published`);
     }
   });
 });
@@ -107,6 +109,7 @@ test("localized route: preview mode serves every adaptable slug in every non-Eng
         assert.equal(r.implementation.slug, slug);
       }
     }
+    assert.equal(resolveLocalizedToolRequest("en", "qr-code-generator").status, "not-found");
     assert.equal(resolveLocalizedToolRequest("en", listAdaptableSlugs()[0]).status, "not-found");
   });
 });
@@ -126,13 +129,17 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
   for (const l of nonEnglish) {
     for (const entry of toolCatalog.filter((t) => !RESERVED_CATALOG_SLUGS.has(t.slug))) {
       const m = buildLocalizedToolMetadata(l, entry);
-      const expectIndex = isPublished(l) && isLocalizedToolIndexable(l, entry.slug);
+      const expectIndex = (isPublished(l) || entry.slug === "qr-code-generator") && isLocalizedToolIndexable(l, entry.slug);
       assert.deepEqual(m.robots, expectIndex ? { index: true, follow: true } : { index: false, follow: isPublished(l) }, `${l}/${entry.slug}`);
       assert.equal(m.alternates.canonical, absoluteUrl(`/tools/${entry.slug}`, l), "canonical must be the localized URL itself");
       assert.ok(m.alternates.canonical.startsWith("https://pd-fora.vercel.app/"));
       assert.notEqual(m.alternates.canonical, absoluteUrl(`/tools/${entry.slug}`, "en"), "must not canonicalize to English");
       assert.notEqual(m.alternates.canonical, absoluteUrl("/", l), "must not canonicalize to the homepage");
-      if (l === "ne" && expectIndex) {
+      if (entry.slug === "qr-code-generator" && expectIndex) {
+        assert.equal(m.alternates.languages?.[l], `https://pd-fora.vercel.app/${l}/tools/qr-code-generator`);
+        assert.equal(m.alternates.languages?.en, "https://pd-fora.vercel.app/tools/qr-code-generator");
+        assert.equal(m.alternates.languages?.["x-default"], "https://pd-fora.vercel.app/tools/qr-code-generator");
+      } else if (l === "ne" && expectIndex) {
         assert.equal(m.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/tools/${entry.slug}`);
         assert.equal(m.alternates.languages?.en, `https://pd-fora.vercel.app/tools/${entry.slug}`);
       } else {
@@ -155,7 +162,7 @@ test("verification registry: only published locales and adaptable tools may ever
   const adaptable = new Set([...listAdaptableSlugs(), ...legacyToolSlugs]);
   for (const [locale, slugs] of Object.entries(verifiedLocalizedTools)) {
     assert.ok(locales.includes(locale) && locale !== "en", `unknown locale ${locale}`);
-    assert.equal(isPublished(locale), true, `${locale} lists verified tools but is not published`);
+    assert.ok(isPublished(locale) || slugs.every((slug) => slug === "qr-code-generator"), `${locale} may list only the independently published QR tool while its wider locale remains unpublished`);
     for (const slug of slugs) assert.ok(adaptable.has(slug), `${locale} verifies unknown/unadaptable tool ${slug}`);
   }
   for (const l of nonEnglish) for (const slug of adaptable) {

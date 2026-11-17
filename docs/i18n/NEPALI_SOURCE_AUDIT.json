@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T07:24:58.445Z",
+  "generatedAt": "2026-11-17T06:56:32.468Z",
   "methodology": "Derived from current catalog, canonical PDF inventory, Nepali route allowlists, page dispatch source, localized verification allowlist and registered Nepali blog records. Static source evidence is not runtime/browser or human review evidence.",
   "inventory": {
     "uniqueTools": 174,
@@ -29,180 +29,12 @@
       "allIndexable": true
     },
     "indexableToolSlugs": [
-      "acronym-generator",
-      "add-background",
-      "add-blank-pages",
-      "add-bookmarks",
-      "add-page-numbers",
-      "age-calculator",
-      "aspect-ratio-calculator",
-      "average-calculator",
-      "base64-encoder-decoder",
-      "bates-numbering",
-      "binary-to-text",
-      "bmi-calculator",
-      "bmr-calculator",
-      "break-even-calculator",
-      "business-days-calculator",
-      "camel-case-converter",
-      "case-converter",
-      "character-frequency",
-      "color-contrast-checker",
-      "color-converter",
-      "color-picker-palette",
-      "commission-calculator",
-      "compare-pdf",
-      "compound-interest-sip-calculator",
       "compress-pdf",
-      "crop-pdf",
-      "css-gradient-generator",
-      "css-minifier",
-      "csv-to-json",
-      "currency-converter",
-      "date-add-subtract-calculator",
-      "date-difference-calculator",
-      "delete-pages",
-      "dice-roller",
-      "discount-percentage-calculator",
-      "edit-pdf-metadata",
-      "email-extractor",
-      "email-signature-generator",
-      "email-validator",
-      "extract-bookmarks",
-      "extract-fonts",
-      "extract-images",
-      "extract-page-images",
-      "extract-pages",
-      "find-replace-text",
-      "flatten-pdf",
-      "fraction-calculator",
-      "gcd-lcm-calculator",
-      "gold-tola-gram-converter",
-      "grayscale-pdf",
-      "hash-generator",
-      "hashtag-extractor",
-      "header-footer",
-      "hex-to-text",
-      "hourly-to-salary-calculator",
-      "html-encoder-decoder",
-      "html-tag-stripper",
-      "image-compressor",
-      "image-dpi-calculator",
-      "image-format-converter",
-      "images-to-pdf",
-      "json-escape-unescape",
-      "json-formatter-validator",
-      "json-to-csv",
-      "json-to-yaml",
-      "jwt-decoder",
-      "kebab-case-converter",
-      "keyword-density-checker",
-      "line-counter",
-      "loan-emi-calculator",
-      "loksewa-photo-resizer",
-      "lorem-ipsum-generator",
-      "markdown-table-generator",
-      "markup-calculator",
       "merge-pdf",
-      "meta-description-checker",
-      "meta-title-checker",
-      "morse-code-translator",
-      "neb-gpa-calculator",
-      "nepal-electricity-bill-calculator",
-      "nepal-forex-rates",
-      "nepal-land-area-converter",
-      "nepal-phone-validator",
-      "nepal-public-holidays-2083",
-      "nepal-salary-tax-calculator",
-      "nepal-share-calculator",
-      "nepali-calendar",
-      "nepali-date-converter",
-      "nepali-digit-converter",
-      "nepali-number-converter",
-      "nepali-unicode-typing",
-      "nepali-vat-calculator",
-      "nepse-dividend-calculator",
-      "nepse-market-news",
-      "notes-to-pdf",
-      "number-extractor",
-      "open-graph-preview",
-      "page-counter",
-      "palindrome-checker",
-      "password-generator",
-      "password-strength-checker",
-      "pdf-information",
-      "pdf-to-bmp",
-      "pdf-to-csv",
-      "pdf-to-excel",
-      "pdf-to-html",
       "pdf-to-jpg",
-      "pdf-to-json",
-      "pdf-to-markdown",
-      "pdf-to-png",
-      "pdf-to-text",
-      "pdf-to-tiff",
-      "pdf-to-webp",
       "pdf-to-word",
-      "percentage-change-calculator",
-      "percentage-of-number-calculator",
-      "phone-number-extractor",
-      "preeti-unicode-converter",
-      "prime-number-checker",
-      "profit-margin-calculator",
-      "protect-pdf",
-      "px-rem-converter",
-      "random-number-generator",
-      "ratio-simplifier",
-      "reading-time-calculator",
-      "regex-tester",
-      "remove-annotations",
-      "remove-attachments",
-      "remove-blank-pages",
-      "remove-duplicate-lines",
-      "remove-duplicate-words",
-      "remove-pdf-links",
-      "remove-pdf-metadata",
-      "reorder-pdf",
-      "repair-pdf",
-      "resume-builder",
-      "reverse-text",
-      "robots-txt-generator",
-      "roman-numeral-converter",
       "rotate-pdf",
-      "rotate-selected-pages",
-      "salary-breakdown-calculator",
-      "sales-tax-calculator",
-      "savings-goal-calculator",
-      "sentence-counter",
-      "sign-pdf",
-      "simple-interest-calculator",
-      "sitemap-generator",
-      "snake-case-converter",
-      "sort-lines",
-      "split-bill-calculator",
-      "split-by-bookmarks",
-      "split-pdf",
-      "text-diff-checker",
-      "text-to-binary",
-      "text-to-hex",
-      "text-to-slug",
-      "time-duration-calculator",
-      "timezone-meeting-planner",
-      "tip-calculator",
-      "unit-converter",
-      "unix-timestamp-converter",
-      "unlock-pdf",
-      "url-encoder-decoder",
-      "url-extractor",
-      "url-query-parser",
-      "url-validator",
-      "uuid-generator",
-      "video-bitrate-calculator",
-      "watermark",
-      "whitespace-cleaner",
-      "word-character-counter",
-      "word-frequency-counter",
-      "xml-formatter-validator"
+      "split-pdf"
     ],
     "nativeSpeakerReviewCertified": false,
     "browserQaCertified": false
@@ -215,7 +47,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -225,7 +57,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -235,7 +67,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -245,7 +77,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -255,7 +87,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -265,7 +97,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -285,7 +117,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -295,7 +127,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -305,7 +137,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -315,7 +147,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -325,7 +157,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -335,7 +167,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -345,7 +177,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -355,7 +187,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -365,7 +197,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -375,7 +207,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -385,7 +217,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -395,7 +227,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -415,7 +247,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -425,7 +257,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -435,7 +267,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -445,7 +277,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -455,7 +287,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -465,7 +297,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -485,7 +317,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -495,7 +327,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -505,7 +337,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -515,7 +347,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -525,7 +357,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -535,7 +367,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -555,7 +387,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -565,7 +397,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -575,7 +407,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -585,7 +417,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -595,7 +427,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -605,7 +437,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -615,7 +447,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -625,7 +457,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -645,7 +477,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -655,7 +487,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -665,7 +497,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -685,7 +517,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -695,7 +527,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -705,7 +537,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -715,7 +547,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -725,7 +557,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -735,7 +567,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -745,7 +577,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -755,7 +587,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -765,7 +597,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -775,7 +607,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -785,7 +617,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -795,7 +627,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -805,7 +637,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -815,7 +647,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -825,7 +657,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -835,7 +667,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -845,7 +677,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -855,7 +687,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -865,7 +697,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -875,7 +707,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -885,7 +717,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -895,7 +727,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -905,7 +737,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -915,7 +747,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -925,7 +757,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -935,7 +767,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -945,7 +777,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -955,7 +787,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -965,7 +797,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -975,7 +807,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -985,7 +817,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -995,7 +827,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1005,7 +837,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1015,7 +847,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1025,7 +857,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1035,7 +867,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1045,7 +877,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1055,7 +887,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1065,7 +897,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1075,7 +907,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1085,7 +917,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1095,7 +927,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1105,7 +937,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1115,7 +947,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1125,7 +957,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1135,7 +967,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1145,7 +977,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1155,7 +987,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1165,7 +997,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1175,7 +1007,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1185,7 +1017,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1195,7 +1027,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1205,7 +1037,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1215,7 +1047,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1225,7 +1057,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1235,7 +1067,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1245,7 +1077,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1255,7 +1087,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1265,7 +1097,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1275,7 +1107,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1285,7 +1117,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1295,7 +1127,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1305,7 +1137,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1315,7 +1147,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1325,7 +1157,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1335,7 +1167,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1345,7 +1177,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1355,7 +1187,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1365,7 +1197,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1375,7 +1207,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1385,7 +1217,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1395,7 +1227,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1405,7 +1237,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1415,7 +1247,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1425,7 +1257,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1435,7 +1267,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1445,7 +1277,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1455,7 +1287,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1465,7 +1297,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1475,7 +1307,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1485,7 +1317,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1495,7 +1327,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1505,7 +1337,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1515,7 +1347,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1525,7 +1357,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1535,7 +1367,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1545,7 +1377,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1555,7 +1387,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1565,7 +1397,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1575,7 +1407,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1585,7 +1417,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1595,7 +1427,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1605,7 +1437,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1615,7 +1447,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1625,7 +1457,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1635,7 +1467,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1645,7 +1477,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1655,7 +1487,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1665,7 +1497,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1675,7 +1507,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1685,7 +1517,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1695,7 +1527,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1705,7 +1537,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1715,7 +1547,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1725,7 +1557,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1735,7 +1567,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1745,7 +1577,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1755,7 +1587,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1765,7 +1597,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1775,7 +1607,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1785,7 +1617,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1795,7 +1627,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1805,7 +1637,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1815,7 +1647,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1825,7 +1657,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1835,7 +1667,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1845,7 +1677,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1855,7 +1687,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1865,7 +1697,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": true,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1875,7 +1707,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1885,7 +1717,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1895,7 +1727,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1905,7 +1737,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1915,7 +1747,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1925,7 +1757,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1935,7 +1767,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -1945,7 +1777,7 @@
       "hasDedicatedWorkspaceDispatch": true,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     }
   ]

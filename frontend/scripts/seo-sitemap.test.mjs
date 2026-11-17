@@ -90,11 +90,11 @@ const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedPublicInfoSlugs,
 ];
 
-const approvedPdfSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "pdf-to-jpg", "rotate-pdf"];
+const approvedPdfSlugs = pdfRoutes;
 assert.deepEqual(
   [...approvedNepali].sort(),
   [...toolRoutes, ...approvedPdfSlugs].sort(),
-  "All localized Nepali catalog tools and only six individually approved Nepali PDF routes may be indexable",
+  "All localized Nepali catalog and PDF tools may be indexable",
 );
 
 const reportedNepaliLongTitleSlugs = [

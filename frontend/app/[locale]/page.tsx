@@ -7,6 +7,8 @@ import { getTranslator } from "../../lib/i18n/messages";
 import { buildLocaleMetadata } from "../../lib/i18n/metadata";
 import { getSwitcherOptions } from "../../lib/i18n/switcher";
 import NepaliHomePage from "../../components/NepaliHomePage";
+import HindiHomePage from "../../components/HindiHomePage";
+import { isPreviewEnabled } from "../../lib/i18n/config";
 
 type Props = { params: Promise<{ locale: string }>; searchParams?: Promise<{ from?: string }> };
 
@@ -14,6 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale) || locale === "en") return { title: "Page not found", robots: { index: false, follow: true } };
   if (!isPublished(locale)) {
+    if (locale === "hi" && isPreviewEnabled()) return { title: "हिंदी ऑनलाइन टूल और कैलकुलेटर | PDFora", description: "PDFora के हिंदी कैलकुलेटर, टेक्स्ट और डेवलपर टूल का पूर्वावलोकन। हिंदी इंटरफ़ेस वाले उपलब्ध टूल इस्तेमाल करें।", robots: { index: false, follow: true }, alternates: { canonical: "https://pd-fora.vercel.app/hi" } };
     const copy = localeFallbackCopy[locale];
     return { title: copy.title, description: copy.message, robots: { index: false, follow: true }, alternates: { canonical: `https://pd-fora.vercel.app/${locale}` } };
   }
@@ -29,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function LocalizedHomePage({ params, searchParams }: Props) {
   const { locale } = await params;
   if (!isLocale(locale) || locale === "en") notFound();
-  if (!isPublished(locale)) {
+  if (!isPublished(locale) && !(locale === "hi" && isPreviewEnabled())) {
     const copy = localeFallbackCopy[locale];
     const from = searchParams ? (await searchParams).from : undefined;
     return (
@@ -43,6 +46,7 @@ export default async function LocalizedHomePage({ params, searchParams }: Props)
   const t = await getTranslator(locale);
   const info = localeInfo[locale];
   if (locale === "ne") return <NepaliHomePage />;
+  if (locale === "hi") return <HindiHomePage />;
   return (
     <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">
       {!isPublished(locale) && (

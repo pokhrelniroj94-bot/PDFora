@@ -21,7 +21,7 @@ export function resolveLocalizedToolRequest(localeParam: unknown, slugParam: unk
   if (localeParam === "en") return { status: "not-found", reason: "locale-not-served" };
   // QR Generator is independently translated and published in all non-English locales.
   // Keep every other tool behind the normal locale publishing gate.
-  if (!isRoutable(localeParam) && slugParam !== "qr-code-generator") return { status: "not-found", reason: "locale-not-served" };
+  if (!isRoutable(localeParam) && !(localeParam !== "en" && slugParam === "qr-code-generator")) return { status: "not-found", reason: "locale-not-served" };
   const resolution = resolveCatalogTool(slugParam);
   if (!resolution.ok) return { status: "not-found", reason: resolution.reason };
   return { status: "ok", locale: localeParam, implementation: resolution.implementation };

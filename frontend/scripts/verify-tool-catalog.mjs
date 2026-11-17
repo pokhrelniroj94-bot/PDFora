@@ -151,5 +151,5 @@ assert.ok(seoContent.includes('"qr-code-generator": { example:'), "QR Code Gener
 assert.ok(toolPage.includes('"qr-code-generator": { title:'), "QR Code Generator must have unique metadata");
 const qrWorkspace = read("../components/QRCodeGenerator.tsx");
 for (const locale of ["en","ne","hi","bn","ur","ar","es","fr","de","pt","zh","ja"]) assert.ok(qrWorkspace.includes(locale+":"), `Missing QR UI locale ${locale}`);
-for (const feature of ["whatsapp","vcard","event","toDataURL","QR.create","WPA","WEP","nopass"]) assert.ok(qrWorkspace.includes(feature), `Missing QR generator feature: ${feature}`);
+for (const feature of ["whatsapp","vcard","event","new QR(host","matrix.isDark","QR.CorrectLevel","/vendor/qrcode.min.js","WPA","WEP","nopass"]) assert.ok(qrWorkspace.includes(feature), `Missing QR generator feature: ${feature}`);
 console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including the 12-language QR generator and guide.`);

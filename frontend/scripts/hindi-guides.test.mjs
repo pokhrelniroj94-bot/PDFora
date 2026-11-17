@@ -73,7 +73,7 @@ test("Hindi server route checks use server-safe slug registries", async () => {
 
 test("all newly completed Hindi utility routes are preview-only and have dedicated visible UI", async () => {
   process.env.PDFORA_I18N_PREVIEW = "1";
-  const routing = await import("../lib/i18n/routing.ts");
+  const { routing } = await loadI18n();
   const slugs = ["resume-builder","nepali-date-converter","nepali-calendar","loksewa-photo-resizer","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news"];
   for (const slug of slugs) {
     assert.equal(routing.hasLocalizedPage("/tools/"+slug, "hi"), true, slug+" route");

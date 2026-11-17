@@ -23,6 +23,7 @@ import HindiDeveloperToolsWorkspace from "../../../../components/HindiDeveloperT
 import HindiImageToolsWorkspace from "../../../../components/HindiImageToolsWorkspace";
 import HindiAdditionalToolsWorkspace from "../../../../components/HindiAdditionalToolsWorkspace";
 import HindiGrowthToolsWorkspace from "../../../../components/HindiGrowthToolsWorkspace";
+import HindiNepalExtraToolsWorkspace from "../../../../components/HindiNepalExtraToolsWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -486,6 +487,9 @@ export default async function LocalizedToolPage({ params }: Props) {
         <HindiMathUtilityWorkspace slug={toolSlug} />
       </main>
     );
+  }
+  if (request.locale === "hi" && ["nepali-digit-converter", "nepali-number-converter", "currency-converter", "nepse-dividend-calculator"].includes(toolSlug)) {
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी नेपाल उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1></div><HindiNepalExtraToolsWorkspace slug={toolSlug} /></main>;
   }
   if (request.locale === "hi" && ["email-signature-generator", "timezone-meeting-planner", "video-bitrate-calculator", "markdown-table-generator"].includes(toolSlug)) {
     return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी उत्पादकता टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1></div><HindiGrowthToolsWorkspace slug={toolSlug} /></main>;

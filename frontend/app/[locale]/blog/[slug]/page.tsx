@@ -44,7 +44,7 @@ const nepaliSearchTitles: Record<string, string> = {
   "loksewa-online-form-photo-resizer-guide": "लोकसेवा फारामका लागि फोटो रिसाइज",
   "nea-electricity-bill-calculator-nepal-guide": "नेपाल बिजुली बिल कसरी जाँच्ने?",
   "percentage-change-calculator-guide": "Percentage Change: प्रतिशत कसरी निकाल्ने?",
-  "tip-calculator-guide": "Tip Calculator: १५%, १८% र २०% कसरी निकाल्ने?",
+  "tip-calculator-guide": "Tip Calculator: टिप र बिल कसरी बाँड्ने?",
 };
 
 const qrLocales = locales.filter((locale) => locale !== "en" && locale !== "ne");

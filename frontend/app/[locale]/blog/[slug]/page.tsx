@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { isLocale, isRoutable } from "../../../../lib/i18n/config";
+import { isLocale, isRoutable, localeInfo } from "../../../../lib/i18n/config";
 import { getNepaliLocalizedBlogPost, nepaliLocalizedBlogPosts } from "../../../../lib/nepali-localized-blog-posts";
 import { buildLocaleMetadata } from "../../../../lib/i18n/metadata";
 import BlogToolCTA from "../../../../components/BlogToolCTA";
+import LocalizedQrBlogArticle from "../../../../components/LocalizedQrBlogArticle";
+import { getLocalizedQrBlogPost } from "../../../../lib/localized-qr-blog-posts";
 
 const baseUrl = "https://pd-fora.vercel.app";
 
@@ -20,6 +22,10 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
+  if (isLocale(locale) && locale !== "ne" && slug === "qr-code-generator-guide") {
+    const qrPost = getLocalizedQrBlogPost(locale, slug);
+    if (qrPost) return buildLocaleMetadata({ locale, path: `/blog/${qrPost.slug}`, title: qrPost.title, description: qrPost.description });
+  }
   const post = getNepaliLocalizedBlogPost(slug);
   if (locale !== "ne" || !post) return { title: "Article not found", robots: { index: false, follow: true } };
   // Keep search titles concise without changing the reader-facing article headline.
@@ -58,6 +64,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NepaliBlogArticle({ params }: Props) {
   const { locale, slug } = await params;
+  if (isLocale(locale) && locale !== "ne" && slug === "qr-code-generator-guide" && getLocalizedQrBlogPost(locale, slug)) {
+    return <LocalizedQrBlogArticle locale={locale} />;
+  }
   const post = getNepaliLocalizedBlogPost(slug);
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale) || !post) notFound();
   const articleSchema = {
@@ -66,7 +75,8 @@ export default async function NepaliBlogArticle({ params }: Props) {
     headline: post.title,
     description: post.description,
     dateModified: `${post.updated}T00:00:00+05:45`,
-    inLanguage: "ne",
+    // The Nepali article schema uses inLanguage: "ne"; other translated QR guides use localeInfo[locale].htmlLang.
+    inLanguage: localeInfo[locale].htmlLang,
     mainEntityOfPage: `${baseUrl}/ne/blog/${post.slug}`,
     author: { "@type": "Organization", name: "PDFora", url: `${baseUrl}/ne/about` },
     publisher: { "@type": "Organization", name: "PDFora", url: baseUrl },

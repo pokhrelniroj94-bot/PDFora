@@ -27,8 +27,8 @@ test("translation coverage report is conservative and tied to the current commit
   assert.equal(report.locales.ne.routeCoveragePercent, null, "dynamic route equivalents must not be divided by source-file counts");
   assert.equal(report.locales.ne.pdfGuideCoverage.translated, 49);
   assert.equal(report.locales.ne.pdfGuideCoverage.total, 49);
-  assert.equal(report.locales.ne.blogCoverage.translated, 40, "All 40 curated editorial articles have Nepali translations");
-  assert.equal(report.locales.ne.blogCoverage.total, 40);
+  assert.equal(report.locales.ne.blogCoverage.translated, 41, "All 41 curated editorial articles have Nepali translations");
+  assert.equal(report.locales.ne.blogCoverage.total, 41);
   assert.equal(report.locales.ne.blogCoverage.percent, 100);
   assert.ok(report.locales.ne.blogCoverage.percent > 0);
 

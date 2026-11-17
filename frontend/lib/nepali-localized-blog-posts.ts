@@ -33,7 +33,6 @@ const coreNepaliLocalizedBlogPosts: BlogPost[] = [
       { label: "PDF जानकारी", href: "/pdf-information" },
       { label: "तस्बिरबाट PDF", href: "/images-to-pdf" },
       { label: "PDF पृष्ठ हटाउनुहोस्", href: "/delete-pages" },
-      { label: "१MB भित्र PDF कम्प्रेस गर्ने तरिका", href: "/blog/compress-pdf-to-under-1mb-online" }
     ]
   },
   {

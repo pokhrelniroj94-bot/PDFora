@@ -3,6 +3,7 @@ import { isPublished, localeInfo, type Locale } from "./config";
 import { absoluteUrl, hreflangMap } from "./routing";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
+import { isVercelPreview } from "../seo";
 
 interface LocaleMetadataInput {
   locale: Locale;
@@ -44,7 +45,7 @@ export function buildLocaleMetadata({ locale, path, title, description }: Locale
     title,
     description: fittedDescription,
     alternates: { canonical, ...(languages ? { languages } : {}) },
-    robots: !published ? { index: false, follow: false } : indexable ? { index: true, follow: true } : { index: false, follow: true },
+    robots: !published ? { index: false, follow: false } : isVercelPreview() || !indexable ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
       type: "website",
       url: canonical,

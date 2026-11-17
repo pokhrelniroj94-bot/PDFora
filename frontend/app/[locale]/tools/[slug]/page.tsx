@@ -20,6 +20,7 @@ import HindiFinanceCalculatorWorkspace from "../../../../components/HindiFinance
 import HindiNepalToolsWorkspace from "../../../../components/HindiNepalToolsWorkspace";
 import HindiTextToolsWorkspace from "../../../../components/HindiTextToolsWorkspace";
 import HindiDeveloperToolsWorkspace from "../../../../components/HindiDeveloperToolsWorkspace";
+import HindiImageToolsWorkspace from "../../../../components/HindiImageToolsWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -483,6 +484,10 @@ export default async function LocalizedToolPage({ params }: Props) {
         <HindiMathUtilityWorkspace slug={toolSlug} />
       </main>
     );
+  }
+  if (request.locale === "hi" && ["image-compressor", "image-format-converter", "image-dpi-calculator"].includes(toolSlug)) {
+    const titles: Record<string, string> = { "image-compressor": "इमेज कंप्रेसर", "image-format-converter": "इमेज फ़ॉर्मेट कनवर्टर", "image-dpi-calculator": "इमेज DPI कैलकुलेटर" };
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी इमेज टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1></div><HindiImageToolsWorkspace slug={toolSlug} /></main>;
   }
   if (request.locale === "hi" && isHindiBusinessSlug(toolSlug)) {
     return (

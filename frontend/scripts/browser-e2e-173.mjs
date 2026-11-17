@@ -668,7 +668,17 @@ async function runTool(tool, index) {
       } else if (tool.slug === "notes-to-pdf") {
         await setFirstTextArea(page, "PDFora E2E Notes\\nThis is a browser-generated test document.");
       } else if (tool.slug === "jwt-decoder") {
-        await setFieldByLabel(page, "JWT token", "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
+        const jwtSeeded = await page.evaluate(`(() => {
+          const field = document.querySelector("main input:not([type=file]), main textarea");
+          if (!field) return false;
+          const prototype = field instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+          const setter = Object.getOwnPropertyDescriptor(prototype, "value")?.set;
+          setter?.call(field, "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
+          field.dispatchEvent(new Event("input", { bubbles: true }));
+          field.dispatchEvent(new Event("change", { bubbles: true }));
+          return field.value;
+        })()`);
+        if (!jwtSeeded || !jwtSeeded.includes(".eyJzdWIiOiJlMmUi")) throw new Error("JWT decoder test could not seed its token input.");
       } else if (tool.slug === "nepali-unicode-typing") {
         await setFirstTextArea(page, "Namaste Nepal");
       } else if (tool.slug === "preeti-unicode-converter") {

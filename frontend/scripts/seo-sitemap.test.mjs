@@ -90,10 +90,11 @@ const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedPublicInfoSlugs,
 ];
 
+const approvedPdfSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "pdf-to-jpg", "rotate-pdf"];
 assert.deepEqual(
   [...approvedNepali].sort(),
-  [...pdfRoutes, ...toolRoutes].sort(),
-  "The Nepali indexing registry must include every localized PDF and catalog tool route",
+  [...approvedPdfSlugs].sort(),
+  "Only the six individually approved Nepali PDF routes may be indexable",
 );
 
 const reportedNepaliLongTitleSlugs = [
@@ -250,17 +251,12 @@ for (const slug of approvedNepali) {
   assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
 }
 for (const slug of toolRoutes) {
-  assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), true, `${slug} is included in the published Nepali registry`);
-}
-
-
-for (const slug of toolRoutes) {
+  assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), false, `${slug} must remain excluded until individual approval`);
   const request = modules["localized-route"].resolveLocalizedToolRequest("ne", slug);
   assert.equal(request.status, "ok", `Expected registered Nepali route: ${slug}`);
   const metadata = modules["localized-metadata"].buildLocalizedToolMetadata("ne", request.implementation.entry);
-  assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} must be indexable after Nepali route QA`);
-  assert.equal(metadata.alternates?.languages?.ne, `https://pd-fora.vercel.app/ne/tools/${slug}`);
-  assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app/tools/${slug}`);
+  assert.deepEqual(metadata.robots, { index: false, follow: true }, `${slug} must remain crawlable but noindex until approved`);
+  assert.equal(metadata.alternates?.languages, undefined, `${slug} must not advertise unapproved hreflang`);
 }
 
 for (const slug of approvedNepali) {
@@ -277,10 +273,10 @@ for (const slug of approvedNepali) {
   assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app${pathName}`);
 }
 
-// Historical localized PDF URLs remain valid and indexable when their Nepali routes are registered.
+// All localized PDF routes remain resolvable, but only the six reviewed equivalents are indexable.
 for (const slug of ["pdf-information", "pdf-to-png", "pdf-to-html", "pdf-to-excel", "add-blank-pages"]) {
   assert.ok(pdfRoutes.includes(slug), `Historical localized URL /ne/${slug} must resolve to its registered page, not a 404`);
-  assert.equal(isLocalizedToolIndexable("ne", slug), true, `/ne/${slug} is in the published Nepali PDF registry`);
+  assert.equal(isLocalizedToolIndexable("ne", slug), false, `/ne/${slug} must remain noindex until individual approval`);
 }
 assert.match(nepaliPdfPageSource, /Object\.keys\(nepaliPdfRoutes\)/, "All registered Nepali PDF routes must be generated so legacy URLs resolve");
 assert.ok(nextConfigSource.includes('{ source: "/nepali-date-converter", destination: "/tools/nepali-date-converter", permanent: true }'), "Legacy /nepali-date-converter must permanently redirect to the catalog canonical URL");

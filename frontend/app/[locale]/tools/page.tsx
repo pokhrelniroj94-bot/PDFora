@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import HindiToolsDirectory from "./HindiToolsDirectory";
 import { hreflangMap } from "../../../lib/i18n/routing";
 import { nepaliPdfRoutes } from "../../../lib/i18n/nepali-pdf-routes";
 import { nepaliToolNames } from "../../../lib/i18n/pdf-tool-names-ne";
@@ -12,25 +13,24 @@ import {
 
 type Props = { params: Promise<{ locale: string }> };
 
-export const metadata: Metadata = {
-  title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
-  description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
-  alternates: { canonical: "https://pd-fora.vercel.app/ne/tools", languages: hreflangMap("/tools") },
-  robots: { index: true, follow: true },
-  openGraph: {
-    type: "website",
-    url: "https://pd-fora.vercel.app/ne/tools",
-    siteName: "PDFora",
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  if (locale === "hi") return {
+    title: "हिंदी ऑनलाइन टूल और कैलकुलेटर | PDFora",
+    description: "हिंदी में गणित, वित्त, तारीख, टेक्स्ट, डेवलपर और नेपाल उपयोगिता टूल इस्तेमाल करें। उपलब्ध टूल का हिंदी इंटरफ़ेस और स्पष्ट निर्देश।",
+    alternates: { canonical: "https://pd-fora.vercel.app/hi/tools" },
+    robots: { index: false, follow: true },
+    openGraph: { type: "website", url: "https://pd-fora.vercel.app/hi/tools", siteName: "PDFora", title: "हिंदी ऑनलाइन टूल और कैलकुलेटर | PDFora", description: "हिंदी में गणित, वित्त, तारीख, टेक्स्ट, डेवलपर और नेपाल उपयोगिता टूल इस्तेमाल करें।", locale: "hi_IN" },
+  };
+  return {
     title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
     description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
-    locale: "ne_NP",
-  },
-  twitter: {
-    card: "summary",
-    title: "नेपाली अनलाइन टुलहरूको सूची | PDFora",
-    description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।",
-  },
-};
+    alternates: { canonical: "https://pd-fora.vercel.app/ne/tools", languages: hreflangMap("/tools") },
+    robots: { index: true, follow: true },
+    openGraph: { type: "website", url: "https://pd-fora.vercel.app/ne/tools", siteName: "PDFora", title: "नेपाली अनलाइन टुलहरूको सूची | PDFora", description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।", locale: "ne_NP" },
+    twitter: { card: "summary", title: "नेपाली अनलाइन टुलहरूको सूची | PDFora", description: "PDF, नेपाली मिति, लेखन, गणना, वित्त, नेपालका उपयोगिता र करियरसम्बन्धी नेपाली इन्टरफेस भएका उपकरणहरू एउटै सूचीमा खोज्नुहोस्।" },
+  };
+}
 
 const names: Record<string, string> = {
   "nepali-digit-converter":"नेपाली अंक रूपान्तरण","nepali-number-converter":"नेपाली संख्या रूपान्तरण","nepali-date-converter":"वि.सं. र ई.सं. मिति रूपान्तरण",
@@ -75,6 +75,7 @@ function ToolLink({ slug, title }: { slug: string; title?: string }) {
 
 export default async function NepaliToolsDirectory({ params }: Props) {
   const { locale } = await params;
+  if (locale === "hi") return <HindiToolsDirectory params={Promise.resolve({ locale })} />;
   if (locale !== "ne") notFound();
   return <main lang="ne" className="mx-auto min-h-screen max-w-6xl px-4 py-10 sm:px-6">
     <header className="mb-10">

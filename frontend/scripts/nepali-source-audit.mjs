@@ -52,10 +52,9 @@ const dispatch = [
   "nepali-vat-calculator", "neb-gpa-calculator", "nepse-technical-analysis"
 ];
 const dispatchSet = new Set(dispatch);
-const indexable = new Set([
-  ...parse(read("lib/i18n/nepali-pdf-routes.ts"), /^\s*"([^"]+)":\s*\{/gm),
-  ...parse(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g),
-]);
+const verificationSource = read("lib/tools/localized-verification.ts");
+const approvalBlock = verificationSource.match(/ne:\s*\[([^\]]*)\]/)?.[1] ?? "";
+const indexable = new Set(parse(approvalBlock, /"([a-z0-9-]+)"/g));
 const blog = read("lib/nepali-localized-blog-posts.ts");
 const blogSlugs = parse(blog, /^\s*slug:\s*"([^"]+)"/gm);
 const blogTitles = parse(blog, /^\s*title:\s*"([^"]+)"/gm);

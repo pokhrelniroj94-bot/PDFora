@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { isLocale, isRoutable } from "../../../../lib/i18n/config";
+import { isLocale, isRoutable, localeInfo } from "../../../../lib/i18n/config";
 import { getNepaliLocalizedBlogPost, nepaliLocalizedBlogPosts } from "../../../../lib/nepali-localized-blog-posts";
 import { buildLocaleMetadata } from "../../../../lib/i18n/metadata";
 import BlogToolCTA from "../../../../components/BlogToolCTA";
@@ -75,7 +75,7 @@ export default async function NepaliBlogArticle({ params }: Props) {
     headline: post.title,
     description: post.description,
     dateModified: `${post.updated}T00:00:00+05:45`,
-    inLanguage: "ne",
+    inLanguage: localeInfo[locale].htmlLang,
     mainEntityOfPage: `${baseUrl}/ne/blog/${post.slug}`,
     author: { "@type": "Organization", name: "PDFora", url: `${baseUrl}/ne/about` },
     publisher: { "@type": "Organization", name: "PDFora", url: baseUrl },

@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-# Keep only the latest commit's full 174-tool QA run; superseded commits must not consume hours of CI.
+# Keep only the latest commit's full 175-tool QA run; superseded commits must not consume hours of CI.
 concurrency:
   group: pdfora-quality-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
@@ -109,7 +109,7 @@ jobs:
           PDFORA_PRODUCTION_URL: http://127.0.0.1:3000
           PDFORA_EXPECT_CANONICAL_ORIGIN: https://pd-fora.vercel.app
         run: node scripts/production-security-smoke.mjs
-      - name: Run Chromium E2E across all 174 PDF and catalog tools
+      - name: Run Chromium E2E across all 175 PDF and catalog tools
         id: browser-e2e
         continue-on-error: true
         env:
@@ -117,14 +117,14 @@ jobs:
           E2E_BASE_URL: http://127.0.0.1:3000
           E2E_TOOL_TIMEOUT_MS: "20000"
         run: node scripts/browser-e2e-173.mjs
-      - name: Run Chromium E2E across all 174 Nepali tool routes
+      - name: Run Chromium E2E across all 175 Nepali tool routes
         id: nepali-browser-e2e
         continue-on-error: true
         env:
           CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
           E2E_BASE_URL: http://127.0.0.1:3000
           E2E_LOCALE: ne
-          E2E_REPORT_PATH: ../docs/qa/BROWSER_E2E_NE_174_REPORT.json
+          E2E_REPORT_PATH: ../docs/qa/BROWSER_E2E_NE_175_REPORT.json
           E2E_TOOL_TIMEOUT_MS: "20000"
         run: node scripts/browser-e2e-173.mjs
       - name: Regenerate audit with browser evidence
@@ -134,10 +134,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pdfora-browser-e2e-174-report
+          name: pdfora-browser-e2e-175-report
           path: |
-            docs/qa/BROWSER_E2E_174_REPORT.json
-            docs/qa/BROWSER_E2E_NE_174_REPORT.json
+            docs/qa/BROWSER_E2E_175_REPORT.json
+            docs/qa/BROWSER_E2E_NE_175_REPORT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.md
             docs/i18n/TRANSLATION_COVERAGE.json

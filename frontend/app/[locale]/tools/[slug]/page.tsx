@@ -305,6 +305,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const request = resolveLocalizedToolRequest(locale, slug);
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
+  if (request.implementation.slug === "qr-code-generator") {
+    const copy = qrLocalizedCopy[request.locale] ?? qrLocalizedCopy.en;
+    return { ...metadata, title: copy.title, description: copy.description, openGraph: { ...metadata.openGraph, title: copy.title, description: copy.description }, twitter: { ...metadata.twitter, title: copy.title, description: copy.description } };
+  }
   if (request.locale === "ne" && nepaliTitles[request.implementation.slug] && nepaliDescriptions[request.implementation.slug]) {
     const title = nepaliTitles[request.implementation.slug];
     const description = fitLocaleDescription(nepaliDescriptions[request.implementation.slug] ?? metadata.description ?? "");

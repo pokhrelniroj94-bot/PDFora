@@ -154,7 +154,7 @@ Generated from current source by \`npm run i18n:nepali-audit\`.
 - Missing localized title in the catalog route source (PDF titles are sourced from the PDF name dictionary): ${missingTitles.length}.
 - Duplicate blog slugs/titles/descriptions: ${duplicate(blogSlugs).length}/${duplicate(blogTitles).length}/${duplicate(blogDescriptions).length}.
 - Nepali blog editorial records checked: ${blogEditorial.length}; articles without cited sources: ${missingBlogSources.length}; broken internal tool links: ${blogEditorial.reduce((sum, post) => sum + post.brokenInternalLinks.length, 0)}.
-- All 35 curated Nepali blog routes are configured indexable; ${missingBlogSources.length} articles still lack external citations and need factual/source follow-up where claims require independent evidence.
+- All 38 curated Nepali blog routes are configured indexable; ${missingBlogSources.length} articles still lack external citations and need factual/source follow-up where claims require independent evidence.
 - Explicitly indexable localized tool slugs: ${indexable.size}.
 - Native-speaker review certified: **No**.
 - Per-tool Nepali browser QA certified by this static report: **No**.

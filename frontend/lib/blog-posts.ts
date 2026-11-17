@@ -397,6 +397,77 @@ const priorityEditorialBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }],
     sources: [{ label: "Google Search Central: Influencing title links in Google Search", url: "https://developers.google.com/search/docs/appearance/title-link" }]
+  },
+  {
+    slug: "prime-number-checker-guide",
+    title: "Is It a Prime Number? How to Check Any Number",
+    description: "Learn how to check whether a number is prime or composite, why 1 is not prime and how the square-root test works, with worked examples.",
+    keyword: "prime number checker how to check if a number is prime",
+    updated: "2026-11-17",
+    readTime: "5 min read",
+    intro: "A prime number is a whole number greater than 1 whose only positive factors are 1 and itself. Checking a small number by hand is easy, but larger values need a method. This guide explains the divisibility test used by the Prime Number Checker, with examples you can verify yourself.",
+    sections: [
+      { heading: "What makes a number prime or composite?", paragraphs: ["A prime has exactly two positive factors. 7 is prime because only 1 and 7 divide it evenly. A composite number has more than two factors: 12 is divisible by 1, 2, 3, 4, 6 and 12.", "The numbers 0 and 1 are neither prime nor composite. 1 has only one positive factor, so it fails the two-factor rule, and this is why the checker reports 0 and 1 as not prime."] },
+      { heading: "The square-root test, step by step", paragraphs: ["You only need to test divisors up to the square root of the number. If a number has a factor larger than its square root, it must also have a matching smaller factor, so the smaller one would already have been found.", "To test 97, the square root is about 9.85, so check 2, 3, 5 and 7. None divides 97 evenly, therefore 97 is prime. To test 91, check 2, 3, 5 and 7: 91 ÷ 7 = 13, so 91 = 7 × 13 and is composite. Many people mistake 91 for a prime because it is not divisible by 2, 3 or 5."] },
+      { heading: "Use the Prime Number Checker", paragraphs: ["Enter a non-negative whole number and run the checker. It reports whether the number is prime or not prime using trial division up to the square root. It accepts whole numbers within the browser's safe integer range, and it rejects decimals and negative values with an input error.", "For a result you do not trust, test it by hand: find one factor other than 1 and the number itself, and the number is composite."] },
+      { heading: "Handy facts to remember", paragraphs: ["2 is the only even prime, because every other even number is divisible by 2. Any number ending in 0 or 5, other than 5 itself, is divisible by 5. A number is divisible by 3 when its digits add up to a multiple of 3, so 51 (5 + 1 = 6) is divisible by 3 and is not prime."], bullets: ["Primes below 30: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29.", "221 looks prime but equals 13 × 17.", "Prime checking is different from finding the greatest common divisor of two numbers."] }
+    ],
+    faqs: [
+      { question: "Is 1 a prime number?", answer: "No. A prime needs exactly two positive factors, and 1 has only one. Modern definitions exclude 1 so that every integer above 1 has a single prime factorisation." },
+      { question: "Is 2 a prime number?", answer: "Yes. 2 is divisible only by 1 and 2, and it is the only even prime number." },
+      { question: "How do I check if a large number is prime?", answer: "Divide it by every prime up to its square root. If none divides it evenly, the number is prime. The Prime Number Checker applies this test to whole numbers within the supported range." },
+      { question: "Is 91 a prime number?", answer: "No. 91 = 7 × 13, so it is composite even though it is not divisible by 2, 3 or 5." },
+      { question: "Can the checker test decimals or negative numbers?", answer: "No. Primes are defined for whole numbers greater than 1, so decimals and negative values show an input error." }
+    ],
+    toolLinks: [{ label: "Prime Number Checker", href: "/tools/prime-number-checker" }, { label: "GCD and LCM Calculator", href: "/tools/gcd-lcm-calculator" }, { label: "Ratio Simplifier", href: "/tools/ratio-simplifier" }],
+    sources: [{ label: "Wikipedia: Prime number", url: "https://en.wikipedia.org/wiki/Prime_number" }]
+  },
+  {
+    slug: "split-bill-calculator-guide",
+    title: "How to Split a Bill Equally: Formula & Examples",
+    description: "Split a restaurant or shared bill between friends, including a service charge or tip. See the formula, rounding examples and when equal shares are unfair.",
+    keyword: "how to split a bill equally split bill calculator",
+    updated: "2026-11-17",
+    readTime: "4 min read",
+    intro: "Splitting a bill equally takes one division, but groups often forget the service charge, disagree about rounding or realise that one person ordered far more. This guide shows the formula the Split Bill Calculator uses and how to handle the common complications.",
+    sections: [
+      { heading: "The equal-split formula", paragraphs: ["Total to pay = bill + any extra amount. Share per person = total ÷ number of people. The extra amount can be a service charge, delivery fee or tip that you want to share too.", "For example, a NPR 3,000 bill plus NPR 200 extra is NPR 3,200. Split between four people, each pays NPR 800."] },
+      { heading: "Worked example with a service charge", paragraphs: ["A group of four receives a NPR 2,400 bill and the restaurant adds NPR 240 service charge. The total is NPR 2,640, so each person pays NPR 660. Enter 2,400 as the bill, 240 as the extra amount and 4 people to get the same result.", "If you also want to leave a tip, add it to the extra amount instead of calculating it separately. The Tip Calculator can help you choose the tip first."] },
+      { heading: "Rounding when the bill does not divide evenly", paragraphs: ["NPR 1,000 split between three people is 333.33 each, and three payments of 333.33 add up to 999.99, so the group is one paisa short. Decide in advance who covers the difference, or round every share up to the next whole rupee and treat the remainder as a small tip.", "The calculator shows two decimal places, so check the final amount against the receipt before paying."] },
+      { heading: "When an equal split is not fair", paragraphs: ["An equal split works when everyone ordered similar items or agreed to share. If one person had an expensive meal or did not drink, calculate each person's items separately and divide only the shared dishes, taxes and fees. The calculator divides the total evenly and does not handle itemised orders."] }
+    ],
+    faqs: [
+      { question: "How do I split a restaurant bill between friends?", answer: "Add any service charge or tip to the bill, then divide the total by the number of people. For NPR 3,200 and four people, each pays NPR 800." },
+      { question: "Should the service charge be included when splitting?", answer: "Yes, if everyone is sharing it. Enter it as the extra amount so it is included in the total before dividing." },
+      { question: "What if the bill cannot be divided evenly?", answer: "Round each share up and agree who absorbs the small difference. For example, NPR 1,000 between three people is 333.33 each, leaving the group one paisa short." },
+      { question: "Can the calculator split unequal orders?", answer: "No. It divides the total equally. For different orders, work out each person's items first and share only the common costs." }
+    ],
+    toolLinks: [{ label: "Split Bill Calculator", href: "/tools/split-bill-calculator" }, { label: "Tip Calculator", href: "/tools/tip-calculator" }, { label: "Percentage of Number Calculator", href: "/tools/percentage-of-number-calculator" }],
+    sources: [{ label: "Wikipedia: Division (mathematics)", url: "https://en.wikipedia.org/wiki/Division_(mathematics)" }]
+  },
+  {
+    slug: "date-add-subtract-calculator-guide",
+    title: "How to Add or Subtract Days from a Date (Examples)",
+    description: "Add or subtract days from any date, with worked examples for month ends and leap years. Learn why 30 days is not the same as one month.",
+    keyword: "how to add days to a date date calculator",
+    updated: "2026-11-17",
+    readTime: "5 min read",
+    intro: "Working out a deadline, delivery date or notice period means adding days to a start date while respecting month lengths and leap years. This guide explains the calendar-day arithmetic used by the Date Add or Subtract Calculator, with examples you can check.",
+    sections: [
+      { heading: "How adding days to a date works", paragraphs: ["Start from the chosen date and count forward one calendar day at a time, rolling into the next month or year when needed. Adding 30 days to 1 November 2026 gives 1 December 2026, because November has 30 days.", "To subtract, enter a negative number of days. Subtracting 1 day from 1 March 2026 gives 28 February 2026."] },
+      { heading: "Month ends and leap years", paragraphs: ["Months have 28 to 31 days, so the same number of days lands differently. Adding 30 days to 31 January 2026 gives 2 March 2026, because February 2026 has 28 days.", "In a leap year February has 29 days. Adding 2 days to 28 February 2028 gives 1 March 2028, while adding 2 days to 28 February 2027 gives 2 March 2027. A year is a leap year when it divides by 4, except century years that do not divide by 400."] },
+      { heading: "A longer example: 100 days from today", paragraphs: ["From 17 November 2026, 13 days reach 30 November, another 31 reach 31 December, another 31 reach 31 January 2027 and the last 25 reach 25 February 2027. Adding 100 days therefore gives 25 February 2027.", "Use this kind of check to confirm the calculator result for contract terms or project plans."] },
+      { heading: "30 days is not one month", paragraphs: ["A calendar month and a fixed number of days are different. One month after 31 January is usually the end of February, while 30 days after 31 January is in March. The calculator adds calendar days, and it does not skip weekends or public holidays. For working days, use the Business Days Calculator."] }
+    ],
+    faqs: [
+      { question: "How do I add days to a date?", answer: "Enter the start date and the number of days. The calculator counts calendar days forward, so 30 days after 1 November 2026 is 1 December 2026." },
+      { question: "How do I subtract days from a date?", answer: "Enter a negative number of days. Subtracting 1 day from 1 March 2026 gives 28 February 2026." },
+      { question: "Does the calculator handle leap years?", answer: "Yes. It follows the calendar, so 2 days after 28 February 2028 is 1 March 2028, while the same step in 2027 reaches 2 March." },
+      { question: "Does it skip weekends or holidays?", answer: "No. It counts every calendar day. Use the Business Days Calculator to count weekdays between two dates." },
+      { question: "What date is 100 days from 17 November 2026?", answer: "25 February 2027, counting every calendar day." }
+    ],
+    toolLinks: [{ label: "Date Add or Subtract Calculator", href: "/tools/date-add-subtract-calculator" }, { label: "Business Days Calculator", href: "/tools/business-days-calculator" }, { label: "Date Difference Calculator", href: "/tools/date-difference-calculator" }],
+    sources: [{ label: "Wikipedia: Leap year", url: "https://en.wikipedia.org/wiki/Leap_year" }]
   }
 ];
 

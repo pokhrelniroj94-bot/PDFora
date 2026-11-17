@@ -62,7 +62,7 @@ assert.ok(englishToolPageSource.includes("It estimates periodic interest when yo
 assert.ok(catalogToolSeoSource.includes("compounds monthly or weekly"), "Savings Goal guidance must disclose periodic compounding");
 assert.ok(nepaliLocalizedBlogSource.includes("मासिक वा साप्ताहिक अवधिअनुसार चक्रवृद्धि"), "Nepali savings guide must disclose periodic compounding");
 const nepaliPostMatches = [...nepaliLocalizedBlogSource.matchAll(/slug: "([^"]+)"/g)];
-assert.equal(nepaliPostMatches.length, 35, "Reviewed Nepali blog inventory must remain complete");
+assert.equal(nepaliPostMatches.length, 38, "Reviewed Nepali blog inventory must remain complete");
 for (let index = 0; index < nepaliPostMatches.length; index += 1) {
   const start = nepaliPostMatches[index].index;
   const end = nepaliPostMatches[index + 1]?.index ?? nepaliLocalizedBlogSource.length;

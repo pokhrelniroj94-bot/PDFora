@@ -135,7 +135,9 @@ export default async function LocalizedBlogArticle({ params }: Props) {
           <p className="text-xs font-black uppercase tracking-[0.18em] text-teal-700">PDFora · {post.readTime}</p>
           <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-950 sm:text-4xl">{post.title}</h1>
           <p className="mt-5 text-base leading-8 text-slate-600">{post.intro}</p>
-          <BlogToolCTA blogSlug={post.slug} href={toolHref} label="QR Code Generator" locale={locale} />
+          {post.toolLinks.length > 0 && (
+            <BlogToolCTA blogSlug={post.slug} href={toolHref} label="QR Code Generator" locale={locale} />
+          )}
           <p className="mt-5 text-xs text-slate-500">{post.updated}</p>
         </header>
         <div className="mt-6 space-y-6">

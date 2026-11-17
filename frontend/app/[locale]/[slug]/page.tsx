@@ -13,6 +13,7 @@ import { buildLocaleMetadata } from "../../../lib/i18n/metadata";
 import NepseMarketDashboard from "../../../components/NepseMarketDashboard";
 import ResumeBuilder from "../../../components/ResumeBuilder";
 import NepaliStaticPage from "../../../components/NepaliStaticPage";
+import HindiStaticPage from "../../../components/HindiStaticPage";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -34,7 +35,7 @@ function getPdfLocaleCopy(locale: string): PdfLocaleCopy | undefined {
 
 export function generateStaticParams() {
   const nepali = [...Object.keys(nepaliPdfRoutes), "market", "resume-builder", "privacy", "terms", "about", "contact"].map((slug) => ({ locale: "ne", slug }));
-  const hindi = isRoutable("hi") ? Object.keys(nepaliPdfRoutes).map((slug) => ({ locale: "hi", slug })) : [];
+  const hindi = isRoutable("hi") ? [...Object.keys(nepaliPdfRoutes), "about", "privacy", "terms", "contact"].map((slug) => ({ locale: "hi", slug })) : [];
   return [...nepali, ...hindi];
 }
 
@@ -56,6 +57,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: "२० व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन र PDF निर्यातसहित नेपाली रिजुमे तथा CV बनाउनुहोस्।",
     });
   }
+  const hindiStaticMetadata: Record<string, { title: string; description: string }> = {
+    privacy: { title: "हिंदी गोपनीयता नीति | PDFora", description: "PDFora में अपलोड की गई फ़ाइलों, तकनीकी जानकारी, कुकी और बाहरी सेवा प्रदाताओं के डेटा प्रबंधन की जानकारी।" },
+    terms: { title: "हिंदी सेवा की शर्तें | PDFora", description: "PDFora के ऑनलाइन टूल उपयोग, फ़ाइलों की जिम्मेदारी, परिणामों की जाँच और सेवा उपलब्धता की हिंदी शर्तें।" },
+    about: { title: "PDFora के बारे में | हिंदी", description: "PDFora के PDF, कैलकुलेटर, टेक्स्ट और डेवलपर ऑनलाइन टूल के उद्देश्य और सुविधाओं के बारे में जानें।" },
+    contact: { title: "PDFora संपर्क | हिंदी सहायता", description: "PDFora टूल सहायता, तकनीकी समस्या, सुझाव और गोपनीयता प्रश्न के लिए संपर्क जानकारी।" },
+  };
+  if (locale === "hi" && hindiStaticMetadata[slug]) return buildLocaleMetadata({ locale, path: `/${slug}`, ...hindiStaticMetadata[slug] });
   const staticMetadata: Record<string, { title: string; description: string }> = {
     privacy: { title: "नेपाली गोपनीयता नीति | PDFora", description: "PDFora ले फाइल, कुकी, AI र तेस्रो पक्षका सेवासँग सम्बन्धित जानकारी कसरी सम्हाल्छ भन्ने नेपाली नीति।" },
     terms: { title: "नेपाली सेवा सर्तहरू | PDFora", description: "PDFora का सेवा प्रयोग, फाइल, उपलब्धता र दायित्वसम्बन्धी नेपाली सर्तहरू।" },
@@ -88,6 +96,9 @@ export default async function NepaliPdfToolPage({ params }: Props) {
   }
   if (locale === "ne" && ["privacy", "terms", "about", "contact"].includes(slug)) {
     return <NepaliStaticPage page={slug as "privacy" | "terms" | "about" | "contact"} />;
+  }
+  if (locale === "hi" && isRoutable("hi") && ["privacy", "terms", "about", "contact"].includes(slug)) {
+    return <HindiStaticPage page={slug as "privacy" | "terms" | "about" | "contact"} />;
   }
   const route = getNepaliPdfRoute(slug);
   const pdfCopy = getPdfLocaleCopy(locale);

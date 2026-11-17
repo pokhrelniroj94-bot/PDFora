@@ -47,7 +47,7 @@ const editorialBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "QR Code Generator", href: "/tools/qr-code-generator" }, { label: "URL Encoder & Decoder", href: "/tools/url-encoder-decoder" }, { label: "Password Generator", href: "/tools/password-generator" }],
     sources: [{ label: "DENSO WAVE: QR Code features and error correction", url: "https://www.qrcode.com/en/about/" }, { label: "Google Search Central: Helpful, reliable, people-first content", url: "https://developers.google.com/search/docs/fundamentals/creating-helpful-content" }]
-  },,
+  },
   {
     slug: "compress-pdf-to-under-1mb-online",
     title: "How to Compress a PDF to Under 1MB Online",

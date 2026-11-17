@@ -47,6 +47,7 @@ const pdfRouteSource = read("lib/i18n/nepali-pdf-routes.ts");
 const legacyPdfSource = read("lib/legacy-tool-slugs.ts");
 const knownPdfSlugs = new Set([...legacyPdfSource.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]));
 const knownToolSlugs = new Set([
+  "qr-code-generator",
   ...[...toolRouteSource.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]),
   ...[...pdfRouteSource.matchAll(/^  "([a-z0-9-]+)":/gm)].map((match) => match[1]),
 ]);
@@ -88,6 +89,6 @@ const editorialAudit = entries.map((entry, index) => {
 });
 assert.equal([...normalizedTitles.values()].filter((count) => count > 1).length, 0, "Nepali blog titles must not duplicate after normalization");
 assert.equal([...normalizedIntros.values()].filter((count) => count > 1).length, 0, "Nepali blog introductions must not duplicate after normalization");
-assert.equal(editorialAudit.length, 40, "Expected 40 Nepali blog articles in the editorial inventory");
+assert.equal(editorialAudit.length, 41, "Expected 41 Nepali blog articles in the editorial inventory, including the restored QR guide");
 assert.equal(missingSources.length, 0, `Every Nepali blog must have a cited source: ${missingSources.join(", ")}`);
 console.log(`Nepali editorial QA: ${editorialAudit.length} articles checked; ${missingSources.length} have no cited source and require factual/editorial review before indexing.`);

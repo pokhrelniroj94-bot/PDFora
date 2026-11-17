@@ -1,6 +1,7 @@
 // Focused checks for the Hindi PDF guides. Run: node scripts/hindi-guides.test.mjs (Node 22.6+, no install needed)
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFile } from "node:fs/promises";
 import { ensureTypeStripping, loadI18n } from "./lib/load-i18n.mjs";
 
 ensureTypeStripping();
@@ -61,4 +62,11 @@ test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", asyn
       assert.ok(fields.hindiFieldKeys.includes(value), `${route.slug}: missing Hindi field copy for ${JSON.stringify(value)}`);
     }
   }
+});
+
+test("Hindi server route checks use server-safe slug registries", async () => {
+  const route = await readFile(new URL("../app/[locale]/tools/[slug]/page.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(route, /isHindiMathSlug|isHindiBusinessSlug/, "client component predicates must never be called from the server route");
+  assert.match(route, /hindiMathToolSlugs\.includes\(toolSlug\)/);
+  assert.match(route, /hindiBusinessToolSlugs\.includes\(toolSlug\)/);
 });

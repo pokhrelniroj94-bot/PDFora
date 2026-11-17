@@ -773,7 +773,7 @@ async function runTool(tool, index) {
         const readyStarted = Date.now();
         let ready = false;
         while (Date.now() - readyStarted < 15000) {
-          ready = await page.evaluate('!!document.querySelector("main button:not([disabled])")');
+          ready = await page.evaluate('!![...document.querySelectorAll("main button")].find(button => /convert to nepali unicode/i.test(button.innerText) && !button.disabled)');
           if (ready) break;
           await delay(250);
         }

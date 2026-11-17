@@ -24,7 +24,7 @@ const toolPaths = new Set([
     .map((tool) => `/tools/${tool.slug}`),
 ]);
 
-assert.equal(toolPaths.size, 174, "publishing gate must cover the complete 174-tool inventory");
+assert.equal(toolPaths.size, 175, "publishing gate must cover the complete 175-tool inventory");
 
 for (const locale of config.locales) {
   if (locale === config.defaultLocale) continue;

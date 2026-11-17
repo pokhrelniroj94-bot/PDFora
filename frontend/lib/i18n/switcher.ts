@@ -16,7 +16,8 @@ export interface SwitcherOption {
  */
 export function getSwitcherOptions(path: string): SwitcherOption[] {
   return locales
-    .filter((l) => (l === defaultLocale || isRoutable(l)) && hasLocalizedPage(path, l))
+    // A locale may be offered for a single explicitly published route even while its wider site stays unpublished.
+    .filter((l) => (l === defaultLocale || isRoutable(l) || hasLocalizedPage(path, l)) && hasLocalizedPage(path, l))
     .map((l) => ({
       locale: l,
       nativeName: localeInfo[l].nativeName,

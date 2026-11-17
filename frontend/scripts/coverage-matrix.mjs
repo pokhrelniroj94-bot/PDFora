@@ -22,8 +22,8 @@ if (tools.length !== 175 || uniqueSlugs.size !== 175) {
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
 const localizedUtilitySlugs = parseSlugs(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g);
 const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs]);
-const hindiPdfSlugs = parseSlugs(read("lib/i18n/pdf-tool-names-hi.ts"), /"([a-z0-9-]+)":\\s*"/g);
-const hindiCatalogSlugs = parseSlugs(read("lib/i18n/hindi-tool-seo.ts"), /"([a-z0-9-]+)":\\s*\\{/g);
+const hindiPdfSlugs = parseSlugs(read("lib/i18n/pdf-tool-names-hi.ts"), /"([a-z0-9-]+)":\s*"/g);
+const hindiCatalogSlugs = parseSlugs(read("lib/i18n/hindi-tool-seo.ts"), /"([a-z0-9-]+)":\s*\\{/g);
 const localizedHindiTools = new Set([...hindiPdfSlugs, ...hindiCatalogSlugs, "qr-code-generator"]);
 // The published Nepali registry covers every localized tool route: 49 PDF + 125 catalog.
 // SEO sitemap tests separately assert that the source registry and these route inventories match.

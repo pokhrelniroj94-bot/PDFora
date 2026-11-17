@@ -7,6 +7,7 @@ import {
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
+import { getLocalizedQrBlogPost } from "../localized-qr-blog-posts";
 
 /**
  * URL scheme: English keeps its existing unprefixed URLs (/merge-pdf, /tools/x, /blog/y).
@@ -90,8 +91,12 @@ const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set();
 
 export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
-  if (locale !== "ne" || !isPublished(locale)) return false;
   const normalized = normalizePath(path);
+  // QR Generator is a reviewed, independently translated exception; do not publish
+  // unrelated routes for locales whose wider site translation is still unpublished.
+  if (normalized === "/tools/qr-code-generator" && isLocalizedToolIndexable(locale, "qr-code-generator")) return true;
+  if (normalized === "/blog/qr-code-generator-guide" && locale !== "en" && Boolean(getLocalizedQrBlogPost(locale, "qr-code-generator-guide"))) return true;
+  if (locale !== "ne" || !isPublished(locale)) return false;
   if (nepaliIndexableNonToolPaths.has(normalized) || isLocalizedPageIndexable(locale, normalized)) return true;
   const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];
   if (catalogToolSlug && isLocalizedToolIndexable(locale, catalogToolSlug)) return true;
@@ -102,6 +107,9 @@ export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean
 export function hasLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
   const normalized = normalizePath(path);
+  const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];
+  if (catalogToolSlug && isLocalizedToolIndexable(locale, catalogToolSlug)) return true;
+  if (normalized === "/blog/qr-code-generator-guide" && locale !== "en" && Boolean(getLocalizedQrBlogPost(locale, "qr-code-generator-guide"))) return true;
   if (locale === "hi") return hindiLocalizedRoutePaths.has(normalized);
   if (locale !== "ne") return false;
   if (localizedPaths.has(normalized)) return true;

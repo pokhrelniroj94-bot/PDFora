@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ToolWorkspace from "../../../../components/AllTools";
+import QRCodeGenerator from "../../../../components/QRCodeGenerator";
 import ResumeBuilder from "../../../../components/ResumeBuilder";
 import { isPublished } from "../../../../lib/i18n/config";
 import { getTranslator } from "../../../../lib/i18n/messages";
@@ -153,6 +154,7 @@ const nepaliTitles: Record<string, string> = {
   "image-dpi-calculator": "तस्बिर DPI तथा PPI क्याल्कुलेटर",
   "video-bitrate-calculator": "भिडियो बिटरेट क्याल्कुलेटर",
   "markdown-table-generator": "Markdown तालिका निर्माता",
+  "qr-code-generator": "बहुभाषिक QR Code जेनेरेटर",
 };
 const nepaliDescriptions: Record<string, string> = {
   "xml-formatter-validator": "XML syntax जाँचेर सुरक्षित रूपमा indentation मिलाउनुहोस्।",
@@ -183,6 +185,7 @@ const nepaliDescriptions: Record<string, string> = {
   "image-dpi-calculator": "प्रिन्ट आकारअनुसार तस्बिरको PPI र आवश्यक पिक्सेल आयाम गणना गर्नुहोस्।",
   "video-bitrate-calculator": "भिडियो अवधि, लक्षित फाइल आकार, अडियो बिटरेट र अतिरिक्त स्थानका आधारमा भिडियो बिटरेट अनुमान गर्नुहोस्।",
   "markdown-table-generator": "Tab छुट्याइएको पाठलाई Markdown तालिकामा रूपान्तरण गर्नुहोस्; सबै प्रशोधन ब्राउजरमै हुन्छ।",
+  "qr-code-generator": "वेबसाइट, Wi-Fi, इमेल, फोन, सम्पर्क कार्ड र कार्यक्रमका लागि QR बनाउनुहोस्; PNG वा SVG डाउनलोड गर्नुहोस्।",
   "resume-builder": "२० वटा व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन, सम्पादनयोग्य खण्ड र PDF निर्यात प्रयोग गरी व्यवस्थित CV बनाउनुहोस्।",
   "csv-to-json": "पहिलो पङ्क्तिलाई शीर्षक मानेर CSV डेटालाई JSON array मा बदल्नुहोस्।",
   "json-to-yaml": "JSON डेटालाई पढ्न सजिलो YAML ढाँचामा बदल्नुहोस्।",
@@ -319,6 +322,7 @@ export default async function LocalizedToolPage({ params }: Props) {
   if (request.status !== "ok") notFound();
   const t = await getTranslator(request.locale, ["common"]);
   const toolSlug = request.implementation.slug;
+  if (request.locale === "ne" && toolSlug === "qr-code-generator") return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 max-w-3xl text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><QRCodeGenerator defaultLocale="ne" /></main>;
   if (request.locale === "ne" && toolSlug === "nepali-unicode-typing") { return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTypingTool locale="ne" /></section></main>; }
   if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator", "password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "currency-converter", "image-compressor", "image-format-converter", "preeti-unicode-converter"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliRemainingToolsWorkspace slug={toolSlug} /></section></main>;

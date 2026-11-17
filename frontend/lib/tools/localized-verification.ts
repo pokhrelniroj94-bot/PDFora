@@ -4,7 +4,7 @@ import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLo
 import { nepaliPdfRoutes } from "../i18n/nepali-pdf-routes";
 
 /**
- * All 125 Nepali catalog tools and all 49 Nepali PDF tools have dedicated localized
+ * All 126 Nepali catalog tools and all 49 Nepali PDF tools have dedicated localized
  * workspaces, unique Nepali metadata and reviewed Nepali instructions. The registry
  * is shared by metadata, reciprocal hreflang and the XML sitemap.
  */

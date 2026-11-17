@@ -99,6 +99,7 @@ export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
     "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator",
     "json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator",
     "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug",
+    "image-compressor", "image-format-converter", "image-dpi-calculator",
   ].map((slug) => `/tools/${slug}`),
 ]);
 

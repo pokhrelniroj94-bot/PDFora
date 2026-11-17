@@ -32,8 +32,8 @@ function loadQr(): Promise<QRCodeApi> {
  const sources = [
   // Same-origin proxy avoids browser extensions, network filters and third-party CSP issues.
   "/api/qr-library",
-  "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js",
-  "https://unpkg.com/qrcode@1.5.4/lib/browser.min.js",
+  "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js",
+  "https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js",
  ];
  qrLoadPromise = (async () => {
   // Remove a stale failed script left by an earlier attempt. Its error event has

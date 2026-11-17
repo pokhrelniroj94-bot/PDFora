@@ -42,7 +42,7 @@ export default function HomePage() {
     url: "https://pd-fora.vercel.app/",
     applicationCategory: "UtilitiesApplication",
     operatingSystem: "Any",
-    description: "Free online tools for PDF documents, finance, math, text, code, images, SEO and Nepal utilities.",
+    description: "Free online PDF tools, practical calculators, text utilities and Nepal-focused services from PDFora.",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   };
 

@@ -161,7 +161,7 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
 test("verification registry: only published locales and adaptable tools may ever be listed", () => {
   const adaptable = new Set([...listAdaptableSlugs(), ...legacyToolSlugs]);
   for (const [locale, slugs] of Object.entries(verifiedLocalizedTools)) {
-    assert.ok(locales.includes(locale) && locale !== "en", `unknown locale ${locale}`);
+    assert.ok(locales.includes(locale), `unknown locale ${locale}`);\n    if (locale === "en") assert.deepEqual(slugs, ["qr-code-generator"], "English registry may contain only the unprefixed QR route");
     assert.ok(isPublished(locale) || slugs.every((slug) => slug === "qr-code-generator"), `${locale} may list only the independently published QR tool while its wider locale remains unpublished`);
     for (const slug of slugs) assert.ok(adaptable.has(slug), `${locale} verifies unknown/unadaptable tool ${slug}`);
   }
@@ -176,12 +176,12 @@ test("route file contract: validates through the resolver, 404s, no JSON-LD, Eng
   assert.match(page, /resolveLocalizedToolRequest\(/);
   assert.match(page, /notFound\(\)/);
   assert.match(page, /<ToolWorkspace slug=\{toolSlug\} \/>/, "must reuse the existing ToolWorkspace");
-  assert.match(page, /lang="en" dir="ltr"/, "untranslated tool UI must be declared English");
+  assert.match(page, /lang=\\{request\\.locale\\}/, "the QR workspace must declare its selected language");\n  assert.match(page, /QRCodeGenerator defaultLocale=\\{request\\.locale\\}/, "the QR workspace must receive the resolved locale");
   assert.doesNotMatch(page, /ld\+json|SoftwareApplication|FAQPage/, "English structured data must not be attached to localized URLs");
   assert.doesNotMatch(page, /index:\s*true/, "indexing is decided only in lib/tools/localized-metadata.ts");
   assert.doesNotMatch(page, /generateStaticParams/, "no speculative static generation of localized tool pages");
   const meta = read("lib/tools/localized-metadata.ts");
-  assert.match(meta, /isPublished\(locale\) && isLocalizedToolIndexable/);
+  assert.match(meta, /isLocalizedToolIndexable\\(locale, entry\\.slug\\)/, "localized metadata must use the explicit verification registry");
 });
 
 test("scope guards: English tool execution stays independent while approved hreflang is reciprocal", () => {

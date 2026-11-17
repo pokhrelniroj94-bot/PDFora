@@ -4,9 +4,10 @@ import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLo
 import { nepaliPdfRoutes } from "../i18n/nepali-pdf-routes";
 
 /**
- * All 126 Nepali catalog tools and all 49 Nepali PDF tools have dedicated localized
- * workspaces, unique Nepali metadata and reviewed Nepali instructions. The registry
- * is shared by metadata, reciprocal hreflang and the XML sitemap.
+ * Nepali tools have dedicated localized workspaces and reviewed instructions. The QR
+ * Generator is a narrowly scoped exception with complete interface translations and
+ * localized page copy in all supported locales. The registry is shared by metadata,
+ * reciprocal hreflang, language switching and the XML sitemap.
  */
 export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {
   en: ["qr-code-generator"],

@@ -495,6 +495,7 @@ export default function CatalogToolSEOContent({
   }
 
   const toolAdvice: Record<string, { example: string; accuracy: string; workflow: string; mistakes: string }> = {
+    "qr-code-generator": { example: "Create a QR code for a public website, guest Wi-Fi network, business contact card or event details. Select the matching content type, enter the information and test the exported image with a second phone.", accuracy: "The generator encodes supplied text into a QR symbol in your browser. It does not validate a website, verify a phone number, encrypt information or make a destination safe.", workflow: "Choose the content type, review every field, select an error-correction level and high-contrast colours, generate the code, download PNG or SVG and test it at the intended screen or print size.", mistakes: "Do not publish Wi-Fi passwords or private contact data without permission. Avoid low contrast, cropping the quiet zone, very small print sizes and assuming a scanned URL is trustworthy." },
     "compound-interest-sip-calculator": { example: "Worked example: invest NPR 5,000 at the end of every month for 10 years and assume a 10% nominal annual return, compounded monthly. The calculator uses r = 0.10 ÷ 12 and n = 120. The SIP portion is 5,000 × [((1 + r)^n − 1) ÷ r]. If you also enter an initial NPR 20,000, that amount grows separately as 20,000 × (1 + r)^n. The total projected value is the sum of those two parts; the total contributed principal is NPR 620,000.", accuracy: "This is a fixed-rate mathematical projection, not a forecast or guarantee. The implementation treats the annual rate as a nominal rate divided by 12, assumes each SIP payment is made at month-end (these are month-end deposits), and compounds the initial amount monthly. It excludes market volatility, fund expenses, transaction costs, taxes, inflation, exit loads and missed or changing contributions. Actual mutual-fund NAV returns vary and can be negative.", workflow: "Run three scenarios using cautious, middle and optimistic annual-return assumptions rather than relying on one number. Compare projected value with total contributions (initial investment + monthly SIP × number of months). Change only one input at a time, and use the same investment horizon when comparing funds. Check a fund's official factsheet and expense ratio before making an investment decision.", mistakes: "Do not enter 10 when you mean 10 per month; the rate field expects an annual percentage. Do not confuse the initial lump sum with the monthly SIP. The calculator assumes month-end deposits, so it will differ from an SIP due at the beginning of each month. Do not interpret the projected gain as guaranteed profit or as a recommendation to buy a fund." },
     "resume-builder": { example: "Choose a CV layout, add your contact details, professional summary, experience, education, skills and optional projects or certifications. The live preview updates while you type; select Download CV as PDF and choose Save as PDF in the print dialog.", accuracy: "The builder formats the information you provide. It does not independently verify employment, qualifications, dates, contact details or ATS compatibility. Review every field and the final printed pages before applying.", workflow: "Start with a clean ATS-friendly layout such as Harvard Classic or Compact ATS for online applications. Tailor the summary and achievement bullets to the vacancy, use measurable results where truthful, then check the A4 PDF on desktop and mobile.", mistakes: "Avoid invented achievements, generic objective statements, spelling errors, excessive graphics and unprofessional email addresses. Keep dates consistent and do not include sensitive personal information unless the employer specifically requires it." },
 
@@ -634,6 +635,27 @@ export default function CatalogToolSEOContent({
     "base64-encoder-decoder": "Convert text to Base64 or decode a Base64 value back to text. Base64 is a transport encoding, not a way to protect confidential information.",
   };
   const toolSpecificSteps: Record<string, string[]> = {
+    "reading-time-calculator": [
+      "Paste the complete article, lesson, email or speech script into the text field, including the sections you want counted.",
+      "Set the reading speed in words per minute (WPM). Compare 150, 200 and 250 WPM as planning assumptions rather than treating one speed as universal.",
+      "Set the speaking speed separately when estimating a presentation or narrated script, then run the calculator.",
+      "Review the word count, estimated reading time and estimated speaking time. Add pauses, slide changes and audience questions separately for a live presentation.",
+      "The tool counts whitespace-separated words; tables, code, unfamiliar terms and text in a second language can take longer to understand than the estimate."
+    ],
+    "savings-goal-calculator": [
+      "Enter the full savings target and the amount already saved. Use the same currency and include only money actually set aside for this goal.",
+      "Enter the number of whole months remaining until the target date. The tool accepts 1–1,200 months.",
+      "Enter the annual interest-rate assumption, from 0% to 100%. Use 0% first to see a no-interest baseline.",
+      "Choose monthly or weekly deposits, run the calculation and review the required deposit per period, projected existing balance, estimated interest and projected total.",
+      "Deposits are modelled at the end of each period with the annual rate divided across 12 or 52 periods. Check the account's real compounding, tax and fee rules before relying on the estimate."
+    ],
+    "percentage-change-calculator": [
+      "Choose Calculate percentage change for a normal before-and-after comparison, or Find original value from final value when working backwards.",
+      "For a normal change, enter the starting amount as Original value and the later amount as New value. Keep both values in the same unit and on the same measurement basis.",
+      "For a reverse calculation, enter the known Final value and the Percentage change (%); the calculator estimates the original value.",
+      "Run the calculation and check the percentage direction and change amount. A positive result is an increase and a negative result is a decrease.",
+      "The forward formula needs a non-zero original value. Reverse mode requires a non-zero final value and a percentage change greater than -100%."
+    ],
     "compound-interest-sip-calculator": [
       "Enter the amount you plan to invest at the end of each month in Monthly SIP (NPR). Enter 0 if you are not making monthly contributions.",
       "Enter the investment period in whole years, from more than 0 up to 100 years.",

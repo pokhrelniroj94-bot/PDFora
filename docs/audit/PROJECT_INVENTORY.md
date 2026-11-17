@@ -1,6 +1,6 @@
 # PDFora project inventory
 
-Updated on 2026-11-14 from the current localization work branch. Machine-readable
+Updated on 2026-11-17 from the current localization work branch. Machine-readable
 counts are in `docs/audit/inventory.json`.
 
 ## Verified source inventory
@@ -15,10 +15,12 @@ counts are in `docs/audit/inventory.json`.
 | Catalog categories | 10 | Catalog source |
 | Editorial blog articles | 8 | `frontend/lib/blog-posts.ts` |
 | Nepal blog articles | 19 | `frontend/lib/nepal-blog-posts.ts` |
-| Nepali dedicated tool interfaces | 169/174 | 49 PDF routes and 120 catalog utilities have Nepali route/workspace coverage; five restored legacy utilities remain English-only |
+| Nepali dedicated tool interfaces | 174/174 | All 49 PDF routes and 125 catalog utilities have Nepali route/workspace coverage |
 | Nepali utility route equivalents | 111 | `frontend/lib/i18n/nepali-tool-routes.ts` |
 | Localized Nepali PDF route equivalents | 49 | `frontend/lib/i18n/nepali-pdf-routes.ts` |
-| Indexable Nepali PDF routes | 6 | `frontend/lib/tools/localized-verification.ts` allowlist |
+| Indexable Nepali PDF routes | 49 | `frontend/lib/tools/localized-verification.ts` localized-route registry |
+| Indexable Nepali catalog tools | 125 | `frontend/lib/tools/localized-verification.ts` localized-route registry |
+| Total indexable Nepali tools | **174** | 49 PDF + 125 catalog routes; shared metadata, hreflang and sitemap gate |
 | Published locales | 2 | English and Nepali |
 | Unpublished locales | 10 | Locale publication registry |
 
@@ -26,10 +28,7 @@ The reconciled source inventory is **174 unique tools**: 49 PDF tools and 125 ca
 
 ## Localization and publication policy
 
-English is the source language. Nepali now has route/workspace coverage for 169 of 174 canonical tools (49 PDF tools and 120 catalog utilities). Five restored utilities remain English-only until localized and reviewed. This is interface
-presence, not proof that every workflow passed functional/browser QA or that all
-copy received independent native-speaker review. Newly added utility interfaces
-remain excluded from indexing until the relevant QA and review are complete.
+English is the source language. Nepali now has route/workspace coverage for all 174 canonical tools (49 PDF tools and 125 catalog utilities). All 174 have localized titles/descriptions and route-specific Nepali interfaces or instructions, and are included in the indexing registry, sitemap and reciprocal hreflang. This is source/content coverage, not proof that every workflow passed individual functional QA or that all copy received independent native-speaker review. Targeted tool-specific tests are recorded for 44/174; continue functional and language review, and remove any page from the registry if it proves incomplete or inaccurate.
 
 Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified
 Chinese and Japanese are registered but unpublished. They remain excluded from

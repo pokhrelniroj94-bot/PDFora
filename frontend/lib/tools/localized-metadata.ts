@@ -20,7 +20,7 @@ export function buildLocalizedToolMetadata(locale: Locale, entry: ToolInfo): Met
     title: `${entry.name} | PDFora`,
     description: entry.description,
   });
-  const indexable = isPublished(locale) && isLocalizedToolIndexable(locale, entry.slug);
+  const indexable = (isPublished(locale) || isLocalizedToolIndexable(locale, entry.slug)) && isLocalizedToolIndexable(locale, entry.slug);
   if (indexable) return { ...base, robots: { index: true, follow: true } };
   return {
     ...base,

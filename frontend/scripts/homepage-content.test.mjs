@@ -29,6 +29,9 @@ assert.ok(homepage.includes('const [category, setCategory] = useState("All")'), 
 assert.ok(homepage.includes("const [visibleCount, setVisibleCount] = useState(12)"), "Homepage should render a compact initial tool list");
 assert.ok(homepage.includes("const visibleTools = homepageTools.slice(0, visibleCount)"), "Homepage should paginate the mixed-category featured catalogue");
 assert.ok(homepage.includes("Free Online Tools for"), "Homepage hero must present PDFora as a multi-category tool platform");
+assert.ok(homepage.includes('Free Online Tools for{" "}'), "Homepage H1 must retain a semantic space between the lead-in and its highlighted phrase");
+assert.ok(homepage.includes("Merge, split, compress and convert PDF files online. Use calculators to plan costs and savings."), "Homepage lead copy should use short, clear task-focused sentences");
+assert.ok(!homepage.includes("use Nepal-focused utilities—all in one free online workspace"), "Homepage lead copy should avoid the previous long compound sentence");
 for (const phrase of ["Finance & math", "Text tools", "Developer tools", "Image tools", "Nepal tools"]) {
   assert.ok(homepage.includes(phrase), `Homepage hero must visibly introduce ${phrase}`);
 }

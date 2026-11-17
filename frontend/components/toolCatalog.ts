@@ -1,5 +1,6 @@
 export type ToolInfo = { slug: string; name: string; category: string; description: string; keywords: string };
 export const toolCatalog: ToolInfo[] = [
+{slug:"qr-code-generator",name:"QR Code Generator",category:"Utilities",description:"Create QR codes for websites, text, Wi-Fi, email, phone, SMS, WhatsApp, contacts and events. Customize colours, size and error correction.",keywords:"qr code generator free online qr creator wifi qr url text vcard whatsapp sms png svg download"},
 {slug:"resume-builder",name:"Professional Resume & CV Builder",category:"Career Tools",description:"Create a polished CV with 20 professional templates, live A4 preview, editable sections and free PDF export.",keywords:"resume cv maker builder templates europass harvard job application cover letter career"},
 {slug:"pdf-tools",name:"Explore All PDF Tools",category:"PDF",description:"Explore the complete PDF toolkit for merging, splitting, compressing, converting, editing and securing documents. Browse the available tools in one directory.",keywords:"pdf merge split compress convert edit tools"},
 {slug:"loan-emi-calculator",name:"Loan & EMI Calculator",category:"Finance",description:"Calculate monthly EMI, total interest and total repayment.",keywords:"loan emi interest installment mortgage finance"},

@@ -199,18 +199,20 @@ export const nepalBlogPosts: BlogPost[] = [
   ,
   {
     slug: "nepal-rastra-bank-daily-exchange-rates-guide",
-    title: "Nepal Rastra Bank Exchange Rate Today: How to Check USD, INR and Other Currencies",
-    description: "Learn how to read NRB buying and selling rates, currency units and convert foreign currency into Nepalese rupees.",
+    title: "Nepal Rastra Bank Exchange Rate Today | USD, INR & EUR",
+    description: "Check NRB buying and selling rates, currency units and NPR conversion formulas. See why bank and money-changer rates may differ.",
     keyword: "Nepal Rastra Bank exchange rate today",
-    updated: "2026-11-01",
-    readTime: "5 min read",
+    updated: "2026-11-17",
+    readTime: "6 min read",
     intro: "People sending remittances, travelling abroad, paying for imports or comparing foreign-currency values often need the Nepal Rastra Bank reference exchange rate. NRB publishes buying and selling prices, and some currencies are quoted in units of 10 or 100 rather than one.",
     sections: [
       { heading: "What are NRB buying and selling rates?", paragraphs: ["The buying rate is the reference amount in NPR at which a bank buys a foreign currency. The selling rate is the reference amount at which a bank sells that currency. Individual banks and money changers may quote different rates.", "Always check the unit shown beside the currency. For example, if the rate is quoted per 100 Indian rupees, divide or multiply using that 100-unit basis rather than treating the rate as one INR."] },
+      { heading: "How to convert foreign currency into Nepalese rupees", paragraphs: ["For foreign currency to NPR, multiply the foreign amount by the NRB buying rate and divide by the quoted unit: NPR received = foreign amount × buying rate ÷ unit. For NPR to foreign currency, divide the NPR amount by the selling rate and multiply by the quoted unit: foreign amount = NPR amount × unit ÷ selling rate.", "Example figures are for explaining the calculation, not today's published rates. If USD has a unit of 1 and a buying rate of NPR 150, USD 100 corresponds to NPR 15,000 at that reference rate. If INR has a unit of 100 and a buying rate of NPR 160, INR 1,000 corresponds to NPR 1,600. Always use the unit printed beside the rate." ] },
       { heading: "How to use the NRB rate tool", paragraphs: [], bullets: ["Open the NRB Daily Exchange Rates tool.", "Refresh to load the latest rate published by NRB.", "Find the currency code and check its unit, buying rate and selling rate.", "For foreign currency to NPR, use the buying-rate calculation.", "For NPR to foreign currency, use the selling-rate calculation."] },
       { heading: "Why the latest date may be earlier than today", paragraphs: ["NRB publishes rates on working days. Weekends and public holidays may have no new rate. The tool checks a short recent date range and displays the latest rate record returned by NRB."] }
     ],
     faqs: [
+      { question: "How do I calculate USD or INR into NPR using the NRB rate?", answer: "Multiply the foreign amount by the NRB buying rate and divide by the quoted unit. For NPR to foreign currency, use the selling rate and multiply by the unit before dividing." },
       { question: "Are NRB rates the same as remittance rates?", answer: "Not necessarily. Remittance providers and individual banks may offer their own rates and fees." },
       { question: "Why does INR show a unit of 100?", answer: "The NRB publishes some currencies against a quoted unit such as 100 or 10. The converter uses the unit supplied by the API." },
       { question: "Does the tool use live rates?", answer: "It requests the latest available published NRB rate when you refresh; it does not guarantee intraday bank rates." }

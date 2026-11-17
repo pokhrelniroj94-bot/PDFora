@@ -214,11 +214,11 @@ export default function HomePageClient() {
               Your everyday digital workspace
             </div>
             <h1 className="mt-5 w-full max-w-full break-words text-[2.15rem] font-black leading-[1.08] tracking-[-.045em] min-[400px]:text-[2.35rem] md:mt-7 md:text-6xl lg:text-[4.35rem]">
-              Free Online Tools for
+              Free Online Tools for{" "}
               <span className="mt-1 block bg-gradient-to-r from-teal-200 via-emerald-300 to-cyan-200 bg-clip-text text-transparent">PDF, Finance, Text & More.</span>
             </h1>
             <p className="mt-5 block w-full max-w-[58ch] whitespace-normal [overflow-wrap:anywhere] text-[14px] leading-6 text-slate-300 md:mt-6 md:text-base md:leading-8">
-              Merge, split, compress and convert PDFs, calculate costs and savings, format text and code, edit images, check SEO and use Nepal-focused utilities—all in one free online workspace.
+              Merge, split, compress and convert PDF files online. Use calculators to plan costs and savings. Format text and code, edit images, and check SEO. Explore tools for Nepali dates, local measurements and other everyday tasks in Nepal—all in one free workspace.
             </p>
             <div className="mt-7 flex w-full min-w-0 flex-col gap-3 md:w-auto md:flex-row">
               <Link href="/tools" className="inline-flex min-h-12 w-full min-w-0 items-center justify-center rounded-2xl bg-gradient-to-r from-teal-400 to-emerald-400 px-5 py-3.5 text-sm font-extrabold text-[#062321] shadow-xl shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:shadow-emerald-400/20 md:w-auto">Explore all tools <span className="ml-2">→</span></Link>

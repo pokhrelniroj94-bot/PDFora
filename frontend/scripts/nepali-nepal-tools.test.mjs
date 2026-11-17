@@ -143,10 +143,10 @@ for (const slug of [...newSlugs, ...liveSlugs]) {
   const request = modules["localized-route"].resolveLocalizedToolRequest("ne", slug);
   assert.equal(request.status, "ok", `${slug} must resolve through the localized route`);
   const metadata = modules["localized-metadata"].buildLocalizedToolMetadata("ne", request.implementation.entry);
-  assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} is indexable after its localized route QA`);
+  assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} has a dedicated Nepali workspace and should be indexable`);
   assert.equal(metadata.alternates?.canonical, `https://pd-fora.vercel.app/ne/tools/${slug}`, `${slug} must keep its self-referencing canonical`);
   assert.equal(metadata.alternates?.languages?.ne, `https://pd-fora.vercel.app/ne/tools/${slug}`);
   assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app/tools/${slug}`);
 }
 
-console.log("Nepali Nepal-tool regression checks passed: localized routes, mobile validation, weight conversion, official electricity-source links and indexable metadata.");
+console.log("Nepali Nepal-tool regression checks passed: localized routes, mobile validation, weight conversion, official electricity-source links and reciprocal hreflang metadata.");

@@ -27,7 +27,7 @@ for (const match of nepali.matchAll(/slug:\s*"([^"]+)"[\s\S]*?title:\s*"([^"]+)"
   assert.match(match[2], /[\u0900-\u097F]/u, `Blog title must be Nepali script: ${match[1]}`);
 }
 assert.ok(indexPage.includes("nepaliLocalizedBlogPosts.map"), "Nepali blog index must render the complete localized catalogue");
-assert.ok(articlePage.includes('inLanguage: "ne"'), "Nepali article structured data must declare Nepali");
+assert.ok(articlePage.includes("inLanguage: localeInfo[locale].htmlLang"), "Localized article structured data must declare the active language, including Nepali");
 assert.ok(articlePage.includes('"@type": "BreadcrumbList"') && articlePage.includes("breadcrumbSchema"), "Nepali articles must include localized breadcrumb structured data");
 assert.ok(articlePage.includes("generateStaticParams"), "Nepali articles must be statically enumerable");
 assert.ok(sitemap.includes("nepaliLocalizedBlogPosts.filter((post) => isLocalizedPageIndexable(\"ne\", `/blog/${post.slug}`))"), "Only native-reviewed Nepali blog articles may enter the sitemap");
@@ -36,6 +36,9 @@ assert.ok(sitemap.includes("nepaliLocalizedUtilitySlugs") && sitemap.includes("n
 assert.ok(englishArticlePage.includes("const languages = hreflangMap") && englishArticlePage.includes("languages"), "English articles must use the shared localized hreflang gate");
 assert.ok(sitemap.includes("/ne/market") && sitemap.includes("/ne/resume-builder"), "Published Nepali market and resume pages must be included in sitemap");
 assert.ok(routing.includes("nepaliLocalizedBlogPosts.map"), "Every Nepali blog article must be registered for language switching and hreflang");
+assert.ok(englishEditorial.includes('slug: "compress-pdf-under-200kb-nepal-online-forms"'), "English 200KB Nepal upload guide must be published");
+assert.ok(nepali.includes('slug: "compress-pdf-under-200kb-nepal-online-forms"'), "Nepali 200KB Nepal upload guide must be localized");
+assert.ok(nepali.includes("लोकसेवा") && nepali.includes("२००KB"), "Nepali 200KB guide must include natural Devanagari content");
 
 console.log(`Nepali blog coverage passed: ${expected.length} editorial articles translated; ${localized.length} localized routes available.`);
 
@@ -88,6 +91,6 @@ const editorialAudit = entries.map((entry, index) => {
 });
 assert.equal([...normalizedTitles.values()].filter((count) => count > 1).length, 0, "Nepali blog titles must not duplicate after normalization");
 assert.equal([...normalizedIntros.values()].filter((count) => count > 1).length, 0, "Nepali blog introductions must not duplicate after normalization");
-assert.equal(editorialAudit.length, 35, "Expected 35 Nepali blog articles in the editorial inventory");
+assert.equal(editorialAudit.length, 37, "Expected 37 Nepali blog articles in the editorial inventory");
 assert.equal(missingSources.length, 0, `Every Nepali blog must have a cited source: ${missingSources.join(", ")}`);
 console.log(`Nepali editorial QA: ${editorialAudit.length} articles checked; ${missingSources.length} have no cited source and require factual/editorial review before indexing.`);

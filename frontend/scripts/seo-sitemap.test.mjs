@@ -93,8 +93,8 @@ const toolRoutes = [
 const approvedPdfSlugs = ["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word", "pdf-to-jpg", "rotate-pdf"];
 assert.deepEqual(
   [...approvedNepali].sort(),
-  [...approvedPdfSlugs].sort(),
-  "Only the six individually approved Nepali PDF routes may be indexable",
+  [...toolRoutes, ...approvedPdfSlugs].sort(),
+  "All localized Nepali catalog tools and only six individually approved Nepali PDF routes may be indexable",
 );
 
 const reportedNepaliLongTitleSlugs = [

@@ -9,12 +9,12 @@ const report = JSON.parse(fs.readFileSync(matrixPath, "utf8"));
 test("tool-language matrix accounts for every configured locale and unique tool", () => {
   assert.equal(report.counts.locales, 12);
   assert.equal(report.counts.pdfTools, 49);
-  assert.equal(report.counts.catalogUtilities, 125);
-  assert.equal(report.counts.tools, 174);
-  assert.equal(report.counts.matrixRows, 12 * 174);
-  assert.equal(report.rows.length, 2088);
-  assert.equal(report.counts.localizedNepaliTools, 174, "49 Nepali PDF routes plus 125 localized catalog routes");
-  assert.equal(report.counts.indexableNepaliTools, 174);
+  assert.equal(report.counts.catalogUtilities, 126);
+  assert.equal(report.counts.tools, 175);
+  assert.equal(report.counts.matrixRows, 12 * 175);
+  assert.equal(report.rows.length, 2100);
+  assert.equal(report.counts.localizedNepaliTools, 175, "49 Nepali PDF routes plus 126 localized catalog routes");
+  assert.equal(report.counts.indexableNepaliTools, 175);
   assert.equal(report.rows.filter((row) => row.locale === "ne" && row.functionalTest === "targeted-unit-tests").length, 44);
   for (const slug of ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"]) {
     const englishRow = report.rows.find((row) => row.locale === "en" && row.slug === slug);
@@ -60,7 +60,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   assert.ok(nepaliBrowserWorkspace.includes('locale="ne"'));
   const browserToolSource = fs.readFileSync(browserOnlyWorkspacePath, "utf8");
   for (const translatedLabel of ["पूरा नाम", "बैठकको मिति", "तस्बिरको चौडाइ (पिक्सेल)", "भिडियो अवधि (मिनेट)", "Markdown नतिजा"]) assert.ok(browserToolSource.includes(translatedLabel), `Missing Nepali copy: ${translatedLabel}`);
-  assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 174);
+  assert.equal(new Set(report.tools.map((tool) => tool.slug)).size, 175);
   for (const locale of ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]) {
     const qr = report.rows.find((row) => row.locale === locale && row.slug === "qr-code-generator");
     assert.ok(qr, `QR Generator row missing for ${locale}`);

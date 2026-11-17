@@ -1,6 +1,6 @@
 const QR_LIBRARY_URLS = [
-  "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/lib/browser.min.js",
-  "https://unpkg.com/qrcode@1.5.4/lib/browser.min.js",
+  "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js",
+  "https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js",
 ] as const;
 
 // Serve the pinned, public QR library from the same origin. QR payloads are never

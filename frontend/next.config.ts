@@ -64,6 +64,12 @@ const nextConfig: NextConfig = {
           { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" },
         ],
       },
+      {
+        // Social-card images are fetched by Googlebot but are not search landing pages;
+        // keep them out of the "Crawled - currently not indexed" report noise.
+        source: "/:path*/opengraph-image",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
     ];
   },
 };

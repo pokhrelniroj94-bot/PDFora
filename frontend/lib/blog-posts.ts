@@ -114,8 +114,8 @@ const editorialBlogPosts: BlogPost[] = [
   },
   {
     slug: "split-pdf-and-extract-selected-pages",
-    title: "How to Split a PDF and Extract Only the Pages You Need",
-    description: "A step-by-step guide to splitting a large PDF, extracting selected pages and saving a smaller document for sharing.",
+    title: "How to Extract Pages from a PDF (or Split It) Free",
+    description: "Extract selected pages from a PDF or split it into parts online. Learn page ranges like 2,5,9-12 and avoid common page-number mistakes.",
     keyword: "how to split PDF and extract selected pages online",
     updated: "2026-11-01",
     readTime: "5 min read",
@@ -336,6 +336,7 @@ const priorityEditorialBlogPosts: BlogPost[] = [
       { heading: "15%, 18% and 20% tip examples", paragraphs: ["For a $60 bill, a 15% tip is $9, an 18% tip is $10.80, and a 20% tip is $12. The corresponding totals are $69, $70.80 and $72. If three people split each total equally, they pay $23, $23.60 or $24 per person. These are arithmetic examples, not universal tipping rules; customary amounts differ by country, venue and service.", "To calculate any percentage, convert it to a decimal or divide by 100. For example, $60 × 18 ÷ 100 = $10.80. You can enter 15, 18 or 20 in the calculator, or use another percentage that fits your situation."] },
       { heading: "Calculate the tip and split the bill", paragraphs: ["Enter the bill amount, type the percentage as a number such as 18 for 18%, and enter the number of people sharing equally. Run the Tip Calculator and review the tip amount, final total and per-person share.", "An equal split is only appropriate when everyone agrees to share the full amount evenly. If people ordered different items, calculate each person's food and drink share separately before allocating any shared tax, service charge or tip."] },
       { heading: "Check service charges and tax", paragraphs: ["Read the receipt before adding a tip. Some restaurants already include a service charge, gratuity or other fee. Adding another percentage without checking can mean paying twice for the same purpose. Local customs and restaurant policies differ, so the calculator does not recommend a universal tip rate.", "If you intend to tip on the pre-tax amount, use the subtotal before tax. If you prefer to tip on the full receipt amount, use that amount. The calculator follows the number you enter and does not detect or remove tax or service charges automatically."] },
+      { heading: "Tip on NPR 1,500: 10%, 15% and 20% examples", paragraphs: ["The same formula works in any currency. For a restaurant bill of NPR 1,500, a 10% tip is NPR 150 (total NPR 1,650), a 15% tip is NPR 225 (total NPR 1,725) and a 20% tip is NPR 300 (total NPR 1,800). So a 20 percent tip on 1,500 rupees is NPR 300.", "If three people split the NPR 1,800 total equally, each pays NPR 600. Some restaurants already add a service charge or VAT to the bill, so check the receipt first and tip only on the amount you intend to, rather than adding a second charge for the same service."] },
       { heading: "Rounding and payment", paragraphs: ["The exact per-person amount may include cents or paisa. Agree how to handle rounding before paying, especially when a bill is split between several people. Check the final receipt and payment amount before completing the transaction.", "The calculator is an arithmetic aid, not a payment service. It does not process a payment, convert currencies or determine what is customary in your location."] }
     ],
     faqs: [
@@ -343,6 +344,7 @@ const priorityEditorialBlogPosts: BlogPost[] = [
       { question: "How do I calculate a 20% tip?", answer: "Multiply the tip base by 0.20. For a $60 bill, a 20% tip is $12 before adding it to the bill." },
       { question: "How do I split a bill including tip?", answer: "Add the tip to the bill, then divide the final total by the number of people sharing equally. A $70.80 total split three ways is $23.60 each." },
       { question: "Should I tip on the bill before or after tax?", answer: "It depends on local practice and your preference. Use the pre-tax subtotal if that is the amount you intend to tip on, or the tax-inclusive total if that is your chosen basis." },
+      { question: "What is a 20 percent tip on 1,500 rupees?", answer: "Multiply 1,500 by 0.20 to get NPR 300. Adding it to the bill gives NPR 1,800 in total; split three ways, that is NPR 600 each." },
       { question: "What if a service charge is already included?", answer: "Check the receipt and restaurant policy before adding another tip. The calculator does not detect or remove service charges automatically." }
     ],
     toolLinks: [{ label: "Tip Calculator", href: "/tools/tip-calculator" }, { label: "Split Bill Calculator", href: "/tools/split-bill-calculator" }, { label: "Percentage Calculator", href: "/tools/percentage-of-number-calculator" }]

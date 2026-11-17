@@ -176,7 +176,7 @@ assert.match(robotsSource, /disallow:\s*\["\/api\/"\]/, "API endpoints should st
 assert.match(layoutSource, /inLanguage:\s*htmlLang/, "Structured data must reflect the server-rendered page language");
 assert.match(layoutSource, /title:\s*\{\s*default:[^,]+,\s*template:\s*"%s"\s*\}/, "Page titles must not append a second PDFora brand suffix");
 assert.ok((read("app/tools/page.tsx").match(/description:\s*"([^"]+)"/)?.[1]?.length ?? 999) <= 160, "Tool directory meta description must stay within 160 characters");
-assert.match(layoutSource, /publisher:\s*\{\s*"@id":\s*"https:\/\/pd-fora\.vercel\.app\/#organization"\s*\}/, "WebSite structured data should reference the canonical publisher entity");
+assert.ok(layoutSource.includes('publisher: { "@id": \`${PRODUCTION_ORIGIN}/#organization\` }') || layoutSource.includes('publisher: { "@id": "https://pd-fora.vercel.app/#organization" }'), "WebSite structured data should reference the canonical publisher entity");
 assert.doesNotMatch(layoutSource, /SoftwareApplication/, "SoftwareApplication schema must not be injected into unrelated blog, legal and utility pages");
 assert.match(homepageSource, /"@type":\s*"SoftwareApplication"/, "SoftwareApplication schema should appear on the homepage that describes the application");
 assert.doesNotMatch(robotsSource, /disallow:[^\]]*noindex|disallow:[^\]]*\/ne\//, "Do not block crawlers from reading noindex directives on localized pages");

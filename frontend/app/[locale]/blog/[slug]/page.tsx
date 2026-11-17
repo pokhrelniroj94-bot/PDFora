@@ -61,10 +61,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!isLocale(rawLocale)) return { title: "Article not found", robots: { index: false, follow: true } };
   const post = getPost(rawLocale, slug);
   if (!post) return { title: "Article not found", robots: { index: false, follow: true } };
+  const searchTitle = rawLocale === "ne" ? nepaliSearchTitles[post.slug] ?? post.title : post.title;
   return buildLocaleMetadata({
     locale: rawLocale,
     path: `/blog/${post.slug}`,
-    title: locale === "ne" ? nepaliSearchTitles[post.slug] ?? post.title : post.title,
+    title: searchTitle,
     description: post.description,
   });
 }

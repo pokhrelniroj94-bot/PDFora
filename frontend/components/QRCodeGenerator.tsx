@@ -24,7 +24,62 @@ const panel="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6";
 function Field({id,children,labels}:{id:string;children:ReactNode;labels:Record<string,string>}){return <label className="block"><span className={label}>{labels[id]}</span>{children}</label>;}
 type QRCodeApi={toDataURL:(text:string,options:Record<string,unknown>)=>Promise<string>;create:(text:string,options:Record<string,unknown>)=>{modules:{size:number;data:ArrayLike<number>}}};
 function getQrFromWindow():QRCodeApi|null{return (window as unknown as {QRCode?:QRCodeApi}).QRCode??null;}
-function loadQr():Promise<QRCodeApi>{const current=getQrFromWindow();if(current)return Promise.resolve(current);return new Promise((resolve,reject)=>{const existing=document.querySelector<HTMLScriptElement>('script[data-pdfora-qr="1"]');if(existing){existing.addEventListener("load",()=>{const qr=getQrFromWindow();if(qr)resolve(qr);else reject(new Error("QR library unavailable"));});existing.addEventListener("error",()=>reject(new Error("QR library unavailable")));return;}const script=document.createElement("script");script.src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js";script.async=true;script.dataset.pdforaQr="1";script.onload=()=>{const qr=getQrFromWindow();if(qr)resolve(qr);else reject(new Error("QR library unavailable"));};script.onerror=()=>reject(new Error("QR library could not load. Check your connection."));document.head.appendChild(script);});}
+let qrLoadPromise: Promise<QRCodeApi> | null = null;
+function loadQr(): Promise<QRCodeApi> {
+ const current = getQrFromWindow();
+ if (current) return Promise.resolve(current);
+ if (qrLoadPromise) return qrLoadPromise;
+ const sources = [
+  "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js",
+  "https://unpkg.com/qrcode@1.5.4/build/qrcode.min.js",
+  "https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.4/qrcode.min.js",
+ ];
+ qrLoadPromise = (async () => {
+  // Remove a stale failed script left by an earlier attempt. Its error event has
+  // already fired, so attaching another listener to it would never settle.
+  document.querySelectorAll<HTMLScriptElement>('script[data-pdfora-qr="1"]').forEach((node) => node.remove());
+  let lastError: Error = new Error("QR library could not load. Check your connection.");
+  for (const src of sources) {
+   try {
+    await new Promise<void>((resolve, reject) => {
+     const script = document.createElement("script");
+     const timeout = window.setTimeout(() => {
+      script.remove();
+      reject(new Error("QR library request timed out"));
+     }, 12000);
+     script.src = src;
+     script.async = true;
+     script.crossOrigin = "anonymous";
+     script.referrerPolicy = "no-referrer";
+     script.dataset.pdforaQr = "1";
+     script.onload = () => {
+      window.clearTimeout(timeout);
+      if (getQrFromWindow()) resolve();
+      else {
+       script.remove();
+       reject(new Error("QR library loaded without its API"));
+      }
+     };
+     script.onerror = () => {
+      window.clearTimeout(timeout);
+      script.remove();
+      reject(new Error("QR library source unavailable"));
+     };
+     document.head.appendChild(script);
+    });
+    const qr = getQrFromWindow();
+    if (qr) return qr;
+   } catch (error) {
+    lastError = error instanceof Error ? error : lastError;
+   }
+  }
+  throw lastError;
+ })().catch((error) => {
+  qrLoadPromise = null;
+  throw error;
+ });
+ return qrLoadPromise;
+}
 function escWifi(v:string){return v.replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/:/g,"\\:").replace(/"/g,'\\"');}
 function QRCodeGenerator({defaultLocale="en"}:{defaultLocale?:Locale}){
  const [locale,setLocale]=useState<Locale>(defaultLocale),[kind,setKind]=useState<Kind>("url"),[value,setValue]=useState("https://pd-fora.vercel.app"),[ssid,setSsid]=useState(""),[password,setPassword]=useState(""),[security,setSecurity]=useState("WPA"),[subject,setSubject]=useState(""),[message,setMessage]=useState(""),[name,setName]=useState(""),[org,setOrg]=useState(""),[job,setJob]=useState(""),[phone,setPhone]=useState(""),[email,setEmail]=useState(""),[website,setWebsite]=useState(""),[address,setAddress]=useState(""),[eventDate,setEventDate]=useState(""),[eventEnd,setEventEnd]=useState(""),[location,setLocation]=useState(""),[size,setSize]=useState("512"),[margin,setMargin]=useState("4"),[level,setLevel]=useState("M"),[foreground,setForeground]=useState("#111827"),[background,setBackground]=useState("#ffffff"),[png,setPng]=useState(""),[svg,setSvg]=useState(""),[payload,setPayload]=useState(""),[error,setError]=useState(""),[busy,setBusy]=useState(false);

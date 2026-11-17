@@ -31,6 +31,7 @@ import NepaliFinanceCalculatorWorkspace from "../../../../components/NepaliFinan
 import NepaliRemainingToolsWorkspace from "../../../../components/NepaliRemainingToolsWorkspace";
 import NepaliTypingTool from "../../../../components/NepaliTypingTool";
 import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../../../../lib/i18n/nepali-tool-routes";
+import { hindiToolSeo } from "../../../../lib/i18n/hindi-tool-seo";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 const nepaliTitles: Record<string, string> = {
@@ -295,6 +296,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const request = resolveLocalizedToolRequest(locale, slug);
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
+  if (request.locale === "hi" && hindiToolSeo[request.implementation.slug]) {
+    const title = `${hindiToolSeo[request.implementation.slug].title} | PDFora`;
+    const description = fitLocaleDescription(hindiToolSeo[request.implementation.slug].description);
+    return { ...metadata, title, description, openGraph: { ...metadata.openGraph, title, description }, twitter: { ...metadata.twitter, title, description } };
+  }
   if (request.locale === "ne" && nepaliTitles[request.implementation.slug] && nepaliDescriptions[request.implementation.slug]) {
     const title = nepaliTitles[request.implementation.slug];
     const description = fitLocaleDescription(nepaliDescriptions[request.implementation.slug] ?? metadata.description ?? "");

@@ -17,7 +17,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 |---|---:|---:|---:|---:|
 | en | 174 | 174 | 49 | 174 |
 | ne | 174 | 174 | 49 | 174 |
-| hi | 0 | 163 | 49 | 0 |
+| hi | 0 | 174 | 49 | 0 |
 | bn | 0 | 0 | 0 | 0 |
 | ur | 0 | 0 | 0 | 0 |
 | ar | 0 | 0 | 0 | 0 |
@@ -30,8 +30,10 @@ This matrix contains one row for every combination of **12 configured locales ×
 
 ## Current blockers
 
+- Hindi interface coverage is now 174/174 by route and visible-workspace source inspection. All 174 remain noindex and unpublished. Functional browser testing and native Hindi editorial review are still outstanding; no tool is approved for indexing yet.
+
 - Nepali has 174 route registrations out of 174 catalogued tools. Route registration is not proof that every interface string, validation, error, output or download is localized or functionally verified. Native-speaker review is not certified by this matrix.
-- Hindi has 163 source-registered translated tool interfaces (49 PDF plus 114 catalog tools); 11 catalog tools remain unimplemented. Hindi remains unpublished and excluded from indexing until browser QA and native-speaker review are complete.
+- Hindi now has source-registered interfaces for all 174 catalogued tools (49 PDF plus 125 catalog tools). This does not certify full browser QA, every workflow edge case, or native-speaker review. Several Nepal-specific utilities use clearly labelled manual-rate estimates or explicitly disclose unavailable official data. Hindi remains unpublished and excluded from indexing until browser QA and native-speaker review are complete.
 - Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
 - The targeted-test slug registry is a source-level indicator only; it must not be interpreted as full browser QA. The separate Nepali source audit reports current test references and per-tool route evidence.
 - OCR is not counted among the 174 available tools because it remains excluded from the canonical PDF inventory.

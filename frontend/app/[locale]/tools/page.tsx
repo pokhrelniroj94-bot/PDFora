@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import HindiToolsDirectory from "./HindiToolsDirectory";
+import { isRoutable } from "../../../lib/i18n/config";
 import { hreflangMap } from "../../../lib/i18n/routing";
 import { nepaliPdfRoutes } from "../../../lib/i18n/nepali-pdf-routes";
 import { nepaliToolNames } from "../../../lib/i18n/pdf-tool-names-ne";
@@ -75,7 +76,7 @@ function ToolLink({ slug, title }: { slug: string; title?: string }) {
 
 export default async function NepaliToolsDirectory({ params }: Props) {
   const { locale } = await params;
-  if (locale === "hi") return <HindiToolsDirectory params={Promise.resolve({ locale })} />;
+  if (locale === "hi" && isRoutable("hi")) return <HindiToolsDirectory params={Promise.resolve({ locale })} />;
   if (locale !== "ne") notFound();
   return <main lang="ne" className="mx-auto min-h-screen max-w-6xl px-4 py-10 sm:px-6">
     <header className="mb-10">

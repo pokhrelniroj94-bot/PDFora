@@ -178,6 +178,10 @@ export default function Page() {
             handle.
           </p>
 
+          <p className="mt-6 text-sm leading-7 text-slate-600">
+            Need to meet a specific upload limit? Read our practical guide on <a href="/blog/compress-pdf-under-200kb-nepal-online-forms" className="font-semibold text-blue-700 underline underline-offset-4">how to compress a PDF under 200KB for Nepal online forms</a>. It explains why the result depends on the original scan and how to check every page before submitting.
+          </p>
+
           <h2 className="mt-10 text-2xl font-black">
             Is PDFora Compress PDF free?
           </h2>

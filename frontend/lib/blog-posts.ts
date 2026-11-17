@@ -23,6 +23,40 @@ export type BlogPost = {
 
 const editorialBlogPosts: BlogPost[] = [
   {
+    slug: "compress-pdf-under-200kb-nepal-online-forms",
+    title: "How to Compress a PDF Under 200KB for Nepal Forms",
+    description: "Reduce a PDF for a 200KB upload limit on Nepal forms. Follow safe compression steps, check readability and understand why exact sizes are not guaranteed.",
+    keyword: "compress PDF under 200KB Nepal online form",
+    updated: "2026-11-17",
+    readTime: "6 min read",
+    intro: "Some online applications, university forms and government services set a maximum PDF upload size. If the instructions for your particular Lok Sewa, TU, scholarship or other application say 200KB, this guide explains how to try to meet that limit without making certificates, photos, signatures or stamps unreadable. Upload limits vary by form and year, so always follow the live portal instructions. PDFora's current Compress PDF workflow sends the selected file to its processing service; read the privacy notice before uploading sensitive documents.",
+    sections: [
+      { heading: "1. Confirm the exact upload limit first", paragraphs: ["Open the application instructions and check whether 200KB is a strict maximum, whether the portal accepts PDF, and whether it requires all pages in one file. Do not assume every Lok Sewa, TU or government form uses the same limit; requirements can differ between services, notices and application rounds.", "The labels KB and KiB can also differ. In decimal units, 200 KB is 200,000 bytes; 200 KiB is 204,800 bytes. NIST explains the binary prefix KiB as 1,024 bytes. When a portal shows a byte count or rejects a file close to the limit, use the portal's stated byte limit rather than relying on a rounded file-size label."] },
+      { heading: "2. Compress the PDF with PDFora", paragraphs: ["Open PDFora's Compress PDF tool, choose the original PDF and start compression. When processing finishes, download the new file and check its actual size in your device's file manager or PDF viewer. The compressor uses PDFora's processing service rather than the browser-only PDF worker, so the selected document is uploaded for processing. Review the privacy notice before submitting identity documents, certificates or other sensitive files.", "Keep the original file unchanged until you have confirmed that the compressed copy is complete and readable."], bullets: ["Open the Compress PDF tool.", "Select the PDF required by the application.", "Start compression and wait for the result.", "Download the compressed copy and check whether it is below the portal's stated maximum.", "Open the file and inspect every page before uploading it to the application."] },
+      { heading: "3. If the PDF is still above 200KB", paragraphs: ["A single compression pass cannot guarantee a particular file size. Scanned pages and photographs often contain much more image data than text-based PDFs. If the file is still too large, return to the original scan and, where the application permits, scan in grayscale, avoid unnecessary colour backgrounds, crop excess blank borders and choose a moderate resolution that keeps small text legible.", "If the document contains pages that are genuinely not required, remove them only when the official instructions allow it. Split a PDF only if the portal accepts multiple uploads; do not separate pages when the application requires one complete document. Avoid repeatedly compressing the already-compressed output because extra passes may reduce clarity without making much difference to size."] },
+      { heading: "4. Check the document before submitting", paragraphs: ["A small file is not useful if an officer cannot read it. Open the downloaded PDF at normal zoom and check names, dates of birth, registration numbers, citizenship or certificate details, signatures, stamps, QR codes and every required page. Confirm that pages are upright, in the correct order and not cut off.", "Check the final file size after downloading, not just the size shown before compression. If the portal rejects the file, read its error message and compare the exact byte limit, accepted format and page requirements."] },
+      { heading: "5. Protect private application documents", paragraphs: ["Identity cards, academic certificates and government application documents may contain personal information. PDFora's current compression route uploads the selected PDF to its processing service; it is not accurate to describe this particular compressor as browser-only or local processing. Read the PDFora privacy notice and the receiving portal's instructions before uploading. Do not upload documents you are not authorised to share."] }
+    ],
+    faqs: [
+      { question: "Can every PDF be compressed under 200KB?", answer: "No. The result depends on page count, scanned image resolution, embedded fonts and the original file. A multi-page photo scan may not reach 200KB without making important details unreadable." },
+      { question: "Do all Lok Sewa and TU forms require a 200KB PDF?", answer: "No universal 200KB rule applies to every form. Check the current notice or upload instructions for the specific exam, university or government service you are using." },
+      { question: "Is 200KB the same as 200KiB?", answer: "Not exactly. 200 KB in decimal units is 200,000 bytes, while 200 KiB is 204,800 bytes. Follow a portal's stated byte limit if it provides one." },
+      { question: "Will PDF compression make my certificate blurry?", answer: "It can reduce image quality, especially for scanned documents. Inspect small text, numbers, signatures, stamps and QR codes after compression; use a clearer original scan if details are no longer readable." },
+      { question: "Can I remove pages to get below the upload limit?", answer: "Only remove pages that the application does not require. If the portal expects a complete certificate or multi-page document, keep all required pages together." },
+      { question: "Can I compress a PDF on my phone?", answer: "You can open PDFora in a supported mobile browser, select the PDF and download the result. Check the downloaded file in your phone's file manager and open every page before submitting." }
+    ],
+    toolLinks: [
+      { label: "Compress PDF", href: "/compress-pdf" },
+      { label: "PDF Information", href: "/pdf-information" },
+      { label: "Images to PDF", href: "/images-to-pdf" },
+      { label: "Delete PDF Pages", href: "/delete-pages" }
+    ],
+    sources: [
+      { label: "NIST: Definitions of the SI units and binary prefixes", url: "https://pml.nist.gov/cuu/Units/binary.html" },
+      { label: "Adobe Acrobat Help: Reduce PDF file size", url: "https://helpx.adobe.com/acrobat/desktop/create-documents/optimize-pdfs/reduce-file-size.html" }
+    ]
+  },
+  {
     slug: "compress-pdf-to-under-1mb-online",
     title: "How to Compress a PDF to Under 1MB Online",
     description: "Learn practical ways to reduce a PDF to under 1MB for online forms, email and document uploads, and find out why some files cannot reach an exact size.",

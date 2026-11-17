@@ -393,6 +393,7 @@ test("switcher: never offers an unavailable page", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
   assert.deepEqual(switcher.getSwitcherOptions("/").map((o) => o.locale), ["en", "ne"]);
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"], "unpublished Hindi must never be offered in production");
+  assert.deepEqual(switcher.getSwitcherOptions("/tools/qr-code-generator").map((o) => o.locale), config.locales, "only the independently translated QR page offers all 12 languages");
   process.env.PDFORA_I18N_PREVIEW = "1";
   const home = switcher.getSwitcherOptions("/");
   assert.deepEqual(home.map((o) => o.locale), ["en", "ne"]);

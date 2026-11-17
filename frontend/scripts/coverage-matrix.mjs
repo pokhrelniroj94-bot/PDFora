@@ -106,7 +106,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 - Catalog utilities: ${catalog.length}
 - Unique tools: ${tools.length}
 - Matrix rows: ${matrix.length}
-- Published locales: ${[...publishedLocales].join(", ")}
+- Published locales: ${[...publishedLocales].join(", ")}; the QR generator is a separately approved multilingual exception
 - RTL locales: ur, ar
 
 | Locale | Published tool rows | Interface-present rows | Content-present rows | Index-eligible rows |
@@ -116,7 +116,7 @@ ${summary}
 ## Current blockers
 
 - Nepali has ${localizedNepaliTools.size} route registrations out of ${tools.length} catalogued tools. Route registration is not proof that every interface string, validation, error, output or download is localized or functionally verified. Native-speaker review is not certified by this matrix.
-- Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
+- Hindi has dedicated visible interfaces for all ${localizedHindiTools.size} routes, but only the already-approved QR generator is published/indexable. The remaining Hindi routes stay unpublished and noindex pending browser/mobile QA and native Hindi editorial review. Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished except for the QR generator.
 - The targeted-test slug registry is a source-level indicator only; it must not be interpreted as full browser QA. The separate Nepali source audit reports current test references and per-tool route evidence.
 - OCR is not counted among the 175 available tools because it remains excluded from the canonical PDF inventory.
 `;

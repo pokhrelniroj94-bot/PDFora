@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-17T10:29:27.103Z",
-  "sourceCommit": "25a0d387139bf29b17e6590e7216966512626332",
+  "generatedAt": "2026-11-17T10:34:48.039Z",
+  "sourceCommit": "a48ebce691d3557af028c3d712e677a643e1c6a5",
   "methodology": {
     "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
     "routeCoverage": "Dynamic route handlers serve multiple slugs; localized route equivalents are reported as counts only, not percentages of page source files.",
@@ -14,7 +14,7 @@
     "apiRouteSourceFiles": 6,
     "pdfGuides": 49,
     "nepaliPdfGuides": 49,
-    "editorialBlogArticles": 19,
+    "editorialBlogArticles": 21,
     "nepalBlogArticles": 19,
     "publishedNepaliPdfRoutes": 49,
     "publishedNepaliUtilityRoutes": 116,
@@ -22,10 +22,10 @@
     "publishedNepaliPublicInfoRoutes": 2,
     "publishedNepaliMarketDashboardRoute": true,
     "publishedNepaliResumeBuilderRoute": true,
-    "publishedNepaliBlogRoutes": 39,
+    "publishedNepaliBlogRoutes": 41,
     "publishedNepaliStaticRoutes": 4,
     "publishedNepaliHomeRoute": true,
-    "publishedNepaliRouteEquivalents": 222
+    "publishedNepaliRouteEquivalents": 224
   },
   "locales": {
     "en": {
@@ -41,8 +41,8 @@
         "percent": 100
       },
       "blogCoverage": {
-        "translated": 38,
-        "total": 38,
+        "translated": 40,
+        "total": 40,
         "percent": 100,
         "note": "English source content; editorial review is not independently measured."
       },
@@ -53,7 +53,7 @@
       "status": "Partially translated",
       "published": true,
       "sourceRouteFiles": 71,
-      "translatedRoutes": 222,
+      "translatedRoutes": 224,
       "routeCoveragePercent": null,
       "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {
@@ -62,10 +62,10 @@
         "percent": 100
       },
       "blogCoverage": {
-        "translated": 38,
-        "total": 38,
+        "translated": 40,
+        "total": 40,
         "percent": 100,
-        "note": "All 38 curated editorial articles are translated; generated catalog guides remain noindex and are not counted."
+        "note": "All 40 curated editorial articles are translated; generated catalog guides remain noindex and are not counted."
       },
       "namespaceFiles": 3,
       "reviewStatus": "Existing Nepali routes and PDF guide copy; complete site-wide native review not assessed"
@@ -84,7 +84,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,
@@ -104,7 +104,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,
@@ -124,7 +124,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,
@@ -144,7 +144,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,
@@ -164,7 +164,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,
@@ -184,7 +184,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,
@@ -204,7 +204,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,
@@ -224,7 +224,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,
@@ -244,7 +244,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,
@@ -264,7 +264,7 @@
       },
       "blogCoverage": {
         "translated": 0,
-        "total": 38,
+        "total": 40,
         "percent": 0
       },
       "namespaceFiles": 3,

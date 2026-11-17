@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T10:29:26.945Z",
+  "generatedAt": "2026-11-17T10:34:48.727Z",
   "methodology": "Derived from current catalog, canonical PDF inventory, Nepali route allowlists, page dispatch source, localized verification allowlist and registered Nepali blog records. Static source evidence is not runtime/browser or human review evidence.",
   "inventory": {
     "uniqueTools": 174,
@@ -8,10 +8,10 @@
     "nepaliToolRoutes": 174,
     "nepaliPdfRoutes": 49,
     "nepaliCatalogRoutes": 125,
-    "nepaliNonToolRoutes": 48,
-    "nepaliRouteEquivalents": 222,
+    "nepaliNonToolRoutes": 50,
+    "nepaliRouteEquivalents": 224,
     "targetedUnitTestToolCount": 82,
-    "nepaliBlogArticles": 38
+    "nepaliBlogArticles": 40
   },
   "checks": {
     "duplicateCatalogSlugs": [],
@@ -22,7 +22,7 @@
     "duplicateBlogTitles": [],
     "duplicateBlogDescriptions": [],
     "blogEditorial": {
-      "total": 38,
+      "total": 40,
       "missingSources": [],
       "brokenInternalLinks": [],
       "invalidSourceUrls": [],

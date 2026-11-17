@@ -468,6 +468,54 @@ const priorityEditorialBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "Date Add or Subtract Calculator", href: "/tools/date-add-subtract-calculator" }, { label: "Business Days Calculator", href: "/tools/business-days-calculator" }, { label: "Date Difference Calculator", href: "/tools/date-difference-calculator" }],
     sources: [{ label: "Wikipedia: Leap year", url: "https://en.wikipedia.org/wiki/Leap_year" }]
+  },
+  {
+    slug: "bmr-calculator-guide",
+    title: "BMR Calculator: Mifflin–St Jeor Formula & Example",
+    description: "See how basal metabolic rate is estimated with the Mifflin–St Jeor equation, with a worked example, its limits and how BMR differs from daily calories.",
+    keyword: "bmr calculator mifflin st jeor formula",
+    updated: "2026-11-17",
+    readTime: "5 min read",
+    intro: "Basal metabolic rate (BMR) is an estimate of the energy your body uses at rest. The BMR Calculator applies the Mifflin–St Jeor equation to your weight, height, age and the sex input of the formula. This guide shows the arithmetic and explains what the number can and cannot tell you. It is an educational estimate, not medical advice.",
+    sections: [
+      { heading: "The Mifflin–St Jeor formula", paragraphs: ["BMR (kcal/day) = 10 × weight in kg + 6.25 × height in cm − 5 × age in years + 5 for the male equation, or − 161 for the female equation. The calculator asks you to choose male or female because the published equation has these two constants.", "The equation was published in 1990 from measurements of healthy adults, and it is a population-level estimate rather than a measurement of one person."] },
+      { heading: "Worked example", paragraphs: ["Take a 25-year-old who weighs 65 kg and is 170 cm tall. The shared part is 10 × 65 + 6.25 × 170 − 5 × 25 = 650 + 1,062.5 − 125 = 1,587.5. With the male constant (+5) the result is 1,592.5, which the calculator rounds to 1,593 kcal/day. With the female constant (−161) it is 1,426.5, shown as 1,427 kcal/day.", "Use the same units each time: kilograms for weight and centimetres for height. Entering pounds or inches gives a wrong result."] },
+      { heading: "BMR is not your daily calorie need", paragraphs: ["BMR covers resting energy only. Total daily energy expenditure also includes movement, exercise and digestion, so it is higher. A common rough step is to multiply BMR by an activity factor, for example 1.2 for very little exercise, which turns 1,593 into about 1,912 kcal/day. Treat any such figure as a starting point rather than a target."] },
+      { heading: "Limits of the estimate", paragraphs: ["Muscle mass, body composition, health conditions, pregnancy and medicines all change real energy use, and the equation ignores them. Do not use the result as a diet prescription. For weight, nutrition or medical decisions, speak to a doctor or registered dietitian."] }
+    ],
+    faqs: [
+      { question: "What is the BMR formula used by the calculator?", answer: "Mifflin–St Jeor: 10 × kg + 6.25 × cm − 5 × age, then +5 for the male equation or −161 for the female equation." },
+      { question: "What is the BMR for a 25-year-old male, 65 kg and 170 cm?", answer: "About 1,593 kcal/day. The same inputs with the female equation give about 1,427 kcal/day." },
+      { question: "Is BMR the same as the calories I should eat?", answer: "No. BMR is resting energy only. Daily needs are higher once activity is included, and the right target depends on your goals and health." },
+      { question: "Can I enter pounds or inches?", answer: "No. Convert to kilograms and centimetres first, otherwise the result will be wrong." },
+      { question: "How accurate is the estimate?", answer: "It is a population estimate. Body composition, health and medicines can make your actual resting energy differ." }
+    ],
+    toolLinks: [{ label: "BMR Calculator", href: "/tools/bmr-calculator" }, { label: "BMI Calculator", href: "/tools/bmi-calculator" }, { label: "Unit Converter", href: "/tools/unit-converter" }],
+    sources: [{ label: "Mifflin et al. (1990): A new predictive equation for resting energy expenditure", url: "https://pubmed.ncbi.nlm.nih.gov/2305711/" }]
+  },
+  {
+    slug: "url-extractor-guide",
+    title: "How to Extract URLs from Text or a Document",
+    description: "Pull every http and https link out of pasted text, remove duplicates and avoid trailing-punctuation mistakes. Includes examples and limits.",
+    keyword: "extract urls from text url extractor",
+    updated: "2026-11-17",
+    readTime: "4 min read",
+    intro: "Copying links one by one from a report, email or web page is slow and error-prone. The URL Extractor scans pasted text, finds web addresses that start with http:// or https:// and lists each unique link once. This guide explains what it finds, what it misses and what to check before using the list.",
+    sections: [
+      { heading: "How to extract links from text", paragraphs: ["Copy the text that contains the links, paste it into the URL Extractor and run it. The result is one URL per line with repeated links removed, or the message No URLs found when nothing matches.", "For example, pasting \"Visit https://example.com and https://example.org/help, then https://example.com again\" returns two unique addresses rather than three."] },
+      { heading: "What counts as a URL here", paragraphs: ["The extractor looks for text that begins with http:// or https:// and continues until it reaches a space, a quote or one of the characters < > ( ) [ ] { }. Addresses written without a scheme, such as www.example.com, and other schemes such as mailto: or ftp: are not matched."] },
+      { heading: "Check trailing punctuation and brackets", paragraphs: ["A link at the end of a sentence may keep its full stop or comma, so https://example.com/help. can appear with the dot attached. Remove it before opening or importing the link.", "Because round brackets end a match, an address that legitimately contains parentheses, such as some wiki page names, will be cut short. Compare the list with the source for important links."] },
+      { heading: "Before you use the list", paragraphs: ["A valid-looking address can still be broken, redirected or unsafe, and extraction does not visit the page. Open a sample of links, and do not paste confidential documents into an online tool. For email addresses and phone numbers, use the related extractors instead."] }
+    ],
+    faqs: [
+      { question: "How do I extract all URLs from text?", answer: "Paste the text into the URL Extractor and run it. It lists every http and https link once, one per line." },
+      { question: "Does the extractor remove duplicate links?", answer: "Yes. A link that appears several times is listed once." },
+      { question: "Why does a link include a full stop at the end?", answer: "The tool does not strip sentence punctuation. Delete the trailing dot or comma before using the link." },
+      { question: "Will it find links without http or https?", answer: "No. Addresses such as www.example.com without a scheme, and mailto: or ftp: links, are not matched." },
+      { question: "Does it check that the links work?", answer: "No. It only finds text that looks like a web address. Open the links to confirm they work." }
+    ],
+    toolLinks: [{ label: "URL Extractor", href: "/tools/url-extractor" }, { label: "Email Extractor", href: "/tools/email-extractor" }, { label: "URL Query Parser", href: "/tools/url-query-parser" }],
+    sources: [{ label: "RFC 3986: Uniform Resource Identifier (URI) Generic Syntax", url: "https://www.rfc-editor.org/rfc/rfc3986" }]
   }
 ];
 

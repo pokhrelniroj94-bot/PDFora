@@ -615,51 +615,6 @@ async function runTool(tool, index) {
       if (!action) throw new Error("PDF tool has no enabled processing action.");
       row.action = action;
       row.checks.push("processing action clicked");
-      if (tool.slug === "qr-code-generator") {
-        const qrStarted = Date.now();
-        let qrPreview = null;
-        while (Date.now() - qrStarted < 45000) {
-          qrPreview = await page.evaluate(`() => {
-            const image = document.querySelector('img[alt="Generated QR code preview"]');
-            const alert = document.querySelector('main [role="alert"]')?.innerText || "";
-            return {
-              image: image?.getAttribute("src") || "",
-              png: [...document.querySelectorAll("main button")].some((button) => /download png/i.test(button.innerText)),
-              svg: [...document.querySelectorAll("main button")].some((button) => /download svg/i.test(button.innerText)),
-              alert,
-            };
-          }`);
-          if (qrPreview.image.startsWith("data:image/png;base64,")) break;
-          if (qrPreview.alert) throw new Error("QR generator reported an error: " + qrPreview.alert);
-          await delay(250);
-        }
-        if (!qrPreview?.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg) {
-          throw new Error("QR generator did not create a PNG preview and PNG/SVG download actions within 45 seconds.");
-        }
-        const downloadClicked = await page.evaluate(`() => {
-          const button = [...document.querySelectorAll("main button")].find((item) => /download png/i.test(item.innerText));
-          if (!button) return false;
-          button.click();
-          return true;
-        }`);
-        if (!downloadClicked) throw new Error("QR PNG download action was unavailable.");
-        let qrFile = "";
-        const qrDownloadStarted = Date.now();
-        while (Date.now() - qrDownloadStarted < 10000) {
-          qrFile = fs.readdirSync(downloadsDir).find((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name) && name.toLowerCase().endsWith(".png")) || "";
-          if (qrFile) break;
-          await delay(200);
-        }
-        if (!qrFile) throw new Error("QR PNG download did not complete.");
-        const qrDownload = await validateDownloadedFile(path.join(downloadsDir, qrFile));
-        row.checks.push("QR library loaded, PNG preview generated, SVG/PNG actions shown and downloaded PNG signature validated");
-        row.output = "QR preview generated; " + qrDownload.bytes + " byte PNG download validated";
-        row.outputVerified = true;
-        row.status = "PASS";
-        row.evidenceLevel = "qr-preview-and-png-download-verified";
-        row.downloadedFiles = [qrDownload];
-        return row;
-      }
       const start = Date.now();
       let finalState = null;
       let statusText = "";

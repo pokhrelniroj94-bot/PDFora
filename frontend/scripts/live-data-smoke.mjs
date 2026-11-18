@@ -4,15 +4,24 @@ const failures = [];
 async function request(path) {
   return fetch(new URL(path, base), { cache: "no-store", signal: AbortSignal.timeout(35000) });
 }
+async function requestWithRetry(path, attempts = 3) {
+  let response;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    response = await request(path);
+    if (![502, 503, 504].includes(response.status) || attempt === attempts - 1) return response;
+    await new Promise((resolve) => setTimeout(resolve, 1500 * (attempt + 1)));
+  }
+  return response;
+}
 function check(name, ok, detail = "") {
   checks.push({ name, status: ok ? "PASS" : "FAIL", detail });
   if (!ok) failures.push(name + (detail ? ": " + detail : ""));
 }
 const [forexResponse, nepseResponse, newsResponse, invalidForex, invalidNepse] = await Promise.all([
-  request("/api/nepal-forex"),
+  requestWithRetry("/api/nepal-forex"),
   request("/api/nepse-market?symbol=NEPSE&period=1Y"),
   request("/api/nepal-market-news"),
-  request("/api/nepal-forex?date=2099-99-99"),
+  requestWithRetry("/api/nepal-forex?date=2099-99-99"),
   request("/api/nepse-market?symbol=INVALID%20SYMBOL&period=1Y"),
 ]);
 check("NRB forex endpoint responds HTTP 200", forexResponse.status === 200, String(forexResponse.status));

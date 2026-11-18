@@ -128,7 +128,7 @@ assert.ok(marketApi.includes('read<Json>("/data/market/top_stocks.json", 60)'), 
 assert.ok(marketApi.includes('read<unknown[]>("/data/market/sector_indices.json", 60)'), "NEPSE sector source must be an array");
 assert.ok(marketApi.includes('read<Json>("/data/market/supply_demand.json", 60)'), "NEPSE supply/demand source must be an object");
 assert.ok(marketApi.includes("summary: pick(summaryResult, [])"), "NEPSE summary fallback must remain an array for dashboard rendering");
-assert.ok(marketApi.includes('s-maxage=60'), "NEPSE API response cache must allow frequent quote updates");
+assert.ok(marketApi.includes('"Cache-Control": "no-store, max-age=0"'), "NEPSE API response must not be served from a stale CDN/browser cache");
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
 assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
 assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market dashboard route is missing");

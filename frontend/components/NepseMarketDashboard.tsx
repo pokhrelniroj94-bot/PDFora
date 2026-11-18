@@ -11,6 +11,27 @@ type Summary = { detail: string; value: number | string };
 type TopMover = { symbol: string; ltp?: number; pointChange?: number; percentageChange?: number; securityName?: string };
 type DepthRow = { symbol: string; securityName?: string; totalQuantity: number; totalOrder: number };
 type MarketData = { symbol: string; source: string; sourceUpdatedAt: string; dataCoverage?: { stockQuotes?: string; indexCards?: string; marketSummary?: string; topMovers?: string; sectorIndices?: string; supplyDemand?: string; historicalCharts?: string }; latestHistoryDate: string | null; status: { is_open?: boolean; last_checked?: string }; indices: Index[]; summary: Summary[]; topStocks: Record<string, TopMover[]>; supplyDemand: { supplyList?: DepthRow[]; demandList?: DepthRow[] }; sectors: Array<{ indexName?: string; indexCode?: string; description?: string; currentValue?: number | null; change?: number | null; perChange?: number | null; latestDate?: string | null }>; stocks: Stock[]; points: Point[]; partial?: boolean; quoteStale?: boolean; fetchedAt?: string; error?: string };
+async function readMarketResponse(response: Response): Promise<MarketData> {
+  const body = await response.text();
+  let payload: Partial<MarketData> & { error?: string } = {};
+  if (body.trim()) {
+    try {
+      payload = JSON.parse(body) as Partial<MarketData> & { error?: string };
+    } catch {
+      throw new Error(response.ok
+        ? "Market data service returned an invalid response. Your last successful snapshot is kept; please retry."
+        : "Market data service returned an invalid error response (HTTP " + response.status + ").");
+    }
+  } else {
+    throw new Error("Market data service returned an empty response (HTTP " + response.status + "). Your last successful snapshot is kept; please retry.");
+  }
+  if (!response.ok) throw new Error(payload.error || "Market data unavailable (HTTP " + response.status + ").");
+  if (!Array.isArray(payload.stocks) || !Array.isArray(payload.indices)) {
+    throw new Error("Market data response is incomplete. Your last successful snapshot is kept; please retry.");
+  }
+  return payload as MarketData;
+}
+
 const n = (v: unknown, digits = 2) => typeof v === "number" && Number.isFinite(v) ? v.toLocaleString("en-IN", { maximumFractionDigits: digits }) : "—";
 const money = (v: unknown) => typeof v === "number" && Number.isFinite(v) ? "Rs. " + v.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "—";
 const pctClass = (v: number) => v > 0 ? "text-emerald-700" : v < 0 ? "text-rose-700" : "text-slate-600";
@@ -98,8 +119,8 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
   const load=useCallback(async (nextSymbol=symbol,nextPeriod=period) => {
     try {
       const response=await fetch("/api/nepse-market?symbol="+encodeURIComponent(nextSymbol)+"&period="+nextPeriod,{cache:"no-store"});
-      const json=await response.json() as MarketData;
-      if(!response.ok) throw new Error(json.error||"Market data unavailable.");
+      const json=await readMarketResponse(response);
+      
       setData(json); setError("");
     } catch(e) { setError(e instanceof Error?e.message:"Market data temporarily unavailable."); }
     finally { setLoading(false); }
@@ -112,8 +133,8 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
       inFlight=true;
       try {
         const response=await fetch("/api/nepse-market?symbol="+encodeURIComponent(symbol)+"&period="+period,{cache:"no-store"});
-        const json=await response.json() as MarketData;
-        if(!response.ok) throw new Error(json.error||"Market data unavailable.");
+        const json=await readMarketResponse(response);
+        
         if(active){setData(json);setError("");}
       } catch(e) {
         if(active) setError(e instanceof Error?e.message:"Market data temporarily unavailable.");

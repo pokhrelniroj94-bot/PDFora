@@ -28,7 +28,20 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Production build
+        id: production-build
         run: npm run build
+      - name: Commit build-verified dependency updates
+        if: steps.production-build.outcome == 'success'
+        working-directory: .
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/package.json frontend/package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m "security: update Next.js and Sentry dependencies [skip ci]"
+            git pull --rebase origin security-next-upgrade-2026-11-18
+            git push origin HEAD:security-next-upgrade-2026-11-18
+          fi
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
       - name: Upload generated lockfile for review if audit remains blocked
@@ -40,14 +53,3 @@ jobs:
             frontend/package.json
             frontend/package-lock.json
           if-no-files-found: error
-      - name: Commit verified dependency updates
-        working-directory: .
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add frontend/package.json frontend/package-lock.json
-          if ! git diff --cached --quiet; then
-            git commit -m "security: upgrade vulnerable frontend dependencies [skip ci]"
-            git pull --rebase origin security-next-upgrade-2026-11-18
-            git push origin HEAD:security-next-upgrade-2026-11-18
-          fi

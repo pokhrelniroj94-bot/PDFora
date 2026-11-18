@@ -85,6 +85,7 @@ const report = {
   forex: forex ? { source: forex.source, requestedDate: forex.requestedDate, rateDate: forex.rateDate, stale: forex.isStale, fallback: forex.fallback, rates: forex.rates?.length } : null,
   nepse: nepse ? { source: nepse.source, sourceUpdatedAt: nepse.sourceUpdatedAt, quoteAgeMinutes: nepse.quoteAgeMinutes, quoteStale: nepse.quoteStale, partial: nepse.partial, stocks: nepse.stocks?.length, indices: nepse.indices?.length } : null,
   checks,
+  warnings,
   counts: { pass: checks.filter((x) => x.status === "PASS").length, fail: failures.length },
 };
 console.log(JSON.stringify(report, null, 2));

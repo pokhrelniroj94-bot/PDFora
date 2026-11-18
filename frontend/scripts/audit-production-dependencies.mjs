@@ -22,7 +22,7 @@ try {
   process.exit(result.status || 1);
 }
 
-const findings = Object.entries(report.vulnerabilities || {});
+if (result.error || report.error || (!report.metadata && !report.vulnerabilities)) {\n  console.error(report.error?.summary || result.stderr || "npm audit could not complete.");\n  process.exit(1);\n}\n\nconst findings = Object.entries(report.vulnerabilities || {});
 const unexpected = findings.filter(([name, finding]) => {
   if (!allowedDependencyChain.has(name)) return true;
   const via = Array.isArray(finding.via) ? finding.via : [];
@@ -38,7 +38,7 @@ const unexpected = findings.filter(([name, finding]) => {
   );
 });
 
-if (unexpected.length > 0) {
+if (unexpected.length > 0 || (result.status !== 0 && findings.length === 0)) {
   console.error("Production dependency audit found unapproved vulnerabilities:");
   for (const [name, finding] of unexpected) {
     console.error(`- ${name}: ${finding.severity}; via ${JSON.stringify(finding.via)}`);

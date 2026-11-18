@@ -16,7 +16,11 @@ async function readMarketResponse(response: Response): Promise<MarketData> {
   let payload: Partial<MarketData> & { error?: string } = {};
   if (body.trim()) {
     try {
-      payload = JSON.parse(body) as Partial<MarketData> & { error?: string };
+      const parsed: unknown = JSON.parse(body);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        throw new Error("Market data service returned an invalid response shape.");
+      }
+      payload = parsed as Partial<MarketData> & { error?: string };
     } catch {
       throw new Error(response.ok
         ? "Market data service returned an invalid response. Your last successful snapshot is kept; please retry."
@@ -120,7 +124,6 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
     try {
       const response=await fetch("/api/nepse-market?symbol="+encodeURIComponent(nextSymbol)+"&period="+nextPeriod,{cache:"no-store"});
       const json=await readMarketResponse(response);
-      
       setData(json); setError("");
     } catch(e) { setError(e instanceof Error?e.message:"Market data temporarily unavailable."); }
     finally { setLoading(false); }

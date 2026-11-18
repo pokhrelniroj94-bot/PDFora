@@ -317,7 +317,7 @@ export default function CatalogToolSEOContent({
         <h2 className="text-xl font-black text-slate-950">How many paisa are in 1 aana?</h2>
         <p className="mt-3 leading-8 text-slate-700"><strong>1 aana equals 4 paisa.</strong> In the standard hill-region land measurement system, 1 ropani = 16 aana = 64 paisa = 256 daam. One aana is also 342.25 square feet, so you can compare traditional units with square feet and square metres.</p>
         <p className="mt-3 leading-8 text-slate-700">For example, 2 aana equals 8 paisa, while 1 ropani and 8 aana equals 24 aana or 8,214 square feet. The Terai system is separate: 1 bigha = 20 kattha = 400 dhur. Use the matching input section rather than mixing hill and Terai units.</p>
-        <p className="mt-3 leading-8 text-slate-700">This answers common searches including “1 aana in paisa”, “1 aana to paisa”, “1 ropani ma kati aana”, “1 aana in square feet” and “ropani aana paisa daam conversion”. These are unit conversions only, not a cadastral survey or confirmation of a property's recorded area.</p>
+        <p className="mt-3 leading-8 text-slate-700">This answers common searches including “1 aana in paisa”, “1 aana to paisa”, “1 ropani ma kati aana”, “1 aana in square feet” and “ropani aana paisa daam conversion”. These are unit conversions only, not a cadastral survey or confirmation of a property&apos;s recorded area.</p>
       </section>}
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and important limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.caution}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>
@@ -356,7 +356,7 @@ export default function CatalogToolSEOContent({
     "gold-tola-gram-converter": {
       heading: "Convert gold and silver weight between tola and grams",
       intro: "Convert a jewellery or bullion weight from tola to grams, or grams back to tola. The converter uses the standard mass relationship of one tola to approximately 11.6638038 grams.",
-      steps: ["Choose Tola to grams or Grams to tola.", "Enter the weight as a non-negative number.", "Read the converted weight and the conversion factor.", "Use the weight shown on the jeweller's scale for a purchase or sale calculation."],
+      steps: ["Choose Tola to grams or Grams to tola.", "Enter the weight as a non-negative number.", "Read the converted weight and the conversion factor.", "Use the weight shown on the jeweller&apos;s scale for a purchase or sale calculation."],
       example: "1 tola = 11.6638 grams approximately. Therefore, 2.5 tola is about 29.1595 grams.",
       note: "This tool converts weight only. It does not provide live gold prices, purity testing, making charges, wastage, hallmark verification or a jewellery valuation."
     },
@@ -425,9 +425,9 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Example</h2><p className="mt-3 leading-8 text-slate-700">{guide.example}</p></section>
       {tool.slug === "gold-tola-gram-converter" && <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">How many grams are in 1 tola of gold?</h2>
-        <p className="mt-3 leading-8 text-slate-700"><strong>1 tola equals approximately 11.6638038 grams.</strong> For the reverse conversion, 1 gram is approximately 0.085735 tola. The same standard weight conversion applies to silver; this calculator converts weight and does not estimate a metal's market value.</p>
+        <p className="mt-3 leading-8 text-slate-700"><strong>1 tola equals approximately 11.6638038 grams.</strong> For the reverse conversion, 1 gram is approximately 0.085735 tola. The same standard weight conversion applies to silver; this calculator converts weight and does not estimate a metal&apos;s market value.</p>
         <p className="mt-3 leading-8 text-slate-700">Quick examples: 2 tola is about 23.3276 grams, 5 tola is about 58.3190 grams, and 10 tola is about 116.6380 grams. Enter any supported weight above to convert tola to grams or grams to tola without manually repeating the formula.</p>
-        <p className="mt-3 leading-8 text-slate-700">This section answers common searches such as “1 tola in grams”, “1 tola to gram”, “how many grams in one tola”, “1 tola ma kitna gram hota hai”, “1 gram gold in tola” and “10 tola in grams”. Check the jeweller's scale and purity details separately when buying or selling jewellery.</p>
+        <p className="mt-3 leading-8 text-slate-700">This section answers common searches such as “1 tola in grams”, “1 tola to gram”, “how many grams in one tola”, “1 tola ma kitna gram hota hai”, “1 gram gold in tola” and “10 tola in grams”. Check the jeweller&apos;s scale and purity details separately when buying or selling jewellery.</p>
       </section>}
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.note}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>

@@ -456,6 +456,103 @@ async function runTool(tool, index) {
       throw new Error("Tool rendered a missing/unimplemented configuration message.");
     }
 
+    if (tool.slug === "qr-code-generator") {
+      const expectedKinds = ["url", "text", "wifi", "email", "phone", "sms", "whatsapp", "vcard", "event"];
+      const qrKinds = await page.evaluate(() => {
+        const label = [...document.querySelectorAll("main label")].find((item) => /QR content type/i.test(item.innerText));
+        return label ? [...label.querySelectorAll("select option")].map((option) => option.value) : [];
+      });
+      if (JSON.stringify(qrKinds) !== JSON.stringify(expectedKinds)) {
+        throw new Error("QR content selector does not expose all nine supported types: " + JSON.stringify(qrKinds));
+      }
+      const fieldByKind = {
+        url: "Text or URL", text: "Text or URL", wifi: "Network name (SSID)",
+        email: "Text or URL", phone: "Text or URL", sms: "Phone", whatsapp: "Phone",
+        vcard: "Full name", event: "Start date and time",
+      };
+      for (const kind of expectedKinds) {
+        const selected = await page.evaluate(`(kind) => {
+          const label = [...document.querySelectorAll("main label")].find((item) => /QR content type/i.test(item.innerText));
+          const select = label?.querySelector("select");
+          if (!select) return false;
+          const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")?.set;
+          setter?.call(select, kind);
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+          return true;
+        }`, kind);
+        if (!selected) throw new Error("QR content type selector disappeared while checking " + kind);
+        await delay(60);
+        const expectedLabel = fieldByKind[kind];
+        const fieldPresent = await page.evaluate(`(expected) => [...document.querySelectorAll("main label")].some((item) => item.innerText.trim().startsWith(expected))`, expectedLabel);
+        if (!fieldPresent) throw new Error("QR " + kind + " type did not show its required input field: " + expectedLabel);
+      }
+      const restored = await page.evaluate(() => {
+        const label = [...document.querySelectorAll("main label")].find((item) => /QR content type/i.test(item.innerText));
+        const select = label?.querySelector("select");
+        if (!select) return false;
+        const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")?.set;
+        setter?.call(select, "url");
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        return true;
+      });
+      if (!restored) throw new Error("QR URL mode could not be restored.");
+      await delay(80);
+      await setFieldByLabel(page, "Text or URL", "https://example.com/qr-e2e");
+      const downloadsBeforeQr = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
+      const generateClicked = await page.evaluate(() => {
+        const button = [...document.querySelectorAll("main button")].find((item) => /^Generate QR code$/i.test(item.innerText.trim()));
+        if (!button || button.disabled) return false;
+        button.click();
+        return true;
+      });
+      if (!generateClicked) throw new Error("QR Generate button was not enabled.");
+      let qrPreview = null;
+      const qrStarted = Date.now();
+      while (Date.now() - qrStarted < 15000) {
+        qrPreview = await page.evaluate(() => {
+          const image = document.querySelector('img[alt="Generated QR code preview"]');
+          const alert = document.querySelector("main [role=alert]")?.innerText || "";
+          const library = document.querySelector('script[data-pdfora-qr="1"]')?.getAttribute("src") || "";
+          return {
+            image: image?.getAttribute("src") || "",
+            png: [...document.querySelectorAll("main button")].some((button) => /download png/i.test(button.innerText)),
+            svg: [...document.querySelectorAll("main button")].some((button) => /download svg/i.test(button.innerText)),
+            alert, library,
+          };
+        });
+        if (qrPreview.image.startsWith("data:image/png;base64,")) break;
+        if (qrPreview.alert) throw new Error("QR generator reported an error: " + qrPreview.alert);
+        await delay(200);
+      }
+      if (!qrPreview?.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg ||
+          !qrPreview.library.includes("/vendor/qrcode.min.js")) {
+        throw new Error("QR generator did not load its local library and create a PNG preview with PNG/SVG actions: " + JSON.stringify(qrPreview));
+      }
+      const downloadClicked = await page.evaluate(() => {
+        const button = [...document.querySelectorAll("main button")].find((item) => /download png/i.test(item.innerText));
+        if (!button) return false;
+        button.click();
+        return true;
+      });
+      if (!downloadClicked) throw new Error("QR PNG download action was unavailable.");
+      let qrFile = "";
+      const qrDownloadStarted = Date.now();
+      while (Date.now() - qrDownloadStarted < 10000) {
+        qrFile = fs.readdirSync(downloadsDir).find((name) => !name.endsWith(".crdownload") && !downloadsBeforeQr.has(name) && name.toLowerCase().endsWith(".png")) || "";
+        if (qrFile) break;
+        await delay(200);
+      }
+      if (!qrFile) throw new Error("QR PNG download did not complete.");
+      const qrDownload = await validateDownloadedFile(path.join(downloadsDir, qrFile));
+      row.checks.push("all nine QR content types expose their required fields; local QR library loaded; PNG preview and SVG/PNG actions verified; downloaded PNG signature validated");
+      row.output = "Nine QR modes verified; " + qrDownload.bytes + " byte PNG download validated";
+      row.outputVerified = true;
+      row.status = "PASS";
+      row.evidenceLevel = "nine-qr-modes-preview-and-png-download-verified";
+      row.downloadedFiles = [qrDownload];
+      return row;
+    }
+
     if (tool.kind === "pdf") {
       const inputNode = await page.send("DOM.getDocument", { depth: 1 });
       const queries = await page.send("DOM.querySelectorAll", {

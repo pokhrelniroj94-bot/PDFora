@@ -54,7 +54,7 @@ jobs:
       - run: npm run lint
       - run: npm run build
       - name: Audit npm dependencies
-        run: npm audit --omit=dev --audit-level=high
+        run: node scripts/audit-production-dependencies.mjs
       - name: Read-only production security, privacy and SEO smoke checks
         id: production-smoke
         continue-on-error: true

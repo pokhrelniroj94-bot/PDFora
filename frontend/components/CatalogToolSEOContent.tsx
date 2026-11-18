@@ -356,7 +356,7 @@ export default function CatalogToolSEOContent({
     "gold-tola-gram-converter": {
       heading: "Convert gold and silver weight between tola and grams",
       intro: "Convert a jewellery or bullion weight from tola to grams, or grams back to tola. The converter uses the standard mass relationship of one tola to approximately 11.6638038 grams.",
-      steps: ["Choose Tola to grams or Grams to tola.", "Enter the weight as a non-negative number.", "Read the converted weight and the conversion factor.", "Use the weight shown on the jeweller&apos;s scale for a purchase or sale calculation."],
+      steps: ["Choose Tola to grams or Grams to tola.", "Enter the weight as a non-negative number.", "Read the converted weight and the conversion factor.", "Use the weight shown on the jeweller’s scale for a purchase or sale calculation."],
       example: "1 tola = 11.6638 grams approximately. Therefore, 2.5 tola is about 29.1595 grams.",
       note: "This tool converts weight only. It does not provide live gold prices, purity testing, making charges, wastage, hallmark verification or a jewellery valuation."
     },

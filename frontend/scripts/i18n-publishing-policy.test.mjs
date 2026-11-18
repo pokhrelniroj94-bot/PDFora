@@ -127,6 +127,14 @@ assert.match(siteLanguageBar, /getSwitcherOptions\(path\)\.map\(\(option\) => op
 assert.ok(qrComponent.includes('"/vendor/qrcode.min.js"'), "QR generator must load its locally hosted library without a third-party network dependency");
 assert.ok(qrLibraryBundle.includes("CorrectLevel") && qrLibraryBundle.includes("QRCode"), "vendored QR library must expose the QRCode browser API");
 assert.ok(qrLibraryLicense.includes("MIT License") && qrLibraryLicense.includes("davidshimjs"), "vendored QR library must retain its MIT license notice");
+assert.match(qrComponent, /type Kind="url"\|"text"\|"wifi"\|"email"\|"phone"\|"sms"\|"whatsapp"\|"vcard"\|"event"/, "QR content types must remain available");
+assert.match(qrComponent, /\["url","text","wifi","email","phone","sms","whatsapp","vcard","event"\]/, "QR UI must expose all nine content types");
+assert.ok(qrComponent.includes("new QR(host,{text:encoded"), "QR generation must continue to use the locally hosted QRCode library");
+assert.ok(qrComponent.includes('canvas.toDataURL("image/png")') && qrComponent.includes("setSvg(vector)"), "QR generation must retain PNG and SVG output");
+assert.ok(qrComponent.includes('a.download="pdfora-qr-code."+format'), "QR downloads must retain their expected filename");
+assert.ok(qrComponent.includes('"WIFI:T:"+security') && qrComponent.includes('"BEGIN:VCARD"') && qrComponent.includes('"BEGIN:VEVENT"'), "Wi-Fi, vCard and event payload formats must remain supported");
+assert.ok(qrComponent.includes('"https://wa.me/"') && qrComponent.includes('"SMSTO:"'), "WhatsApp and SMS payload formats must remain supported");
+assert.ok(qrComponent.includes('setPng("");setSvg("")'), "changing QR inputs must clear stale preview output");
 
 const qrHreflang = routing.hreflangMap("/tools/qr-code-generator");
 for (const locale of config.locales) {

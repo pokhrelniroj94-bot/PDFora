@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { runNepaliTextTool } from "../lib/i18n/nepali-text-tools.ts";
+import { formatNepaliRomanized } from "../lib/nepali-typing.ts";
 
 assert.equal(runNepaliTextTool("word-character-counter", "नमस्ते world"), "शब्द: 2\nअक्षर (space सहित): 12\nअक्षर (space बाहेक): 11\nअनुच्छेद: 1");
 assert.equal(runNepaliTextTool("case-converter", "Hello World", { caseMode: "lower" }), "hello world");
@@ -14,4 +15,7 @@ assert.match(runNepaliTextTool("reading-time-calculator", "one two three", { wor
 assert.equal(runNepaliTextTool("line-counter", "a\n\nb"), "कुल लाइन: 3\nखाली लाइन: 1\nसामग्री भएका लाइन: 2");
 assert.equal(runNepaliTextTool("sentence-counter", "पहिलो वाक्य। दोस्रो वाक्य!"), "अनुमानित वाक्य: 2\nशब्द: 4");
 assert.equal(runNepaliTextTool("word-character-counter", ""), "शब्द: 0\nअक्षर (space सहित): 0\nअक्षर (space बाहेक): 0\nअनुच्छेद: 0");
-console.log("Nepali text utility functional tests passed (13 assertions).");
+assert.equal(formatNepaliRomanized("nms/te"), "नमस्ते");
+assert.equal(formatNepaliRomanized("nms/te 123"), "नमस्ते १२३");
+assert.equal(formatNepaliRomanized("abcXYZ"), "ाब्छढञऋ");
+console.log("Nepali text utility functional tests passed (16 assertions).");

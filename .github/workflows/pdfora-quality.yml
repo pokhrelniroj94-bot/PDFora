@@ -53,8 +53,6 @@ jobs:
         run: npm run i18n:check
       - run: npm run lint
       - run: npm run build
-      - name: Audit npm dependencies
-        run: npm audit --omit=dev --audit-level=high
       - name: Read-only production security, privacy and SEO smoke checks
         id: production-smoke
         continue-on-error: true
@@ -147,6 +145,11 @@ jobs:
             docs/i18n/NEPALI_SOURCE_AUDIT.json
             docs/i18n/NEPALI_SOURCE_AUDIT.md
           if-no-files-found: warn
+      # Run the full browser, sitemap and live-data QA even when npm audit reports a known vulnerability.
+      # The audit remains a blocking gate; it is deliberately placed after test/report collection.
+      - name: Audit npm dependencies
+        if: always()
+        run: npm audit --omit=dev --audit-level=high
       - name: Fail CI when any individual E2E check fails
         if: always() && steps.browser-e2e.outcome == 'failure'
         run: exit 1

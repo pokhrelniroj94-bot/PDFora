@@ -114,17 +114,17 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
         <h2 className="text-xl font-black text-slate-950">{locale === "ne" ? "यो PDF टुल कहिले प्रयोग गर्ने?" : locale === "hi" ? "इस PDF टूल का उपयोग कब करें?" : "When should you use this PDF tool?"}</h2>
         <p className="mt-4 text-sm leading-8 text-slate-700">
           {locale === "ne"
-            ? \`\${toolName} त्यतिबेला उपयोगी हुन्छ जब तपाईंलाई \${localizedGuide.purpose.charAt(0).toLowerCase()}\${localizedGuide.purpose.slice(1)} आवश्यक हुन्छ। माथिको टुलमा आफ्नो कागजात खोल्नुहोस्, उपलब्ध विकल्पअनुसार प्रक्रिया पूरा गर्नुहोस् र डाउनलोड गर्नुअघि नतिजा जाँच्नुहोस्।\`
+            ? `${toolName} त्यतिबेला उपयोगी हुन्छ जब तपाईंलाई ${localizedGuide.purpose.charAt(0).toLowerCase()}${localizedGuide.purpose.slice(1)} आवश्यक हुन्छ। माथिको टुलमा आफ्नो कागजात खोल्नुहोस्, उपलब्ध विकल्पअनुसार प्रक्रिया पूरा गर्नुहोस् र डाउनलोड गर्नुअघि नतिजा जाँच्नुहोस्।`
             : locale === "hi"
-              ? \`\${toolName} तब उपयोगी है जब आपको \${localizedGuide.purpose.charAt(0).toLowerCase()}\${localizedGuide.purpose.slice(1)} की आवश्यकता हो। ऊपर दिए गए टूल में अपना दस्तावेज़ खोलें, उपलब्ध विकल्पों के अनुसार प्रक्रिया पूरी करें और डाउनलोड करने से पहले परिणाम जाँचें।\`
-              : \`\${toolName} is useful when your document workflow requires this specific operation: \${localizedGuide.purpose} Open the tool above, choose the available options that match your file, complete the operation and inspect the downloaded result before sharing or submitting it.\`}
+              ? `${toolName} तब उपयोगी है जब आपको ${localizedGuide.purpose.charAt(0).toLowerCase()}${localizedGuide.purpose.slice(1)} की आवश्यकता हो। ऊपर दिए गए टूल में अपना दस्तावेज़ खोलें, उपलब्ध विकल्पों के अनुसार प्रक्रिया पूरी करें और डाउनलोड करने से पहले परिणाम जाँचें।`
+              : `${toolName} is useful when your document workflow requires this specific operation: ${localizedGuide.purpose} Open the tool above, choose the available options that match your file, complete the operation and inspect the downloaded result before sharing or submitting it.`}
         </p>
         <p className="mt-3 text-sm leading-8 text-slate-700">
           {locale === "ne"
-            ? \`“\${toolName} अनलाइन कसरी गर्ने?”, “PDF \${toolName.toLowerCase()} गर्दा के जाँच्ने?” र “प्रक्रियापछि PDF को गुणस्तर कसरी सुनिश्चित गर्ने?” जस्ता प्रश्नको उत्तरका लागि यस पृष्ठको चरण, सीमा र FAQ हेर्नुहोस्।\`
+            ? `“${toolName} अनलाइन कसरी प्रयोग गर्ने?”, “प्रक्रियापछि PDF मा के जाँच्ने?” र “PDF को गुणस्तर कसरी सुनिश्चित गर्ने?” जस्ता प्रश्नको उत्तरका लागि यस पृष्ठको चरण, सीमा र FAQ हेर्नुहोस्।`
             : locale === "hi"
-              ? \`“\${toolName} ऑनलाइन कैसे करें?”, “PDF \${toolName.toLowerCase()} करने के बाद क्या जाँचें?” और “प्रोसेसिंग के बाद PDF की गुणवत्ता कैसे जाँचें?” जैसे सवालों के लिए इस पेज के चरण, सीमाएँ और FAQ देखें।\`
-              : \`This guide also addresses practical search questions such as “how to \${toolName.toLowerCase()} a PDF online”, “what should I check after \${toolName.toLowerCase()} a PDF” and “how can I verify PDF quality after processing”. The steps, limitations and FAQs below provide the task-specific details rather than a generic list of PDF keywords.\`}
+              ? `“${toolName} ऑनलाइन कैसे इस्तेमाल करें?”, “प्रोसेसिंग के बाद PDF में क्या जाँचें?” और “PDF की गुणवत्ता कैसे जाँचें?” जैसे सवालों के लिए इस पेज के चरण, सीमाएँ और FAQ देखें।`
+              : `This guide also addresses practical search questions such as “how to use ${toolName.toLowerCase()} online”, “what should I check after processing a PDF” and “how can I verify PDF quality after processing”. The steps, limitations and FAQs below provide the task-specific details rather than a generic list of PDF keywords.`}
         </p>
         <p className="mt-3 text-sm leading-8 text-slate-700">
           {locale === "ne"

@@ -9,6 +9,7 @@ const nepalTools = read("../components/NepalTools.tsx");
 const nepalLiveTools = read("../components/NepalLiveTools.tsx");
 const resumeBuilder = read("../components/ResumeBuilder.tsx");
 const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
+const nepaliTypingEngine = read("../lib/nepali-typing.ts");
 const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
 const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
@@ -30,7 +31,9 @@ const liveCases = [...nepalLiveTools.matchAll(/slug === "([a-z0-9-]+)"/g)].map((
 const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
 const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
-const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
+const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') &&
+  nepaliTypingTool.includes("formatNepaliRomanized") &&
+  nepaliTypingEngine.includes("export function formatNepaliRomanized");
 const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
 const browserOnlyGrowthSlugs = ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"];
@@ -47,7 +50,8 @@ for (const slug of ["nepal-forex-rates", "nepal-salary-tax-calculator", "nepal-e
   assert.ok(liveCases.includes(slug), `Missing Nepal live tool handler: ${slug}`);
   assert.ok(routedNepalSlugs.includes(slug), `Missing Nepal live route: ${slug}`);
 }
-assert.ok(typingRouted, "Nepali Unicode typing route or engine is missing");
+assert.ok(typingRouted, "Nepali Unicode typing route or locally bundled engine is missing");
+assert.doesNotMatch(nepaliTypingTool, /unpkg\\.com|nepalify-script/, "Nepali typing must not depend on a third-party runtime CDN");
 assert.ok(allTools.includes('import("./NepalLiveTools")') || allTools.includes('import NepalLiveTools from "./NepalLiveTools"'), "Nepal live tools component is not imported");
 
 assert.ok(allTools.includes('import("./NepaliTypingTool")') || allTools.includes('import NepaliTypingTool from "./NepaliTypingTool"'), "Nepali typing component is not imported");

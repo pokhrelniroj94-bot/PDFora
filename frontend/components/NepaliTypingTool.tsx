@@ -20,7 +20,7 @@ export default function NepaliTypingTool({ locale = "en" }: { locale?: "en" | "n
     if (window.nepalify?.format) { Promise.resolve().then(() => setReady(true)); return; }
     const existing = document.querySelector<HTMLScriptElement>('script[data-nepalify-script]');
     if (existing) {
-      if (existing.dataset.loaded === "true" && window.nepalify?.format) { setReady(true); return; }
+      if (existing.dataset.loaded === "true" && window.nepalify?.format) { Promise.resolve().then(() => setReady(true)); return; }
       const onLoad = () => { existing.dataset.loaded = "true"; setReady(!!window.nepalify?.format); };
       const onError = () => setError(ne ? "नेपाली टाइपिङ इन्जिन लोड भएन। पृष्ठ पुनःलोड गरेर प्रयास गर्नुहोस्।" : "Nepali typing library could not load. Reload the page and try again.");
       existing.addEventListener("load", onLoad, { once: true });

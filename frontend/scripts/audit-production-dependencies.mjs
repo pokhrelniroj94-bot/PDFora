@@ -22,7 +22,11 @@ try {
   process.exit(result.status || 1);
 }
 
-if (result.error || report.error || (!report.metadata && !report.vulnerabilities)) {\n  console.error(report.error?.summary || result.stderr || "npm audit could not complete.");\n  process.exit(1);\n}\n\nconst findings = Object.entries(report.vulnerabilities || {});
+if (result.error || report.error || (!report.metadata && !report.vulnerabilities)) {
+  console.error(report.error?.summary || result.stderr || "npm audit could not complete.");
+  process.exit(1);
+}
+const findings = Object.entries(report.vulnerabilities || {});
 const unexpected = findings.filter(([name, finding]) => {
   if (!allowedDependencyChain.has(name)) return true;
   const via = Array.isArray(finding.via) ? finding.via : [];

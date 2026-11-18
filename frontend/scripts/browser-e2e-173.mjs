@@ -809,17 +809,16 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepali-unicode-typing") {
-        const readyStarted = Date.now();
-        let readyButton = false;
-        while (Date.now() - readyStarted < 25000 && !readyButton) {
-          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
-          if (!readyButton) await delay(250);
-        }
-        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
+        const buttonReady = await page.evaluate(`(() => [...document.querySelectorAll("main button")].some((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled))()`);
+        if (!buttonReady) throw new Error("Locally bundled Nepali typing action was not enabled.");
         await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
-        await delay(300);
-        const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output.");
+        await delay(100);
+        const typingState = await page.evaluate(`(() => ({
+          output: document.querySelectorAll("main textarea")[1]?.value || "",
+          externalNepaliScripts: [...document.scripts].map((script) => script.src).filter((src) => /nepalify|unpkg/i.test(src)),
+        }))()`);
+        if (typingState.output !== "नमस्ते") throw new Error("Nepali keyboard layout output mismatch: " + typingState.output);
+        if (typingState.externalNepaliScripts.length) throw new Error("Nepali typing must use its bundled local engine, not an external CDN: " + typingState.externalNepaliScripts.join(", "));
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");

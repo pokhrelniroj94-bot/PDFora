@@ -140,7 +140,7 @@ export default function Page() {
           </h2>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Use Extract PDF Pages when you need only a few pages from a longer document—for example, selected assignment pages, a report section or supporting pages from a form. The tool creates a separate PDF from the pages you enter, leaving the source document available as your original.
+            Use Extract PDF Pages when you need only a few pages from a longer document—for example, selected assignment pages, a report section or supporting pages from a form. It can detach or separate those selected pages into a new PDF while leaving the original document unchanged.
           </p>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
@@ -230,6 +230,14 @@ export default function Page() {
               </summary>
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 Yes. Enter a range such as 5-8, or combine ranges and individual pages such as 1,3,5-8. Review the downloaded PDF to confirm the selected pages are in the intended order.
+              </p>
+            </details>
+            <details className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <summary className="cursor-pointer font-black">
+                How do I detach selected pages from a PDF?
+              </summary>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                Upload the PDF, enter the page numbers or ranges you want to keep, and process it. PDFora creates a separate PDF containing those pages; the original file remains unchanged.
               </p>
             </details>
 

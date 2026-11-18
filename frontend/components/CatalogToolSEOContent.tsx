@@ -779,6 +779,30 @@ export default function CatalogToolSEOContent({
             {uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}
           </div>
         </section>
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+          <h2 className="text-xl font-black text-slate-950">What this tool helps you do</h2>
+          <p className="mt-4 leading-8 text-slate-700">
+            {title} is designed for people who need to {taskDescription.toLowerCase()}. It belongs to the {tool.category.toLowerCase()} category, so it supports a practical task in that workflow rather than replacing a specialist application or professional review. Use it when you need a clear, focused way to complete this specific job online.
+          </p>
+          <p className="mt-3 leading-8 text-slate-700">
+            Common related concepts include {({
+              PDF: "PDF documents, page order, file conversion, document preparation and output quality",
+              Finance: "principal, rates, repayment, fees, currency, estimates and financial assumptions",
+              Text: "plain text, words, characters, formatting, Unicode and text cleanup",
+              Developer: "input validation, data formats, encoding, parsing, debugging and safe test samples",
+              Image: "image formats, dimensions, compression, colour, transparency and export quality",
+              Math: "formulas, units, percentages, rounding, numeric inputs and worked examples",
+              SEO: "search intent, page content, metadata, crawling, indexing and search snippets",
+              Business: "costs, revenue, pricing, margins, targets and business assumptions",
+              Nepal: "Nepal-specific formats, NPR, Bikram Sambat dates and current local requirements",
+              Utilities: "online utilities, QR data, digital sharing, file formats and device compatibility",
+              "Career Tools": "CV structure, job applications, professional experience and document export"
+            } as Record<string, string>)[tool.category] ?? "the input, output, supported formats and practical requirements of this task"}.
+          </p>
+          <p className="mt-3 leading-8 text-slate-700">
+            If you are searching for how to {taskDescription.toLowerCase()} online, start with the tool above, follow the steps on this page and check the result before you use or share it. The examples, limitations and frequently asked questions below explain what the tool does and where a separate source or expert check may still be needed.
+          </p>
+        </section>
         <section className="rounded-2xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Related tools and further reading</h2>
           <p className="mt-3 leading-7 text-slate-700">You may also find these related utilities useful for the next step in your workflow. Choose the tool that matches the task rather than repeating the same operation unnecessarily.</p>

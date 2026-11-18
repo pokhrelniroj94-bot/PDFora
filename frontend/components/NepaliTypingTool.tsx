@@ -20,7 +20,8 @@ export default function NepaliTypingTool({ locale = "en" }: { locale?: "en" | "n
     if (window.nepalify?.format) { Promise.resolve().then(() => setReady(true)); return; }
     const existing = document.querySelector<HTMLScriptElement>('script[data-nepalify-script]');
     if (existing) {
-      const onLoad = () => setReady(!!window.nepalify?.format);
+      if (existing.dataset.loaded === "true" && window.nepalify?.format) { setReady(true); return; }
+      const onLoad = () => { existing.dataset.loaded = "true"; setReady(!!window.nepalify?.format); };
       const onError = () => setError(ne ? "नेपाली टाइपिङ इन्जिन लोड भएन। पृष्ठ पुनःलोड गरेर प्रयास गर्नुहोस्।" : "Nepali typing library could not load. Reload the page and try again.");
       existing.addEventListener("load", onLoad, { once: true });
       existing.addEventListener("error", onError, { once: true });
@@ -31,6 +32,7 @@ export default function NepaliTypingTool({ locale = "en" }: { locale?: "en" | "n
     script.async = true;
     script.dataset.nepalifyScript = "true";
     script.onload = () => {
+      script.dataset.loaded = "true";
       if (window.nepalify?.format) setReady(true);
       else setError(ne ? "टाइपिङ script लोड भयो तर API भेटिएन। पृष्ठ पुनःलोड गर्नुहोस् वा Preeti converter प्रयोग गर्नुहोस्।" : "Nepali typing script loaded, but its API was not found. Please reload or use the Preeti converter.");
     };

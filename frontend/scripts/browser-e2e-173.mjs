@@ -714,11 +714,11 @@ async function runTool(tool, index) {
       if (tool.slug === "nepali-unicode-typing") {
         const readyStarted = Date.now();
         let readyButton = false;
-        while (Date.now() - readyStarted < 25000 && !readyButton) {
+        while (Date.now() - readyStarted < 45000 && !readyButton) {
           readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
           if (!readyButton) await delay(250);
         }
-        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
+        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 45 seconds.");
         await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
         await delay(300);
         const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);

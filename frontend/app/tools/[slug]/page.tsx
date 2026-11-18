@@ -345,8 +345,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Can I enter decimal values?", a: "Use integers when the calculator asks for whole numbers. Decimals are not standard inputs for integer GCD and LCM calculations." }
     ],
     "prime-number-checker": [
-      { q: "What is a prime number?", a: "A prime number is an integer greater than 1 with exactly two positive factors: 1 and itself." },
+      { q: "How do you check whether a number is prime?", a: "A prime number is a whole number greater than 1 with exactly two positive factors: 1 and itself. To test a number efficiently, check divisibility by prime numbers up to its square root." },
       { q: "Is 1 a prime number?", a: "No. The number 1 has only one positive factor, so it is neither prime nor composite." },
+      { q: "Is 0 a prime or composite number?", a: "No. Zero is neither prime nor composite because it does not have exactly two positive factors." },
+      { q: "What is the difference between prime and composite?", a: "A prime number greater than 1 has exactly two positive factors. A composite number greater than 1 has more than two positive factors." },
       { q: "Does the checker show factors for composite numbers?", a: "The tool can list factors for composite inputs where supported; review the output to see which integers divide the number exactly." }
     ],
     "business-days-calculator": [
@@ -418,12 +420,6 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "What is the percentage change formula?", a: "Percentage change = (new value − original value) ÷ original value × 100, when the original value is not zero." },
       { q: "Is a 20% increase the same as a 20% decrease?", a: "No. A move from 100 to 120 is +20%, but a move from 120 to 100 is −16.67%, because the original value changes." },
       { q: "Can I calculate percentage change from zero?", a: "No. The original value is the baseline, and division by zero is undefined." }
-    ],
-    "prime-number-checker": [
-      { q: "How do you check whether a number is prime?", a: "A prime number is a whole number greater than 1 with exactly two positive factors: 1 and itself. To test a number efficiently, check divisibility by prime numbers up to its square root." },
-      { q: "Is 1 a prime number?", a: "No. The number 1 has only one positive factor, so it is neither prime nor composite." },
-      { q: "Is 0 a prime or composite number?", a: "No. Zero is neither prime nor composite because it does not have exactly two positive factors." },
-      { q: "What is the difference between prime and composite?", a: "A prime number greater than 1 has exactly two positive factors. A composite number greater than 1 has more than two positive factors." }
     ],
     "px-rem-converter": [
       { q: "How many rem is 600px?", a: "At a 16px root font size, 600px ÷ 16 = 37.5rem. Change the root size if your stylesheet uses a different value." },

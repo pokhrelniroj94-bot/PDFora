@@ -133,7 +133,7 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Tip calculator formula and worked examples</h2>
         <p className="mt-3 rounded-xl bg-slate-50 p-4 font-semibold leading-7 text-slate-900">Tip = bill amount × tip percentage ÷ 100. Total = bill amount + tip. Per-person share = total ÷ number of people.</p>
-        <p className="mt-4 leading-8 text-slate-700">For a bill of 2,000 and a 10% tip, the tip is 200 and the total is 2,200. If four people split the total equally, each person pays 550. For a $60 bill, a 15% tip is $9, an 18% tip is $10.80 and a 20% tip is $12. Split three ways, the final totals are $23, $23.60 and $24 per person. These are examples only; local tipping customs vary.</p>
+        <p className="mt-4 leading-8 text-slate-700">For a NPR 1,500 bill, a 20% tip is NPR 300 and the total is NPR 1,800. If three people split the total equally, each person pays NPR 600. For a bill of 2,000 and a 10% tip, the tip is 200 and the total is 2,200; four equal shares are 550 each. For a $60 bill, a 15% tip is $9, an 18% tip is $10.80 and a 20% tip is $12. These are arithmetic examples only; local tipping customs vary.</p>
       </section>
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Service charges, unequal splits and limitations</h2>
@@ -143,6 +143,7 @@ export default function CatalogToolSEOContent({
         <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
         <div className="mt-4 space-y-4">
           <div><h3 className="font-bold text-slate-900">How do I calculate a 10% tip?</h3><p className="mt-1 leading-7 text-slate-700">Multiply the bill by 10 and divide by 100. For a bill of 2,000, a 10% tip is 200.</p></div>
+          <div><h3 className="font-bold text-slate-900">What is a 20% tip on NPR 1,500?</h3><p className="mt-1 leading-7 text-slate-700">A 20% tip on NPR 1,500 is NPR 300. The bill plus tip is NPR 1,800; split equally between three people, that is NPR 600 each.</p></div>
           <div><h3 className="font-bold text-slate-900">How do I calculate an 18% tip?</h3><p className="mt-1 leading-7 text-slate-700">Multiply the tip base by 18 and divide by 100. For a $60 tip base, 18% is $10.80.</p></div>
           <div><h3 className="font-bold text-slate-900">Can I split the bill between several people?</h3><p className="mt-1 leading-7 text-slate-700">Yes. Enter the number of people and the calculator divides the bill plus tip into equal shares.</p></div>
           <div><h3 className="font-bold text-slate-900">Does the calculator include service charge or tax?</h3><p className="mt-1 leading-7 text-slate-700">No. Check your receipt and include only the amount that should be used as the tip base.</p></div>

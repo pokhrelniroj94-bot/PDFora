@@ -1220,8 +1220,11 @@ async function runTool(tool, index) {
           row.status = "PASS";
           row.evidenceLevel = "nepal-market-headline-links-and-official-sources-verified";
         } else {
-          row.checks.push("Nepal market tab and official source links rendered; no live Nepal-market headlines were returned");
+          // An empty live feed is a truthful fallback state, not a fabricated headline
+          // or a broken route. Keep the official NEPSE/SEBON source links visible.
+          row.checks.push("Nepal market tab and official source links rendered; no live Nepal-market headlines were returned, so the empty-feed fallback is shown");
           row.evidenceLevel = "nepal-market-empty-feed-and-official-sources";
+          row.status = "PARTIAL";
         }
         return row;
       }

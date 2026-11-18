@@ -458,10 +458,10 @@ async function runTool(tool, index) {
 
     if (tool.slug === "qr-code-generator") {
       const expectedKinds = ["url", "text", "wifi", "email", "phone", "sms", "whatsapp", "vcard", "event"];
-      const qrKinds = await page.evaluate(() => {
+      const qrKinds = await page.evaluate(`(() => {
         const label = [...document.querySelectorAll("main label")].find((item) => /QR content type/i.test(item.innerText));
         return label ? [...label.querySelectorAll("select option")].map((option) => option.value) : [];
-      });
+      })()`);
       if (JSON.stringify(qrKinds) !== JSON.stringify(expectedKinds)) {
         throw new Error("QR content selector does not expose all nine supported types: " + JSON.stringify(qrKinds));
       }
@@ -490,7 +490,7 @@ async function runTool(tool, index) {
         })()`);
         if (!fieldPresent) throw new Error("QR " + kind + " type did not show its required input field: " + expectedLabel);
       }
-      const restored = await page.evaluate(() => {
+      const restored = await page.evaluate(`(() => {
         const label = [...document.querySelectorAll("main label")].find((item) => /QR content type/i.test(item.innerText));
         const select = label?.querySelector("select");
         if (!select) return false;
@@ -498,22 +498,22 @@ async function runTool(tool, index) {
         setter?.call(select, "url");
         select.dispatchEvent(new Event("change", { bubbles: true }));
         return true;
-      });
+      })()`);
       if (!restored) throw new Error("QR URL mode could not be restored.");
       await delay(80);
       await setFieldByLabel(page, "Text or URL", "https://example.com/qr-e2e");
       const downloadsBeforeQr = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
-      const generateClicked = await page.evaluate(() => {
+      const generateClicked = await page.evaluate(`(() => {
         const button = [...document.querySelectorAll("main button")].find((item) => /^Generate QR code$/i.test(item.innerText.trim()));
         if (!button || button.disabled) return false;
         button.click();
         return true;
-      });
+      })()`);
       if (!generateClicked) throw new Error("QR Generate button was not enabled.");
       let qrPreview = null;
       const qrStarted = Date.now();
       while (Date.now() - qrStarted < 15000) {
-        qrPreview = await page.evaluate(() => {
+        qrPreview = await page.evaluate(`(() => {
           const image = document.querySelector('img[alt="Generated QR code preview"]');
           const alert = document.querySelector("main [role=alert]")?.innerText || "";
           const library = document.querySelector('script[data-pdfora-qr="1"]')?.getAttribute("src") || "";
@@ -523,7 +523,7 @@ async function runTool(tool, index) {
             svg: [...document.querySelectorAll("main button")].some((button) => /download svg/i.test(button.innerText)),
             alert, library,
           };
-        });
+        })()`);
         if (qrPreview.image.startsWith("data:image/png;base64,")) break;
         if (qrPreview.alert) throw new Error("QR generator reported an error: " + qrPreview.alert);
         await delay(200);
@@ -532,12 +532,12 @@ async function runTool(tool, index) {
           !qrPreview.library.includes("/vendor/qrcode.min.js")) {
         throw new Error("QR generator did not load its local library and create a PNG preview with PNG/SVG actions: " + JSON.stringify(qrPreview));
       }
-      const downloadClicked = await page.evaluate(() => {
+      const downloadClicked = await page.evaluate(`(() => {
         const button = [...document.querySelectorAll("main button")].find((item) => /download png/i.test(item.innerText));
         if (!button) return false;
         button.click();
         return true;
-      });
+      })()`);
       if (!downloadClicked) throw new Error("QR PNG download action was unavailable.");
       let qrFile = "";
       const qrDownloadStarted = Date.now();

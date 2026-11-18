@@ -76,7 +76,7 @@ export default function CatalogToolSEOContent({
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Math utility</p>
-        <h2 className="mt-2 text-2xl font-black text-slate-950">Check whether a whole number is prime or composite</h2>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Check if a number is prime online</h2>
         <p className="mt-4 leading-8 text-slate-700">A prime number is an integer greater than 1 that has exactly two positive factors: 1 and itself. A composite number is greater than 1 and has additional positive factors. Enter a whole number to test its classification. The checker reports prime or not prime; to see factors of a composite number, divide it by small primes up to its square root.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
@@ -815,6 +815,12 @@ export default function CatalogToolSEOContent({
             If you are searching for how to {taskDescription.toLowerCase()} online, start with the tool above, follow the steps on this page and check the result before you use or share it. The examples, limitations and frequently asked questions below explain what the tool does and where a separate source or expert check may still be needed.
           </p>
         </section>
+      {tool.slug === "px-rem-converter" && <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to convert 600px to rem or 5px to rem</h2>
+        <p className="mt-3 leading-8 text-slate-700"><strong>Formula: rem = pixels ÷ root font size.</strong> With the common CSS root size of 16px, 600px ÷ 16 = 37.5rem and 5px ÷ 16 = 0.3125rem. For the reverse conversion, multiply the rem value by the root font size.</p>
+        <p className="mt-3 leading-8 text-slate-700">The root font size is editable because websites can set a different value on the html element. For example, with a 20px root size, 600px equals 30rem and 5px equals 0.25rem. Use the same root size as the page you are styling to avoid unexpected spacing or typography.</p>
+        <p className="mt-3 leading-8 text-slate-700">REM is relative to the root element, while EM is relative to the relevant parent or element font size. This converter changes CSS units; it does not inspect your stylesheet or determine the computed size of a live website.</p>
+      </section>}
         <section className="rounded-2xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Related tools and further reading</h2>
           <p className="mt-3 leading-7 text-slate-700">You may also find these related utilities useful for the next step in your workflow. Choose the tool that matches the task rather than repeating the same operation unnecessarily.</p>

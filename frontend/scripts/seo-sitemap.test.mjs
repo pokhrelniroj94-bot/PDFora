@@ -55,6 +55,10 @@ assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Mo
 assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Increase or Decrease"'), "Percentage Change metadata must target calculation intent with a concise search title");
 assert.ok("Percentage Change Calculator – Increase or Decrease".length <= 60, "Percentage Change title must remain concise for search snippets");
 assert.ok(englishToolPageSource.includes('title: "Prime Number Checker – Test Prime or Composite"'), "Prime Number Checker metadata must target the 114-impression GSC query");
+assert.ok(englishToolPageSource.includes('description: "Use this prime number checker to test whether a whole number is prime or composite.'), "Prime checker description must answer the online prime-check intent");
+assert.ok(englishToolPageSource.includes('title: "PX to REM Converter – CSS Pixel to REM Calculator"'), "PX to REM title must match the CSS unit-conversion task");
+assert.ok(catalogToolSeoSource.includes("How to convert 600px to rem or 5px to rem"), "PX to REM guide must answer the GSC long-tail conversion queries");
+assert.ok(catalogToolSeoSource.includes("600px ÷ 16 = 37.5rem and 5px ÷ 16 = 0.3125rem"), "PX to REM examples must use the default 16px root size correctly");
 assert.ok(englishEditorialBlogSource.includes('title: "Reading Time Calculator: WPM Formula & Examples"'), "Reading Time guide must target the calculator query while retaining its formula guide intent");
 assert.ok(englishEditorialBlogSource.includes('title: "Savings Goal Calculator: Monthly & Weekly Savings Plan"'), "Savings guide must target the calculator query while retaining its planning intent");
 assert.ok(englishEditorialBlogSource.includes('title: "Percentage Change Calculator: Formula & Examples"'), "Percentage Change guide must target the calculator query while retaining formula intent");

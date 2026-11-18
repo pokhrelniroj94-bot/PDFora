@@ -6,6 +6,7 @@ const allowedDependencyChain = new Set([
   "@rollup/pluginutils",
   "fdir",
   "@rollup/plugin-commonjs",
+  "@sentry/nextjs",
 ]);
 
 const command = process.platform === "win32" ? "npm.cmd" : "npm";

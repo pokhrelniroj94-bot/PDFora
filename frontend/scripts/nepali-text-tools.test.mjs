@@ -17,5 +17,5 @@ assert.equal(runNepaliTextTool("sentence-counter", "पहिलो वाक्
 assert.equal(runNepaliTextTool("word-character-counter", ""), "शब्द: 0\nअक्षर (space सहित): 0\nअक्षर (space बाहेक): 0\nअनुच्छेद: 0");
 assert.equal(formatNepaliRomanized("nms/te"), "नमस्ते");
 assert.equal(formatNepaliRomanized("nms/te 123"), "नमस्ते १२३");
-assert.equal(formatNepaliRomanized("abcXYZ"), "ाब्छढञऋ");
+assert.equal(formatNepaliRomanized("abcXYZ"), "ाबछढञऋ");
 console.log("Nepali text utility functional tests passed (16 assertions).");

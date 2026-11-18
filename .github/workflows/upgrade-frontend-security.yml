@@ -1,7 +1,7 @@
 name: Upgrade vulnerable frontend dependencies
 on:
   push:
-    branches: [security-next-upgrade]
+    branches: [security-next-upgrade-2026-11-18]
 permissions:
   contents: write
 jobs:
@@ -13,22 +13,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: security-next-upgrade
+          ref: security-next-upgrade-2026-11-18
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - name: Upgrade Next.js to patched release
-        run: npm install next@16.4.3 --save-exact
-      - name: Apply compatible security fixes
-        run: npm audit fix || echo "Non-blocking development advisories remain; the production audit below is the release gate."
+        run: npm install next@16.4.6 eslint-config-next@16.4.6 @sentry/nextjs@11.14.0 --save-exact
+      - name: Apply non-breaking dependency updates only
+        run: npm audit fix || echo "Safe updates attempted; unresolved advisories remain a blocking release gate."
+      - name: Record resolved dependency versions
+        run: npm ls next eslint-config-next @sentry/nextjs picomatch --all || true
       - name: Lint
         run: npm run lint
       - name: Production build
         run: npm run build
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
+      - name: Upload generated lockfile for review if audit remains blocked
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfora-security-lockfile-candidate
+          path: |
+            frontend/package.json
+            frontend/package-lock.json
+          if-no-files-found: error
       - name: Commit verified dependency updates
         working-directory: .
         run: |
@@ -37,6 +48,6 @@ jobs:
           git add frontend/package.json frontend/package-lock.json
           if ! git diff --cached --quiet; then
             git commit -m "security: upgrade vulnerable frontend dependencies [skip ci]"
-            git pull --rebase origin security-next-upgrade
-            git push origin HEAD:security-next-upgrade
+            git pull --rebase origin security-next-upgrade-2026-11-18
+            git push origin HEAD:security-next-upgrade-2026-11-18
           fi

@@ -43,6 +43,8 @@ assert.ok(!homepageSource.includes("Free Online PDF Tools – Merge, Split & Com
 assert.ok(homepageSource.includes("Explore free online PDF, finance, math, text, developer, image, SEO and Nepal tools."), "Homepage description must identify the wider tool categories");
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
 assert.ok(englishToolPageSource.includes('title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
+assert.ok(englishToolPageSource.includes('description: "Calculate a 20% tip on NPR 1,500 (NPR 300), total bill and equal split.'), "The tip calculator description must answer the observed NPR 1,500 query");
+assert.ok(catalogToolSeoSource.includes("A 20% tip on NPR 1,500 is NPR 300."), "The tip calculator page must include the GSC-led NPR worked example");
 assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Tip: 15%, 18% & 20% Examples"'), "The tip guide title must match the 486-impression Search Console query");
 assert.ok(englishEditorialBlogSource.includes('description: "Calculate the tip, add it to the bill and split the total per person.'), "The tip guide description must lead with the actual calculator benefit");
 assert.ok(englishEditorialBlogSource.includes('heading: "How to calculate tip: formula and worked examples"'), "The tip guide must answer the primary query in its first instructional section");

@@ -10,7 +10,7 @@ type Point = { date: string; close: number; open?: number; high?: number; low?: 
 type Summary = { detail: string; value: number | string };
 type TopMover = { symbol: string; ltp?: number; pointChange?: number; percentageChange?: number; securityName?: string };
 type DepthRow = { symbol: string; securityName?: string; totalQuantity: number; totalOrder: number };
-type MarketData = { symbol: string; source: string; sourceUpdatedAt: string; dataCoverage?: { stockQuotes?: string; indexCards?: string; marketSummary?: string; topMovers?: string; sectorIndices?: string; supplyDemand?: string; historicalCharts?: string }; latestHistoryDate: string | null; status: { is_open?: boolean; last_checked?: string }; indices: Index[]; summary: Summary[]; topStocks: Record<string, TopMover[]>; supplyDemand: { supplyList?: DepthRow[]; demandList?: DepthRow[] }; sectors: Array<{ indexName?: string; indexCode?: string; description?: string; currentValue?: number | null; change?: number | null; perChange?: number | null; latestDate?: string | null }>; stocks: Stock[]; points: Point[]; partial?: boolean; quoteStale?: boolean; error?: string };
+type MarketData = { symbol: string; source: string; sourceUpdatedAt: string; dataCoverage?: { stockQuotes?: string; indexCards?: string; marketSummary?: string; topMovers?: string; sectorIndices?: string; supplyDemand?: string; historicalCharts?: string }; latestHistoryDate: string | null; status: { is_open?: boolean; last_checked?: string }; indices: Index[]; summary: Summary[]; topStocks: Record<string, TopMover[]>; supplyDemand: { supplyList?: DepthRow[]; demandList?: DepthRow[] }; sectors: Array<{ indexName?: string; indexCode?: string; description?: string; currentValue?: number | null; change?: number | null; perChange?: number | null; latestDate?: string | null }>; stocks: Stock[]; points: Point[]; partial?: boolean; quoteStale?: boolean; fetchedAt?: string; error?: string };
 const n = (v: unknown, digits = 2) => typeof v === "number" && Number.isFinite(v) ? v.toLocaleString("en-IN", { maximumFractionDigits: digits }) : "—";
 const money = (v: unknown) => typeof v === "number" && Number.isFinite(v) ? "Rs. " + v.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "—";
 const pctClass = (v: number) => v > 0 ? "text-emerald-700" : v < 0 ? "text-rose-700" : "text-slate-600";
@@ -69,7 +69,7 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
   const copy = ne ? {
     home: "← PDFora गृहपृष्ठ", eyebrow: "PDFora बजार डेस्क", title: "NEPSE बजार ड्यासबोर्ड",
     description: "बजारको झलक, सूचकाङ्क र शेयर चार्ट, क्षेत्रगत प्रदर्शन, बढेका/घटेका शेयर तथा कम्पनीको मूल्य इतिहास।",
-    status: "ड्यासबोर्डले हरेक ६० सेकेन्डमा कोट अद्यावधिक जाँच गर्छ; स्रोतको समय तल देखिन्छ",
+    status: "ड्यासबोर्डले हरेक ६० सेकेन्डमा कोट अद्यावधिक जाँच गर्छ; स्रोतको समय तल देखिन्छ", checked: "अन्तिम जाँच",
     refresh: "बजार डेटा अद्यावधिक गर्नुहोस्", loading: "लोड हुँदैछ…", source: "शेयर कोट स्रोत",
     chart: "मूल्य चार्ट", load: "चार्ट लोड गर्नुहोस्", candles: "क्यान्डल", line: "लाइन",
     gainers: "बढेका शेयर", losers: "घटेका शेयर", listed: "सूचीबद्ध कम्पनीहरू",
@@ -79,7 +79,7 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
     home: "← PDFora home", eyebrow: "PDFora Market Desk", title: "NEPSE Market Dashboard",
     description: "Market snapshot, index and stock charts, sector performance, top movers and company price history.",
     open: "Market reported open", closed: "Market reported closed / snapshot",
-    status: "Dashboard checks for quote updates every 60 seconds; source timestamps are shown below",
+    status: "Dashboard checks for quote updates every 60 seconds; source timestamps are shown below", checked: "Last checked",
     refresh: "Refresh market data", loading: "Loading…", source: "Stock quote source",
     chart: "Price chart", load: "Load chart", candles: "Candles", line: "Line",
     gainers: "Top gainers", losers: "Top losers", listed: "Listed companies",
@@ -106,7 +106,10 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
   },[symbol,period]);
   useEffect(()=>{
     let active=true;
+    let inFlight=false;
     const refresh=async()=>{
+      if(!active||inFlight||document.visibilityState==="hidden") return;
+      inFlight=true;
       try {
         const response=await fetch("/api/nepse-market?symbol="+encodeURIComponent(symbol)+"&period="+period,{cache:"no-store"});
         const json=await response.json() as MarketData;
@@ -116,11 +119,21 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
         if(active) setError(e instanceof Error?e.message:"Market data temporarily unavailable.");
       } finally {
         if(active) setLoading(false);
+        inFlight=false;
       }
     };
     void refresh();
     const timer=window.setInterval(()=>void refresh(),60*1000);
-    return()=>{active=false;window.clearInterval(timer);};
+    window.addEventListener("focus",refresh);
+    window.addEventListener("online",refresh);
+    document.addEventListener("visibilitychange",refresh);
+    return()=>{
+      active=false;
+      window.clearInterval(timer);
+      window.removeEventListener("focus",refresh);
+      window.removeEventListener("online",refresh);
+      document.removeEventListener("visibilitychange",refresh);
+    };
   },[symbol,period]);
   const stocks=useMemo(()=>{
     const filtered=(data?.stocks??[]).filter(s=>(s.symbol+" "+s.name).toLowerCase().includes(query.toLowerCase()));
@@ -152,7 +165,7 @@ export default function NepseMarketDashboard({ locale = "en" }: { locale?: "en" 
       {data?.partial&&<p role="status" className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">Some secondary market datasets did not load. Core quotes and index data are still available.</p>}
       {data?.quoteStale&&<p role="alert" className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm leading-5 text-amber-950">Warning: the upstream NEPSE quote snapshot is old or has no verifiable update time. These figures may not represent the latest trading session. Do not rely on them as live prices; verify on the official NEPSE site.</p>}
       {data?.dataCoverage&&<section aria-label="Market data source coverage" className="rounded-xl border border-slate-200 bg-white p-4 text-xs leading-5 text-slate-600"><p className="font-bold text-slate-800">Data freshness and source coverage</p><p className="mt-1">Stock quotes: {data.dataCoverage.stockQuotes}. Index cards, market summary, top movers and supply/demand: YONEPSE public snapshot (not independently verified as live). Sector indices and historical charts: archived daily data.</p><p className="mt-1">The dashboard refreshes its request every 60 seconds; that does not mean every upstream dataset refreshes every 60 seconds.</p></section>}
-      <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-slate-500">{copy.source}: {data?.source??"YONEPSE public dataset"} · Latest quote: {formatDate(data?.sourceUpdatedAt)}</p><button onClick={()=>{setLoading(true);void load(symbol,period);}} disabled={loading} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{loading?copy.loading:copy.refresh}</button></div>
+      <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-slate-500">{copy.source}: {data?.source??"YONEPSE public dataset"} · Latest quote: {formatDate(data?.sourceUpdatedAt)} · {copy.checked}: {formatDate(data?.fetchedAt)}</p><button onClick={()=>{setLoading(true);void load(symbol,period);}} disabled={loading} className="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{loading?copy.loading:copy.refresh}</button></div>
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{(data?.indices??[]).map(idx=><button key={idx.index} onClick={()=>chooseSymbol(indexCodeByName[idx.index]??"NEPSE")} className={"rounded-2xl border bg-white p-4 text-left shadow-sm "+((indexCodeByName[idx.index]??"NEPSE")===symbol?"border-teal-400 ring-1 ring-teal-100":"border-slate-200")}><p className="text-xs font-semibold text-slate-500">{idx.index}</p><p className="mt-2 text-2xl font-black tabular-nums">{n(idx.currentValue??idx.close)}</p><p className={"mt-1 text-sm font-bold "+pctClass(idx.perChange)}>{idx.change>0?"+":""}{n(idx.change)} ({idx.perChange>0?"+":""}{n(idx.perChange)}%)</p></button>)}</section>
       <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{metrics.map(m=><div key={m.detail} className={card}><p className="text-xs font-semibold text-slate-500">{m.detail}</p><p className="mt-2 text-xl font-black tabular-nums">{typeof m.value==="number"?n(m.value,0):m.value}</p></div>)}</section>
       <section className={card}>

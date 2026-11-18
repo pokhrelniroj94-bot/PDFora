@@ -471,7 +471,8 @@ async function runTool(tool, index) {
         vcard: "Full name", event: "Start date and time",
       };
       for (const kind of expectedKinds) {
-        const selected = await page.evaluate(`(kind) => {
+        const selected = await page.evaluate(`(() => {
+          const kind = ${JSON.stringify(kind)};
           const label = [...document.querySelectorAll("main label")].find((item) => /QR content type/i.test(item.innerText));
           const select = label?.querySelector("select");
           if (!select) return false;
@@ -479,11 +480,14 @@ async function runTool(tool, index) {
           setter?.call(select, kind);
           select.dispatchEvent(new Event("change", { bubbles: true }));
           return true;
-        }`, kind);
+        })()`);
         if (!selected) throw new Error("QR content type selector disappeared while checking " + kind);
         await delay(60);
         const expectedLabel = fieldByKind[kind];
-        const fieldPresent = await page.evaluate(`(expected) => [...document.querySelectorAll("main label")].some((item) => item.innerText.trim().startsWith(expected))`, expectedLabel);
+        const fieldPresent = await page.evaluate(`(() => {
+          const expected = ${JSON.stringify(expectedLabel)};
+          return [...document.querySelectorAll("main label")].some((item) => item.innerText.trim().startsWith(expected));
+        })()`);
         if (!fieldPresent) throw new Error("QR " + kind + " type did not show its required input field: " + expectedLabel);
       }
       const restored = await page.evaluate(() => {

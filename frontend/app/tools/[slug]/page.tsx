@@ -35,13 +35,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "markdown-table-generator": { title: "Markdown Table Generator – Create Tables Online", description: "Convert tab-separated text into a Markdown table for GitHub README files, documentation and notes. Preview, copy or download the result." },
     "savings-goal-calculator": { title: "Savings Goal Calculator – Monthly & Weekly Savings", description: "Enter your target, current savings and deadline to estimate weekly or monthly deposits. Compare a no-interest baseline with an assumed annual rate." },
     "neb-gpa-calculator": { title: "NEB GPA Calculator – Calculate GPA by Credit Hours", description: "Calculate NEB GPA from subject grade points and credit hours. See weighted points per subject, total credits, formula and estimated GPA out of 4.00." },
-    "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and square metres with clear unit breakdowns." },
+    "nepal-land-area-converter": { title: "Ropani Aana to Sq Ft Converter – Bigha Kattha Dhur", description: "Convert Ropani, Aana, Paisa, Daam, Bigha, Kattha and Dhur to square feet and metres. 1 Aana = 4 Paisa; see clear unit breakdowns." },
     "nepali-vat-calculator": { title: "Nepal VAT Calculator 13% – Add or Remove VAT", description: "Calculate 13% VAT in NPR. Add VAT to a base price or extract VAT from an inclusive total with a clear base, tax and total breakdown." },
     "nepal-share-calculator": { title: "NEPSE Share Profit Calculator – Broker Fees & CGT", description: "Estimate NEPSE share buy cost, sale proceeds, broker commission, SEBON fee, DP charge, CGT and net profit using editable assumptions." },
     "nepali-date-converter": { title: "Nepali Date Converter – BS to AD and AD to BS", description: "Convert Bikram Sambat Nepali dates to Gregorian AD dates and back. See Nepali month names, weekday and Devanagari digits." },
     "nepali-number-converter": { title: "Nepali Number Converter – Number to Words & Digits", description: "Convert numbers into English words using thousand, lakh and crore and display the same number in Nepali Devanagari digits." },
     "nepal-phone-validator": { title: "Nepal Mobile Number Checker – +977 Format", description: "Check the common 10-digit Nepal mobile number format and display its international +977 format. No call or SIM lookup is performed." },
-    "gold-tola-gram-converter": { title: "Tola to Gram Converter – Nepali Gold Weight", description: "Convert gold and silver weight between tola and grams using 1 tola = 11.6638038 grams. Fast two-way conversion." },
+    "gold-tola-gram-converter": { title: "Tola to Gram Converter – Nepali Gold Weight", description: "Convert gold and silver weight from tola to grams or grams to tola. 1 tola = 11.6638038 grams; includes quick examples and two-way conversion." },
     "nepali-digit-converter": { title: "Nepali Unicode Digit Converter – English to Nepali", description: "Convert English digits 0–9 to Nepali Devanagari digits and back while preserving the rest of your text." },
     "nepali-calendar": { title: "Nepali Calendar 2083 – BS Month and AD Dates", description: "View Bikram Sambat calendar months with corresponding Gregorian dates and weekdays. Check the supported BS calendar range." },
     "loksewa-photo-resizer": { title: "Loksewa Photo Resizer – Compress to 50KB, 100KB or 200KB", description: "Resize and compress a photo for Nepal online forms with 50KB, 100KB or 200KB targets. Check official photo rules before uploading." },
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
     "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Enter original and new values to calculate a percentage increase or decrease. See the change, formula and worked result instantly." },
-    "tip-calculator": { title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill", description: "Calculate a restaurant tip, bill total and per-person share. Choose a custom rate or compare 15%, 18% and 20%; check included service charges." },
+    "tip-calculator": { title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill", description: "Calculate a 20% tip on NPR 1,500 (NPR 300), total bill and equal split. Compare 15%, 18% and 20%; check service charges before paying." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 
@@ -66,13 +66,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "unit-converter": { title: "Unit Converter – Length, Weight, Temperature & Volume", description: "Convert common units for length, mass, temperature and volume. Select compatible units and check the converted value instantly." },
     "ratio-simplifier": { title: "Ratio Simplifier – Reduce Ratios to Lowest Terms", description: "Simplify a ratio to its lowest whole-number terms using the greatest common divisor. Check equivalent ratios with clear steps." },
     "gcd-lcm-calculator": { title: "GCD and LCM Calculator – Greatest Common Divisor", description: "Find the greatest common divisor and least common multiple of integers. Use the results to simplify fractions and solve number problems." },
-    "prime-number-checker": { title: "Prime Number Checker – Test Prime or Composite", description: "Check whether a whole number is prime or composite. Test divisibility, review factors and learn why 1 is not a prime number." },
+    "prime-number-checker": { title: "Prime Number Checker – Is This Number Prime?", description: "Check if a whole number is prime online or composite. Learn the prime test, factors, square-root method and why 1 is not prime." },
     "business-days-calculator": { title: "Business Days Calculator – Count Weekdays Between Dates", description: "Count weekdays between two dates while excluding Saturdays and Sundays. Check date boundaries and account separately for public holidays." },
     "unix-timestamp-converter": { title: "Unix Timestamp Converter – Seconds & Milliseconds to Date", description: "Convert Unix timestamps in seconds or milliseconds into readable UTC dates and times, then compare with your local timezone." },
     "date-add-subtract-calculator": { title: "Date Calculator – Add or Subtract Days from a Date", description: "Add or subtract a chosen number of days from a starting date. Check the resulting date across month, year and leap-year boundaries." },
     "aspect-ratio-calculator": { title: "Aspect Ratio Calculator – Find Image Width & Height", description: "Calculate image and video aspect ratios or derive a proportional width or height without stretching the original dimensions." },
 
-    "px-rem-converter": { title: "PX to REM Converter – CSS Units with Root Font Size", description: "Convert CSS pixel values to rem and rem to pixels using an editable root font size. Useful for responsive typography and spacing." },
+    "px-rem-converter": { title: "PX to REM Converter – CSS Pixel to REM Calculator", description: "Convert CSS px to rem and rem to px with an editable root size. See examples such as 600px to rem and 5px to rem." },
     "color-contrast-checker": { title: "Color Contrast Checker – WCAG Text Accessibility", description: "Check foreground and background colour contrast ratios and review WCAG guidance for normal and large text." },
     "word-character-counter": { title: "Word Counter – Count Words, Characters & Reading Time", description: "Count words, characters with or without spaces, sentences and paragraphs, and estimate reading time for pasted text." },
     "reading-time-calculator": { title: "Free Reading Time Calculator – Estimate Minutes & WPM", description: "Paste text to estimate reading time in minutes and seconds. Adjust words per minute and compare a speaking-time estimate for your script." },
@@ -345,8 +345,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "Can I enter decimal values?", a: "Use integers when the calculator asks for whole numbers. Decimals are not standard inputs for integer GCD and LCM calculations." }
     ],
     "prime-number-checker": [
-      { q: "What is a prime number?", a: "A prime number is an integer greater than 1 with exactly two positive factors: 1 and itself." },
+      { q: "How do you check whether a number is prime?", a: "A prime number is a whole number greater than 1 with exactly two positive factors: 1 and itself. To test a number efficiently, check divisibility by prime numbers up to its square root." },
       { q: "Is 1 a prime number?", a: "No. The number 1 has only one positive factor, so it is neither prime nor composite." },
+      { q: "Is 0 a prime or composite number?", a: "No. Zero is neither prime nor composite because it does not have exactly two positive factors." },
+      { q: "What is the difference between prime and composite?", a: "A prime number greater than 1 has exactly two positive factors. A composite number greater than 1 has more than two positive factors." },
       { q: "Does the checker show factors for composite numbers?", a: "The tool can list factors for composite inputs where supported; review the output to see which integers divide the number exactly." }
     ],
     "business-days-calculator": [
@@ -418,6 +420,11 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       { q: "What is the percentage change formula?", a: "Percentage change = (new value − original value) ÷ original value × 100, when the original value is not zero." },
       { q: "Is a 20% increase the same as a 20% decrease?", a: "No. A move from 100 to 120 is +20%, but a move from 120 to 100 is −16.67%, because the original value changes." },
       { q: "Can I calculate percentage change from zero?", a: "No. The original value is the baseline, and division by zero is undefined." }
+    ],
+    "px-rem-converter": [
+      { q: "How many rem is 600px?", a: "At a 16px root font size, 600px ÷ 16 = 37.5rem. Change the root size if your stylesheet uses a different value." },
+      { q: "How many rem is 5px?", a: "At a 16px root font size, 5px ÷ 16 = 0.3125rem." },
+      { q: "What is the difference between px, rem and em?", a: "CSS px is a CSS absolute-length unit; rem is relative to the root element's font size, while em is relative to the font size of the relevant element or parent context." }
     ],
 
 

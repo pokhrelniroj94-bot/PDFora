@@ -43,6 +43,8 @@ assert.ok(!homepageSource.includes("Free Online PDF Tools – Merge, Split & Com
 assert.ok(homepageSource.includes("Explore free online PDF, finance, math, text, developer, image, SEO and Nepal tools."), "Homepage description must identify the wider tool categories");
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
 assert.ok(englishToolPageSource.includes('title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
+assert.ok(englishToolPageSource.includes('description: "Calculate a 20% tip on NPR 1,500 (NPR 300), total bill and equal split.'), "The tip calculator description must answer the observed NPR 1,500 query");
+assert.ok(catalogToolSeoSource.includes("A 20% tip on NPR 1,500 is NPR 300."), "The tip calculator page must include the GSC-led NPR worked example");
 assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Tip: 15%, 18% & 20% Examples"'), "The tip guide title must match the 486-impression Search Console query");
 assert.ok(englishEditorialBlogSource.includes('description: "Calculate the tip, add it to the bill and split the total per person.'), "The tip guide description must lead with the actual calculator benefit");
 assert.ok(englishEditorialBlogSource.includes('heading: "How to calculate tip: formula and worked examples"'), "The tip guide must answer the primary query in its first instructional section");
@@ -54,7 +56,11 @@ assert.ok(englishToolPageSource.includes('title: "Free Reading Time Calculator �
 assert.ok(englishToolPageSource.includes('title: "Savings Goal Calculator – Monthly & Weekly Savings"'), "Savings Goal metadata must target deposit-planning intent");
 assert.ok(englishToolPageSource.includes('title: "Percentage Change Calculator – Increase or Decrease"'), "Percentage Change metadata must target calculation intent with a concise search title");
 assert.ok("Percentage Change Calculator – Increase or Decrease".length <= 60, "Percentage Change title must remain concise for search snippets");
-assert.ok(englishToolPageSource.includes('title: "Prime Number Checker – Test Prime or Composite"'), "Prime Number Checker metadata must target the 114-impression GSC query");
+assert.ok(englishToolPageSource.includes('title: "Prime Number Checker – Is This Number Prime?"'), "Prime Number Checker metadata must target the 114-impression GSC query");
+assert.ok(englishToolPageSource.includes('description: "Check if a whole number is prime online or composite.'), "Prime checker description must answer the online prime-check intent");
+assert.ok(englishToolPageSource.includes('title: "PX to REM Converter – CSS Pixel to REM Calculator"'), "PX to REM title must match the CSS unit-conversion task");
+assert.ok(catalogToolSeoSource.includes("How to convert 600px to rem or 5px to rem"), "PX to REM guide must answer the GSC long-tail conversion queries");
+assert.ok(catalogToolSeoSource.includes("600px ÷ 16 = 37.5rem and 5px ÷ 16 = 0.3125rem"), "PX to REM examples must use the default 16px root size correctly");
 assert.ok(englishEditorialBlogSource.includes('title: "Reading Time Calculator: WPM Formula & Examples"'), "Reading Time guide must target the calculator query while retaining its formula guide intent");
 assert.ok(englishEditorialBlogSource.includes('title: "Savings Goal Calculator: Monthly & Weekly Savings Plan"'), "Savings guide must target the calculator query while retaining its planning intent");
 assert.ok(englishEditorialBlogSource.includes('title: "Percentage Change Calculator: Formula & Examples"'), "Percentage Change guide must target the calculator query while retaining formula intent");

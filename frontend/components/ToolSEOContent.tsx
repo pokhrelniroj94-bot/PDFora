@@ -111,6 +111,30 @@ export default function ToolSEOContent({ slug, locale = "en" }: { slug: string; 
         <p className="mt-4 text-sm leading-8 text-slate-700">{locale === "ne" ? "प्रक्रिया असफल भए फाइलको ढाँचा, आकार र पासवर्ड सुरक्षा जाँच्नुहोस्। एउटै अनुरोध पटक-पटक नपठाउनुहोस्; आवश्यक भए मूल फाइलको प्रतिलिपिबाट पुनः प्रयास गर्नुहोस्।" : locale === "hi" ? "प्रोसेसिंग विफल हो तो फ़ाइल का प्रारूप, आकार और पासवर्ड सुरक्षा जाँचें। एक ही अनुरोध बार-बार न भेजें; ज़रूरत हो तो मूल फ़ाइल की नई प्रति से दोबारा कोशिश करें।" : "If processing fails, check the file format, size and password protection. Avoid submitting the same request repeatedly; try again with a fresh copy of the original if needed."}</p>
       </section>
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">{locale === "ne" ? "यो PDF टुल कहिले प्रयोग गर्ने?" : locale === "hi" ? "इस PDF टूल का उपयोग कब करें?" : "When should you use this PDF tool?"}</h2>
+        <p className="mt-4 text-sm leading-8 text-slate-700">
+          {locale === "ne"
+            ? `${toolName} त्यतिबेला उपयोगी हुन्छ जब तपाईंलाई ${localizedGuide.purpose.charAt(0).toLowerCase()}${localizedGuide.purpose.slice(1)} आवश्यक हुन्छ। माथिको टुलमा आफ्नो कागजात खोल्नुहोस्, उपलब्ध विकल्पअनुसार प्रक्रिया पूरा गर्नुहोस् र डाउनलोड गर्नुअघि नतिजा जाँच्नुहोस्।`
+            : locale === "hi"
+              ? `${toolName} तब उपयोगी है जब आपको ${localizedGuide.purpose.charAt(0).toLowerCase()}${localizedGuide.purpose.slice(1)} की आवश्यकता हो। ऊपर दिए गए टूल में अपना दस्तावेज़ खोलें, उपलब्ध विकल्पों के अनुसार प्रक्रिया पूरी करें और डाउनलोड करने से पहले परिणाम जाँचें।`
+              : `${toolName} is useful when your document workflow requires this specific operation: ${localizedGuide.purpose} Open the tool above, choose the available options that match your file, complete the operation and inspect the downloaded result before sharing or submitting it.`}
+        </p>
+        <p className="mt-3 text-sm leading-8 text-slate-700">
+          {locale === "ne"
+            ? `“${toolName} अनलाइन कसरी प्रयोग गर्ने?”, “प्रक्रियापछि PDF मा के जाँच्ने?” र “PDF को गुणस्तर कसरी सुनिश्चित गर्ने?” जस्ता प्रश्नको उत्तरका लागि यस पृष्ठको चरण, सीमा र FAQ हेर्नुहोस्।`
+            : locale === "hi"
+              ? `“${toolName} ऑनलाइन कैसे इस्तेमाल करें?”, “प्रोसेसिंग के बाद PDF में क्या जाँचें?” और “PDF की गुणवत्ता कैसे जाँचें?” जैसे सवालों के लिए इस पेज के चरण, सीमाएँ और FAQ देखें।`
+              : `This guide also addresses practical search questions such as “how to use ${toolName.toLowerCase()} online”, “what should I check after processing a PDF” and “how can I verify PDF quality after processing”. The steps, limitations and FAQs below provide the task-specific details rather than a generic list of PDF keywords.`}
+        </p>
+        <p className="mt-3 text-sm leading-8 text-slate-700">
+          {locale === "ne"
+            ? "फाइलको प्रकार, आकार, पासवर्ड सुरक्षा वा भित्री संरचनाले नतिजा फरक पार्न सक्छ। महत्त्वपूर्ण कागजातका लागि मूल फाइल सुरक्षित राख्नुहोस् र अन्तिम PDF छुट्टै reader मा खोलेर जाँच्नुहोस्।"
+            : locale === "hi"
+              ? "फ़ाइल का प्रकार, आकार, पासवर्ड सुरक्षा या आंतरिक संरचना परिणाम को प्रभावित कर सकती है। ज़रूरी दस्तावेज़ के लिए मूल फ़ाइल सुरक्षित रखें और अंतिम PDF को अलग reader में खोलकर जाँचें।"
+              : "File type, size, password protection and internal document structure can affect the result. Keep the original for important documents and open the finished PDF in a separate reader to verify the pages and content."}
+        </p>
+      </section>
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <h2 className="text-xl font-black text-slate-950">{labels[11]}</h2>
         <div className="mt-5 space-y-5">{faqs.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 text-sm leading-8 text-slate-600">{item.a}</p></div>)}</div>
       </section>

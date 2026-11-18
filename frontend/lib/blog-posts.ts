@@ -439,6 +439,7 @@ const priorityEditorialBlogPosts: BlogPost[] = [
       { heading: "Handy facts to remember", paragraphs: ["2 is the only even prime, because every other even number is divisible by 2. Any number ending in 0 or 5, other than 5 itself, is divisible by 5. A number is divisible by 3 when its digits add up to a multiple of 3, so 51 (5 + 1 = 6) is divisible by 3 and is not prime."], bullets: ["Primes below 30: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29.", "221 looks prime but equals 13 × 17.", "Prime checking is different from finding the greatest common divisor of two numbers."] }
     ],
     faqs: [
+      { question: "How do I check if a number is prime online?", answer: "Enter a whole number greater than 1 in the PDFora Prime Number Checker. It tests possible divisors up to the square root and reports whether the number is prime; decimals and negative inputs are not supported." },
       { question: "Is 1 a prime number?", answer: "No. A prime needs exactly two positive factors, and 1 has only one. Modern definitions exclude 1 so that every integer above 1 has a single prime factorisation." },
       { question: "Is 2 a prime number?", answer: "Yes. 2 is divisible only by 1 and 2, and it is the only even prime number." },
       { question: "How do I check if a large number is prime?", answer: "Divide it by every prime up to its square root. If none divides it evenly, the number is prime. The Prime Number Checker applies this test to whole numbers within the supported range." },

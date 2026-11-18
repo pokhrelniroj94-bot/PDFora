@@ -76,7 +76,7 @@ export default function CatalogToolSEOContent({
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Math utility</p>
-        <h2 className="mt-2 text-2xl font-black text-slate-950">Check whether a whole number is prime or composite</h2>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Check if a number is prime online</h2>
         <p className="mt-4 leading-8 text-slate-700">A prime number is an integer greater than 1 that has exactly two positive factors: 1 and itself. A composite number is greater than 1 and has additional positive factors. Enter a whole number to test its classification. The checker reports prime or not prime; to see factors of a composite number, divide it by small primes up to its square root.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
@@ -133,7 +133,7 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Tip calculator formula and worked examples</h2>
         <p className="mt-3 rounded-xl bg-slate-50 p-4 font-semibold leading-7 text-slate-900">Tip = bill amount × tip percentage ÷ 100. Total = bill amount + tip. Per-person share = total ÷ number of people.</p>
-        <p className="mt-4 leading-8 text-slate-700">For a bill of 2,000 and a 10% tip, the tip is 200 and the total is 2,200. If four people split the total equally, each person pays 550. For a $60 bill, a 15% tip is $9, an 18% tip is $10.80 and a 20% tip is $12. Split three ways, the final totals are $23, $23.60 and $24 per person. These are examples only; local tipping customs vary.</p>
+        <p className="mt-4 leading-8 text-slate-700">For a NPR 1,500 bill, a 20% tip is NPR 300 and the total is NPR 1,800. If three people split the total equally, each person pays NPR 600. For a bill of 2,000 and a 10% tip, the tip is 200 and the total is 2,200; four equal shares are 550 each. For a $60 bill, a 15% tip is $9, an 18% tip is $10.80 and a 20% tip is $12. These are arithmetic examples only; local tipping customs vary.</p>
       </section>
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Service charges, unequal splits and limitations</h2>
@@ -143,6 +143,7 @@ export default function CatalogToolSEOContent({
         <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
         <div className="mt-4 space-y-4">
           <div><h3 className="font-bold text-slate-900">How do I calculate a 10% tip?</h3><p className="mt-1 leading-7 text-slate-700">Multiply the bill by 10 and divide by 100. For a bill of 2,000, a 10% tip is 200.</p></div>
+          <div><h3 className="font-bold text-slate-900">What is a 20% tip on NPR 1,500?</h3><p className="mt-1 leading-7 text-slate-700">A 20% tip on NPR 1,500 is NPR 300. The bill plus tip is NPR 1,800; split equally between three people, that is NPR 600 each.</p></div>
           <div><h3 className="font-bold text-slate-900">How do I calculate an 18% tip?</h3><p className="mt-1 leading-7 text-slate-700">Multiply the tip base by 18 and divide by 100. For a $60 tip base, 18% is $10.80.</p></div>
           <div><h3 className="font-bold text-slate-900">Can I split the bill between several people?</h3><p className="mt-1 leading-7 text-slate-700">Yes. Enter the number of people and the calculator divides the bill plus tip into equal shares.</p></div>
           <div><h3 className="font-bold text-slate-900">Does the calculator include service charge or tax?</h3><p className="mt-1 leading-7 text-slate-700">No. Check your receipt and include only the amount that should be used as the tip base.</p></div>
@@ -313,6 +314,12 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><p className="text-xs font-bold uppercase tracking-widest text-teal-700">{guide.eyebrow}</p><h2 className="mt-2 text-2xl font-black text-slate-950">{guide.heading}</h2><p className="mt-4 leading-8 text-slate-700">{guide.intro}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">How to use this calculator</h2><ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">{guide.steps.map((step) => <li key={step}>{step}</li>)}</ol></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Formula and worked example</h2><p className="mt-3 rounded-xl bg-slate-50 p-4 font-semibold leading-7 text-slate-900">{guide.formula}</p><p className="mt-4 leading-8 text-slate-700">{guide.example}</p></section>
+      {tool.slug === "nepal-land-area-converter" && <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How many paisa are in 1 aana?</h2>
+        <p className="mt-3 leading-8 text-slate-700"><strong>1 aana equals 4 paisa.</strong> In the standard hill-region land measurement system, 1 ropani = 16 aana = 64 paisa = 256 daam. One aana is also 342.25 square feet, so you can compare traditional units with square feet and square metres.</p>
+        <p className="mt-3 leading-8 text-slate-700">For example, 2 aana equals 8 paisa, while 1 ropani and 8 aana equals 24 aana or 8,214 square feet. The Terai system is separate: 1 bigha = 20 kattha = 400 dhur. Use the matching input section rather than mixing hill and Terai units.</p>
+        <p className="mt-3 leading-8 text-slate-700">This answers common searches including “1 aana in paisa”, “1 aana to paisa”, “1 ropani ma kati aana”, “1 aana in square feet” and “ropani aana paisa daam conversion”. These are unit conversions only, not a cadastral survey or confirmation of a property&apos;s recorded area.</p>
+      </section>}
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and important limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.caution}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related tools</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read related guide</Link>}</div></section>
@@ -350,7 +357,7 @@ export default function CatalogToolSEOContent({
     "gold-tola-gram-converter": {
       heading: "Convert gold and silver weight between tola and grams",
       intro: "Convert a jewellery or bullion weight from tola to grams, or grams back to tola. The converter uses the standard mass relationship of one tola to approximately 11.6638038 grams.",
-      steps: ["Choose Tola to grams or Grams to tola.", "Enter the weight as a non-negative number.", "Read the converted weight and the conversion factor.", "Use the weight shown on the jeweller's scale for a purchase or sale calculation."],
+      steps: ["Choose Tola to grams or Grams to tola.", "Enter the weight as a non-negative number.", "Read the converted weight and the conversion factor.", "Use the weight shown on the jeweller’s scale for a purchase or sale calculation."],
       example: "1 tola = 11.6638 grams approximately. Therefore, 2.5 tola is about 29.1595 grams.",
       note: "This tool converts weight only. It does not provide live gold prices, purity testing, making charges, wastage, hallmark verification or a jewellery valuation."
     },
@@ -417,6 +424,12 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><p className="text-xs font-bold uppercase tracking-widest text-teal-700">Nepal utility guide</p><h2 className="mt-2 text-2xl font-black text-slate-950">{guide.heading}</h2><p className="mt-4 leading-8 text-slate-700">{guide.intro}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">How to use the tool</h2><ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">{guide.steps.map((step) => <li key={step}>{step}</li>)}</ol></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Example</h2><p className="mt-3 leading-8 text-slate-700">{guide.example}</p></section>
+      {tool.slug === "gold-tola-gram-converter" && <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How many grams are in 1 tola of gold?</h2>
+        <p className="mt-3 leading-8 text-slate-700"><strong>1 tola equals approximately 11.6638038 grams.</strong> For the reverse conversion, 1 gram is approximately 0.085735 tola. The same standard weight conversion applies to silver; this calculator converts weight and does not estimate a metal&apos;s market value.</p>
+        <p className="mt-3 leading-8 text-slate-700">Quick examples: 2 tola is about 23.3276 grams, 5 tola is about 58.3190 grams, and 10 tola is about 116.6380 grams. Enter any supported weight above to convert tola to grams or grams to tola without manually repeating the formula.</p>
+        <p className="mt-3 leading-8 text-slate-700">This section answers common searches such as “1 tola in grams”, “1 tola to gram”, “how many grams in one tola”, “1 tola ma kitna gram hota hai”, “1 gram gold in tola” and “10 tola in grams”. Check the jeweller&apos;s scale and purity details separately when buying or selling jewellery.</p>
+      </section>}
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Accuracy and limitations</h2><p className="mt-3 leading-8 text-slate-700">{guide.note}</p></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2><div className="mt-4 space-y-4">{uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div></section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Related Nepal tools</h2><div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}{guideSlug && <Link href={`/blog/${guideSlug}`} className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-800">Read related guide</Link>}</div></section>
@@ -779,6 +792,36 @@ export default function CatalogToolSEOContent({
             {uniqueFaqItems.map((item) => <div key={item.q}><h3 className="font-bold text-slate-950">{item.q}</h3><p className="mt-2 leading-7 text-slate-600">{item.a}</p></div>)}
           </div>
         </section>
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+          <h2 className="text-xl font-black text-slate-950">What this tool helps you do</h2>
+          <p className="mt-4 leading-8 text-slate-700">
+            {title} is designed for people who need to {taskDescription.toLowerCase()}. It belongs to the {tool.category.toLowerCase()} category, so it supports a practical task in that workflow rather than replacing a specialist application or professional review. Use it when you need a clear, focused way to complete this specific job online.
+          </p>
+          <p className="mt-3 leading-8 text-slate-700">
+            Common related concepts include {({
+              PDF: "PDF documents, page order, file conversion, document preparation and output quality",
+              Finance: "principal, rates, repayment, fees, currency, estimates and financial assumptions",
+              Text: "plain text, words, characters, formatting, Unicode and text cleanup",
+              Developer: "input validation, data formats, encoding, parsing, debugging and safe test samples",
+              Image: "image formats, dimensions, compression, colour, transparency and export quality",
+              Math: "formulas, units, percentages, rounding, numeric inputs and worked examples",
+              SEO: "search intent, page content, metadata, crawling, indexing and search snippets",
+              Business: "costs, revenue, pricing, margins, targets and business assumptions",
+              Nepal: "Nepal-specific formats, NPR, Bikram Sambat dates and current local requirements",
+              Utilities: "online utilities, QR data, digital sharing, file formats and device compatibility",
+              "Career Tools": "CV structure, job applications, professional experience and document export"
+            } as Record<string, string>)[tool.category] ?? "the input, output, supported formats and practical requirements of this task"}.
+          </p>
+          <p className="mt-3 leading-8 text-slate-700">
+            If you are searching for how to {taskDescription.toLowerCase()} online, start with the tool above, follow the steps on this page and check the result before you use or share it. The examples, limitations and frequently asked questions below explain what the tool does and where a separate source or expert check may still be needed.
+          </p>
+        </section>
+      {tool.slug === "px-rem-converter" && <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to convert 600px to rem or 5px to rem</h2>
+        <p className="mt-3 leading-8 text-slate-700"><strong>Formula: rem = pixels ÷ root font size.</strong> With the common CSS root size of 16px, 600px ÷ 16 = 37.5rem and 5px ÷ 16 = 0.3125rem. For the reverse conversion, multiply the rem value by the root font size.</p>
+        <p className="mt-3 leading-8 text-slate-700">The root font size is editable because websites can set a different value on the html element. For example, with a 20px root size, 600px equals 30rem and 5px equals 0.25rem. Use the same root size as the page you are styling to avoid unexpected spacing or typography.</p>
+        <p className="mt-3 leading-8 text-slate-700">REM is relative to the root element, while EM is relative to the relevant parent or element font size. This converter changes CSS units; it does not inspect your stylesheet or determine the computed size of a live website.</p>
+      </section>}
         <section className="rounded-2xl border border-teal-100 bg-teal-50 p-6 sm:p-8">
           <h2 className="text-xl font-black text-slate-950">Related tools and further reading</h2>
           <p className="mt-3 leading-7 text-slate-700">You may also find these related utilities useful for the next step in your workflow. Choose the tool that matches the task rather than repeating the same operation unnecessarily.</p>

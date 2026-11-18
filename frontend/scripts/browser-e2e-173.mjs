@@ -456,6 +456,107 @@ async function runTool(tool, index) {
       throw new Error("Tool rendered a missing/unimplemented configuration message.");
     }
 
+    if (tool.slug === "qr-code-generator") {
+      const expectedKinds = ["url", "text", "wifi", "email", "phone", "sms", "whatsapp", "vcard", "event"];
+      const qrKinds = await page.evaluate(`(() => {
+        const label = [...document.querySelectorAll("main label")].find((item) => /QR content type/i.test(item.innerText));
+        return label ? [...label.querySelectorAll("select option")].map((option) => option.value) : [];
+      })()`);
+      if (JSON.stringify(qrKinds) !== JSON.stringify(expectedKinds)) {
+        throw new Error("QR content selector does not expose all nine supported types: " + JSON.stringify(qrKinds));
+      }
+      const fieldByKind = {
+        url: "Text or URL", text: "Text or URL", wifi: "Network name (SSID)",
+        email: "Text or URL", phone: "Text or URL", sms: "Phone", whatsapp: "Phone",
+        vcard: "Full name", event: "Start date and time",
+      };
+      for (const kind of expectedKinds) {
+        const selected = await page.evaluate(`(() => {
+          const kind = ${JSON.stringify(kind)};
+          const label = [...document.querySelectorAll("main label")].find((item) => /QR content type/i.test(item.innerText));
+          const select = label?.querySelector("select");
+          if (!select) return false;
+          const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")?.set;
+          setter?.call(select, kind);
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+          return true;
+        })()`);
+        if (!selected) throw new Error("QR content type selector disappeared while checking " + kind);
+        await delay(60);
+        const expectedLabel = fieldByKind[kind];
+        const fieldPresent = await page.evaluate(`(() => {
+          const expected = ${JSON.stringify(expectedLabel)};
+          return [...document.querySelectorAll("main label")].some((item) => item.innerText.trim().startsWith(expected));
+        })()`);
+        if (!fieldPresent) throw new Error("QR " + kind + " type did not show its required input field: " + expectedLabel);
+      }
+      const restored = await page.evaluate(`(() => {
+        const label = [...document.querySelectorAll("main label")].find((item) => /QR content type/i.test(item.innerText));
+        const select = label?.querySelector("select");
+        if (!select) return false;
+        const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value")?.set;
+        setter?.call(select, "url");
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        return true;
+      })()`);
+      if (!restored) throw new Error("QR URL mode could not be restored.");
+      await delay(80);
+      await setFieldByLabel(page, "Text or URL", "https://example.com/qr-e2e");
+      const downloadsBeforeQr = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
+      const generateClicked = await page.evaluate(`(() => {
+        const button = [...document.querySelectorAll("main button")].find((item) => /^Generate QR code$/i.test(item.innerText.trim()));
+        if (!button || button.disabled) return false;
+        button.click();
+        return true;
+      })()`);
+      if (!generateClicked) throw new Error("QR Generate button was not enabled.");
+      let qrPreview = null;
+      const qrStarted = Date.now();
+      while (Date.now() - qrStarted < 15000) {
+        qrPreview = await page.evaluate(`(() => {
+          const image = document.querySelector('img[alt="Generated QR code preview"]');
+          const alert = document.querySelector("main [role=alert]")?.innerText || "";
+          const library = document.querySelector('script[data-pdfora-qr="1"]')?.getAttribute("src") || "";
+          return {
+            image: image?.getAttribute("src") || "",
+            png: [...document.querySelectorAll("main button")].some((button) => /download png/i.test(button.innerText)),
+            svg: [...document.querySelectorAll("main button")].some((button) => /download svg/i.test(button.innerText)),
+            alert, library,
+          };
+        })()`);
+        if (qrPreview.image.startsWith("data:image/png;base64,")) break;
+        if (qrPreview.alert) throw new Error("QR generator reported an error: " + qrPreview.alert);
+        await delay(200);
+      }
+      if (!qrPreview?.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg ||
+          !qrPreview.library.includes("/vendor/qrcode.min.js")) {
+        throw new Error("QR generator did not load its local library and create a PNG preview with PNG/SVG actions: " + JSON.stringify(qrPreview));
+      }
+      const downloadClicked = await page.evaluate(`(() => {
+        const button = [...document.querySelectorAll("main button")].find((item) => /download png/i.test(item.innerText));
+        if (!button) return false;
+        button.click();
+        return true;
+      })()`);
+      if (!downloadClicked) throw new Error("QR PNG download action was unavailable.");
+      let qrFile = "";
+      const qrDownloadStarted = Date.now();
+      while (Date.now() - qrDownloadStarted < 10000) {
+        qrFile = fs.readdirSync(downloadsDir).find((name) => !name.endsWith(".crdownload") && !downloadsBeforeQr.has(name) && name.toLowerCase().endsWith(".png")) || "";
+        if (qrFile) break;
+        await delay(200);
+      }
+      if (!qrFile) throw new Error("QR PNG download did not complete.");
+      const qrDownload = await validateDownloadedFile(path.join(downloadsDir, qrFile));
+      row.checks.push("all nine QR content types expose their required fields; local QR library loaded; PNG preview and SVG/PNG actions verified; downloaded PNG signature validated");
+      row.output = "Nine QR modes verified; " + qrDownload.bytes + " byte PNG download validated";
+      row.outputVerified = true;
+      row.status = "PASS";
+      row.evidenceLevel = "nine-qr-modes-preview-and-png-download-verified";
+      row.downloadedFiles = [qrDownload];
+      return row;
+    }
+
     if (tool.kind === "pdf") {
       const inputNode = await page.send("DOM.getDocument", { depth: 1 });
       const queries = await page.send("DOM.querySelectorAll", {
@@ -514,51 +615,6 @@ async function runTool(tool, index) {
       if (!action) throw new Error("PDF tool has no enabled processing action.");
       row.action = action;
       row.checks.push("processing action clicked");
-      if (tool.slug === "qr-code-generator") {
-        const qrStarted = Date.now();
-        let qrPreview = null;
-        while (Date.now() - qrStarted < 45000) {
-          qrPreview = await page.evaluate(`() => {
-            const image = document.querySelector('img[alt="Generated QR code preview"]');
-            const alert = document.querySelector('main [role="alert"]')?.innerText || "";
-            return {
-              image: image?.getAttribute("src") || "",
-              png: [...document.querySelectorAll("main button")].some((button) => /download png/i.test(button.innerText)),
-              svg: [...document.querySelectorAll("main button")].some((button) => /download svg/i.test(button.innerText)),
-              alert,
-            };
-          }`);
-          if (qrPreview.image.startsWith("data:image/png;base64,")) break;
-          if (qrPreview.alert) throw new Error("QR generator reported an error: " + qrPreview.alert);
-          await delay(250);
-        }
-        if (!qrPreview?.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg) {
-          throw new Error("QR generator did not create a PNG preview and PNG/SVG download actions within 45 seconds.");
-        }
-        const downloadClicked = await page.evaluate(`() => {
-          const button = [...document.querySelectorAll("main button")].find((item) => /download png/i.test(item.innerText));
-          if (!button) return false;
-          button.click();
-          return true;
-        }`);
-        if (!downloadClicked) throw new Error("QR PNG download action was unavailable.");
-        let qrFile = "";
-        const qrDownloadStarted = Date.now();
-        while (Date.now() - qrDownloadStarted < 10000) {
-          qrFile = fs.readdirSync(downloadsDir).find((name) => !name.endsWith(".crdownload") && !downloadsBefore.has(name) && name.toLowerCase().endsWith(".png")) || "";
-          if (qrFile) break;
-          await delay(200);
-        }
-        if (!qrFile) throw new Error("QR PNG download did not complete.");
-        const qrDownload = await validateDownloadedFile(path.join(downloadsDir, qrFile));
-        row.checks.push("QR library loaded, PNG preview generated, SVG/PNG actions shown and downloaded PNG signature validated");
-        row.output = "QR preview generated; " + qrDownload.bytes + " byte PNG download validated";
-        row.outputVerified = true;
-        row.status = "PASS";
-        row.evidenceLevel = "qr-preview-and-png-download-verified";
-        row.downloadedFiles = [qrDownload];
-        return row;
-      }
       const start = Date.now();
       let finalState = null;
       let statusText = "";
@@ -712,17 +768,16 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepali-unicode-typing") {
-        const readyStarted = Date.now();
-        let readyButton = false;
-        while (Date.now() - readyStarted < 25000 && !readyButton) {
-          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
-          if (!readyButton) await delay(250);
-        }
-        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
+        const buttonReady = await page.evaluate(`(() => [...document.querySelectorAll("main button")].some((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled))()`);
+        if (!buttonReady) throw new Error("Locally bundled Nepali typing action was not enabled.");
         await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
-        await delay(300);
-        const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output.");
+        await delay(100);
+        const typingState = await page.evaluate(`(() => ({
+          output: document.querySelectorAll("main textarea")[1]?.value || "",
+          externalNepaliScripts: [...document.scripts].map((script) => script.src).filter((src) => /nepalify|unpkg/i.test(src)),
+        }))()`);
+        if (typingState.output !== "नमस्ते") throw new Error("Nepali keyboard layout output mismatch: " + typingState.output);
+        if (typingState.externalNepaliScripts.length) throw new Error("Nepali typing must use its bundled local engine, not an external CDN: " + typingState.externalNepaliScripts.join(", "));
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
@@ -1120,8 +1175,11 @@ async function runTool(tool, index) {
           row.status = "PASS";
           row.evidenceLevel = "nepal-market-headline-links-and-official-sources-verified";
         } else {
-          row.checks.push("Nepal market tab and official source links rendered; no live Nepal-market headlines were returned");
+          // An empty live feed is a truthful fallback state, not a fabricated headline
+          // or a broken route. Keep the official NEPSE/SEBON source links visible.
+          row.checks.push("Nepal market tab and official source links rendered; no live Nepal-market headlines were returned, so the empty-feed fallback is shown");
           row.evidenceLevel = "nepal-market-empty-feed-and-official-sources";
+          row.status = "PARTIAL";
         }
         return row;
       }

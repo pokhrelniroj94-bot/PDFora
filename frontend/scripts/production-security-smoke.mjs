@@ -43,7 +43,18 @@ const sitemapText = await sitemap.text();
 const sitemapUrls = [...sitemapText.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 check("sitemap is valid non-empty XML", sitemapText.includes("<urlset") && sitemapUrls.length > 0, "URLs=" + sitemapUrls.length);
 check("sitemap has no duplicate URLs", new Set(sitemapUrls).size === sitemapUrls.length, "URLs=" + sitemapUrls.length);
-check("sitemap excludes unpublished language routes", !sitemapUrls.some((url) => /\/(hi|bn|ur|ar|es|fr|de|pt|zh|ja)(\/|$)/.test(new URL(url).pathname)), "unpublished locales must not be indexed");
+const independentlyPublishedQrLocales = ["hi", "bn", "ur", "es", "fr", "de", "pt", "ar", "zh", "ja"];
+const unexpectedLocalizedUrls = sitemapUrls.filter((url) => {
+  const pathname = new URL(url).pathname;
+  const match = pathname.match(/^\/(hi|bn|ur|ar|es|fr|de|pt|zh|ja)(\/.*)$/);
+  if (!match || !independentlyPublishedQrLocales.includes(match[1])) return false;
+  return !["/tools/qr-code-generator", "/blog/qr-code-generator-guide"].includes(match[2]);
+});
+check(
+  "sitemap includes only independently published QR routes for otherwise unpublished locales",
+  unexpectedLocalizedUrls.length === 0,
+  unexpectedLocalizedUrls.length ? unexpectedLocalizedUrls.join(", ") : "only QR tool and translated QR guide routes are indexed"
+);
 
 const privacyText = (await privacy.text()).toLowerCase();
 check("privacy policy discloses advertising provider", privacyText.includes("adsterra") && privacyText.includes("advertising"));

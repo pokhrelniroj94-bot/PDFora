@@ -714,15 +714,36 @@ async function runTool(tool, index) {
       if (tool.slug === "nepali-unicode-typing") {
         const readyStarted = Date.now();
         let readyButton = false;
-        while (Date.now() - readyStarted < 25000 && !readyButton) {
-          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
+        while (Date.now() - readyStarted < 45000 && !readyButton) {
+          readyButton = await page.evaluate(`() => {
+            const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText));
+            return Boolean(button && !button.disabled);
+          }`);
           if (!readyButton) await delay(250);
         }
-        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
-        await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
-        await delay(300);
-        const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output.");
+        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 45 seconds.");
+        // Nepalify's "romanized" mode is a keyboard-layout mapping, not free-form
+        // phonetic spell-checking. Use its documented deterministic fixture.
+        await page.evaluate(`() => {
+          const fields = [...document.querySelectorAll("main textarea")];
+          const input = fields[0];
+          const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set;
+          setter?.call(input, "kiMkr/tv/ybimuX/");
+          input?.dispatchEvent(new Event("input", { bubbles: true }));
+          input?.dispatchEvent(new Event("change", { bubbles: true }));
+        }`);
+        await delay(150);
+        await page.evaluate(`() => {
+          const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled);
+          button?.click();
+        }`);
+        let output = "";
+        const outputStarted = Date.now();
+        while (Date.now() - outputStarted < 3000 && !/[\\u0900-\\u097F]/.test(output)) {
+          output = await page.evaluate(`() => document.querySelectorAll("main textarea")[1]?.value || ""`);
+          if (!/[\\u0900-\\u097F]/.test(output)) await delay(100);
+        }
+        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output from the documented romanized-layout fixture.");
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");

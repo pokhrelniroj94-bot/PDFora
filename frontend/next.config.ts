@@ -45,7 +45,7 @@ const nextConfig: NextConfig = {
               "object-src 'none'",
               "frame-ancestors 'none'",
               "form-action 'self'",
-              "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://bauval.org https://*.adsterra.com https://*.adsterra.org",
+              "script-src 'self' 'unsafe-inline' https://unpkg.com https://www.googletagmanager.com https://www.google-analytics.com https://bauval.org https://*.adsterra.com https://*.adsterra.org",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https:",
               "font-src 'self' data: https:",

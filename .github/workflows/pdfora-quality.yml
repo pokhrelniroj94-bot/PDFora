@@ -1,9 +1,9 @@
 name: PDFora quality and security checks
 on:
   pull_request:
-    branches: [main, master, feat/free-market-data-fallbacks, i18n/global-multilingual, feature/complete-12-language-platform]
+    branches: [main, master, feat/free-market-data-fallbacks, i18n/global-multilingual, feature/complete-12-language-platform, seo/e2e-input-fix-2026-11-16]
   push:
-    branches: [master, niroj77-seo-ux-security, i18n/global-multilingual, fix/published-language-switcher]
+    branches: [master, niroj77-seo-ux-security, i18n/global-multilingual, fix/published-language-switcher, hindi-localization-production-sync]
   workflow_dispatch:
 permissions:
   contents: read

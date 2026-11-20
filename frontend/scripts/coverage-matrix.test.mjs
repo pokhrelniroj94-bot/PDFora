@@ -84,8 +84,9 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   }
   assert.ok(report.rows.filter((row) => row.locale === "ne" && row.interface !== "not-implemented").every((row) => row.interface === "nepali-interface-present"), "Interface presence must not imply native-language review");
   const nepaliGuides = report.rows.filter((row) => row.locale === "ne" && row.content !== "not-verified");
-  assert.equal(nepaliGuides.length, 50, "50 Nepali tool guides are recorded in the current coverage matrix");
-  assert.ok(nepaliGuides.every((row) => row.content === "nepali-guide-present"), "Guide presence must not imply native-language review");
+  assert.equal(nepaliGuides.length, 50, "50 localized Nepali guide entries are recorded, including the shared QR guide");
+  assert.ok(nepaliGuides.filter((row) => row.slug !== "qr-code-generator").every((row) => row.content === "nepali-guide-present"), "Nepali tool guide presence must not imply native-language review");
+  assert.equal(nepaliGuides.find((row) => row.slug === "qr-code-generator")?.content, "localized-guide-present", "The multilingual QR guide keeps its shared localization status");
 });
 
 test("tool-language matrix keeps unpublished locales and unverified workflows out of indexing", () => {

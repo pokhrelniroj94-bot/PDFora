@@ -63,8 +63,8 @@ test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", asyn
 test("Hindi server route checks use server-safe slug registries", async () => {
   const route = await readFile(new URL("../app/[locale]/tools/[slug]/page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(route, /isHindiMathSlug|isHindiBusinessSlug/, "client component predicates must never be called from the server route");
-  assert.match(route, /hindiMathToolSlugs\.includes\(toolSlug\)/);
-  assert.match(route, /hindiBusinessToolSlugs\.includes\(toolSlug\)/);
+  assert.match(route, /hindiMathToolSlugs\.includes\(toolSlug/);
+  assert.match(route, /hindiBusinessToolSlugs\.includes\(toolSlug/);
 });
 
 test("all newly completed Hindi utility routes are preview-only and have dedicated visible UI", async () => {

@@ -27,9 +27,10 @@ export default function NepaliTypingTool({ locale = "en" }: { locale?: "en" | "n
           format?: NepalifyFormatter["format"];
         };
         const api = loaded.default ?? loaded;
-        if (typeof api.format !== "function") throw new Error("Nepalify format API was not exported.");
+        const format = api.format;
+        if (typeof format !== "function") throw new Error("Nepalify format API was not exported.");
         if (active) {
-          setFormatter(() => api.format);
+          setFormatter(() => format);
           setError("");
         }
       } catch {

@@ -7,7 +7,7 @@ const btn="rounded-xl bg-teal-700 px-4 py-2.5 text-sm font-bold text-white";
 const fmt=(n:number)=>n.toLocaleString("en-IN",{maximumFractionDigits:2});
 
 const neDigits=(s:string)=>s.replace(/[0-9]/g,d=>"०१२३४५६७८९"[Number(d)]);
-declare global {interface Window {PreetiConverter?:new()=>{convert:(s:string)=>string};nepalify?:{format:(s:string,o?:{layout?:"romanized"|"traditional"})=>string}}}
+declare global {interface Window {PreetiConverter?:new()=>{convert:(text:string)=>string;reverseConvert:(text:string)=>string};nepalify?:{format:(s:string,o?:{layout?:"romanized"|"traditional"})=>string}}}
 export default function HindiNepalCatalogTools({slug}:{slug:string}){
  const [a,setA]=useState("2083-01-01"),[b,setB]=useState("2026-04-14"),[year,setYear]=useState("2083"),[month,setMonth]=useState("1"),[result,setResult]=useState(""),[text,setText]=useState(""),[rate,setRate]=useState("1.6"),[amount,setAmount]=useState("100"),[currency,setCurrency]=useState("USD"),[salary,setSalary]=useState("50000"),[tax,setTax]=useState("10"),[units,setUnits]=useState("100"),[unitRate,setUnitRate]=useState("10"),[fixed,setFixed]=useState("30"),[photo,setPhoto]=useState<File|null>(null),[limit,setLimit]=useState("100"),[maxSide,setMaxSide]=useState("800"),[holidayDate,setHolidayDate]=useState("2083-01-01"),[holidayName,setHolidayName]=useState(""),[holidayItems,setHolidayItems]=useState<Array<{date:string;name:string}>>([]);
  const [news,setNews]=useState<Array<{title?:string;url?:string;source?:string;publishedAt?:string}>>([]);

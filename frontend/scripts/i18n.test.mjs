@@ -411,9 +411,9 @@ test("switcher: never offers an unavailable page", () => {
   assert.deepEqual(switcher.getSwitcherOptions("/tools/qr-code-generator").map((o) => o.locale), config.locales, "only the independently translated QR page offers all 12 languages");
   process.env.PDFORA_I18N_PREVIEW = "1";
   const home = switcher.getSwitcherOptions("/");
-  assert.deepEqual(home.map((o) => o.locale), ["en", "ne"]);
+  assert.deepEqual(home.map((o) => o.locale), ["en", "ne", "hi"], "Hindi homepage is available in preview mode");
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne", "hi"], "Hindi PDF tool pages are real routes (preview only)");
-  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne"], "only reviewed static pages offer Nepali");
+  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne", "hi"], "Hindi static pages are available in preview mode");
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 

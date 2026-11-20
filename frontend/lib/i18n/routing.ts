@@ -8,8 +8,6 @@ import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 import { getLocalizedQrBlogPost } from "../localized-qr-blog-posts";
-import { hindiMathToolSlugs } from "./hindi-math-tools";
-import { hindiBusinessToolSlugs } from "./hindi-business-tools";
 import { hindiToolSeo } from "./hindi-tool-seo";
 
 /**

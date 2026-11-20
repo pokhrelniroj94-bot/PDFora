@@ -1548,5 +1548,14 @@ const report = {
 };
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
-console.log("BROWSER E2E SUMMARY " + JSON.stringify(report.counts));
+const summaryRows = localePrefix ? nepaliRouteResults : results;
+const summary = localePrefix
+  ? {
+      locale: "ne-NP",
+      total: summaryRows.length,
+      pass: summaryRows.filter((row) => row.status === "PASS").length,
+      fail: summaryRows.filter((row) => row.status === "FAIL").length,
+    }
+  : report.counts;
+console.log("BROWSER E2E SUMMARY " + JSON.stringify(summary));
 if (browserFailures) process.exitCode = 1;

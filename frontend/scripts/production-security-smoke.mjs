@@ -43,7 +43,12 @@ const sitemapText = await sitemap.text();
 const sitemapUrls = [...sitemapText.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 check("sitemap is valid non-empty XML", sitemapText.includes("<urlset") && sitemapUrls.length > 0, "URLs=" + sitemapUrls.length);
 check("sitemap has no duplicate URLs", new Set(sitemapUrls).size === sitemapUrls.length, "URLs=" + sitemapUrls.length);
-check("sitemap excludes unpublished language routes", !sitemapUrls.some((url) => /\/(hi|bn|ur|ar|es|fr|de|pt|zh|ja)(\/|$)/.test(new URL(url).pathname)), "unpublished locales must not be indexed");
+const unpublishedLocalePath = /\/(hi|bn|ur|ar|es|fr|de|pt|zh|ja)(\/|$)/;
+const approvedQrLocalePath = /^\/(hi|bn|ur|ar|es|fr|de|pt|zh|ja)\/(?:tools\/qr-code-generator|blog\/qr-code-generator-guide)$/;
+check("sitemap excludes unpublished language routes except reviewed QR pages", !sitemapUrls.some((url) => {
+  const pathname = new URL(url).pathname;
+  return unpublishedLocalePath.test(pathname) && !approvedQrLocalePath.test(pathname);
+}), "unpublished locales must not be indexed; independently reviewed QR translations are allowed");
 
 const privacyText = (await privacy.text()).toLowerCase();
 check("privacy policy discloses advertising provider", privacyText.includes("adsterra") && privacyText.includes("advertising"));

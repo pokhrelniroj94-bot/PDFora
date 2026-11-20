@@ -61,6 +61,7 @@ export async function loadToolAdapter() {
     "lib/i18n/nepali-pdf-routes.ts",
     "lib/i18n/hindi-math-tools.ts",
     "lib/i18n/hindi-business-tools.ts",
+    "lib/i18n/hindi-tool-seo.ts",
     "lib/nepali-localized-blog-posts.ts",
     "lib/localized-qr-blog-posts.ts",
     "lib/i18n/metadata.ts",

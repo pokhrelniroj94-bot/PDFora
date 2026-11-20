@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NepaliBlogArticle({ params }: Props) {
   const { locale, slug } = await params;
-  if (locale === "hi" && isLocale(locale) && isRoutable(locale)) { const article = <HindiBlogArticle slug={slug} />; if (article) return article; notFound(); }
+  if (locale === "hi" && isLocale(locale) && isRoutable(locale)) { if (!getHindiGuide(slug)) notFound(); return <HindiBlogArticle slug={slug} />; }
   const post = getNepaliLocalizedBlogPost(slug);
   if (locale !== "ne" || !isLocale(locale) || !isRoutable(locale) || !post) notFound();
   const articleSchema = {

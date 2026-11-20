@@ -18,6 +18,13 @@ Hindi (`hi`) is **unpublished**: routes are preview-only (`PDFORA_I18N_PREVIEW=1
 - Hindi homepage discovery, all 125 catalog tool names in the directory, category cards, 5 original Hindi guides, and localized About, Privacy, Terms and Contact pages are implemented. Legal and informational pages use self-canonical metadata and remain noindex while Hindi is unpublished.
 - Unique Hindi title/description metadata is present for all 125 catalog tools; 49 PDF tools retain Hindi names, guides and field copy. Coverage matrix records 174/174 visible interface routes, but all Hindi routes remain noindex and functional tests/native review remain unverified.
 
+## Hindi blog (added in this batch; preview-only, noindex)
+- All 16 English editorial articles now have Hindi versions (11 PDF guides + 5 calculator/SEO guides) in `lib/i18n/hindi-editorial-posts-{a,b,c,d}.ts`, rendered by `components/HindiEditorialArticle.tsx` (one H1, H2 sections, visible FAQ, Hindi tool links, BlogPosting JSON-LD, Google source citation where the English article has one). Registered in `/hi/blog` via `components/HindiBlogPages.tsx`.
+- Together with the 5 earlier core guides the Hindi blog has 21 articles. Not created: Hindi versions of the 19 English Nepal guides / 35 Nepali articles beyond the 4 Nepal-specific Hindi guides already present; these need a separate relevance decision (many are Nepal-specific: VAT, NEB GPA, NEPSE, tola, ropani) and are intentionally not mass-translated.
+- `scripts/hindi-editorial-posts.test.mjs` checks 1:1 parity with the English slugs, section/FAQ/tool-link counts, Devanagari content, unique titles (<=60) and descriptions (<=155), preserved facts (20 files/50 MB, server-side notice, OCR limitation, worked examples), that every tool link is a real Hindi route, and that unknown Hindi blog slugs 404.
+- Fixed: unknown `/hi/blog/<slug>` previously rendered an empty page (a JSX element is always truthy); it now calls `notFound()`.
+- Quality caveat: written by Claude, not reviewed by a native Hindi editor. Native review is still a publication gate.
+
 ## Pending publication gates
 - Run a clean production build, TypeScript, ESLint, Jest and all i18n/tool tests after the latest source changes.
 - Browser functional QA for all 174 tools, including PDF uploads/downloads, file-byte integrity, calculations, image workflows, copy/download controls and the NEPSE news endpoint.

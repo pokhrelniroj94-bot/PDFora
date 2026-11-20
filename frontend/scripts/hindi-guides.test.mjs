@@ -35,6 +35,7 @@ test("Hindi guides preserve numeric limits and ranges from the English source", 
 });
 
 test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", async () => {
+  process.env.PDFORA_I18N_PREVIEW = "1";
   const { "pdf-tool-names-hi": names, "pdf-tool-fields-hi": fields, "nepali-pdf-routes": pdfRoutes, routing, config } = await loadI18n();
   const slugs = Object.keys(pdfRoutes.nepaliPdfRoutes);
   assert.equal(slugs.length, 49);

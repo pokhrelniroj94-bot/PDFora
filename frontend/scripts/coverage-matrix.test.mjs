@@ -84,7 +84,7 @@ test("tool-language matrix accounts for every configured locale and unique tool"
   }
   assert.ok(report.rows.filter((row) => row.locale === "ne" && row.interface !== "not-implemented").every((row) => row.interface === "nepali-interface-present"), "Interface presence must not imply native-language review");
   const nepaliGuides = report.rows.filter((row) => row.locale === "ne" && row.content !== "not-verified");
-  assert.equal(nepaliGuides.length, 49);
+  assert.equal(nepaliGuides.length, 50, "50 Nepali tool guides are recorded in the current coverage matrix");
   assert.ok(nepaliGuides.every((row) => row.content === "nepali-guide-present"), "Guide presence must not imply native-language review");
 });
 

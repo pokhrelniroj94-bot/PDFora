@@ -16,9 +16,9 @@ const parseDate = (value: string) => {
 const daysBetween = (a: Date, b: Date) => Math.round((b.getTime() - a.getTime()) / 86400000);
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 
-export default function HindiDateTimeWorkspace({ slug }: { slug: string }) {
+function DateTimeInner({ slug, blank }: { slug: string; blank: boolean }) {
   const tool = slug as DateSlug;
-  const [values, setValues] = useState<Record<string, string>>({
+  const [values, setValues] = useState<Record<string, string>>(blank ? { birth: "", asOf: "", start: "", end: "" } : {
     birth: "2000-01-15", asOf: today(), start: tool === "time-duration-calculator" ? "09:00" : "2026-01-01",
     end: tool === "time-duration-calculator" ? "17:00" : today(),
   });
@@ -65,4 +65,9 @@ export default function HindiDateTimeWorkspace({ slug }: { slug: string }) {
     <button type="button" className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700" onClick={() => setValues({ birth: "", asOf: "", start: "", end: "" })}>सभी मान साफ़ करें</button>
     <p className="text-xs leading-5 text-slate-500">तिथि गणना ग्रेगोरियन कैलेंडर और UTC date arithmetic पर आधारित है। समय अवधि में समाप्ति समय पहले होने पर अगला दिन माना जाता है।</p>
   </section>;
+}
+
+export default function HindiDateTimeWorkspace({ slug }: { slug: string }) {
+  const [state, setState] = useState({ version: 0, blank: false });
+  return <div><DateTimeInner key={state.version} slug={slug} blank={state.blank} /><div className="mt-4 flex flex-wrap gap-2"><button type="button" className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700" onClick={() => setState({ version: state.version + 1, blank: true })}>सभी मान साफ़ करें</button><button type="button" className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700" onClick={() => setState({ version: state.version + 1, blank: false })}>उदाहरण मान वापस लाएँ</button></div></div>;
 }

@@ -136,3 +136,20 @@ export function runHindiMathTool(slug: HindiMathToolSlug, values: HindiMathInput
   }
   return "";
 }
+
+/** Titles and field labels live here (not in the "use client" component) so the server route can read them. */
+export const hindiMathTitles: Record<HindiMathToolSlug, { title: string; description: string }> = {
+  "percentage-change-calculator": { title: "प्रतिशत परिवर्तन कैलकुलेटर", description: "शुरुआती और नए मान से प्रतिशत बढ़ोतरी या कमी निकालें।" },
+  "average-calculator": { title: "औसत कैलकुलेटर", description: "कॉमा या स्पेस से अलग की गई संख्याओं का औसत निकालें।" },
+  "ratio-simplifier": { title: "अनुपात सरल करने वाला टूल", description: "दो पूर्ण संख्याओं के अनुपात को सरलतम रूप में बदलें।" },
+  "fraction-calculator": { title: "भिन्न कैलकुलेटर", description: "दो भिन्नों को जोड़ें, घटाएँ, गुणा करें या भाग दें।" },
+  "percentage-of-number-calculator": { title: "संख्या का प्रतिशत कैलकुलेटर", description: "किसी संख्या का मनचाहा प्रतिशत निकालें।" },
+  "gcd-lcm-calculator": { title: "GCD और LCM कैलकुलेटर", description: "दो पूर्ण संख्याओं का महत्तम समापवर्तक और लघुत्तम समापवर्त्य निकालें।" },
+  "prime-number-checker": { title: "अभाज्य संख्या जाँच", description: "जाँचें कि कोई पूर्ण संख्या अभाज्य है या नहीं।" },
+  "unit-converter": { title: "इकाई रूपांतरण", description: "लंबाई और वज़न की सामान्य इकाइयों के बीच रूपांतरण करें।" },
+  "bmi-calculator": { title: "BMI कैलकुलेटर", description: "वज़न और लंबाई से वयस्क का BMI अनुमानित करें; यह चिकित्सकीय निदान नहीं है।" },
+  "bmr-calculator": { title: "BMR कैलकुलेटर", description: "आयु, लंबाई, वज़न और सूत्र के विकल्प से बुनियादी ऊर्जा खर्च का अनुमान लगाएँ।" },
+  "tip-calculator": { title: "टिप कैलकुलेटर", description: "बिल, टिप प्रतिशत और व्यक्तियों की संख्या से प्रति व्यक्ति राशि निकालें।" },
+  "split-bill-calculator": { title: "बिल बाँटने वाला कैलकुलेटर", description: "कुल बिल को व्यक्तियों में बराबर बाँटें।" },
+  "simple-interest-calculator": { title: "साधारण ब्याज कैलकुलेटर", description: "मूलधन, वार्षिक ब्याज दर और अवधि से साधारण ब्याज निकालें।" },
+};

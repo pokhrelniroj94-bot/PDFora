@@ -1,19 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { hindiBusinessToolSlugs, runHindiBusinessTool, type HindiBusinessToolSlug } from "../lib/i18n/hindi-business-tools";
+import { hindiBusinessConfigs, hindiBusinessToolSlugs, runHindiBusinessTool, type HindiBusinessToolSlug } from "../lib/i18n/hindi-business-tools";
 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 
-export const hindiBusinessConfigs: Record<HindiBusinessToolSlug, { title: string; description: string; fields: Array<[string, string]> }> = {
-  "profit-margin-calculator": { title: "लाभ मार्जिन कैलकुलेटर", description: "बिक्री राशि और लागत से लाभ या हानि तथा बिक्री पर आधारित मार्जिन निकालें।", fields: [["revenue", "बिक्री राशि (NPR)"], ["cost", "कुल लागत (NPR)"]] },
-  "markup-calculator": { title: "मार्कअप कैलकुलेटर", description: "लागत पर मार्कअप प्रतिशत जोड़कर बिक्री मूल्य और मार्जिन निकालें।", fields: [["cost", "लागत (NPR)"], ["markup", "लागत पर जोड़ा जाने वाला प्रतिशत (%)"]] },
-  "break-even-calculator": { title: "ब्रेक-ईवन कैलकुलेटर", description: "स्थिर लागत, प्रति इकाई परिवर्ती लागत और बिक्री मूल्य से लागत निकलने की मात्रा जानें।", fields: [["fixed", "कुल स्थिर लागत (NPR)"], ["variable", "प्रति इकाई परिवर्ती लागत (NPR)"], ["price", "प्रति इकाई बिक्री मूल्य (NPR)"]] },
-  "sales-tax-calculator": { title: "बिक्री कर कैलकुलेटर", description: "आपके दिए कर दर से कर की राशि और कर सहित मूल्य निकालें।", fields: [["price", "कर से पहले का मूल्य (NPR)"], ["rate", "कर दर (%)"]] },
-  "salary-breakdown-calculator": { title: "वेतन विवरण कैलकुलेटर", description: "मासिक कुल वेतन से आपके दिए कर, भविष्य निधि और अन्य कटौतियाँ घटाएँ।", fields: [["gross", "मासिक कुल वेतन (NPR)"], ["tax", "कर कटौती (NPR)"], ["provident", "भविष्य निधि कटौती (NPR)"], ["other", "अन्य कटौती (NPR)"]] },
-  "commission-calculator": { title: "कमीशन कैलकुलेटर", description: "बिक्री राशि और कमीशन प्रतिशत से कमीशन की राशि निकालें।", fields: [["sales", "बिक्री राशि (NPR)"], ["rate", "कमीशन दर (%)"]] },
-  "hourly-to-salary-calculator": { title: "प्रति घंटा दर से वेतन कैलकुलेटर", description: "प्रति घंटा दर, साप्ताहिक कार्य-घंटे और वर्ष के कार्य-सप्ताह से साप्ताहिक, मासिक और वार्षिक आय का अनुमान लगाएँ।", fields: [["hourly", "प्रति घंटा दर (NPR)"], ["hours", "साप्ताहिक कार्य-घंटे"], ["weeks", "वर्ष में कार्य-सप्ताह"]] },
-};
 
 const defaults: Record<string, string> = { revenue: "200000", cost: "150000", markup: "30", fixed: "100000", variable: "250", price: "500", rate: "13", gross: "50000", tax: "2500", provident: "3000", other: "500", sales: "100000", hourly: "500", hours: "40", weeks: "48" };
 

@@ -13,10 +13,10 @@ import NepaliBrowserOnlyGrowthTools from "../../../../components/NepaliBrowserOn
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
-import HindiBusinessCalculatorWorkspace, { hindiBusinessConfigs } from "../../../../components/HindiBusinessCalculatorWorkspace";
-import HindiMathUtilityWorkspace, { hindiMathTitles } from "../../../../components/HindiMathUtilityWorkspace";
-import { hindiMathToolSlugs } from "../../../../lib/i18n/hindi-math-tools";
-import { hindiBusinessToolSlugs } from "../../../../lib/i18n/hindi-business-tools";
+import HindiBusinessCalculatorWorkspace from "../../../../components/HindiBusinessCalculatorWorkspace";
+import HindiMathUtilityWorkspace from "../../../../components/HindiMathUtilityWorkspace";
+import { hindiMathTitles, hindiMathToolSlugs } from "../../../../lib/i18n/hindi-math-tools";
+import { hindiBusinessConfigs, hindiBusinessToolSlugs } from "../../../../lib/i18n/hindi-business-tools";
 import HindiDateTimeWorkspace from "../../../../components/HindiDateTimeWorkspace";
 import HindiFinanceCalculatorWorkspace from "../../../../components/HindiFinanceCalculatorWorkspace";
 import HindiNepalToolsWorkspace from "../../../../components/HindiNepalToolsWorkspace";

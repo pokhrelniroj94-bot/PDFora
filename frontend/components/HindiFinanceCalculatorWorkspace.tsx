@@ -2,25 +2,26 @@
 
 import { useState } from "react";
 import { loanEmi } from "../lib/catalog-calculations";
+import { hindiSavingsGoalDeposit, hindiSipFutureValue } from "../lib/i18n/hindi-finance-math";
 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const money = (value: number) => `NPR ${value.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 function NumberInput({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   return <label className="block"><span className="mb-1.5 block text-sm font-semibold text-slate-700">{label}</span><input className={field} type="number" min="0" step="any" value={value} onChange={(event) => onChange(event.target.value)} /></label>;
 }
-export default function HindiFinanceCalculatorWorkspace({ slug }: { slug: string }) {
-  const [principal, setPrincipal] = useState("1000000");
-  const [rate, setRate] = useState("10");
-  const [months, setMonths] = useState("60");
-  const [monthly, setMonthly] = useState("5000");
-  const [years, setYears] = useState("10");
-  const [initial, setInitial] = useState("0");
-  const [price, setPrice] = useState("1000");
-  const [discount, setDiscount] = useState("20");
-  const [target, setTarget] = useState("500000");
-  const [saved, setSaved] = useState("50000");
-  const [saveMonths, setSaveMonths] = useState("24");
-  const [saveRate, setSaveRate] = useState("5");
+function FinanceInner({ slug, blank }: { slug: string; blank: boolean }) {
+  const [principal, setPrincipal] = useState(blank ? "" : "1000000");
+  const [rate, setRate] = useState(blank ? "" : "10");
+  const [months, setMonths] = useState(blank ? "" : "60");
+  const [monthly, setMonthly] = useState(blank ? "" : "5000");
+  const [years, setYears] = useState(blank ? "" : "10");
+  const [initial, setInitial] = useState(blank ? "" : "0");
+  const [price, setPrice] = useState(blank ? "" : "1000");
+  const [discount, setDiscount] = useState(blank ? "" : "20");
+  const [target, setTarget] = useState(blank ? "" : "500000");
+  const [saved, setSaved] = useState(blank ? "" : "50000");
+  const [saveMonths, setSaveMonths] = useState(blank ? "" : "24");
+  const [saveRate, setSaveRate] = useState(blank ? "" : "5");
   const p = Number(principal), annual = Number(rate), term = Number(months);
   const validLoan = [p, annual, term].every(Number.isFinite) && p > 0 && annual >= 0 && annual <= 100 && Number.isInteger(term) && term > 0 && term <= 1200;
   let emi: number | null = null;
@@ -28,9 +29,8 @@ export default function HindiFinanceCalculatorWorkspace({ slug }: { slug: string
   if (validLoan) { try { emi = loanEmi(p, annual, term); } catch (error) { emiError = error instanceof Error ? error.message : "कृपया ऋण का विवरण जाँचें।"; } }
   const sipMonthly = Number(monthly), sipYears = Number(years), starting = Number(initial);
   const sipValid = [sipMonthly, sipYears, annual, starting].every(Number.isFinite) && sipMonthly >= 0 && sipYears > 0 && sipYears <= 100 && annual >= 0 && annual <= 100 && starting >= 0;
-  const periods = sipYears * 12, monthlyRate = annual / 1200;
-  let futureValue = sipValid ? starting * (1 + monthlyRate) ** periods : 0;
-  if (sipValid) for (let index = 1; index <= periods; index += 1) futureValue += sipMonthly * (1 + monthlyRate) ** (periods - index);
+  const periods = sipYears * 12;
+  const futureValue = sipValid ? hindiSipFutureValue(sipMonthly, sipYears, annual, starting) : 0;
   const originalPrice = Number(price), discountRate = Number(discount);
   const discountValid = Number.isFinite(originalPrice) && Number.isFinite(discountRate) && originalPrice >= 0 && discountRate >= 0 && discountRate <= 100;
   const heading = slug === "loan-emi-calculator" ? "ऋण EMI कैलकुलेटर" : slug === "compound-interest-sip-calculator" ? "चक्रवृद्धि ब्याज और SIP कैलकुलेटर" : "छूट प्रतिशत कैलकुलेटर";
@@ -54,9 +54,7 @@ export default function HindiFinanceCalculatorWorkspace({ slug }: { slug: string
   if (slug === "savings-goal-calculator") {
     const goal = Number(target), current = Number(saved), duration = Number(saveMonths), yearlyRate = Number(saveRate);
     const valid = [goal, current, duration, yearlyRate].every(Number.isFinite) && goal > 0 && current >= 0 && duration > 0 && Number.isInteger(duration) && duration <= 1200 && yearlyRate >= 0 && yearlyRate <= 100;
-    const remaining = Math.max(0, goal - current), monthlyRate = yearlyRate / 1200;
-    const factor = monthlyRate === 0 ? duration : (Math.pow(1 + monthlyRate, duration) - 1) / monthlyRate;
-    const deposit = remaining === 0 ? 0 : remaining / factor;
+    const { remaining, deposit } = hindiSavingsGoalDeposit(goal, current, duration, yearlyRate);
     return <section className="space-y-4">
       <div><h2 className="text-xl font-black text-slate-950">बचत लक्ष्य कैलकुलेटर</h2><p className="mt-1 text-sm text-slate-600">लक्ष्य, मौजूदा बचत, समय और अनुमानित ब्याज दर के आधार पर आवश्यक मासिक बचत का अनुमान लगाएँ।</p></div>
       <div className="grid gap-3 sm:grid-cols-2"><NumberInput label="बचत लक्ष्य (NPR)" value={target} onChange={setTarget}/><NumberInput label="मौजूदा बचत (NPR)" value={saved} onChange={setSaved}/><NumberInput label="समय (महीने)" value={saveMonths} onChange={setSaveMonths}/><NumberInput label="अनुमानित वार्षिक ब्याज (%)" value={saveRate} onChange={setSaveRate}/></div>
@@ -65,4 +63,9 @@ export default function HindiFinanceCalculatorWorkspace({ slug }: { slug: string
     </section>;
   }
   return <p role="alert" className="text-sm text-slate-600">यह वित्तीय कैलकुलेटर उपलब्ध नहीं है।</p>;
+}
+
+export default function HindiFinanceCalculatorWorkspace({ slug }: { slug: string }) {
+  const [state, setState] = useState({ version: 0, blank: false });
+  return <div><FinanceInner key={state.version} slug={slug} blank={state.blank} /><div className="mt-4 flex flex-wrap gap-2"><button type="button" className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700" onClick={() => setState({ version: state.version + 1, blank: true })}>सभी मान साफ़ करें</button><button type="button" className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700" onClick={() => setState({ version: state.version + 1, blank: false })}>उदाहरण मान वापस लाएँ</button></div></div>;
 }

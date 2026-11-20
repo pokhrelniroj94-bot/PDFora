@@ -10,6 +10,7 @@ import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 import { getLocalizedQrBlogPost } from "../localized-qr-blog-posts";
 import { hindiMathToolSlugs } from "./hindi-math-tools";
 import { hindiBusinessToolSlugs } from "./hindi-business-tools";
+import { hindiToolSeo } from "./hindi-tool-seo";
 
 /**
  * URL scheme: English keeps its existing unprefixed URLs (/merge-pdf, /tools/x, /blog/y).
@@ -84,7 +85,21 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
  * so these routes are only reachable in preview and are never indexed or listed in hreflang.
  * Grow this set only as each Hindi page is genuinely translated.
  */
-export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set(Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`));
+const hindiBlogGuideSlugs = [
+  "percentage-calculator-guide",
+  "average-calculator-guide",
+  "bs-ad-date-conversion-guide",
+  "preeti-unicode-conversion-guide",
+  "loksewa-photo-size-guide",
+] as const;
+
+export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
+  "/", "/tools", "/categories", "/blog", "/about", "/privacy", "/terms", "/contact",
+  ...Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`),
+  ...Object.keys(hindiToolSeo).map((slug) => `/tools/${slug}`),
+  "/tools/resume-builder",
+  ...hindiBlogGuideSlugs.map((slug) => `/blog/${slug}`),
+]);
 
 // Only published localized destinations that are in the shared index registry
 // participate in reciprocal hreflang. Human/native review status is tracked

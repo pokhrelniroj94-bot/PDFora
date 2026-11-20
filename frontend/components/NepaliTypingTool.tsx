@@ -27,7 +27,7 @@ export default function NepaliTypingTool({ locale = "en" }: { locale?: "en" | "n
       return () => { existing.removeEventListener("load", onLoad); existing.removeEventListener("error", onError); };
     }
     const script = document.createElement("script");
-    script.src = "https://unpkg.com/nepalify@0.5.0/umd/nepalify.production.min.js";
+    script.src = "https://cdn.jsdelivr.net/npm/nepalify@0.4.2/umd/nepalify.production.min.js";
     script.async = true;
     script.dataset.nepalifyScript = "true";
     script.onload = () => {

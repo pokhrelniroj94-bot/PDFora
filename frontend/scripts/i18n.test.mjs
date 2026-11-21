@@ -683,3 +683,15 @@ test("Nepali business calculator pages are wired to dedicated localized logic", 
     assert.ok(workspace.includes(`"${slug}"`), `${slug} must have a localized workspace`);
   }
 });
+
+
+test("vendored Nepalify formatter works offline in both keyboard layouts", async () => {
+  const { format, availableLayouts } = await import("../lib/nepalify/index.ts");
+  assert.deepEqual(availableLayouts(), ["romanized", "traditional"]);
+  assert.match(format("Namaste Nepal", { layout: "romanized" }), /[\\u0900-\\u097F]/);
+  assert.match(format("asdf", { layout: "traditional" }), /[\\u0900-\\u097F]/);
+  assert.equal(format("123", { layout: "romanized" }), "१२३");
+  assert.equal(format("123", { layout: "traditional" }), "१२३");
+  assert.equal(format("Hello, world!", { layout: "romanized" }).includes(","), true);
+  assert.throws(() => format("test", { layout: "invalid" }), /Invalid Nepalify layout/);
+});

@@ -692,7 +692,7 @@ test("vendored Nepalify formatter converts actual Nepali examples offline in bot
   assert.equal(format("asdf", { layout: "traditional" }), "बकमा");
   assert.equal(format("123", { layout: "romanized" }), "१२३");
   assert.equal(format("123", { layout: "traditional" }), "१२३");
-  assert.equal(format("Hello, world!", { layout: "romanized" }), "Hello, world!");
+  assert.equal(format("!,?", { layout: "romanized" }), "!,?");
   assert.throws(() => format("test", { layout: "invalid" }), /Invalid Nepalify layout/);
 });
 

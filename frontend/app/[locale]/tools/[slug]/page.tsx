@@ -28,8 +28,8 @@ import HindiFinanceCalculatorWorkspace from "../../../../components/HindiFinance
 import HindiDateTimeWorkspace from "../../../../components/HindiDateTimeWorkspace";
 import { hindiBusinessToolSlugs } from "../../../../lib/i18n/hindi-business-tools";
 import { hindiMathToolSlugs } from "../../../../lib/i18n/hindi-math-tools";
-import HindiMathUtilityWorkspace, { hindiMathTitles } from "../../../../components/HindiMathUtilityWorkspace";
-import HindiBusinessCalculatorWorkspace, { hindiBusinessConfigs } from "../../../../components/HindiBusinessCalculatorWorkspace";
+import HindiMathUtilityWorkspace from "../../../../components/HindiMathUtilityWorkspace";
+import HindiBusinessCalculatorWorkspace from "../../../../components/HindiBusinessCalculatorWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -471,7 +471,7 @@ export default async function LocalizedToolPage({ params }: Props) {
       <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
         <div className="mb-7">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी कैलकुलेटर</p>
-          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiMathTitles[toolSlug as (typeof hindiMathToolSlugs)[number]].title}</h1>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1>
         </div>
         <HindiMathUtilityWorkspace slug={toolSlug} />
       </main>
@@ -501,7 +501,7 @@ export default async function LocalizedToolPage({ params }: Props) {
       <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
         <div className="mb-7">
           <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी व्यावसायिक कैलकुलेटर</p>
-          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiBusinessConfigs[toolSlug as (typeof hindiBusinessToolSlugs)[number]].title}</h1>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1>
         </div>
         <HindiBusinessCalculatorWorkspace slug={toolSlug} />
       </main>

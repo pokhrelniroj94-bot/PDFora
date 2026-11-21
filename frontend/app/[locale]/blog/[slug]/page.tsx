@@ -6,6 +6,7 @@ import { getNepaliLocalizedBlogPost, nepaliLocalizedBlogPosts } from "../../../.
 import { getLocalizedQrBlogPost } from "../../../../lib/localized-qr-blog-posts";
 import { buildLocaleMetadata } from "../../../../lib/i18n/metadata";
 import BlogToolCTA from "../../../../components/BlogToolCTA";
+import { HindiBlogArticle, getHindiGuide, hindiGuides } from "../../../../components/HindiBlogPages";
 
 const baseUrl = "https://pd-fora.vercel.app";
 
@@ -54,6 +55,7 @@ export function generateStaticParams() {
   return [
     ...nepaliLocalizedBlogPosts.map((post) => ({ locale: "ne", slug: post.slug })),
     ...qrLocales.map((locale) => ({ locale, slug: "qr-code-generator-guide" })),
+    ...hindiGuides.map((post) => ({ locale: "hi", slug: post.slug })),
   ];
 }
 
@@ -65,6 +67,7 @@ function getPost(locale: Locale, slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   if (!isLocale(rawLocale)) return { title: "Article not found", robots: { index: false, follow: true } };
+  if (rawLocale === "hi") { const guide = getHindiGuide(slug); return guide ? buildLocaleMetadata({ locale: "hi", path: `/blog/${slug}`, title: guide.title, description: guide.description }) : { title: "लेख उपलब्ध नहीं है", robots: { index: false, follow: true } }; }
   const post = getPost(rawLocale, slug);
   if (!post) return { title: "Article not found", robots: { index: false, follow: true } };
   const searchTitle = rawLocale === "ne" ? nepaliSearchTitles[post.slug] ?? post.title : post.title;
@@ -80,6 +83,7 @@ export default async function LocalizedBlogArticle({ params }: Props) {
   const { locale: rawLocale, slug } = await params;
   if (!isLocale(rawLocale)) notFound();
   const locale = rawLocale;
+  if (locale === "hi" && isRoutable(locale)) { const article = <HindiBlogArticle slug={slug} />; if (article) return article; notFound(); }
   const post = getPost(locale, slug);
   const independentlyPublishedQrGuide = locale !== "en" && slug === "qr-code-generator-guide" && Boolean(post);
   if ((!isRoutable(locale) && !independentlyPublishedQrGuide) || !post) notFound();

@@ -528,11 +528,11 @@ async function runTool(tool, index) {
               alert,
             };
           }`);
-          if (qrPreview.image.startsWith("data:image/png;base64,")) break;
+          if (typeof qrPreview?.image === "string" && qrPreview.image.startsWith("data:image/png;base64,")) break;
           if (qrPreview.alert) throw new Error("QR generator reported an error: " + qrPreview.alert);
           await delay(250);
         }
-        if (!qrPreview?.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg) {
+        if (!qrPreview || typeof qrPreview.image !== "string" || !qrPreview.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg) {
           throw new Error("QR generator did not create a PNG preview and PNG/SVG download actions within 45 seconds.");
         }
         const downloadClicked = await page.evaluate(`() => {
@@ -671,6 +671,46 @@ async function runTool(tool, index) {
       row.status = validatedDownloads.length > 0 ? "PASS" : "PARTIAL";
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
+      if (tool.slug === "qr-code-generator") {
+        await setFirstTextArea(page, "https://pd-fora.vercel.app/qr-e2e-check");
+        const generateButton = await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.innerText || ""`);
+        if (!generateButton) throw new Error("QR Generator has no enabled generate action.");
+        await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.click()`);
+        let preview = null;
+        const started = Date.now();
+        while (Date.now() - started < 15000) {
+          preview = await page.evaluate(`() => ({
+            image: document.querySelector('img[alt="Generated QR code preview"]')?.getAttribute("src") || "",
+            png: [...document.querySelectorAll("main button")].some((button) => /download png|png डाउनलोड/i.test(button.innerText)),
+            svg: [...document.querySelectorAll("main button")].some((button) => /download svg|svg डाउनलोड/i.test(button.innerText)),
+            alert: document.querySelector("main [role=alert]")?.innerText || ""
+          })`);
+          if (typeof preview?.image === "string" && preview.image.startsWith("data:image/png;base64,") && preview.png && preview.svg) break;
+          if (preview.alert) throw new Error("QR Generator error: " + preview.alert);
+          await delay(200);
+        }
+        if (!preview || typeof preview.image !== "string" || !preview.image.startsWith("data:image/png;base64,") || !preview.png || !preview.svg) {
+          throw new Error("QR Generator did not create a PNG preview and both download actions.");
+        }
+        const before = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
+        await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /download png|png डाउनलोड/i.test(button.innerText))?.click()`);
+        let downloaded = "";
+        const downloadStarted = Date.now();
+        while (Date.now() - downloadStarted < 10000) {
+          downloaded = fs.readdirSync(downloadsDir).find((name) => !name.endsWith(".crdownload") && !before.has(name) && name.toLowerCase().endsWith(".png")) || "";
+          if (downloaded) break;
+          await delay(200);
+        }
+        if (!downloaded) throw new Error("QR PNG download did not complete.");
+        const file = await validateDownloadedFile(path.join(downloadsDir, downloaded));
+        row.checks.push("QR generated from a real URL, PNG/SVG download actions shown and PNG signature validated");
+        row.output = "QR preview generated; " + file.bytes + " byte PNG download validated";
+        row.outputVerified = true;
+        row.evidenceLevel = "qr-preview-and-png-download-verified";
+        row.downloadedFiles = [file];
+        row.status = "PASS";
+        return row;
+      }
       if (tool.slug === "nepal-electricity-bill-calculator") {
         const links = await page.evaluate('[...document.querySelectorAll("a[href]")].map((a) => a.href)');
         if (!links.some((href) => href.includes("erc.gov.np/electricity-calculator"))) throw new Error("Official ERC calculator handoff link is missing.");
@@ -712,17 +752,18 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepali-unicode-typing") {
+        await setFirstTextArea(page, "nms/te mero deS nepal ho");
         const readyStarted = Date.now();
         let readyButton = false;
         while (Date.now() - readyStarted < 25000 && !readyButton) {
-          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
+          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode|नेपाली unicode मा बदल्नुहोस्/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
           if (!readyButton) await delay(250);
         }
         if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
-        await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
+        await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode|नेपाली unicode मा बदल्नुहोस्/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
         await delay(300);
         const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output.");
+        if (!output.includes("नमस्ते मेरो देश नेपाल हो")) throw new Error("Nepali typing conversion did not produce the expected Devanagari sentence.");
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
@@ -734,8 +775,6 @@ async function runTool(tool, index) {
         await setFirstTextArea(page, "PDFora E2E Notes\\nThis is a browser-generated test document.");
       } else if (tool.slug === "jwt-decoder") {
         await setFieldByLabel(page, "JWT token", "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
-      } else if (tool.slug === "nepali-unicode-typing") {
-        await setFirstTextArea(page, "Namaste Nepal");
       } else if (tool.slug === "preeti-unicode-converter") {
         await setFirstTextArea(page, "k\\/Llt");
       } else if (tool.slug === "nepali-date-converter") {
@@ -1548,5 +1587,14 @@ const report = {
 };
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
-console.log("BROWSER E2E SUMMARY " + JSON.stringify(report.counts));
+const summaryRows = localePrefix ? nepaliRouteResults : results;
+const summary = localePrefix
+  ? {
+      locale: "ne-NP",
+      total: summaryRows.length,
+      pass: summaryRows.filter((row) => row.status === "PASS").length,
+      fail: summaryRows.filter((row) => row.status === "FAIL").length,
+    }
+  : report.counts;
+console.log("BROWSER E2E SUMMARY " + JSON.stringify(summary));
 if (browserFailures) process.exitCode = 1;

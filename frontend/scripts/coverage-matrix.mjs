@@ -21,7 +21,10 @@ if (tools.length !== 175 || uniqueSlugs.size !== 175) {
 
 const localizedPdfSlugs = parseSlugs(read("lib/i18n/nepali-pdf-routes.ts"), /"([a-z0-9-]+)":\s*\{/g);
 const localizedUtilitySlugs = parseSlugs(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g);
-const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs]);
+const localizedNepaliTools = new Set([...localizedPdfSlugs, ...localizedUtilitySlugs, "qr-code-generator"]);
+const hindiPdfSlugs = parseSlugs(read("lib/i18n/pdf-tool-names-hi.ts"), /"([a-z0-9-]+)":\s*"/g);
+const hindiCatalogSlugs = parseSlugs(read("lib/i18n/hindi-tool-seo.ts"), /"([a-z0-9-]+)":\s*\{/g);
+const localizedHindiTools = new Set([...hindiPdfSlugs, ...hindiCatalogSlugs, "qr-code-generator"]);
 // The published Nepali registry covers every localized tool route: 49 PDF + 125 catalog.
 // SEO sitemap tests separately assert that the source registry and these route inventories match.
 const indexedNepaliTools = new Set(localizedNepaliTools);
@@ -38,9 +41,11 @@ for (const locale of locales) {
   for (const tool of tools) {
     const english = locale === "en";
     const nepaliInterfacePresent = locale === "ne" && localizedNepaliTools.has(tool.slug);
-    const localized = english || nepaliInterfacePresent;
-    const guide = english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug);
-    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug);
+    const hindiInterfacePresent = locale === "hi" && localizedHindiTools.has(tool.slug);
+    const qrLocalizedTool = tool.slug === "qr-code-generator" && locale !== "en";
+    const localized = english || nepaliInterfacePresent || hindiInterfacePresent || qrLocalizedTool;
+    const guide = tool.slug === "qr-code-generator" && locale !== "en" ? true : english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug) || locale === "hi" && tool.kind === "pdf" && hindiPdfSlugs.includes(tool.slug);
+    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug) || qrLocalizedTool;
     matrix.push({
       locale,
       slug: tool.slug,
@@ -48,12 +53,12 @@ for (const locale of locales) {
       route: tool.kind === "pdf" ? `/${tool.slug}` : `/tools/${tool.slug}`,
       routeExists: true,
       handler: english ? handlerEvidence : localized ? "localized-route-handler" : "not-published",
-      interface: english ? "source-language" : localized ? "nepali-interface-present" : "not-implemented",
-      content: guide ? (english ? "source-guide" : "nepali-guide-present") : "not-verified",
+      interface: english ? "source-language" : nepaliInterfacePresent || (qrLocalizedTool && locale === "ne") ? "nepali-interface-present" : hindiInterfacePresent || (qrLocalizedTool && locale === "hi") ? "hindi-interface-present" : qrLocalizedTool ? "localized-interface-present" : "not-implemented",
+      content: guide ? (tool.slug === "qr-code-generator" && !english ? "localized-guide-present" : english ? "source-guide" : locale === "ne" ? "nepali-guide-present" : "hindi-guide-present") : "not-verified",
       functionalTest: locale === "ne" && targetedNepaliUnitTests.has(tool.slug) ? "targeted-unit-tests" : "not-individually-verified",
       humanReview: english ? "source-content-review-not-assessed" : localized ? "native-review-not-assessed" : "not-reviewed",
       indexing: indexable ? "eligible" : "excluded",
-      published: publishedLocales.has(locale) && localized,
+      published: (publishedLocales.has(locale) && localized) || qrLocalizedTool,
       direction: rtlLocales.has(locale) ? "rtl" : "ltr",
     });
   }
@@ -77,6 +82,7 @@ const inventory = {
     publishedLocales: [...publishedLocales],
     localizedNepaliTools: localizedNepaliTools.size,
     indexableNepaliTools: indexedNepaliTools.size,
+    localizedHindiTools: localizedHindiTools.size,
   },
   tools,
   rows: matrix,
@@ -100,7 +106,7 @@ This matrix contains one row for every combination of **12 configured locales ×
 - Catalog utilities: ${catalog.length}
 - Unique tools: ${tools.length}
 - Matrix rows: ${matrix.length}
-- Published locales: ${[...publishedLocales].join(", ")}
+- Published locales: ${[...publishedLocales].join(", ")}; the QR generator is a separately approved multilingual exception
 - RTL locales: ur, ar
 
 | Locale | Published tool rows | Interface-present rows | Content-present rows | Index-eligible rows |
@@ -110,7 +116,7 @@ ${summary}
 ## Current blockers
 
 - Nepali has ${localizedNepaliTools.size} route registrations out of ${tools.length} catalogued tools. Route registration is not proof that every interface string, validation, error, output or download is localized or functionally verified. Native-speaker review is not certified by this matrix.
-- Hindi, Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished and excluded from indexing.
+- Hindi has dedicated visible interfaces for all ${localizedHindiTools.size} routes, but only the already-approved QR generator is published/indexable. The remaining Hindi routes stay unpublished and noindex pending browser/mobile QA and native Hindi editorial review. Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished except for the QR generator.
 - The targeted-test slug registry is a source-level indicator only; it must not be interpreted as full browser QA. The separate Nepali source audit reports current test references and per-tool route evidence.
 - OCR is not counted among the 175 available tools because it remains excluded from the canonical PDF inventory.
 `;

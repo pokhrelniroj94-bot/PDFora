@@ -411,9 +411,9 @@ test("switcher: never offers an unavailable page", () => {
   assert.deepEqual(switcher.getSwitcherOptions("/tools/qr-code-generator").map((o) => o.locale), config.locales, "only the independently translated QR page offers all 12 languages");
   process.env.PDFORA_I18N_PREVIEW = "1";
   const home = switcher.getSwitcherOptions("/");
-  assert.deepEqual(home.map((o) => o.locale), ["en", "ne"]);
+  assert.deepEqual(home.map((o) => o.locale), ["en", "ne", "hi"], "Hindi homepage is available in preview mode");
   assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne", "hi"], "Hindi PDF tool pages are real routes (preview only)");
-  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne"], "only reviewed static pages offer Nepali");
+  assert.deepEqual(switcher.getSwitcherOptions("/about").map((o) => o.locale), ["en", "ne", "hi"], "Hindi static pages are available in preview mode");
   delete process.env.PDFORA_I18N_PREVIEW;
 });
 
@@ -681,5 +681,37 @@ test("Nepali business calculator pages are wired to dedicated localized logic", 
   for (const slug of ["profit-margin-calculator", "markup-calculator", "break-even-calculator", "sales-tax-calculator", "salary-breakdown-calculator", "commission-calculator", "hourly-to-salary-calculator"]) {
     assert.ok(page.includes(`"${slug}"`), `${slug} must be routed to a Nepali page`);
     assert.ok(workspace.includes(`"${slug}"`), `${slug} must have a localized workspace`);
+  }
+});
+
+
+test("vendored Nepalify formatter converts actual Nepali examples offline in both keyboard layouts", async () => {
+  const { format, availableLayouts } = await import("../lib/nepalify/index.ts");
+  assert.deepEqual(availableLayouts(), ["romanized", "traditional"]);
+  assert.equal(format("nms/te mero deS nepal ho", { layout: "romanized" }), "नमस्ते मेरो देश नेपाल हो");
+  assert.equal(format("asdf", { layout: "traditional" }), "बकमा");
+  assert.equal(format("123", { layout: "romanized" }), "१२३");
+  assert.equal(format("123", { layout: "traditional" }), "१२३");
+  assert.equal(format("!,?", { layout: "romanized" }), "!,?");
+  assert.throws(() => format("test", { layout: "invalid" }), /Invalid Nepalify layout/);
+});
+
+test("Hindi blog guide registry is available in preview and remains blocked in production", () => {
+  const originalPreview = process.env.PDFORA_I18N_PREVIEW;
+  try {
+    delete process.env.PDFORA_I18N_PREVIEW;
+    assert.equal(config.localeInfo.hi.status, "unpublished");
+    for (const slug of ["percentage-calculator-guide", "average-calculator-guide", "bs-ad-date-conversion-guide", "preeti-unicode-conversion-guide", "loksewa-photo-size-guide"]) {
+      assert.equal(routing.hasLocalizedPage("/blog/" + slug, "hi"), false, "Hindi must remain blocked in production: " + slug);
+    }
+    process.env.PDFORA_I18N_PREVIEW = "1";
+    for (const slug of ["percentage-calculator-guide", "average-calculator-guide", "bs-ad-date-conversion-guide", "preeti-unicode-conversion-guide", "loksewa-photo-size-guide"]) {
+      assert.equal(routing.hasLocalizedPage("/blog/" + slug, "hi"), true, "Hindi preview registry is missing: " + slug);
+    }
+    assert.equal(routing.hasLocalizedPage("/blog/not-a-real-hindi-guide", "hi"), false);
+    assert.equal(routing.hreflangMap("/blog/percentage-calculator-guide")?.hi, undefined, "unpublished Hindi must not appear in hreflang");
+  } finally {
+    if (originalPreview === undefined) delete process.env.PDFORA_I18N_PREVIEW;
+    else process.env.PDFORA_I18N_PREVIEW = originalPreview;
   }
 });

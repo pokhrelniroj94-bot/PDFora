@@ -14,6 +14,22 @@ import NepaliBrowserOnlyGrowthTools from "../../../../components/NepaliBrowserOn
 import NepaliTextUtilityWorkspace from "../../../../components/NepaliTextUtilityWorkspace";
 import NepaliExtraTextWorkspace from "../../../../components/NepaliExtraTextWorkspace";
 import NepaliMathUtilityWorkspace from "../../../../components/NepaliMathUtilityWorkspace";
+import { hindiToolSeo } from "../../../../lib/i18n/hindi-tool-seo";
+import HindiResumeBuilder from "../../../../components/HindiResumeBuilder";
+import HindiNepalCatalogTools from "../../../../components/HindiNepalCatalogTools";
+import HindiNepalExtraToolsWorkspace from "../../../../components/HindiNepalExtraToolsWorkspace";
+import HindiGrowthToolsWorkspace from "../../../../components/HindiGrowthToolsWorkspace";
+import HindiAdditionalToolsWorkspace from "../../../../components/HindiAdditionalToolsWorkspace";
+import HindiImageToolsWorkspace from "../../../../components/HindiImageToolsWorkspace";
+import HindiDeveloperToolsWorkspace from "../../../../components/HindiDeveloperToolsWorkspace";
+import HindiTextToolsWorkspace from "../../../../components/HindiTextToolsWorkspace";
+import HindiNepalToolsWorkspace from "../../../../components/HindiNepalToolsWorkspace";
+import HindiFinanceCalculatorWorkspace from "../../../../components/HindiFinanceCalculatorWorkspace";
+import HindiDateTimeWorkspace from "../../../../components/HindiDateTimeWorkspace";
+import { hindiBusinessToolSlugs } from "../../../../lib/i18n/hindi-business-tools";
+import { hindiMathToolSlugs } from "../../../../lib/i18n/hindi-math-tools";
+import HindiMathUtilityWorkspace from "../../../../components/HindiMathUtilityWorkspace";
+import HindiBusinessCalculatorWorkspace from "../../../../components/HindiBusinessCalculatorWorkspace";
 import NepaliBusinessCalculatorWorkspace from "../../../../components/NepaliBusinessCalculatorWorkspace";
 import NepaliDateTimeWorkspace from "../../../../components/NepaliDateTimeWorkspace";
 import NepaliDeveloperTextWorkspace from "../../../../components/NepaliDeveloperTextWorkspace";
@@ -306,6 +322,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const request = resolveLocalizedToolRequest(locale, slug);
   if (request.status !== "ok") return localizedToolNotFoundMetadata;
   const metadata = buildLocalizedToolMetadata(request.locale, request.implementation.entry);
+  if (request.locale === "hi" && hindiToolSeo[request.implementation.slug]) {
+    const title = `${hindiToolSeo[request.implementation.slug].title} | PDFora`;
+    const description = fitLocaleDescription(hindiToolSeo[request.implementation.slug].description);
+    return { ...metadata, title, description, openGraph: { ...metadata.openGraph, title, description }, twitter: { ...metadata.twitter, title, description } };
+  }
   if (request.implementation.slug === "qr-code-generator" && qrLocalizedCopy[request.locale]) {
     const { title, description } = qrLocalizedCopy[request.locale];
     const fittedDescription = fitLocaleDescription(description);
@@ -357,6 +378,134 @@ export default async function LocalizedToolPage({ params }: Props) {
       de: "QR-Code-Anleitung lesen", pt: "Ler o guia de criação de QR Code", zh: "阅读二维码制作指南", ja: "QRコード作成ガイドを読む",
     };
     return <main lang={request.locale} dir={request.locale === "ar" || request.locale === "ur" ? "rtl" : "ltr"} className="mx-auto min-h-screen w-full max-w-5xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{copy.title}</h1><p className="mt-2 max-w-3xl text-slate-600">{copy.description}</p></div><QRCodeGenerator defaultLocale={request.locale} /><p className="mt-8 text-center text-sm"><Link className="font-semibold text-teal-700 underline underline-offset-4" href={"/" + request.locale + "/blog/qr-code-generator-guide"}>{guideLabels[request.locale]}</Link></p></main>;
+  }
+  if (request.locale === "hi" && ["age-calculator", "date-difference-calculator", "time-duration-calculator"].includes(toolSlug)) {
+    const titles: Record<string, string> = {
+      "age-calculator": "आयु कैलकुलेटर",
+      "date-difference-calculator": "तिथि अंतर कैलकुलेटर",
+      "time-duration-calculator": "समय अवधि कैलकुलेटर",
+    };
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी तिथि और समय कैलकुलेटर</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1>
+        </div>
+        <HindiDateTimeWorkspace slug={toolSlug} />
+      </main>
+    );
+  }
+  if (request.locale === "hi" && ["loan-emi-calculator", "compound-interest-sip-calculator", "discount-percentage-calculator", "savings-goal-calculator"].includes(toolSlug)) {
+    const titles: Record<string, string> = {
+      "loan-emi-calculator": "ऋण EMI कैलकुलेटर",
+      "compound-interest-sip-calculator": "चक्रवृद्धि ब्याज और SIP कैलकुलेटर",
+      "discount-percentage-calculator": "छूट प्रतिशत कैलकुलेटर",
+      "savings-goal-calculator": "बचत लक्ष्य कैलकुलेटर",
+    };
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी वित्तीय कैलकुलेटर</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1>
+        </div>
+        <HindiFinanceCalculatorWorkspace slug={toolSlug} />
+      </main>
+    );
+  }
+  if (request.locale === "hi" && ["nepali-vat-calculator", "nepal-land-area-converter", "gold-tola-gram-converter", "nepal-phone-validator", "neb-gpa-calculator", "nepal-share-calculator"].includes(toolSlug)) {
+    const titles: Record<string, string> = {
+      "nepali-vat-calculator": "नेपाल VAT कैलकुलेटर",
+      "nepal-land-area-converter": "नेपाल भूमि क्षेत्रफल कनवर्टर",
+      "gold-tola-gram-converter": "तोला और ग्राम कनवर्टर",
+      "nepal-phone-validator": "नेपाल मोबाइल नंबर जाँच",
+      "neb-gpa-calculator": "NEB GPA कैलकुलेटर",
+      "nepal-share-calculator": "NEPSE शेयर लाभ/हानि कैलकुलेटर",
+    };
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी नेपाल उपयोगी टूल</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1>
+        </div>
+        <HindiNepalToolsWorkspace slug={toolSlug} />
+      </main>
+    );
+  }
+  if (request.locale === "hi" && ["word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text", "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator", "line-counter", "sentence-counter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator"].includes(toolSlug)) {
+    const titles: Record<string, string> = {
+      "word-character-counter": "शब्द और अक्षर गणक", "case-converter": "अक्षर शैली कनवर्टर",
+      "remove-duplicate-lines": "दोहराई गई पंक्तियाँ हटाएँ", "sort-lines": "पंक्तियाँ क्रमबद्ध करें",
+      "reverse-text": "पाठ उलटें", "whitespace-cleaner": "अतिरिक्त रिक्त स्थान साफ़ करें",
+      "character-frequency": "अक्षर आवृत्ति गणक", "word-frequency-counter": "शब्द आवृत्ति गणक",
+      "reading-time-calculator": "पढ़ने का समय कैलकुलेटर", "line-counter": "पंक्ति गणक",
+      "sentence-counter": "वाक्य गणक", "email-extractor": "ईमेल पता निकालें",
+      "url-extractor": "URL निकालें", "phone-number-extractor": "फोन नंबर निकालें",
+      "number-extractor": "संख्याएँ निकालें", "hashtag-extractor": "हैशटैग निकालें",
+      "remove-duplicate-words": "दोहराए गए शब्द हटाएँ", "find-replace-text": "खोजें और बदलें",
+      "palindrome-checker": "Palindrome जाँच", "acronym-generator": "संक्षिप्त नाम बनाएँ",
+    };
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी टेक्स्ट टूल</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1>
+        </div>
+        <HindiTextToolsWorkspace slug={toolSlug} />
+      </main>
+    );
+  }
+  if (request.locale === "hi" && ["json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator", "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug"].includes(toolSlug)) {
+    const titles: Record<string, string> = {
+      "json-formatter-validator": "JSON फ़ॉर्मेटर और वैलिडेटर", "base64-encoder-decoder": "Base64 एन्कोडर / डिकोडर",
+      "url-encoder-decoder": "URL एन्कोडर / डिकोडर", "hash-generator": "हैश जनरेटर",
+      "text-diff-checker": "टेक्स्ट अंतर जाँच", "lorem-ipsum-generator": "Lorem Ipsum जनरेटर",
+      "html-encoder-decoder": "HTML एन्कोडर / डिकोडर", "text-to-slug": "टेक्स्ट से URL Slug",
+    };
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+      <div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी डेवलपर टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1></div>
+      <HindiDeveloperToolsWorkspace slug={toolSlug} />
+    </main>;
+  }
+  if (request.locale === "hi" && hindiMathToolSlugs.includes(toolSlug as (typeof hindiMathToolSlugs)[number])) {
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी कैलकुलेटर</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1>
+        </div>
+        <HindiMathUtilityWorkspace slug={toolSlug} />
+      </main>
+    );
+  }
+  if (request.locale === "hi" && ["nepali-date-converter","nepali-calendar","loksewa-photo-resizer","preeti-unicode-converter","nepal-forex-rates","nepal-salary-tax-calculator","nepal-electricity-bill-calculator","nepal-public-holidays-2083","nepali-unicode-typing","nepse-market-news"].includes(toolSlug)) {
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी नेपाल उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1></div><HindiNepalCatalogTools slug={toolSlug} /></main>;
+  }
+  if (request.locale === "hi" && toolSlug === "resume-builder") {
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><HindiResumeBuilder /></main>;
+  }
+  if (request.locale === "hi" && ["nepali-digit-converter", "nepali-number-converter", "currency-converter", "nepse-dividend-calculator"].includes(toolSlug)) {
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी नेपाल उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1></div><HindiNepalExtraToolsWorkspace slug={toolSlug} /></main>;
+  }
+  if (request.locale === "hi" && ["email-signature-generator", "timezone-meeting-planner", "video-bitrate-calculator", "markdown-table-generator"].includes(toolSlug)) {
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी उत्पादकता टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1></div><HindiGrowthToolsWorkspace slug={toolSlug} /></main>;
+  }
+  if (request.locale === "hi" && ["password-generator","uuid-generator","regex-tester","jwt-decoder","color-picker-palette","color-contrast-checker","css-minifier","meta-title-checker","meta-description-checker","keyword-density-checker","robots-txt-generator","sitemap-generator","open-graph-preview","json-to-csv","url-query-parser","xml-formatter-validator","notes-to-pdf","text-to-binary","binary-to-text","text-to-hex","hex-to-text","morse-code-translator","camel-case-converter","snake-case-converter","kebab-case-converter","html-tag-stripper","csv-to-json","json-to-yaml","json-escape-unescape","url-validator","email-validator","password-strength-checker","random-number-generator","dice-roller","unix-timestamp-converter","date-add-subtract-calculator","business-days-calculator","px-rem-converter","aspect-ratio-calculator","color-converter","css-gradient-generator","roman-numeral-converter"].includes(toolSlug)) {
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी उपयोगिता टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1></div><HindiAdditionalToolsWorkspace slug={toolSlug} /></main>;
+  }
+  if (request.locale === "hi" && ["image-compressor", "image-format-converter", "image-dpi-calculator"].includes(toolSlug)) {
+    const titles: Record<string, string> = { "image-compressor": "इमेज कंप्रेसर", "image-format-converter": "इमेज फ़ॉर्मेट कनवर्टर", "image-dpi-calculator": "इमेज DPI कैलकुलेटर" };
+    return <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">हिंदी इमेज टूल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{titles[toolSlug]}</h1></div><HindiImageToolsWorkspace slug={toolSlug} /></main>;
+  }
+  if (request.locale === "hi" && hindiBusinessToolSlugs.includes(toolSlug as (typeof hindiBusinessToolSlugs)[number])) {
+    return (
+      <main lang="hi" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6">
+        <div className="mb-7">
+          <p className="text-xs font-black uppercase tracking-widest text-teal-700">हिन्दी व्यावसायिक कैलकुलेटर</p>
+          <h1 className="mt-2 text-3xl font-black text-slate-950">{hindiToolSeo[toolSlug]?.title ?? toolSlug}</h1>
+        </div>
+        <HindiBusinessCalculatorWorkspace slug={toolSlug} />
+      </main>
+    );
   }
   if (request.locale === "ne" && toolSlug === "nepali-unicode-typing") { return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTypingTool locale="ne" /></section></main>; }
   if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator", "password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "currency-converter", "image-compressor", "image-format-converter", "preeti-unicode-converter"].includes(toolSlug)) {

@@ -716,11 +716,11 @@ async function runTool(tool, index) {
         const readyStarted = Date.now();
         let readyButton = false;
         while (Date.now() - readyStarted < 25000 && !readyButton) {
-          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
+          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode|नेपाली unicode मा बदल्नुहोस्/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
           if (!readyButton) await delay(250);
         }
         if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
-        await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
+        await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode|नेपाली unicode मा बदल्नुहोस्/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
         await delay(300);
         const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
         if (!output.includes("नमस्ते मेरो देश नेपाल हो")) throw new Error("Nepali typing conversion did not produce the expected Devanagari sentence.");

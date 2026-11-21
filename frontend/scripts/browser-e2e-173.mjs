@@ -671,6 +671,46 @@ async function runTool(tool, index) {
       row.status = validatedDownloads.length > 0 ? "PASS" : "PARTIAL";
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
+      if (tool.slug === "qr-code-generator") {
+        await setFirstTextArea(page, "https://pd-fora.vercel.app/qr-e2e-check");
+        const generateButton = await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.innerText || ""`);
+        if (!generateButton) throw new Error("QR Generator has no enabled generate action.");
+        await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.click()`);
+        let preview = null;
+        const started = Date.now();
+        while (Date.now() - started < 15000) {
+          preview = await page.evaluate(`() => ({
+            image: document.querySelector('img[alt="Generated QR code preview"]')?.getAttribute("src") || "",
+            png: [...document.querySelectorAll("main button")].some((button) => /download png|png डाउनलोड/i.test(button.innerText)),
+            svg: [...document.querySelectorAll("main button")].some((button) => /download svg|svg डाउनलोड/i.test(button.innerText)),
+            alert: document.querySelector("main [role=alert]")?.innerText || ""
+          })`);
+          if (preview.image.startsWith("data:image/png;base64,") && preview.png && preview.svg) break;
+          if (preview.alert) throw new Error("QR Generator error: " + preview.alert);
+          await delay(200);
+        }
+        if (!preview?.image.startsWith("data:image/png;base64,") || !preview.png || !preview.svg) {
+          throw new Error("QR Generator did not create a PNG preview and both download actions.");
+        }
+        const before = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
+        await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /download png|png डाउनलोड/i.test(button.innerText))?.click()`);
+        let downloaded = "";
+        const downloadStarted = Date.now();
+        while (Date.now() - downloadStarted < 10000) {
+          downloaded = fs.readdirSync(downloadsDir).find((name) => !name.endsWith(".crdownload") && !before.has(name) && name.toLowerCase().endsWith(".png")) || "";
+          if (downloaded) break;
+          await delay(200);
+        }
+        if (!downloaded) throw new Error("QR PNG download did not complete.");
+        const file = await validateDownloadedFile(path.join(downloadsDir, downloaded));
+        row.checks.push("QR generated from a real URL, PNG/SVG download actions shown and PNG signature validated");
+        row.output = "QR preview generated; " + file.bytes + " byte PNG download validated";
+        row.outputVerified = true;
+        row.evidenceLevel = "qr-preview-and-png-download-verified";
+        row.downloadedFiles = [file];
+        row.status = "PASS";
+        return row;
+      }
       if (tool.slug === "nepal-electricity-bill-calculator") {
         const links = await page.evaluate('[...document.querySelectorAll("a[href]")].map((a) => a.href)');
         if (!links.some((href) => href.includes("erc.gov.np/electricity-calculator"))) throw new Error("Official ERC calculator handoff link is missing.");

@@ -8,6 +8,7 @@ import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
 import { hindiMathToolSlugs } from "./hindi-math-tools";
 import { hindiBusinessToolSlugs } from "./hindi-business-tools";
+import { hindiEditorialPosts } from "./hindi-editorial-posts";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 
 /**
@@ -85,7 +86,10 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
  */
 export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
   "/", "/tools", "/categories", "/blog", "/about", "/privacy", "/terms", "/contact",
-  "/blog/percentage-calculator-guide", "/blog/average-calculator-guide",
+  // 5 core guides + the 16 Hindi editorial articles; scripts/hindi-route-registry.test.mjs keeps this in sync with /hi/blog.
+  "/blog/percentage-calculator-guide", "/blog/average-calculator-guide", "/blog/bs-ad-date-conversion-guide",
+  "/blog/preeti-unicode-conversion-guide", "/blog/loksewa-photo-size-guide",
+  ...hindiEditorialPosts.map((post) => `/blog/${post.slug}`),
   ...Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`),
   ...hindiMathToolSlugs.map((slug) => `/tools/${slug}`),
   ...hindiBusinessToolSlugs.map((slug) => `/tools/${slug}`),

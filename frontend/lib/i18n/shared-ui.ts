@@ -128,7 +128,7 @@ const localized: Partial<Record<Locale, Omit<SharedUiCopy, "cookie" | "groups"> 
   hi: {
     footerNavigation: "फ़ुटर नेविगेशन", allTools: "सभी टूल", guides: "गाइड और ट्यूटोरियल", about: "PDFora के बारे में", contact: "संपर्क",
     language: "भाषा", languageHint: "जहाँ अनुवाद उपलब्ध हो वहाँ वह पृष्ठ चुनें; अन्यथा स्पष्ट वैकल्पिक संदेश दिखेगा।",
-    englishHomepageNotice: "नेपाली होमपेज उपलब्ध है; अन्य पृष्ठों का अनुवाद जारी है।",
+    englishHomepageNotice: "हिंदी होमपेज उपलब्ध है; अन्य पृष्ठों का अनुवाद जारी है।",
     directoryLabel: "PDFora के PDF टूल देखें", directoryEyebrow: "PDFora टूलबॉक्स", directoryTitle: "सभी टूल देखें",
     directoryDescription: "PDF टूल के साथ वित्त, टेक्स्ट, डेवलपर और इमेज उपयोगिताएँ हमारे सभी टूल केंद्र में उपलब्ध हैं।",
     directoryLink: "वित्त, टेक्स्ट, डेवलपर और इमेज टूल देखें →",

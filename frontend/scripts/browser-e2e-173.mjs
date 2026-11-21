@@ -528,11 +528,11 @@ async function runTool(tool, index) {
               alert,
             };
           }`);
-          if (qrPreview.image.startsWith("data:image/png;base64,")) break;
+          if (typeof qrPreview?.image === "string" && qrPreview.image.startsWith("data:image/png;base64,")) break;
           if (qrPreview.alert) throw new Error("QR generator reported an error: " + qrPreview.alert);
           await delay(250);
         }
-        if (!qrPreview?.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg) {
+        if (!qrPreview || typeof qrPreview.image !== "string" || !qrPreview.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg) {
           throw new Error("QR generator did not create a PNG preview and PNG/SVG download actions within 45 seconds.");
         }
         const downloadClicked = await page.evaluate(`() => {
@@ -685,11 +685,11 @@ async function runTool(tool, index) {
             svg: [...document.querySelectorAll("main button")].some((button) => /download svg|svg डाउनलोड/i.test(button.innerText)),
             alert: document.querySelector("main [role=alert]")?.innerText || ""
           })`);
-          if (preview.image.startsWith("data:image/png;base64,") && preview.png && preview.svg) break;
+          if (typeof preview?.image === "string" && preview.image.startsWith("data:image/png;base64,") && preview.png && preview.svg) break;
           if (preview.alert) throw new Error("QR Generator error: " + preview.alert);
           await delay(200);
         }
-        if (!preview?.image.startsWith("data:image/png;base64,") || !preview.png || !preview.svg) {
+        if (!preview || typeof preview.image !== "string" || !preview.image.startsWith("data:image/png;base64,") || !preview.png || !preview.svg) {
           throw new Error("QR Generator did not create a PNG preview and both download actions.");
         }
         const before = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));

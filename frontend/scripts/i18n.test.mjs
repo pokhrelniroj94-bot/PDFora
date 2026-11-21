@@ -685,13 +685,33 @@ test("Nepali business calculator pages are wired to dedicated localized logic", 
 });
 
 
-test("vendored Nepalify formatter works offline in both keyboard layouts", async () => {
+test("vendored Nepalify formatter converts actual Nepali examples offline in both keyboard layouts", async () => {
   const { format, availableLayouts } = await import("../lib/nepalify/index.ts");
   assert.deepEqual(availableLayouts(), ["romanized", "traditional"]);
-  assert.match(format("Namaste Nepal", { layout: "romanized" }), /[\\u0900-\\u097F]/);
-  assert.match(format("asdf", { layout: "traditional" }), /[\\u0900-\\u097F]/);
+  assert.equal(format("nms/te mero deS nepal ho", { layout: "romanized" }), "नमस्ते मेरो देश नेपाल हो");
+  assert.equal(format("asdf", { layout: "traditional" }), "बकमा");
   assert.equal(format("123", { layout: "romanized" }), "१२३");
   assert.equal(format("123", { layout: "traditional" }), "१२३");
-  assert.equal(format("Hello, world!", { layout: "romanized" }).includes(","), true);
+  assert.equal(format("Hello, world!", { layout: "romanized" }), "Hello, world!");
   assert.throws(() => format("test", { layout: "invalid" }), /Invalid Nepalify layout/);
+});
+
+test("Hindi blog guide registry is available in preview and remains blocked in production", () => {
+  const originalPreview = process.env.PDFORA_I18N_PREVIEW;
+  try {
+    delete process.env.PDFORA_I18N_PREVIEW;
+    assert.equal(config.localeInfo.hi.status, "unpublished");
+    for (const slug of ["percentage-calculator-guide", "average-calculator-guide", "bs-ad-date-conversion-guide", "preeti-unicode-conversion-guide", "loksewa-photo-size-guide"]) {
+      assert.equal(routing.hasLocalizedPage("/blog/" + slug, "hi"), false, "Hindi must remain blocked in production: " + slug);
+    }
+    process.env.PDFORA_I18N_PREVIEW = "1";
+    for (const slug of ["percentage-calculator-guide", "average-calculator-guide", "bs-ad-date-conversion-guide", "preeti-unicode-conversion-guide", "loksewa-photo-size-guide"]) {
+      assert.equal(routing.hasLocalizedPage("/blog/" + slug, "hi"), true, "Hindi preview registry is missing: " + slug);
+    }
+    assert.equal(routing.hasLocalizedPage("/blog/not-a-real-hindi-guide", "hi"), false);
+    assert.equal(routing.hreflangMap("/blog/percentage-calculator-guide")?.hi, undefined, "unpublished Hindi must not appear in hreflang");
+  } finally {
+    if (originalPreview === undefined) delete process.env.PDFORA_I18N_PREVIEW;
+    else process.env.PDFORA_I18N_PREVIEW = originalPreview;
+  }
 });

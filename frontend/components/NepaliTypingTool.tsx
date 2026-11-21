@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { format as nepalifyFormat, type availableLayouts } from "../lib/nepalify";
+import { format as nepalifyFormat } from "../lib/nepalify";
 
 type Layout = "romanized" | "traditional";
 

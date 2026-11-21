@@ -712,6 +712,7 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepali-unicode-typing") {
+        await setFirstTextArea(page, "nms/te mero deS nepal ho");
         const readyStarted = Date.now();
         let readyButton = false;
         while (Date.now() - readyStarted < 25000 && !readyButton) {
@@ -722,7 +723,7 @@ async function runTool(tool, index) {
         await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
         await delay(300);
         const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output.");
+        if (!output.includes("नमस्ते मेरो देश नेपाल हो")) throw new Error("Nepali typing conversion did not produce the expected Devanagari sentence.");
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
@@ -734,8 +735,6 @@ async function runTool(tool, index) {
         await setFirstTextArea(page, "PDFora E2E Notes\\nThis is a browser-generated test document.");
       } else if (tool.slug === "jwt-decoder") {
         await setFieldByLabel(page, "JWT token", "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
-      } else if (tool.slug === "nepali-unicode-typing") {
-        await setFirstTextArea(page, "Namaste Nepal");
       } else if (tool.slug === "preeti-unicode-converter") {
         await setFirstTextArea(page, "k\\/Llt");
       } else if (tool.slug === "nepali-date-converter") {

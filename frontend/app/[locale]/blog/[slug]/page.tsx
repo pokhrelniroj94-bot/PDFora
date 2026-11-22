@@ -55,7 +55,7 @@ export function generateStaticParams() {
   return [
     ...nepaliLocalizedBlogPosts.map((post) => ({ locale: "ne", slug: post.slug })),
     ...qrLocales.map((locale) => ({ locale, slug: "qr-code-generator-guide" })),
-    ...hindiGuides.map((post) => ({ locale: "hi", slug: post.slug })),
+    ...(isRoutable("hi") ? hindiGuides.map((post) => ({ locale: "hi", slug: post.slug })) : []),
   ];
 }
 

@@ -6,12 +6,12 @@ The report deliberately separates source-language content from translated conten
 
 **Method limits:** frontend page source-file counts are not runtime route counts. Dynamic route equivalents are reported as counts only, not percentages of source files. Shared UI coverage measures only the dedicated `shared-ui.ts` module, not every component, form, validation message, or error surface.
 
-Inventory: 70 frontend page source files, 6 API route source files, 49 English PDF guides, 49 Nepali PDF guides, 16 editorial articles and 19 Nepal articles.
+Inventory: 76 frontend page source files, 6 API route source files, 49 English PDF guides, 49 Nepali PDF guides, 18 editorial articles and 19 Nepal articles.
 
 | Code | Language | Status | Localized route equivalents | Shared UI module | PDF guides | Blog content |
 |---|---|---|---:|---:|---:|---:|---:|
 | en | English | Source language; translation review not assessed | Source language | 100% | 100% | 100% |
-| ne | Nepali | Partially translated | 219 | 100% | 100% | 100% |
+| ne | Nepali | Partially translated | 222 | 100% | 100% | 100% |
 | hi | Hindi | Not published | 0 | 0% | 0% | 0% |
 | bn | Bengali | Not published | 0 | 0% | 0% | 0% |
 | ur | Urdu | Not published | 0 | 0% | 0% | 0% |
@@ -23,4 +23,4 @@ Inventory: 70 frontend page source files, 6 API route source files, 49 English P
 | zh | Chinese (Simplified) | Not published | 0 | 0% | 0% | 0% |
 | ja | Japanese | Not published | 0 | 0% | 0% | 0% |
 
-Nepali currently has the homepage, 49 localized PDF routes, 116 localized utility routes, seven finance/news routes, two public-information routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, 35 curated editorial articles and four localized legal/static pages. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has the homepage, 49 localized PDF routes, 117 localized utility routes, seven finance/news routes, two public-information routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, 37 curated editorial articles and four localized legal/static pages. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.

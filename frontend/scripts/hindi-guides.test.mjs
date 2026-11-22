@@ -81,7 +81,8 @@ test("all newly completed Hindi utility routes are preview-only and have dedicat
   }
   const page = await readFile(new URL("../components/HindiNepalCatalogTools.tsx", import.meta.url), "utf8");
   assert.match(page, /window\.PreetiConverter/);
-  assert.match(page, /window\.nepalify/);
+  assert.match(page, /from "\.\.\/lib\/vendor\/nepalify"/);
+  assert.doesNotMatch(page, /window\.nepalify|cdn\.jsdelivr\.net|unpkg\.com/);
   assert.match(page, /यह मैनुअल अनुमान है, लाइव बैंक\/बाजार दर नहीं/);
   assert.match(page, /आधिकारिक 2083 छुट्टी सूची उपलब्ध नहीं है/);
   const resume = await readFile(new URL("../components/HindiResumeBuilder.tsx", import.meta.url), "utf8");

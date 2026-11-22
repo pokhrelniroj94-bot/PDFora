@@ -1,41 +1,36 @@
 {
-  "generatedAt": "2026-11-17T06:56:32.468Z",
+  "generatedAt": "2026-11-22T06:55:10.018Z",
   "methodology": "Derived from current catalog, canonical PDF inventory, Nepali route allowlists, page dispatch source, localized verification allowlist and registered Nepali blog records. Static source evidence is not runtime/browser or human review evidence.",
   "inventory": {
-    "uniqueTools": 174,
+    "uniqueTools": 175,
     "pdfTools": 49,
-    "catalogTools": 125,
-    "nepaliToolRoutes": 174,
+    "catalogTools": 126,
+    "nepaliToolRoutes": 175,
     "nepaliPdfRoutes": 49,
-    "nepaliCatalogRoutes": 125,
-    "nepaliNonToolRoutes": 45,
-    "nepaliRouteEquivalents": 219,
+    "nepaliCatalogRoutes": 126,
+    "nepaliNonToolRoutes": 47,
+    "nepaliRouteEquivalents": 222,
     "targetedUnitTestToolCount": 82,
-    "nepaliBlogArticles": 35
+    "nepaliBlogArticles": 37
   },
   "checks": {
     "duplicateCatalogSlugs": [],
     "missingNepaliRoutes": [],
-    "missingDedicatedDispatch": [],
+    "missingDedicatedDispatch": [
+      "qr-code-generator"
+    ],
     "missingLocalizedTitle": [],
     "duplicateBlogSlugs": [],
     "duplicateBlogTitles": [],
     "duplicateBlogDescriptions": [],
     "blogEditorial": {
-      "total": 35,
+      "total": 37,
       "missingSources": [],
       "brokenInternalLinks": [],
       "invalidSourceUrls": [],
       "allIndexable": true
     },
-    "indexableToolSlugs": [
-      "compress-pdf",
-      "merge-pdf",
-      "pdf-to-jpg",
-      "pdf-to-word",
-      "rotate-pdf",
-      "split-pdf"
-    ],
+    "indexableToolSlugs": [],
     "nativeSpeakerReviewCertified": false,
     "browserQaCertified": false
   },
@@ -107,7 +102,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -237,7 +232,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -307,7 +302,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -377,7 +372,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -467,7 +462,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -507,7 +502,7 @@
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,
       "hasTargetedUnitTest": false,
-      "indexable": true,
+      "indexable": false,
       "nativeSpeakerReviewed": false
     },
     {
@@ -523,6 +518,16 @@
     {
       "slug": "watermark",
       "kind": "pdf",
+      "hasNepaliRoute": true,
+      "hasDedicatedWorkspaceDispatch": false,
+      "hasNepaliTitle": true,
+      "hasTargetedUnitTest": false,
+      "indexable": false,
+      "nativeSpeakerReviewed": false
+    },
+    {
+      "slug": "qr-code-generator",
+      "kind": "catalog",
       "hasNepaliRoute": true,
       "hasDedicatedWorkspaceDispatch": false,
       "hasNepaliTitle": true,

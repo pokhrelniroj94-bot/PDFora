@@ -326,6 +326,93 @@ const hindiPriorityCopy: Record<string, { title: string; description: string }> 
   },
 };
 
+type NepaliPriorityGuideSlug =
+  | "reading-time-calculator"
+  | "savings-goal-calculator"
+  | "tip-calculator"
+  | "percentage-change-calculator"
+  | "prime-number-checker";
+
+const nepaliPriorityGuides: Record<NepaliPriorityGuideSlug, { intro: string; formula: string; example: string; note: string; questions: { q: string; a: string }[] }> = {
+  "reading-time-calculator": {
+    intro: "Reading Time Calculator ले लेख वा पाठमा भएका शब्द र तपाईंको पढ्ने गतिका आधारमा पढ्न लाग्ने अनुमानित समय देखाउँछ। लेख प्रकाशित गर्दा पाठकलाई सामग्री कति लामो छ भन्ने बुझाउन यो उपयोगी हुन्छ।",
+    formula: "अनुमानित समय (मिनेट) = शब्द संख्या ÷ प्रति मिनेट पढिने शब्द (WPM)।",
+    example: "उदाहरणका लागि, १,२०० शब्दको लेख २०० WPM को गतिमा पढ्दा करिब ६ मिनेट लाग्छ। १५० WPM मा त्यही लेख पढ्न ८ मिनेट लाग्न सक्छ।",
+    note: "यो अनुमान हो, निश्चित समय होइन। विषयको कठिनाइ, भाषा, पाठकको अनुभव, स्क्रिनमा पढ्ने अवस्था र बीचमा लिइने विश्रामले वास्तविक समय फरक पार्छ। नेपाली र अंग्रेजी पाठमा पढ्ने गति एउटै हुन्छ भन्ने मान्नु हुँदैन।",
+    questions: [
+      { q: "WPM भनेको के हो?", a: "WPM को अर्थ Words Per Minute अर्थात् एक मिनेटमा पढिने शब्द संख्या हो।" },
+      { q: "पढ्ने समय किन अनुमान मात्र हो?", a: "सबैले एउटै गतिमा पढ्दैनन्। कठिन शब्द, तालिका, चित्र र विषय बुझ्न लाग्ने समय फरक हुन्छ।" },
+    ],
+  },
+  "savings-goal-calculator": {
+    intro: "बचत लक्ष्य क्याल्कुलेटरले चाहिएको रकम, अहिलेको बचत र लक्ष्य पूरा गर्ने अवधि प्रयोग गरी नियमित रूपमा कति रकम छुट्याउनुपर्छ भन्ने योजना बनाउन मद्दत गर्छ।",
+    formula: "ब्याज नजोडिएको सरल अनुमान: आवश्यक मासिक बचत = (लक्ष्य रकम − हालको बचत) ÷ बाँकी महिना।",
+    example: "लक्ष्य रु. १,२०,००० छ, अहिले रु. ३०,००० बचत छ र १० महिना बाँकी छन् भने ब्याज नजोडी मासिक रु. ९,००० बचत गर्नुपर्छ।",
+    note: "ब्याजदर स्थिर रहने, नियमित किस्ता समयमै जम्मा हुने र शुल्क नलाग्ने जस्ता मान्यताले नतिजा बदल्न सक्छन्। बैंकको वास्तविक ब्याज, कर र शुल्क छुट्टै पुष्टि गर्नुहोस्।",
+    questions: [
+      { q: "लक्ष्य रकमभन्दा अहिलेको बचत बढी भए के हुन्छ?", a: "गणितीय रूपमा थप बचत आवश्यक नहुन सक्छ; तर आपत्कालीन कोष वा अन्य लक्ष्यका लागि रकम छुट्याउने निर्णय तपाईंको हो।" },
+      { q: "क्याल्कुलेटरको नतिजा बैंकको प्रतिफल हो?", a: "होइन। यो प्रविष्ट गरिएको मान्यतामा आधारित योजना हो, बैंकले दिने निश्चित प्रतिफल होइन।" },
+    ],
+  },
+  "tip-calculator": {
+    intro: "टिप क्याल्कुलेटरले बिलको रकम, टिपको प्रतिशत र सँगै भुक्तानी गर्ने व्यक्तिको संख्याबाट टिप, जम्मा रकम र प्रतिव्यक्ति बराबर पर्ने रकम निकाल्छ।",
+    formula: "टिप = बिल × टिप प्रतिशत ÷ १००। जम्मा = बिल + टिप। प्रतिव्यक्ति = जम्मा ÷ व्यक्ति संख्या।",
+    example: "बिल रु. २,००० र टिप १०% भए टिप रु. २०० हुन्छ। चार जनाले बराबर बाँड्दा जम्मा रु. २,२०० अर्थात् प्रतिव्यक्ति रु. ५५० पर्छ।",
+    note: "सेवा शुल्क वा टिप बिलमै समावेश छ कि छैन रसिदमा जाँच्नुहोस्। यो हिसाबले फरक-फरक परिकार अर्डर गर्ने व्यक्तिको छुट्टाछुट्टै हिस्सा निकाल्दैन र कुनै देशको टिप दिने चलन निर्धारण गर्दैन।",
+    questions: [
+      { q: "१० प्रतिशत टिप कसरी निकाल्ने?", a: "बिललाई १० ले गुणा गरेर १०० ले भाग गर्नुहोस्। रु. २,००० को १०% रु. २०० हुन्छ।" },
+      { q: "के सबैले बराबर रकम तिर्नुपर्छ?", a: "यो गणनाले जम्मा रकमलाई व्यक्तिको संख्याले बराबर भाग गर्छ; असमान अर्डरको हिसाब गर्दैन।" },
+    ],
+  },
+  "percentage-change-calculator": {
+    intro: "प्रतिशत परिवर्तन क्याल्कुलेटरले पुरानो र नयाँ मान तुलना गरी कति प्रतिशत वृद्धि वा कमी भयो भन्ने देखाउँछ। मूल्य, बिक्री, अंक वा अन्य दुई संख्याबीचको परिवर्तन बुझ्न यो उपयोगी हुन्छ।",
+    formula: "प्रतिशत परिवर्तन = ((नयाँ मान − पुरानो मान) ÷ पुरानो मान) × १००।",
+    example: "पुरानो मूल्य रु. ८०० बाट नयाँ मूल्य रु. १,००० भयो भने परिवर्तन (२०० ÷ ८००) × १०० = २५% वृद्धि हुन्छ।",
+    note: "पुरानो मान शून्य भए यो सूत्रबाट प्रतिशत परिवर्तन निकाल्न मिल्दैन। नकारात्मक मान वा फरक एकाइ भएका तथ्याङ्क तुलना गर्दा परिणामको अर्थ सावधानीपूर्वक बुझ्नुहोस्।",
+    questions: [
+      { q: "नतिजा ऋणात्मक आए के अर्थ हुन्छ?", a: "नयाँ मान पुरानो मानभन्दा कम भएकोले प्रतिशत कमी भएको जनाउँछ।" },
+      { q: "प्रतिशत परिवर्तन र प्रतिशत बिन्दु एउटै हुन्?", a: "होइन। उदाहरणका लागि ২০% बाट ২৫% हुनु ५ प्रतिशत बिन्दुको वृद्धि हो, तर सापेक्ष प्रतिशत परिवर्तन २५% हो।" },
+    ],
+  },
+  "prime-number-checker": {
+    intro: "अभाज्य संख्या भनेको १ भन्दा ठूलो यस्तो पूर्ण संख्या हो जसलाई १ र आफैँबाहेक अरू कुनै धनात्मक पूर्ण संख्याले निःशेष भाग गर्न सक्दैन। यो टुलले प्रविष्ट गरिएको पूर्ण संख्या अभाज्य हो वा होइन जाँच्न मद्दत गर्छ।",
+    formula: "n > 1 का लागि √n सम्मका सम्भावित भाजक जाँच्नु पर्याप्त हुन्छ। कुनै भाजकले निःशेष भाग नगरे n अभाज्य हुन्छ।",
+    example: "२९ अभाज्य हो: √२९ करिब ५.३८ भएकाले २, ३ र ५ जाँच्दा कुनैले निःशेष भाग गर्दैन। ३५ अभाज्य होइन, किनकि ३५ = ५ × ७ हुन्छ।",
+    note: "० र १ अभाज्य होइनन्। २ एक मात्र सम अभाज्य संख्या हो। अत्यन्त ठूलो संख्याको परीक्षणमा साधारण भाग विधिभन्दा विशेष primality algorithm आवश्यक पर्न सक्छ।",
+    questions: [
+      { q: "के १ अभाज्य संख्या हो?", a: "होइन। अभाज्य संख्याका ठीक दुई फरक धनात्मक भाजक हुनुपर्छ; १ को एउटा मात्र हुन्छ।" },
+      { q: "२ मात्र सम अभाज्य किन हो?", a: "२ भन्दा ठूलो हरेक सम पूर्ण संख्या २ ले भाग जाने भएकाले त्यसका दुईभन्दा बढी धनात्मक भाजक हुन्छन्।" },
+    ],
+  },
+};
+
+function NepaliPriorityGuide({ slug }: { slug: string }) {
+  if (!(slug in nepaliPriorityGuides)) return null;
+  const guide = nepaliPriorityGuides[slug as NepaliPriorityGuideSlug];
+  return <article className="mt-8 space-y-5 rounded-2xl border border-slate-200 bg-white p-5 sm:p-7">
+    <section>
+      <h2 className="text-xl font-bold text-slate-950">यो क्याल्कुलेटर कसरी काम गर्छ?</h2>
+      <p className="mt-3 leading-8 text-slate-700">{guide.intro}</p>
+    </section>
+    <section>
+      <h2 className="text-lg font-bold text-slate-950">सूत्र</h2>
+      <p className="mt-2 rounded-xl bg-slate-50 p-4 leading-8 text-slate-800">{guide.formula}</p>
+    </section>
+    <section>
+      <h2 className="text-lg font-bold text-slate-950">उदाहरणसहित बुझौँ</h2>
+      <p className="mt-2 leading-8 text-slate-700">{guide.example}</p>
+    </section>
+    <section>
+      <h2 className="text-lg font-bold text-slate-950">ध्यान दिनुपर्ने कुरा</h2>
+      <p className="mt-2 leading-8 text-slate-700">{guide.note}</p>
+    </section>
+    <section>
+      <h2 className="text-lg font-bold text-slate-950">सोधिने प्रश्नहरू</h2>
+      <div className="mt-3 space-y-4">{guide.questions.map((item) => <div key={item.q}><h3 className="font-semibold text-slate-900">{item.q}</h3><p className="mt-1 leading-7 text-slate-700">{item.a}</p></div>)}</div>
+    </section>
+  </article>;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const request = resolveLocalizedToolRequest(locale, slug);
@@ -397,7 +484,7 @@ export default async function LocalizedToolPage({ params }: Props) {
   }
   if (request.locale === "ne" && toolSlug === "nepali-unicode-typing") { return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><h1 className="text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTypingTool locale="ne" /></section></main>; }
   if (request.locale === "ne" && ["xml-formatter-validator", "notes-to-pdf", "html-tag-stripper", "savings-goal-calculator", "nepal-share-calculator", "password-generator", "uuid-generator", "regex-tester", "jwt-decoder", "color-picker-palette", "color-contrast-checker", "css-minifier", "meta-title-checker", "meta-description-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator", "open-graph-preview", "currency-converter", "image-compressor", "image-format-converter", "preeti-unicode-converter"].includes(toolSlug)) {
-    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliRemainingToolsWorkspace slug={toolSlug} /></section></main>;
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliRemainingToolsWorkspace slug={toolSlug} /></section><NepaliPriorityGuide slug={toolSlug as NepaliPriorityGuideSlug} /></main>;
   }
   if (request.locale === "ne" && toolSlug === "resume-builder") {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
@@ -409,7 +496,7 @@ export default async function LocalizedToolPage({ params }: Props) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट उपयोगिता</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliExtraTextWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && ["word-character-counter", "case-converter", "remove-duplicate-lines", "sort-lines", "reverse-text", "whitespace-cleaner", "character-frequency", "word-frequency-counter", "reading-time-calculator", "line-counter", "sentence-counter"].includes(toolSlug)) {
-    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTextUtilityWorkspace slug={toolSlug} /></section></main>;
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली टेक्स्ट टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliTextUtilityWorkspace slug={toolSlug} /></section><NepaliPriorityGuide slug={toolSlug as NepaliPriorityGuideSlug} /></main>;
   }
   if (request.locale === "ne" && ["json-formatter-validator", "base64-encoder-decoder", "url-encoder-decoder", "hash-generator", "text-diff-checker", "lorem-ipsum-generator", "html-encoder-decoder", "text-to-slug"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली Developer तथा Text Tools</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliDeveloperTextWorkspace slug={toolSlug} /></section></main>;
@@ -421,7 +508,7 @@ export default async function LocalizedToolPage({ params }: Props) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली व्यवसाय तथा लेखा टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliBusinessCalculatorWorkspace slug={toolSlug} /></section></main>;
   }
   if (request.locale === "ne" && ["percentage-change-calculator", "average-calculator", "ratio-simplifier", "fraction-calculator", "percentage-of-number-calculator", "gcd-lcm-calculator", "prime-number-checker", "unit-converter", "bmi-calculator", "bmr-calculator", "tip-calculator", "split-bill-calculator", "simple-interest-calculator"].includes(toolSlug)) {
-    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली गणित टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliMathUtilityWorkspace slug={toolSlug} /></section></main>;
+    return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाली गणित टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliMathUtilityWorkspace slug={toolSlug} /></section><NepaliPriorityGuide slug={toolSlug as NepaliPriorityGuideSlug} /></main>;
   }
   if (request.locale === "ne" && ["nepal-phone-validator", "gold-tola-gram-converter", "nepali-calendar", "loksewa-photo-resizer"].includes(toolSlug)) {
     return <main lang="ne" dir="ltr" className="mx-auto min-h-screen w-full max-w-4xl px-4 py-10 sm:px-6"><div className="mb-7"><p className="text-xs font-black uppercase tracking-widest text-teal-700">नेपाल उपयोगी टुल</p><h1 className="mt-2 text-3xl font-black text-slate-950">{nepaliTitles[toolSlug]}</h1><p className="mt-2 text-slate-600">{nepaliDescriptions[toolSlug]}</p></div><section className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"><NepaliNepalToolsWorkspace slug={toolSlug} /></section></main>;

@@ -702,7 +702,7 @@ async function runTool(tool, index) {
           throw new Error("QR Generator output incomplete: " + JSON.stringify(preview));
         }
         const before = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
-        await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /download png|png डाउनलोड/i.test(button.innerText))?.click()`);
+        await page.evaluate(`() => [...document.querySelectorAll("button")].find((button) => /download png|png डाउनलोड/i.test(button.innerText))?.click()`);
         let downloaded = "";
         const downloadStarted = Date.now();
         while (Date.now() - downloadStarted < 10000) {

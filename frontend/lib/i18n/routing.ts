@@ -8,6 +8,8 @@ import { nepaliPdfRoutes } from "./nepali-pdf-routes";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 import { getLocalizedQrBlogPost } from "../localized-qr-blog-posts";
+import { hindiBlogGuideSlugs } from "./hindi-blog-slugs";
+import { hindiToolSeo } from "./hindi-tool-seo";
 
 /**
  * URL scheme: English keeps its existing unprefixed URLs (/merge-pdf, /tools/x, /blog/y).
@@ -82,7 +84,13 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
  * so these routes are only reachable in preview and are never indexed or listed in hreflang.
  * Grow this set only as each Hindi page is genuinely translated.
  */
-export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set(Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`));
+export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
+  "/", "/tools", "/categories", "/blog", "/about", "/privacy", "/terms", "/contact",
+  ...Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`),
+  ...Object.keys(hindiToolSeo).map((slug) => `/tools/${slug}`),
+  "/tools/resume-builder",
+  ...hindiBlogGuideSlugs.map((slug) => `/blog/${slug}`),
+]);
 
 // Only published localized destinations that are in the shared index registry
 // participate in reciprocal hreflang. Human/native review status is tracked
@@ -94,6 +102,7 @@ export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean
   const normalized = normalizePath(path);
   if (normalized === "/tools/qr-code-generator" && isLocalizedToolIndexable(locale, "qr-code-generator")) return true;
   if (normalized === "/blog/qr-code-generator-guide" && locale !== "en" && (locale === "ne" || Boolean(getLocalizedQrBlogPost(locale, "qr-code-generator-guide")))) return true;
+  if (locale === "hi") return isPublished(locale) && hindiLocalizedRoutePaths.has(normalized);
   if (locale !== "ne" || !isPublished(locale)) return false;
   if (nepaliIndexableNonToolPaths.has(normalized) || isLocalizedPageIndexable(locale, normalized)) return true;
   const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];

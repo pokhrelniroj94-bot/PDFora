@@ -123,7 +123,7 @@ export function hasLocalizedPage(path: string, locale: Locale): boolean {
   const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];
   if (catalogToolSlug && isLocalizedToolIndexable(locale, catalogToolSlug)) return true;
   if (normalized === "/blog/qr-code-generator-guide" && locale !== "en" && Boolean(getLocalizedQrBlogPost(locale, "qr-code-generator-guide"))) return true;
-  if (locale === "hi") return isPublished(locale) && hindiLocalizedRoutePaths.has(normalized);
+  if (locale === "hi") return isRoutable(locale) && hindiLocalizedRoutePaths.has(normalized);
   if (locale !== "ne") return false;
   if (localizedPaths.has(normalized)) return true;
   return false;

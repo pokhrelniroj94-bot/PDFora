@@ -301,6 +301,31 @@ const nepaliDescriptions: Record<string, string> = {
   "discount-percentage-calculator": "मूल्य र छुट प्रतिशतबाट छुट रकम, अन्तिम मूल्य र प्रतिशत परिवर्तन निकाल्नुहोस्।",
 };
 
+// Hindi search copy is prepared for five priority intents. Hindi routes remain
+// noindex until native proofreading and full functional/mobile QA approve publication.
+const hindiPriorityCopy: Record<string, { title: string; description: string }> = {
+  "reading-time-calculator": {
+    title: "रीडिंग टाइम कैलकुलेटर – पढ़ने का समय और WPM",
+    description: "शब्दों की संख्या और अपनी पढ़ने की गति (WPM) डालकर लेख या टेक्स्ट पढ़ने का अनुमानित समय जानें। गति बदलकर परिणाम की तुलना करें।",
+  },
+  "savings-goal-calculator": {
+    title: "बचत लक्ष्य कैलकुलेटर – मासिक और साप्ताहिक बचत",
+    description: "बचत का लक्ष्य, मौजूदा राशि और समय-सीमा डालें। बिना ब्याज और अनुमानित वार्षिक दर के साथ जरूरी मासिक या साप्ताहिक बचत देखें।",
+  },
+  "tip-calculator": {
+    title: "टिप कैलकुलेटर – टिप, बिल और प्रति व्यक्ति राशि",
+    description: "बिल की राशि, टिप प्रतिशत और लोगों की संख्या डालकर टिप, कुल बिल और बराबर प्रति व्यक्ति भुगतान की गणना करें।",
+  },
+  "percentage-change-calculator": {
+    title: "प्रतिशत परिवर्तन कैलकुलेटर – वृद्धि या कमी",
+    description: "मूल और नई संख्या डालकर प्रतिशत वृद्धि या कमी निकालें। सूत्र और उदाहरण से परिणाम समझें; मूल संख्या शून्य नहीं होनी चाहिए।",
+  },
+  "prime-number-checker": {
+    title: "प्राइम नंबर चेकर – अभाज्य या भाज्य संख्या जाँचें",
+    description: "कोई पूर्ण संख्या डालकर जाँचें कि वह अभाज्य है या नहीं। अभाज्य संख्या के नियम, गुणनखंड और उदाहरण समझें।",
+  },
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const request = resolveLocalizedToolRequest(locale, slug);
@@ -326,6 +351,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       openGraph: { ...metadata.openGraph, title, description },
       twitter: { ...metadata.twitter, title, description },
+    };
+  }
+  if (request.locale === "hi" && hindiPriorityCopy[request.implementation.slug]) {
+    const { title, description } = hindiPriorityCopy[request.implementation.slug];
+    // Keep Hindi noindex until native editorial and functional approval is complete.
+    return {
+      ...metadata,
+      title,
+      description: fitLocaleDescription(description),
+      openGraph: { ...metadata.openGraph, title, description },
+      twitter: { ...metadata.twitter, title, description },
+      robots: { index: false, follow: true },
     };
   }
   return metadata;

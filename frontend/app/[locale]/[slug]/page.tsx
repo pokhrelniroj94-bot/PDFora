@@ -13,6 +13,7 @@ import { buildLocaleMetadata } from "../../../lib/i18n/metadata";
 import NepseMarketDashboard from "../../../components/NepseMarketDashboard";
 import ResumeBuilder from "../../../components/ResumeBuilder";
 import NepaliStaticPage from "../../../components/NepaliStaticPage";
+import HindiStaticPage from "../../../components/HindiStaticPage";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
@@ -34,7 +35,7 @@ function getPdfLocaleCopy(locale: string): PdfLocaleCopy | undefined {
 
 export function generateStaticParams() {
   const nepali = [...Object.keys(nepaliPdfRoutes), "market", "resume-builder", "privacy", "terms", "about", "contact"].map((slug) => ({ locale: "ne", slug }));
-  const hindi = isRoutable("hi") ? Object.keys(nepaliPdfRoutes).map((slug) => ({ locale: "hi", slug })) : [];
+  const hindi = isRoutable("hi") ? [...Object.keys(nepaliPdfRoutes), "about", "privacy", "terms", "contact"].map((slug) => ({ locale: "hi", slug })) : [];
   return [...nepali, ...hindi];
 }
 
@@ -62,6 +63,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     about: { title: "PDFora बारेमा | नेपाली", description: "PDFora का PDF टुल, नेपाल उपयोगी क्याल्कुलेटर र प्लेटफर्मको उद्देश्यबारे नेपाली जानकारी।" },
     contact: { title: "PDFora सम्पर्क | नेपाली", description: "PDFora का टुल सहायता, सुझाव र गोपनीयता प्रश्नका लागि नेपाली सम्पर्क जानकारी।" },
   };
+  const hindiStaticMetadata: Record<string, { title: string; description: string }> = {
+    privacy: { title: "हिंदी गोपनीयता नीति | PDFora", description: "PDFora में फ़ाइल प्रोसेसिंग, तकनीकी जानकारी, कुकी, विज्ञापन और बाहरी सेवा प्रदाताओं के डेटा प्रबंधन की जानकारी।" },
+    terms: { title: "हिंदी सेवा की शर्तें | PDFora", description: "PDFora के ऑनलाइन टूल उपयोग, फ़ाइल जिम्मेदारी, परिणामों की जाँच और सेवा उपलब्धता की हिंदी शर्तें।" },
+    about: { title: "PDFora के बारे में | हिंदी", description: "PDFora के PDF, कैलकुलेटर, टेक्स्ट और डेवलपर ऑनलाइन टूल के उद्देश्य और सुविधाएँ।" },
+    contact: { title: "PDFora से संपर्क | हिंदी", description: "PDFora टूल में समस्या, सुझाव और गोपनीयता प्रश्न भेजने के तरीके देखें।" },
+  };
+  if (locale === "hi" && isRoutable("hi") && hindiStaticMetadata[slug]) {
+    return buildLocaleMetadata({ locale: "hi", path: `/${slug}`, ...hindiStaticMetadata[slug] });
+  }
   if (locale === "ne" && staticMetadata[slug]) {
     return buildLocaleMetadata({ locale, path: `/${slug}`, ...staticMetadata[slug] });
   }
@@ -85,6 +95,9 @@ export default async function NepaliPdfToolPage({ params }: Props) {
   }
   if (locale === "ne" && slug === "resume-builder") {
     return <ResumeBuilder locale="ne" />;
+  }
+  if (locale === "hi" && isRoutable("hi") && ["privacy", "terms", "about", "contact"].includes(slug)) {
+    return <HindiStaticPage page={slug as "privacy" | "terms" | "about" | "contact"} />;
   }
   if (locale === "ne" && ["privacy", "terms", "about", "contact"].includes(slug)) {
     return <NepaliStaticPage page={slug as "privacy" | "terms" | "about" | "contact"} />;

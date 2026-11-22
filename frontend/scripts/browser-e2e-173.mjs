@@ -712,17 +712,20 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepali-unicode-typing") {
+        // The runtime is bundled locally and synchronous, so the button is ready on hydration.
         const readyStarted = Date.now();
         let readyButton = false;
         while (Date.now() - readyStarted < 25000 && !readyButton) {
           readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
           if (!readyButton) await delay(250);
         }
-        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
+        if (!readyButton) throw new Error("Nepali typing converter button did not become ready within 25 seconds.");
         await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
         await delay(300);
         const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output.");
+        if (!/[\u0900-\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output.");
+        const expected = "\u0928\u092e\u0938\u094d\u0924\u0947 \u092e\u0947\u0930\u094b \u0926\u0947\u0936 \u0928\u0947\u092a\u093e\u0932 \u0939\u094b";
+        if (!output.includes(expected)) throw new Error("Nepali typing output did not match the documented romanized-layout fixture: " + output);
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");

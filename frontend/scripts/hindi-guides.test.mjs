@@ -4,6 +4,8 @@ import test from "node:test";
 import { ensureTypeStripping, loadI18n } from "./lib/load-i18n.mjs";
 
 ensureTypeStripping();
+// Exercise Hindi route availability only in the explicit preview mode; publication stays disabled.
+process.env.PDFORA_I18N_PREVIEW = "1";
 const { "tool-guides-hi": hiModule, "tool-guides": enModule } = await loadI18n();
 const hi = hiModule.hindiToolGuides;
 const en = enModule.toolGuides;
@@ -45,8 +47,11 @@ test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", asyn
     assert.equal(routing.hasIndexableLocalizedPage(`/${slug}`, "hi"), false, `${slug}: must stay non-indexable`);
   }
   assert.equal(config.isPublished("hi"), false);
-  assert.equal(routing.hasLocalizedPage("/blog", "hi"), false, "no Hindi blog index yet");
-  assert.equal(routing.hasLocalizedPage("/", "hi"), false, "no Hindi homepage yet");
+  assert.equal(routing.hasLocalizedPage("/blog", "hi"), true, "Hindi blog index is available in preview");
+  assert.equal(routing.hasIndexableLocalizedPage("/blog", "hi"), false, "Hindi blog index must remain noindex before publication");
+  assert.equal(routing.hasLocalizedPage("/", "hi"), true, "Hindi homepage is available in preview");
+  assert.equal(routing.hasIndexableLocalizedPage("/", "hi"), false, "Hindi homepage must remain noindex before publication");
+  assert.equal(config.isPublished("hi"), false, "preview mode must not publish Hindi");
   // Every translatable field string in the PDF route table has a Hindi equivalent (technical values excepted).
   const technical = new Set(["90", "bottom-center", "1", "false", "11", "all", "10", "85", "1,3,5", "#E5E7EB", "6"]);
   for (const route of Object.values(pdfRoutes.nepaliPdfRoutes)) {
@@ -57,3 +62,5 @@ test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", asyn
     }
   }
 });
+
+process.env.PDFORA_I18N_PREVIEW = "0";

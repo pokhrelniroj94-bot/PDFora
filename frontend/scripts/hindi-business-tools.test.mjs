@@ -42,3 +42,9 @@ const ui = fs.readFileSync(new URL("../components/HindiBusinessCalculatorWorkspa
 assert.match(ui, /सभी मान साफ़ करें/);
 assert.match(ui, /उदाहरण मान वापस लाएँ/);
 console.log("Hindi business calculator tests passed.");
+
+const routePage = fs.readFileSync(new URL("../app/[locale]/tools/[slug]/page.tsx", import.meta.url), "utf8");
+assert.match(routePage, /import HindiBusinessCalculatorWorkspace from/);
+assert.doesNotMatch(routePage, /import HindiBusinessCalculatorWorkspace,\s*\{/);
+assert.doesNotMatch(routePage, /hindiBusinessConfigs\[toolSlug/);
+assert.match(routePage, /hindiToolSeo\[toolSlug\]\?\.title \?\? toolSlug/);

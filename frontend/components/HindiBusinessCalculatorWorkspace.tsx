@@ -5,7 +5,7 @@ import { hindiBusinessToolSlugs, runHindiBusinessTool, type HindiBusinessToolSlu
 
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 
-export const hindiBusinessConfigs: Record<HindiBusinessToolSlug, { title: string; description: string; fields: Array<[string, string]> }> = {
+const hindiBusinessConfigs: Record<HindiBusinessToolSlug, { title: string; description: string; fields: Array<[string, string]> }> = {
   "profit-margin-calculator": { title: "लाभ मार्जिन कैलकुलेटर", description: "बिक्री राशि और लागत से लाभ या हानि तथा बिक्री पर आधारित मार्जिन निकालें।", fields: [["revenue", "बिक्री राशि (NPR)"], ["cost", "कुल लागत (NPR)"]] },
   "markup-calculator": { title: "मार्कअप कैलकुलेटर", description: "लागत पर मार्कअप प्रतिशत जोड़कर बिक्री मूल्य और मार्जिन निकालें।", fields: [["cost", "लागत (NPR)"], ["markup", "लागत पर जोड़ा जाने वाला प्रतिशत (%)"]] },
   "break-even-calculator": { title: "ब्रेक-ईवन कैलकुलेटर", description: "स्थिर लागत, प्रति इकाई परिवर्ती लागत और बिक्री मूल्य से लागत निकलने की मात्रा जानें।", fields: [["fixed", "कुल स्थिर लागत (NPR)"], ["variable", "प्रति इकाई परिवर्ती लागत (NPR)"], ["price", "प्रति इकाई बिक्री मूल्य (NPR)"]] },

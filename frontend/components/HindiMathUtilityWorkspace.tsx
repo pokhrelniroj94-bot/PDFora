@@ -6,7 +6,7 @@ import { hindiMathToolSlugs, runHindiMathTool, type HindiMathToolSlug } from "..
 const field = "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label = "mb-1.5 block text-sm font-semibold text-slate-700";
 
-export const hindiMathTitles: Record<HindiMathToolSlug, { title: string; description: string }> = {
+const hindiMathTitles: Record<HindiMathToolSlug, { title: string; description: string }> = {
   "percentage-change-calculator": { title: "प्रतिशत परिवर्तन कैलकुलेटर", description: "शुरुआती और नए मान से प्रतिशत बढ़ोतरी या कमी निकालें।" },
   "average-calculator": { title: "औसत कैलकुलेटर", description: "कॉमा या स्पेस से अलग की गई संख्याओं का औसत निकालें।" },
   "ratio-simplifier": { title: "अनुपात सरल करने वाला टूल", description: "दो पूर्ण संख्याओं के अनुपात को सरलतम रूप में बदलें।" },

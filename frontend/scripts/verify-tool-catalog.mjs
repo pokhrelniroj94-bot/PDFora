@@ -9,6 +9,7 @@ const nepalTools = read("../components/NepalTools.tsx");
 const nepalLiveTools = read("../components/NepalLiveTools.tsx");
 const resumeBuilder = read("../components/ResumeBuilder.tsx");
 const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
+const nepaliTypingEngine = read("../lib/nepalify/index.ts");
 const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
 const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
@@ -30,7 +31,7 @@ const liveCases = [...nepalLiveTools.matchAll(/slug === "([a-z0-9-]+)"/g)].map((
 const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
 const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
-const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes('from "../lib/vendor/nepalify"') && !/https?:\/\//.test(nepaliTypingTool);
+const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes('from "../lib/nepalify"') && nepaliTypingTool.includes("nepalifyFormat(roman, { layout })") && nepaliTypingEngine.includes("const romanizedMap") && nepaliTypingEngine.includes("const traditionalMap") && nepaliTypingEngine.includes("export function format");
 const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
 const browserOnlyGrowthSlugs = ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"];
@@ -132,7 +133,6 @@ assert.ok(marketApi.includes('"Cache-Control": "no-store, max-age=0"'), "NEPSE A
 assert.ok(marketDashboard.includes("async function readMarketResponse") && marketDashboard.includes("Your last successful snapshot is kept"), "NEPSE dashboard must handle empty/invalid API responses without losing the last good snapshot");
 assert.ok(!marketDashboard.includes("response.json() as MarketData"), "NEPSE dashboard must not parse possibly empty responses without validation");
 assert.ok(marketDashboard.includes('window.addEventListener("focus",refresh)') && marketDashboard.includes('document.addEventListener("visibilitychange",refresh)'), "NEPSE dashboard must refresh when the user returns to the tab");
-
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
 assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
 assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market dashboard route is missing");

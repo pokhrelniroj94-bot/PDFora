@@ -1,6 +1,6 @@
 "use client";
 import {useEffect,useState} from "react";
-import {format as nepalifyFormat} from "../lib/vendor/nepalify";
+import {format as nepalifyFormat} from "../lib/nepalify";
 import DateConverter from "../lib/nepali-date-converter";
 const field="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900";
 const label="mb-1.5 block text-sm font-semibold text-slate-700";

@@ -29,3 +29,9 @@ Hindi (`hi`) is **unpublished**: routes are preview-only (`PDFORA_I18N_PREVIEW=1
 ## Verification
 - Passing: `npm run i18n:test` (Node, no install needed).
 - A prior Vercel preview build reached TypeScript and failed on Hindi route typing and an undefined number-word helper; those source issues were corrected. The latest Vercel deployment API request is blocked by the Free plan daily deployment API limit (100 deployments/24h), so a fresh build cannot be launched from this session yet. TypeScript, ESLint, Jest, Next build, browser/mobile QA and native review remain unverified after the latest changes.
+
+## Nepali typing reliability fix (2026-11-21)
+- Replaced the runtime jsDelivr import in `components/NepaliTypingTool.tsx` with a locally vendored formatter based on `nepalify@0.5.0` (ISC license and upstream attribution included).
+- Both Romanized and Traditional keyboard layouts are available without a network request.
+- Added a regression test to `scripts/i18n.test.mjs` for both layouts, Devanagari digits, punctuation preservation and invalid-layout handling.
+- CI and browser E2E verification for this commit are pending; do not mark the typing workflow verified until the 175-tool Chromium run passes.

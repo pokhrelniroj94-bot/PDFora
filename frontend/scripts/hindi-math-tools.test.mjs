@@ -40,3 +40,9 @@ const ui = fs.readFileSync(new URL("../components/HindiMathUtilityWorkspace.tsx"
 assert.match(ui, /सभी मान साफ़ करें/);
 assert.match(ui, /उदाहरण मान वापस लाएँ/);
 console.log("Hindi math utility tests passed.");
+
+const routePage = fs.readFileSync(new URL("../app/[locale]/tools/[slug]/page.tsx", import.meta.url), "utf8");
+assert.match(routePage, /import HindiMathUtilityWorkspace from/);
+assert.doesNotMatch(routePage, /import HindiMathUtilityWorkspace,\s*\{/);
+assert.doesNotMatch(routePage, /hindiMathTitles\[toolSlug/);
+assert.match(routePage, /hindiToolSeo\[toolSlug\]\?\.title \?\? toolSlug/);

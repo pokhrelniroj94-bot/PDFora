@@ -35,3 +35,11 @@ Hindi (`hi`) is **unpublished**: routes are preview-only (`PDFORA_I18N_PREVIEW=1
 - Both Romanized and Traditional keyboard layouts are available without a network request.
 - Added a regression test to `scripts/i18n.test.mjs` for both layouts, Devanagari digits, punctuation preservation and invalid-layout handling.
 - CI and browser E2E verification for this commit are pending; do not mark the typing workflow verified until the 175-tool Chromium run passes.
+
+## Production-sync checkpoint (22 Nov 2026)
+
+- Nepali typing CI failure (`FAIL 168/175 nepali-unicode-typing`): root cause was the runtime jsDelivr/unpkg CDN dependency (button disabled until the remote module loaded) plus a double-escaped Devanagari regex in earlier E2E revisions (`/[\\u0900-\\u097F]/` matches ASCII digits/uppercase, never Devanagari). Fixed by a local, pinned, ISC-licensed engine at `frontend/lib/nepalify` (output-identical to upstream nepalify 0.5.0 maps, verified over 1184 characters in both layouts), synchronous conversion, exact-sentence E2E assertion (`nms/te mero deS nepal ho` -> `नमस्ते मेरो देश नेपाल हो`).
+- Nepalify is a keyboard layout, not phonetic transliteration: `namaste` -> `नामासते`; `nms/te` -> `नमस्ते`. Copy on EN/NE/HI pages says so. Phonetic input would need a different engine (not implemented).
+- Hindi typing tool now uses the same local engine; jsDelivr/unpkg removed from the CSP `script-src`; regression tests: `nepalify.test.mjs`, `nepalify-no-cdn.test.mjs`, `security-consent-regression.test.mjs`.
+- Master sync: cherry-picked master's popunder removal/CSP host removal, OG-image noindex header, NEPSE refresh fix (with lockfile/next 16.4.6). A full merge of master conflicts in 26 files (generated i18n docs, QR/routing/metadata); master's remaining commits (QR restore, two guide promotions) overlap work already on this branch and were NOT merged. Release order vs. `seo/e2e-input-fix-2026-11-16` is a maintainer decision.
+- Not verified here (no network/node_modules in this environment): tsc, ESLint, Jest, `next build`, Chromium E2E, 175-route Hindi browser QA. Native Hindi proofreading not done. Hindi remains unpublished/noindex. No deployment performed.

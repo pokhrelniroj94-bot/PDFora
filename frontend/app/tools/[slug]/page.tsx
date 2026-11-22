@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "unit-converter": { title: "Unit Converter – Length, Weight, Temperature & Volume", description: "Convert common units for length, mass, temperature and volume. Select compatible units and check the converted value instantly." },
     "ratio-simplifier": { title: "Ratio Simplifier – Reduce Ratios to Lowest Terms", description: "Simplify a ratio to its lowest whole-number terms using the greatest common divisor. Check equivalent ratios with clear steps." },
     "gcd-lcm-calculator": { title: "GCD and LCM Calculator – Greatest Common Divisor", description: "Find the greatest common divisor and least common multiple of integers. Use the results to simplify fractions and solve number problems." },
-    "prime-number-checker": { title: "Prime Number Checker – Test Prime or Composite", description: "Check whether a whole number is prime or composite. Test divisibility, review factors and learn why 1 is not a prime number." },
+    "prime-number-checker": { title: "Prime Number Checker – Is It Prime or Composite?", description: "Enter a whole number to check whether it is prime or composite. Learn the square-root divisibility test and why 1 is not prime." },
     "business-days-calculator": { title: "Business Days Calculator – Count Weekdays Between Dates", description: "Count weekdays between two dates while excluding Saturdays and Sundays. Check date boundaries and account separately for public holidays." },
     "unix-timestamp-converter": { title: "Unix Timestamp Converter – Seconds & Milliseconds to Date", description: "Convert Unix timestamps in seconds or milliseconds into readable UTC dates and times, then compare with your local timezone." },
     "date-add-subtract-calculator": { title: "Date Calculator – Add or Subtract Days from a Date", description: "Add or subtract a chosen number of days from a starting date. Check the resulting date across month, year and leap-year boundaries." },
@@ -347,7 +347,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     "prime-number-checker": [
       { q: "What is a prime number?", a: "A prime number is an integer greater than 1 with exactly two positive factors: 1 and itself." },
       { q: "Is 1 a prime number?", a: "No. The number 1 has only one positive factor, so it is neither prime nor composite." },
-      { q: "Does the checker show factors for composite numbers?", a: "The tool can list factors for composite inputs where supported; review the output to see which integers divide the number exactly." }
+      { q: "Does the checker show factors for composite numbers?", a: "No. It reports whether the entered whole number is prime or not prime. To verify a composite number, test possible divisors up to its square root." }
     ],
     "business-days-calculator": [
       { q: "Which days are excluded?", a: "The calculator excludes Saturdays and Sundays. It does not automatically remove every Nepal public holiday unless that feature is explicitly provided." },

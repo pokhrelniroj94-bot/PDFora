@@ -672,25 +672,34 @@ async function runTool(tool, index) {
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
       if (tool.slug === "qr-code-generator") {
-        await setFirstTextArea(page, "https://pd-fora.vercel.app/qr-e2e-check");
-        const generateButton = await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.innerText || ""`);
+        const qrInputSet = await setFieldByLabel(page, "Text or URL", "https://pd-fora.vercel.app/qr-e2e-check")
+          || await setFieldByLabel(page, "पाठ या URL", "https://pd-fora.vercel.app/qr-e2e-check")
+          || await setFieldByLabel(page, "पाठ वा URL", "https://pd-fora.vercel.app/qr-e2e-check");
+        if (!qrInputSet) throw new Error("QR Generator URL input was not found by its visible label.");
+        const generateButton = await page.evaluate(`() => [...document.querySelectorAll("button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.innerText || ""`);
         if (!generateButton) throw new Error("QR Generator has no enabled generate action.");
-        await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.click()`);
+        await page.evaluate(`() => [...document.querySelectorAll("button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.click()`);
         let preview = null;
         const started = Date.now();
-        while (Date.now() - started < 15000) {
-          preview = await page.evaluate(`() => ({
-            image: document.querySelector('img[alt="Generated QR code preview"]')?.getAttribute("src") || "",
-            png: [...document.querySelectorAll("main button")].some((button) => /download png|png डाउनलोड/i.test(button.innerText)),
-            svg: [...document.querySelectorAll("main button")].some((button) => /download svg|svg डाउनलोड/i.test(button.innerText)),
-            alert: document.querySelector("main [role=alert]")?.innerText || ""
-          })`);
+        while (Date.now() - started < 20000) {
+          preview = await page.evaluate(`() => {
+            const image = document.querySelector('img[alt="Generated QR code preview"]');
+            const src = image?.getAttribute("src") || image?.currentSrc || "";
+            return {
+              image: src,
+              imageFound: !!image,
+              png: [...document.querySelectorAll("button")].some((button) => /download png|png डाउनलोड/i.test(button.innerText)),
+              svg: [...document.querySelectorAll("button")].some((button) => /download svg|svg डाउनलोड/i.test(button.innerText)),
+              alert: [...document.querySelectorAll("[role=alert]")].map((node) => node.innerText.trim()).filter(Boolean).join(" | "),
+              buttons: [...document.querySelectorAll("button")].map((button) => button.innerText.trim()).filter(Boolean)
+            };
+          }`);
           if (typeof preview?.image === "string" && preview.image.startsWith("data:image/png;base64,") && preview.png && preview.svg) break;
           if (preview.alert) throw new Error("QR Generator error: " + preview.alert);
           await delay(200);
         }
         if (!preview || typeof preview.image !== "string" || !preview.image.startsWith("data:image/png;base64,") || !preview.png || !preview.svg) {
-          throw new Error("QR Generator did not create a PNG preview and both download actions.");
+          throw new Error("QR Generator output incomplete: " + JSON.stringify(preview));
         }
         const before = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
         await page.evaluate(`() => [...document.querySelectorAll("main button")].find((button) => /download png|png डाउनलोड/i.test(button.innerText))?.click()`);

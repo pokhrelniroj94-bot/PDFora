@@ -14,6 +14,7 @@ type Props = { params: Promise<{ locale: string }>; searchParams?: Promise<{ fro
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale) || locale === "en") return { title: "Page not found", robots: { index: false, follow: true } };
+  if (locale === "hi" && isPublished("hi")) return buildLocaleMetadata({ locale: "hi", path: "/", title: "हिंदी ऑनलाइन टूल और कैलकुलेटर | PDFora", description: "PDFora के हिंदी कैलकुलेटर, PDF, टेक्स्ट और डेवलपर टूल इस्तेमाल करें। सभी हिंदी इंटरफ़ेस वाले उपलब्ध टूल एक जगह।" });
   if (!isPublished(locale)) {
     if (locale === "hi" && isPreviewEnabled()) return { title: "हिंदी ऑनलाइन टूल और कैलकुलेटर | PDFora", description: "PDFora के हिंदी कैलकुलेटर, टेक्स्ट और डेवलपर टूल का पूर्वावलोकन। हिंदी इंटरफ़ेस वाले उपलब्ध टूल इस्तेमाल करें।", robots: { index: false, follow: true }, alternates: { canonical: "https://pd-fora.vercel.app/hi" } };
     const copy = localeFallbackCopy[locale];

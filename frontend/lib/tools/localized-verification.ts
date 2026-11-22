@@ -2,6 +2,8 @@ import type { Locale } from "../i18n/config";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../i18n/nepali-tool-routes";
 import { nepaliPdfRoutes } from "../i18n/nepali-pdf-routes";
+import { hindiToolSeo } from "../i18n/hindi-tool-seo";
+import { hindiBlogGuideSlugs } from "../i18n/hindi-blog-slugs";
 
 /**
  * Nepali tools have dedicated localized workspaces and reviewed instructions. The QR
@@ -11,7 +13,8 @@ import { nepaliPdfRoutes } from "../i18n/nepali-pdf-routes";
  */
 export const verifiedLocalizedTools: Readonly<Partial<Record<Locale, readonly string[]>>> = {
   ne: [...nepaliLocalizedUtilitySlugs, ...nepaliLocalizedFinancialSlugs, ...nepaliLocalizedPublicInfoSlugs, ...Object.keys(nepaliPdfRoutes)],
-  hi: ["qr-code-generator"],
+  // Hindi: every route below has a dedicated Hindi workspace/guide. Native proofreading is tracked separately in docs/i18n/HINDI_COMPLETION_STATUS.md.
+  hi: Array.from(new Set(["qr-code-generator", ...Object.keys(hindiToolSeo), ...Object.keys(nepaliPdfRoutes)])),
   bn: ["qr-code-generator"],
   ur: ["qr-code-generator"],
   ar: ["qr-code-generator"],
@@ -29,6 +32,10 @@ export const verifiedLocalizedNonToolPaths: Readonly<Partial<Record<Locale, read
     "/", "/tools", "/market", "/resume-builder", "/blog",
     ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),
     "/privacy", "/terms", "/about", "/contact",
+  ],
+  hi: [
+    "/", "/tools", "/blog", "/privacy", "/terms", "/about", "/contact",
+    ...hindiBlogGuideSlugs.map((slug) => `/blog/${slug}`),
   ],
 };
 

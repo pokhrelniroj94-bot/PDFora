@@ -140,8 +140,8 @@ test("metadata: default-deny indexing, self-referencing canonical, no hreflang, 
         assert.equal(m.alternates.languages?.[l], `https://pd-fora.vercel.app/${l}/tools/qr-code-generator`);
         assert.equal(m.alternates.languages?.en, "https://pd-fora.vercel.app/tools/qr-code-generator");
         assert.equal(m.alternates.languages?.["x-default"], "https://pd-fora.vercel.app/tools/qr-code-generator");
-      } else if (l === "ne" && expectIndex) {
-        assert.equal(m.alternates.languages?.ne, `https://pd-fora.vercel.app/ne/tools/${entry.slug}`);
+      } else if ((l === "ne" || l === "hi") && expectIndex) {
+        assert.equal(m.alternates.languages?.[l], `https://pd-fora.vercel.app/${l}/tools/${entry.slug}`);
         assert.equal(m.alternates.languages?.en, `https://pd-fora.vercel.app/tools/${entry.slug}`);
       } else {
         assert.equal(m.alternates.languages, undefined, "unpublished locales must not emit hreflang");

@@ -10,14 +10,14 @@ This matrix contains one row for every combination of **12 configured locales ×
 - Catalog utilities: 126
 - Unique tools: 175
 - Matrix rows: 2100
-- Published locales: en, ne; the QR generator is a separately approved multilingual exception
+- Published locales: en, ne, hi; the QR generator is a separately approved multilingual exception
 - RTL locales: ur, ar
 
 | Locale | Published tool rows | Interface-present rows | Content-present rows | Index-eligible rows |
 |---|---:|---:|---:|---:|
 | en | 175 | 175 | 49 | 175 |
 | ne | 175 | 175 | 50 | 175 |
-| hi | 1 | 175 | 50 | 1 |
+| hi | 175 | 175 | 50 | 175 |
 | bn | 1 | 1 | 1 | 1 |
 | ur | 1 | 1 | 1 | 1 |
 | ar | 1 | 1 | 1 | 1 |
@@ -31,6 +31,6 @@ This matrix contains one row for every combination of **12 configured locales ×
 ## Current blockers
 
 - Nepali has 175 route registrations out of 175 catalogued tools. Route registration is not proof that every interface string, validation, error, output or download is localized or functionally verified. Native-speaker review is not certified by this matrix.
-- Hindi has dedicated visible interfaces for all 175 routes, but only the already-approved QR generator is published/indexable. The remaining Hindi routes stay unpublished and noindex pending browser/mobile QA and native Hindi editorial review. Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished except for the QR generator.
+- Hindi has dedicated visible interfaces for all 175 routes, and Hindi is published/indexable for all of them (owner-approved release, 22 Nov 2026). Browser/mobile QA of every Hindi route and native Hindi editorial review are still NOT completed; the matrix marks every Hindi row native-review-not-assessed. Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished except for the QR generator.
 - The targeted-test slug registry is a source-level indicator only; it must not be interpreted as full browser QA. The separate Nepali source audit reports current test references and per-tool route evidence.
 - OCR is not counted among the 175 available tools because it remains excluded from the canonical PDF inventory.

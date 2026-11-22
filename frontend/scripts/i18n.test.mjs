@@ -62,7 +62,8 @@ test("each supported language has a distinct native visual theme without publish
   assert.ok(css.includes("--theme-hero"), "shared hero surfaces must use locale theme tokens");
   assert.ok(css.includes("--theme-link"), "links must use locale theme tokens");
   assert.ok(css.includes("color-mix(in srgb, var(--brand)"), "focus and surfaces must derive from locale brand colors");
-  assert.equal(config.localeInfo.hi.status, "unpublished", "theme work must not publish untranslated Hindi routes");
+  assert.equal(config.localeInfo.hi.status, "published", "Hindi is published after the owner-approved release");
+  assert.equal(config.localeInfo.bn.status, "unpublished", "theme work must not publish untranslated Bengali routes");
   assert.equal(config.localeInfo.ar.status, "unpublished", "theme work must not publish untranslated Arabic routes");
 });
 
@@ -121,15 +122,16 @@ test("all twelve locales load translated common, accessibility and SEO namespace
   }
 });
 
-test("publishing policy: English and reviewed Nepali routes are published", () => {
+test("publishing policy: English, Nepali and Hindi routes are published", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
   assert.equal(config.isPublished("en"), true);
   assert.equal(config.isPublished("ne"), true);
-  for (const l of config.locales.filter((x) => !["en", "ne"].includes(x))) {
+  assert.equal(config.isPublished("hi"), true);
+  for (const l of config.locales.filter((x) => !["en", "ne", "hi"].includes(x))) {
     assert.equal(config.isPublished(l), false, `${l} must start unpublished`);
     assert.equal(config.isRoutable(l), false);
   }
-  assert.deepEqual(config.getRoutableLocales(), ["ne"]);
+  assert.deepEqual(config.getRoutableLocales(), ["ne", "hi"]);
   assert.equal(config.isRoutable("en"), false, "English is served unprefixed, never at /en");
   process.env.PDFORA_I18N_PREVIEW = "1";
   assert.deepEqual(config.getRoutableLocales(), ["ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
@@ -406,8 +408,9 @@ test("hreflang: only explicitly approved English/Nepali equivalents are advertis
 
 test("switcher: never offers an unavailable page", () => {
   delete process.env.PDFORA_I18N_PREVIEW;
-  assert.deepEqual(switcher.getSwitcherOptions("/").map((o) => o.locale), ["en", "ne"]);
-  assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne"], "unpublished Hindi must never be offered in production");
+  assert.deepEqual(switcher.getSwitcherOptions("/").map((o) => o.locale), ["en", "ne", "hi"]);
+  assert.deepEqual(switcher.getSwitcherOptions("/merge-pdf").map((o) => o.locale), ["en", "ne", "hi"], "published Hindi PDF tool pages are offered");
+  assert.deepEqual(switcher.getSwitcherOptions("/market").map((o) => o.locale), ["en", "ne"], "Hindi has no /market page, so it must not be offered");
   assert.deepEqual(switcher.getSwitcherOptions("/tools/qr-code-generator").map((o) => o.locale), config.locales, "only the independently translated QR page offers all 12 languages");
   process.env.PDFORA_I18N_PREVIEW = "1";
   const home = switcher.getSwitcherOptions("/");
@@ -696,20 +699,22 @@ test("vendored Nepalify formatter converts actual Nepali examples offline in bot
   assert.throws(() => format("test", { layout: "invalid" }), /Invalid Nepalify layout/);
 });
 
-test("Hindi blog guide registry is available in preview and remains blocked in production", () => {
+test("Hindi blog guide registry is published with reciprocal hreflang and blocks unknown slugs", () => {
   const originalPreview = process.env.PDFORA_I18N_PREVIEW;
   try {
     delete process.env.PDFORA_I18N_PREVIEW;
-    assert.equal(config.localeInfo.hi.status, "unpublished");
+    assert.equal(config.localeInfo.hi.status, "published");
     for (const slug of ["percentage-calculator-guide", "average-calculator-guide", "bs-ad-date-conversion-guide", "preeti-unicode-conversion-guide", "loksewa-photo-size-guide"]) {
-      assert.equal(routing.hasLocalizedPage("/blog/" + slug, "hi"), false, "Hindi must remain blocked in production: " + slug);
+      assert.equal(routing.hasLocalizedPage("/blog/" + slug, "hi"), true, "Hindi guide must be routable in production: " + slug);
+      assert.equal(routing.hasIndexableLocalizedPage("/blog/" + slug, "hi"), true, "Hindi guide must be indexable: " + slug);
     }
     process.env.PDFORA_I18N_PREVIEW = "1";
     for (const slug of ["percentage-calculator-guide", "average-calculator-guide", "bs-ad-date-conversion-guide", "preeti-unicode-conversion-guide", "loksewa-photo-size-guide"]) {
       assert.equal(routing.hasLocalizedPage("/blog/" + slug, "hi"), true, "Hindi preview registry is missing: " + slug);
     }
     assert.equal(routing.hasLocalizedPage("/blog/not-a-real-hindi-guide", "hi"), false);
-    assert.equal(routing.hreflangMap("/blog/percentage-calculator-guide")?.hi, undefined, "unpublished Hindi must not appear in hreflang");
+    assert.equal(routing.hreflangMap("/blog/percentage-calculator-guide")?.hi, "https://pd-fora.vercel.app/hi/blog/percentage-calculator-guide", "published Hindi guide appears in hreflang");
+    assert.equal(routing.hreflangMap("/blog/qr-code-generator-guide")?.hi, "https://pd-fora.vercel.app/hi/blog/qr-code-generator-guide");
   } finally {
     if (originalPreview === undefined) delete process.env.PDFORA_I18N_PREVIEW;
     else process.env.PDFORA_I18N_PREVIEW = originalPreview;

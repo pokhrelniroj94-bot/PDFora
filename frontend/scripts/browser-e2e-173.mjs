@@ -8,7 +8,10 @@ import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
 const reportPath = path.resolve(process.env.E2E_REPORT_PATH || "../docs/qa/BROWSER_E2E_175_REPORT.json");
-const localePrefix = process.env.E2E_LOCALE === "ne" ? "/ne" : "";
+const e2eLocale = ["ne", "hi"].includes(process.env.E2E_LOCALE || "") ? process.env.E2E_LOCALE : "";
+const localePrefix = e2eLocale ? "/" + e2eLocale : "";
+const e2eLocaleName = e2eLocale === "hi" ? "Hindi" : "Nepali";
+const e2eLocaleTag = e2eLocale === "hi" ? "hi-IN" : "ne-NP";
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
 const downloadsDir = path.join(tempDir, "downloads");
@@ -334,8 +337,8 @@ async function runTool(tool, index) {
     row.heading = initial.heading;
     row.documentLanguage = initial.lang;
     row.hasNepaliScript = /[\u0900-\u097F]/u.test(initial.heading + " " + initial.body);
-    if (localePrefix && !/^ne(?:-|$)/i.test(initial.lang)) throw new Error("Nepali route document lang is not Nepali: " + initial.lang);
-    if (localePrefix && !row.hasNepaliScript) throw new Error("Nepali route has no Devanagari in its visible title/body.");
+    if (localePrefix && !new RegExp("^" + e2eLocale + "(?:-|$)", "i").test(initial.lang)) throw new Error(e2eLocaleName + " route document lang is not " + e2eLocale + ": " + initial.lang);
+    if (localePrefix && !row.hasNepaliScript) throw new Error(e2eLocaleName + " route has no Devanagari in its visible title/body.");
 
     // Exercise every tool at a narrow mobile viewport, then verify basic keyboard
     // reachability and accessible names before returning to the desktop viewport.
@@ -1476,7 +1479,7 @@ try {
   const nepaliRoutes = allTools.map((tool) => ({
     slug: tool.slug,
     kind: tool.kind,
-    url: tool.kind === "pdf" ? "/ne/" + tool.slug : "/ne/tools/" + tool.slug,
+    url: tool.kind === "pdf" ? localePrefix + "/" + tool.slug : localePrefix + "/tools/" + tool.slug,
   }));
   for (const route of nepaliRoutes) {
     let page;
@@ -1505,24 +1508,32 @@ try {
           fileInputs: [...(main?.querySelectorAll('input[type="file"]') || [])].filter(visible).length,
           overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
           main: !!main,
+          canonical: document.querySelector('link[rel="canonical"]')?.getAttribute("href") || "",
+          robots: document.querySelector('meta[name="robots"]')?.getAttribute("content") || "",
         };
       })()`);
       if (!state.main || !state.body || /Application error|Internal Server Error|404: This page could not be found/i.test(state.body)) {
-        throw new Error("Nepali route did not render a usable page.");
+        throw new Error(e2eLocaleName + " route did not render a usable page.");
       }
-      if (state.lang !== "ne") throw new Error("Expected document language ne; received " + state.lang);
-      if (!state.heading) throw new Error("Nepali tool heading is missing.");
-      if (!/[\u0900-\u097F]/.test(state.body)) throw new Error("Nepali Devanagari interface text is missing.");
+      if (state.lang !== e2eLocale) throw new Error("Expected document language " + e2eLocale + "; received " + state.lang);
+      if (!state.heading) throw new Error(e2eLocaleName + " tool heading is missing.");
+      if (e2eLocale === "hi") {
+        if (!/[\u0900-\u097F]/.test(state.title)) throw new Error("Hindi page title is not Hindi: " + state.title);
+        if (!state.canonical.endsWith(route.url)) throw new Error("Hindi canonical is not self-referencing: " + state.canonical + " for " + route.url);
+        if (/noindex/i.test(state.robots)) throw new Error("Published Hindi route is noindex: " + route.url);
+        if (/NaN|Infinity|undefined/.test(state.body)) throw new Error("Hindi page body contains NaN/Infinity/undefined.");
+      }
+      if (!/[\u0900-\u097F]/.test(state.body)) throw new Error(e2eLocaleName + " Devanagari interface text is missing.");
       if (/toolEnglishNotice|viewEnglishTool|currently available in English/i.test(state.body)) {
         throw new Error("English-only fallback notice appeared on a route registered as Nepali-localized.");
       }
-      if (!state.controls) throw new Error("Nepali tool has no visible interactive controls.");
-      if (route.kind === "pdf" && !state.fileInputs) throw new Error("Nepali PDF tool has no visible file input.");
-      if (state.overflow) throw new Error("Nepali tool has horizontal overflow at 390px mobile width.");
+      if (!state.controls) throw new Error(e2eLocaleName + " tool has no visible interactive controls.");
+      if (route.kind === "pdf" && !state.fileInputs) throw new Error(e2eLocaleName + " PDF tool has no visible file input.");
+      if (state.overflow) throw new Error(e2eLocaleName + " tool has horizontal overflow at 390px mobile width.");
       row.heading = state.heading;
       row.controls = state.controls;
       row.editableControls = state.editable;
-      row.checks.push("lang=ne, Devanagari content, heading, visible controls, mobile viewport and no horizontal overflow");
+      row.checks.push("lang=" + e2eLocale + ", Devanagari content, heading, visible controls, mobile viewport and no horizontal overflow");
       if (route.kind === "pdf") row.checks.push("PDF upload control visible");
 
       // Exercise one editable control without submitting data. This checks hydration and
@@ -1555,7 +1566,7 @@ try {
       if (page) await page.close();
     }
     nepaliRouteResults.push(row);
-    console.log((row.status === "PASS" ? "PASS " : "FAIL ") + "ne-NP " +
+    console.log((row.status === "PASS" ? "PASS " : "FAIL ") + e2eLocaleTag + " " +
       (nepaliRouteResults.length) + "/175 " + route.slug + " — " +
       (row.errors[0] || row.checks.join(", ")));
   }
@@ -1567,7 +1578,7 @@ const report = {
   generatedAt: new Date().toISOString(),
   sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
-  localeMode: localePrefix ? "ne-route-smoke" : "en-functional",
+  localeMode: localePrefix ? e2eLocale + "-route-smoke" : "en-functional",
   scope: requestedToolFilters.length ? requestedToolFilters : "all-175-tools",
   expected: requestedToolFilters.length
     ? { pdf: tools.filter((tool) => tool.kind === "pdf").length, catalog: tools.filter((tool) => tool.kind === "catalog").length, total: tools.length }
@@ -1599,7 +1610,7 @@ fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
 const summaryRows = localePrefix ? nepaliRouteResults : results;
 const summary = localePrefix
   ? {
-      locale: "ne-NP",
+      locale: e2eLocaleTag,
       total: summaryRows.length,
       pass: summaryRows.filter((row) => row.status === "PASS").length,
       fail: summaryRows.filter((row) => row.status === "FAIL").length,

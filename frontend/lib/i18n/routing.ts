@@ -1,3 +1,4 @@
+import { hindiBlogGuideSlugs } from "./hindi-blog-slugs";
 import { SITE_URL, defaultLocale, isLocale, isPublished, isRoutable, localeInfo, locales, type Locale } from "./config";
 import {
   nepaliLocalizedFinancialSlugs,
@@ -83,13 +84,6 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
  * so these routes are only reachable in preview and are never indexed or listed in hreflang.
  * Grow this set only as each Hindi page is genuinely translated.
  */
-const hindiBlogGuideSlugs = [
-  "percentage-calculator-guide",
-  "average-calculator-guide",
-  "bs-ad-date-conversion-guide",
-  "preeti-unicode-conversion-guide",
-  "loksewa-photo-size-guide",
-] as const;
 
 export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
   "/", "/tools", "/categories", "/blog", "/about", "/privacy", "/terms", "/contact",
@@ -111,7 +105,7 @@ export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean
   // unrelated routes for locales whose wider site translation is still unpublished.
   if (normalized === "/tools/qr-code-generator" && isLocalizedToolIndexable(locale, "qr-code-generator")) return true;
   if (normalized === "/blog/qr-code-generator-guide" && locale !== "en" && Boolean(getLocalizedQrBlogPost(locale, "qr-code-generator-guide"))) return true;
-  if (locale !== "ne" || !isPublished(locale)) return false;
+  if ((locale !== "ne" && locale !== "hi") || !isPublished(locale)) return false;
   if (nepaliIndexableNonToolPaths.has(normalized) || isLocalizedPageIndexable(locale, normalized)) return true;
   const catalogToolSlug = normalized.match(/^\/tools\/([^/]+)$/)?.[1];
   if (catalogToolSlug && isLocalizedToolIndexable(locale, catalogToolSlug)) return true;

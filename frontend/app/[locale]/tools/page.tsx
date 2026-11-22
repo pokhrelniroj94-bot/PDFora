@@ -1,3 +1,4 @@
+import { buildLocaleMetadata } from "../../../lib/i18n/metadata";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -36,13 +37,7 @@ const nepaliMetadata: Metadata = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  if (locale === "hi") return {
-    title: "हिंदी ऑनलाइन टूल और कैलकुलेटर | PDFora",
-    description: "हिंदी में गणित, वित्त, तारीख, टेक्स्ट, डेवलपर और नेपाल उपयोगिता टूल इस्तेमाल करें।",
-    alternates: { canonical: "https://pd-fora.vercel.app/hi/tools" },
-    robots: { index: false, follow: false },
-    openGraph: { type: "website", url: "https://pd-fora.vercel.app/hi/tools", siteName: "PDFora", title: "हिंदी ऑनलाइन टूल और कैलकुलेटर | PDFora", description: "हिंदी में गणित, वित्त, तारीख, टेक्स्ट, डेवलपर और नेपाल उपयोगिता टूल इस्तेमाल करें।", locale: "hi_IN" },
-  };
+  if (locale === "hi") return buildLocaleMetadata({ locale: "hi", path: "/tools", title: "हिंदी ऑनलाइन टूल और कैलकुलेटर | PDFora", description: "हिंदी में गणित, वित्त, तारीख, टेक्स्ट, डेवलपर और नेपाल उपयोगिता टूल इस्तेमाल करें।" });
   return nepaliMetadata;
 }
 

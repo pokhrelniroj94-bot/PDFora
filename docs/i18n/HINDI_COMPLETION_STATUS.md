@@ -1,6 +1,6 @@
 # Hindi completion status
 
-Hindi (`hi`) is **unpublished**: routes are preview-only (`PDFORA_I18N_PREVIEW=1`), noindex, and absent from hreflang, sitemap and the language selector. Do not change `status` in `lib/i18n/config.ts` until every section below is done and verified.
+Hindi (`hi`) is **published** (owner-approved release, 22 Nov 2026): `status: "published"` in `lib/i18n/config.ts`, indexable via the verified registry in `lib/tools/localized-verification.ts` (175 tool routes, home, tools directory, About/Privacy/Terms/Contact, blog index and the 5 original Hindi guides), in the language selector, hreflang and sitemap. Publication was done with these gates **still open**: native Hindi proofreading, full functional QA of every Hindi tool (CI runs a 175-route smoke pass: lang, Devanagari title/body, self canonical, indexable robots, controls, 390px overflow, editable input), and mobile/a11y review. Hindi blog parity is limited to 5 guides (not the 37 Nepali articles); other blog links use the explicit fallback page. `/categories` is a Hindi page but is not indexed.
 
 ## Implemented in source (preview-only; final QA still pending)
 - 49 PDF tool pages are wired to the existing PDFora/Niroj processing workspaces (`app/[locale]/[slug]/page.tsx`), Hindi names and guides, translated PDF UI messages, and translated field placeholders. Routes remain preview-only/noindex; runtime/build verification for this branch is still pending.

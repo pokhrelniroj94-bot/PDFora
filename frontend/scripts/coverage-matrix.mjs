@@ -32,7 +32,7 @@ const guideSlugs = new Set(parseSlugs(read("lib/tool-guides.ts"), /"slug":\s*"([
 const nepaliPdfGuideSlugs = new Set(parseSlugs(read("lib/i18n/tool-guides-ne.ts"), /"([^"]+)":\s*\{/g));
 const locales = ["en", "ne", "hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"];
 const rtlLocales = new Set(["ur", "ar"]);
-const publishedLocales = new Set(["en", "ne"]);
+const publishedLocales = new Set(["en", "ne", "hi"]);
 const handlerEvidence = "catalog-handler-check";
 const targetedNepaliUnitTests = new Set(["nepal-phone-validator", "gold-tola-gram-converter", "email-extractor", "url-extractor", "phone-number-extractor", "number-extractor", "hashtag-extractor", "remove-duplicate-words", "find-replace-text", "palindrome-checker", "acronym-generator", "text-to-binary", "binary-to-text", "text-to-hex", "hex-to-text", "morse-code-translator", "camel-case-converter", "snake-case-converter", "kebab-case-converter", "json-escape-unescape", "px-rem-converter", "roman-numeral-converter", "csv-to-json", "json-to-yaml", "json-to-csv", "url-validator", "email-validator", "password-strength-checker", "url-query-parser", "color-converter", "aspect-ratio-calculator", "css-gradient-generator", "unix-timestamp-converter", "date-add-subtract-calculator", "business-days-calculator", "random-number-generator", "dice-roller", "regex-tester", "jwt-decoder", "css-minifier", "color-contrast-checker", "keyword-density-checker", "robots-txt-generator", "sitemap-generator"]);
 
@@ -45,7 +45,7 @@ for (const locale of locales) {
     const qrLocalizedTool = tool.slug === "qr-code-generator" && locale !== "en";
     const localized = english || nepaliInterfacePresent || hindiInterfacePresent || qrLocalizedTool;
     const guide = tool.slug === "qr-code-generator" && locale !== "en" ? true : english ? guideSlugs.has(tool.slug) : locale === "ne" && tool.kind === "pdf" && nepaliPdfGuideSlugs.has(tool.slug) || locale === "hi" && tool.kind === "pdf" && hindiPdfSlugs.includes(tool.slug);
-    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug) || qrLocalizedTool;
+    const indexable = english && tool.slug !== "ocr-pdf" || locale === "ne" && indexedNepaliTools.has(tool.slug) || hindiInterfacePresent || qrLocalizedTool;
     matrix.push({
       locale,
       slug: tool.slug,
@@ -116,7 +116,7 @@ ${summary}
 ## Current blockers
 
 - Nepali has ${localizedNepaliTools.size} route registrations out of ${tools.length} catalogued tools. Route registration is not proof that every interface string, validation, error, output or download is localized or functionally verified. Native-speaker review is not certified by this matrix.
-- Hindi has dedicated visible interfaces for all ${localizedHindiTools.size} routes, but only the already-approved QR generator is published/indexable. The remaining Hindi routes stay unpublished and noindex pending browser/mobile QA and native Hindi editorial review. Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished except for the QR generator.
+- Hindi has dedicated visible interfaces for all ${localizedHindiTools.size} routes, and Hindi is published/indexable for all of them (owner-approved release, 22 Nov 2026). Browser/mobile QA of every Hindi route and native Hindi editorial review are still NOT completed; the matrix marks every Hindi row native-review-not-assessed. Bengali, Urdu, Arabic, Spanish, French, German, Portuguese, Simplified Chinese and Japanese remain unpublished except for the QR generator.
 - The targeted-test slug registry is a source-level indicator only; it must not be interpreted as full browser QA. The separate Nepali source audit reports current test references and per-tool route evidence.
 - OCR is not counted among the 175 available tools because it remains excluded from the canonical PDF inventory.
 `;

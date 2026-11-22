@@ -127,6 +127,16 @@ jobs:
           E2E_REPORT_PATH: ../docs/qa/BROWSER_E2E_NE_175_REPORT.json
           E2E_TOOL_TIMEOUT_MS: "20000"
         run: node scripts/browser-e2e-173.mjs
+      - name: Run Chromium E2E across all 175 Hindi tool routes
+        id: hindi-browser-e2e
+        continue-on-error: true
+        env:
+          CHROME_BIN: ${{ steps.chrome.outputs.chrome-path }}
+          E2E_BASE_URL: http://127.0.0.1:3000
+          E2E_LOCALE: hi
+          E2E_REPORT_PATH: ../docs/qa/BROWSER_E2E_HI_175_REPORT.json
+          E2E_TOOL_TIMEOUT_MS: "20000"
+        run: node scripts/browser-e2e-173.mjs
       - name: Regenerate audit with browser evidence
         if: always()
         run: npm run audit:functional
@@ -138,6 +148,7 @@ jobs:
           path: |
             docs/qa/BROWSER_E2E_175_REPORT.json
             docs/qa/BROWSER_E2E_NE_175_REPORT.json
+            docs/qa/BROWSER_E2E_HI_175_REPORT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.json
             docs/qa/FUNCTIONAL_TOOL_AUDIT.md
             docs/i18n/TRANSLATION_COVERAGE.json
@@ -152,6 +163,9 @@ jobs:
         run: exit 1
       - name: Fail CI when any individual Nepali E2E check fails
         if: always() && steps.nepali-browser-e2e.outcome == 'failure'
+        run: exit 1
+      - name: Fail CI when any individual Hindi E2E check fails
+        if: always() && steps.hindi-browser-e2e.outcome == 'failure'
         run: exit 1
       - name: Fail CI after reports when production smoke checks fail
         if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.production-smoke.outcome == 'failure'

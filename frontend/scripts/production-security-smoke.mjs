@@ -43,8 +43,8 @@ const sitemapText = await sitemap.text();
 const sitemapUrls = [...sitemapText.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 check("sitemap is valid non-empty XML", sitemapText.includes("<urlset") && sitemapUrls.length > 0, "URLs=" + sitemapUrls.length);
 check("sitemap has no duplicate URLs", new Set(sitemapUrls).size === sitemapUrls.length, "URLs=" + sitemapUrls.length);
-const unpublishedLocalePath = /\/(hi|bn|ur|ar|es|fr|de|pt|zh|ja)(\/|$)/;
-const approvedQrLocalePath = /^\/(hi|bn|ur|ar|es|fr|de|pt|zh|ja)\/(?:tools\/qr-code-generator|blog\/qr-code-generator-guide)$/;
+const unpublishedLocalePath = /\/(bn|ur|ar|es|fr|de|pt|zh|ja)(\/|$)/;
+const approvedQrLocalePath = /^\/(bn|ur|ar|es|fr|de|pt|zh|ja)\/(?:tools\/qr-code-generator|blog\/qr-code-generator-guide)$/;
 check("sitemap excludes unpublished language routes except reviewed QR pages", !sitemapUrls.some((url) => {
   const pathname = new URL(url).pathname;
   return unpublishedLocalePath.test(pathname) && !approvedQrLocalePath.test(pathname);

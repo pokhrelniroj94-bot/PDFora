@@ -10,8 +10,11 @@ const chromePath = process.env.CHROME_BIN || "google-chrome";
 const reportPath = path.resolve(process.env.E2E_REPORT_PATH || "../docs/qa/BROWSER_E2E_175_REPORT.json");
 const e2eLocale = ["ne", "hi"].includes(process.env.E2E_LOCALE || "") ? process.env.E2E_LOCALE : "";
 const localePrefix = e2eLocale ? "/" + e2eLocale : "";
-const e2eLocaleName = e2eLocale === "hi" ? "Hindi" : "Nepali";
-const e2eLocaleTag = e2eLocale === "hi" ? "hi-IN" : "ne-NP";
+// The dedicated locale pass runs in every mode: Hindi when E2E_LOCALE=hi, otherwise the Nepali baseline.
+const passLocale = e2eLocale || "ne";
+const e2eLocaleName = passLocale === "hi" ? "Hindi" : "Nepali";
+const e2eLocaleTag = passLocale === "hi" ? "hi-IN" : "ne-NP";
+const passPrefix = "/" + passLocale;
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
 const downloadsDir = path.join(tempDir, "downloads");
@@ -1479,7 +1482,7 @@ try {
   const nepaliRoutes = allTools.map((tool) => ({
     slug: tool.slug,
     kind: tool.kind,
-    url: tool.kind === "pdf" ? localePrefix + "/" + tool.slug : localePrefix + "/tools/" + tool.slug,
+    url: tool.kind === "pdf" ? passPrefix + "/" + tool.slug : passPrefix + "/tools/" + tool.slug,
   }));
   for (const route of nepaliRoutes) {
     let page;
@@ -1515,9 +1518,9 @@ try {
       if (!state.main || !state.body || /Application error|Internal Server Error|404: This page could not be found/i.test(state.body)) {
         throw new Error(e2eLocaleName + " route did not render a usable page.");
       }
-      if (state.lang !== e2eLocale) throw new Error("Expected document language " + e2eLocale + "; received " + state.lang);
+      if (state.lang !== passLocale) throw new Error("Expected document language " + passLocale + "; received " + state.lang);
       if (!state.heading) throw new Error(e2eLocaleName + " tool heading is missing.");
-      if (e2eLocale === "hi") {
+      if (passLocale === "hi") {
         if (!/[\u0900-\u097F]/.test(state.title)) throw new Error("Hindi page title is not Hindi: " + state.title);
         if (!state.canonical.endsWith(route.url)) throw new Error("Hindi canonical is not self-referencing: " + state.canonical + " for " + route.url);
         if (/noindex/i.test(state.robots)) throw new Error("Published Hindi route is noindex: " + route.url);
@@ -1533,7 +1536,7 @@ try {
       row.heading = state.heading;
       row.controls = state.controls;
       row.editableControls = state.editable;
-      row.checks.push("lang=" + e2eLocale + ", Devanagari content, heading, visible controls, mobile viewport and no horizontal overflow");
+      row.checks.push("lang=" + passLocale + ", Devanagari content, heading, visible controls, mobile viewport and no horizontal overflow");
       if (route.kind === "pdf") row.checks.push("PDF upload control visible");
 
       // Exercise one editable control without submitting data. This checks hydration and

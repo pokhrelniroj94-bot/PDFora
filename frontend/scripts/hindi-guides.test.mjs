@@ -63,4 +63,3 @@ test("Hindi PDF tool names, field copy and routing cover all 49 PDF tools", asyn
   }
 });
 
-process.env.PDFORA_I18N_PREVIEW = "0";

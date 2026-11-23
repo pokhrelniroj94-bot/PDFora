@@ -467,6 +467,125 @@ const priorityEditorialBlogPosts: BlogPost[] = [
     ],
     toolLinks: [{ label: "SEO Title Checker", href: "/tools/meta-title-checker" }, { label: "Meta Description Checker", href: "/tools/meta-description-checker" }],
     sources: [{ label: "Google Search Central: Influencing title links in Google Search", url: "https://developers.google.com/search/docs/appearance/title-link" }]
+  },
+  {
+    slug: "prime-number-checker-guide",
+    title: "Is It a Prime Number? How to Check Any Number",
+    description: "Learn how to check whether a number is prime or composite, why 1 is not prime and how the square-root test works, with worked examples.",
+    keyword: "prime number checker how to check if a number is prime",
+    updated: "2026-11-17",
+    readTime: "5 min read",
+    intro: "A prime number is a whole number greater than 1 whose only positive factors are 1 and itself. Checking a small number by hand is easy, but larger values need a method. This guide explains the divisibility test used by the Prime Number Checker, with examples you can verify yourself.",
+    sections: [
+      { heading: "What makes a number prime or composite?", paragraphs: ["A prime has exactly two positive factors. 7 is prime because only 1 and 7 divide it evenly. A composite number has more than two factors: 12 is divisible by 1, 2, 3, 4, 6 and 12.", "The numbers 0 and 1 are neither prime nor composite. 1 has only one positive factor, so it fails the two-factor rule, and this is why the checker reports 0 and 1 as not prime."] },
+      { heading: "The square-root test, step by step", paragraphs: ["You only need to test divisors up to the square root of the number. If a number has a factor larger than its square root, it must also have a matching smaller factor, so the smaller one would already have been found.", "To test 97, the square root is about 9.85, so check 2, 3, 5 and 7. None divides 97 evenly, therefore 97 is prime. To test 91, check 2, 3, 5 and 7: 91 ÷ 7 = 13, so 91 = 7 × 13 and is composite. Many people mistake 91 for a prime because it is not divisible by 2, 3 or 5."] },
+      { heading: "Use the Prime Number Checker", paragraphs: ["Enter a non-negative whole number and run the checker. It reports whether the number is prime or not prime using trial division up to the square root. It accepts whole numbers within the browser's safe integer range, and it rejects decimals and negative values with an input error.", "For a result you do not trust, test it by hand: find one factor other than 1 and the number itself, and the number is composite."] },
+      { heading: "Handy facts to remember", paragraphs: ["2 is the only even prime, because every other even number is divisible by 2. Any number ending in 0 or 5, other than 5 itself, is divisible by 5. A number is divisible by 3 when its digits add up to a multiple of 3, so 51 (5 + 1 = 6) is divisible by 3 and is not prime."], bullets: ["Primes below 30: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29.", "221 looks prime but equals 13 × 17.", "Prime checking is different from finding the greatest common divisor of two numbers."] }
+    ],
+    faqs: [
+      { question: "Is 1 a prime number?", answer: "No. A prime needs exactly two positive factors, and 1 has only one. Modern definitions exclude 1 so that every integer above 1 has a single prime factorisation." },
+      { question: "Is 2 a prime number?", answer: "Yes. 2 is divisible only by 1 and 2, and it is the only even prime number." },
+      { question: "How do I check if a large number is prime?", answer: "Divide it by every prime up to its square root. If none divides it evenly, the number is prime. The Prime Number Checker applies this test to whole numbers within the supported range." },
+      { question: "Is 91 a prime number?", answer: "No. 91 = 7 × 13, so it is composite even though it is not divisible by 2, 3 or 5." },
+      { question: "Can the checker test decimals or negative numbers?", answer: "No. Primes are defined for whole numbers greater than 1, so decimals and negative values show an input error." }
+    ],
+    toolLinks: [{ label: "Prime Number Checker", href: "/tools/prime-number-checker" }, { label: "GCD and LCM Calculator", href: "/tools/gcd-lcm-calculator" }, { label: "Ratio Simplifier", href: "/tools/ratio-simplifier" }],
+    sources: [{ label: "Wikipedia: Prime number", url: "https://en.wikipedia.org/wiki/Prime_number" }]
+  },
+  {
+    slug: "split-bill-calculator-guide",
+    title: "How to Split a Bill Equally: Formula & Examples",
+    description: "Split a restaurant or shared bill between friends, including a service charge or tip. See the formula, rounding examples and when equal shares are unfair.",
+    keyword: "how to split a bill equally split bill calculator",
+    updated: "2026-11-17",
+    readTime: "4 min read",
+    intro: "Splitting a bill equally takes one division, but groups often forget the service charge, disagree about rounding or realise that one person ordered far more. This guide shows the formula the Split Bill Calculator uses and how to handle the common complications.",
+    sections: [
+      { heading: "The equal-split formula", paragraphs: ["Total to pay = bill + any extra amount. Share per person = total ÷ number of people. The extra amount can be a service charge, delivery fee or tip that you want to share too.", "For example, a NPR 3,000 bill plus NPR 200 extra is NPR 3,200. Split between four people, each pays NPR 800."] },
+      { heading: "Worked example with a service charge", paragraphs: ["A group of four receives a NPR 2,400 bill and the restaurant adds NPR 240 service charge. The total is NPR 2,640, so each person pays NPR 660. Enter 2,400 as the bill, 240 as the extra amount and 4 people to get the same result.", "If you also want to leave a tip, add it to the extra amount instead of calculating it separately. The Tip Calculator can help you choose the tip first."] },
+      { heading: "Rounding when the bill does not divide evenly", paragraphs: ["NPR 1,000 split between three people is 333.33 each, and three payments of 333.33 add up to 999.99, so the group is one paisa short. Decide in advance who covers the difference, or round every share up to the next whole rupee and treat the remainder as a small tip.", "The calculator shows two decimal places, so check the final amount against the receipt before paying."] },
+      { heading: "When an equal split is not fair", paragraphs: ["An equal split works when everyone ordered similar items or agreed to share. If one person had an expensive meal or did not drink, calculate each person's items separately and divide only the shared dishes, taxes and fees. The calculator divides the total evenly and does not handle itemised orders."] }
+    ],
+    faqs: [
+      { question: "How do I split a restaurant bill between friends?", answer: "Add any service charge or tip to the bill, then divide the total by the number of people. For NPR 3,200 and four people, each pays NPR 800." },
+      { question: "Should the service charge be included when splitting?", answer: "Yes, if everyone is sharing it. Enter it as the extra amount so it is included in the total before dividing." },
+      { question: "What if the bill cannot be divided evenly?", answer: "Round each share up and agree who absorbs the small difference. For example, NPR 1,000 between three people is 333.33 each, leaving the group one paisa short." },
+      { question: "Can the calculator split unequal orders?", answer: "No. It divides the total equally. For different orders, work out each person's items first and share only the common costs." }
+    ],
+    toolLinks: [{ label: "Split Bill Calculator", href: "/tools/split-bill-calculator" }, { label: "Tip Calculator", href: "/tools/tip-calculator" }, { label: "Percentage of Number Calculator", href: "/tools/percentage-of-number-calculator" }],
+    sources: [{ label: "Wikipedia: Division (mathematics)", url: "https://en.wikipedia.org/wiki/Division_(mathematics)" }]
+  },
+  {
+    slug: "date-add-subtract-calculator-guide",
+    title: "How to Add or Subtract Days from a Date (Examples)",
+    description: "Add or subtract days from any date, with worked examples for month ends and leap years. Learn why 30 days is not the same as one month.",
+    keyword: "how to add days to a date date calculator",
+    updated: "2026-11-17",
+    readTime: "5 min read",
+    intro: "Working out a deadline, delivery date or notice period means adding days to a start date while respecting month lengths and leap years. This guide explains the calendar-day arithmetic used by the Date Add or Subtract Calculator, with examples you can check.",
+    sections: [
+      { heading: "How adding days to a date works", paragraphs: ["Start from the chosen date and count forward one calendar day at a time, rolling into the next month or year when needed. Adding 30 days to 1 November 2026 gives 1 December 2026, because November has 30 days.", "To subtract, enter a negative number of days. Subtracting 1 day from 1 March 2026 gives 28 February 2026."] },
+      { heading: "Month ends and leap years", paragraphs: ["Months have 28 to 31 days, so the same number of days lands differently. Adding 30 days to 31 January 2026 gives 2 March 2026, because February 2026 has 28 days.", "In a leap year February has 29 days. Adding 2 days to 28 February 2028 gives 1 March 2028, while adding 2 days to 28 February 2027 gives 2 March 2027. A year is a leap year when it divides by 4, except century years that do not divide by 400."] },
+      { heading: "A longer example: 100 days from today", paragraphs: ["From 17 November 2026, 13 days reach 30 November, another 31 reach 31 December, another 31 reach 31 January 2027 and the last 25 reach 25 February 2027. Adding 100 days therefore gives 25 February 2027.", "Use this kind of check to confirm the calculator result for contract terms or project plans."] },
+      { heading: "30 days is not one month", paragraphs: ["A calendar month and a fixed number of days are different. One month after 31 January is usually the end of February, while 30 days after 31 January is in March. The calculator adds calendar days, and it does not skip weekends or public holidays. For working days, use the Business Days Calculator."] }
+    ],
+    faqs: [
+      { question: "How do I add days to a date?", answer: "Enter the start date and the number of days. The calculator counts calendar days forward, so 30 days after 1 November 2026 is 1 December 2026." },
+      { question: "How do I subtract days from a date?", answer: "Enter a negative number of days. Subtracting 1 day from 1 March 2026 gives 28 February 2026." },
+      { question: "Does the calculator handle leap years?", answer: "Yes. It follows the calendar, so 2 days after 28 February 2028 is 1 March 2028, while the same step in 2027 reaches 2 March." },
+      { question: "Does it skip weekends or holidays?", answer: "No. It counts every calendar day. Use the Business Days Calculator to count weekdays between two dates." },
+      { question: "What date is 100 days from 17 November 2026?", answer: "25 February 2027, counting every calendar day." }
+    ],
+    toolLinks: [{ label: "Date Add or Subtract Calculator", href: "/tools/date-add-subtract-calculator" }, { label: "Business Days Calculator", href: "/tools/business-days-calculator" }, { label: "Date Difference Calculator", href: "/tools/date-difference-calculator" }],
+    sources: [{ label: "Wikipedia: Leap year", url: "https://en.wikipedia.org/wiki/Leap_year" }]
+  },
+  {
+    slug: "bmr-calculator-guide",
+    title: "BMR Calculator: Mifflin–St Jeor Formula & Example",
+    description: "See how basal metabolic rate is estimated with the Mifflin–St Jeor equation, with a worked example, its limits and how BMR differs from daily calories.",
+    keyword: "bmr calculator mifflin st jeor formula",
+    updated: "2026-11-17",
+    readTime: "5 min read",
+    intro: "Basal metabolic rate (BMR) is an estimate of the energy your body uses at rest. The BMR Calculator applies the Mifflin–St Jeor equation to your weight, height, age and the sex input of the formula. This guide shows the arithmetic and explains what the number can and cannot tell you. It is an educational estimate, not medical advice.",
+    sections: [
+      { heading: "The Mifflin–St Jeor formula", paragraphs: ["BMR (kcal/day) = 10 × weight in kg + 6.25 × height in cm − 5 × age in years + 5 for the male equation, or − 161 for the female equation. The calculator asks you to choose male or female because the published equation has these two constants.", "The equation was published in 1990 from measurements of healthy adults, and it is a population-level estimate rather than a measurement of one person."] },
+      { heading: "Worked example", paragraphs: ["Take a 25-year-old who weighs 65 kg and is 170 cm tall. The shared part is 10 × 65 + 6.25 × 170 − 5 × 25 = 650 + 1,062.5 − 125 = 1,587.5. With the male constant (+5) the result is 1,592.5, which the calculator rounds to 1,593 kcal/day. With the female constant (−161) it is 1,426.5, shown as 1,427 kcal/day.", "Use the same units each time: kilograms for weight and centimetres for height. Entering pounds or inches gives a wrong result."] },
+      { heading: "BMR is not your daily calorie need", paragraphs: ["BMR covers resting energy only. Total daily energy expenditure also includes movement, exercise and digestion, so it is higher. A common rough step is to multiply BMR by an activity factor, for example 1.2 for very little exercise, which turns 1,593 into about 1,912 kcal/day. Treat any such figure as a starting point rather than a target."] },
+      { heading: "Limits of the estimate", paragraphs: ["Muscle mass, body composition, health conditions, pregnancy and medicines all change real energy use, and the equation ignores them. Do not use the result as a diet prescription. For weight, nutrition or medical decisions, speak to a doctor or registered dietitian."] }
+    ],
+    faqs: [
+      { question: "What is the BMR formula used by the calculator?", answer: "Mifflin–St Jeor: 10 × kg + 6.25 × cm − 5 × age, then +5 for the male equation or −161 for the female equation." },
+      { question: "What is the BMR for a 25-year-old male, 65 kg and 170 cm?", answer: "About 1,593 kcal/day. The same inputs with the female equation give about 1,427 kcal/day." },
+      { question: "Is BMR the same as the calories I should eat?", answer: "No. BMR is resting energy only. Daily needs are higher once activity is included, and the right target depends on your goals and health." },
+      { question: "Can I enter pounds or inches?", answer: "No. Convert to kilograms and centimetres first, otherwise the result will be wrong." },
+      { question: "How accurate is the estimate?", answer: "It is a population estimate. Body composition, health and medicines can make your actual resting energy differ." }
+    ],
+    toolLinks: [{ label: "BMR Calculator", href: "/tools/bmr-calculator" }, { label: "BMI Calculator", href: "/tools/bmi-calculator" }, { label: "Unit Converter", href: "/tools/unit-converter" }],
+    sources: [{ label: "Mifflin et al. (1990): A new predictive equation for resting energy expenditure", url: "https://pubmed.ncbi.nlm.nih.gov/2305711/" }]
+  },
+  {
+    slug: "url-extractor-guide",
+    title: "How to Extract URLs from Text or a Document",
+    description: "Pull every http and https link out of pasted text, remove duplicates and avoid trailing-punctuation mistakes. Includes examples and limits.",
+    keyword: "extract urls from text url extractor",
+    updated: "2026-11-17",
+    readTime: "4 min read",
+    intro: "Copying links one by one from a report, email or web page is slow and error-prone. The URL Extractor scans pasted text, finds web addresses that start with http:// or https:// and lists each unique link once. This guide explains what it finds, what it misses and what to check before using the list.",
+    sections: [
+      { heading: "How to extract links from text", paragraphs: ["Copy the text that contains the links, paste it into the URL Extractor and run it. The result is one URL per line with repeated links removed, or the message No URLs found when nothing matches.", "For example, pasting \"Visit https://example.com and https://example.org/help, then https://example.com again\" returns two unique addresses rather than three."] },
+      { heading: "What counts as a URL here", paragraphs: ["The extractor looks for text that begins with http:// or https:// and continues until it reaches a space, a quote or one of the characters < > ( ) [ ] { }. Addresses written without a scheme, such as www.example.com, and other schemes such as mailto: or ftp: are not matched."] },
+      { heading: "Check trailing punctuation and brackets", paragraphs: ["A link at the end of a sentence may keep its full stop or comma, so https://example.com/help. can appear with the dot attached. Remove it before opening or importing the link.", "Because round brackets end a match, an address that legitimately contains parentheses, such as some wiki page names, will be cut short. Compare the list with the source for important links."] },
+      { heading: "Before you use the list", paragraphs: ["A valid-looking address can still be broken, redirected or unsafe, and extraction does not visit the page. Open a sample of links, and do not paste confidential documents into an online tool. For email addresses and phone numbers, use the related extractors instead."] }
+    ],
+    faqs: [
+      { question: "How do I extract all URLs from text?", answer: "Paste the text into the URL Extractor and run it. It lists every http and https link once, one per line." },
+      { question: "Does the extractor remove duplicate links?", answer: "Yes. A link that appears several times is listed once." },
+      { question: "Why does a link include a full stop at the end?", answer: "The tool does not strip sentence punctuation. Delete the trailing dot or comma before using the link." },
+      { question: "Will it find links without http or https?", answer: "No. Addresses such as www.example.com without a scheme, and mailto: or ftp: links, are not matched." },
+      { question: "Does it check that the links work?", answer: "No. It only finds text that looks like a web address. Open the links to confirm they work." }
+    ],
+    toolLinks: [{ label: "URL Extractor", href: "/tools/url-extractor" }, { label: "Email Extractor", href: "/tools/email-extractor" }, { label: "URL Query Parser", href: "/tools/url-query-parser" }],
+    sources: [{ label: "RFC 3986: Uniform Resource Identifier (URI) Generic Syntax", url: "https://www.rfc-editor.org/rfc/rfc3986" }]
   }
 ];
 

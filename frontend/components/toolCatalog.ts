@@ -92,7 +92,7 @@ export const toolCatalog: ToolInfo[] = [
 {slug:"hourly-to-salary-calculator",name:"Hourly to Salary Calculator",category:"Business",description:"Convert an hourly wage into estimated weekly, monthly and annual earnings.",keywords:"hourly to salary calculator wage"},
 {slug:"percentage-of-number-calculator",name:"Percentage of a Number Calculator",category:"Math",description:"Calculate a percentage of any number and show the remaining value.",keywords:"percentage of a number calculator"},
 {slug:"gcd-lcm-calculator",name:"GCD and LCM Calculator",category:"Math",description:"Find the greatest common divisor and least common multiple of two integers.",keywords:"gcd lcm calculator"},
-{slug:"prime-number-checker",name:"Prime Number Checker",category:"Math",description:"Check whether an integer is prime and list its factors when it is composite.",keywords:"prime number checker"},
+{slug:"prime-number-checker",name:"Prime Number Checker",category:"Math",description:"Check whether a whole number is prime or not prime using a square-root divisibility test.",keywords:"prime number checker"},
 {slug:"random-number-generator",name:"Random Number Generator",category:"Math",description:"Generate cryptographically random integers within a chosen inclusive range.",keywords:"random number generator integer"},
 {slug:"dice-roller",name:"Dice Roller",category:"Math",description:"Roll a chosen number of standard six-sided dice and calculate the total.",keywords:"online dice roller"},
 {slug:"unix-timestamp-converter",name:"Unix Timestamp Converter",category:"Developer",description:"Convert Unix seconds or milliseconds into a readable UTC date and time.",keywords:"unix timestamp converter"},

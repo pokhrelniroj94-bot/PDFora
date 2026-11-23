@@ -86,7 +86,7 @@ const localizedPaths: ReadonlySet<string> = nepaliLocalizedRoutePaths;
  */
 
 export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
-  "/", "/tools", "/blog", "/about", "/privacy", "/terms", "/contact",
+  "/tools", "/blog", "/about", "/privacy", "/terms", "/contact",
   ...Object.keys(nepaliPdfRoutes).map((slug) => `/${slug}`),
   ...Object.keys(hindiToolSeo).map((slug) => `/tools/${slug}`),
   "/tools/resume-builder",

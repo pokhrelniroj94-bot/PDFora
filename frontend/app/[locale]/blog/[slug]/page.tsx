@@ -6,6 +6,7 @@ import { getNepaliLocalizedBlogPost, nepaliLocalizedBlogPosts } from "../../../.
 import { getLocalizedQrBlogPost } from "../../../../lib/localized-qr-blog-posts";
 import { buildLocaleMetadata } from "../../../../lib/i18n/metadata";
 import BlogToolCTA from "../../../../components/BlogToolCTA";
+import { HindiBlogArticle, getHindiGuide, hindiGuides } from "../../../../components/HindiBlogPages";
 
 const baseUrl = "https://pd-fora.vercel.app";
 
@@ -16,36 +17,36 @@ function toNepaliToolHref(href: string): string {
 }
 
 const nepaliSearchTitles: Record<string, string> = {
-    "qr-code-generator-guide": "QR Code कसरी बनाउने? Wi-Fi र URL",
-    "compress-pdf-under-200kb-nepal-online-forms": "PDF २००KB भित्र कसरी कम्प्रेस गर्ने?",
-    "nepali-date-converter-bs-to-ad-guide": "नेपाली मिति BS–AD रूपान्तरण",
-    "neb-gpa-calculator-nepal-guide": "NEB GPA क्याल्कुलेटर: ग्रेड र क्रेडिट",
-    "nepal-vat-calculator-13-percent-guide": "नेपालमा १३% VAT कसरी गणना गर्ने?",
-    "ropani-aana-paisa-daam-land-measurement-guide": "रोपनी–आना–पैसा–दाम जग्गा नाप",
-    "tola-to-gram-gold-weight-conversion-nepal": "तोला र ग्राम: सुनको तौल रूपान्तरण",
-    "nepali-number-to-words-lakh-crore-guide": "हजार, लाख र करोड: अङ्कलाई अक्षरमा",
-    "nepal-mobile-number-format-checker-guide": "नेपाल मोबाइल नम्बरको ढाँचा जाँच",
-    "nepal-public-holidays-2083-calendar-guide": "नेपालका सार्वजनिक बिदा २०८३",
-    "nepal-rastra-bank-daily-exchange-rates-guide": "NRB दैनिक विनिमय दर कसरी हेर्ने?",
-    "nepal-salary-income-tax-calculator-2083-84-guide": "नेपाल तलब कर २०८३/८४",
-    "nepse-cash-dividend-and-bonus-share-calculator-guide": "NEPSE नगद लाभांश र बोनस सेयर",
-    "nepse-market-news-and-ipo-updates": "NEPSE समाचार र IPO सूचना पुष्टि",
-    "nepse-share-buy-sell-profit-calculator-guide": "NEPSE सेयर नाफा र कारोबार लागत",
-    "preeti-to-unicode-nepali-font-converter-guide": "Preeti बाट Unicode नेपाली रूपान्तरण",
-    "nepali-calendar-bs-month-guide": "नेपाली पात्रो: महिना र बार",
-    "compress-pdf-to-under-1mb-online": "PDF लाई १MB भित्र कसरी कम्प्रेस गर्ने?",
-    "convert-jpg-images-to-one-pdf-on-phone": "मोबाइलमा JPG फोटोबाट PDF बनाउने",
-    "convert-pdf-pages-to-jpg-images": "PDF पृष्ठलाई JPG मा बदल्ने",
-    "convert-pdf-table-to-excel-spreadsheet": "PDF तालिकालाई Excel मा बदल्ने",
-    "convert-pdf-to-editable-word-document": "PDF लाई सम्पादनयोग्य Word मा बदल्ने",
-    "merge-multiple-pdf-files-into-one-document": "धेरै PDF एउटै फाइलमा जोड्ने",
-    "split-pdf-and-extract-selected-pages": "PDF पृष्ठ विभाजन र निकाल्ने",
-    "english-to-nepali-digits-converter-guide": "अङ्ग्रेजी र नेपाली अङ्क रूपान्तरण",
-    "loksewa-online-form-photo-resizer-guide": "लोकसेवा फारामका लागि फोटो रिसाइज",
-    "nea-electricity-bill-calculator-nepal-guide": "नेपाल बिजुली बिल कसरी जाँच्ने?",
-    "percentage-change-calculator-guide": "Percentage Change: प्रतिशत कसरी निकाल्ने?",
-    "tip-calculator-guide": "Tip Calculator: टिप र बिल कसरी बाँड्ने?",
-  };
+  "qr-code-generator-guide": "QR Code कसरी बनाउने? Wi-Fi र URL",
+  "compress-pdf-under-200kb-nepal-online-forms": "PDF २००KB भित्र कसरी कम्प्रेस गर्ने?",
+  "nepali-date-converter-bs-to-ad-guide": "नेपाली मिति BS–AD रूपान्तरण",
+  "neb-gpa-calculator-nepal-guide": "NEB GPA क्याल्कुलेटर: ग्रेड र क्रेडिट",
+  "nepal-vat-calculator-13-percent-guide": "नेपालमा १३% VAT कसरी गणना गर्ने?",
+  "ropani-aana-paisa-daam-land-measurement-guide": "रोपनी–आना–पैसा–दाम जग्गा नाप",
+  "tola-to-gram-gold-weight-conversion-nepal": "तोला र ग्राम: सुनको तौल रूपान्तरण",
+  "nepali-number-to-words-lakh-crore-guide": "हजार, लाख र करोड: अङ्कलाई अक्षरमा",
+  "nepal-mobile-number-format-checker-guide": "नेपाल मोबाइल नम्बरको ढाँचा जाँच",
+  "nepal-public-holidays-2083-calendar-guide": "नेपालका सार्वजनिक बिदा २०८३",
+  "nepal-rastra-bank-daily-exchange-rates-guide": "NRB विनिमय दर आज: USD, INR र EUR",
+  "nepal-salary-income-tax-calculator-2083-84-guide": "नेपाल तलब कर २०८३/८४",
+  "nepse-cash-dividend-and-bonus-share-calculator-guide": "NEPSE नगद लाभांश र बोनस सेयर",
+  "nepse-market-news-and-ipo-updates": "NEPSE समाचार र IPO सूचना पुष्टि",
+  "nepse-share-buy-sell-profit-calculator-guide": "NEPSE सेयर नाफा र कारोबार लागत",
+  "preeti-to-unicode-nepali-font-converter-guide": "Preeti बाट Unicode नेपाली रूपान्तरण",
+  "nepali-calendar-bs-month-guide": "नेपाली पात्रो: महिना र बार",
+  "compress-pdf-to-under-1mb-online": "PDF लाई १MB भित्र कसरी कम्प्रेस गर्ने?",
+  "convert-jpg-images-to-one-pdf-on-phone": "मोबाइलमा JPG फोटोबाट PDF बनाउने",
+  "convert-pdf-pages-to-jpg-images": "PDF पृष्ठलाई JPG मा बदल्ने",
+  "convert-pdf-table-to-excel-spreadsheet": "PDF तालिकालाई Excel मा बदल्ने",
+  "convert-pdf-to-editable-word-document": "PDF लाई सम्पादनयोग्य Word मा बदल्ने",
+  "merge-multiple-pdf-files-into-one-document": "धेरै PDF एउटै फाइलमा जोड्ने",
+  "split-pdf-and-extract-selected-pages": "PDF पृष्ठ विभाजन र निकाल्ने",
+  "english-to-nepali-digits-converter-guide": "अङ्ग्रेजी र नेपाली अङ्क रूपान्तरण",
+  "loksewa-online-form-photo-resizer-guide": "लोकसेवा फारामका लागि फोटो रिसाइज",
+  "nea-electricity-bill-calculator-nepal-guide": "नेपाल बिजुली बिल कसरी जाँच्ने?",
+  "percentage-change-calculator-guide": "Percentage Change: प्रतिशत कसरी निकाल्ने?",
+  "tip-calculator-guide": "Tip Calculator: १५%, १८% र २०% कसरी निकाल्ने?",
+};
 
 const qrLocales = locales.filter((locale) => locale !== "en" && locale !== "ne");
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -54,6 +55,7 @@ export function generateStaticParams() {
   return [
     ...nepaliLocalizedBlogPosts.map((post) => ({ locale: "ne", slug: post.slug })),
     ...qrLocales.map((locale) => ({ locale, slug: "qr-code-generator-guide" })),
+    ...hindiGuides.map((post) => ({ locale: "hi", slug: post.slug })),
   ];
 }
 
@@ -65,6 +67,7 @@ function getPost(locale: Locale, slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   if (!isLocale(rawLocale)) return { title: "Article not found", robots: { index: false, follow: true } };
+  if (rawLocale === "hi") { const guide = getHindiGuide(slug); return guide ? buildLocaleMetadata({ locale: "hi", path: `/blog/${slug}`, title: guide.title, description: guide.description }) : { title: "लेख उपलब्ध नहीं है", robots: { index: false, follow: true } }; }
   const post = getPost(rawLocale, slug);
   if (!post) return { title: "Article not found", robots: { index: false, follow: true } };
   const searchTitle = rawLocale === "ne" ? nepaliSearchTitles[post.slug] ?? post.title : post.title;
@@ -80,6 +83,7 @@ export default async function LocalizedBlogArticle({ params }: Props) {
   const { locale: rawLocale, slug } = await params;
   if (!isLocale(rawLocale)) notFound();
   const locale = rawLocale;
+  if (locale === "hi" && isRoutable(locale)) { const article = <HindiBlogArticle slug={slug} />; if (article) return article; notFound(); }
   const post = getPost(locale, slug);
   const independentlyPublishedQrGuide = locale !== "en" && slug === "qr-code-generator-guide" && Boolean(post);
   if ((!isRoutable(locale) && !independentlyPublishedQrGuide) || !post) notFound();

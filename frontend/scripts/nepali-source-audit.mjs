@@ -52,10 +52,9 @@ const dispatch = [
   "nepali-vat-calculator", "neb-gpa-calculator", "nepse-technical-analysis"
 ];
 const dispatchSet = new Set(dispatch);
-const indexable = new Set([
-  ...parse(read("lib/i18n/nepali-pdf-routes.ts"), /^\s*"([^"]+)":\s*\{/gm),
-  ...parse(read("lib/i18n/nepali-tool-routes.ts"), /"([a-z0-9-]+)"/g),
-]);
+const verificationSource = read("lib/tools/localized-verification.ts");
+const approvalBlock = verificationSource.match(/ne:\s*\[([^\]]*)\]/)?.[1] ?? "";
+const indexable = new Set(parse(approvalBlock, /"([a-z0-9-]+)"/g));
 const blog = read("lib/nepali-localized-blog-posts.ts");
 const blogSlugs = parse(blog, /^\s*slug:\s*"([^"]+)"/gm);
 const blogTitles = parse(blog, /^\s*title:\s*"([^"]+)"/gm);
@@ -154,7 +153,7 @@ Generated from current source by \`npm run i18n:nepali-audit\`.
 - Missing localized title in the catalog route source (PDF titles are sourced from the PDF name dictionary): ${missingTitles.length}.
 - Duplicate blog slugs/titles/descriptions: ${duplicate(blogSlugs).length}/${duplicate(blogTitles).length}/${duplicate(blogDescriptions).length}.
 - Nepali blog editorial records checked: ${blogEditorial.length}; articles without cited sources: ${missingBlogSources.length}; broken internal tool links: ${blogEditorial.reduce((sum, post) => sum + post.brokenInternalLinks.length, 0)}.
-- All 41 curated Nepali blog routes are configured indexable; ${missingBlogSources.length} articles still lack external citations and need factual/source follow-up where claims require independent evidence.
+- All 42 curated Nepali blog routes are configured indexable; ${missingBlogSources.length} articles still lack external citations and need factual/source follow-up where claims require independent evidence.
 - Explicitly indexable localized tool slugs: ${indexable.size}.
 - Native-speaker review certified: **No**.
 - Per-tool Nepali browser QA certified by this static report: **No**.

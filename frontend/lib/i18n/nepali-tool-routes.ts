@@ -1,4 +1,5 @@
 export const nepaliLocalizedUtilitySlugs = [
+  "qr-code-generator",
   "resume-builder",
   "xml-formatter-validator",
   "notes-to-pdf",
@@ -114,7 +115,6 @@ export const nepaliLocalizedUtilitySlugs = [
   "timezone-meeting-planner",
   "image-dpi-calculator",
   "video-bitrate-calculator",
-  "qr-code-generator",
   "markdown-table-generator",
 ] as const;
 

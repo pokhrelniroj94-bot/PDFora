@@ -1,0 +1,45 @@
+# Hindi completion status
+
+Hindi (`hi`) is **published** (owner-approved release, 22 Nov 2026): `status: "published"` in `lib/i18n/config.ts`, indexable via the verified registry in `lib/tools/localized-verification.ts` (175 tool routes, home, tools directory, About/Privacy/Terms/Contact, blog index and the 5 original Hindi guides), in the language selector, hreflang and sitemap. Publication was done with these gates **still open**: native Hindi proofreading, full functional QA of every Hindi tool (CI runs a 175-route smoke pass: lang, Devanagari title/body, self canonical, indexable robots, controls, 390px overflow, editable input), and mobile/a11y review. Hindi blog parity is limited to 5 guides (not the 37 Nepali articles); other blog links use the explicit fallback page. `/categories` is a Hindi page but is not indexed.
+
+## Implemented in source (preview-only; final QA still pending)
+- 49 PDF tool pages are wired to the existing PDFora/Niroj processing workspaces (`app/[locale]/[slug]/page.tsx`), Hindi names and guides, translated PDF UI messages, and translated field placeholders. Routes remain preview-only/noindex; runtime/build verification for this branch is still pending.
+- 13 math calculators: `lib/i18n/hindi-math-tools.ts`, `components/HindiMathUtilityWorkspace.tsx`, `scripts/hindi-math-tools.test.mjs`.
+- 7 business calculators: `lib/i18n/hindi-business-tools.ts`, `components/HindiBusinessCalculatorWorkspace.tsx`, `scripts/hindi-business-tools.test.mjs`.
+- Currency: Hindi money results use NPR with lakh/crore grouping, matching the Nepali tools. Use ₹ only for a tool with an explicit India context or currency choice.
+
+## Additional Hindi interfaces implemented in this batch (build/test pending)
+- 3 date/time calculator workspaces: age, date difference and time duration (`components/HindiDateTimeWorkspace.tsx`), wired into the Hindi localized tool route. Includes invalid-date checks, UTC calendar-day arithmetic, age in years/months/days, and overnight time-duration handling.
+- 4 finance calculator workspaces: loan EMI, compound interest/SIP, discount percentage and savings goal (`components/HindiFinanceCalculatorWorkspace.tsx`), wired into the Hindi localized tool route. Includes input bounds, NPR formatting and calculation assumptions.
+- 6 Nepal utility/calculator workspaces: VAT, land-area conversion, tola/gram conversion, Nepal mobile-number format checking, credit-weighted NEB GPA and an editable-assumptions NEPSE share profit/loss estimate (`components/HindiNepalToolsWorkspace.tsx`), wired into Hindi routes. These are local calculations/format checks, not live official data.
+- 20 text utility routes wired to a Hindi workspace (`components/HindiTextToolsWorkspace.tsx`): counters, case conversion, line/word operations, reading time, extractors, find/replace, palindrome and acronym tools. Browser-local processing; extractor outputs are pattern matches, not verified contact data.
+- 8 developer/encoding routes wired to a Hindi workspace (`components/HindiDeveloperToolsWorkspace.tsx`): JSON format/validation, Base64, URL encoding, SHA-256, line diff, Lorem Ipsum, HTML entities and URL slug generation.
+- Remaining 11 catalog routes now have Hindi visible workspaces: resume builder; BS–AD date converter; Nepali calendar; Loksewa photo resizer; Preeti-to-Unicode; manual-rate forex calculator; salary tax estimate with user-entered rate; electricity estimate with user-entered single rate; transparent 2083 holiday planner (does not invent official holiday dates); Nepali Unicode typing; and NEPSE market-news feed. Components: `components/HindiNepalCatalogTools.tsx` and `components/HindiResumeBuilder.tsx`.
+- Hindi homepage discovery, all 126 catalog tool names in the directory, category cards, 5 original Hindi guides, and localized About, Privacy, Terms and Contact pages are implemented. Legal and informational pages use self-canonical metadata and remain noindex while Hindi is unpublished.
+- Unique Hindi title/description metadata is present for all 125 catalog tools; 49 PDF tools retain Hindi names, guides and field copy. Coverage matrix records 175/175 visible interface routes, but all Hindi routes remain noindex and functional tests/native review remain unverified.
+
+## Pending publication gates
+- Run a clean production build, TypeScript, ESLint, Jest and all i18n/tool tests after the latest source changes.
+- Browser functional QA for all 175 tools, including PDF uploads/downloads, file-byte integrity, calculations, image workflows, copy/download controls and the NEPSE news endpoint.
+- Mobile responsive and accessibility checks, including keyboard navigation, labels, contrast, screen-reader output and RTL regression on existing locales.
+- Native Hindi editorial review of tool labels, instructions, errors, results, metadata, homepage, blog and legal pages. A Devanagari string check is not a native review.
+- Confirm every page has the intended self-canonical, unique title/description, no Hindi hreflang while unpublished, and is absent from sitemap/language switcher.
+- Only after all gates pass should Hindi be enabled in `lib/i18n/config.ts`, sitemap/hreflang be updated, and production deployed.
+
+## Verification
+- Passing: `npm run i18n:test` (Node, no install needed).
+- A prior Vercel preview build reached TypeScript and failed on Hindi route typing and an undefined number-word helper; those source issues were corrected. The latest Vercel deployment API request is blocked by the Free plan daily deployment API limit (100 deployments/24h), so a fresh build cannot be launched from this session yet. TypeScript, ESLint, Jest, Next build, browser/mobile QA and native review remain unverified after the latest changes.
+
+## Nepali typing reliability fix (2026-11-21)
+- Replaced the runtime jsDelivr import in `components/NepaliTypingTool.tsx` with a locally vendored formatter based on `nepalify@0.5.0` (ISC license and upstream attribution included).
+- Both Romanized and Traditional keyboard layouts are available without a network request.
+- Added a regression test to `scripts/i18n.test.mjs` for both layouts, Devanagari digits, punctuation preservation and invalid-layout handling.
+- CI and browser E2E verification for this commit are pending; do not mark the typing workflow verified until the 175-tool Chromium run passes.
+
+## Production-sync checkpoint (22 Nov 2026)
+
+- Nepali typing CI failure (`FAIL 168/175 nepali-unicode-typing`): root cause was the runtime jsDelivr/unpkg CDN dependency (button disabled until the remote module loaded) plus a double-escaped Devanagari regex in earlier E2E revisions (`/[\\u0900-\\u097F]/` matches ASCII digits/uppercase, never Devanagari). Fixed by a local, pinned, ISC-licensed engine at `frontend/lib/nepalify` (output-identical to upstream nepalify 0.5.0 maps, verified over 1184 characters in both layouts), synchronous conversion, exact-sentence E2E assertion (`nms/te mero deS nepal ho` -> `नमस्ते मेरो देश नेपाल हो`).
+- Nepalify is a keyboard layout, not phonetic transliteration: `namaste` -> `नामासते`; `nms/te` -> `नमस्ते`. Copy on EN/NE/HI pages says so. Phonetic input would need a different engine (not implemented).
+- Hindi typing tool now uses the same local engine; jsDelivr/unpkg removed from the CSP `script-src`; regression tests: `nepalify.test.mjs`, `nepalify-no-cdn.test.mjs`, `security-consent-regression.test.mjs`.
+- Master sync: cherry-picked master's popunder removal/CSP host removal, OG-image noindex header, NEPSE refresh fix (with lockfile/next 16.4.6). A full merge of master conflicts in 26 files (generated i18n docs, QR/routing/metadata); master's remaining commits (QR restore, two guide promotions) overlap work already on this branch and were NOT merged. Release order vs. `seo/e2e-input-fix-2026-11-16` is a maintainer decision.
+- Not verified here (no network/node_modules in this environment): tsc, ESLint, Jest, `next build`, Chromium E2E, 175-route Hindi browser QA. Native Hindi proofreading not done. Hindi remains unpublished/noindex. No deployment performed.

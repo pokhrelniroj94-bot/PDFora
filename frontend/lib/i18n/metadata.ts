@@ -27,21 +27,21 @@ export function fitLocaleDescription(value: string, max = 155): string {
  */
 export function buildLocaleMetadata({ locale, path, title, description }: LocaleMetadataInput): Metadata {
   const fittedDescription = fitLocaleDescription(description);
-  const isQrTool = path === "/tools/qr-code-generator" && locale !== "en" && isLocalizedToolIndexable(locale, "qr-code-generator");
-  const isQrGuide = path === "/blog/qr-code-generator-guide" && locale !== "en" && (locale === "ne" || Boolean(getLocalizedQrBlogPost(locale, "qr-code-generator-guide")));
-  const published = isPublished(locale) || isQrTool || isQrGuide;
+  // The QR Generator has complete, dedicated UI translations and is published independently.
+  const isLocalizedQrGuide = path === "/blog/qr-code-generator-guide" && locale !== "en" && Boolean(getLocalizedQrBlogPost(locale, "qr-code-generator-guide"));
+  const published = isPublished(locale) || (path === "/tools/qr-code-generator" && locale !== "en" && isLocalizedToolIndexable(locale, "qr-code-generator")) || isLocalizedQrGuide;
   const canonical = absoluteUrl(path, locale);
   const pdfSlug = path.replace(/^\/+/, "");
   const isPdfTool = Object.prototype.hasOwnProperty.call(nepaliPdfRoutes, pdfSlug);
   const catalogToolSlug = path.match(/^\/tools\/([^/]+)$/)?.[1];
   const isCatalogTool = Boolean(catalogToolSlug);
-  const indexable = (isQrTool || isQrGuide) || (published && (
+  const indexable = published && (
     isPdfTool
       ? locale === "en" || isLocalizedToolIndexable(locale, pdfSlug)
       : isCatalogTool
         ? locale === "en" || isLocalizedToolIndexable(locale, catalogToolSlug!)
-        : locale === "en" || isLocalizedPageIndexable(locale, path)
-  ));
+         : locale === "en" || isLocalizedPageIndexable(locale, path) || isLocalizedQrGuide
+  );
   const languages = indexable ? hreflangMap(path) : undefined;
   return {
     title,

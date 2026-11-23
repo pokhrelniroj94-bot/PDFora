@@ -7,8 +7,12 @@ import { localizedQrBlogPosts } from "../lib/localized-qr-blog-posts";
 import { nepaliLocalizedFinancialSlugs, nepaliLocalizedPublicInfoSlugs, nepaliLocalizedUtilitySlugs } from "../lib/i18n/nepali-tool-routes";
 import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../lib/tools/localized-verification";
 import { nepaliPdfRoutes } from "../lib/i18n/nepali-pdf-routes";
+import { hindiToolSeo } from "../lib/i18n/hindi-tool-seo";
+import { hindiBlogGuideSlugs } from "../lib/i18n/hindi-blog-slugs";
 
-const baseUrl = "https://pd-fora.vercel.app";
+import { PRODUCTION_ORIGIN } from "../lib/seo";
+
+const baseUrl = PRODUCTION_ORIGIN;
 const prioritySlugs = new Set<string>(["merge-pdf", "split-pdf", "compress-pdf", "pdf-to-word"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -44,6 +48,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...nepaliLocalizedPublicInfoSlugs,
   ].filter((slug) => isLocalizedToolIndexable("ne", slug));
 
+  // Hindi: default-deny, driven by the same verified registry as metadata and hreflang.
+  const hindiToolSlugs = [...Object.keys(nepaliPdfRoutes), ...Object.keys(hindiToolSeo), "qr-code-generator"]
+    .filter((slug, index, all) => all.indexOf(slug) === index && isLocalizedToolIndexable("hi", slug));
+  const hindiSitemapEntries: MetadataRoute.Sitemap = [
+    ...(isLocalizedPageIndexable("hi", "/") ? [{ url: `${baseUrl}/hi`, changeFrequency: "weekly" as const, priority: 0.8 }] : []),
+    ...(isLocalizedPageIndexable("hi", "/tools") ? [{ url: `${baseUrl}/hi/tools`, changeFrequency: "weekly" as const, priority: 0.75 }] : []),
+    ...hindiToolSlugs.map((slug) => ({
+      url: nepaliPdfRoutes[slug] ? `${baseUrl}/hi/${slug}` : `${baseUrl}/hi/tools/${slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+    })),
+    ...["privacy", "terms", "about", "contact"].filter((slug) => isLocalizedPageIndexable("hi", `/${slug}`)).map((slug) => ({
+      url: `${baseUrl}/hi/${slug}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.35,
+    })),
+    ...(isLocalizedPageIndexable("hi", "/blog") ? [{ url: `${baseUrl}/hi/blog`, changeFrequency: "weekly" as const, priority: 0.7 }] : []),
+    ...hindiBlogGuideSlugs.filter((slug) => isLocalizedPageIndexable("hi", `/blog/${slug}`)).map((slug) => ({
+      url: `${baseUrl}/hi/blog/${slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+    })),
+  ];
+
   return [
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
     { url: `${baseUrl}/how-to-use`, changeFrequency: "monthly", priority: 0.6 },
@@ -58,7 +86,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.65,
     })),
-    ...(["hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"] as const)
+    ...hindiSitemapEntries,
+    ...(["bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"] as const)
       .filter((locale) => isLocalizedToolIndexable(locale, "qr-code-generator"))
       .map((locale) => ({
         url: `${baseUrl}/${locale}/tools/qr-code-generator`,

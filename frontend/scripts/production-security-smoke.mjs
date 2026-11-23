@@ -43,20 +43,12 @@ const sitemapText = await sitemap.text();
 const sitemapUrls = [...sitemapText.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 check("sitemap is valid non-empty XML", sitemapText.includes("<urlset") && sitemapUrls.length > 0, "URLs=" + sitemapUrls.length);
 check("sitemap has no duplicate URLs", new Set(sitemapUrls).size === sitemapUrls.length, "URLs=" + sitemapUrls.length);
-// The only currently published non-Nepali routes are the independently reviewed
-// QR Generator and its dedicated translated guide. Other routes in these locales
-// must remain absent until their complete localized content is reviewed.
-const publishedQrLocales = new Set(["hi", "bn", "ur", "ar", "es", "fr", "de", "pt", "zh", "ja"]);
-const publishedLocalizedQrPaths = new Set(["/tools/qr-code-generator", "/blog/qr-code-generator-guide"]);
-const hasUnpublishedLocalizedRoute = sitemapUrls.some((url) => {
+const unpublishedLocalePath = /\/(bn|ur|ar|es|fr|de|pt|zh|ja)(\/|$)/;
+const approvedQrLocalePath = /^\/(bn|ur|ar|es|fr|de|pt|zh|ja)\/(?:tools\/qr-code-generator|blog\/qr-code-generator-guide)$/;
+check("sitemap excludes unpublished language routes except reviewed QR pages", !sitemapUrls.some((url) => {
   const pathname = new URL(url).pathname;
-  const match = pathname.match(/^\/(hi|bn|ur|ar|es|fr|de|pt|zh|ja)(\/.*)?$/);
-  if (!match) return false;
-  const locale = match[1];
-  const localizedPath = match[2] || "/";
-  return !publishedQrLocales.has(locale) || !publishedLocalizedQrPaths.has(localizedPath);
-});
-check("sitemap excludes unpublished language routes", !hasUnpublishedLocalizedRoute, "only independently reviewed QR Generator pages may be published outside English and Nepali");
+  return unpublishedLocalePath.test(pathname) && !approvedQrLocalePath.test(pathname);
+}), "unpublished locales must not be indexed; independently reviewed QR translations are allowed");
 
 const privacyText = (await privacy.text()).toLowerCase();
 check("privacy policy discloses advertising provider", privacyText.includes("adsterra") && privacyText.includes("advertising"));

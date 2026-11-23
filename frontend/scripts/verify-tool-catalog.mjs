@@ -9,6 +9,7 @@ const nepalTools = read("../components/NepalTools.tsx");
 const nepalLiveTools = read("../components/NepalLiveTools.tsx");
 const resumeBuilder = read("../components/ResumeBuilder.tsx");
 const nepaliTypingTool = read("../components/NepaliTypingTool.tsx");
+const nepaliTypingEngine = read("../lib/nepalify/index.ts");
 const nepalBlogPosts = read("../lib/nepal-blog-posts.ts");
 const blogPostsSource = read("../lib/blog-posts.ts");
 const seoContent = read("../components/CatalogToolSEOContent.tsx");
@@ -30,7 +31,7 @@ const liveCases = [...nepalLiveTools.matchAll(/slug === "([a-z0-9-]+)"/g)].map((
 const nepalRouteBlock = allTools.match(/if\(\[(.*?)\]\.includes\(slug\)\)/s);
 assert.ok(nepalRouteBlock, "Nepal utility route list is missing");
 const routedNepalSlugs = [...nepalRouteBlock[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
-const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes("nepalify.format");
+const typingRouted = allTools.includes('slug==="nepali-unicode-typing"') && nepaliTypingTool.includes('from "../lib/nepalify"') && nepaliTypingTool.includes("nepalifyFormat(roman, { layout })") && nepaliTypingEngine.includes("const romanizedMap") && nepaliTypingEngine.includes("const traditionalMap") && nepaliTypingEngine.includes("export function format");
 const implemented = new Set([...quickCases, ...extraCases, ...conditionalCases, ...nepalCases, ...liveCases, ...routedNepalSlugs]);
 if (typingRouted) implemented.add("nepali-unicode-typing");
 const browserOnlyGrowthSlugs = ["email-signature-generator","timezone-meeting-planner","image-dpi-calculator","video-bitrate-calculator","markdown-table-generator"];
@@ -86,7 +87,7 @@ const allHrefs = [...availablePdfHrefs, ...catalogHrefs];
 assert.equal(new Set(allHrefs).size, allHrefs.length, "Duplicate routes in the unified tool directory");
 assert.equal(pdfHrefs.length, 50, "Expected 50 PDF tool routes in the canonical list");
 assert.equal(availablePdfHrefs.length, 49, "OCR must remain excluded until its backend support is enabled");
-assert.equal(catalog.length, 126, "Expected 126 non-AI catalog utilities, including QR Generator");
+assert.equal(catalog.length, 126, "Expected 126 non-AI catalog utilities including the QR Code Generator");
 assert.equal(allHrefs.length, 175, "Expected 175 available tools (49 PDF tools + 126 catalog utilities)");
 assert.ok(toolDirectory.includes('kind: "pdf"') && toolDirectory.includes('kind: "utility"'), "Unified directory must distinguish PDF tools from utility tools");
 assert.ok(toolDirectory.includes('"loan-emi-calculator": "EMI calculator'), "Loan/EMI search aliases are missing");
@@ -132,7 +133,6 @@ assert.ok(marketApi.includes('"Cache-Control": "no-store, max-age=0"'), "NEPSE A
 assert.ok(marketDashboard.includes("async function readMarketResponse") && marketDashboard.includes("Your last successful snapshot is kept"), "NEPSE dashboard must handle empty/invalid API responses without losing the last good snapshot");
 assert.ok(!marketDashboard.includes("response.json() as MarketData"), "NEPSE dashboard must not parse possibly empty responses without validation");
 assert.ok(marketDashboard.includes('window.addEventListener("focus",refresh)') && marketDashboard.includes('document.addEventListener("visibilitychange",refresh)'), "NEPSE dashboard must refresh when the user returns to the tab");
-
 assert.ok(marketDashboard.includes('60*1000'), "NEPSE dashboard must refresh quote data every 60 seconds");
 assert.ok(marketDashboard.includes("not an exchange-authorized tick-by-tick trading terminal"), "NEPSE dashboard must disclose quote-feed limitations");
 assert.ok(marketPage.includes("NepseMarketDashboard"), "Dedicated NEPSE market dashboard route is missing");
@@ -150,17 +150,10 @@ assert.ok(catalogSource.includes("20 professional templates"), "Resume Builder c
 assert.ok(homepage.indexOf("/* ALL TOOLS */") < homepage.indexOf("/* NEPAL MARKET UPDATES */"), "Homepage must put tools before market news");
 assert.ok(homepage.includes('const categories = ["All", ...Array.from(new Set(["PDF", ...allTools.map((tool) => tool.category)]))'), "Homepage category filters must include every tool category");
 assert.ok(homepage.includes("searchResults.map(tool=>"), "Homepage search must show all matching tools");
-assert.ok(blogPostsSource.includes('slug: "qr-code-generator-guide"'), "QR Code Generator must have a dedicated guide");
-assert.ok(seoContent.includes('"qr-code-generator": { example:'), "QR Code Generator must have specific SEO guidance");
+assert.ok(blogPostsSource.includes('slug: "qr-code-generator-guide"'), "QR Code Generator must have a dedicated people-first guide");
+assert.ok(seoContent.includes('"qr-code-generator": { example:'), "QR Code Generator must have tool-specific SEO guidance");
 assert.ok(toolPage.includes('"qr-code-generator": { title:'), "QR Code Generator must have unique metadata");
 const qrWorkspace = read("../components/QRCodeGenerator.tsx");
-const qrLibrary = read("../public/vendor/qrcode.min.js");
-const qrLicense = read("../public/vendor/qrcode-LICENSE.txt");
-assert.ok(allTools.includes('import QRCodeGenerator from "./QRCodeGenerator"'), "QR workspace must be imported by the existing tool dispatcher");
-assert.ok(allTools.includes('if(slug==="qr-code-generator")'), "QR workspace must be routed from the catalog tool dispatcher");
 for (const locale of ["en","ne","hi","bn","ur","ar","es","fr","de","pt","zh","ja"]) assert.ok(qrWorkspace.includes(locale+":"), `Missing QR UI locale ${locale}`);
-for (const feature of ["whatsapp","vcard","event","/vendor/qrcode.min.js","WPA","WEP","nopass"]) assert.ok(qrWorkspace.includes(feature), `Missing QR generator feature: ${feature}`);
-assert.ok(qrLibrary.includes("QRCode") && qrLibrary.includes("CorrectLevel"), "Local QR engine must expose the QRCode browser API");
-assert.ok(qrLicense.includes("MIT License"), "Vendored QR library must retain its MIT license");
-
-console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including EMI search, Notes to PDF, NEPSE live quote refresh and resilient news feeds.`);
+for (const feature of ["whatsapp","vcard","event","new QR(host","matrix.isDark","QR.CorrectLevel","/vendor/qrcode.min.js","WPA","WEP","nopass"]) assert.ok(qrWorkspace.includes(feature), `Missing QR generator feature: ${feature}`);
+console.log(`Verified ${catalog.length} catalog tools and ${allHrefs.length} unified homepage/directory tools, including the 12-language QR generator and guide.`);

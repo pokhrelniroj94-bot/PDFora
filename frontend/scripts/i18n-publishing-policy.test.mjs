@@ -66,12 +66,21 @@ for (const locale of config.locales) {
     );
   }
 
-  for (const post of nepaliLocalizedBlogPosts) {
+  // Blog parity: Nepali must mirror every curated Nepali article. Hindi publishes only its five original
+  // Hindi guides (documented in docs/i18n/HINDI_COMPLETION_STATUS.md); every other blog link from a Hindi page
+  // goes through localizedOrFallbackPath (explicit fallback), never presented as translated Hindi.
+  const hindiGuideSlugs = ["percentage-calculator-guide", "average-calculator-guide", "bs-ad-date-conversion-guide", "preeti-unicode-conversion-guide", "loksewa-photo-size-guide"];
+  const expectedBlogSlugs = locale === "hi" ? hindiGuideSlugs : nepaliLocalizedBlogPosts.map((post) => post.slug);
+  for (const slug of expectedBlogSlugs) {
     assert.equal(
-      routing.hasLocalizedPage(`/blog/${post.slug}`, locale),
+      routing.hasLocalizedPage(`/blog/${slug}`, locale),
       true,
-      `${locale} is published but has no localized equivalent for blog/${post.slug}`,
+      `${locale} is published but has no localized equivalent for blog/${slug}`,
     );
+  }
+  if (locale === "hi") {
+    assert.equal(routing.hasLocalizedPage("/blog/savings-goal-calculator-guide", "hi"), false, "untranslated blog posts must not be claimed as Hindi");
+    assert.match(routing.localizedOrFallbackPath("/blog/savings-goal-calculator-guide", "hi"), /^\/hi\?from=/, "untranslated blog links use the explicit fallback page");
   }
 }
 

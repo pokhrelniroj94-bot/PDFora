@@ -27,7 +27,7 @@ export function ensureTypeStripping() {
  * adds ".ts" to extensionless relative imports, and imports them via Node type stripping.
  * Returns { [basename without extension]: module }.
  */
-async function loadTsFiles(relFiles) {
+export async function loadTsFiles(relFiles) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-ts-"));
   fs.writeFileSync(path.join(tmp, "package.json"), '{"type":"module"}');
   for (const rel of relFiles) {
@@ -59,6 +59,10 @@ export async function loadToolAdapter() {
     "lib/i18n/routing.ts",
     "lib/i18n/nepali-tool-routes.ts",
     "lib/i18n/nepali-pdf-routes.ts",
+    "lib/i18n/hindi-math-tools.ts",
+    "lib/i18n/hindi-business-tools.ts",
+    "lib/i18n/hindi-tool-seo.ts",
+    "lib/i18n/hindi-blog-slugs.ts",
     "lib/nepali-localized-blog-posts.ts",
     "lib/localized-qr-blog-posts.ts",
     "lib/i18n/metadata.ts",

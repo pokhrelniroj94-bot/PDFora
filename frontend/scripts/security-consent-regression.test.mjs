@@ -19,7 +19,7 @@ const checks = [
   ["CSP permits PDF worker blobs", /worker-src 'self' blob:/.test(config)],
   ["CSP permits PDF worker child contexts", /child-src 'self' blob:/.test(config)],
   ["CSP uses an explicit script host list", /script-src 'self' 'unsafe-inline'[^"]*https:\/\/www\.googletagmanager\.com/.test(config)],
-  ["CSP permits the pinned Nepali typing library", /script-src[^"]*https:\/\/unpkg\.com/.test(config)],
+  ["CSP does not allow runtime CDN script hosts (Nepali typing is bundled locally)", !/script-src[^"]*(unpkg\.com|cdn\.jsdelivr\.net)/.test(config)],
   ["CSP no longer permits retired popunder host", !/https:\/\/abscloud\.org/.test(config)],
   ["shared consent defaults to denied", /useState\(false\)/.test(consentHook)],
   ["shared consent requires explicit advertising true", /advertising === true/.test(consentHook)],

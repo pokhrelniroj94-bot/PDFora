@@ -39,7 +39,7 @@ The source-generated tool matrix in `docs/i18n/TOOL_LANGUAGE_COVERAGE_MATRIX.jso
 - The five earlier additions (`xml-formatter-validator`, `notes-to-pdf`, `html-tag-stripper`, `savings-goal-calculator`, `nepal-share-calculator`) remain present. The latest batch adds 18 more interfaces through the shared Nepali remaining-tools workspace; all 23 are still subject to individual functional QA.
 - 44 Nepali tools have targeted unit-test coverage recorded by the matrix, including seven newly tested developer/SEO logic helpers. The other tools are not individually functionally verified.
 - Native-language review is not independently recorded as complete for the 169 Nepali interfaces.
-- Only six Nepali PDF tools are in the explicit indexing allowlist. Localized catalog utilities remain excluded from indexing until their individual approval gates pass.
+- All **174 Nepali tool routes** (49 PDF + 125 catalog) are now indexable and included in sitemap/hreflang, based on localized workspaces, unique Nepali metadata and localized PDF instructions. Targeted tool-specific unit tests cover 44/174; remaining per-tool QA and full native-speaker review remain outstanding. Remove any route from the indexability registry if QA finds incomplete or inaccurate content.
 
 ### Other locales
 

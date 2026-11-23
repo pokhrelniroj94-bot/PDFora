@@ -8,7 +8,13 @@ import { PDFDocument, PDFName, PDFString, StandardFonts } from "pdf-lib";
 const baseUrl = process.env.E2E_BASE_URL || "http://127.0.0.1:3000";
 const chromePath = process.env.CHROME_BIN || "google-chrome";
 const reportPath = path.resolve(process.env.E2E_REPORT_PATH || "../docs/qa/BROWSER_E2E_175_REPORT.json");
-const localePrefix = process.env.E2E_LOCALE === "ne" ? "/ne" : "";
+const e2eLocale = ["ne", "hi"].includes(process.env.E2E_LOCALE || "") ? process.env.E2E_LOCALE : "";
+const localePrefix = e2eLocale ? "/" + e2eLocale : "";
+// The dedicated locale pass runs in every mode: Hindi when E2E_LOCALE=hi, otherwise the Nepali baseline.
+const passLocale = e2eLocale || "ne";
+const e2eLocaleName = passLocale === "hi" ? "Hindi" : "Nepali";
+const e2eLocaleTag = passLocale === "hi" ? "hi-IN" : "ne-NP";
+const passPrefix = "/" + passLocale;
 const timeoutMs = Number(process.env.E2E_TOOL_TIMEOUT_MS || 45000);
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pdfora-e2e-"));
 const downloadsDir = path.join(tempDir, "downloads");
@@ -334,8 +340,8 @@ async function runTool(tool, index) {
     row.heading = initial.heading;
     row.documentLanguage = initial.lang;
     row.hasNepaliScript = /[\u0900-\u097F]/u.test(initial.heading + " " + initial.body);
-    if (localePrefix && !/^ne(?:-|$)/i.test(initial.lang)) throw new Error("Nepali route document lang is not Nepali: " + initial.lang);
-    if (localePrefix && !row.hasNepaliScript) throw new Error("Nepali route has no Devanagari in its visible title/body.");
+    if (localePrefix && !new RegExp("^" + e2eLocale + "(?:-|$)", "i").test(initial.lang)) throw new Error(e2eLocaleName + " route document lang is not " + e2eLocale + ": " + initial.lang);
+    if (localePrefix && !row.hasNepaliScript) throw new Error(e2eLocaleName + " route has no Devanagari in its visible title/body.");
 
     // Exercise every tool at a narrow mobile viewport, then verify basic keyboard
     // reachability and accessible names before returning to the desktop viewport.
@@ -518,7 +524,7 @@ async function runTool(tool, index) {
         const qrStarted = Date.now();
         let qrPreview = null;
         while (Date.now() - qrStarted < 45000) {
-          qrPreview = await page.evaluate(`() => {
+          qrPreview = await page.evaluate(`(() => {
             const image = document.querySelector('img[alt="Generated QR code preview"]');
             const alert = document.querySelector('main [role="alert"]')?.innerText || "";
             return {
@@ -527,20 +533,20 @@ async function runTool(tool, index) {
               svg: [...document.querySelectorAll("main button")].some((button) => /download svg/i.test(button.innerText)),
               alert,
             };
-          }`);
-          if (qrPreview.image.startsWith("data:image/png;base64,")) break;
+          })()`);
+          if (typeof qrPreview?.image === "string" && qrPreview.image.startsWith("data:image/png;base64,")) break;
           if (qrPreview.alert) throw new Error("QR generator reported an error: " + qrPreview.alert);
           await delay(250);
         }
-        if (!qrPreview?.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg) {
+        if (!qrPreview || typeof qrPreview.image !== "string" || !qrPreview.image.startsWith("data:image/png;base64,") || !qrPreview.png || !qrPreview.svg) {
           throw new Error("QR generator did not create a PNG preview and PNG/SVG download actions within 45 seconds.");
         }
-        const downloadClicked = await page.evaluate(`() => {
+        const downloadClicked = await page.evaluate(`(() => {
           const button = [...document.querySelectorAll("main button")].find((item) => /download png/i.test(item.innerText));
           if (!button) return false;
           button.click();
           return true;
-        }`);
+        })()`);
         if (!downloadClicked) throw new Error("QR PNG download action was unavailable.");
         let qrFile = "";
         const qrDownloadStarted = Date.now();
@@ -671,6 +677,55 @@ async function runTool(tool, index) {
       row.status = validatedDownloads.length > 0 ? "PASS" : "PARTIAL";
     } else {
       if (!initial.heading) throw new Error("Catalog tool page is missing its main heading.");
+      if (tool.slug === "qr-code-generator") {
+        const qrInputSet = await setFieldByLabel(page, "Text or URL", "https://pd-fora.vercel.app/qr-e2e-check")
+          || await setFieldByLabel(page, "पाठ या URL", "https://pd-fora.vercel.app/qr-e2e-check")
+          || await setFieldByLabel(page, "पाठ वा URL", "https://pd-fora.vercel.app/qr-e2e-check");
+        if (!qrInputSet) throw new Error("QR Generator URL input was not found by its visible label.");
+        const generateButton = await page.evaluate(`(() => [...document.querySelectorAll("button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.innerText || "")()`);
+        if (!generateButton) throw new Error("QR Generator has no enabled generate action.");
+        await page.evaluate(`(() => [...document.querySelectorAll("button")].find((button) => /generate qr code|qr कोड बनाएँ|qr code बनाउनुहोस्/i.test(button.innerText) && !button.disabled)?.click())()`);
+        let preview = null;
+        const started = Date.now();
+        while (Date.now() - started < 20000) {
+          preview = await page.evaluate(`(() => {
+            const image = document.querySelector('img[alt="Generated QR code preview"]');
+            const src = image?.getAttribute("src") || image?.currentSrc || "";
+            return {
+              image: src,
+              imageFound: !!image,
+              png: [...document.querySelectorAll("button")].some((button) => /download png|png डाउनलोड/i.test(button.innerText)),
+              svg: [...document.querySelectorAll("button")].some((button) => /download svg|svg डाउनलोड/i.test(button.innerText)),
+              alert: [...document.querySelectorAll("[role=alert]")].map((node) => node.innerText.trim()).filter(Boolean).join(" | "),
+              buttons: [...document.querySelectorAll("button")].map((button) => button.innerText.trim()).filter(Boolean)
+            };
+          })()`);
+          if (typeof preview?.image === "string" && preview.image.startsWith("data:image/png;base64,") && preview.png && preview.svg) break;
+          if (preview.alert) throw new Error("QR Generator error: " + preview.alert);
+          await delay(200);
+        }
+        if (!preview || typeof preview.image !== "string" || !preview.image.startsWith("data:image/png;base64,") || !preview.png || !preview.svg) {
+          throw new Error("QR Generator output incomplete: " + JSON.stringify(preview));
+        }
+        const before = new Set(fs.readdirSync(downloadsDir).filter((name) => !name.endsWith(".crdownload")));
+        await page.evaluate(`(() => [...document.querySelectorAll("button")].find((button) => /download png|png डाउनलोड/i.test(button.innerText))?.click())()`);
+        let downloaded = "";
+        const downloadStarted = Date.now();
+        while (Date.now() - downloadStarted < 10000) {
+          downloaded = fs.readdirSync(downloadsDir).find((name) => !name.endsWith(".crdownload") && !before.has(name) && name.toLowerCase().endsWith(".png")) || "";
+          if (downloaded) break;
+          await delay(200);
+        }
+        if (!downloaded) throw new Error("QR PNG download did not complete.");
+        const file = await validateDownloadedFile(path.join(downloadsDir, downloaded));
+        row.checks.push("QR generated from a real URL, PNG/SVG download actions shown and PNG signature validated");
+        row.output = "QR preview generated; " + file.bytes + " byte PNG download validated";
+        row.outputVerified = true;
+        row.evidenceLevel = "qr-preview-and-png-download-verified";
+        row.downloadedFiles = [file];
+        row.status = "PASS";
+        return row;
+      }
       if (tool.slug === "nepal-electricity-bill-calculator") {
         const links = await page.evaluate('[...document.querySelectorAll("a[href]")].map((a) => a.href)');
         if (!links.some((href) => href.includes("erc.gov.np/electricity-calculator"))) throw new Error("Official ERC calculator handoff link is missing.");
@@ -712,38 +767,18 @@ async function runTool(tool, index) {
         return row;
       }
       if (tool.slug === "nepali-unicode-typing") {
+        await setFirstTextArea(page, "nms/te mero deS nepal ho");
         const readyStarted = Date.now();
         let readyButton = false;
-        while (Date.now() - readyStarted < 45000 && !readyButton) {
-          readyButton = await page.evaluate(`() => {
-            const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText));
-            return Boolean(button && !button.disabled);
-          }`);
+        while (Date.now() - readyStarted < 25000 && !readyButton) {
+          readyButton = await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode|नेपाली unicode मा बदल्नुहोस्/i.test(item.innerText)); return Boolean(button && !button.disabled); })()`);
           if (!readyButton) await delay(250);
         }
-        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 45 seconds.");
-        // Nepalify's "romanized" mode is a keyboard-layout mapping, not free-form
-        // phonetic spell-checking. Use its documented deterministic fixture.
-        await page.evaluate(`() => {
-          const fields = [...document.querySelectorAll("main textarea")];
-          const input = fields[0];
-          const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, "value")?.set;
-          setter?.call(input, "kiMkr/tv/ybimuX/");
-          input?.dispatchEvent(new Event("input", { bubbles: true }));
-          input?.dispatchEvent(new Event("change", { bubbles: true }));
-        }`);
-        await delay(150);
-        await page.evaluate(`() => {
-          const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode/i.test(item.innerText) && !item.disabled);
-          button?.click();
-        }`);
-        let output = "";
-        const outputStarted = Date.now();
-        while (Date.now() - outputStarted < 3000 && !/[\\u0900-\\u097F]/.test(output)) {
-          output = await page.evaluate(`() => document.querySelectorAll("main textarea")[1]?.value || ""`);
-          if (!/[\\u0900-\\u097F]/.test(output)) await delay(100);
-        }
-        if (!/[\\u0900-\\u097F]/.test(output)) throw new Error("Nepali typing conversion did not produce Devanagari output from the documented romanized-layout fixture.");
+        if (!readyButton) throw new Error("Nepali typing engine did not become ready within 25 seconds.");
+        await page.evaluate(`(() => { const button = [...document.querySelectorAll("main button")].find((item) => /convert to nepali unicode|नेपाली unicode मा बदल्नुहोस्/i.test(item.innerText) && !item.disabled); button?.click(); })()`);
+        await delay(300);
+        const output = await page.evaluate(`(() => [...document.querySelectorAll("main textarea")].map((item) => item.value).join(" "))()`);
+        if (!output.includes("नमस्ते मेरो देश नेपाल हो")) throw new Error("Nepali typing conversion did not produce the expected Devanagari sentence.");
       }
       if (tool.slug === "word-character-counter" || tool.slug === "case-converter") {
         await setFirstTextArea(page, "PDFora tools make everyday tasks faster.");
@@ -755,8 +790,6 @@ async function runTool(tool, index) {
         await setFirstTextArea(page, "PDFora E2E Notes\\nThis is a browser-generated test document.");
       } else if (tool.slug === "jwt-decoder") {
         await setFieldByLabel(page, "JWT token", "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJlMmUiLCJyb2xlIjoidGVzdGVyIn0.");
-      } else if (tool.slug === "nepali-unicode-typing") {
-        await setFirstTextArea(page, "Namaste Nepal");
       } else if (tool.slug === "preeti-unicode-converter") {
         await setFirstTextArea(page, "k\\/Llt");
       } else if (tool.slug === "nepali-date-converter") {
@@ -1449,7 +1482,7 @@ try {
   const nepaliRoutes = allTools.map((tool) => ({
     slug: tool.slug,
     kind: tool.kind,
-    url: tool.kind === "pdf" ? "/ne/" + tool.slug : "/ne/tools/" + tool.slug,
+    url: tool.kind === "pdf" ? passPrefix + "/" + tool.slug : passPrefix + "/tools/" + tool.slug,
   }));
   for (const route of nepaliRoutes) {
     let page;
@@ -1478,24 +1511,32 @@ try {
           fileInputs: [...(main?.querySelectorAll('input[type="file"]') || [])].filter(visible).length,
           overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 2,
           main: !!main,
+          canonical: document.querySelector('link[rel="canonical"]')?.getAttribute("href") || "",
+          robots: document.querySelector('meta[name="robots"]')?.getAttribute("content") || "",
         };
       })()`);
       if (!state.main || !state.body || /Application error|Internal Server Error|404: This page could not be found/i.test(state.body)) {
-        throw new Error("Nepali route did not render a usable page.");
+        throw new Error(e2eLocaleName + " route did not render a usable page.");
       }
-      if (state.lang !== "ne") throw new Error("Expected document language ne; received " + state.lang);
-      if (!state.heading) throw new Error("Nepali tool heading is missing.");
-      if (!/[\u0900-\u097F]/.test(state.body)) throw new Error("Nepali Devanagari interface text is missing.");
+      if (state.lang !== passLocale) throw new Error("Expected document language " + passLocale + "; received " + state.lang);
+      if (!state.heading) throw new Error(e2eLocaleName + " tool heading is missing.");
+      if (passLocale === "hi") {
+        if (!/[\u0900-\u097F]/.test(state.title)) throw new Error("Hindi page title is not Hindi: " + state.title);
+        if (!state.canonical.endsWith(route.url)) throw new Error("Hindi canonical is not self-referencing: " + state.canonical + " for " + route.url);
+        if (/noindex/i.test(state.robots)) throw new Error("Published Hindi route is noindex: " + route.url);
+        if (/NaN|Infinity|undefined/.test(state.body)) throw new Error("Hindi page body contains NaN/Infinity/undefined.");
+      }
+      if (!/[\u0900-\u097F]/.test(state.body)) throw new Error(e2eLocaleName + " Devanagari interface text is missing.");
       if (/toolEnglishNotice|viewEnglishTool|currently available in English/i.test(state.body)) {
         throw new Error("English-only fallback notice appeared on a route registered as Nepali-localized.");
       }
-      if (!state.controls) throw new Error("Nepali tool has no visible interactive controls.");
-      if (route.kind === "pdf" && !state.fileInputs) throw new Error("Nepali PDF tool has no visible file input.");
-      if (state.overflow) throw new Error("Nepali tool has horizontal overflow at 390px mobile width.");
+      if (!state.controls) throw new Error(e2eLocaleName + " tool has no visible interactive controls.");
+      if (route.kind === "pdf" && !state.fileInputs) throw new Error(e2eLocaleName + " PDF tool has no visible file input.");
+      if (state.overflow) throw new Error(e2eLocaleName + " tool has horizontal overflow at 390px mobile width.");
       row.heading = state.heading;
       row.controls = state.controls;
       row.editableControls = state.editable;
-      row.checks.push("lang=ne, Devanagari content, heading, visible controls, mobile viewport and no horizontal overflow");
+      row.checks.push("lang=" + passLocale + ", Devanagari content, heading, visible controls, mobile viewport and no horizontal overflow");
       if (route.kind === "pdf") row.checks.push("PDF upload control visible");
 
       // Exercise one editable control without submitting data. This checks hydration and
@@ -1528,7 +1569,7 @@ try {
       if (page) await page.close();
     }
     nepaliRouteResults.push(row);
-    console.log((row.status === "PASS" ? "PASS " : "FAIL ") + "ne-NP " +
+    console.log((row.status === "PASS" ? "PASS " : "FAIL ") + e2eLocaleTag + " " +
       (nepaliRouteResults.length) + "/175 " + route.slug + " — " +
       (row.errors[0] || row.checks.join(", ")));
   }
@@ -1540,7 +1581,7 @@ const report = {
   generatedAt: new Date().toISOString(),
   sourceCommit: process.env.GITHUB_SHA || "unknown",
   baseUrl,
-  localeMode: localePrefix ? "ne-route-smoke" : "en-functional",
+  localeMode: localePrefix ? e2eLocale + "-route-smoke" : "en-functional",
   scope: requestedToolFilters.length ? requestedToolFilters : "all-175-tools",
   expected: requestedToolFilters.length
     ? { pdf: tools.filter((tool) => tool.kind === "pdf").length, catalog: tools.filter((tool) => tool.kind === "catalog").length, total: tools.length }
@@ -1548,7 +1589,7 @@ const report = {
   methodology: {
     browser: "Headless Chromium via Chrome DevTools Protocol; Node.js 22 native WebSocket",
     pdf: "Open each selected PDF route, attach valid fixtures and inspect processing/output. The Merge PDF assertion uploads two distinct PDFs, moves the first below the second, then verifies the downloaded merged page dimensions match that selected order.",
-    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A dedicated second pass visits all 175 registered Nepali tool routes, checks lang=ne, Devanagari content, heading, controls, PDF upload presence, 390px mobile overflow and a non-submitting editable-control interaction. This does not certify each tool’s validation, result oracle or downloaded file in Nepali; those require individual localized functional assertions. When E2E_LOCALE=ne, the English-language functional oracle suite is skipped and only the dedicated 175-route Nepali smoke pass runs, avoiding false failures from English expected-output strings.",
+    catalog: "Open each catalog route, inspect the rendered workspace, execute its primary action when present and inspect output/error state. PASS requires an explicit expected-output assertion; un-oracled output or route-only checks are PARTIAL. A dedicated second pass visits all 175 registered Nepali tool routes, checks lang=ne, Devanagari content, heading, controls, PDF upload presence, 390px mobile overflow and a non-submitting editable-control interaction. This does not certify each tool’s validation, result oracle or downloaded file in Nepali; those require individual localized functional assertions. When E2E_LOCALE=ne, the English-language functional oracle suite is skipped and only the dedicated 174-route Nepali smoke pass runs, avoiding false failures from English expected-output strings.",
     limitations: "This is a browser route and workflow smoke suite, not complete functional certification for all 175 non-AI tools. PASS is reserved for explicit expected-output assertions; PARTIAL means a route rendered or a processing state/output appeared without a full expected-output oracle. The suite checks 390px horizontal overflow, Tab focus, document language/landmarks/headings and visible control names. It does not replace visual comparison, exhaustive input boundaries, WCAG contrast measurements or manual screen-reader testing.",
   },
   counts: {
@@ -1569,5 +1610,14 @@ const report = {
 };
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + "\n");
-console.log("BROWSER E2E SUMMARY " + JSON.stringify(report.counts));
+const summaryRows = localePrefix ? nepaliRouteResults : results;
+const summary = localePrefix
+  ? {
+      locale: e2eLocaleTag,
+      total: summaryRows.length,
+      pass: summaryRows.filter((row) => row.status === "PASS").length,
+      fail: summaryRows.filter((row) => row.status === "FAIL").length,
+    }
+  : report.counts;
+console.log("BROWSER E2E SUMMARY " + JSON.stringify(summary));
 if (browserFailures) process.exitCode = 1;

@@ -4,22 +4,22 @@ Generated from current source by `npm run i18n:nepali-audit`.
 
 ## Inventory
 
-- Canonical unique tools: **174** (49 PDF + 125 catalog).
-- Nepali tool routes: **174** (49 PDF + 125 catalog).
-- Additional localized non-tool routes: **50** (10 fixed pages + 40 blog articles).
-- Total Nepali route equivalents: **224**. This is a route inventory, not an indexability count.
-- Registered Nepali blog articles: **40**.
+- Canonical unique tools: **175** (49 PDF + 126 catalog).
+- Nepali tool routes: **175** (49 PDF + 126 catalog).
+- Additional localized non-tool routes: **52** (10 fixed pages + 42 blog articles).
+- Total Nepali route equivalents: **227**. This is a route inventory, not an indexability count.
+- Registered Nepali blog articles: **42**.
 - Tool slugs referenced by current targeted Nepali unit-test files: **82**.
 
 ## Gate results
 
 - Missing Nepali routes: 0.
-- Missing dedicated workspace dispatch (PDF tools use the PDF workspace): 0.
+- Missing dedicated workspace dispatch (PDF tools use the PDF workspace): 1.
 - Missing localized title in the catalog route source (PDF titles are sourced from the PDF name dictionary): 0.
 - Duplicate blog slugs/titles/descriptions: 0/0/0.
-- Nepali blog editorial records checked: 40; articles without cited sources: 0; broken internal tool links: 0.
-- All 40 curated Nepali blog routes are configured indexable; 0 articles still lack external citations and need factual/source follow-up where claims require independent evidence.
-- Explicitly indexable localized tool slugs: 174.
+- Nepali blog editorial records checked: 42; articles without cited sources: 0; broken internal tool links: 0.
+- All 42 curated Nepali blog routes are configured indexable; 0 articles still lack external citations and need factual/source follow-up where claims require independent evidence.
+- Explicitly indexable localized tool slugs: 0.
 - Native-speaker review certified: **No**.
 - Per-tool Nepali browser QA certified by this static report: **No**.
 

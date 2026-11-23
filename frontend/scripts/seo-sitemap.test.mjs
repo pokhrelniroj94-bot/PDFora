@@ -42,9 +42,9 @@ assert.equal(homepageSource.split("Free Online PDF, Finance & Text Tools | PDFor
 assert.ok(!homepageSource.includes("Free Online PDF Tools – Merge, Split & Compress | PDFora"), "Legacy PDF-only social titles must be removed");
 assert.ok(homepageSource.includes("Explore free online PDF, finance, math, text, developer, image, SEO and Nepal tools."), "Homepage description must identify the wider tool categories");
 assert.ok(englishToolPageSource.includes('description: "Check a meta description character count and preview its Google snippet.'), "The meta-description utility snippet must explicitly match its primary query");
-assert.ok(englishToolPageSource.includes('title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
-assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate Tip: 15%, 18% & 20% Examples"'), "The tip guide title must match the 486-impression Search Console query");
-assert.ok(englishEditorialBlogSource.includes('description: "Calculate the tip, add it to the bill and split the total per person.'), "The tip guide description must lead with the actual calculator benefit");
+assert.ok(englishToolPageSource.includes('title: "Free Tip Calculator – 15%, 18%, 20% & Bill Split | PDFora"'), "The tip calculator snippet must lead with the first-page query and clarify free use");
+assert.ok(englishEditorialBlogSource.includes('title: "How to Calculate a Tip: 15%, 18%, 20% + Quick Math"'), "The tip guide title must match the 1,021-impression Search Console query");
+assert.ok(englishEditorialBlogSource.includes('description: "Use the tip formula, quick mental-math shortcuts and 15%, 18% or 20% examples.'), "The tip guide description must lead with the actual calculator benefit");
 assert.ok(englishEditorialBlogSource.includes('heading: "How to calculate tip: formula and worked examples"'), "The tip guide must answer the primary query in its first instructional section");
 assert.ok(catalogToolSeoSource.includes("SEO Title Checker: Review Your Page Title Before Publishing"), "The SEO title checker content must state its primary search intent");
 assert.ok(catalogToolSeoSource.includes("Use this SEO title checker with the exact HTML title"), "The SEO title checker intro must match its primary query");
@@ -62,7 +62,7 @@ assert.ok(englishToolPageSource.includes("It estimates periodic interest when yo
 assert.ok(catalogToolSeoSource.includes("compounds monthly or weekly"), "Savings Goal guidance must disclose periodic compounding");
 assert.ok(nepaliLocalizedBlogSource.includes("मासिक वा साप्ताहिक अवधिअनुसार चक्रवृद्धि"), "Nepali savings guide must disclose periodic compounding");
 const nepaliPostMatches = [...nepaliLocalizedBlogSource.matchAll(/slug: "([^"]+)"/g)];
-assert.equal(nepaliPostMatches.length, 41, "Reviewed Nepali blog inventory must include the restored QR guide");
+assert.equal(nepaliPostMatches.length, 42, "Reviewed Nepali blog inventory must remain complete");
 for (let index = 0; index < nepaliPostMatches.length; index += 1) {
   const start = nepaliPostMatches[index].index;
   const end = nepaliPostMatches[index + 1]?.index ?? nepaliLocalizedBlogSource.length;
@@ -90,10 +90,11 @@ const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedPublicInfoSlugs,
 ];
 
+const approvedPdfSlugs = pdfRoutes;
 assert.deepEqual(
   [...approvedNepali].sort(),
-  [...pdfRoutes, ...toolRoutes].sort(),
-  "The Nepali indexing registry must include every localized PDF and catalog tool route",
+  [...toolRoutes, ...approvedPdfSlugs].sort(),
+  "All localized Nepali catalog and PDF tools may be indexable",
 );
 
 const reportedNepaliLongTitleSlugs = [
@@ -120,7 +121,7 @@ assert.ok(nepaliBlogPageSource.includes('locale="ne"'), "Nepali blog CTAs must r
 assert.ok(nepaliBlogPageSource.includes("function toNepaliToolHref"), "Nepali blog links must normalize both catalog and legacy PDF routes");
 assert.ok(nepaliBlogPageSource.includes("href={toNepaliToolHref(tool.href)}"), "Related-tool links must use localized route normalization");
 assert.ok(blogToolCtaSource.includes('locale === "ne"'), "Shared blog CTA must support Nepali copy");
-for (const [slug, title] of [["percentage-change-calculator-guide", "Percentage Change: प्रतिशत कसरी निकाल्ने?"], ["tip-calculator-guide", "Tip Calculator: टिप र बिल कसरी बाँड्ने?"]]) {
+for (const [slug, title] of [["percentage-change-calculator-guide", "Percentage Change: प्रतिशत कसरी निकाल्ने?"], ["tip-calculator-guide", "Tip Calculator: १५%, १८% र २०% कसरी निकाल्ने?"]]) {
   assert.ok(title.length <= 60, `${slug} search title must stay within 60 characters`);
   assert.ok(nepaliBlogPageSource.includes(`"${slug}": "${title}"`), `${slug} must retain its reviewed concise search title`);
 }
@@ -142,6 +143,17 @@ for (const slug of ["case-converter", "prime-number-checker", "json-to-yaml", "d
   assert.match(catalogToolSeoSource, new RegExp('"' + slug + '"'), `${slug} must have page-specific Search Console recovery guidance`);
 }
 assert.match(catalogToolSeoSource, /toolSpecificSteps\[tool\.slug\]/, "Reviewed tools must render their own instructions instead of repeated generic steps");
+const highIntentTaskGuides = [
+  ["reading-time-calculator", "Set the reading speed in words per minute (WPM).", "Set the speaking speed separately"],
+  ["savings-goal-calculator", "Use the same currency", "Choose monthly or weekly deposits"],
+  ["percentage-change-calculator", "Choose Calculate percentage change", "For a reverse calculation"],
+];
+for (const [slug, ...phrases] of highIntentTaskGuides) {
+  assert.ok(catalogToolSeoSource.includes('"'+slug+'": ['), `${slug} must have a dedicated task-specific instruction list`);
+  for (const phrase of phrases) {
+    assert.ok(catalogToolSeoSource.includes(phrase), `${slug} task guidance must include: ${phrase}`);
+  }
+}
 assert.doesNotMatch(pdfToExcelLayoutSource, /<ToolSEOContent/, "PDF to Excel layout must not append a duplicate generic guide");
 assert.match(pdfToExcelPageSource, /showSeoContent=\{false\}/, "PDF to Excel must disable the nested generic guide because its page contains a bespoke XLSX guide");
 assert.match(niroj77ToolSource, /showSeoContent\?: boolean/, "Niroj77Tool must allow bespoke pages to suppress its generic SEO block");
@@ -154,7 +166,10 @@ assert.match(sitemapSource, /nepaliPdfRoutes\[slug\]/, "PDF URLs must retain the
 assert.doesNotMatch(sitemapSource, /\.\.\.\["merge-pdf",\s*"split-pdf",\s*"compress-pdf",\s*"rotate-pdf",\s*"pdf-to-word",\s*"pdf-to-jpg"\]/, "Do not maintain a second hard-coded localized PDF allowlist");
 assert.match(sitemapSource, /!isGeneratedGuide\(post\.slug\)/, "Unreviewed generated PDF and catalogue guides must stay out of the sitemap");
 assert.ok(!["opengraph-image", "favicon.ico", "_next/", "/api/"].some((value) => sitemapSource.includes(value)), "Sitemap must contain canonical content pages only, never OG images, static assets or API endpoints");
-assert.ok(!["/hi", "/id", "/pt", "/es", "/fr", "/de", "/bn", "/ur", "/ar", "/zh", "/ja"].some((value) => sitemapSource.includes(value)), "Unpublished locale routes must not be included in the sitemap");
+assert.ok(!["/id", "/pt", "/es", "/fr", "/de", "/bn", "/ur", "/ar", "/zh", "/ja"].some((value) => sitemapSource.includes(value)), "Unpublished locale routes must not be included in the sitemap");
+assert.match(sitemapSource, /isLocalizedToolIndexable\("hi", slug\)/, "Hindi sitemap URLs must come from the verified Hindi registry");
+assert.match(sitemapSource, /isLocalizedPageIndexable\("hi", `\/blog\/\$\{slug\}`\)/, "Hindi guides enter the sitemap only through the verified registry");
+assert.match(sitemapSource, /isLocalizedToolIndexable\(locale, "qr-code-generator"\)/, "Only explicitly verified QR locale routes may enter the additional locale sitemap entries");
 assert.ok(nextConfigSource.includes("Object.keys(nepaliPdfRoutes).map"), "Legacy /ne/tools/<pdf-slug> paths must redirect using the canonical Nepali PDF route registry");
 assert.ok(nextConfigSource.includes("source: " + String.fromCharCode(96) + "/ne/tools/${slug}" + String.fromCharCode(96)), "Legacy localized PDF route redirect must match /ne/tools/<slug>");
 assert.ok(nextConfigSource.includes("destination: " + String.fromCharCode(96) + "/ne/${slug}" + String.fromCharCode(96)), "Legacy localized PDF route redirect must point to /ne/<slug>");
@@ -164,7 +179,7 @@ assert.match(robotsSource, /disallow:\s*\["\/api\/"\]/, "API endpoints should st
 assert.match(layoutSource, /inLanguage:\s*htmlLang/, "Structured data must reflect the server-rendered page language");
 assert.match(layoutSource, /title:\s*\{\s*default:[^,]+,\s*template:\s*"%s"\s*\}/, "Page titles must not append a second PDFora brand suffix");
 assert.ok((read("app/tools/page.tsx").match(/description:\s*"([^"]+)"/)?.[1]?.length ?? 999) <= 160, "Tool directory meta description must stay within 160 characters");
-assert.match(layoutSource, /publisher:\s*\{\s*"@id":\s*"https:\/\/pd-fora\.vercel\.app\/#organization"\s*\}/, "WebSite structured data should reference the canonical publisher entity");
+assert.ok(layoutSource.includes('publisher: { "@id": \`${PRODUCTION_ORIGIN}/#organization\` }') || layoutSource.includes('publisher: { "@id": "https://pd-fora.vercel.app/#organization" }'), "WebSite structured data should reference the canonical publisher entity");
 assert.doesNotMatch(layoutSource, /SoftwareApplication/, "SoftwareApplication schema must not be injected into unrelated blog, legal and utility pages");
 assert.match(homepageSource, /"@type":\s*"SoftwareApplication"/, "SoftwareApplication schema should appear on the homepage that describes the application");
 assert.doesNotMatch(robotsSource, /disallow:[^\]]*noindex|disallow:[^\]]*\/ne\//, "Do not block crawlers from reading noindex directives on localized pages");
@@ -183,6 +198,34 @@ assert.ok(blogToolCtaSource.includes("blog_slug") && blogToolCtaSource.includes(
 assert.ok(toolViewAnalyticsSource.includes('"tool_view"'), "All catalog tool categories must report consented tool views");
 assert.ok(toolViewAnalyticsSource.includes("tool_slug") && toolViewAnalyticsSource.includes("tool_category"), "Tool view events must identify the tool and category");
 assert.ok(niroj77ToolSource.includes('"tool_start"') && niroj77ToolSource.includes('"tool_complete"') && niroj77ToolSource.includes('"tool_error"'), "PDF tool processing must measure starts, completions and errors");
+const splitGuideSource = blogPostsSource.slice(blogPostsSource.indexOf('slug: "split-pdf-and-extract-selected-pages"'));
+for (const phrase of ["1-5;6-10", "1,3,8", "Split PDF", "Extract Pages", "does not perform OCR"]) {
+  assert.ok(splitGuideSource.includes(phrase), `Split PDF guide must explain the verified workflow: ${phrase}`);
+}
+assert.ok(splitGuideSource.includes("updated: \"2026-11-17\""), "Split PDF guide must record its substantive editorial update");
+const nepaliSplitGuideSource = nepaliLocalizedBlogSource.slice(nepaliLocalizedBlogSource.indexOf('slug: "split-pdf-and-extract-selected-pages"'));
+for (const phrase of ["1-5;6-10", "1,3,8", "Split PDF", "Extract Pages", "OCR हुँदैन"]) {
+  assert.ok(nepaliSplitGuideSource.includes(phrase), `Nepali Split PDF guide must explain the verified workflow: ${phrase}`);
+}
+assert.ok(nepaliSplitGuideSource.includes("updated: \"2026-11-17\""), "Nepali Split PDF guide must record its substantive editorial update");
+
+const tipGuideSource = blogPostsSource.slice(blogPostsSource.indexOf('slug: "tip-calculator-guide"'));
+assert.ok(tipGuideSource.includes("Quick mental-math shortcuts"), "Tip guide must add useful mental-math instructions for its high-impression query");
+assert.ok(tipGuideSource.includes("$12.00 − $1.20 = $10.80"), "Tip guide must include a verified 18% worked example");
+assert.ok(tipGuideSource.includes("updated: \"2026-11-17\""), "Tip guide must record its substantive update");
+const nepaliTipGuideSource = nepaliLocalizedBlogSource.slice(nepaliLocalizedBlogSource.indexOf('slug: "tip-calculator-guide"'));
+assert.ok(nepaliTipGuideSource.includes("18%, 20% र 25% टिप छिटो निकाल्ने तरिका"), "Nepali tip guide must include the localized mental-math guidance");
+assert.ok(nepaliTipGuideSource.includes("12.00 − 1.20 = 10.80"), "Nepali tip guide must include the localized worked example");
+const nrbGuideSource = englishNepalBlogSource.slice(englishNepalBlogSource.indexOf('slug: "nepal-rastra-bank-daily-exchange-rates-guide"'));
+const nrbTitle = nrbGuideSource.match(/title: "([^"]+)"/)?.[1] ?? "";
+const nrbDescription = nrbGuideSource.match(/description: "([^"]+)"/)?.[1] ?? "";
+assert.ok(nrbTitle.length <= 60, "NRB guide title must remain concise for Google title links");
+assert.ok(nrbDescription.length <= 155, "NRB guide description must fit the reviewed snippet limit");
+assert.ok(nrbGuideSource.includes("foreign amount × buying rate ÷ unit"), "NRB guide must explain the buying-rate conversion formula");
+assert.ok(nrbGuideSource.includes("NPR amount × unit ÷ selling rate"), "NRB guide must explain the selling-rate conversion formula");
+const nepaliNrbGuideSource = nepaliLocalizedBlogSource.slice(nepaliLocalizedBlogSource.indexOf('slug: "nepal-rastra-bank-daily-exchange-rates-guide"'));
+assert.ok(nepaliNrbGuideSource.includes("विदेशी रकम × खरिद दर ÷ प्रकाशित एकाइ"), "Nepali NRB guide must include the correct buying-rate formula");
+assert.ok(nepaliNrbGuideSource.includes("NPR रकम × प्रकाशित एकाइ ÷ बिक्री दर"), "Nepali NRB guide must include the correct selling-rate formula");
 const priorityEditorialGuides = ["savings-goal-calculator-guide", "reading-time-calculator-guide", "tip-calculator-guide", "percentage-change-calculator-guide", "meta-title-checker-guide"];
 for (const slug of priorityEditorialGuides) {
   assert.ok(blogPostsSource.includes(`slug: "${slug}"`), `${slug} must have individually reviewed editorial content`);
@@ -239,15 +282,11 @@ for (const slug of approvedNepali) {
   assert.equal(alternates?.["x-default"], `https://pd-fora.vercel.app${localeFreePath}`);
 }
 for (const slug of toolRoutes) {
-  assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), true, `${slug} is included in the published Nepali registry`);
-}
-
-
-for (const slug of toolRoutes) {
+  assert.equal(modules["localized-verification"].isLocalizedToolIndexable("ne", slug), true, `${slug} has a dedicated Nepali workspace`);
   const request = modules["localized-route"].resolveLocalizedToolRequest("ne", slug);
   assert.equal(request.status, "ok", `Expected registered Nepali route: ${slug}`);
   const metadata = modules["localized-metadata"].buildLocalizedToolMetadata("ne", request.implementation.entry);
-  assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} must be indexable after Nepali route QA`);
+  assert.deepEqual(metadata.robots, { index: true, follow: true }, `${slug} should be indexable after localization`);
   assert.equal(metadata.alternates?.languages?.ne, `https://pd-fora.vercel.app/ne/tools/${slug}`);
   assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app/tools/${slug}`);
 }
@@ -266,16 +305,15 @@ for (const slug of approvedNepali) {
   assert.equal(metadata.alternates?.languages?.en, `https://pd-fora.vercel.app${pathName}`);
 }
 
-// Historical localized PDF URLs remain valid and indexable when their Nepali routes are registered.
+// All 49 localized PDF routes are resolvable and included in the indexability registry.
 for (const slug of ["pdf-information", "pdf-to-png", "pdf-to-html", "pdf-to-excel", "add-blank-pages"]) {
   assert.ok(pdfRoutes.includes(slug), `Historical localized URL /ne/${slug} must resolve to its registered page, not a 404`);
-  assert.equal(isLocalizedToolIndexable("ne", slug), true, `/ne/${slug} is in the published Nepali PDF registry`);
+  assert.equal(isLocalizedToolIndexable("ne", slug), true, `/ne/${slug} has a localized guide and workspace and should be indexable`);
 }
 assert.match(nepaliPdfPageSource, /Object\.keys\(nepaliPdfRoutes\)/, "All registered Nepali PDF routes must be generated so legacy URLs resolve");
 assert.ok(nextConfigSource.includes('{ source: "/nepali-date-converter", destination: "/tools/nepali-date-converter", permanent: true }'), "Legacy /nepali-date-converter must permanently redirect to the catalog canonical URL");
 assert.doesNotMatch(legacyToolSlugsSource, /"nepali-date-converter"/, "Redirect-only Nepali date URL must not enter the canonical legacy PDF route registry");
 assert.match(sitemapSource, /\$\{baseUrl\}\/tools\/\$\{tool\.slug\}/, "The canonical catalog URL must remain in the sitemap");
-assert.match(sitemapSource, /isLocalizedToolIndexable\(locale, "qr-code-generator"\)/, "Only explicitly verified QR locale routes may enter the additional locale sitemap entries");
 assert.ok(robotsSource.includes('disallow: ["/api/"]'), "The 27 API endpoints in the Search Console robots export must remain intentionally blocked");
 
 console.log(`SEO sitemap/indexing regression checks passed: ${approvedNepali.length} Nepali tool URLs are indexable; ${toolRoutes.length} catalog and ${pdfRoutes.length} PDF tools are included.`);

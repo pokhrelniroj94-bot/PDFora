@@ -28,6 +28,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
     "qr-code-generator": { title: "Free QR Code Generator – Wi-Fi, URL, vCard & More", description: "Create custom QR codes for URLs, text, Wi-Fi, email, phone, SMS, WhatsApp, contacts and events. Customize colour, size and error correction; download PNG or SVG." },
+    "markup-calculator": { title: "Markup Calculator – Selling Price & Markup % | PDFora", description: "Calculate selling price, markup amount and markup percentage from product cost. Check each input before using the result in a quote." },
+    "hourly-to-salary-calculator": { title: "Hourly to Salary Calculator – Annual & Monthly Pay | PDFora", description: "Convert an hourly wage into estimated weekly, monthly and annual pay. Adjust hours and working weeks to match your schedule." },
     "email-signature-generator": { title: "Free Email Signature Generator – HTML Signature | PDFora", description: "Create a professional HTML email signature with contact details, brand colour and a live preview. Copy or download it without uploading personal details." },
     "timezone-meeting-planner": { title: "Time Zone Meeting Planner – World Clock Converter", description: "Convert a meeting date and time across New York, London, Kathmandu, Tokyo and other time zones. Compare local times with daylight-saving support." },
     "image-dpi-calculator": { title: "Image DPI & PPI Calculator – Print Resolution", description: "Calculate image PPI from pixel dimensions and print size. Find the pixel dimensions needed for 72, 150, 300 or 600 PPI printing." },
@@ -57,7 +59,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "profit-margin-calculator": { title: "Profit Margin Calculator – Gross Profit & Margin %", description: "Calculate gross profit and profit margin from product cost and selling price. Understand margin percentage before other expenses." },
     "break-even-calculator": { title: "Break-Even Calculator – Units and Revenue", description: "Calculate break-even sales quantity and revenue using fixed costs, selling price and variable cost per unit." },
     "percentage-change-calculator": { title: "Percentage Change Calculator – Increase or Decrease", description: "Enter original and new values to calculate a percentage increase or decrease. See the change, formula and worked result instantly." },
-    "tip-calculator": { title: "Tip Calculator Free – 15%, 18%, 20% & Split Bill", description: "Calculate a restaurant tip, bill total and per-person share. Choose a custom rate or compare 15%, 18% and 20%; check included service charges." },
+    "tip-calculator": { title: "Free Tip Calculator – 15%, 18%, 20% & Bill Split | PDFora", description: "Calculate a tip, final bill total and per-person share. Compare 15%, 18% and 20%, set a custom rate and check for service charges." },
     "age-calculator": { title: "Age Calculator – Exact Years, Months and Days", description: "Calculate age in completed years, months and days from a date of birth and a selected reference date." },
     "fraction-calculator": { title: "Fraction Calculator – Add, Subtract, Multiply & Divide", description: "Add, subtract, multiply or divide two fractions. View the simplified fraction and decimal result." },
 

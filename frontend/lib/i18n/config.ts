@@ -38,7 +38,7 @@ export const localeInfo: Record<Locale, LocaleInfo> = {
   // selected editorial routes. Other destinations use an explicit Nepali fallback rather
   // than pretending that the entire English site has been translated.
   ne: { code: "ne", englishName: "Nepali", nativeName: "नेपाली", dir: "ltr", htmlLang: "ne", hreflang: "ne", intl: "ne-NP", status: "published" },
-  hi: { code: "hi", englishName: "Hindi", nativeName: "हिन्दी", dir: "ltr", htmlLang: "hi", hreflang: "hi", intl: "hi-IN", status: "unpublished" },
+  hi: { code: "hi", englishName: "Hindi", nativeName: "हिन्दी", dir: "ltr", htmlLang: "hi", hreflang: "hi", intl: "hi-IN", status: "published" },
   bn: { code: "bn", englishName: "Bengali", nativeName: "বাংলা", dir: "ltr", htmlLang: "bn", hreflang: "bn", intl: "bn-BD", status: "unpublished" },
   ur: { code: "ur", englishName: "Urdu", nativeName: "اردو", dir: "rtl", htmlLang: "ur", hreflang: "ur", intl: "ur-PK", status: "unpublished" },
   es: { code: "es", englishName: "Spanish", nativeName: "Español", dir: "ltr", htmlLang: "es", hreflang: "es", intl: "es-ES", status: "unpublished" },

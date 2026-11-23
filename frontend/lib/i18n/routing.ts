@@ -101,6 +101,8 @@ const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set();
 export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean {
   if (locale === defaultLocale) return true;
   const normalized = normalizePath(path);
+  // The Hindi homepage is not reviewed; keep it out of the preview language switcher.
+  if (locale === "hi" && normalized === "/") return false;
   if (normalized === "/tools/qr-code-generator" && isLocalizedToolIndexable(locale, "qr-code-generator")) return true;
   if (normalized === "/blog/qr-code-generator-guide" && locale !== "en" && (locale === "ne" || Boolean(getLocalizedQrBlogPost(locale, "qr-code-generator-guide")))) return true;
   // QR Generator is a reviewed, independently translated exception; do not publish

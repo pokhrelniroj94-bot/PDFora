@@ -1,5 +1,5 @@
 import { hindiBlogGuideSlugs } from "./hindi-blog-slugs";
-import { SITE_URL, defaultLocale, isLocale, isPublished, localeInfo, locales, type Locale } from "./config";
+import { SITE_URL, defaultLocale, isLocale, isPublished, isRoutable, localeInfo, locales, type Locale } from "./config";
 import {
   nepaliLocalizedFinancialSlugs,
   nepaliLocalizedPublicInfoSlugs,

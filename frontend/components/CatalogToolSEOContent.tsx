@@ -96,6 +96,85 @@ export default function CatalogToolSEOContent({
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-6 sm:p-8"><h2 className="text-xl font-black text-slate-950">Zero values and fair comparisons</h2><p className="mt-3 leading-8 text-slate-700">The standard formula cannot calculate a percentage change from an original value of zero because division by zero is undefined. Compare values with matching units, periods and scope, and show the original and new amounts when context matters.</p></section>
     </div></article>;
   }
+  if (tool.slug === "text-to-binary") {
+    return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Developer utility</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Convert text to binary (UTF-8 bytes)</h2>
+        <p className="mt-3 leading-8 text-slate-700">A text to binary converter shows the bytes that represent your characters. This tool encodes text as UTF-8 and writes each byte as eight binary digits (bits), so you can inspect exactly how a string is stored or transmitted. Everything runs in your browser; the text is not uploaded.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to convert text to binary</h2>
+        <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
+          <li>Type or paste your text into the input field.</li>
+          <li>Run the tool to encode the text as UTF-8 bytes.</li>
+          <li>Read the output: each group of eight 0s and 1s is one byte.</li>
+          <li>Copy the result, or change the text and compare the output.</li>
+        </ol>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Text to binary examples</h2>
+        <p className="mt-3 leading-8 text-slate-700">The letter A is the byte 01000001. The text Hi is 01001000 01101001, because H is 01001000 and i is 01101001. Basic English letters, digits and punctuation use one byte each.</p>
+        <p className="mt-3 leading-8 text-slate-700">Characters outside basic ASCII use more than one byte in UTF-8. The Nepali letter न (U+0928) is three bytes: 11100000 10100100 10101000. That is why the binary for Nepali, Hindi, emoji or accented text is longer than the number of characters suggests.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Why UTF-8 matters</h2>
+        <p className="mt-3 leading-8 text-slate-700">Binary output depends on the character encoding. UTF-8 is the common encoding on the web and is compatible with ASCII for the first 128 characters. Other encodings such as UTF-16 produce different bytes for the same text, so a result from this tool will not match them.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">
+          <div><h3 className="font-bold text-slate-900">How do I convert text to binary?</h3><p className="mt-1 leading-7 text-slate-700">Encode each character as bytes, then write each byte as eight binary digits. For A, the byte is 65 in decimal, which is 01000001 in binary.</p></div>
+          <div><h3 className="font-bold text-slate-900">Why is the binary for Nepali text longer?</h3><p className="mt-1 leading-7 text-slate-700">Devanagari characters use three bytes each in UTF-8, so each character produces 24 bits instead of 8.</p></div>
+          <div><h3 className="font-bold text-slate-900">Is this the same as ASCII binary?</h3><p className="mt-1 leading-7 text-slate-700">For basic English letters, digits and punctuation, yes. For other characters this tool uses multi-byte UTF-8, which ASCII cannot represent.</p></div>
+          <div><h3 className="font-bold text-slate-900">Is my text sent to a server?</h3><p className="mt-1 leading-7 text-slate-700">No. The conversion runs in your browser.</p></div>
+        </div>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Related tools</h2>
+        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
+      </section>
+    </div></article>;
+  }
+  if (tool.slug === "password-strength-checker") {
+    return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <p className="text-xs font-bold uppercase tracking-widest text-teal-700">Security utility</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Check password length and character variety</h2>
+        <p className="mt-3 leading-8 text-slate-700">This checker gives a quick, local estimate of a password using its length and character variety. It is a rough guide, not proof of security: it cannot know whether a password has appeared in a data breach or is reused on another site. For that reason, test a sample password with a similar pattern rather than an account password you actually use.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">How to use the password strength checker</h2>
+        <ol className="mt-4 list-decimal space-y-3 pl-5 leading-8 text-slate-700">
+          <li>Enter a sample password in the field.</li>
+          <li>Review the criteria met out of 5: 12 or more characters, an uppercase letter, a lowercase letter, a number and a symbol.</li>
+          <li>Lengthen the sample and compare how the assessment changes.</li>
+          <li>Create the real password with a password manager and use a different one for every account.</li>
+        </ol>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">What makes a password stronger</h2>
+        <p className="mt-3 leading-8 text-slate-700">Length and unpredictability matter most. A long passphrase made of several unrelated words is usually harder to guess than a short password with predictable substitutions such as @ for a. Avoid names, birthdays, keyboard patterns and words that appear in your public profiles.</p>
+        <p className="mt-3 leading-8 text-slate-700">Never reuse a password. If one site is breached, attackers try the same password on other services. A password manager lets you use a long, random, unique password for each account without memorising them.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Limits of any strength score</h2>
+        <p className="mt-3 leading-8 text-slate-700">A strength score is a heuristic. It does not check breach databases, does not know how a website stores passwords, and cannot protect against phishing. Turn on two-factor authentication where it is available.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
+        <div className="mt-4 space-y-4">
+          <div><h3 className="font-bold text-slate-900">Is a longer password always better?</h3><p className="mt-1 leading-7 text-slate-700">Generally yes, if it is also unique and not built from a predictable pattern. Length increases the number of guesses an attacker needs.</p></div>
+          <div><h3 className="font-bold text-slate-900">Should I type my real password here?</h3><p className="mt-1 leading-7 text-slate-700">Safer practice is to test a sample with the same style instead of a password you use for an account.</p></div>
+          <div><h3 className="font-bold text-slate-900">Does a strong rating mean my account is safe?</h3><p className="mt-1 leading-7 text-slate-700">No. A rating cannot detect reuse, breaches or phishing. Use unique passwords and two-factor authentication.</p></div>
+        </div>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Related tools</h2>
+        <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
+      </section>
+    </div></article>;
+  }
   if (tool.slug === "prime-number-checker") {
     return <article className="mx-auto max-w-4xl px-4 pb-14 sm:px-6"><div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">

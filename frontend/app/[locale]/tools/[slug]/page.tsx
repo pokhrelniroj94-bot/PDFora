@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import NepaliToolExplainer from "../../../../components/NepaliToolExplainer";
+import { nepaliToolExplainers } from "../../../../lib/i18n/nepali-tool-explainers";
 import { notFound } from "next/navigation";
 import ToolWorkspace from "../../../../components/AllTools";
 import QRCodeGenerator from "../../../../components/QRCodeGenerator";
@@ -487,7 +489,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  * remains a separate quality dimension and is not inferred from route or browser smoke tests.
  * No English JSON-LD is attached to localized URLs.
  */
-export default async function LocalizedToolPage({ params }: Props) {
+async function LocalizedToolPageBody({ params }: Props) {
   const { locale, slug } = await params;
   const request = resolveLocalizedToolRequest(locale, slug);
   if (request.status !== "ok") notFound();
@@ -699,6 +701,16 @@ export default async function LocalizedToolPage({ params }: Props) {
       <div lang="en" dir="ltr">
         <ToolWorkspace slug={toolSlug} />
       </div>
+    </>
+  );
+}
+
+export default async function LocalizedToolPage(props: Props) {
+  const { locale, slug } = await props.params;
+  return (
+    <>
+      {await LocalizedToolPageBody(props)}
+      {locale === "ne" && nepaliToolExplainers[slug] ? <NepaliToolExplainer slug={slug} /> : null}
     </>
   );
 }

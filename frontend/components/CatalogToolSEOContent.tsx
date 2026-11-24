@@ -123,16 +123,23 @@ export default function CatalogToolSEOContent({
         <p className="mt-3 leading-8 text-slate-700">For example, to test 29, check possible divisors 2, 3, 4 and 5. None divides 29 evenly, so 29 is prime. For 35, the divisor 5 gives 35 = 5 × 7, so 35 is composite.</p>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <h2 className="text-xl font-black text-slate-950">Prime numbers from 1 to 100</h2>
+        <p className="mt-3 leading-8 text-slate-700">There are 25 prime numbers below 100: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89 and 97. For example, 97 is prime, while 91 is composite because 91 = 7 × 13 and 87 is composite because 87 = 3 × 29. Enter any of these values above to compare the result with the list.</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Frequently asked questions</h2>
         <div className="mt-4 space-y-4">
           <div><h3 className="font-bold text-slate-900">Is 1 a prime number?</h3><p className="mt-1 leading-7 text-slate-700">No. A prime number has exactly two distinct positive factors. The number 1 has only one positive factor: itself.</p></div>
           <div><h3 className="font-bold text-slate-900">Is 2 the only even prime number?</h3><p className="mt-1 leading-7 text-slate-700">Yes. Every even integer greater than 2 is divisible by 2 and therefore has more than two positive factors.</p></div>
           <div><h3 className="font-bold text-slate-900">How can I check a large number for primality?</h3><p className="mt-1 leading-7 text-slate-700">For a basic divisibility test, checking possible factors up to the square root is sufficient. Very large integers may require specialised primality algorithms.</p></div>
+          <div><h3 className="font-bold text-slate-900">Is 97 a prime number?</h3><p className="mt-1 leading-7 text-slate-700">Yes. The square root of 97 is about 9.85, and 97 is not divisible by 2, 3, 5 or 7, so its only positive factors are 1 and 97.</p></div>
+          <div><h3 className="font-bold text-slate-900">How many prime numbers are there between 1 and 100?</h3><p className="mt-1 leading-7 text-slate-700">There are 25, starting with 2, 3, 5, 7 and ending with 89 and 97.</p></div>
           <div><h3 className="font-bold text-slate-900">What is the difference between prime and composite?</h3><p className="mt-1 leading-7 text-slate-700">A prime integer greater than 1 has exactly two positive factors. A composite integer greater than 1 has more than two.</p></div>
         </div>
       </section>
       <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
         <h2 className="text-xl font-black text-slate-950">Related maths tools</h2>
+        <p className="mt-2 leading-7 text-slate-700">For the square-root method with worked examples, read <Link href="/blog/prime-number-checker-guide" className="font-semibold text-teal-800 underline">how to check whether any number is prime</Link>.</p>
         <div className="mt-4 flex flex-wrap gap-3">{related.map((item) => <Link key={item.slug} href={`/tools/${item.slug}`} className="rounded-lg border border-teal-200 px-3 py-2 text-sm font-semibold text-teal-800 hover:bg-teal-50">{item.name}</Link>)}</div>
       </section>
     </div></article>;

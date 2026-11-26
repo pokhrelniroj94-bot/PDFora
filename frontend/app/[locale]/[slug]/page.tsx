@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import PDForaTool from "../../../components/PDForaTool";
 import Niroj77Tool from "../../../components/Niroj77Tool";
 import ToolGuide from "../../../components/ToolGuide";
-import { isLocale, isRoutable, type Locale } from "../../../lib/i18n/config";
+import { isLocale, isRoutable, SITE_URL, type Locale } from "../../../lib/i18n/config";
 import { nepaliToolGuides } from "../../../lib/i18n/tool-guides-ne";
 import { nepaliToolNames } from "../../../lib/i18n/pdf-tool-names-ne";
 import { hindiToolGuides } from "../../../lib/i18n/tool-guides-hi";
@@ -13,6 +13,8 @@ import { buildLocaleMetadata } from "../../../lib/i18n/metadata";
 import NepseMarketDashboard from "../../../components/NepseMarketDashboard";
 import ResumeBuilder from "../../../components/ResumeBuilder";
 import NepaliStaticPage from "../../../components/NepaliStaticPage";
+import KundaliTool from "../../../components/KundaliTool";
+import GunaMilanTool from "../../../components/GunaMilanTool";
 import HindiStaticPage from "../../../components/HindiStaticPage";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
@@ -34,7 +36,7 @@ function getPdfLocaleCopy(locale: string): PdfLocaleCopy | undefined {
 }
 
 export function generateStaticParams() {
-  const nepali = [...Object.keys(nepaliPdfRoutes), "market", "resume-builder", "privacy", "terms", "about", "contact"].map((slug) => ({ locale: "ne", slug }));
+  const nepali = [...Object.keys(nepaliPdfRoutes), "market", "resume-builder", "nepali-guna-milan", "nepali-janma-kundali", "privacy", "terms", "about", "contact"].map((slug) => ({ locale: "ne", slug }));
   const hindi = isRoutable("hi") ? [...Object.keys(nepaliPdfRoutes), "about", "privacy", "terms", "contact"].map((slug) => ({ locale: "hi", slug })) : [];
   return [...nepali, ...hindi];
 }
@@ -56,6 +58,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: "नेपाली रिजुमे बिल्डर तथा CV टेम्प्लेट | PDFora",
       description: "२० व्यावसायिक टेम्प्लेट, प्रत्यक्ष A4 पूर्वावलोकन र PDF निर्यातसहित नेपाली रिजुमे तथा CV बनाउनुहोस्।",
     });
+  }
+  if (locale === "ne" && slug === "nepali-guna-milan") {
+    const title = "३६ गुण मिलान क्याल्कुलेटर – परम्परागत अष्टकूट | PDFora";
+    const description = "दुवै व्यक्तिको जन्ममिति, स्थानीय समय र जन्मस्थानबाट परम्परागत ३६ गुण अष्टकूट मिलान हेर्नुहोस्। गणना ब्राउजरमै हुन्छ।";
+    return { title, description, alternates: { canonical: `${SITE_URL}/ne/nepali-guna-milan` }, robots: { index: true, follow: true }, openGraph: { type: "website", title, description, url: `${SITE_URL}/ne/nepali-guna-milan`, siteName: "PDFora" } };
+  }
+  if (locale === "ne" && slug === "nepali-janma-kundali") {
+    const title = "नेपाली जन्मकुण्डली – वैदिक जन्म चार्ट र दशा | PDFora";
+    const description = "जन्ममिति, सही स्थानीय समय र जन्मस्थानबाट लग्न, राशि, नक्षत्र, D1 र D9 जन्मकुण्डली बनाउनुहोस्। विवरण ब्राउजरमै गणना हुन्छ।";
+    return { title, description, alternates: { canonical: `${SITE_URL}/ne/nepali-janma-kundali` }, robots: { index: true, follow: true }, openGraph: { type: "website", title, description, url: `${SITE_URL}/ne/nepali-janma-kundali`, siteName: "PDFora" } };
   }
   const staticMetadata: Record<string, { title: string; description: string }> = {
     privacy: { title: "नेपाली गोपनीयता नीति | PDFora", description: "PDFora ले फाइल, कुकी, AI र तेस्रो पक्षका सेवासँग सम्बन्धित जानकारी कसरी सम्हाल्छ भन्ने नेपाली नीति।" },
@@ -95,6 +107,12 @@ export default async function NepaliPdfToolPage({ params }: Props) {
   }
   if (locale === "ne" && slug === "resume-builder") {
     return <ResumeBuilder locale="ne" />;
+  }
+  if (locale === "ne" && slug === "nepali-guna-milan") {
+    return <main lang="ne" className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6"><div className="mx-auto max-w-5xl"><GunaMilanTool /></div></main>;
+  }
+  if (locale === "ne" && slug === "nepali-janma-kundali") {
+    return <main lang="ne" className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6"><div className="mx-auto max-w-5xl"><KundaliTool /></div></main>;
   }
   if (locale === "hi" && isRoutable("hi") && ["privacy", "terms", "about", "contact"].includes(slug)) {
     return <HindiStaticPage page={slug as "privacy" | "terms" | "about" | "contact"} />;

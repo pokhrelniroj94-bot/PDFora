@@ -167,7 +167,10 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/tools/json-formatter-validator", "ne"), "/ne/tools/json-formatter-validator");
   assert.equal(routing.localizedOrFallbackPath("/nepse-technical-analysis", "ne"), "/ne/nepse-technical-analysis");
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
-  assert.equal(routing.nepaliLocalizedRoutePaths.size, 227, "All localized routes must be represented in the route registry");
+  assert.equal(routing.localizedOrFallbackPath("/nepali-guna-milan", "ne"), "/ne/nepali-guna-milan");
+  assert.equal(routing.localizedOrFallbackPath("/nepali-janma-kundali", "ne"), "/ne/nepali-janma-kundali");
+  assert.equal(routing.hreflangMap("/nepali-guna-milan"), undefined, "Nepali-only tools must not claim an English alternate");
+  assert.equal(routing.nepaliLocalizedRoutePaths.size, 229, "All localized routes must be represented in the route registry");
   for (const slug of ["email-signature-generator", "timezone-meeting-planner", "image-dpi-calculator", "video-bitrate-calculator", "markdown-table-generator"]) {
     assert.equal(routing.localizedOrFallbackPath(`/tools/${slug}`, "ne"), `/ne/tools/${slug}`);
     assert.equal(routing.hasIndexableLocalizedPage(`/tools/${slug}`, "ne"), true, `${slug} has a dedicated Nepali workspace and should be indexable`);

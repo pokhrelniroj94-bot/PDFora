@@ -169,6 +169,9 @@ test("shared navigation preserves unavailable Nepali destinations", () => {
   assert.equal(routing.localizedOrFallbackPath("/blog", "ne"), "/ne/blog");
   assert.equal(routing.localizedOrFallbackPath("/nepali-guna-milan", "ne"), "/ne/nepali-guna-milan");
   assert.equal(routing.localizedOrFallbackPath("/nepali-janma-kundali", "ne"), "/ne/nepali-janma-kundali");
+  assert.equal(routing.localizedOrFallbackPath("/nepali-guna-milan", "en"), "/", "Nepali-only pages must not send English visitors to a missing route");
+  assert.equal(routing.hasIndexableLocalizedPage("/nepali-guna-milan", "ne"), true);
+  assert.equal(routing.hasIndexableLocalizedPage("/nepali-guna-milan", "en"), false);
   assert.equal(routing.hreflangMap("/nepali-guna-milan"), undefined, "Nepali-only tools must not claim an English alternate");
   assert.equal(routing.nepaliLocalizedRoutePaths.size, 229, "All localized routes must be represented in the route registry");
   for (const slug of ["email-signature-generator", "timezone-meeting-planner", "image-dpi-calculator", "video-bitrate-calculator", "markdown-table-generator"]) {

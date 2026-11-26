@@ -78,6 +78,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...(isLocalizedPageIndexable("ne", "/") ? [{ url: `${baseUrl}/ne`, changeFrequency: "weekly" as const, priority: 0.8 }] : []),
     ...(isLocalizedPageIndexable("ne", "/tools") ? [{ url: `${baseUrl}/ne/tools`, changeFrequency: "weekly" as const, priority: 0.75 }] : []),
     ...(isLocalizedPageIndexable("ne", "/market") ? [{ url: `${baseUrl}/ne/market`, changeFrequency: "daily" as const, priority: 0.75 }] : []),
+    { url: `${baseUrl}/ne/nepali-guna-milan`, changeFrequency: "monthly", priority: 0.65 },
+    { url: `${baseUrl}/ne/nepali-janma-kundali`, changeFrequency: "monthly", priority: 0.65 },
     ...(isLocalizedPageIndexable("ne", "/resume-builder") ? [{ url: `${baseUrl}/ne/resume-builder`, changeFrequency: "monthly" as const, priority: 0.65 }] : []),
     ...nepaliToolSlugs.map((slug) => ({
       url: nepaliPdfRoutes[slug]

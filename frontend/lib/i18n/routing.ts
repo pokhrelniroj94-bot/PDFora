@@ -6,7 +6,7 @@ import {
   nepaliLocalizedUtilitySlugs,
 } from "./nepali-tool-routes";
 import { nepaliPdfRoutes } from "./nepali-pdf-routes";
-import { isLocalizedPageIndexable, isLocalizedToolIndexable } from "../tools/localized-verification";
+import { isLocalizedPageIndexable, isLocalizedToolIndexable, isNepaliOnlyPageIndexable } from "../tools/localized-verification";
 import { nepaliLocalizedBlogPosts } from "../nepali-localized-blog-posts";
 import { getLocalizedQrBlogPost } from "../localized-qr-blog-posts";
 import { hindiToolSeo } from "./hindi-tool-seo";
@@ -101,8 +101,9 @@ export const hindiLocalizedRoutePaths: ReadonlySet<string> = new Set([
 const nepaliIndexableNonToolPaths: ReadonlySet<string> = new Set();
 
 export function hasIndexableLocalizedPage(path: string, locale: Locale): boolean {
-  if (locale === defaultLocale) return true;
   const normalized = normalizePath(path);
+  if (isNepaliOnlyPageIndexable(normalized)) return locale === "ne";
+  if (locale === defaultLocale) return true;
   // QR Generator is a reviewed, independently translated exception; do not publish
   // unrelated routes for locales whose wider site translation is still unpublished.
   if (normalized === "/tools/qr-code-generator" && isLocalizedToolIndexable(locale, "qr-code-generator")) return true;
@@ -133,6 +134,7 @@ export function hasLocalizedPage(path: string, locale: Locale): boolean {
  */
 export function localizedOrFallbackPath(path: string, locale: Locale): string {
   const normalized = normalizePath(path);
+  if (isNepaliOnlyPageIndexable(normalized)) return locale === "ne" ? localizePath(normalized, locale) : "/";
   if (locale === defaultLocale) return normalized;
   if (hasLocalizedPage(normalized, locale)) return localizePath(normalized, locale);
   return `${localizePath("/", locale)}?from=${encodeURIComponent(normalized)}`;

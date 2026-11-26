@@ -151,6 +151,7 @@ export interface AlternateOptions {
  * Never lists unpublished or missing translations.
  */
 export function hreflangMap(path: string, options: AlternateOptions = {}): Record<string, string> | undefined {
+  if (isNepaliOnlyPageIndexable(normalizePath(path))) return undefined;
   const isAvailable = options.isAvailable ?? ((l: Locale, p: string) => hasIndexableLocalizedPage(p, l));
   const map: Record<string, string> = {};
   for (const locale of locales) {

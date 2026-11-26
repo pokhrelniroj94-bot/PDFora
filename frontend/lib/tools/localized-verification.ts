@@ -31,7 +31,7 @@ export const verifiedLocalizedNonToolPaths: Readonly<Partial<Record<Locale, read
   ne: [
     "/", "/tools", "/market", "/resume-builder", "/blog",
     ...nepaliLocalizedBlogPosts.map((post) => `/blog/${post.slug}`),
-    "/privacy", "/terms", "/about", "/contact",
+    "/privacy", "/terms", "/about", "/contact", "/nepali-guna-milan", "/nepali-janma-kundali",
   ],
   hi: [
     "/", "/tools", "/blog", "/privacy", "/terms", "/about", "/contact",

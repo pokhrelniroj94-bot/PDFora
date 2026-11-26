@@ -39,7 +39,14 @@ export const verifiedLocalizedNonToolPaths: Readonly<Partial<Record<Locale, read
   ],
 };
 
+export const verifiedNepaliOnlyPaths = ["/nepali-guna-milan", "/nepali-janma-kundali"] as const;
+
+export function isNepaliOnlyPageIndexable(path: string): boolean {
+  return (verifiedNepaliOnlyPaths as readonly string[]).includes(path);
+}
+
 export function isLocalizedPageIndexable(locale: Locale, path: string): boolean {
+  if (isNepaliOnlyPageIndexable(path)) return locale === "ne";
   return verifiedLocalizedNonToolPaths[locale]?.includes(path) === true;
 }
 

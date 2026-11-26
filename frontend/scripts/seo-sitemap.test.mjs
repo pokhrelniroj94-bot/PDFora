@@ -83,6 +83,7 @@ const modules = await loadToolAdapter();
 const hreflangMap = modules.routing.hreflangMap;
 const approvedNepali = modules["localized-verification"].verifiedLocalizedTools.ne ?? [];
 const isLocalizedToolIndexable = modules["localized-verification"].isLocalizedToolIndexable;
+const isLocalizedPageIndexable = modules["localized-verification"].isLocalizedPageIndexable;
 const pdfRoutes = Object.keys(modules["nepali-pdf-routes"].nepaliPdfRoutes);
 const toolRoutes = [
   ...modules["nepali-tool-routes"].nepaliLocalizedUtilitySlugs,
@@ -91,6 +92,11 @@ const toolRoutes = [
 ];
 
 const approvedPdfSlugs = pdfRoutes;
+for (const path of ["/nepali-guna-milan", "/nepali-janma-kundali"]) {
+  assert.equal(isLocalizedPageIndexable("ne", path), true, path + " must be indexable in Nepali");
+  assert.equal(isLocalizedPageIndexable("en", path), false, path + " must not claim a missing English equivalent");
+  assert.ok(sitemapSource.includes(`isLocalizedPageIndexable("ne", "${path}")`), path + " must enter the sitemap through the localized indexability gate");
+}
 assert.deepEqual(
   [...approvedNepali].sort(),
   [...toolRoutes, ...approvedPdfSlugs].sort(),

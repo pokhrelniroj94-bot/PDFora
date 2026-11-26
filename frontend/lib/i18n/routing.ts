@@ -65,6 +65,8 @@ export const nepaliLocalizedNonToolPaths = [
   "/terms",
   "/about",
   "/contact",
+  "/nepali-guna-milan",
+  "/nepali-janma-kundali",
 ] as const;
 
 export const nepaliLocalizedRoutePaths: ReadonlySet<string> = new Set([

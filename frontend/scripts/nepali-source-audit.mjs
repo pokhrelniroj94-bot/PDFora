@@ -62,7 +62,10 @@ const blogDescriptions = parse(blog, /^\s*description:\s*"([^"]+)"/gm);
 const routingSource = read("lib/i18n/routing.ts");
 const nonToolBlock = routingSource.split("export const nepaliLocalizedNonToolPaths = [")[1]?.split("] as const")[0] ?? "";
 const nonToolStaticRoutes = parse(nonToolBlock, /"([^"]+)"/g);
-const nepaliRouteEquivalents = routeSet.size + nonToolStaticRoutes.length + blogSlugs.length;
+const nepaliOnlyBlock = verificationSource.match(/verifiedNepaliOnlyPaths\s*=\s*\[([^\]]*)\]/)?.[1] ?? "";
+const nepaliOnlyRoutes = parse(nepaliOnlyBlock, /"([^"]+)"/g);
+const fixedNonToolRoutes = nonToolStaticRoutes.filter((route) => !nepaliOnlyRoutes.includes(route));
+const nepaliRouteEquivalents = routeSet.size + fixedNonToolRoutes.length + blogSlugs.length + nepaliOnlyRoutes.length;
 
 const blogEntries = [...blog.matchAll(/slug:\s*"([^"]+)"/g)].map((match) => ({ slug: match[1], offset: match.index }));
 const legacyPdfSlugs = new Set(parse(read("lib/legacy-tool-slugs.ts"), /"([a-z0-9-]+)"/g));
@@ -105,7 +108,7 @@ const missingTitles = [...routeSet].filter((s) => !titles.has(s) && !pdf.include
 const report = {
   generatedAt: new Date().toISOString(),
   methodology: "Derived from current catalog, canonical PDF inventory, Nepali route allowlists, page dispatch source, localized verification allowlist and registered Nepali blog records. Static source evidence is not runtime/browser or human review evidence.",
-  inventory: { uniqueTools: unique.length, pdfTools: pdf.length, catalogTools: catalog.length, nepaliToolRoutes: routeSet.size, nepaliPdfRoutes: pdfRoutes.length, nepaliCatalogRoutes: utility.length, nepaliNonToolRoutes: nonToolStaticRoutes.length + blogSlugs.length, nepaliRouteEquivalents, targetedUnitTestToolCount: targetedSlugs.size, nepaliBlogArticles: blogSlugs.length },
+  inventory: { uniqueTools: unique.length, pdfTools: pdf.length, catalogTools: catalog.length, nepaliToolRoutes: routeSet.size, nepaliPdfRoutes: pdfRoutes.length, nepaliCatalogRoutes: utility.length, nepaliNonToolRoutes: fixedNonToolRoutes.length + blogSlugs.length, nepaliOnlyCalculatorRoutes: nepaliOnlyRoutes.length, nepaliRouteEquivalents, targetedUnitTestToolCount: targetedSlugs.size, nepaliBlogArticles: blogSlugs.length },
   checks: {
     duplicateCatalogSlugs: duplicate(all),
     missingNepaliRoutes: missingRoutes,
@@ -141,7 +144,8 @@ Generated from current source by \`npm run i18n:nepali-audit\`.
 
 - Canonical unique tools: **${unique.length}** (${pdf.length} PDF + ${catalog.length} catalog).
 - Nepali tool routes: **${routeSet.size}** (${pdfRoutes.length} PDF + ${utility.length} catalog).
-- Additional localized non-tool routes: **${nonToolStaticRoutes.length + blogSlugs.length}** (${nonToolStaticRoutes.length} fixed pages + ${blogSlugs.length} blog articles).
+- Additional localized non-tool routes: **${fixedNonToolRoutes.length + blogSlugs.length}** (${fixedNonToolRoutes.length} fixed pages + ${blogSlugs.length} blog articles).
+- Additional Nepali-only astrology calculator routes: **${nepaliOnlyRoutes.length}** (no English hreflang equivalents).
 - Total Nepali route equivalents: **${nepaliRouteEquivalents}**. This is a route inventory, not an indexability count.
 - Registered Nepali blog articles: **${blogSlugs.length}**.
 - Tool slugs referenced by current targeted Nepali unit-test files: **${targetedSlugs.size}**.

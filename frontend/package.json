@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:tools": "node scripts/verify-tool-catalog.mjs",
+    "verify:tools": "node scripts/verify-tool-catalog.mjs && node scripts/verify-ashtakoota.mjs",
     "test": "jest",
     "tools:test": "node scripts/tool-adapter.test.mjs && node scripts/tool-ui-regression.test.mjs && node scripts/calculator-input-editability.test.mjs && node scripts/calculator-math-regression.test.mjs && node scripts/sip-calculator-content.test.mjs && node scripts/security-consent-regression.test.mjs && node scripts/nepali-catalog-metadata.test.mjs",
     "audit:functional": "node scripts/functional-audit.mjs",
@@ -27,7 +27,8 @@
     "next": "16.4.6",
     "pdf-lib": "^1.17.1",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "astronomy-engine": "2.1.19"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

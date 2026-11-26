@@ -33,6 +33,8 @@ const nepalTools = [
   { href: "/ne/tools/nepal-electricity-bill-calculator", title: "आधिकारिक ERC बिजुली बिल क्याल्कुलेटर", description: "विद्युत् नियमन आयोगको अद्यावधिक आधिकारिक क्याल्कुलेटर खोल्नुहोस्।" },
   { href: "/ne/tools/nepal-public-holidays-2083", title: "नेपालका सार्वजनिक बिदा २०८३", description: "२०८३ सालका राष्ट्रिय तथा क्षेत्रगत सार्वजनिक बिदाको विवरण हेर्नुहोस्।" },
   { href: "/ne/nepse-technical-analysis", title: "NEPSE प्राविधिक विश्लेषण", description: "उपलब्ध ऐतिहासिक बजार तथ्याङ्कबाट सूचक, जोखिम र समर्थन तथा प्रतिरोध स्तर हेर्नुहोस्। यो लगानी सल्लाह होइन।" },
+  { href: "/ne/nepali-guna-milan", title: "३६ गुण मिलान", description: "जन्ममिति, समय र स्थानका आधारमा परम्परागत अष्टकूट मिलान हेर्नुहोस्।" },
+  { href: "/ne/nepali-janma-kundali", title: "जन्मकुण्डली", description: "जन्म विवरणबाट लग्न, राशि, नक्षत्र र D1 तथा D9 चार्ट तयार गर्नुहोस्।" },
 ];
 
 const faqs = [

@@ -137,7 +137,7 @@ export const nepalBlogPosts: BlogPost[] = [
     sources: [{ label: "National Examinations Board: Letter grading and assessment notice", url: "https://neb.gov.np/neb-notice-file/Notices-202509271000503094.pdf" }]
   },
   {
-    slug: "loksewa-online-form-photo-resizer-guide", title: "How to Resize a Photo to 50KB or 200KB for Loksewa and Online Forms",
+    slug: "loksewa-online-form-photo-resizer-guide", title: "Resize a Photo to 50KB or 200KB for Loksewa Forms",
     description: "Compress a photo in your browser to a chosen KB limit and understand why official image dimensions still matter.", keyword: "Loksewa photo resizer 50KB", updated: "2026-11-01", readTime: "4 min read",
     intro: "Many online applications set a maximum photo file size. A photo that is too large may fail to upload even when it looks correct on screen. Compressing it to a required KB limit can help.",
     sections: [
@@ -149,7 +149,7 @@ export const nepalBlogPosts: BlogPost[] = [
     toolLinks: [{ label: "Loksewa Photo Resizer", href: "/tools/loksewa-photo-resizer" }]
   },
   {
-    slug: "nepse-share-buy-sell-profit-calculator-guide", title: "NEPSE Share Calculator: Estimate Buy Cost, Selling Charges and Profit",
+    slug: "nepse-share-buy-sell-profit-calculator-guide", title: "NEPSE Share Calculator: Buy Cost, Charges and Profit",
     description: "Estimate NEPSE share transaction cost and profit using editable broker commission, SEBON, DP and CGT assumptions.", keyword: "NEPSE share buy sell calculator", updated: "2026-11-01", readTime: "5 min read",
     intro: "The profit on a share trade is not always just the selling price minus the buying price. Transaction charges and capital gains tax assumptions affect the final amount received.",
     sections: [
@@ -222,7 +222,7 @@ export const nepalBlogPosts: BlogPost[] = [
   },
   {
     slug: "nepal-salary-income-tax-calculator-2083-84-guide",
-    title: "Nepal Salary Tax Calculator 2083/84: Understand the New Income Tax Slabs",
+    title: "Nepal Salary Tax Calculator 2083/84: Income Tax Slabs",
     description: "Understand progressive personal income tax bands for FY 2083/84 and estimate annual and monthly tax on taxable income.",
     keyword: "Nepal salary tax calculator 2083/84",
     updated: "2026-11-01",
@@ -243,7 +243,7 @@ export const nepalBlogPosts: BlogPost[] = [
   },
   {
     slug: "nea-electricity-bill-calculator-nepal-guide",
-    title: "How to Check Your Nepal Electricity Bill: Official ERC Calculator and 2083 Tariff",
+    title: "Nepal Electricity Bill: ERC Calculator and 2083 Tariff",
     description: "Learn which meter details to prepare, how to use the official ERC electricity calculator and where to verify Nepal's current tariff.",
     keyword: "official ERC electricity bill calculator Nepal",
     updated: "2026-11-07",
@@ -270,7 +270,7 @@ export const nepalBlogPosts: BlogPost[] = [
   },
   {
     slug: "nepal-public-holidays-2083-calendar-guide",
-    title: "Nepal Government Public Holidays 2083: Full Calendar and Regional Notes",
+    title: "Nepal Public Holidays 2083: Full Calendar and Notes",
     description: "Search the 2083 BS public holiday list with AD dates, national holidays and community-specific observances.",
     keyword: "Nepal public holidays 2083",
     updated: "2026-11-07",
@@ -337,7 +337,7 @@ export const nepalBlogPosts: BlogPost[] = [
 
   ,{
     slug: "nepse-market-news-and-ipo-updates",
-    title: "NEPSE News and Nepal IPO Updates: How to Verify Market Information",
+    title: "NEPSE News and Nepal IPO Updates: Verify the Facts",
     description: "Follow Nepal stock-market headlines, IPO and FPO updates, allotment notices and official sources. Learn how to distinguish news search results from confirmed exchange disclosures.",
     keyword: "NEPSE news Nepal IPO FPO updates",
     updated: "2026-11-02",

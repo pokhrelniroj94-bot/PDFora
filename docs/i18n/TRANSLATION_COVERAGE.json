@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-24T10:21:25.079Z",
-  "sourceCommit": "7f2dad85c8fd9f74297167a789c4d8552d863867",
+  "generatedAt": "2026-11-28T12:40:49.441Z",
+  "sourceCommit": "6520f0b8e2f4589a8d6c11bd4bc429f4b275e39d",
   "methodology": {
     "pageSourceFiles": "Count of app/page.tsx source files; this is not a claim about all runtime URLs or indexable routes.",
     "routeCoverage": "Dynamic route handlers serve multiple slugs; localized route equivalents are reported as counts only, not percentages of page source files.",
@@ -25,7 +25,7 @@
     "publishedNepaliBlogRoutes": 43,
     "publishedNepaliStaticRoutes": 4,
     "publishedNepaliHomeRoute": true,
-    "publishedNepaliRouteEquivalents": 227
+    "publishedNepaliRouteEquivalents": 229
   },
   "locales": {
     "en": {
@@ -53,7 +53,7 @@
       "status": "Partially translated",
       "published": true,
       "sourceRouteFiles": 76,
-      "translatedRoutes": 227,
+      "translatedRoutes": 229,
       "routeCoveragePercent": null,
       "sharedUiModuleCoveragePercent": 100,
       "pdfGuideCoverage": {

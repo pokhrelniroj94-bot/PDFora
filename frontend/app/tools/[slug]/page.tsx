@@ -1,3 +1,4 @@
+import { toolSeoOverrides } from "../../../lib/tool-seo-overrides";
 import type { Metadata } from "next";
 // React import removed as not needed in Server Component
 import { notFound, permanentRedirect } from "next/navigation";
@@ -27,6 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const tool = toolCatalog.find((item) => item.slug === slug);
   if (!tool || slug === "pdf-tools") return { title: "Page not found", robots: { index: false, follow: true } };
   const seoOverrides: Record<string, { title: string; description: string }> = {
+    ...toolSeoOverrides,
     "qr-code-generator": { title: "Free QR Code Generator – Wi-Fi, URL, vCard & More", description: "Create custom QR codes for URLs, text, Wi-Fi, email, phone, SMS, WhatsApp, contacts and events. Customize colour, size and error correction; download PNG or SVG." },
     "markup-calculator": { title: "Markup Calculator – Selling Price & Markup % | PDFora", description: "Calculate selling price, markup amount and markup percentage from product cost. Check each input before using the result in a quote." },
     "hourly-to-salary-calculator": { title: "Hourly to Salary Calculator – Annual & Monthly Pay | PDFora", description: "Convert an hourly wage into estimated weekly, monthly and annual pay. Adjust hours and working weeks to match your schedule." },

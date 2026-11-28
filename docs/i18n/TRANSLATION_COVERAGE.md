@@ -11,7 +11,7 @@ Inventory: 76 frontend page source files, 6 API route source files, 49 English P
 | Code | Language | Status | Localized route equivalents | Shared UI module | PDF guides | Blog content |
 |---|---|---|---:|---:|---:|---:|---:|
 | en | English | Source language; translation review not assessed | Source language | 100% | 100% | 100% |
-| ne | Nepali | Partially translated | 227 | 100% | 100% | 100% |
+| ne | Nepali | Partially translated | 229 | 100% | 100% | 100% |
 | hi | Hindi | Not published | 0 | 0% | 0% | 0% |
 | bn | Bengali | Not published | 0 | 0% | 0% | 0% |
 | ur | Urdu | Not published | 0 | 0% | 0% | 0% |
@@ -23,4 +23,4 @@ Inventory: 76 frontend page source files, 6 API route source files, 49 English P
 | zh | Chinese (Simplified) | Not published | 0 | 0% | 0% | 0% |
 | ja | Japanese | Not published | 0 | 0% | 0% | 0% |
 
-Nepali currently has the homepage, 49 localized PDF routes, 117 localized utility routes, seven finance/news routes, two public-information routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, 42 curated editorial articles and four localized legal/static pages. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.
+Nepali currently has the homepage, 49 localized PDF routes, 117 localized utility routes, seven finance/news routes, two public-information routes, the localized NEPSE market dashboard, a localized Resume Builder, the localized blog index, 42 curated editorial articles, four localized legal/static pages and two Nepali-only astrology calculators. The astrology routes do not claim English hreflang equivalents. Generated catalog-tool guides remain noindex and are excluded from the editorial article count. Ten other locales remain unpublished and must stay out of sitemap and hreflang output until their pages and content are genuinely localized and reviewed.

@@ -7,7 +7,8 @@ Generated from current source by `npm run i18n:nepali-audit`.
 - Canonical unique tools: **175** (49 PDF + 126 catalog).
 - Nepali tool routes: **175** (49 PDF + 126 catalog).
 - Additional localized non-tool routes: **52** (10 fixed pages + 42 blog articles).
-- Total Nepali route equivalents: **227**. This is a route inventory, not an indexability count.
+- Additional Nepali-only astrology calculator routes: **2** (no English hreflang equivalents).
+- Total Nepali route equivalents: **229**. This is a route inventory, not an indexability count.
 - Registered Nepali blog articles: **42**.
 - Tool slugs referenced by current targeted Nepali unit-test files: **82**.
 

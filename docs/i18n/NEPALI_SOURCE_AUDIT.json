@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-24T10:21:25.837Z",
+  "generatedAt": "2026-11-28T12:40:50.201Z",
   "methodology": "Derived from current catalog, canonical PDF inventory, Nepali route allowlists, page dispatch source, localized verification allowlist and registered Nepali blog records. Static source evidence is not runtime/browser or human review evidence.",
   "inventory": {
     "uniqueTools": 175,
@@ -9,7 +9,8 @@
     "nepaliPdfRoutes": 49,
     "nepaliCatalogRoutes": 126,
     "nepaliNonToolRoutes": 52,
-    "nepaliRouteEquivalents": 227,
+    "nepaliOnlyCalculatorRoutes": 2,
+    "nepaliRouteEquivalents": 229,
     "targetedUnitTestToolCount": 82,
     "nepaliBlogArticles": 42
   },
